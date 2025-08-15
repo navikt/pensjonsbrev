@@ -72,7 +72,7 @@ export const LetterEditor = ({
             level="3"
             size="medium"
           >
-            <EditedLetterTitle letter={letter} />
+            <EditedLetterTitle title={letter.title} />
           </Heading>
           <div onKeyDown={editorKeyboardShortcuts}>
             {blocks.map((block, blockIndex) => (
