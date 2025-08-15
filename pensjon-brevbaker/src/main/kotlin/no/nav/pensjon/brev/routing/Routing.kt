@@ -48,10 +48,16 @@ fun Application.brevRouting(
             }
 
             route("etterlatte") {
-                autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService))
+                val etterlatteResource = AutobrevTemplateResource(
+                    "",
+                    EtterlatteMaler.hentAutobrevmaler(),
+                    latexCompilerService,
+                    latexAsyncCompilerService
+                )
+                autobrevRoutes(etterlatteResource)
 
                 post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") {
-                    call.respond(autobrev.renderJSON(it).let { EtterlatteMaler.somSlate(it) })
+                    call.respond(etterlatteResource.renderJSON(it).let { EtterlatteMaler.somSlate(it) })
                 }
             }
             get("/ping_authorized") {
