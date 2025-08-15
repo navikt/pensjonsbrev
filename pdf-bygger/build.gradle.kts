@@ -45,7 +45,7 @@ dependencies {
     implementation(libs.bundles.metrics)
 
     implementation(project(":brevbaker-dsl"))
-    implementation(libs.brevbaker.common)
+    implementation(libs.brevbaker.common.titlemarkup)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
