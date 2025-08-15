@@ -47,6 +47,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //MF_000128 / AP_STANS_FLYTT_MAN
@@ -93,11 +94,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     English to "We have received notice that you have moved to "
                 )
                 eval(pesysData.brukersBostedsland.ifNull(fritekst("BOSTEDSLAND")))
-                text(
-                    Bokmal to ".",
-                    Nynorsk to ".",
-                    English to ".",
-                )
+                universalText(".")
             }
             ifNotNull(
                 pesysData.eksportForbudKode_safe,

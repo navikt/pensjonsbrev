@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -186,11 +187,7 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
                 )
             }
             title2 {
-                text(
-                    Language.Bokmal to "Ved muntlig klage / manglende underskrift:",
-                    Language.Nynorsk to "Ved muntlig klage / manglende underskrift:",
-                    Language.English to "Ved muntlig klage / manglende underskrift:"
-                )
+                universalText("Ved muntlig klage / manglende underskrift:")
             }
             paragraph {
                 text(

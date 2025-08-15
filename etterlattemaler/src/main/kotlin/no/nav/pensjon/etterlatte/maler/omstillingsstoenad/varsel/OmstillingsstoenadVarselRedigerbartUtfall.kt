@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -28,11 +29,7 @@ object OmstillingsstoenadVarselRedigerbartUtfall : EtterlatteTemplate<ManueltBre
         ),
     ) {
         title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
+            universalText("")
         }
         outline {
             includePhrase(Felles.BlankTekst)

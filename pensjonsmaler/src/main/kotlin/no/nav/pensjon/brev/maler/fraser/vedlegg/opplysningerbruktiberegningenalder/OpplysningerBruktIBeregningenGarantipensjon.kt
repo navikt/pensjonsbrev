@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 
 data class OpplysningerBruktIBeregningenGarantipensjon(
     val garantipensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.GarantipensjonVedVirk?>,
@@ -224,7 +225,7 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                             }
 
                             includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
-                            text(Bokmal to ".", Nynorsk to ".", English to ".")
+                            universalText(".")
                         }
                     }
                 }.orShowIf(brukersSivilstand.isOneOf(GLAD_EKT, SEPARERT)) {
@@ -244,7 +245,7 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                                 English to "You and your spouse are registered with different residences as one of you is residing in an institution. Therefore, your pension has been calculated as if you were single. The rate we use is therefore the ",
                             )
                             includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
-                            text(Bokmal to ".", Nynorsk to ".", English to ".")
+                            universalText(".")
                         }
                     }.orShowIf(not(epsVedVirk.borSammenMedBruker_safe.ifNull(false))) {
                         //vedleggBeregnGiftLeverAdskilt_002
@@ -255,7 +256,7 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                                 English to "You and your spouse are registered with different residences. Therefore, your pension has been calculated as if you were single. The rate we use is therefore the ",
                             )
                             includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
-                            text(Bokmal to ".", Nynorsk to ".", English to ".")
+                            universalText(".")
                         }
                     }
                 }.orShowIf(brukersSivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER)) {
@@ -275,7 +276,7 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                             English to "You and your partner are registered with different residences. Therefore, your pension has been calculated as if you were single. The rate we use is therefore the ",
                         )
                         includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
-                        text(Bokmal to ".", Nynorsk to ".", English to ".")
+                        universalText(".")
                     }
                 }.orShowIf(brukersSivilstand.isOneOf(SAMBOER_3_2, SAMBOER_1_5)) {
                     showIf(brukersSivilstand.equalTo(SAMBOER_3_2)) {
@@ -347,7 +348,7 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                             English to "We have registered that you are single. The rate we use is therefore the ",
                         )
                         includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
-                        text(Bokmal to ".", Nynorsk to ".", English to ".")
+                        universalText(".")
                     }
                 }
                 showIf(beregningKap20VedVirk.redusertTrygdetid) {

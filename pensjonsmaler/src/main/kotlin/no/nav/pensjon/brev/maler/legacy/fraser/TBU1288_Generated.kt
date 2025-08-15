@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brev.template.namedReference
 
 object TBU1288_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -19,7 +20,7 @@ object TBU1288_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "Read more about how child supplements are calculated in the attachment called ",
             )
             namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-            text(Bokmal to ".", Nynorsk to ".", English to ".")
+            universalText(".")
         }
     }
 }

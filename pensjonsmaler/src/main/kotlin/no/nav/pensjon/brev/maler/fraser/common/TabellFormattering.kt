@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class KronerText(
@@ -65,7 +66,7 @@ data class BroekText(
     val fontType: FontType = FontType.PLAIN
 ) :TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        eval(teller.format() + "/" + nevner.format())
+        universalText(teller.format() + "/" + nevner.format())
 }
 
 

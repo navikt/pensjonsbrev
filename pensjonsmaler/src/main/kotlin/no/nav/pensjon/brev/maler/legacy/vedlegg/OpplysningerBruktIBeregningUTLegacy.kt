@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
@@ -44,11 +45,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 English to "Data we have used in the calculations of ",
             )
             ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { beregningVirkFom ->
-                textExpr(
-                    Bokmal to beregningVirkFom.format(),
-                    Nynorsk to beregningVirkFom.format(),
-                    English to beregningVirkFom.format(),
-                )
+                universalText(beregningVirkFom.format())
             }
         }
         paragraph {

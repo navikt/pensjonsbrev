@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -132,7 +133,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     )
                 }
                 paragraph {
-                    eval(fritekst("fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde"))
+                    universalText(fritekst("fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde"))
                 }
                 includePhrase(Felles.DuKanLeseMer)
             }

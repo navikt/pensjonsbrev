@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.universalText
 
 data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     val trygdetidsdetaljerKap19VedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.TrygdetidsdetaljerKap19VedVirk>,
@@ -177,12 +178,12 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                             row {
                                 cell {
                                     ifNotNull(trygdetid.fom) {
-                                        eval(it.format(short = true))
+                                        universalText(it.format(short = true))
                                     }
                                 }
                                 cell {
                                     ifNotNull(trygdetid.tom) {
-                                        eval(it.format(short = true))
+                                        universalText(it.format(short = true))
                                     }
                                 }
                             }
@@ -220,17 +221,17 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                         row {
                             cell {
                                 ifNotNull(trygdetid.land) {
-                                    eval(it)
+                                    universalText(it)
                                 }
                             }
                             cell {
                                 ifNotNull(trygdetid.fom) {
-                                    eval(it.format(short = true))
+                                    universalText(it.format(short = true))
                                 }
                             }
                             cell {
                                 ifNotNull(trygdetid.tom) {
-                                    eval(it.format(short = true))
+                                    universalText(it.format(short = true))
                                 }
                             }
                         }

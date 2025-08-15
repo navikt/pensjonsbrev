@@ -52,6 +52,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 // V00011 i metaforce
@@ -443,7 +444,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregni
         }) {
             forEach(pensjonsopptjeningKap20VedVirk.pensjonsopptjeninger) {
                 row {
-                    cell { eval(it.aarstall.format()) }
+                    cell { universalText(it.aarstall.format()) }
                     cell { includePhrase(KronerText(it.pensjonsgivendeinntekt)) }
                     cell { includePhrase(KronerText(it.gjennomsnittligG)) }
                     if (medMerknader) {
