@@ -42,9 +42,6 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         deletedBlocks = deleted
     )
 
-fun Edit.Letter.fixParentIds(): Edit.Letter =
-    copy(blocks = blocks.map { it.fixParentIds(null) })
-
 private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
     when (this) {
         is Edit.Block.Paragraph -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)

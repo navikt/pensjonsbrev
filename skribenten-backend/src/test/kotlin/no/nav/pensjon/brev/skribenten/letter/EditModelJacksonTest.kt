@@ -27,7 +27,7 @@ class EditModelJacksonTest {
         val json = objectMapper.writeValueAsString(expected)
         val actual = objectMapper.readValue(json, Edit.Letter::class.java)
 
-        Assertions.assertThat(actual).isEqualTo(expected)
+        assertThat(actual).isEqualTo(expected)
     }
 
     // TODO: Følgende tester kan slettes når vi fjerner bakoverkompatibilitet for title som ren string
@@ -56,7 +56,7 @@ class EditModelJacksonTest {
     @Test
     fun `kan deserialisere gammel EditModel`() {
         val expected = editedLetter(dokumentDato = LocalDate.of(2025, 8, 12)).copy(
-            title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "", editedText = "En tittel")))
+            title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(-1, "En tittel")))
         )
 
         val actual = objectMapper.readValue(tittelSomStringJson, Edit.Letter::class.java)
