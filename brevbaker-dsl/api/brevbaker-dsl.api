@@ -1228,12 +1228,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {
 	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static final fun universalText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Ljava/lang/String;)V
-	public static final fun universalText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lno/nav/pensjon/brev/template/Expression;)V
-	public static final fun universalText (Lno/nav/pensjon/brev/template/dsl/TextScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun universalText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static synthetic fun universalText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun universalText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/TextScope {

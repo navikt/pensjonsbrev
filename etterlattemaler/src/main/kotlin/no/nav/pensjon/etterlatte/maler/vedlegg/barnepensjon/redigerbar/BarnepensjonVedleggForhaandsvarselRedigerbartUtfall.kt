@@ -6,13 +6,14 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.universalText
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForhaandsvarselFraser
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadForhaandsvarselFraser
 
 @TemplateModelHelpers
 object BarnepensjonVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
@@ -30,7 +31,11 @@ object BarnepensjonVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTemplate<
         ),
     ) {
         title {
-            universalText("")
+            text(
+                Bokmal to "",
+                Nynorsk to "",
+                English to "",
+            )
         }
         outline {
             includePhrase(BarnepensjonForhaandsvarselFraser.ForhaandsvarselRedigerbart)

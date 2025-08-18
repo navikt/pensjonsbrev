@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenGarantipensjon
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -51,7 +52,6 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 // V00011 i metaforce
@@ -443,7 +443,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregni
         }) {
             forEach(pensjonsopptjeningKap20VedVirk.pensjonsopptjeninger) {
                 row {
-                    cell { universalTextExpr(it.aarstall.format()) }
+                    cell { eval(it.aarstall.format()) }
                     cell { includePhrase(KronerText(it.pensjonsgivendeinntekt)) }
                     cell { includePhrase(KronerText(it.gjennomsnittligG)) }
                     if (medMerknader) {

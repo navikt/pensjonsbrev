@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
@@ -74,7 +73,11 @@ object TilbakekrevingFraser {
 						English to ", and your response, which we received on ".expr() + datoTilsvarBruker.format(),
 					)
 				}
-				universalText(".")
+				text(
+					Bokmal to ".",
+					Nynorsk to ".",
+					English to ".",
+				)
 			}
 		}
 	}

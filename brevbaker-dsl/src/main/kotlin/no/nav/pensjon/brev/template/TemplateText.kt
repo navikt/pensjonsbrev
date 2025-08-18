@@ -88,13 +88,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <ParameterType : Any> TextScope<LangBokmalNynorskEnglish, ParameterType>.universalText(
-    text: String,
-    fontType: FontType = FontType.PLAIN,
-) {
-    text(Language.Bokmal to text, Language.Nynorsk to text, Language.English to text, fontType)
-}
-
 // TextScope.textExpr()
 //
 //
@@ -122,13 +115,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <ParameterType : Any, Lang : LanguageSupport> TextScope<Lang, ParameterType>.universalTextExpr(
-    text: StringExpression,
-    fontType: FontType = FontType.PLAIN,
-) {
-    eval(text, fontType)
-}
-
 
 // PlainTextScope.text()
 //
@@ -154,10 +140,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
 }
 
-fun <ParameterType : Any> PlainTextScope<LangBokmalNynorskEnglish, ParameterType>.universalText(text: String) {
-    text(Language.Bokmal to text, Language.Nynorsk to text, Language.English to text)
-}
-
 // PlainTextScope.textExpr()
 //
 //
@@ -181,8 +163,3 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 ) {
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
 }
-
-fun <ParameterType : Any, Lang : LanguageSupport> PlainTextScope<Lang, ParameterType>.universalTextExpr(text: StringExpression) {
-    eval(text)
-}
-

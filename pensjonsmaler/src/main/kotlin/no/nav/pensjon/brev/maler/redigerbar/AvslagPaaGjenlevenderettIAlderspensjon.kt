@@ -78,7 +78,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Mal 152 i metaforce
@@ -166,7 +165,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                             "angi antall dager/måneder"
                         ) + "."
                     )
-                    universalTextExpr(fritekst(" eller "))
+                    eval(fritekst(" eller "))
                     textExpr(
                         Bokmal to " I følge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge. ",
                         Nynorsk to " Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg. ",
@@ -229,7 +228,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         Nynorsk to "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i ",
                         English to "To be eligible for your retirement pension with survivor`s rights when you live in "
                     )
-                    universalTextExpr(pesysData.bruker.faktiskBostedsland_safe.ifNull(fritekst("BOSTEDSLAND")))
+                    eval(pesysData.bruker.faktiskBostedsland_safe.ifNull(fritekst("BOSTEDSLAND")))
                     text(
                         Bokmal to ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon.",
                         Nynorsk to ", må avdøde ha hatt 20 års butid i Noreg eller ha rett til tilleggspensjon.",
@@ -360,7 +359,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                                 "Legg inn aktuelle artikler om sammenlegging og eksport"
                             ) + " in the social security agreement with "
                         )
-                        ifNotNull(land.navn) { universalTextExpr(it + ".") }
+                        ifNotNull(land.navn) { eval(it + ".") }
                     }
                 }
             }

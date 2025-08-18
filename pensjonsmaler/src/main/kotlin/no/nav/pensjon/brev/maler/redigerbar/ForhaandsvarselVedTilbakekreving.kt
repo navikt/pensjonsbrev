@@ -47,25 +47,19 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
         }
         outline {
             paragraph {
-                val datoFritekst = fritekst("dato")
-                val typeYtelse = fritekst("type ytelse")
-                val datoFraOgMed = fritekst("dato fra og med")
-                val datoTilOgMed = fritekst("dato til og med")
                 textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " viser til vedtak av ".expr() + datoFritekst +
-                            " hvor det er lagt til grunn at du har fått utbetalt for mye ".expr() + typeYtelse +
-                            " i perioden fra og med ".expr() + datoFraOgMed + " til og med ".expr() +
-                            datoTilOgMed + ".".expr(),
-
-                    Nynorsk to felles.avsenderEnhet.navn + " viser til vedtak av ".expr() + datoFritekst +
-                            " der det er lagt til grunn at du har fått utbetalt for mykje ".expr() + typeYtelse +
-                            " i perioden frå og med ".expr() + datoFraOgMed + " til og med ".expr() +
-                            datoTilOgMed + ".".expr(),
-
-                    English to felles.avsenderEnhet.navn + " refers to the decision of ".expr() + datoFritekst + "," +
-                            " which indicates that you have received over-payment of ".expr() + typeYtelse +
-                            " during the period from and including ".expr() + datoFraOgMed + " up to and including ".expr() +
-                            datoTilOgMed + ".".expr()
+                    Bokmal to felles.avsenderEnhet.navn + " viser til vedtak av ".expr() + fritekst("dato") +
+                            " hvor det er lagt til grunn at du har fått utbetalt for mye ".expr() + fritekst("type ytelse") +
+                            " i perioden fra og med ".expr() + fritekst("dato fra og med") + " til og med ".expr() +
+                            fritekst("dato til og med") + ".".expr(),
+                    Nynorsk to felles.avsenderEnhet.navn + " viser til vedtak av ".expr() + fritekst("dato") +
+                            " der det er lagt til grunn at du har fått utbetalt for mykje ".expr() + fritekst("type ytelse") +
+                            " i perioden frå og med ".expr() + fritekst("dato fra og med") + " til og med ".expr() +
+                            fritekst("dato til og med") + ".".expr(),
+                    English to felles.avsenderEnhet.navn + " refers to the decision of ".expr() + fritekst("dato") + "," +
+                            " which indicates that you have received over-payment of ".expr() + fritekst("type ytelse") +
+                            " during the period from and including ".expr() + fritekst("dato fra og med") + " up to and including ".expr() +
+                            fritekst("dato til og med") + ".".expr()
                 )
             }
             paragraph {

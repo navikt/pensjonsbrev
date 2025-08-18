@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brev.template.namedReference
 
 object TBU1133_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -20,7 +19,7 @@ object TBU1133_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 				English to "You can read more about this in attachment ",
 			)
 			namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-			universalText(".")
+			text(Bokmal to ".", Nynorsk to ".", English to ".")
 		}
     }
 }

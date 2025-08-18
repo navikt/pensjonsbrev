@@ -65,7 +65,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -335,7 +334,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
                     namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                 }
-                universalText(".")
+                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011)) {
@@ -425,7 +424,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         text(Bokmal to " og ", Nynorsk to " og ", English to " and ")
                         namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                     }
-                    universalText(".")
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
             }
 

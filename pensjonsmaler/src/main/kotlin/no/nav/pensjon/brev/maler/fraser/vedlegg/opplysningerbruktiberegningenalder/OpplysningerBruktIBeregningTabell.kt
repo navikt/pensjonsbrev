@@ -69,7 +69,6 @@ import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningTabellKap19(
@@ -110,7 +109,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Final pension point score",
                                     )
                                 }
-                                cell { universalTextExpr(it.format()) }
+                                cell { eval(it.format()) }
                             }
                         }
 
@@ -191,7 +190,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Final pension point score (EEA)",
                                     )
                                 }
-                                cell { universalTextExpr(it.format()) }
+                                cell { eval(it.format()) }
                             }
                         }
                     }
@@ -272,7 +271,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Final pension point score (Norway and countries with social security agreement)",
                                     )
                                 }
-                                cell { universalTextExpr(it.format()) }
+                                cell { eval(it.format()) }
                             }
                         }
 
@@ -333,7 +332,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                 English to "Ratio for life expectancy adjustment",
                             )
                         }
-                        cell { universalTextExpr(beregningKap19VedVirk.forholdstallLevealder.format(scale = 3)) }
+                        cell { eval(beregningKap19VedVirk.forholdstallLevealder.format(scale = 3)) }
                     }
                 }
 
@@ -361,7 +360,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                 English to "Occupational injury - degree of disability",
                             )
                         }
-                        cell { universalTextExpr(it.yrkesskadeUforegrad.format() + " %") }
+                        cell { eval(it.yrkesskadeUforegrad.format() + " %") }
                     }
 
                     //tabellYrkesskadeSluttpoengtall_001
@@ -373,7 +372,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                 English to "Final pension point score on occupational injury",
                             )
                         }
-                        cell { universalTextExpr(it.sluttpoengtall.format()) }
+                        cell { eval(it.sluttpoengtall.format()) }
                     }
 
                     //tabellYrkesskadePoengAr_001
@@ -424,7 +423,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "Degree of disability at the age of 67 used for calculating the supplement for the disabled",
                                 )
                             }
-                            cell { universalTextExpr(beregningKap19VedVirk.uforegradVed67.format() + " %") }
+                            cell { eval(beregningKap19VedVirk.uforegradVed67.format() + " %") }
                         }
                     }
 
@@ -438,7 +437,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "Percentage rate for determining the supplement for the disabled",
                                 )
                             }
-                            cell { universalTextExpr(beregningKap19VedVirk.skjermingsgrad.format() + " %") }
+                            cell { eval(beregningKap19VedVirk.skjermingsgrad.format() + " %") }
                         }
                     }
 
@@ -452,7 +451,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "Ratio for life expectancy adjustment used for calculating the supplement for the disabled",
                                 )
                             }
-                            cell { universalTextExpr(beregningKap19VedVirk.forholdstall67Soeker.format(scale = 3)) }
+                            cell { eval(beregningKap19VedVirk.forholdstall67Soeker.format(scale = 3)) }
                         }
                     }
                 }
@@ -562,7 +561,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                     English to "Ratio for life expectancy adjustment",
                                 )
                             }
-                            cell { universalTextExpr(beregningKap20VedVirk.delingstallLevealder.format()) }
+                            cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
                         }
                     }
                 }
@@ -619,7 +618,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                             English to "Life expectancy adjustment divisor at withdrawal",
                         )
                     }
-                    cell { universalTextExpr(beregningKap20VedVirk.delingstallLevealder.format()) }
+                    cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
                 }
 
                 //vedleggTabellKap20Trygdetid_001
@@ -655,7 +654,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
 
                         row {
                             cell { includePhrase(DelingstallVed67Aar) }
-                            cell { universalTextExpr(garantipensjonVedVirk.delingstalletVed67Ar.format()) }
+                            cell { eval(garantipensjonVedVirk.delingstalletVed67Ar.format()) }
                         }
                     }
                 }

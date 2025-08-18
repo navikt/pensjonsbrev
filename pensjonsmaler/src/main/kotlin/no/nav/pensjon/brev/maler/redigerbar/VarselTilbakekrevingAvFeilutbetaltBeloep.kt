@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
@@ -110,7 +109,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 )
             }
             paragraph {
-                universalTextExpr(
+                eval(
                     fritekst(
                         "beskriv hva som har skjedd i saken/ årsaken til feilutbetalingen. " +
                                 "Gjør kort rede for årsaken til feilutbetalingen. " +
@@ -187,7 +186,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 )
             }
             paragraph {
-                universalTextExpr(
+                eval(
                     fritekst(
                         "foreløpig individuell vurdering " +
                                 "Hvor åpenbar/ synlig var feilen? " +

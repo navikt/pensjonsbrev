@@ -1,12 +1,15 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar
 
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.universalText
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -30,7 +33,11 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
         ),
     ) {
         title {
-            universalText("")
+            text(
+                Bokmal to "",
+                Nynorsk to "",
+                English to "",
+            )
         }
         outline {
             includePhrase(Felles.BlankTekst)

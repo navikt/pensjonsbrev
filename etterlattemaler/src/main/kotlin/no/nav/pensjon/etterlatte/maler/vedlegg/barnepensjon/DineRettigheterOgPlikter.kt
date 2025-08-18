@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
@@ -182,6 +181,10 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "If you need help, you are welcome to call us by phone ",
         )
         kontakttelefonPensjon(bosattUtland)
-        universalText(".")
+        text(
+            Bokmal to ".",
+            Nynorsk to ".",
+            English to ".",
+        )
     }
 }

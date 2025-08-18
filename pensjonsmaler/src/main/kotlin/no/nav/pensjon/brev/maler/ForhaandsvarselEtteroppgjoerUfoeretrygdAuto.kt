@@ -29,7 +29,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -146,7 +145,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                         English to "You can read more about repayment in the appendix "
                     )
                     namedReference(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd)
-                    universalTextExpr(".".expr())
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
 
                 showIf(harTjentOver80prosentAvOIFU) {

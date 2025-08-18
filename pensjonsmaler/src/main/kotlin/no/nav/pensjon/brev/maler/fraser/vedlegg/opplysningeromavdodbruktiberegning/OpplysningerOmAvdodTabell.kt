@@ -531,7 +531,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.foedselsnummer(avdodFnr: 
             )
         }
 
-        cell { universalTextExpr(avdodFnr.format()) }
+        cell { eval(avdodFnr.format()) }
     }
 }
 
@@ -575,7 +575,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.yrkesskade(
                     English to "Final pension point score on occupational injury",
                 )
             }
-            cell { universalTextExpr(it.format()) }
+            cell { eval(it.format()) }
         }
     }
     //tabellYrkesskadePoengAr_001
@@ -607,7 +607,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.yrkesskade(
                     English to "Occupational injury - degree of disability",
                 )
             }
-            cell { universalTextExpr(it.format() + " %") }
+            cell { eval(it.format() + " %") }
         }
     }
 }
@@ -673,7 +673,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.sluttpoengTall(
                     )
 
                 }
-                cell { universalTextExpr(it.format()) }
+                cell { eval(it.format()) }
             }
         }
 
@@ -686,7 +686,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.sluttpoengTall(
                         English to "Final pension point score with over-compensation$suffixEngelsk",
                     )
                 }
-                cell { universalTextExpr(it.format()) }
+                cell { eval(it.format()) }
             }
         }
 
@@ -699,7 +699,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.sluttpoengTall(
                         English to "Final pension point score without over-compensation$suffixEngelsk",
                     )
                 }
-                cell { universalTextExpr(it.format()) }
+                cell { eval(it.format()) }
             }
         }
     }

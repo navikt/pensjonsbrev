@@ -12,8 +12,8 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class TBU1120_Generated(
@@ -35,7 +35,11 @@ data class TBU1120_Generated(
 					English to " starting ".expr() + it.formatMonthYear(),
 				)
 			}
-			universalText(".")
+			text(
+				Bokmal to ".",
+				Nynorsk to ".",
+				English to ".",
+			)
 		}
     }
 }

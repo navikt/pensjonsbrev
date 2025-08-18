@@ -286,7 +286,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                                     English to ", and Article 6 of regulation (EC) 883/200"
                                 )
                             }
-                            universalText(".")
+                            text(Bokmal to ".", Nynorsk to ".", English to ".")
                         }
                     }
                 }

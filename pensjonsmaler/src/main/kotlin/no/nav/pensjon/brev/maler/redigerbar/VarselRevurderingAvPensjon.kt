@@ -27,7 +27,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalTextExpr
 
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -104,7 +103,12 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                 )
             }
             paragraph {
-                universalTextExpr(fritekst("Fritekst felt - beskriv hva som har skjedd i saken/ årsaken til revurderingen"))
+                val beskrivelse = fritekst("Fritekst felt - beskriv hva som har skjedd i saken/ årsaken til revurderingen")
+                textExpr(
+                    Bokmal to beskrivelse,
+                    Nynorsk to beskrivelse,
+                    English to beskrivelse,
+                )
             }
             title1 {
                 text(
