@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.fom
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.land
@@ -23,7 +22,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.universalText
+import no.nav.pensjon.brev.template.dsl.universalTextExpr
 
 data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     val trygdetidsdetaljerKap19VedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.TrygdetidsdetaljerKap19VedVirk>,
@@ -178,12 +177,12 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                             row {
                                 cell {
                                     ifNotNull(trygdetid.fom) {
-                                        universalText(it.format(short = true))
+                                        universalTextExpr(it.format(short = true))
                                     }
                                 }
                                 cell {
                                     ifNotNull(trygdetid.tom) {
-                                        universalText(it.format(short = true))
+                                        universalTextExpr(it.format(short = true))
                                     }
                                 }
                             }
@@ -221,17 +220,17 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                         row {
                             cell {
                                 ifNotNull(trygdetid.land) {
-                                    universalText(it)
+                                    universalTextExpr(it)
                                 }
                             }
                             cell {
                                 ifNotNull(trygdetid.fom) {
-                                    universalText(it.format(short = true))
+                                    universalTextExpr(it.format(short = true))
                                 }
                             }
                             cell {
                                 ifNotNull(trygdetid.tom) {
-                                    universalText(it.format(short = true))
+                                    universalTextExpr(it.format(short = true))
                                 }
                             }
                         }

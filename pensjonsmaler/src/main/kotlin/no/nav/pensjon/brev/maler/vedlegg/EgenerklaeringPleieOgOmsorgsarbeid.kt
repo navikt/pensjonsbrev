@@ -140,13 +140,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
         )
         newline()
 
-        universalText(felles.avsenderEnhet.navn)
+        universalTextExpr(felles.avsenderEnhet.navn)
         newline()
 
         with(returadresse) {
-            universalText(adresseLinje1)
+            universalTextExpr(adresseLinje1)
             newline()
-            universalText(postNr + " " + postSted)
+            universalTextExpr(postNr + " " + postSted)
         }
     }
 }

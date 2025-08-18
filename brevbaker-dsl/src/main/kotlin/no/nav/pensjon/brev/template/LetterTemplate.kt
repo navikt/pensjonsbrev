@@ -419,6 +419,16 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             languages = LanguageCombination.Triple(lang1.first, lang2.first, lang3.first),
                             fontType = fontType
                         )
+
+                        fun <Lang: LanguageSupport> create(
+                            text: String,
+                            fontType: FontType = FontType.PLAIN,
+                            lang: Lang,
+                        ) = Literal(
+                            text = lang.all().associateWith { text },
+                            languages = lang,
+                            fontType = fontType
+                        )
                     }
                 }
 

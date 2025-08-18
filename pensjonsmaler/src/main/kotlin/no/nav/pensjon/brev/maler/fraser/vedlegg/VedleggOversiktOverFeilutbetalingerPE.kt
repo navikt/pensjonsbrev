@@ -25,8 +25,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.universalText
+import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
@@ -142,7 +142,7 @@ private data class TilbakekrevingerTabell(
                 table(
                     header = {
                         column(columnSpan = 3) {
-                            universalText(tilbakekreves.maanedOgAar.formatMonthYear() + " - ")
+                            universalTextExpr(tilbakekreves.maanedOgAar.formatMonthYear() + " - ")
                             includePhrase(
                                 KonteringTypeYtelseTextMappingStorBokstav(
                                     ytelsenMedFeilutbetaling = tilbakekreves.ytelsenMedFeilutbetaling

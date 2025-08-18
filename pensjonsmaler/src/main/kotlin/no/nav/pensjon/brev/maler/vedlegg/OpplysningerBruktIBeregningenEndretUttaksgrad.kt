@@ -67,7 +67,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.universalText
+import no.nav.pensjon.brev.template.dsl.universalTextExpr
 
 // V00005 i metaforce
 @TemplateModelHelpers
@@ -213,7 +213,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                 )
                             }
                             cell {
-                                universalText(it.format())
+                                universalTextExpr(it.format())
                             }
                         }
                     }
@@ -245,7 +245,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    universalText(it.format())
+                                    universalTextExpr(it.format())
                                 }
                             }
                         }
@@ -264,7 +264,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                         )
                                     }
                                     cell {
-                                        universalText(it.format())
+                                        universalTextExpr(it.format())
                                     }
                                 }
                             }
@@ -369,7 +369,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    universalText(forholdstallLevealder.format(scale = 3))
+                                    universalTextExpr(forholdstallLevealder.format(scale = 3))
                                 }
                             }
                         }
@@ -478,7 +478,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    universalText(it.format())
+                                    universalTextExpr(it.format())
                                 }
                             }
                         }
@@ -494,7 +494,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    universalText(it.format())
+                                    universalTextExpr(it.format())
                                 }
                             }
                         }

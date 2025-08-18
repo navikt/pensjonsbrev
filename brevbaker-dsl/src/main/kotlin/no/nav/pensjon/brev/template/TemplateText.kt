@@ -95,7 +95,6 @@ fun <ParameterType : Any> TextScope<LangBokmalNynorskEnglish, ParameterType>.uni
     text(Language.Bokmal to text, Language.Nynorsk to text, Language.English to text, fontType)
 }
 
-
 // TextScope.textExpr()
 //
 //
@@ -123,7 +122,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <Lang : LanguageSupport, ParameterType : Any> TextScope<Lang, ParameterType>.universalText(
+fun <ParameterType : Any, Lang : LanguageSupport> TextScope<Lang, ParameterType>.universalTextExpr(
     text: StringExpression,
     fontType: FontType = FontType.PLAIN,
 ) {
@@ -183,7 +182,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
 }
 
-fun <ParameterType : Any> PlainTextScope<LangBokmalNynorskEnglish, ParameterType>.universalText(text: StringExpression) {
+fun <ParameterType : Any, Lang : LanguageSupport> PlainTextScope<Lang, ParameterType>.universalTextExpr(text: StringExpression) {
     eval(text)
 }
 

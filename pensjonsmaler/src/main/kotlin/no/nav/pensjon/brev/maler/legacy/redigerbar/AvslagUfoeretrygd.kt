@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.universalText
+import no.nav.pensjon.brev.template.dsl.universalTextExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
@@ -249,7 +250,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 }
 
                 paragraph {
-                    universalText(fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene"))
+                    universalTextExpr(fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene"))
                 }
 
                 paragraph {
@@ -718,7 +719,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2414NN, TBU2414EN, TBU2414]
 
                 paragraph {
-                    universalText(fritekst("legg inn konkret begrunnelse der det er nødvendig"))
+                    universalTextExpr(fritekst("legg inn konkret begrunnelse der det er nødvendig"))
                     text(
                         Bokmal to ". Vi har ut fra sakens opplysninger vurdert at du ikke har gjennomført all hensiktsmessig behandling. Du har heller ikke gjennomført arbeidsrettede tiltak, som kan bedre dine inntektsmuligheter i arbeidslivet.",
                         Nynorsk to ". Vi har ut frå opplysningane i saka vurdert det slik at du ikkje har gjennomført all formålstenleg behandling. Du har heller ikkje gjennomført arbeidsretta tiltak som kan betre moglegheitene dine for deg å skaffe deg inntekter i arbeidslivet.",
