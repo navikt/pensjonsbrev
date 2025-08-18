@@ -340,7 +340,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // opphorYtelseEPSOver2G
                 paragraph {
                     textExpr(
-                        Bokmal to sivilstandBestemtStorBokstav + " din mottat  ikke lenger egen pensjon eller uføretrygd, men har fortsatt en inntekt større enn to ganger grunnbeløpet.",
+                        Bokmal to sivilstandBestemtStorBokstav + " din mottar ikke lenger egen pensjon eller uføretrygd, men har fortsatt en inntekt større enn to ganger grunnbeløpet.",
                         Nynorsk to sivilstandBestemtStorBokstav + " din får ikkje lenger eigen pensjon eller eiga uføretrygd, men har framleis ei inntekt som er større enn to gonger grunnbeløpet.",
                         English to "Your ".expr() + sivilstandBestemtLitenBokstav + " no longer receives a pension or disability benefit, but still has an annual income that exceeds twice the national insurance basic amount."
                     )
