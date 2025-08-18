@@ -31,6 +31,7 @@ enum class FeatureToggles(private val key: String) {
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakEndringOpptjeningEndret("vedtakEndringOpptjeningEndret"),
     vedtakEndringVedFlyttingMellomLand("vedtakEndringVedFlyttingMellomLand"),
+    brukertestbrev2025("brukertestbrev2025"),
     vedtakStansFlyttingMellomLand("vedtakStansFlyttingMellomLand"),
     avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP");
 
