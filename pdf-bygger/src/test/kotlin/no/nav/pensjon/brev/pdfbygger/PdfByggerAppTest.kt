@@ -152,6 +152,7 @@ class PdfByggerAppTest {
         """.trimIndent()
 
         assertThat(objectMapper.readValue<LetterMarkup>(json), isA<LetterMarkup>())
+        assertThat(objectMapper.readValue<LetterMarkup>(json).title.joinToString("") { it.text }, equalTo("Tittel 1"))
     }
 
     private fun ApplicationTestBuilder.appConfig(latexCommand: String? = null, parallelism: Int? = null, compileTimeout: Duration? = null, queueTimeout: Duration? = null) =

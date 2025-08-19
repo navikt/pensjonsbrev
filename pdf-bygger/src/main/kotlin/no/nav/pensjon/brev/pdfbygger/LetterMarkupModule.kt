@@ -63,8 +63,7 @@ internal object LetterMarkupModule : SimpleModule() {
                     node.replace("title", ArrayNode(ctxt.nodeFactory).apply {
                         addObject().apply {
                             put("id", -1)
-                            put("text", "")
-                            put("editedText", titleNode.textValue())
+                            put("text", titleNode.textValue())
                             put("type", LetterMarkup.ParagraphContent.Type.LITERAL.name)
                             put("fontType", LetterMarkup.ParagraphContent.Text.FontType.PLAIN.name)
                         }
