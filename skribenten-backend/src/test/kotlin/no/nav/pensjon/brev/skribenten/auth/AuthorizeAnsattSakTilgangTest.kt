@@ -25,7 +25,9 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
 import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -73,13 +75,13 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val creds = BasicAuthCredentials("test", "123")
 
-    private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, ServiceResult<List<Pdl.Gradering>>> = mapOf()) = object : PdlService {
+    private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, ServiceResult<List<Pdl.Gradering>>> = mapOf()) = object : PdlServiceStub() {
         override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) = adressebeskyttelser[Pair(fnr, behandlingsnummer)] ?: TODO("Not yet implemented")
     }
 
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(emptyList())))
 
-    private val defaultPenService = object : PenService {
+    private val defaultPenService = object : PenServiceStub() {
         override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
             mapOf(
                 "${testSak.saksId}" to ServiceResult.Ok(testSak),
@@ -215,7 +217,7 @@ class AuthorizeAnsattSakTilgangTest {
         }
 
     @Test
-    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenService {
+    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenServiceStub() {
         override suspend fun hentSak(saksId: String) = ServiceResult.Error<Pen.SakSelection>("Sak finnes ikke", HttpStatusCode.NotFound)
     }) { client ->
         val response = client.get("/sak/${testSak.saksId}")

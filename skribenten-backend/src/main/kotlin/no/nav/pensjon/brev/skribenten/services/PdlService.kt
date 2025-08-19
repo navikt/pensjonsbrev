@@ -32,8 +32,8 @@ private val hentAdressebeskyttelseQuery = PdlServiceHttp::class.java.getResource
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
 interface PdlService {
-    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> = TODO("Not yet implemented")
-    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = TODO("Not yet implemented")
+    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String>
+    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>>
 }
 
 class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {

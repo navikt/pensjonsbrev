@@ -16,9 +16,9 @@ import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 interface BrevmetadataService {
-    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> = TODO("Not yet implemented")
-    suspend fun getEblanketter(): List<BrevdataDto> = TODO("Not yet implemented")
-    suspend fun getMal(brevkode: String): BrevdataDto = TODO("Not yet implemented")
+    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto>
+    suspend fun getEblanketter(): List<BrevdataDto>
+    suspend fun getMal(brevkode: String): BrevdataDto
 }
 
 class BrevmetadataServiceHttp(

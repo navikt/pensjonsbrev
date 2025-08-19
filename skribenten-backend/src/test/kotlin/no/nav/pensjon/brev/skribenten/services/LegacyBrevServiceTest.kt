@@ -65,7 +65,7 @@ class LegacyBrevServiceTest {
         maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
     )
 
-    private val safService = object : SafService {
+    private val safService = object : SafServiceStub() {
         override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
         override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<SafService.HentDokumenterResponse> {
             return ServiceResult.Ok(
@@ -82,7 +82,7 @@ class LegacyBrevServiceTest {
         }
     }
 
-    private val penService = object : PenService {
+    private val penService = object : PenServiceStub() {
         override suspend fun bestillDoksysBrev(
             request: Api.BestillDoksysBrevRequest,
             enhetsId: String,

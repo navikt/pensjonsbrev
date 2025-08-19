@@ -174,7 +174,7 @@ class BrevredigeringServiceTest {
         var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
         var pesysBrevdata: BrevdataResponse.Data? = null,
         var sendBrevResponse: ServiceResult<Pen.BestillBrevResponse>? = null,
-    ) : PenService {
+    ) : PenServiceStub() {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
 
         data class PesysBrevdatakallRequest(

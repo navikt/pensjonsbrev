@@ -32,25 +32,25 @@ import kotlin.jvm.java
 private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 
 interface PenService {
-    suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = TODO("Not implemented yet")
+    suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection>
     suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,
         enhetsId: String,
         saksId: Long
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> = TODO("Not implemented yet")
+    ): ServiceResult<Pen.BestillDoksysBrevResponse>
     suspend fun bestillExstreamBrev(
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
-    ): ServiceResult<BestillExstreamBrevResponse> = TODO("Not implemented yet")
-    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> = TODO("Not implemented yet")
-    suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> = TODO("Not implemented yet")
-    suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> = TODO("Not implemented yet")
-    suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> = TODO("Not implemented yet")
-    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult> = TODO("Not implemented yet")
-    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> = TODO("Not implemented yet")
+    ): ServiceResult<BestillExstreamBrevResponse>
+    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse>
+    suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse>
+    suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>>
+    suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean>
+    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult>
+    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data>
     suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
         distribuer: Boolean,
-    ): ServiceResult<Pen.BestillBrevResponse> = TODO("Not implemented yet")
+    ): ServiceResult<Pen.BestillBrevResponse>
 
     data class KravStoettetAvDatabyggerResult(
         val kravStoettet: Map<String, Boolean> = emptyMap()

@@ -40,7 +40,7 @@ class BrevmalServiceTest {
 
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
-    private fun lagBrevmalService(service: PenService = object : PenService {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    private fun lagBrevmalService(service: PenService = object : PenServiceStub() {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -180,7 +180,7 @@ class BrevmalServiceTest {
             brevmaler = listOf(brevdataDto),
         )
 
-        val penService = object : PenService {
+        val penService = object : PenServiceStub() {
             override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
                 if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(isKravPaaGammeltRegelverk) else TODO("Not yet implemented")
 

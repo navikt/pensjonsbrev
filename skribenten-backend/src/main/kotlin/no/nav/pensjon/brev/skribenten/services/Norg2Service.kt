@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 interface Norg2Service {
-    suspend fun getEnhet(enhetId: String): NavEnhet? = TODO("Not implemented yet")
+    suspend fun getEnhet(enhetId: String): NavEnhet?
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown

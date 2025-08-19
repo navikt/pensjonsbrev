@@ -18,9 +18,9 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSam
 import org.slf4j.LoggerFactory
 
 interface SamhandlerService {
-    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = TODO("Not yet implemented")
-    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = TODO("Not yet implemented")
-    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = TODO("Not yet implemented")
+    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto
+    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto
+    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
 }
 
 class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
