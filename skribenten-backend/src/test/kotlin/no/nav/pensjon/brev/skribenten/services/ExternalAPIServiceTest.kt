@@ -53,7 +53,7 @@ class ExternalAPIServiceTest {
     )
     private val externalAPIService = ExternalAPIService(
         config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to skribentenWebUrl)).toConfig(),
-        brevhenter = object : Brevhenter {
+        hentBrevService = object : HentBrevService {
             override fun hentBrevForAlleSaker(saksIder: Set<Long>) = listOf(brevDto)
         },
         brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))

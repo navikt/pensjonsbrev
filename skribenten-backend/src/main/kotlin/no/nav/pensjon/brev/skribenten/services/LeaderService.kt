@@ -20,7 +20,7 @@ interface LeaderService {
     val isLeaderElectionEnabled: Boolean
 }
 
-class LeaderServiceImpl(
+class NaisLeaderService(
     private val url: String?,
     clientEngine: HttpClientEngine = CIO.create(),
 ) : LeaderService {

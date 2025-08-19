@@ -63,7 +63,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
     class VedtaksbrevKreverVedtaksId(message: String) : BrevredigeringException(message)
 }
 
-interface Brevhenter {
+interface HentBrevService {
     fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo>
 }
 
@@ -71,7 +71,7 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
-) : Brevhenter {
+) : HentBrevService {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
     }

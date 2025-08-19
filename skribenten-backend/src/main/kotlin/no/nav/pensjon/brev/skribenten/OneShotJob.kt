@@ -4,7 +4,7 @@ import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
-import no.nav.pensjon.brev.skribenten.services.LeaderServiceImpl
+import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -61,7 +61,7 @@ private val logger = LoggerFactory.getLogger("OneShotJob")
  * @param block The block of one-shot job definitions to execute.
  */
 suspend fun oneShotJobs(skribentenConfig: Config, block: OneShotJobConfig.() -> Unit) =
-    oneShotJobs(LeaderServiceImpl(skribentenConfig.getConfig("services.leader")), block)
+    oneShotJobs(NaisLeaderService(skribentenConfig.getConfig("services.leader")), block)
 
 /**
  * Executes one-shot jobs if this instance is the leader in a leader election setup.
