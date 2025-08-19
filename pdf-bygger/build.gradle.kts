@@ -45,7 +45,7 @@ dependencies {
     implementation(libs.bundles.metrics)
 
     implementation(project(":brevbaker-dsl"))
-    implementation(libs.brevbaker.common.titlemarkup)
+    implementation(libs.brevbaker.common)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
@@ -54,6 +54,9 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
+
+    testImplementation(project(":brevbaker"))
+    testImplementation(testFixtures(project(":brevbaker")))
 }
 
 application {

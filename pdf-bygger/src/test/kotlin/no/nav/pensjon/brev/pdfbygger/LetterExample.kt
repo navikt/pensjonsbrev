@@ -1,5 +1,277 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
+
+enum class LetterExampleBrevkode : Brevkode.Automatisk {
+    TESTBREV_PDFBYGGER;
+
+    override fun kode() = name
+}
+
+@TemplateModelHelpers
+object LetterExample : AutobrevTemplate<LetterExampleDto> {
+
+    override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV_PDFBYGGER
+
+    override val template = createTemplate(
+        name = "EKSEMPEL_BREV", //Letter ID
+        letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
+        languages = languages(Bokmal, Nynorsk),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
+            isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+    ) {
+        title {
+            text(
+                Bokmal to "Eksempelbrev",
+                Nynorsk to "Eksempelbrev"
+            )
+        }
+
+        // Main letter content
+        outline {
+            //Select boolean expression from this letters argument
+
+
+            // Data from the felles(common) argument can also be used. Both felles and argument supports map and select.
+            val firstName = felles.bruker.fornavn
+
+            // section title
+            title1 {
+                text(Bokmal to "Du har fått innvilget pensjon", Nynorsk to "Du har fått innvilget pensjon")
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
+                    Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
+                )
+            }
+
+            paragraph {
+                showIf(firstName.equalTo("Alexander")) {
+                    text(
+                        Bokmal to "Hei Alexander",
+                        Nynorsk to "Hei Alexander",
+                    )
+                }.orShowIf(firstName.equalTo("Håkon")) {
+                    text(
+                        Bokmal to "Hei Håkon",
+                        Nynorsk to "Hei Håkon"
+                    )
+                }.orShow {
+                    textExpr(
+                        Bokmal to "Hei ".expr() + firstName,
+                        Nynorsk to "Hei ".expr() + firstName,
+                    )
+                }
+                text(
+                    Bokmal to ", håper du har en fin dag!",
+                    Nynorsk to ", håper du har en fin dag!"
+                )
+            }
+
+
+
+            // Fetch a value from the letter arguments
+            paragraph {
+                list {
+                    item {
+                        text(Bokmal to "Test1", Nynorsk to "Test1")
+                    }
+
+                    item {
+                        text(Bokmal to "Test2", Nynorsk to "Test2")
+                    }
+
+                    item {
+                        text(Bokmal to "Test3", Nynorsk to "Test3")
+                    }
+
+                    item {
+                        //textOnlyPhrase can be included anywhere you write text.
+                        includePhrase(TextOnlyPhraseTest)
+                    }
+                }
+                text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
+            }
+
+            title1 {
+                text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt")
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020",
+                    Nynorsk to "Dette er din inntekt fra 01.01.2020 til 01.05.2020"
+                )
+                table(
+                    header = {
+                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4") }
+                    }
+                ) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Din inntekt før skatt i måned 1",
+                                Nynorsk to "Din inntekt før skatt i måned 1"
+                            )
+                        }
+                        cell { text(Bokmal to "100 Kr", Nynorsk to "100 Kr") }
+                        cell { text(Bokmal to "200 Kr", Nynorsk to "200 Kr") }
+                        cell { text(Bokmal to "300 Kr", Nynorsk to "300 Kr") }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Din inntekt før skatt i måned 1",
+                                Nynorsk to "Din inntekt før skatt i måned 1"
+                            )
+                        }
+                        cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
+                        cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
+                        cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
+                    }
+                }
+            }
+
+            //Print some lipsum paragraphs.
+            for (lipsum in lipsums) {
+                paragraph { text(Bokmal to lipsum, Nynorsk to lipsum) }
+            }
+        }
+        includeAttachment(testVedlegg, TestVedleggDto("test1", "test2").expr())
+    }
+}
+
+// This data class should normally be in the api-model. Placed here for test-purposes.
+data class LetterExampleDto(
+    val pensjonInnvilget: Boolean,
+    val datoInnvilget: LocalDate,
+    val navneliste: List<String>,
+    val tilleggEksempel: List<ExampleTilleggDto>,
+    val datoAvslaatt: LocalDate?,
+    val pensjonBeloep: Int?,
+) : BrevbakerBrevdata
+
+data class ExampleTilleggDto(
+    val navn: String,
+    val tillegg1: Kroner? = null,
+    val tillegg2: Kroner? = null,
+    val tillegg3: Kroner? = null,
+) {
+    @Suppress("unused")
+    constructor() : this(
+        navn = "Navn",
+        tillegg1 = Kroner(1234),
+        tillegg2 = Kroner(1234),
+        tillegg3 = Kroner(1234),
+    )
+}
+
+data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensjonInnvilget: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
+    //The elements used in outline can also be used in outline phrases.
+    //This is intended for use in the top-level outline scope
+
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        paragraph {
+            showIf(pensjonInnvilget) {
+                val dato = datoInnvilget.format()
+                textExpr(
+                    Bokmal to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
+                    Nynorsk to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
+                )
+            }
+        }
+}
+
+@Suppress("unused")
+object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        list {
+            item {
+                text(Bokmal to "Test 1", Nynorsk to "Test 1")
+            }
+
+            item {
+                text(Bokmal to "Test 2", Nynorsk to "Test 2")
+            }
+
+            item {
+                text(Bokmal to "Test 3", Nynorsk to "Test 3")
+            }
+        }
+}
+
+object TextOnlyPhraseTest : TextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
+}
+
+data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        textExpr(
+            Bokmal to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+            Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+        )
+}
+
+data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)
+
+@TemplateModelHelpers
+val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
+    title = newText(
+        Bokmal to "Test vedlegg",
+        Nynorsk to "Test vedlegg",
+    ),
+    includeSakspart = true
+) {
+    paragraph {
+        //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
+        val dokDato = felles.dokumentDato.format()
+        textExpr(
+            Bokmal to "Test verdi 1: tv1".expr() + " Test verdi 2: tv2" + " dokument dato: " + dokDato,
+            Nynorsk to "Test verdi 1: tv11".expr() + " Test verdi 2: tv22" + " dokument dato: " + dokDato,
+        )
+    }
+}
+
 
 val lipsums = listOf(
     "Etiam porta turpis et eros ullamcorper sodales. Cras et eleifend leo. Aenean vehicula nunc sit amet quam tincidunt, id aliquam arcu cursus. Morbi non imperdiet augue, nec placerat tellus. Aenean imperdiet auctor porta. Morbi in lacus nec purus commodo sodales non in ligula. Praesent euismod mollis elit, mollis finibus massa pretium eget. Fusce mollis tempus nisl vitae suscipit. Morbi in elementum tortor. Aenean varius odio non sem convallis, at venenatis arcu ullamcorper. Duis porttitor nulla facilisis mattis porttitor. Quisque pharetra hendrerit tellus, id consequat sapien maximus sit amet. Vestibulum vehicula pellentesque nulla, sit amet egestas felis pellentesque ac. Ut viverra vel magna eget mollis. Aliquam dictum aliquet tortor vitae efficitur. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
