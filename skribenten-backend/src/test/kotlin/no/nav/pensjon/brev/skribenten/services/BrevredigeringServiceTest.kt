@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -139,6 +140,7 @@ class BrevredigeringServiceTest {
     )
 
     private val penService: PenService = mockk()
+    private val krypteringService: KrypteringService = KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
     private val navAnsattService = mockk<NavansattService> {
         coEvery { harTilgangTilEnhet(any(), any()) } returns ServiceResult.Ok(false)
         coEvery {
@@ -173,6 +175,7 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerMock,
         navansattService = navAnsattService,
         penService = penService,
+        krypteringService = krypteringService
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
@@ -560,7 +563,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().lesPdf(krypteringService).bytes).isEqualTo(stagetPDF)
         }
     }
 
@@ -625,8 +628,9 @@ class BrevredigeringServiceTest {
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+            Brevredigering[brev.info.id].skrivRedigertBrev(
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
+                krypteringService)
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
@@ -655,8 +659,9 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
-                Brevredigering[brev.info.id].redigertBrev =
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+                Brevredigering[brev.info.id].skrivRedigertBrev(
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
+                    krypteringService)
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
@@ -1021,7 +1026,7 @@ class BrevredigeringServiceTest {
             }
         }
         transaction {
-            assertThat(Brevredigering[brev.info.id].redigertBrev == brev.redigertBrev)
+            assertThat(Brevredigering[brev.info.id].lesRedigertBrev(krypteringService) == brev.redigertBrev)
         }
     }
 
@@ -1220,8 +1225,9 @@ class BrevredigeringServiceTest {
         assertThat(hash1.hex).isEqualTo(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter.toEdit())))
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+            Brevredigering[brev.info.id].skrivRedigertBrev(
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
+                krypteringService)
         }
 
         val hash2 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -1330,7 +1336,7 @@ class BrevredigeringServiceTest {
             )
         }
 
-        assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
+        assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].lesRedigertBrev(krypteringService).signatur.saksbehandlerNavn })
     }
 
     @Test

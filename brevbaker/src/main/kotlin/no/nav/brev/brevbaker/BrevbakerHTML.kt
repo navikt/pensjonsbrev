@@ -15,7 +15,7 @@ internal object BrevbakerHTML {
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { html ->
                 LetterResponse(
-                    file = html.indexHTML.content.toByteArray(Charsets.UTF_8),
+                    file = html.indexHTML.content.encodeToByteArray(),
                     contentType = ContentTypes.TEXT_HTML_UTF8,
                     letterMetadata = letter.template.letterMetadata,
                 )
