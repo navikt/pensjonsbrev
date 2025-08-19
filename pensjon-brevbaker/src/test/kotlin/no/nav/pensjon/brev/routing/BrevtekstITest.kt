@@ -5,16 +5,13 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import no.nav.brev.brevbaker.Fixtures
-import no.nav.brev.brevbaker.LetterTestRenderer
+import no.nav.brev.brevbaker.Fixtures.felles
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -38,42 +35,48 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 @Tag(TestTags.INTEGRATION_TEST)
-class EndeTilEndeTest {
+class BrevtekstITest {
 
-    private val bestillMarkupRequest = BestillBrevRequest(
-        kode = EnkeltRedigerbartTestbrev.kode,
-        letterData = EmptyRedigerbarBrevdata,
-        felles = Fixtures.felles,
-        language = LanguageCode.BOKMAL,
-    )
 
     @Test
     fun `all text is still there`() = testBrevbakerApp { client ->
-        val bestillinga = LetterImpl(
-            template = EnkeltRedigerbartTestbrev.template,
-            argument = bestillMarkupRequest.letterData,
-            language = Bokmal,
-            felles = bestillMarkupRequest.felles
-        ).let { LetterTestRenderer.renderLetterOnly(it) }
-            .let {
-                with(bestillMarkupRequest) {
-                    BestillRedigertBrevRequest(kode, letterData as EmptyRedigerbarBrevdata, felles, language, it)
-                }
-            }
 
-        val body: LetterResponse = client.post("/letter/redigerbar/pdf") {
+        val markup = client.post("/letter/redigerbar/markup") {
             accept(ContentType.Application.Json)
-            setBody(bestillinga)
+            setBody(
+                BestillBrevRequest(
+                    kode = EnkeltRedigerbartTestbrev.kode,
+                    letterData = EmptyRedigerbarBrevdata,
+                    felles = felles,
+                    language = LanguageCode.BOKMAL,
+                )
+            )
+        }.body<LetterMarkup>()
+
+        val pdf: LetterResponse = client.post("/letter/redigerbar/pdf") {
+            accept(ContentType.Application.Json)
+            setBody(
+                BestillRedigertBrevRequest(
+                    kode = EnkeltRedigerbartTestbrev.kode,
+                    letterData = EmptyRedigerbarBrevdata,
+                    felles = felles,
+                    language = LanguageCode.BOKMAL,
+                    letterMarkup = markup
+                )
+            )
         }.body()
 
-        val tekstIMarkup: List<String> = finnTekstPerAvsnitt(bestillinga.letterMarkup)
-        val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(body.file))
+        val tekstIMarkup: List<String> = finnTekstPerAvsnitt(markup)
+        val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(pdf.file))
 
-        assertContains(tekstIPDF, bestillinga.letterMarkup.title)
+        assertContains(tekstIPDF, markup.title)
 
         assertEquals(10, tekstIMarkup.size)
+        tekstIMarkup.forEach { assertFalse(it.isEmpty()) }
+
         tekstIMarkup.forEach {
             assertContains(tekstIPDF.fjernWhitespace(), it.fjernWhitespace())
         }
@@ -82,7 +85,8 @@ class EndeTilEndeTest {
 
 private fun String.fjernWhitespace() = replace("\\s".toRegex(), "")
 
-private fun finnTekstPerAvsnitt(letterMarkup: LetterMarkup): List<String> = letterMarkup.blocks.flatMap { finnTekst(it) }
+private fun finnTekstPerAvsnitt(letterMarkup: LetterMarkup): List<String> =
+    letterMarkup.blocks.flatMap { finnTekst(it) }
 
 private fun finnTekst(block: Block): List<String> = when (block) {
     is Paragraph -> finnTekstForParagraph(block)
