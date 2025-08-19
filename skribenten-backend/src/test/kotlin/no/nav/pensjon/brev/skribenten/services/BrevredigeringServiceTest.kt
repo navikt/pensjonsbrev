@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.time.delay
 import no.nav.brev.Landkode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -122,7 +123,7 @@ class BrevredigeringServiceTest {
     private val brevbakerService = BrevredigeringFakeBrevbakerService()
 
     private class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
-        lateinit var renderMarkupResultat: ((f: Felles) -> ServiceResult<LetterMarkup>)
+        lateinit var renderMarkupResultat: suspend ((f: Felles) -> ServiceResult<LetterMarkup>)
         lateinit var renderPdfResultat: ServiceResult<LetterResponse>
         lateinit var modelSpecificationResultat: ServiceResult<TemplateModelSpecification>
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
@@ -513,7 +514,7 @@ class BrevredigeringServiceTest {
         }
 
         brevbakerService.renderMarkupResultat = {
-            Thread.sleep(10.minutes.toJavaDuration())
+            delay(10.minutes)
             ServiceResult.Ok(letter)
         }
 
@@ -926,7 +927,7 @@ class BrevredigeringServiceTest {
             val brev = opprettBrev().resultOrNull()!!
 
             brevbakerService.renderMarkupResultat = {
-                Thread.sleep(100)
+                delay(100)
                 ServiceResult.Ok(letter)
             }
 
