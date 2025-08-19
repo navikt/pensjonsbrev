@@ -23,7 +23,7 @@ interface SamhandlerService {
     suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = TODO("Not yet implemented")
 }
 
-class SamhandlerServiceImpl(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -39,7 +39,7 @@ class SamhandlerServiceImpl(configSamhandlerProxy: Config, authService: AuthServ
         callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
     }
 
-    private val logger = LoggerFactory.getLogger(SamhandlerServiceImpl::class.java)
+    private val logger = LoggerFactory.getLogger(SamhandlerServiceHttp::class.java)
 
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
         samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {

@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
 
-private val hentNavnQuery = PdlServiceImpl::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
+private val hentNavnQuery = PdlServiceHttp::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
-private val hentAdressebeskyttelseQuery = PdlServiceImpl::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
+private val hentAdressebeskyttelseQuery = PdlServiceHttp::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
 
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
@@ -36,7 +36,7 @@ interface PdlService {
     suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = TODO("Not yet implemented")
 }
 
-class PdlServiceImpl(config: Config, authService: AuthService) : PdlService, ServiceStatus {
+class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 

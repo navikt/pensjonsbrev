@@ -17,8 +17,8 @@ interface Norg2Service {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceImpl(val config: Config) : Norg2Service {
-    private val logger = LoggerFactory.getLogger(Norg2ServiceImpl::class.java)
+class Norg2ServiceHttp(val config: Config) : Norg2Service {
+    private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
     private val norgUrl = config.getString("url")
 
     private val client = HttpClient(CIO) {

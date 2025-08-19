@@ -21,7 +21,7 @@ interface BrevmetadataService {
     suspend fun getMal(brevkode: String): BrevdataDto = TODO("Not yet implemented")
 }
 
-class BrevmetadataServiceImpl(
+class BrevmetadataServiceHttp(
     config: Config,
 ) : BrevmetadataService, ServiceStatus {
     private val brevmetadataUrl = config.getString("url")

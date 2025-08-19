@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.jvm.java
 
-private val logger = LoggerFactory.getLogger(PenServiceImpl::class.java)
+private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 
 interface PenService {
     suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = TODO("Not implemented yet")
@@ -57,7 +57,7 @@ interface PenService {
     )
 }
 
-class PenServiceImpl(config: Config, authService: AuthService) : PenService, ServiceStatus {
+class PenServiceHttp(config: Config, authService: AuthService) : PenService, ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 

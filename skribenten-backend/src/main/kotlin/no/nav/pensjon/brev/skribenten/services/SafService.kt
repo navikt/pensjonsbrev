@@ -47,7 +47,7 @@ interface SafService {
     }
 }
 
-class SafServiceImpl(config: Config, authService: AuthService) : SafService, ServiceStatus {
+class SafServiceHttp(config: Config, authService: AuthService) : SafService, ServiceStatus {
     private val safUrl = config.getString("url")
     private val safRestUrl = config.getString("rest_url")
     private val safScope = config.getString("scope")

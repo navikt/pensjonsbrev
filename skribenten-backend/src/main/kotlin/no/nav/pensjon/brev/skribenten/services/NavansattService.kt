@@ -21,8 +21,8 @@ interface NavansattService {
     suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = TODO("Not yet implemented")
 }
 
-class NavansattServiceImpl(config: Config, authService: AuthService) : NavansattService, ServiceStatus {
-    private val logger = LoggerFactory.getLogger(NavansattServiceImpl::class.java)
+class NavansattServiceHttp(config: Config, authService: AuthService) : NavansattService, ServiceStatus {
+    private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")

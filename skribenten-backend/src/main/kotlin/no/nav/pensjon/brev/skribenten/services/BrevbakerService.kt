@@ -61,7 +61,7 @@ interface BrevbakerService {
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? = TODO("Not yet implemented")
 }
 
-class BrevbakerServiceImpl(config: Config, authService: AuthService) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: Config, authService: AuthService) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
