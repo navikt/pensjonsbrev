@@ -168,7 +168,7 @@ export type Title2Block = Block & {
 };
 
 export type Title = {
-  readonly content: TextContent[];
+  readonly text: TextContent[];
   readonly deletedContent: number[];
 };
 
