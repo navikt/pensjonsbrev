@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avtalelandNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borIAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borINorge
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.egenopptjeningErBest
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.erForstegangsbehandletNorgeUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.faktiskBostedsland_safe
@@ -52,14 +53,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.egenOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harGjenlevenderett
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harGjenlevendetillegg
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harGjenlevendetilleggKap19
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kildeskatt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kravVirkDatoFomSenereEnnOensketUttakstidspunkt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.supplerendeStoenad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
@@ -268,8 +263,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(harAvdod) {
                 showIf(
-                    saksbehandlerValg.harGjenlevenderett
-                            and gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)
+                    gjenlevenderettAnvendt
+                            and not(gjenlevendetilleggKap19Innvilget)
                             and not(gjenlevendetilleggInnvilget)
                 ) {
                     paragraph {
@@ -281,11 +276,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(
-                    saksbehandlerValg.harGjenlevendetillegg and gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(
-                        0
-                    )
-                ) {
+                showIf(gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(0)) {
                     // beregningAPGjtOpptj
                     paragraph {
                         text(
@@ -306,7 +297,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(saksbehandlerValg.harGjenlevendetilleggKap19 and gjenlevendetilleggKap19Innvilget) {
+                showIf(gjenlevendetilleggKap19Innvilget) {
                     // beregningAPGjtKap19
                     paragraph {
                         textExpr(
@@ -320,14 +311,15 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                     paragraph {
                         text(
+                            // TODO fjerne dette avsnittet og lag ny tekst i vedlegget
                             Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
                             Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er skilnaden mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
                             English to "The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
                         )
                     }
                 }
-
-                showIf(saksbehandlerValg.egenOpptjening and not(gjenlevenderettAnvendt)) {
+                // TODO datastyre denne
+                showIf(pesysData.egenopptjeningErBest and not(gjenlevenderettAnvendt)) {
                     // beregningAPGjRettOpptjEgen_002
                     title1 {
                         text(
@@ -475,10 +467,10 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(gjenlevendetilleggKap19Innvilget) { includePhrase(ReguleringAvGjenlevendetillegg) }
 
-            showIf(
-                saksbehandlerValg.supplerendeStoenad and uttaksgrad.equalTo(100) and borINorge and not(
-                    fullTrygdetid
-                ) and not(innvilgetFor67)
+            showIf(uttaksgrad.equalTo(100)
+                    and borINorge
+                    and not(fullTrygdetid)
+                    and not(innvilgetFor67)
             ) {
                 includePhrase(SupplerendeStoenadAP)
             }
@@ -489,7 +481,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(borINorge) {
                 includePhrase(SkattAP)
-            }.orShowIf(saksbehandlerValg.kildeskatt) {
+            }.orShowIf(saksbehandlerValg.kildeskatt) { // TODO prøve å datastyre
                 title1 {
                     text(
                         Bokmal to "Skatteregler for deg som bor i utlandet",
@@ -536,7 +528,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 includePhrase(Skatteplikt)
             }
 
-            showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+            showIf(vedtakEtterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
@@ -565,10 +557,3 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, pesysData.opplysningerOmAvdodBruktIBeregning)
     }
 }
-
-
-
-
-
-
-
