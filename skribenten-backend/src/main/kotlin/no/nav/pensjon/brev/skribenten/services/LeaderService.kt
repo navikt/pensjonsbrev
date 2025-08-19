@@ -25,7 +25,7 @@ class NaisLeaderService(
     clientEngine: HttpClientEngine = CIO.create(),
 ) : LeaderService {
     constructor(config: Config, clientEngine: HttpClientEngine = CIO.create()) : this(
-        url = config.tryGetString("leader.url"),
+        url = config.tryGetString("url"),
         clientEngine = clientEngine
     )
 
