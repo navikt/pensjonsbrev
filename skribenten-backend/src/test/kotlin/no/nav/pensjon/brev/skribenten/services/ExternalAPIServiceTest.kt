@@ -56,7 +56,7 @@ class ExternalAPIServiceTest {
         brevhenter = object : Brevhenter {
             override fun hentBrevForAlleSaker(saksIder: Set<Long>) = listOf(brevDto)
         },
-        brevbakerService = FakeBrevbakerService(redigerbareMaler = mapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
+        brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
     )
 
 

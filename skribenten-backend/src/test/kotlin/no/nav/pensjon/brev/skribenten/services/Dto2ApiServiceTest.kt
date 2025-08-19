@@ -23,7 +23,7 @@ class Dto2ApiServiceTest {
     private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service(), samhandlerService: SamhandlerService = FakeSamhandlerService()): Dto2ApiService =
         Dto2ApiService(
             brevbakerService = FakeBrevbakerService(
-                redigerbareMaler = mapOf(Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
+                redigerbareMaler = mutableMapOf(Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
                     name = Testbrevkoder.TESTBREV.kode(),
                     letterDataClass = EksempelRedigerbartDto::class.java.name,
                     languages = listOf(LanguageCode.BOKMAL),

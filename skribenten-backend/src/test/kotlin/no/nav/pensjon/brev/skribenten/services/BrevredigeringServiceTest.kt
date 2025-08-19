@@ -121,11 +121,11 @@ class BrevredigeringServiceTest {
 
     private val brevbakerService = BrevredigeringFakeBrevbakerService()
 
-    private class BrevredigeringFakeBrevbakerService : BrevbakerService {
+    private class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: ((f: Felles) -> ServiceResult<LetterMarkup>)
         lateinit var renderPdfResultat: ServiceResult<LetterResponse>
         lateinit var modelSpecificationResultat: ServiceResult<TemplateModelSpecification>
-        val redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
+        override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
 

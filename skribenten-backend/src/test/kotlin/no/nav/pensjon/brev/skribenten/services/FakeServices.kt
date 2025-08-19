@@ -74,8 +74,8 @@ open class FakeBrevmetadataService(
 }
 
 open class FakeBrevbakerService(
-    val maler: List<TemplateDescription.Redigerbar> = listOf(),
-    val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf(),
+    open var maler: List<TemplateDescription.Redigerbar> = listOf(),
+    open var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf(),
 ) : BrevbakerService {
     override suspend fun getTemplates() = ServiceResult.Ok(maler)
 
