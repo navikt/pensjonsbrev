@@ -49,7 +49,7 @@ fun main() {
     }.start(wait = true)
 }
 
-fun Application.skribentenApp(skribentenConfig: Config) {
+suspend fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -123,6 +123,12 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     }
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
+
+    oneShotJobs(skribentenConfig) {
+        job("redigertBrev-tittel-markup") {
+            updateBrevredigeringJson()
+        }
+    }
 
     monitor.subscribe(ApplicationStopPreparing) {
         Features.shutdown()
