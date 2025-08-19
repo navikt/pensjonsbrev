@@ -477,9 +477,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             // omregningGP_PenT_GarantiPen_MNT
                             paragraph {
                                 text(
-                                    Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                                    Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                                    English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
+                                    English to "We have therefore recalculated your basic pension, supplementary pension and guaranteed pension."
                                 )
                             }
                         }.orShow {
