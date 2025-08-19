@@ -4,24 +4,14 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
-import no.nav.brev.brevbaker.Fixtures
-import no.nav.brev.brevbaker.Fixtures.felles
-import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.pdfbygger.EksempelbrevRedigerbart
-import no.nav.pensjon.brev.pdfbygger.LetterExample
-import no.nav.pensjon.brev.pdfbygger.createEksempelbrevRedigerbartDto
-import no.nav.pensjon.brev.pdfbygger.outlineTestTemplate
-import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.pdfbygger.LetterMarkupBlocksBuilder
+import no.nav.pensjon.brev.pdfbygger.ParagraphBuilder
+import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brev.template.render.DocumentFile
-import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.test.Test
 
 class LatexDocumentRendererTest {
@@ -40,7 +30,7 @@ class LatexDocumentRendererTest {
     fun `title should be combined once with adjacent table`() {
         val titleText = "Test tittel 1234"
         assertNumberOfTextOccurrences(1, titleText) {
-            title1 { text(Language.Bokmal to titleText) }
+            title1 { text(titleText) }
             paragraph { testTable() }
         }
     }
@@ -49,7 +39,7 @@ class LatexDocumentRendererTest {
     fun `table should not grab the title of previous title if there are other elements between them in the same paragraph`() {
         val titleText = "Test tittel 1234"
         assertNumberOfTextOccurrences(1, titleText) {
-            title1 { text(Language.Bokmal to titleText) }
+            title1 { text(titleText) }
             paragraph {
                 testText()
                 testTable()
@@ -61,7 +51,7 @@ class LatexDocumentRendererTest {
     fun `table should not grab the title of previous title if there are other elements between them`() {
         val titleText = "Test tittel 1234"
         assertNumberOfTextOccurrences(1, titleText) {
-            title1 { text(Language.Bokmal to titleText) }
+            title1 { text(titleText) }
             paragraph { testText() }
             paragraph {
                 testText()
@@ -118,17 +108,11 @@ class LatexDocumentRendererTest {
 
     @Test
     fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
-        val letterData = createEksempelbrevRedigerbartDto()
-
-        val letter = LetterTestImpl(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
-
-        val letterMarkup = LetterTestRenderer.render(letter)
-
         val pdfRequest = PDFRequest(
-            letterMarkup = letterMarkup.letterMarkup,
-            attachments = letterMarkup.attachments,
+            letterMarkup = EksempelbrevRedigerbart.brev,
+            attachments = listOf(EksempelbrevRedigerbart.vedlegg),
             language = LanguageCode.BOKMAL,
-            brevtype = EksempelbrevRedigerbart.template.letterMetadata.brevtype,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
         val rendered = LatexDocumentRenderer.render(pdfRequest)
 
@@ -137,66 +121,62 @@ class LatexDocumentRendererTest {
             containsSubstring("Du har fått innvilget pensjon")
         )
 
-        assertThat(rendered.files.first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
+        assertThat(
+            rendered.files.first { it.fileName == "attachment_0.tex" }.content,
+            containsSubstring("Test vedlegg")
+        )
     }
 
-    fun assertNumberOfParagraphs(
+    private fun assertNumberOfParagraphs(
         expectedParagraphs: Int,
-        outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit
+        outline: LetterMarkupBlocksBuilder.() -> Unit
     ) = assertNumberOfTextOccurrences(expectedParagraphs, "templateparagraph", outline)
 
-    fun assertNumberOfTextOccurrences(
+    private fun assertNumberOfTextOccurrences(
         expectedOccurrences: Int,
         expectedText: String,
-        outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit
+        outline: LetterMarkupBlocksBuilder.() -> Unit
     ) {
-        val letter = LetterTestImpl(
-            LetterExample.template,
-            EmptyBrevdata,
-            Language.Bokmal,
-            Fixtures.fellesAuto,
-        )
-        runBlocking {
-            val markup =
-                LetterTestRenderer.render(LetterTestImpl(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
+        val markup = letterMarkup {
+            outline {
+                outline()
+            }
+        }
 
-            val latexDocument = LatexDocumentRenderer.render(
-                PDFRequest(
-                    letterMarkup = markup.letterMarkup,
-                    attachments = markup.attachments,
-                    language = letter.language.toCode(),
-                    brevtype = letter.template.letterMetadata.brevtype,
-                )
+        val latexDocument = LatexDocumentRenderer.render(
+            PDFRequest(
+                letterMarkup = markup,
+                attachments = emptyList(),
+                language = LanguageCode.BOKMAL,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
-            val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
-            assertThat(tex.content.lines().count { it.contains(expectedText) }, equalTo(expectedOccurrences))
-        }
+        )
+        val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
+        assertThat(tex.content.lines().count { it.contains(expectedText) }, equalTo(expectedOccurrences))
     }
 
 
-
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testItemList() {
+    private fun ParagraphBuilder.testItemList() {
         list {
-            item { text(Language.Bokmal to "test") }
+            item { text("test") }
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable() {
+    private fun ParagraphBuilder.testTable() {
         table(
             header = {
-                column { text(Language.Bokmal to "Column A") }
-                column { text(Language.Bokmal to "Column B") }
+                column { text("Column A") }
+                column { text("Column B") }
             }
         ) {
             row {
-                cell { text(Language.Bokmal to "Cell A-1") }
-                cell { text(Language.Bokmal to "Cell B-1") }
+                cell { text("Cell A-1") }
+                cell { text("Cell B-1") }
             }
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testText() {
-        text(Language.Bokmal to "test")
+    private fun ParagraphBuilder.testText() {
+        text("test")
     }
-
 }

@@ -18,6 +18,7 @@ kotlinxCoroutinesVersion = "1.10.2"
 logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.15.2"
+pdfboxVersion = "3.0.5"
 postgresqlVersion = "42.7.7"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.0.2"
@@ -30,6 +31,7 @@ binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibil
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
+brevbaker-common-titlemarkup = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version = "2.0.0" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
@@ -42,6 +44,7 @@ ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-proces
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackVersion" }
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashVersion" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
+pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
 

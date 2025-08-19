@@ -123,6 +123,8 @@ dependencies {
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
 
+    testImplementation(libs.pdfbox)
+
     testImplementation(testFixtures(project(":brevbaker")))
 }
 
