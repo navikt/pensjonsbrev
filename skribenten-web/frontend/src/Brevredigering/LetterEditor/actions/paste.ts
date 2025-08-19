@@ -35,7 +35,6 @@ import type {
 } from "~/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
-  Cell,
   Content,
   LiteralValue,
   Row,
@@ -241,7 +240,6 @@ function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): Tabl
   return Array.from({ length: Math.max(0, colCount) }, (_, i) => {
     const src = cells[i];
     const content = Array.isArray(src?.content) ? src!.content : [];
-    // Return a fresh object; keep content as-is (the pipeline later wraps these into Literals)
     return { content };
   });
 }
@@ -270,38 +268,35 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
+        if (isTableCellIndex(draft.focus)) {
+          return;
+        }
+        if ((el.headerCells?.length ?? 0) === 0 && el.rows.length === 0) {
+          return;
+        }
         const headerCells = el.headerCells ?? [];
-
         const bodyColMax = Math.max(1, ...el.rows.map((r) => r.cells.length));
         const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
+        const hasHeader = headerCells.length > 0;
+        const shouldPromoteFirstRowToHeader = !hasHeader && el.rows.length > 0;
 
-        // If no header parsed, promote first body row to header automatically
-        const shouldPromoteFirstRowToHeader = headerCells.length === 0 && el.rows.length > 0;
+        const getHeaderSpec = (cells: TableCell[]) =>
+          cells.map((cell) => ({
+            text: cleansePastedText(cell.content.map((t) => t.text).join(" ")),
+            font: cell.content[0]?.font ?? FontType.PLAIN,
+          }));
 
-        const headerSpecSource =
-          headerCells.length > 0
-            ? headerCells.map((cell) => ({
-                text: cleansePastedText(cell.content.map((t) => t.text).join(" ")),
-                font: cell.content[0]?.font ?? FontType.PLAIN,
-              }))
-            : (() => {
-                const normalizedFirst = normalizeCells(el.rows[0].cells, colCount);
-                return normalizedFirst.map((cell) => ({
-                  text: cleansePastedText(cell.content.map((t) => t.text).join(" ")),
-                  font: cell.content[0]?.font ?? FontType.PLAIN,
-                }));
-              })();
+        const headerSpecSource = hasHeader
+          ? getHeaderSpec(headerCells)
+          : getHeaderSpec(normalizeCells(el.rows[0]?.cells ?? [], colCount));
 
         const colSpec = newColSpec(colCount, headerSpecSource);
-
-        // Use remaining rows as body if we promoted the first row to header
         const effectiveRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
 
-        // Rows (pad/trim to colCount; ensure at least one literal per cell)
-        const rows: Row[] = effectiveRows.map<Row>((row) => ({
+        const rows: Row[] = effectiveRows.map((row) => ({
           id: null,
           parentId: null,
-          cells: normalizeCells(row.cells, colCount).map<Cell>((cell) => ({
+          cells: normalizeCells(row.cells, colCount).map((cell) => ({
             id: null,
             parentId: null,
             text:
@@ -322,13 +317,18 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
 
         const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
         if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
+          // Split current literal at cursor so trailing text stays after table.
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
-          addElements([tableContent], draft.focus.contentIndex + 1, currentBlock.content, currentBlock.deletedContent);
+
+          const tableIndex = draft.focus.contentIndex + 1;
+          addElements([tableContent], tableIndex, currentBlock.content, currentBlock.deletedContent);
+
+          const focusRowIndex = rows.length > 0 ? 0 : -1;
 
           draft.focus = {
             blockIndex: draft.focus.blockIndex,
-            contentIndex: draft.focus.contentIndex + 1,
-            rowIndex: 0,
+            contentIndex: tableIndex,
+            rowIndex: focusRowIndex,
             cellIndex: 0,
             cellContentIndex: 0,
             cursorPosition: 0,
@@ -558,70 +558,58 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
   return mergeNeighbouringText(traversedChildNodes);
 }
 
-function traverseTable(element: HTMLTableElement, font: FontType): Table {
-  const tableRows: TableRow[] = [];
-  let headerCells: TableCell[] | undefined = undefined;
-
-  const rowElements = Array.from(element.querySelectorAll("tr"));
-
-  // Only extract header if <thead> or <th> is present
-  const thead = element.querySelector("thead");
-  if (thead) {
-    const headerRow = thead.querySelector("tr");
-    if (headerRow) {
-      const ths = headerRow.querySelectorAll("th");
-      if (ths.length > 0) {
-        headerCells = Array.from(ths).map((cellElement) => ({
-          content: traverseChildren(cellElement, font).flatMap((child) =>
-            child.type === "TEXT"
-              ? [child]
-              : child.type === "P"
-                ? child.content
-                : child.type === "ITEM"
-                  ? child.content
-                  : [],
-          ),
-        }));
-        const headerRowIndex = rowElements.indexOf(headerRow);
-        if (headerRowIndex !== -1) {
-          rowElements.splice(headerRowIndex, 1);
-        }
+function traverseTable(element: Element, font: FontType): Table {
+  const flattenCellContent = (cellElement: Element) =>
+    traverseChildren(cellElement, font).flatMap((child) => {
+      switch (child.type) {
+        case "TEXT":
+          return [child];
+        case "P":
+        case "ITEM":
+          return child.content;
+        case "H1":
+        case "H2":
+        case "TABLE":
+          // Not allowed in table cells, ignore
+          return [];
+        default:
+          return [];
       }
-    }
-  } else if (rowElements.length > 0) {
-    const firstRow = rowElements[0];
-    const ths = firstRow.querySelectorAll("th");
-    if (ths.length > 0) {
-      headerCells = Array.from(ths).map((cellElement) => ({
-        content: traverseChildren(cellElement, font).flatMap((child) =>
-          child.type === "TEXT"
-            ? [child]
-            : child.type === "P"
-              ? child.content
-              : child.type === "ITEM"
-                ? child.content
-                : [],
-        ),
-      }));
-      rowElements.shift();
-    }
-  }
-
-  // We do not generate default headers if none are present
-  for (const tableRowElement of rowElements) {
-    const tableCells: TableCell[] = [];
-    tableRowElement.querySelectorAll("td,th").forEach((cellElement) => {
-      const cellContent = traverseChildren(cellElement, font).flatMap((child) => {
-        if (child.type === "TEXT") return [child];
-        if (child.type === "P") return child.content;
-        if (child.type === "ITEM") return child.content;
-        return [];
-      });
-      tableCells.push({ content: cellContent });
     });
 
-    if (tableCells.length > 0) tableRows.push({ cells: tableCells });
+  let rowElements = Array.from(element.querySelectorAll("tr"));
+  let headerCells: TableCell[] | undefined;
+
+  const theadRow = element.querySelector("thead tr");
+  if (theadRow) {
+    const ths = Array.from(theadRow.querySelectorAll("th"));
+    if (ths.length > 0) {
+      headerCells = ths.map((cellElement) => ({
+        content: flattenCellContent(cellElement),
+      }));
+      // Remove header row from body rows
+      rowElements = rowElements.filter((row) => row !== theadRow);
+    }
   }
+
+  if (!headerCells && rowElements.length > 0) {
+    const firstRow = rowElements[0];
+    const ths = Array.from(firstRow.querySelectorAll("th"));
+    if (ths.length > 0) {
+      headerCells = ths.map((cellElement) => ({
+        content: flattenCellContent(cellElement),
+      }));
+      rowElements = rowElements.slice(1);
+    }
+  }
+
+  const tableRows: TableRow[] = rowElements
+    .map((rowEl) => ({
+      cells: Array.from(rowEl.querySelectorAll("td,th")).map((cellEl) => ({
+        content: flattenCellContent(cellEl),
+      })),
+    }))
+    .filter((row) => row.cells.length > 0);
 
   return {
     type: "TABLE",
@@ -649,8 +637,9 @@ function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", fon
         case "ITEM": {
           return child.content;
         }
-        case "TABLE":
+        case "TABLE": {
           return [];
+        }
       }
     });
     return [{ type, content: childElements }];
@@ -707,7 +696,7 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     }
 
     case "TABLE": {
-      return [traverseTable(element as HTMLTableElement, font)];
+      return [traverseTable(element, font)];
     }
 
     default: {
@@ -751,10 +740,6 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
         return traversedElement.content;
       }
       case "TABLE": {
-        // Should not happen, but if it does, we just ignore it.
-        return [];
-      }
-      default: {
         // Should not happen, but if it does, we just ignore it.
         return [];
       }
