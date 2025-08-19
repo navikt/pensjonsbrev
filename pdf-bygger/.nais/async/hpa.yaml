@@ -9,7 +9,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{app-name}}
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 50
   behavior:
     scaleUp:
