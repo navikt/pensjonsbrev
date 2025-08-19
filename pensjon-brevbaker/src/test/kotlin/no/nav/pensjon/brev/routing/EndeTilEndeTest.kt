@@ -73,7 +73,7 @@ class EndeTilEndeTest {
 
         assertContains(tekstIPDF, bestillinga.letterMarkup.title)
 
-        assertEquals(8, tekstIMarkup.size)
+        assertEquals(10, tekstIMarkup.size)
         tekstIMarkup.forEach {
             assertContains(tekstIPDF.fjernWhitespace(), it.fjernWhitespace())
         }
@@ -103,7 +103,7 @@ private fun finnTekstForParagraph(paragraph: Paragraph): List<String> = paragrap
 }
 
 private fun finnTekstForMultipleChoice(element: MultipleChoice): List<String> =
-    element.prompt.map { it.text } + element.choices.map { it.text }.map { it.joinToString(" ") { i -> i.text } }
+    element.prompt.map { it.text } + element.choices.map { it.text }.map { it.joinToString("") { i -> i.text } }
 
 private fun finnTekstForTabell(table: Table): List<String> {
     val header = finnTekstForHeader(table.header)
@@ -114,8 +114,8 @@ private fun finnTekstForTabell(table: Table): List<String> {
 private fun finnTekstForHeader(header: Header): String =
     header.colSpec.map { it.headerContent }.joinToString(" ") { finnTekstForCell(it) }
 
-private fun finnTekstForCell(cell: Cell): String = cell.text.joinToString(" ") { it.text }
+private fun finnTekstForCell(cell: Cell): String = cell.text.joinToString("") { it.text }
 
 private fun finnTekstForItemList(itemList: ItemList): List<String> = itemList.items.map { finnTekstForItem(it) }
 
-private fun finnTekstForItem(item: Item): String = item.content.joinToString(" ") { it.text }
+private fun finnTekstForItem(item: Item): String = item.content.joinToString("") { it.text }

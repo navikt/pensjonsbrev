@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -49,11 +50,16 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(Bokmal to "Du har fått innvilget pensjon", Nynorsk to "Du har fått innvilget pensjon")
             }
 
+            title2 {
+                text(Bokmal to "Her er din title2", Nynorsk to "Her er din title2")
+            }
+
             paragraph {
                 text(
                     Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
                     Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
                 )
+                text(Bokmal to " Kanskje.", Nynorsk to " Kanskje.", fontType = FontType.BOLD)
             }
 
             paragraph {
