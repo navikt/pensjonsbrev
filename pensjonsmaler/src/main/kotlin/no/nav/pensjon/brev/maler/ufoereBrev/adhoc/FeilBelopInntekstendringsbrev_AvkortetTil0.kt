@@ -56,12 +56,12 @@ class FeilBelopInntekstendringsbrev_AvkortetTil0 {
                 }
 
                 paragraph {
-                    text(Bokmal to "\"Det gir deg rett til en årlig utbetaling av uføretrygd på XXX XXX kroner.\"",
+                    text(Bokmal to "\"Det gir deg rett til en årlig utbetaling av uføretrygd på XXX XXX kroner.\" Dette beløpet er feil.",
                         FontType.ITALIC)
                 }
 
                 paragraph {
-                    text(Bokmal to "Dette beløpet er feil.")
+                    text(Bokmal to "Tallet påvirker ikke din utbetaling og du trenger ikke å gjøre noe. Ønsker du mer informasjon eller har spørsmål, kan du kontakte Nav på nav.no/kontakt. Du kan også ringe oss på 55 55 33 33, alle hverdager mellom kl. 09.00 og 15.00")
                 }
             }
         }

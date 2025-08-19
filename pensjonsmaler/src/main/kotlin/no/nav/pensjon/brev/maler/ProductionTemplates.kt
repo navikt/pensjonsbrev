@@ -57,6 +57,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
@@ -151,14 +152,15 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
-        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagGradsendringFoerNormertPensjonsalder,
         AvslagGradsendringFoerNormertPensjonsalderAP2016,
         AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
+        BrukerTestBrev,
         EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
@@ -182,8 +184,8 @@ object ProductionTemplates : AllTemplates {
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
-        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
+        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvUttaksgrad,
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
