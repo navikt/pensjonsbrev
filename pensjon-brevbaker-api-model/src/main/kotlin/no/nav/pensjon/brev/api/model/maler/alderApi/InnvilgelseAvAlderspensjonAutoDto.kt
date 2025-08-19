@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
-data class InfoAlderspensjonOvergang67AarAutoDto(
+data class InnvilgelseAvAlderspensjonAutoDto(
     val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
@@ -40,33 +40,34 @@ data class InfoAlderspensjonOvergang67AarAutoDto(
     val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?
-) : BrevbakerBrevdata
+) : BrevbakerBrevdata {
 
-// v5.Alderspensjon / v1.AlderspensjonKap20
-data class AlderspensjonVedVirk(
-    val erEksportberegnet: Boolean,
-    val garantipensjonInnvilget: Boolean,
-    val garantitilleggInnvilget: Boolean,
-    val gjenlevenderettAnvendt: Boolean,
-    val gjenlevendetilleggInnvilget: Boolean,
-    val gjenlevendetilleggKap19Innvilget: Boolean,
-    val godkjentYrkesskade: Boolean,
-    val innvilgetFor67: Boolean,
-    val pensjonstilleggInnvilget: Boolean,
-    val privatAFPErBrukt: Boolean,
-    val skjermingstilleggInnvilget: Boolean,
-    val totalPensjon: Kroner,
-    val uforeKombinertMedAlder: Boolean,
-    val uttaksgrad: Int,
-)
+    // v5.Alderspensjon / v1.AlderspensjonKap20
+    data class AlderspensjonVedVirk(
+        val erEksportberegnet: Boolean,
+        val garantipensjonInnvilget: Boolean,
+        val garantitilleggInnvilget: Boolean,
+        val gjenlevenderettAnvendt: Boolean,
+        val gjenlevendetilleggInnvilget: Boolean,
+        val gjenlevendetilleggKap19Innvilget: Boolean,
+        val godkjentYrkesskade: Boolean,
+        val innvilgetFor67: Boolean,
+        val pensjonstilleggInnvilget: Boolean,
+        val privatAFPErBrukt: Boolean,
+        val skjermingstilleggInnvilget: Boolean,
+        val totalPensjon: Kroner,
+        val uforeKombinertMedAlder: Boolean,
+        val uttaksgrad: Int,
+    )
 
-// v1.InngangOgEksportVurdering / v1.InngangOgEksportVurderingAvdod
-data class InngangOgEksportVurdering(
-    val eksportForbud: Boolean,
-    val eksportTrygdeavtaleAvtaleland: Boolean,
-    val eksportTrygdeavtaleEOS: Boolean,
-    val harOppfyltVedSammenlegging: Boolean,  // If (oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) = true
-    val minst20ArBotidKap19Avdod: Boolean,  // // hentes fra v1.InngangOgEksportVurderingAvdod
-    val minst20ArTrygdetid: Boolean,
-    val minst20ArTrygdetidKap20Avdod: Boolean,  // hentes fra v1.InngangOgEksportVurderingAvdod
-)
+    // v1.InngangOgEksportVurdering / v1.InngangOgEksportVurderingAvdod
+    data class InngangOgEksportVurdering(
+        val eksportForbud: Boolean,
+        val eksportTrygdeavtaleAvtaleland: Boolean,
+        val eksportTrygdeavtaleEOS: Boolean,
+        val harOppfyltVedSammenlegging: Boolean,  // If (oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) = true
+        val minst20ArBotidKap19Avdod: Boolean,  // hentes fra v1.InngangOgEksportVurderingAvdod
+        val minst20ArTrygdetid: Boolean,
+        val minst20ArTrygdetidKap20Avdod: Boolean,  // hentes fra v1.InngangOgEksportVurderingAvdod
+    )
+}
