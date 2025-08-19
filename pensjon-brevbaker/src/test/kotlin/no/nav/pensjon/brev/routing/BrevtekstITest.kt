@@ -11,7 +11,9 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -80,6 +82,29 @@ class BrevtekstITest {
         tekstIMarkup.forEach {
             assertContains(tekstIPDF.fjernWhitespace(), it.fjernWhitespace())
         }
+    }
+
+    @Test
+    fun `can read all text from autobrev`() = testBrevbakerApp { client ->
+        val pdf: LetterResponse = client.post("/letter/autobrev/pdf") {
+            accept(ContentType.Application.Json)
+            setBody(
+                BestillBrevRequest(
+                    kode = LetterExample.kode,
+                    letterData = createLetterExampleDto(),
+                    felles = felles,
+                    language = LanguageCode.BOKMAL,
+                )
+            )
+        }.body()
+
+        val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(pdf.file))
+        assertContains(tekstIPDF, "Saksnummer: 1337123 side 1 av 6")
+        assertContains(tekstIPDF, "Du har fått innvilget pensjon")
+        assertContains(tekstIPDF, "Hei Test, håper du har en fin dag!")
+        assertContains(tekstIPDF, "• Du har fått tilleg1 for Test testerson 2 på 100 Kr\n")
+        assertContains(tekstIPDF, "En liste med navn har elementet: test testerson1\n")
+        assertContains(tekstIPDF, "Vedlegget gjelder: Test \"bruker\" Testerson\n")
     }
 }
 
