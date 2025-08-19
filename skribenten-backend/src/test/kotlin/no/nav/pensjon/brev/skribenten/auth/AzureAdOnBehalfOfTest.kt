@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.mockk.coEvery
-import io.mockk.mockk
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.context.CoroutineContextValueException
@@ -19,12 +18,11 @@ class AzureAdOnBehalfOfTest {
 
     private val principal = MockPrincipal(NavIdent("Cypher"), "Mr. Reagan")
     private val clientScope = "Matrix"
-    private val adService = mockk<AzureADService>()
 
-    private val clientWithOBOPlugin =
+    private fun settOppClient(authService: AuthService): HttpClient =
         HttpClient(MockEngine { respond("Principal: ${it.headers[HttpHeaders.Authorization]?.substringAfter("Bearer ")}") }) {
             install(AzureAdOnBehalfOf) {
-                authService = adService
+                this.authService = authService
                 scope = clientScope
             }
         }
@@ -32,17 +30,19 @@ class AzureAdOnBehalfOfTest {
     @Test
     fun `feiler om principal ikke er i context`(): Unit = runBlocking {
         assertThrows<CoroutineContextValueException> {
-            clientWithOBOPlugin.get("/something")
+            settOppClient(FakeAuthService).get("/something")
         }
     }
 
     @Test
     fun `utveksler obo-token med principal fra context`(): Unit = runBlocking {
         val aToken = TokenResponse.OnBehalfOfToken("Joe Pantoliano", "", "", clientScope, 10_000)
-        coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns aToken
+        val tokenAuthService = object : AuthService {
+            override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) = aToken
+        }
 
         val response = withPrincipal(principal) {
-            clientWithOBOPlugin.get("/something")
+            settOppClient(tokenAuthService).get("/something")
         }
         assertEquals("Principal: ${aToken.accessToken}", response.bodyAsText())
     }
@@ -50,11 +50,14 @@ class AzureAdOnBehalfOfTest {
     @Test
     fun `feiler om authService svarer med feil`(): Unit = runBlocking {
         val tokenError = TokenResponse.ErrorResponse("", "", emptyList(), "", "", "", null)
-        coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns tokenError
+
+        val errorAuthService = object : AuthService {
+            override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) = tokenError
+        }
 
         assertThrows<AzureAdOnBehalfOfAuthorizationException> {
             withPrincipal(principal) {
-                clientWithOBOPlugin.get("/something")
+                settOppClient(errorAuthService).get("/something")
             }
         }
     }

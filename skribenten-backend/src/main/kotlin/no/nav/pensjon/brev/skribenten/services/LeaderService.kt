@@ -15,10 +15,15 @@ import java.net.InetAddress
 data class LeaderElection(val isThisInstanceLeader: Boolean, val thisInstanceName: String, val leaderName: String)
 private data class LeaderResponse(val name: String)
 
-class LeaderService(
+interface LeaderService {
+    suspend fun electedLeader(): LeaderElection?
+    val isLeaderElectionEnabled: Boolean
+}
+
+class NaisLeaderService(
     private val url: String?,
     clientEngine: HttpClientEngine = CIO.create(),
-) {
+) : LeaderService {
     constructor(config: Config, clientEngine: HttpClientEngine = CIO.create()) : this(
         url = config.tryGetString("leader.url"),
         clientEngine = clientEngine
@@ -33,7 +38,7 @@ class LeaderService(
     }
     private val thisInstanceName by lazy { thisInstanceName() }
 
-    val isLeaderElectionEnabled: Boolean
+    override val isLeaderElectionEnabled: Boolean
         get() = !url.isNullOrEmpty()
 
     private suspend fun fetchLeader(): LeaderResponse? =
@@ -43,7 +48,7 @@ class LeaderService(
             null
         }
 
-    suspend fun electedLeader(): LeaderElection? {
+    override suspend fun electedLeader(): LeaderElection? {
         return fetchLeader()?.name?.let {
             LeaderElection(
                 isThisInstanceLeader = it == thisInstanceName,

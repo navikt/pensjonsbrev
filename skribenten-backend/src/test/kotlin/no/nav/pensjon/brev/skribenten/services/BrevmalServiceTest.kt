@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -40,12 +38,9 @@ class BrevmalServiceTest {
         )
     )
 
-    private val penService: PenService = mockk()
-    private val brevmetadataService: BrevmetadataService = mockk()
-    private val brevbakerService: BrevbakerService = mockk {
-        coEvery { getTemplates() } returns ServiceResult.Ok(brevbakerbrev)
-    }
-    private val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
+    private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
+
+    private fun lagBrevmalService(service: PenService = object : PenServiceStub() {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -86,12 +81,12 @@ class BrevmalServiceTest {
 
     @Test
     fun `eblanketter vises om forespurt`() {
-        coEvery {
-            brevmetadataService.getEblanketter()
-        } returns listOf(testOkBrev.copy(brevkodeIBrevsystem = "e-blankett-kode"))
+        val brevmetadataService = FakeBrevmetadataService(
+            eblanketter = listOf(testOkBrev.copy(brevkodeIBrevsystem = "e-blankett-kode")),
+        )
 
         runBlocking {
-            val brevmaler = brevmalService.hentBrevmalerForSak(sakType = Sakstype.UFOREP, includeEblanketter = true)
+            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype.UFOREP, includeEblanketter = true)
             assertThat(brevmaler).anyMatch { it.id == "e-blankett-kode" }
         }
     }
@@ -181,12 +176,20 @@ class BrevmalServiceTest {
         sakstype: Sakstype,
         isKravPaaGammeltRegelverk: Boolean = true
     ): ListAssert<Api.Brevmal> {
-        coEvery { brevmetadataService.getBrevmalerForSakstype(any()) } returns listOf(brevdataDto)
-        coEvery { penService.hentIsKravPaaGammeltRegelverk(TEST_VEDTAKS_ID) }.returns(ServiceResult.Ok(isKravPaaGammeltRegelverk))
-        coEvery { penService.hentIsKravStoettetAvDatabygger(TEST_VEDTAKS_ID) }.returns(ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())))
+        val brevmetadataService = FakeBrevmetadataService(
+            brevmaler = listOf(brevdataDto),
+        )
+
+        val penService = object : PenServiceStub() {
+            override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
+                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(isKravPaaGammeltRegelverk) else TODO("Not yet implemented")
+
+            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
+                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())) else TODO("Not yet implemented")
+        }
 
         return runBlocking {
-            val brevmaler = brevmalService.hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)
             return@runBlocking assertThat(brevmaler)
         }
     }
@@ -194,12 +197,10 @@ class BrevmalServiceTest {
     private fun assertThatBrevmalerInSakskontekst(brevdataDto: BrevdataDto): ListAssert<Api.Brevmal> =
         assertThatBrevmalerInSakskontekst(listOf(brevdataDto))
 
-    private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>): ListAssert<Api.Brevmal> {
-        coEvery { brevmetadataService.getBrevmalerForSakstype(any()) } returns brevdataDto
-
-        return runBlocking {
-            val brevmaler = brevmalService.hentBrevmalerForSak(Sakstype.UFOREP, false)
-            return@runBlocking assertThat(brevmaler)
-        }
+    private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>) = runBlocking {
+        val brevmaler = lagBrevmalService(brevmetadataService = FakeBrevmetadataService(
+            brevmaler = brevdataDto,
+        )).hentBrevmalerForSak(Sakstype.UFOREP, false)
+        return@runBlocking assertThat(brevmaler)
     }
 }

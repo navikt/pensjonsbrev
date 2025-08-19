@@ -56,7 +56,6 @@ updates:
           - "io.getunleash*"
           - "io.ktor*"
           - "io.micrometer*"
-          - "io.mockk*"
           - "net.logstash.logback:logstash-logback-encoder"
           - "no.nav*"
           - "org.assertj:assertj-core"
