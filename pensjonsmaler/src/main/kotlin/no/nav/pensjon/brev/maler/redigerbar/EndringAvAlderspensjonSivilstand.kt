@@ -1,15 +1,17 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
+import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.KravArsakType.ALDERSOVERGANG
 import no.nav.pensjon.brev.api.model.KravArsakType.VURDER_SERSKILT_SATS
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.GIFT
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_1_5
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_3_2
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
@@ -64,7 +66,13 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboereTidligereGift
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -74,10 +82,22 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -888,66 +908,66 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+            }
 
-                showIf(regelverkType.isOneOf(AP2025)) {
-                    // hjemmelSivilstandAP2025
-                    paragraph {
-                        text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                            English to "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
-                        )
-                    }
-                }
-
-                showIf(kravArsakType.isOneOf(ALDERSOVERGANG)) {
-                    // vedleggBeregnPensjonsOpptjeningOverskrift
-                    title1 {
-                        text(
-                            Bokmal to "Pensjonsopptjeningen din",
-                            Nynorsk to "Pensjonsoppteninga di",
-                            English to "Your accumulated pension capital",
-                        )
-                    }
-                    // vedleggBeregnPensjonsOpptjening
-                    paragraph {
-                        text(
-                            Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
-                            Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
-                            English to "Our online service 'Din pensjon' at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
-                        )
-                    }
-                }
-
-                // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
-                showIf(saksbehandlerValg.feilutbetaling) {
-                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                    includePhrase(FeilutbetalingAP)
-                }
-
-                // Hvis endring i pensjonen (Selectable) - skattAPendring
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.endringPensjon) {
-                    includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
-                }
-
-                // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-                showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
-                    includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
-                }
-
-                // Arbeidsinntekt og pensjon
-                showIf(
-                    regelverkType.isNotAnyOf(AP1967) and kravArsakType.isNotAnyOf(KravArsakType.INSTOPPHOLD)
-                ) {
-                    includePhrase(
-                        ArbeidsinntektOgAlderspensjon(
-                            innvilgetFor67 = innvilgetFor67,
-                            uttaksgrad = uttaksgrad.ifNull(then = (0)),
-                            uforeKombinertMedAlder = uforeKombinertMedAlder
-                        )
+            showIf(regelverkType.isOneOf(AP2025)) {
+                // hjemmelSivilstandAP2025
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
                     )
                 }
+            }
+
+            showIf(kravArsakType.isOneOf(ALDERSOVERGANG)) {
+                // vedleggBeregnPensjonsOpptjeningOverskrift
+                title1 {
+                    text(
+                        Bokmal to "Pensjonsopptjeningen din",
+                        Nynorsk to "Pensjonsoppteninga di",
+                        English to "Your accumulated pension capital",
+                    )
+                }
+                // vedleggBeregnPensjonsOpptjening
+                paragraph {
+                    text(
+                        Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
+                        Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
+                        English to "Our online service 'Din pensjon' at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
+                    )
+                }
+            }
+
+            // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
+            showIf(saksbehandlerValg.feilutbetaling) {
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+                includePhrase(FeilutbetalingAP)
+            }
+
+            // Hvis endring i pensjonen (Selectable) - skattAPendring
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+            showIf(saksbehandlerValg.endringPensjon) {
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
+            }
+
+            // Hvis etterbetaling (Selectable) - etterbetalingAP_002
+            showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+                includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
+            }
+
+            // Arbeidsinntekt og pensjon
+            showIf(
+                regelverkType.isNotAnyOf(AP1967) and kravArsakType.isNotAnyOf(KravArsakType.INSTOPPHOLD)
+            ) {
+                includePhrase(
+                    ArbeidsinntektOgAlderspensjon(
+                        innvilgetFor67 = innvilgetFor67,
+                        uttaksgrad = uttaksgrad.ifNull(then = (0)),
+                        uforeKombinertMedAlder = uforeKombinertMedAlder
+                    )
+                )
             }
 
             includePhrase(InformasjonOmAlderspensjon)
