@@ -173,7 +173,7 @@ class LetterRoutesITest {
     }
 }
 
-private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
+private fun <T : Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
     kode = kode,
     letterData = this.letterData,
     felles = this.felles,

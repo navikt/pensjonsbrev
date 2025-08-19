@@ -125,6 +125,8 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.mockk)
 
+    testImplementation(libs.pdfbox)
+
     testImplementation(testFixtures(project(":brevbaker")))
 }
 
