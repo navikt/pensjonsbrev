@@ -32,7 +32,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.He
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.NewLine
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
-import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.text.PDFTextStripper
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -69,7 +69,7 @@ class EndeTilEndeTest {
         }.body()
 
         val tekstIMarkup: List<String> = finnTekstPerAvsnitt(bestillinga.letterMarkup)
-        val tekstIPDF = PDFTextStripper().getText(PDDocument.load(body.file))
+        val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(body.file))
 
         assertContains(tekstIPDF, bestillinga.letterMarkup.title)
 
