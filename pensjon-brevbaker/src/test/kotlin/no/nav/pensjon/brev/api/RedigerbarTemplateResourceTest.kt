@@ -13,8 +13,10 @@ import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -33,10 +35,10 @@ class RedigerbarTemplateResourceTest {
         Fixtures.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
-            title = "redigert markup",
+            title = listOf(LiteralImpl(1, "redigert markup")),
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "gjelder bruker",
-                gjelderFoedselsnummer = "123abc",
+                gjelderFoedselsnummer = Foedselsnummer("123abc"),
                 vergeNavn = null,
                 saksnummer = "001",
                 dokumentDato = LocalDate.now()
@@ -55,12 +57,13 @@ class RedigerbarTemplateResourceTest {
     @Test
     fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
+        val letterTitle = validRedigertBrevRequest.letterMarkup.title.joinToString("") { it.text }
         val anAttachmentTitle = LetterTestRenderer.renderAttachmentsOnly(
             validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
             EksempelbrevRedigerbart.template
         ).first().title.joinToString { it.text }
 
-        assertThat(result, containsSubstring(validRedigertBrevRequest.letterMarkup.title))
+        assertThat(result, containsSubstring(letterTitle))
 
         assertThat(result, containsSubstring(anAttachmentTitle))
     }
