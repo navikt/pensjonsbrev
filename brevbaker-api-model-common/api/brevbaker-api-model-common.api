@@ -251,6 +251,9 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggDto : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Broek {
 	public fun <init> (II)V
 	public fun equals (Ljava/lang/Object;)Z
