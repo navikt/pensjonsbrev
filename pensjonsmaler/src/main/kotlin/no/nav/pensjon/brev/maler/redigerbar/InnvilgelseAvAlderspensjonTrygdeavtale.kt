@@ -140,7 +140,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             pesysData.inngangOgEksportVurdering_safe.harOppfyltVedSammenlegging_safe.ifNull(then = false)
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
         val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
-        val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe.ifNull(then = listOf("LANDNAVN"))
+        val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe
         val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val privatAFPErBrukt = pesysData.alderspensjonVedVirk.privatAFPErBrukt
         val regelverkType = pesysData.regelverkType
@@ -168,13 +168,14 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             showIf(antallLandVilkarsprovd.greaterThan(0)) {
                 // mottattInfoFraEttLand / mottattInfoFraFlereLan
                 paragraph {
+                    val landnavn = landNavn.format().ifNull(fritekst("LANDNAVN"))
                     textExpr(
                         Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ".expr()
-                                + landNavn.format() + ".",
+                                + landnavn + ".",
                         Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ".expr()
-                                + landNavn.format() + ".",
+                                + landnavn + ".",
                         English to "We have received information from foreign national insurance authorities regarding your accumulated rights in ".expr()
-                                + landNavn.format() + "."
+                                + landnavn + "."
                     )
                 }
             }
