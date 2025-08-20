@@ -420,7 +420,7 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
   const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
-  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredfields : [];
+  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 
@@ -458,7 +458,7 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
     );
   }
 
-  if (hasRequired && !hasOptional)
+  if (!hasOptional && hasRequired)
     return (
       <>
         <Heading size="xsmall">Overstyring</Heading>

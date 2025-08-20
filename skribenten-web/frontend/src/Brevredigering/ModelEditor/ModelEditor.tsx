@@ -26,42 +26,25 @@ const useModelSpecificationForm = (brevkode: string) => {
 
 export const usePartitionedModelSpecification = (brevkode: string) => {
   const { status, specification, error } = useModelSpecificationForm(brevkode);
-
-  const [optionalFields, requiredfields] = specification
+  const [optionalFields, requiredFields] = specification
     ? partition(Object.entries(specification), (spec) => isFieldNullableOrBoolean(spec[1]))
     : [[], []];
-
   return {
     status: status,
-    requiredfields,
     optionalFields,
+    requiredFields,
     error: error,
   };
 };
 
 export const createFormElementsFromSpecification = (args: {
   specificationFormElements: {
-    requiredfields: [string, FieldType][];
     optionalFields: [string, FieldType][];
+    requiredFields: [string, FieldType][];
   };
   brevkode: string;
   submitOnChange?: () => void;
 }) => {
-  const requiredFields = args.specificationFormElements.requiredfields.map(([field, fieldType]) => ({
-    field: field,
-    fieldType: fieldType,
-    element: (
-      <FieldEditor
-        brevkode={args.brevkode}
-        field={field}
-        fieldType={fieldType}
-        key={field}
-        prependedName="saksbehandlerValg"
-        submitOnChange={args.submitOnChange}
-      />
-    ),
-  }));
-
   const optionalFields = args.specificationFormElements.optionalFields.map(([field, fieldType]) => ({
     field: field,
     fieldType: fieldType,
@@ -77,23 +60,38 @@ export const createFormElementsFromSpecification = (args: {
     ),
   }));
 
+  const requiredFields = args.specificationFormElements.requiredFields.map(([field, fieldType]) => ({
+    field: field,
+    fieldType: fieldType,
+    element: (
+      <FieldEditor
+        brevkode={args.brevkode}
+        field={field}
+        fieldType={fieldType}
+        key={field}
+        prependedName="saksbehandlerValg"
+        submitOnChange={args.submitOnChange}
+      />
+    ),
+  }));
+
   return {
-    requiredFields,
     optionalFields,
+    requiredFields,
   };
 };
 
 export const SaksbehandlerValgModelEditor = (props: {
   brevkode: string;
   specificationFormElements: {
-    requiredfields: [string, FieldType][];
     optionalFields: [string, FieldType][];
+    requiredFields: [string, FieldType][];
   };
   fieldsToRender: "required" | "optional";
   submitOnChange?: () => void;
 }) => {
   const { register } = useFormContext();
-  const { requiredFields, optionalFields } = createFormElementsFromSpecification({
+  const { optionalFields, requiredFields } = createFormElementsFromSpecification({
     specificationFormElements: props.specificationFormElements,
     brevkode: props.brevkode,
     submitOnChange: props.submitOnChange,
