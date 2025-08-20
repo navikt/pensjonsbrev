@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
@@ -148,10 +149,10 @@ object Fixtures {
 
     val fellesAuto = no.nav.brev.brevbaker.Fixtures.fellesAuto
 
-    inline fun <reified T : Any> create(): T = create(T::class)
+    inline fun <reified T : BrevbakerBrevdata> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> create(letterDataType: KClass<T>): T =
+    fun <T : BrevbakerBrevdata> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             AdhocAlderspensjonGjtOppryddingAutoDto::class -> createAlderspensjonGjtOppryddingAutoDto() as T
             AvslagPaaGjenlevenderettIAlderspensjonDto::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
