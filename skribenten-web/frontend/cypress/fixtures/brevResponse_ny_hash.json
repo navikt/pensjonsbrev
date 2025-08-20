@@ -15,7 +15,7 @@
   "redigertBrev": {
     "title": {
       "text": [
-        { "id": 1, "parentId": null, "type": "LITERAL", "text": "Informasjon om saksbehandlingstiden vår", "editedText": null, "tags": [] }
+        { "id": 1, "parentId": null, "type": "LITERAL", "text": "Informasjon om saksbehandlingstiden vår med ny hash", "editedText": null, "tags": [] }
       ],
       "deletedContent": []
     },
@@ -201,8 +201,8 @@
     "signatur": {
       "hilsenTekst": "Med vennlig hilsen",
       "saksbehandlerRolleTekst": "Saksbehandler",
-      "saksbehandlerNavn": "",
-      "attesterendeSaksbehandlerNavn": "",
+      "saksbehandlerNavn": "Sak S. Behandler",
+      "attesterendeSaksbehandlerNavn": "Attest S. Behandler",
       "navAvsenderEnhet": "Nav Oslo"
     },
     "deletedBlocks": []
