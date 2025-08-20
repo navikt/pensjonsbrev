@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -15,7 +16,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
     InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
-            innvilgelseAPellerOektUttaksgrad = true,
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
             oekningIPensjonen = false,
             reduksjonIPensjonen = false,
@@ -59,10 +59,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
                 antallLandVilkarsprovd = 0,
                 landNavn = "Sverige",
             ),
-            dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
-                sakstype = Sakstype.ALDER,
-                brukerUnder18Aar = false
-            ),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
             maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
                 beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
@@ -78,6 +74,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             ),
             opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
             opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
-            opplysningerOmAvdodBruktIBeregning = null
+            opplysningerOmAvdodBruktIBeregning = null,
+            orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto()
         )
     )

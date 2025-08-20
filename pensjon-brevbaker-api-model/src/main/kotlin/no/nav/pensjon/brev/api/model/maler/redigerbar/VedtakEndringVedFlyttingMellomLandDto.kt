@@ -5,13 +5,13 @@ import no.nav.pensjon.brev.api.model.EksportForbudKode
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -39,7 +39,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetpensjonPerMaanedVedVirk: BeregnetPensjonPerMaanedVedVirk,
         val erEtterbetaling1Maaned: Boolean,
-        val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningenAlderDto?,

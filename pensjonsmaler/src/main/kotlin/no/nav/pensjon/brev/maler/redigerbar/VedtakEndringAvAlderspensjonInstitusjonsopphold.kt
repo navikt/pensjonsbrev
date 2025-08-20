@@ -61,6 +61,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// 000122 i doksys
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<VedtakEndringAvAlderspensjonInstitusjonsoppholdDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

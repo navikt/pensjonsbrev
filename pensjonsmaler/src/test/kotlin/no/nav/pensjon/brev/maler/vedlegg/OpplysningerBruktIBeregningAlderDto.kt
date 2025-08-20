@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.PoengTallsType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.api.model.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -88,7 +90,24 @@ fun createOpplysningerBruktIBeregningAlderDto() =
         ),
         poengrekkeVedVirk = OpplysningerBruktIBeregningenAlderDto.PoengrekkeVedVirk(
             inneholderOmsorgspoeng = true,
-            pensjonspoeng = listOf()
+            pensjonspoeng = listOf(
+                Pensjonspoeng(
+                    pensjonsgivendeinntekt = Kroner(1234),
+                    grunnbelopVeiet = Kroner(1234),
+                    arstall = 2021,
+                    pensjonspoeng = 1234.5,
+                    poengtallstype = PoengTallsType.J,
+                    bruktIBeregningen = true,
+                ),
+                Pensjonspoeng(
+                    pensjonsgivendeinntekt = Kroner(1234),
+                    grunnbelopVeiet = Kroner(1234),
+                    arstall = 2020,
+                    pensjonspoeng = 1234.5,
+                    poengtallstype = PoengTallsType.FPP,
+                    bruktIBeregningen = true,
+                ),
+            )
         ),
         skalSkjuleTrygdetidstabellerPgaAldersovergang = false
     )

@@ -209,7 +209,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         English to "You will receive NOK ".expr() + totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
                                 kravVirkDatoFom + "."
                     )
-                    showIf(gjenlevendetilleggInnvilget) {
+                    showIf(not(gjenlevendetilleggInnvilget)) {
                         textExpr(
                             Bokmal to " Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format() + " kroner.",
                             Nynorsk to " Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + " kroner.",

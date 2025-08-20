@@ -55,8 +55,8 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             title2 {
                 text(
                     Bokmal to "Beløp trukket fra din pensjonsgivende inntekt",
-                    Nynorsk to "Beløp trukket fra din pensjonsgivende inntekt",
-                    English to "Beløp trukket fra din pensjonsgivende inntekt",
+                    Nynorsk to "Beløp som er trekt frå den pensjonsgivande inntekta di",
+                    English to "Amounts deducted from your pensionable income",
                 )
             }
             paragraph {

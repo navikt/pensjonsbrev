@@ -149,8 +149,11 @@ export const removeTable = produce<LetterEditorState>((draft) => {
 
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
+
+  // Adjust focus to a valid position
   const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
   draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+
   draft.isDirty = true;
 });
 

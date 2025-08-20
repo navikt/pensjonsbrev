@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import io.ktor.client.request.*
@@ -15,7 +16,9 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
@@ -29,10 +32,10 @@ class PdfByggerAppTest {
     @OptIn(InterneDataklasser::class)
     private val pdfRequest = PDFRequest(
         letterMarkup = LetterMarkupImpl(
-            title = "Tittel 1",
+            title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(-1, "Tittel 1")),
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "Navn Navnesen",
-                gjelderFoedselsnummer = "12345678901",
+                gjelderFoedselsnummer = Foedselsnummer("12345678901"),
                 vergeNavn = null,
                 saksnummer = "123",
                 dokumentDato = LocalDate.of(2025, 1, 1)
@@ -122,6 +125,34 @@ class PdfByggerAppTest {
                 assertThat(queueTimedOut, hasSize(equalTo(requests.size - successful.size)))
             }
         }
+    }
+
+    // TODO: Fjern når string-tittel kompatibilitet fjernes
+    @Test
+    fun `verifiser at lettermarkup med string tittel kan deserialiseres`() {
+        val json = """
+            {
+              "title" : "Tittel 1",
+              "sakspart" : {
+                "gjelderNavn" : "Navn Navnesen",
+                "gjelderFoedselsnummer" : "12345678901",
+                "vergeNavn" : null,
+                "saksnummer" : "123",
+                "dokumentDato" : "2025-01-01"
+              },
+              "blocks" : [ ],
+              "signatur" : {
+                "hilsenTekst" : "hilsen",
+                "saksbehandlerRolleTekst" : "saksbehandler",
+                "saksbehandlerNavn" : "Saksbehandler Saksbehandlersen",
+                "attesterendeSaksbehandlerNavn" : null,
+                "navAvsenderEnhet" : "Nav sentralt"
+              }
+            }
+        """.trimIndent()
+
+        assertThat(objectMapper.readValue<LetterMarkup>(json), isA<LetterMarkup>())
+        assertThat(objectMapper.readValue<LetterMarkup>(json).title.joinToString("") { it.text }, equalTo("Tittel 1"))
     }
 
     private fun ApplicationTestBuilder.appConfig(latexCommand: String? = null, parallelism: Int? = null, compileTimeout: Duration? = null, queueTimeout: Duration? = null) =

@@ -8,6 +8,6 @@ import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal object BrevbakerLetterMarkup {
-    fun renderLetterMarkup(letter: Letter<BrevbakerBrevdata>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)
+    fun <T: BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)
     fun renderLetterWithAttachmentsMarkup(letter: Letter<BrevbakerBrevdata>): LetterWithAttachmentsMarkup = Letter2Markup.renderLetter(letter.toScope(), letter.template)
 }

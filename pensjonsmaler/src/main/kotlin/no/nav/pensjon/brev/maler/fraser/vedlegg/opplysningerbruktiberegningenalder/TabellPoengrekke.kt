@@ -25,35 +25,35 @@ data class TabellPoengrekke(val pensjonspoeng: Expression<List<Pensjonspoeng>>) 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table({
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 2) {
                     text(
                         Bokmal to "År",
                         Nynorsk to "År",
                         English to "Year"
                     )
                 }
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 6) {
                     text(
                         Bokmal to "Pensjonsgivende inntekt (kr)",
                         Nynorsk to "Pensjonsgivande inntekt (kr)",
                         English to "Pensionable income (NOK)"
                     )
                 }
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 4) {
                     text(
                         Bokmal to "Gj.snittlig G (kr)",
                         Nynorsk to "Gj.snittleg G (kr)",
                         English to "Average G (NOK)"
                     )
                 }
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 5) {
                     text(
                         Bokmal to "Pensjonspoeng",
                         Nynorsk to "Pensjonspoeng",
                         English to "Pension points"
                     )
                 }
-                column(columnSpan = 2) { text(Bokmal to "Merknad", Nynorsk to "Merknad", English to "Notes") }
+                column(columnSpan = 5) { text(Bokmal to "Merknad", Nynorsk to "Merknad", English to "Notes") }
             }) {
                 forEach(pensjonspoeng) {
                     val bruktIBeregningen = it.bruktIBeregningen
