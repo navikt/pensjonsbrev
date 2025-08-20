@@ -56,8 +56,8 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             sakstype = Sakstype.ALDER,
             vedtakEtterbetaling = true,
             vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
-                antallLandVilkarsprovd = 0,
-                landNavn = "Sverige",
+                antallLandVilkarsprovd = 2,
+                landNavn = listOf("Sverige", "Finland"),
             ),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
             maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
