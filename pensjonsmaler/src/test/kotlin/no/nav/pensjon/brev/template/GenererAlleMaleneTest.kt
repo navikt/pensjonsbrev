@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -20,7 +19,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 
-val filterForPDF = listOf(Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE)
+val filterForPDF = listOf(LetterExample.kode)
 
 class GenererAlleMaleneTest {
 
@@ -43,7 +42,7 @@ class GenererAlleMaleneTest {
     }
 
     @ParameterizedTest(name = "{1}, {3}")
-    @MethodSource("filtrerteMaler")
+    @MethodSource("alleMalene")
     fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
