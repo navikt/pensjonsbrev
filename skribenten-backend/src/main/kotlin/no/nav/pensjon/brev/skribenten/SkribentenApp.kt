@@ -125,9 +125,7 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
     configureMetrics()
 
     oneShotJobs(skribentenConfig) {
-        job("redigertBrev-tittel-markup") {
-            updateBrevredigeringJson()
-        }
+        // Blir utført når appen starter
     }
 
     monitor.subscribe(ApplicationStopPreparing) {
