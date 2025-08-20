@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -42,7 +43,7 @@ data class OmregningAlderUfore2016Felles(
     val oppfyltVedSammenleggingFemArKap19: Expression<Boolean>,
     val oppfyltVedSammenleggingFemArKap20: Expression<Boolean>,
     val borINorge: Expression<Boolean>,
-    val erEOSLand: Expression<Boolean>,
+    val erEOSLand: Expression<ErEOSLand>,
     val eksportTrygdeavtaleEOS: Expression<Boolean>,
     val avtaleland: Expression<String?>,
     val innvilgetFor67: Expression<Boolean>,
@@ -345,7 +346,7 @@ data class OmregningAlderUfore2016Felles(
                             or oppfyltVedSammenleggingFemArKap19
                             or oppfyltVedSammenleggingFemArKap20)
                     and borINorge
-                    and erEOSLand
+                    and erEOSLand.equalTo(ErEOSLand.JA)
         ) {
             paragraph {
                 text(
@@ -363,7 +364,7 @@ data class OmregningAlderUfore2016Felles(
                     and oppfyltVedSammenleggingFemArKap20.not()
                     and eksportTrygdeavtaleEOS
                     and borINorge.not()
-                    and erEOSLand.not()
+                    and erEOSLand.notEqualTo(ErEOSLand.JA)
         ) {
             paragraph {
                 text(
@@ -382,7 +383,7 @@ data class OmregningAlderUfore2016Felles(
                             or oppfyltVedSammenleggingFemArKap20)
                     and eksportTrygdeavtaleEOS
                     and borINorge.not()
-                    and erEOSLand
+                    and erEOSLand.equalTo(ErEOSLand.JA)
         ) {
             paragraph {
                 text(
@@ -400,7 +401,7 @@ data class OmregningAlderUfore2016Felles(
                             or oppfyltVedSammenleggingFemArKap19
                             or oppfyltVedSammenleggingFemArKap20
                             or eksportTrygdeavtaleAvtaleland)
-                    and erEOSLand.not()
+                    and erEOSLand.notEqualTo(ErEOSLand.JA)
         ) {
             ifNotNull(avtaleland) { avtaleland ->
                 paragraph {
