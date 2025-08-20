@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.outlineTestTemplate
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.BinaryOperation
@@ -48,7 +49,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun `if-elseif-else chain loeftes opp slik at de er paa samme nivaa`() {
-        val templ = outlineTestTemplate<Unit> {
+        val templ = outlineTestTemplate<EmptyBrevdata> {
             paragraph {
                 showIf(true.expr()) {
                     text(Bokmal to "første")
@@ -92,7 +93,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun `if-elseif-else chain loeftes kun opp om det er ett og bare ett element som er en conditional`() {
-        val templ = outlineTestTemplate<Unit> {
+        val templ = outlineTestTemplate<EmptyBrevdata> {
             paragraph {
                 showIf(true.expr()) {
                     text(Bokmal to "første")
@@ -145,7 +146,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun `collection isEmpty expr blir forenklet`() {
-        val templ = outlineTestTemplate<Unit> {
+        val templ = outlineTestTemplate<EmptyBrevdata> {
             paragraph {
                 textExpr(Bokmal to emptyList<String>().expr().isEmpty().format(BooleanFormatter))
             }

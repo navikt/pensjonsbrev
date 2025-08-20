@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
@@ -108,10 +109,10 @@ object Fixtures {
 
     val felles = no.nav.brev.brevbaker.Fixtures.felles
 
-    inline fun <reified T : Any> create(): T = create(T::class)
+    inline fun <reified T : BrevbakerBrevdata> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> create(letterDataType: KClass<T>): T =
+    fun <T : BrevbakerBrevdata> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
             BarnepensjonInnvilgelseRedigerbartUtfallDTO::class -> createBarnepensjonInnvilgelseRedigerbartUtfallDTO() as T
@@ -174,7 +175,6 @@ object Fixtures {
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T
             TomMal::class -> createTomMal() as T
-            Unit::class -> Unit as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
