@@ -32,8 +32,8 @@ class BrevkodeTest {
 
     @Test
     fun `alle brevkoder skal være unike`(){
-        val redigerbareBrev = Pesysbrevkoder.Redigerbar.entries.map { it.toString() }
-        val autobrev = Pesysbrevkoder.AutoBrev.entries.map { it.toString() }
+        val redigerbareBrev = Ufoerebrevkoder.Redigerbar.entries.map { it.toString() }
+        val autobrev = Ufoerebrevkoder.AutoBrev.entries.map { it.toString() }
 
         assert(redigerbareBrev.intersect(autobrev.toSet()).isEmpty())
     }
