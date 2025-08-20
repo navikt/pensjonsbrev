@@ -196,14 +196,14 @@ class BrevredigeringServiceTest {
             vedtaksId: Long?,
             brevkode: Brevkode.Redigerbart,
             avsenderEnhetsId: String?,
-        ): ServiceResult<BrevdataResponse.Data> = ServiceResult.Ok(pesysBrevdata ?: TODO("Not implemented")).also {
+        ): ServiceResult<BrevdataResponse.Data> = ServiceResult.Ok(pesysBrevdata ?: notYetStubbed("Mangler pesysBrevdata stub")).also {
             utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
         }
 
         override suspend fun sendbrev(sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean) =
             sendBrevResponse?.also {
                 utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
-            } ?: TODO("Not implemented")
+            } ?: notYetStubbed("Mangler sendBrevResponse stub")
 
         fun verifyHentPesysBrevdata(
             saksId: Long,

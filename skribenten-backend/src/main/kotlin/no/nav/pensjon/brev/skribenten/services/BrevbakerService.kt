@@ -1,18 +1,12 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
@@ -44,7 +38,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
-import kotlin.collections.joinToString
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
@@ -156,6 +149,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
 
 @OptIn(InterneDataklasser::class)
 internal object LetterMarkupModule : SimpleModule() {
+    @Suppress("unused")
     private fun readResolve(): Any = LetterMarkupModule
 
     init {
@@ -179,52 +173,7 @@ internal object LetterMarkupModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        // TODO: Bytt tilbake til addAbstractTypeMapping når brevbaker støtter markup for title
-//        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
-        addDeserializer(LetterMarkup::class.java, TitleAsMarkupOrStringDeserializer)
-        addSerializer(TitleAsStringSerializer)
-    }
-
-    // TODO: Kan fjernes når brevbaker støtter markup for title
-    object TitleAsStringSerializer : JsonSerializer<LetterMarkup>() {
-        override fun handledType(): Class<LetterMarkup> = LetterMarkup::class.java
-
-        override fun serialize(value: LetterMarkup, gen: JsonGenerator, serializers: SerializerProvider) {
-            gen.writeStartObject()
-            gen.writeStringField("title", value.title.joinToString(separator = "") { it.text })
-            gen.writePOJOField("sakspart", value.sakspart)
-            gen.writePOJOField("signatur", value.signatur)
-
-            gen.writeArrayFieldStart("blocks")
-            for (block in value.blocks) {
-                gen.writeObject(block)
-            }
-            gen.writeEndArray()
-
-            gen.writeEndObject()
-        }
-    }
-
-    object TitleAsMarkupOrStringDeserializer : JsonDeserializer<LetterMarkup>() {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup {
-            val node = p.codec.readTree<JsonNode>(p)
-
-            if (node.isObject && node is ObjectNode) {
-                val titleNode = node.get("title")
-                if (titleNode.isTextual) {
-                    node.replace("title", ArrayNode(ctxt.nodeFactory).apply {
-                        addObject().apply {
-                            put("id", -1)
-                            put("text", titleNode.textValue())
-                            put("type", LetterMarkup.ParagraphContent.Type.LITERAL.name)
-                            put("fontType", LetterMarkup.ParagraphContent.Text.FontType.PLAIN.name)
-                            putArray("tags")
-                        }
-                    })
-                }
-            }
-            return p.codec.treeToValue(node, LetterMarkupImpl::class.java)
-        }
+        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
     }
 
     private fun blockDeserializer() =
