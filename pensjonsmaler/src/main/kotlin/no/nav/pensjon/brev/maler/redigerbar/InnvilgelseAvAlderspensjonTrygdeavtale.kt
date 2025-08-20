@@ -269,12 +269,18 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
             includePhrase(
                 EOSLandAvtaleHjemmel(
-                    borINorge, eksportTrygdeavtaleEOS, erEOSLand, harOppfyltVedSammenlegging
+                    borINorge = borINorge,
+                    eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
+                    erEOSLand = erEOSLand,
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn, eksportTrygdeavtaleAvtaleland, erEOSLand, borINorge
+                    avtalelandNavn = avtalelandNavn,
+                    eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
+                    erEOSLand = erEOSLand,
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
 
