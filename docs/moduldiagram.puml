@@ -4,8 +4,11 @@ object "pensjon-brevbaker" as brevbaker
 brevbaker : dagens applikasjon
 
 object pensjonsmalene #pink
-pensjonsmalene : - ny modul
 pensjonsmalene : - her ligger malene og malkodene
+
+object ufoeremalene #pink
+ufoeremalene : - her ligger malene og malkodene
+
 
 object "etterlattemaler" as etterlatte #pink
 
@@ -32,18 +35,17 @@ object "brevbaker-selector-generator" as tmg
 tmg : dagens template-model-generator
 
 object PEN #yellow
-PEN : som i dag
 
 object Skribenten
 Skribenten : som i dag
 
 bibliotek --> dsl
 brevbaker --> pensjonsmalene
+brevbaker --> ufoeremalene
 brevbaker --> etterlatte
 pensjonsmalene --> pensjonapimodel
 
-pensjonsmalene --> ufoereapimodel
-'denne er midlertidig fram til vi får eigen uføre-modell også
+ufoeremalene --> ufoereapimodel
 
 pensjonsmalene -> bibliotek
 etterlatte --> bibliotek
@@ -53,6 +55,7 @@ dsl --> modelcommon
 tmg --> dsl
 etterlatte ..> tmg
 pensjonsmalene ..> tmg
+ufoeremalene ..> tmg
 bibliotek ..> tmg
 
 PEN --> pensjonapimodel

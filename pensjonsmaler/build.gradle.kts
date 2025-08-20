@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val pensjonApiModelVersion = 228
-val ufoereApiModelVersion = 1
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -23,8 +22,6 @@ dependencies {
     implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$pensjonApiModelVersion")
-    api("no.nav.pensjon.brev:ufoere-brevbaker-api-model:${ufoereApiModelVersion}")
-
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker")))
