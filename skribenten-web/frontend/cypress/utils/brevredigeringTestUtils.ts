@@ -64,7 +64,7 @@ export const nyRedigertBrev = ({
 }): EditedLetter => {
   return {
     title: title ?? {
-      text: [newLiteral({ text: "tittel" })],
+      text: [newLiteral({ text: "Information about application processing time" })],
       deletedContent: [],
     },
     sakspart: sakspart ?? {
