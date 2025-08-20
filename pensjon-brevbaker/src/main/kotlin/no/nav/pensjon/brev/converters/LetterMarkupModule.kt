@@ -2,12 +2,9 @@ package no.nav.pensjon.brev.converters
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -18,6 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 
 @OptIn(InterneDataklasser::class)
 object LetterMarkupModule : SimpleModule() {
+    @Suppress("unused")
     private fun readResolve(): Any = LetterMarkupModule
 
     class DeserializationException(message: String): Exception(message)
@@ -94,30 +92,6 @@ object LetterMarkupModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        // TODO: Bytt tilbake til addAbstractTypeMapping når title som markup er tatt i bruk i Skribenten.
-//        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
-        addDeserializer(LetterMarkup::class.java, TitleAsMarkupOrStringDeserializer)
-
-    }
-
-    object TitleAsMarkupOrStringDeserializer : JsonDeserializer<LetterMarkup>() {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup {
-            val node = p.codec.readTree<JsonNode>(p)
-
-            if (node.isObject && node is ObjectNode) {
-                val titleNode = node.get("title")
-                if (titleNode.isTextual) {
-                    node.replace("title", ArrayNode(ctxt.nodeFactory).apply {
-                        addObject().apply {
-                            put("id", -1)
-                            put("text", titleNode.textValue())
-                            put("type", LetterMarkup.ParagraphContent.Type.LITERAL.name)
-                            put("fontType", LetterMarkup.ParagraphContent.Text.FontType.PLAIN.name)
-                        }
-                    })
-                }
-            }
-            return p.codec.treeToValue(node, LetterMarkupImpl::class.java)
-        }
+        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
     }
 }
