@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -90,6 +89,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
     // v1.VedtaksresultatUtland
     data class VedtaksresultatUtland(
         val antallLandVilkarsprovd: Int,
-        val landNavn: String?,  // Ett eller flere land som sendes i en string, komma separert
+        val landNavn: List<String>,
     )
 }
