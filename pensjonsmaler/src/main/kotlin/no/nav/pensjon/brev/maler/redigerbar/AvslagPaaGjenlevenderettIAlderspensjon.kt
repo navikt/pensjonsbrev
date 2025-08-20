@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_RED
 import no.nav.pensjon.brev.api.model.BeloepEndring.UENDRET
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.KravInitiertAv.BRUKER
 import no.nav.pensjon.brev.api.model.KravInitiertAv.NAV
 import no.nav.pensjon.brev.api.model.KravInitiertAv.VERGE
@@ -71,7 +72,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -339,7 +339,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
 
             ifNotNull(pesysData.avtaleland) { land ->
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(land.erEOSLand and saksbehandlerValg.hjemmelEOES) {
+                showIf(land.erEOSLand.equalTo(ErEOSLand.JA) and saksbehandlerValg.hjemmelEOES) {
                     // avslagGjRettAPHjemmelEOS_001
                     paragraph {
                         text(
@@ -348,7 +348,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                             English to "This decision was also made pursuant to the provisions of Articles 6 and 57 of the Regulation (EC) no. 883/2004."
                         )
                     }
-                }.orShowIf(not(land.erEOSLand) and saksbehandlerValg.hjemmelAvtaleland) {
+                }.orShowIf(land.erEOSLand.equalTo(ErEOSLand.NEI) and saksbehandlerValg.hjemmelAvtaleland) {
                     // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     // avslagGjRettAPHjemmelAvtale_001
                     paragraph {
