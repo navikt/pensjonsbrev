@@ -5,14 +5,17 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 fun createMaanedligPensjonFoerSkattAP2025() = MaanedligPensjonFoerSkattAP2025Dto(
-    beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
+    beregnetPensjonPerManedGjeldende = lagAlderspensjonPerMaaned(),
+    beregnetPensjonperManed = listOf(lagAlderspensjonPerMaaned(), lagAlderspensjonPerMaaned()),
+    kravVirkFom = LocalDate.now()
+)
+
+private fun lagAlderspensjonPerMaaned(): MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed =
+    MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
         inntektspensjon = Kroner(1000),
         totalPensjon = Kroner(2000),
         garantipensjon = Kroner(1000),
         minstenivaIndividuell = Kroner(0),
         virkDatoFom = LocalDate.now(),
         virkDatoTom = null
-    ),
-    beregnetPensjonperManed = listOf(),
-    kravVirkFom = LocalDate.now()
-)
+    )

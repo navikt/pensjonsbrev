@@ -90,7 +90,6 @@ import no.nav.pensjon.brev.fixtures.createInformasjonOmSaksbehandlingstidUtDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
-import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned
 import no.nav.pensjon.brev.fixtures.createOmsorgEgenAutoDto
@@ -211,7 +210,6 @@ object Fixtures {
             TilbakekrevingAvFeilutbetaltBeloepDto::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             VarselTilbakekrevingAvFeilutbetaltBeloepDto::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
             MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
-            MaanedligPensjonFoerSkattAP2025Dto::class -> createMaanedligPensjonFoerSkattAP2025Dto() as T
             PE::class -> createPE() as T
             SamletMeldingOmPensjonsvedtakDto::class -> createSamletMeldingOmPensjonsvedtakDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
