@@ -31,7 +31,6 @@ binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibil
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
-brevbaker-common-titlemarkup = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version = "2.0.0" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
