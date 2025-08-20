@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
@@ -42,7 +43,7 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
             antallBeregningsperioderPensjon = 4
         ),
         avtaleland = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Avtaleland(
-            erEOSLand = false,
+            erEOSLand = ErEOSLand.NEI,
             navn = "Togo"
         ),
         bruker = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Bruker(

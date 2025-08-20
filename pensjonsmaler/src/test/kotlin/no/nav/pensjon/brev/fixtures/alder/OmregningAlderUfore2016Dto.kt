@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdod
@@ -25,7 +26,7 @@ fun createOmregningAlderUfore2016Dto() =
                 erEksportberegnet = true,
                 eksportberegnetUtenGarantipensjon = true,
                 borINorge = true,
-                erEOSLand = true,
+                erEOSLand = ErEOSLand.JA,
                 eksportTrygdeavtaleEOS = true,
                 avtaleland = "Australia",
                 oppfyltVedSammenleggingKap19 = true,

@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
-import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -66,7 +66,7 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
         opplysningerBruktIBeregningen = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto(),
         opplysningerOmAvdoedBruktIBeregning = null,
-        informasjonOmMedlemskapOgHelserettigheterDto = InformasjonOmMedlemskapOgHelserettigheterDto(erEOSLand = true),
+        informasjonOmMedlemskapOgHelserettigheterDto = InformasjonOmMedlemskapOgHelserettigheterDto(erEOSLand = ErEOSLand.JA),
         orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto()
     )
 )
