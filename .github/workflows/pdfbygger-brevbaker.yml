@@ -63,7 +63,8 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
+          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
           ./gradlew :pensjon-brevbaker:buildNeeded
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
@@ -171,7 +172,8 @@ jobs:
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
+          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
           ./gradlew :pensjon-brevbaker:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"

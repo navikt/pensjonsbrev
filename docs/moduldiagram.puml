@@ -9,8 +9,11 @@ pensjonsmalene : - her ligger malene og malkodene
 
 object "etterlattemaler" as etterlatte #pink
 
-object "pensjon-brevbaker-api-model" as apimodel #pink
-apimodel : som i dag
+object "pensjon-brevbaker-api-model" as pensjonapimodel #pink
+pensjonapimodel : som i dag
+
+object "ufoere-brevbaker-api-model" as ufoereapimodel #pink
+ufoereapimodel : som i dag
 
 object "brevbaker-dsl" as dsl
 dsl : - ny modul
@@ -37,17 +40,23 @@ Skribenten : som i dag
 bibliotek --> dsl
 brevbaker --> pensjonsmalene
 brevbaker --> etterlatte
-pensjonsmalene --> apimodel
+pensjonsmalene --> pensjonapimodel
+
+pensjonsmalene --> ufoereapimodel
+'denne er midlertidig fram til vi får eigen uføre-modell også
+
 pensjonsmalene -> bibliotek
 etterlatte --> bibliotek
-apimodel --> modelcommon
+pensjonapimodel --> modelcommon
+ufoereapimodel --> modelcommon
 dsl --> modelcommon
 tmg --> dsl
 etterlatte ..> tmg
 pensjonsmalene ..> tmg
 bibliotek ..> tmg
 
-PEN --> apimodel
+PEN --> pensjonapimodel
+PEN --> ufoereapimodel
 Gjenny --> modelcommon
 
 Skribenten --> modelcommon
