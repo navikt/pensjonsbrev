@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -12,10 +13,12 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
@@ -226,11 +229,11 @@ data class InnvilgetGjRettKap19For2024(
 data class EOSLandAvtaleHjemmel(
     val borINorge: Expression<Boolean>,
     val eksportTrygdeavtaleEOS: Expression<Boolean>,
-    val erEOSLand: Expression<Boolean>,
+    val erEOSLand: Expression<ErEOSLand>,
     val harOppfyltVedSammenlegging: Expression<Boolean>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(erEOSLand) {
+        showIf(erEOSLand.equalTo(ErEOSLand.JA)) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004",
@@ -255,11 +258,11 @@ data class EOSLandAvtaleHjemmel(
 data class BilateralAvtaleHjemmel(
     val avtalelandNavn: Expression<String>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
-    val erEOSLand: Expression<Boolean>,
+    val erEOSLand: Expression<ErEOSLand>,
     val harOppfyltVedSammenlegging: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
+        showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and erEOSLand.notEqualTo(ErEOSLand.JA)) {
             paragraph {
                 textExpr(
                     Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn + ".",
