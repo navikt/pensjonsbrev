@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.client.call.body
-import io.ktor.client.request.accept
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import no.nav.brev.brevbaker.Fixtures.felles
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -18,19 +16,13 @@ import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Cell
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.NewLine
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.*
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.text.PDFTextStripper
 import org.junit.jupiter.api.Tag
@@ -74,7 +66,7 @@ class BrevtekstITest {
         val tekstIMarkup: List<String> = finnTekstPerAvsnitt(markup)
         val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(pdf.file))
 
-        assertContains(tekstIPDF, markup.title)
+        assertContains(tekstIPDF, markup.title.tekst())
 
         assertEquals(10, tekstIMarkup.size)
         tekstIMarkup.forEach { assertFalse(it.isEmpty()) }
@@ -132,19 +124,17 @@ private fun finnTekstForParagraph(paragraph: Paragraph): List<String> = paragrap
 }
 
 private fun finnTekstForMultipleChoice(element: MultipleChoice): List<String> =
-    element.prompt.map { it.text } + element.choices.map { it.text }.map { it.joinToString("") { i -> i.text } }
+    element.prompt.map { it.text } + element.choices.map { it.text }.map { it.tekst() }
 
 private fun finnTekstForTabell(table: Table): List<String> {
     val header = finnTekstForHeader(table.header)
-    val rows = table.rows.map { it.cells.joinToString(" ") { c -> finnTekstForCell(c) } }
+    val rows = table.rows.map { it.cells.joinToString(" ") { c -> c.text.tekst() } }
     return listOf(header) + rows
 }
 
 private fun finnTekstForHeader(header: Header): String =
-    header.colSpec.map { it.headerContent }.joinToString(" ") { finnTekstForCell(it) }
+    header.colSpec.map { it.headerContent }.joinToString(" ") { it.text.tekst() }
 
-private fun finnTekstForCell(cell: Cell): String = cell.text.joinToString("") { it.text }
+private fun finnTekstForItemList(itemList: ItemList): List<String> = itemList.items.map { it.content.tekst() }
 
-private fun finnTekstForItemList(itemList: ItemList): List<String> = itemList.items.map { finnTekstForItem(it) }
-
-private fun finnTekstForItem(item: Item): String = item.content.joinToString("") { it.text }
+private fun List<ParagraphContent.Text>.tekst() = joinToString("") { it.text }
