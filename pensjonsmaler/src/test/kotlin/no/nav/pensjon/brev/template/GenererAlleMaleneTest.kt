@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
@@ -26,7 +27,7 @@ class GenererAlleMaleneTest {
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("filtrerteMaler")
-    fun <T : Any> testPdf(
+    fun <T : BrevbakerBrevdata> testPdf(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
@@ -43,7 +44,7 @@ class GenererAlleMaleneTest {
 
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
-    fun <T : Any> testHtml(
+    fun <T : BrevbakerBrevdata> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,

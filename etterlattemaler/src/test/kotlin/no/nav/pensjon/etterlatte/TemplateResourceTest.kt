@@ -7,6 +7,7 @@ import no.nav.brev.brevbaker.TestTags.MANUAL_TEST
 import no.nav.brev.brevbaker.jacksonObjectMapper
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.etterlatte.maler.BrevDTO
@@ -27,7 +28,7 @@ class TemplateResourceTest {
     @Tag(MANUAL_TEST)
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
-    fun <T : Any> testPdf(
+    fun <T : BrevbakerBrevdata> testPdf(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
@@ -40,7 +41,7 @@ class TemplateResourceTest {
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
-    fun <T : Any> testHtml(
+    fun <T : BrevbakerBrevdata> testHtml(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
@@ -59,7 +60,7 @@ class TemplateResourceTest {
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
-    fun <T : Any> jsontest(
+    fun <T : BrevbakerBrevdata> jsontest(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
