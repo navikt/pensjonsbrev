@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.outlineTestTemplate
-import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.pensjonOgUfoereProductionTemplates
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -27,7 +27,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun canRenderDocumentationForAllTemplates() {
-        (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler()).forEach {
+        (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler()).forEach {
             TemplateDocumentationRenderer.render(
                 it.template,
                 it.template.language.all().first(),
