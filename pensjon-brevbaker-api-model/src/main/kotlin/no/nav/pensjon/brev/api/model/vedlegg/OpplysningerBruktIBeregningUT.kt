@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.VedleggDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -22,19 +23,19 @@ data class OpplysningerBruktIBeregningUTDto(
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
     val harKravaarsakEndringInntekt: Boolean,
-) {
+) : VedleggDto {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
         val inntektVedSkadetidspunkt: Kroner,
         val skadetidspunkt: LocalDate,
         val yrkesskadegrad: Int,
-    )
+    ) : VedleggDto
 
     data class BarnetilleggGjeldende(
         val saerkullsbarn: Saerkullsbarn?,
         val fellesbarn: Fellesbarn?,
         val foedselsdatoPaaBarnTilleggetGjelder: List<LocalDate>,
-    ) {
+    ) : VedleggDto {
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
             val beloepNetto: Kroner,
@@ -50,7 +51,7 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-        )
+        ) : VedleggDto
 
         data class Fellesbarn(
             val avkortningsbeloepAar: Kroner,
@@ -70,7 +71,7 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
             val borMedSivilstand: BorMedSivilstand,
-        )
+        ) : VedleggDto
     }
 
     data class TrygdetidsdetaljerGjeldende(
@@ -86,20 +87,20 @@ data class OpplysningerBruktIBeregningUTDto(
         val tellerTTEOS: Int?,
         val tellerTTNordiskKonv: Int?,
         val utenforEOSogNorden: UtenforEOSogNorden?,
-    ) {
+    ) : VedleggDto {
 
         data class UtenforEOSogNorden(
             val faktiskTTBilateral: Int,
             val tellerProRata: Int,
             val nevnerProRata: Int,
-        )
+        ) : VedleggDto
     }
 
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,
         val grunnbeloep: Kroner,
         val virkDatoFom: LocalDate,
-    )
+    ) : VedleggDto
 
     data class UfoeretrygdGjeldende(
         val beloepsgrense: Kroner,
@@ -108,16 +109,16 @@ data class OpplysningerBruktIBeregningUTDto(
         val kompensasjonsgrad: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
-    )
+    ) : VedleggDto
 
     data class InntektsAvkortingGjeldende(
         val forventetInntektAar: Kroner,
         val inntektsgrenseAar: Kroner,
         val inntektstak: Kroner,
-    )
+    ) : VedleggDto
 
     data class InntektFoerUfoereGjeldende(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Kroner,
-    )
+    ) : VedleggDto
 }

@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.VedleggDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 data class MaanedligUfoeretrygdFoerSkattDto(
     val ufoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
-) {
+) : VedleggDto {
     data class UfoeretrygdPerMaaned(
         val annetBelop: Kroner,
         val barnetilleggSaerkullsbarnBrutto: Kroner?,
@@ -27,5 +28,5 @@ data class MaanedligUfoeretrygdFoerSkattDto(
         val totalUTBeloepNetto: Kroner,
         val virkningFraOgMed: LocalDate,
         val virkningTilOgMed: LocalDate?,
-    )
+    ) : VedleggDto
 }

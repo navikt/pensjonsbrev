@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.VedleggDto
 
 @Suppress("unused")
 data class OrienteringOmRettigheterAlderDto(
@@ -16,4 +17,4 @@ data class OrienteringOmRettigheterAlderDto(
     val barnetilleggVedvirk_innvilgetBarnetillegFellesbarn: Boolean,
     val barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn: Boolean,
     val ektefelletilleggVedvirk_innvilgetEktefelletillegg: Boolean,
-)
+) : VedleggDto
