@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
@@ -47,7 +48,7 @@ data class InngangOgEksportVurdering(
     val erEksportberegnet: Boolean,
     val eksportberegnetUtenGarantipensjon: Boolean,
     val borINorge: Boolean,
-    val erEOSLand: Boolean,
+    val erEOSLand: ErEOSLand,
     val eksportTrygdeavtaleEOS: Boolean,
     val avtaleland: String?,
     val oppfyltVedSammenleggingKap19: Boolean,
