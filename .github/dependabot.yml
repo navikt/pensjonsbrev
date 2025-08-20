@@ -35,6 +35,8 @@ updates:
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
+    ignore:
+      - dependency-name: "no.nav.pensjon.brevbaker:brevbaker-api-model-common"
     groups:
       tjenestebuss:
         patterns:
