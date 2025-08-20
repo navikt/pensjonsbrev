@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -110,7 +111,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             English to ", 20-5, 20-8, 20-10",
                         )
                     }
-                    showIf(erEOSland) {
+                    showIf(erEOSland.equalTo(ErEOSLand.JA)) {
                         text(
                             Bokmal to " og EØS-avtalens forordning 883/2004 artikkel 57.",
                             Nynorsk to " og EØS-avtalens forordning 883/2004 artikkel 57.",
@@ -128,7 +129,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
 
             }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAp2011 or erAp2016) {
 
-                showIf(not(erAvtaleland) and not(erEOSland)) {
+                showIf(not(erAvtaleland) and erEOSland.equalTo(ErEOSLand.NEI)) {
                     paragraph {
                         text(
                             Bokmal to "For å ha rett til alderspensjon må du ha minst ",
@@ -237,7 +238,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             )
                         }
                     }
-                    showIf(erEOSland and not(erAvtaleland)) {
+                    showIf(erEOSland.equalTo(ErEOSLand.JA) and not(erAvtaleland)) {
                         showIf(erAp2011) {
                             paragraph {
                                 text(
@@ -279,7 +280,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                                 English to " of the National Insurance Act and to the provisions of the social security agreement with ".expr() + avtaleland,
                             )
 
-                            showIf(erAvtaleland and erEOSland) {
+                            showIf(erAvtaleland and erEOSland.equalTo(ErEOSLand.JA)) {
                                 text(
                                     Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6",
                                     Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6",
@@ -500,21 +501,21 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         }
     }
 
-    private data class EOSogEllerAvtaleland(val erEOSland: Expression<Boolean>, val erAvtaleland: Expression<Boolean>): TextOnlyPhrase<LangBokmalNynorskEnglish>(){
+    private data class EOSogEllerAvtaleland(val erEOSland: Expression<ErEOSLand>, val erAvtaleland: Expression<Boolean>): TextOnlyPhrase<LangBokmalNynorskEnglish>(){
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(erEOSland and not(erAvtaleland)) {
+            showIf(erEOSland.equalTo(ErEOSLand.JA) and not(erAvtaleland)) {
                 text(
                     Bokmal to "EØS-land",
                     Nynorsk to "EØS-land",
                     English to "an other EEA country",
                 )
-            }.orShowIf(erAvtaleland and not(erEOSland)) {
+            }.orShowIf(erAvtaleland and erEOSland.notEqualTo(ErEOSLand.JA)) {
                 text(
                     Bokmal to "avtaleland",
                     Nynorsk to "avtaleland",
                     English to "an other signatory country",
                 )
-            }.orShowIf(erEOSland and erAvtaleland) {
+            }.orShowIf(erEOSland.equalTo(ErEOSLand.JA) and erAvtaleland) {
                 text(
                     Bokmal to "EØS- og avtaleland",
                     Nynorsk to "EØS- og avtaleland",
