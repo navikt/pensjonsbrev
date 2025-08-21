@@ -74,10 +74,8 @@ const TableView: React.FC<{
           if (!cell) return;
           const rowEl = cell.parentElement as HTMLTableRowElement;
 
-          const hasRenderedThead = hasHeaderContentCols(node.header?.colSpec);
-          const isHeaderCell = cell.tagName === "TH" || (hasRenderedThead && rowEl.parentElement?.tagName === "THEAD");
-
-          const rowIndex = isHeaderCell ? -1 : rowEl.rowIndex - (hasRenderedThead ? 1 : 0);
+          const isHeaderCell = cell.tagName === "TH" || (hasHeader && rowEl.parentElement?.tagName === "THEAD");
+          const rowIndex = isHeaderCell ? -1 : rowEl.rowIndex - (hasHeader ? 1 : 0);
           const colIndex = cell.cellIndex;
 
           setEditorState((prev) => ({
@@ -200,7 +198,7 @@ const TableView: React.FC<{
             Gjør overskrift til vanlig tekst
           </ActionMenu.Item>
         )}
-        {isHeaderCtx && <ActionMenu.Divider />}
+        {isHeaderCtx && headerHasContent && <ActionMenu.Divider />}
         <ActionMenu.Item
           disabled={isHeaderCtx}
           icon={<PlusIcon fontSize="1.25rem" />}
