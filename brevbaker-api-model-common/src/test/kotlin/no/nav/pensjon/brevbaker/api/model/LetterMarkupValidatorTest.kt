@@ -180,10 +180,10 @@ class LetterMarkupValidatorTest {
 
     private fun letter(vararg blocks: LetterMarkup.Block) =
         LetterMarkupImpl(
-            title = "En tittel",
+            title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(1, "En tittel")),
             sakspart = SakspartImpl(
                 gjelderNavn = "Test Testeson",
-                gjelderFoedselsnummer = "1234568910",
+                gjelderFoedselsnummer = Foedselsnummer("1234568910"),
                 vergeNavn = null,
                 saksnummer = "1234",
                 dokumentDato = LocalDate.now()
