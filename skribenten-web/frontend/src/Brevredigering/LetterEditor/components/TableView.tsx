@@ -74,10 +74,7 @@ const TableView: React.FC<{
           if (!cell) return;
           const rowEl = cell.parentElement as HTMLTableRowElement;
 
-          // Did our TableView render a thead?
           const hasRenderedThead = hasHeaderContentCols(node.header?.colSpec);
-
-          // Is the clicked cell a header cell in our rendered table?
           const isHeaderCell = cell.tagName === "TH" || (hasRenderedThead && rowEl.parentElement?.tagName === "THEAD");
 
           const rowIndex = isHeaderCell ? -1 : rowEl.rowIndex - (hasRenderedThead ? 1 : 0);
