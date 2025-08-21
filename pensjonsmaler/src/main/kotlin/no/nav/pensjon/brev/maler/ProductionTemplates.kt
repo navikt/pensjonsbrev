@@ -57,6 +57,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
@@ -87,6 +88,8 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMell
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.*
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -143,18 +146,21 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
         VedtakGjpOpphorArskull6070Utland,
+        FeilBelopInntekstendringsbrev,
+        FeilBelopInntekstendringsbrev_AvkortetTil0,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
-        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagGradsendringFoerNormertPensjonsalder,
         AvslagGradsendringFoerNormertPensjonsalderAP2016,
         AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
+        BrukerTestBrev,
         EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
@@ -178,8 +184,8 @@ object ProductionTemplates : AllTemplates {
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
-        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
+        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvUttaksgrad,
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,

@@ -203,8 +203,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 textExpr(
-                    Bokmal to "Endringen av utbetalingen din i ".expr() + virkningFom.year.format() + " påvirker ikke utbetalingen din i " + virkningFom.year.format(),
-                    Nynorsk to "Endringa av utbetalinga di i ".expr() + virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + virkningFom.year.format()
+                    Bokmal to "Endringen av utbetalingen din i ".expr() + virkningFom.year.format() + " påvirker ikke utbetalingen din i " + virkningFom.year.minus(1).format(),
+                    Nynorsk to "Endringa av utbetalinga di i ".expr() + virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + virkningFom.year.minus(1).format()
                 )
             }
             paragraph {
@@ -587,11 +587,9 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 }
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i ".expr() +
-                            virkningFom.year.minus(1).format() + " eller senere.",
-                    Nynorsk to "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i ".expr() +
-                            virkningFom.year.minus(1).format() + " eller seinare."
+                text(
+                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere.",
+                    Nynorsk to "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i 2024 eller seinare."
                 )
             }
             paragraph {

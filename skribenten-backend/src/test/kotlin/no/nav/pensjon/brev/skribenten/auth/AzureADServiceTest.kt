@@ -1,21 +1,34 @@
 package no.nav.pensjon.brev.skribenten.auth
 
+import com.auth0.jwt.interfaces.Claim
+import com.auth0.jwt.interfaces.Payload
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
 
+private val fakeJwtPayload = object : Payload {
+    override fun getIssuer() = null
+    override fun getSubject() = null
+    override fun getAudience() = emptyList<String>()
+    override fun getExpiresAt() = null
+    override fun getNotBefore() = null
+    override fun getIssuedAt() = null
+    override fun getId() = null
+    override fun getClaim(name: String?) = null
+    override fun getClaims() = mapOf<String?, Claim?>()
+}
+
 class AzureADServiceTest {
     private val jwtConfig = JwtConfig("navn", "utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", emptyList(), true)
     private val objectMapper = jacksonObjectMapper()
-    private val principal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk())
+    private val principal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload)
 
     @Test
     fun `getOnBehalfOfToken can exchange token`() {
@@ -60,7 +73,7 @@ class AzureADServiceTest {
     @Test
     fun `getOnBehalfOfToken caches the aqcuired token`() {
         val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla2", 1024L)
-        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk())
+        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload)
 
         val service = createService {
             respond(
@@ -78,7 +91,7 @@ class AzureADServiceTest {
     @Test
     fun `getOnBehalfOfToken uses cached token`() {
         val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla3", 1024L)
-        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk()).apply { setOnBehalfOfToken("bla3", onBehalfOfToken) }
+        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload).apply { setOnBehalfOfToken("bla3", onBehalfOfToken) }
 
         val service = createService()
         runBlocking {

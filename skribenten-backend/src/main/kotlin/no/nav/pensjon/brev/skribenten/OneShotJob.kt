@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
+import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -29,12 +30,17 @@ class OneShotJobConfig {
                 val existing = OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
                 if (existing == null) {
                     logger.info("One-shot job started: '$uniqeName'")
-                    JobConfig(uniqeName).apply(block)
-                    OneShotJobTable.insert {
-                        it[id] = uniqeName
-                        it[completedAt] = Instant.now()
+                    val job = JobConfig(uniqeName).apply(block)
+
+                    if (job.completed) {
+                        OneShotJobTable.insert {
+                            it[id] = uniqeName
+                            it[completedAt] = Instant.now()
+                        }
+                        logger.info("One-shot job '$uniqeName' completed successfully.")
+                    } else {
+                        logger.warn("One-shot job '$uniqeName' did not complete successfully. It may need to be re-run.")
                     }
-                    logger.info("One-shot job completed: '$uniqeName'")
                 } else {
                     logger.info("One-shot job '$uniqeName' has already been executed. Skipping.")
                 }
@@ -48,7 +54,9 @@ class OneShotJobConfig {
 
 
 @OneShotJobDsl
-class JobConfig(val jobName: String)
+class JobConfig(val jobName: String) {
+    var completed: Boolean = true
+}
 
 private val logger = LoggerFactory.getLogger("OneShotJob")
 
@@ -60,7 +68,7 @@ private val logger = LoggerFactory.getLogger("OneShotJob")
  * @param block The block of one-shot job definitions to execute.
  */
 suspend fun oneShotJobs(skribentenConfig: Config, block: OneShotJobConfig.() -> Unit) =
-    oneShotJobs(LeaderService(skribentenConfig.getConfig("services.leader")), block)
+    oneShotJobs(NaisLeaderService(skribentenConfig.getConfig("services.leader")), block)
 
 /**
  * Executes one-shot jobs if this instance is the leader in a leader election setup.
@@ -87,9 +95,15 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 
 fun JobConfig.updateBrevredigeringJson() {
     transaction {
-        val kanOppdateres = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrev)
-            .where { BrevredigeringTable.sistReservert less Instant.now().minus(15.minutes.toJavaDuration()) }
-            .toList()
+        val alleBrev = BrevredigeringTable.select(
+            BrevredigeringTable.id,
+            BrevredigeringTable.sistReservert,
+            BrevredigeringTable.redigertBrev
+        ).toList()
+
+        val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+        val kanOppdateres =
+            alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
@@ -97,6 +111,11 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 update[BrevredigeringTable.redigertBrev] = redigertBrev.copy()
             }
+        }
+
+        if (alleBrev.size != kanOppdateres.size) {
+            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
+            completed = false
         }
     }
 }

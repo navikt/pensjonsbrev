@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -123,7 +122,8 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.mockk)
+
+    testImplementation(libs.pdfbox)
 
     testImplementation(testFixtures(project(":brevbaker")))
 }

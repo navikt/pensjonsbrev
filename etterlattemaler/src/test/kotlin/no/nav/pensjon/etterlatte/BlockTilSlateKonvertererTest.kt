@@ -1,13 +1,16 @@
 package no.nav.pensjon.etterlatte
 
 
-import io.mockk.mockk
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.Brevbaker
+import no.nav.brev.brevbaker.PDFByggerService
+import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
@@ -22,7 +25,9 @@ class BlockTilSlateKonvertererTest {
     @Test
     fun `kan lese inn letter markup fra brevbakeren`() {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
-        val letterMarkup = Brevbaker(mockk()).renderLetterMarkup(letter)
+        val letterMarkup = Brevbaker(object : PDFByggerService {
+            override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(ByteArray(0))
+        }).renderLetterMarkup(letter)
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
     }
@@ -69,10 +74,10 @@ class BlockTilSlateKonvertererTest {
     }
 
     private val brevbaker_payload_med_title1_title2_og_paragraf = LetterMarkupImpl(
-        title = "Et dokument fra brevbakeren",
+        title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(1, "Et dokument fra brevbakeren")),
         sakspart = LetterMarkupImpl.SakspartImpl(
             gjelderNavn = "Ola Nordmann",
-            gjelderFoedselsnummer = "1",
+            gjelderFoedselsnummer = Foedselsnummer("1"),
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
             vergeNavn = null,
@@ -119,10 +124,10 @@ class BlockTilSlateKonvertererTest {
     )
 
     private val brevbaker_payload_med_item_list = LetterMarkupImpl(
-        title = "Et dokument fra brevbakeren",
+        title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(1, "Et dokument fra brevbakeren")),
         sakspart = LetterMarkupImpl.SakspartImpl(
             gjelderNavn = "Ola Nordmann",
-            gjelderFoedselsnummer = "1",
+            gjelderFoedselsnummer = Foedselsnummer("1"),
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
             vergeNavn = null,

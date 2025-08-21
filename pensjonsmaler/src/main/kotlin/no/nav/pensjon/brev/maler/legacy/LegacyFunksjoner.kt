@@ -147,14 +147,14 @@ fun Expression<PE>.pe_ut_barnet_barna_felles_serkull(): Expression<String> {
     val barnetilleggfelles = beregningytelseskomp.barnetilleggfelles_safe
 
     val erEttBarn = (barnetilleggfelles.antallbarnfelles_safe.ifNull(0).equalTo(1) and
-            barnetilleggfelles.btfbnetto_safe.ifNull(0).equalTo(0)) or
+            barnetilleggfelles.btfbnetto_safe.ifNull(Kroner(0)).equalTo(0)) or
             (barnetilleggserkull.antallbarnserkull_safe.ifNull(0).equalTo(1) and
-                    barnetilleggserkull.btsbnetto_safe.ifNull(0).equalTo(0))
+                    barnetilleggserkull.btsbnetto_safe.ifNull(Kroner(0)).equalTo(0))
 
     val erFlereBarn = (barnetilleggfelles.antallbarnfelles_safe.ifNull(0).greaterThan(1) and
-            barnetilleggfelles.btfbnetto_safe.ifNull(0).equalTo(0)) or
+            barnetilleggfelles.btfbnetto_safe.ifNull(Kroner(0)).equalTo(0)) or
             (barnetilleggserkull.antallbarnserkull_safe.ifNull(0).greaterThan(1) and
-                    barnetilleggserkull.btsbnetto_safe.ifNull(0).equalTo(0))
+                    barnetilleggserkull.btsbnetto_safe.ifNull(Kroner(0)).equalTo(0))
     return ifElse(
         erEttBarn, ifElse(erEngelsk, "child", "barnet"),
         ifElse(

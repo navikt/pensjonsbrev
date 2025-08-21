@@ -40,6 +40,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenGarantipensjon
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -258,7 +260,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
         }
         showIf(
-            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.equalTo(Kroner(0))
+            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.equalTo(0)
                     and not(avslattGarantipensjon)
                     and redusertTrygdetid
         ) {
@@ -408,21 +410,21 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregni
 ) {
     paragraph {
         table({
-            column {
+            column(columnSpan = 1, alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "År",
                     Nynorsk to "År",
                     English to "Year",
                 )
             }
-            column {
+            column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Pensjonsgivende inntekt (kr)",
                     Nynorsk to "Pensjonsgivande inntekt (kr)",
                     English to "Pensionable income (NOK)",
                 )
             }
-            column {
+            column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Gjennomsnittlig G (kr)",
                     Nynorsk to "Gjennomsnittlig G (kr)",
@@ -430,7 +432,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregni
                 )
             }
             if (medMerknader) {
-                column(columnSpan = 2) {
+                column(columnSpan = 4) {
                     text(
                         Bokmal to "Andre typer opptjeningsgrunnlag registrert",
                         Nynorsk to "Andre typer oppteningsgrunnlag registrert",

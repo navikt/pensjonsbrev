@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.FeatureToggleService
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -25,9 +25,18 @@ class OperationsTest {
     fun `LocalizedCollectionFormat uses comma and localized separator before last item`() {
         val list = listOf("Alexander", "Jeremy", "Håkon", "Agne")
 
-        assertEquals("Alexander, Jeremy, Håkon og Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.Bokmal))
-        assertEquals("Alexander, Jeremy, Håkon og Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.Nynorsk))
-        assertEquals("Alexander, Jeremy, Håkon and Agne", LocalizedFormatter.CollectionFormat.apply(list, Language.English))
+        assertEquals(
+            "Alexander, Jeremy, Håkon og Agne",
+            LocalizedFormatter.CollectionFormat.apply(list, Language.Bokmal)
+        )
+        assertEquals(
+            "Alexander, Jeremy, Håkon og Agne",
+            LocalizedFormatter.CollectionFormat.apply(list, Language.Nynorsk)
+        )
+        assertEquals(
+            "Alexander, Jeremy, Håkon and Agne",
+            LocalizedFormatter.CollectionFormat.apply(list, Language.English)
+        )
     }
 
     @Test
@@ -87,7 +96,10 @@ class OperationsTest {
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {
             val toggle = FeatureToggle("t1")
-            FeatureToggleSingleton.init(object : FeatureToggleService { override fun isEnabled(toggle: FeatureToggle) = true })
+            FeatureToggleSingleton.init(object : FeatureToggleService {
+                override fun isEnabled(toggle: FeatureToggle) = true
+                override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
+            })
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), true)
         }
@@ -95,7 +107,10 @@ class OperationsTest {
         @Test
         fun `enabled gir false viss funksjonen returnerer false`() {
             val toggle = FeatureToggle("t2")
-            FeatureToggleSingleton.init(object : FeatureToggleService { override fun isEnabled(toggle: FeatureToggle) = false })
+            FeatureToggleSingleton.init(object : FeatureToggleService {
+                override fun isEnabled(toggle: FeatureToggle) = false
+                override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
+            })
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), false)
         }

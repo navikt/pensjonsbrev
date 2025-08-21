@@ -4,15 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.DeserializationFeature
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.headers
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.Parameters
+import io.ktor.http.append
+import io.ktor.http.isSuccess
+import io.ktor.serialization.jackson.jackson
 import java.time.LocalDateTime
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
@@ -40,7 +44,11 @@ sealed class TokenResponse {
     ) : TokenResponse()
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) {
+interface AuthService {
+    suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse
+}
+
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) : AuthService {
     private val client = HttpClient(engine) {
         install(ContentNegotiation) {
             jackson {
@@ -71,7 +79,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
         }
     }
 
-    suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
+    override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
         return principal.getOnBehalfOfToken(scope)?.takeIf { it.isValid() }
             ?: exchangeToken(principal.accessToken, scope).also {
                     if (it is TokenResponse.OnBehalfOfToken) {
