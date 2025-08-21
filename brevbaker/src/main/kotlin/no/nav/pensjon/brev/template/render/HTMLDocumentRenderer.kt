@@ -49,7 +49,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                 head {
                     meta(charset = Charsets.UTF_8.name())
                     meta(name = "viewport", content = "width=device-width")
-                    title { text(letter.title) }
+                    title { renderTextWithoutStyle(letter.title) }
                     style { unsafe { fontBinary.forEach { raw(it) } } }
                     style { unsafe { raw(css) } }
                 }
@@ -65,7 +65,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                                 renderSakspart(language, felles)
                                 brevdato(language, felles)
                             }
-                            h1(classes("tittel")) { text(letter.title) }
+                            h1(classes("tittel")) { renderTextWithoutStyle(letter.title) }
                             div(classes("brevkropp")) {
                                 letter.blocks.forEach { renderBlock(it) }
                                 renderClosing(language, felles, brevtype)

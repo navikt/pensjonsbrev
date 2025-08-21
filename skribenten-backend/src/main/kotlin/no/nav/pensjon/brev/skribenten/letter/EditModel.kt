@@ -20,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 
 object Edit {
-    data class Letter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>)
+    data class Letter(val title: Title, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>)
 
     interface Identifiable {
         val id: Int?
@@ -32,6 +32,11 @@ object Edit {
         @JsonIgnore
         fun isEdited(): Boolean
     }
+
+    data class Title(
+        val text: List<Edit.ParagraphContent.Text>,
+        val deletedContent: Set<Int> = emptySet(),
+    )
 
     sealed class Block(val type: Type) : Identifiable {
         enum class Type {
@@ -181,6 +186,7 @@ object Edit {
             addDeserializer(ParagraphContent.Text::class.java, textContentDeserializer())
         }
 
+
         private fun blockDeserializer() = object : StdDeserializer<Block>(Block::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Block {
                 val node = p.codec.readTree<JsonNode>(p)
@@ -224,7 +230,7 @@ object Edit {
 }
 
 fun LetterMarkup.toEdit(): Edit.Letter =
-    Edit.Letter(title, sakspart, blocks.toEdit(), signatur, emptySet())
+    Edit.Letter(Edit.Title(title.toEdit(null)), sakspart, blocks.toEdit(), signatur, emptySet())
 
 fun List<Block>.toEdit(): List<Edit.Block> =
     map { it.toEdit() }
@@ -232,9 +238,12 @@ fun List<Block>.toEdit(): List<Edit.Block> =
 fun Block.toEdit(): Edit.Block =
     when (this) {
         is Block.Paragraph -> Edit.Block.Paragraph(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
-        is Block.Title1 -> Edit.Block.Title1(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
-        is Block.Title2 -> Edit.Block.Title2(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
+        is Block.Title1 -> Edit.Block.Title1(id = id, editable = editable, content = content.toEdit(id), parentId = null)
+        is Block.Title2 -> Edit.Block.Title2(id = id, editable = editable, content = content.toEdit(id), parentId = null)
     }
+
+fun List<ParagraphContent.Text>.toEdit(parentId: Int?): List<Edit.ParagraphContent.Text> =
+    map { it.toEdit(parentId) }
 
 fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
     when (this) {
@@ -259,7 +268,7 @@ fun ParagraphContent.Text.FontType.toEdit(): Edit.ParagraphContent.Text.FontType
     }
 
 fun ParagraphContent.ItemList.Item.toEdit(parentId: Int?): Edit.ParagraphContent.ItemList.Item =
-    Edit.ParagraphContent.ItemList.Item(id = id, content = content.map { it.toEdit(id) }, parentId = parentId)
+    Edit.ParagraphContent.ItemList.Item(id = id, content = content.toEdit(id), parentId = parentId)
 
 fun ParagraphContent.Table.toEdit(parentId: Int?): Edit.ParagraphContent.Table =
     Edit.ParagraphContent.Table(id = id, rows = rows.map { it.toEdit(id) }, header = header.toEdit(id), parentId = parentId)
@@ -268,7 +277,7 @@ fun ParagraphContent.Table.Row.toEdit(parentId: Int?): Edit.ParagraphContent.Tab
     Edit.ParagraphContent.Table.Row(id = id, cells = cells.map { it.toEdit(id) }, parentId = parentId)
 
 fun ParagraphContent.Table.Cell.toEdit(parentId: Int?): Edit.ParagraphContent.Table.Cell =
-    Edit.ParagraphContent.Table.Cell(id = id, text = text.map { it.toEdit(id) }, parentId = parentId)
+    Edit.ParagraphContent.Table.Cell(id = id, text = text.toEdit(id), parentId = parentId)
 
 fun ParagraphContent.Table.Header.toEdit(parentId: Int?): Edit.ParagraphContent.Table.Header =
     Edit.ParagraphContent.Table.Header(id = id, colSpec = colSpec.map { it.toEdit(id) }, parentId = parentId)
@@ -283,14 +292,17 @@ fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table
     }
 
 fun Edit.Letter.toMarkup(): LetterMarkup =
-    LetterMarkupImpl(title = title, sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
+    LetterMarkupImpl(title = title.text.toMarkup(), sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
 
 fun Edit.Block.toMarkup(): Block =
     when (this) {
         is Edit.Block.Paragraph -> BlockImpl.ParagraphImpl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
-        is Edit.Block.Title1 -> BlockImpl.Title1Impl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
-        is Edit.Block.Title2 -> BlockImpl.Title2Impl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title1 -> BlockImpl.Title1Impl(id = id ?: 0, editable = editable, content = content.toMarkup())
+        is Edit.Block.Title2 -> BlockImpl.Title2Impl(id = id ?: 0, editable = editable, content = content.toMarkup())
     }
+
+fun List<Edit.ParagraphContent.Text>.toMarkup() =
+    map { it.toMarkup() }
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
@@ -325,7 +337,7 @@ fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontTy
     }
 
 fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.Item =
-    ParagraphContentImpl.ItemListImpl.ItemImpl(id = id ?: 0, content = content.map { it.toMarkup() })
+    ParagraphContentImpl.ItemListImpl.ItemImpl(id = id ?: 0, content = content.toMarkup())
 
 fun Edit.ParagraphContent.Table.Header.toMarkup(): ParagraphContent.Table.Header =
     ParagraphContentImpl.TableImpl.HeaderImpl(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })
@@ -343,7 +355,7 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
     ParagraphContentImpl.TableImpl.RowImpl(id = id ?: 0, cells = cells.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
-    ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.map { it.toMarkup() })
+    ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
 
 
 
