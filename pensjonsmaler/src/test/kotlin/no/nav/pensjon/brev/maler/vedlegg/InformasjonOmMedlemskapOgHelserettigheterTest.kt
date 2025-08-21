@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.template.Language
@@ -17,7 +18,7 @@ class InformasjonOmMedlemskapOgHelserettigheterTest {
 
     @ParameterizedTest
     @MethodSource("sakstyperOgSpraak")
-    fun `test vedlegg vedleggInformasjonOmMedlemskapOgHelserettigheter`(sakstype: Sakstype, spraak: Language, erEOSLand: Boolean) {
+    fun `test vedlegg vedleggInformasjonOmMedlemskapOgHelserettigheter`(sakstype: Sakstype, spraak: Language, erEOSLand: ErEOSLand) {
         val template = createVedleggTestTemplate(
             vedleggInformasjonOmMedlemskapOgHelserettigheter,
             InformasjonOmMedlemskapOgHelserettigheterDto(erEOSLand).expr(),
@@ -34,6 +35,6 @@ class InformasjonOmMedlemskapOgHelserettigheterTest {
     companion object {
         @JvmStatic
         fun sakstyperOgSpraak() = listOf(Language.Bokmal, Language.Nynorsk, Language.English)
-            .flatMap { spraak -> listOf(true, false).map { Arguments.of(Sakstype.ALDER, spraak, it) } }
+            .flatMap { spraak -> ErEOSLand.entries.map { Arguments.of(Sakstype.ALDER, spraak, it) } }
     }
 }

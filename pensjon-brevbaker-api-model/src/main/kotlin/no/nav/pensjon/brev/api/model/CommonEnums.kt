@@ -216,3 +216,7 @@ enum class VedtaksBegrunnelse{
     VIRKFOM_FOR_2011,
     VIRK_FOR_LANGT_FREM
 }
+
+enum class ErEOSLand {
+    JA, NEI, UDEFINERT
+}

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -15,7 +16,7 @@ fun createAvslagForLiteTrygdetidAPDto() =
         pesysData = AvslagForLiteTrygdetidAPDto.PesysData(
             avtaleland = "Avtaleland",
             bostedsland = "Bostedsland",
-            erEOSland = true,
+            erEOSland = ErEOSLand.JA,
             trygdeperioderNorge = listOf(
                 Trygdetid(
                     fom = LocalDate.of(2024, 1, 1),

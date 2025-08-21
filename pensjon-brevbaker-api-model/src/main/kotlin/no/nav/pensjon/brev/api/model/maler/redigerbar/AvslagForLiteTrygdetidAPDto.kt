@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -19,7 +20,7 @@ data class AvslagForLiteTrygdetidAPDto(
     data class PesysData(
         val avtaleland: String?,
         val bostedsland: String?,
-        val erEOSland: Boolean,
+        val erEOSland: ErEOSLand,
         val regelverkType: AlderspensjonRegelverkType,
         val borINorge: Boolean,
         val trygdeperioderNorge: List<Trygdetid>,

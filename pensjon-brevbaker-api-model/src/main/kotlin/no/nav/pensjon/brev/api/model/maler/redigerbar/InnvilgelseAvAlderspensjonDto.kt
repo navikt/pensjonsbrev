@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -50,7 +51,7 @@ data class InnvilgelseAvAlderspensjonDto(
         val avtalelandNavn: String?,  // v1.Avdod
         val borIAvtaleland: Boolean,  // v3.Person
         val borINorge: Boolean,  // v3.Person
-        val erEOSLand: Boolean,  // v1.Land
+        val erEOSLand: ErEOSLand,
         val erForstegangsbehandletNorgeUtland: Boolean,  // v3.Krav
         val faktiskBostedsland: String?,  // v3.Person
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed

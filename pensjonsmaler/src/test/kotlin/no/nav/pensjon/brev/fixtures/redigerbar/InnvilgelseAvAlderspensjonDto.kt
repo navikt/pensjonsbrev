@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
@@ -46,7 +47,7 @@ fun createInnvilgelseAvAlderspensjonDto() =
             avtalelandNavn = null,
             borIAvtaleland = false,
             borINorge = false,
-            erEOSLand = false,
+            erEOSLand = ErEOSLand.NEI,
             erForstegangsbehandletNorgeUtland = false,
             faktiskBostedsland = null,
             fullTrygdtid = false,

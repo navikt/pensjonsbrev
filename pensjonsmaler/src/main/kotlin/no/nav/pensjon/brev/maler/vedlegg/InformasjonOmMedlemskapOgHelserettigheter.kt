@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.ErEOSLand
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDtoSelectors.erEOSLand
 import no.nav.pensjon.brev.maler.fraser.common.Constants.HELFO
@@ -10,6 +11,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.TELEFON_HELSE
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -25,7 +27,7 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
         ),
         includeSakspart = false
     ) {
-        showIf(erEOSLand) {
+        showIf(erEOSLand.equalTo(ErEOSLand.JA)) {
             title1 {
                 text(
                     Bokmal to "- for alderspensjonister som flytter til et EØS-land og er omfattet av EØS-avtalens regler om trygd",
