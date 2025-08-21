@@ -87,6 +87,7 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjening
 import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
+import no.nav.pensjon.brev.maler.ufoereBrev.VarselOpphoerMedHvilendeRett
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.*
 import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.*
@@ -146,6 +147,7 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
         VedtakGjpOpphorArskull6070Utland,
+        VarselOpphoerMedHvilendeRett,
         FeilBelopInntekstendringsbrev,
         FeilBelopInntekstendringsbrev_AvkortetTil0,
     )
