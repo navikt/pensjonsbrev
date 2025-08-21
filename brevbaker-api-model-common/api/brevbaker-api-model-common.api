@@ -361,6 +361,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
 	public abstract fun getTitle ()Ljava/util/List;
+	public fun validate ()Ljava/lang/Void;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
@@ -409,6 +410,10 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type : 
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/lang/Void;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {

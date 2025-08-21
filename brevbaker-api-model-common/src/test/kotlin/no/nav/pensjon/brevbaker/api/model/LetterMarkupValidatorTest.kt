@@ -196,5 +196,5 @@ class LetterMarkupValidatorTest {
                 null,
                 "Nav Familie- og pensjonsytelser Porsgrunn"
             )
-        )
+        ).also { it.validate() }
 }

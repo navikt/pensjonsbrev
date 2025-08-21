@@ -87,6 +87,7 @@ class LaTeXCompilerService(
 
     override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
+            pdfRequest.letterMarkup.validate()
             httpClient.post("$pdfByggerUrl/$path") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)

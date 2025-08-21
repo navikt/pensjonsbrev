@@ -22,10 +22,6 @@ data class LetterMarkupImpl(
     override val signatur: LetterMarkup.Signatur
 ) : LetterMarkup {
 
-    init {
-        LetterMarkupValidator.validate(this)
-    }
-
     @InterneDataklasser
     data class AttachmentImpl(
         override val title: List<ParagraphContent.Text>,
