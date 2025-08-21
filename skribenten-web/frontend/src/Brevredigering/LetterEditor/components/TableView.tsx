@@ -54,6 +54,7 @@ const TableView: React.FC<{
   const menuTargetRef = useRef<{ rowIndex: number; colIndex: number } | null>(null);
 
   const headerHasContent = hasHeaderContentCols(node.header?.colSpec);
+  const hasHeader = node.header?.colSpec?.length > 0;
   const canPromoteHeader = !headerHasContent;
 
   const onlyOneCol = (node.header.colSpec?.length ?? 0) <= 1;
@@ -97,7 +98,7 @@ const TableView: React.FC<{
           setMenuAnchor({ x: e.clientX, y: e.clientY });
         }}
       >
-        {headerHasContent && (
+        {hasHeader && (
           <thead>
             <tr>
               {node.header.colSpec.map((col: ColumnSpec, colIdx) => {
