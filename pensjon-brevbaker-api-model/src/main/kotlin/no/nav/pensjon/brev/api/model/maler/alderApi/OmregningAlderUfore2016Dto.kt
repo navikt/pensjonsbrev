@@ -26,7 +26,7 @@ data class OmregningAlderUfore2016Dto(
     val garantitilleggInnvilget: Boolean,
     val innvilgetFor67: Boolean,
     val fullTrygdetid: Boolean,
-    val persongrunnlagAvdod: PersongrunnlagAvdod?,
+    val persongrunnlagAvdod: PersongrunnlagAvdod,
     val faktiskBostedsland: String?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
