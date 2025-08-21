@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
+import no.nav.pensjon.brevbaker.api.model.IllegalLetterMarkupException
 
 fun Application.restModule(
     prometheusMeterRegistry: PrometheusMeterRegistry
@@ -67,6 +68,9 @@ fun Application.restModule(
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+        }
+        exception<IllegalLetterMarkupException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Ugyldig LetterMarkup, validerte ikke.")
         }
     }
 
