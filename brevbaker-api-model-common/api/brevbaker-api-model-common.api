@@ -361,7 +361,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
 	public abstract fun getTitle ()Ljava/util/List;
-	public fun validate ()Ljava/lang/Void;
+	public fun validateAndThrow ()V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
@@ -413,7 +413,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type : 
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$DefaultImpls {
-	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/lang/Void;
+	public static fun validateAndThrow (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
@@ -595,7 +595,8 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$Paragraph
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValidator {
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValidator;
-	public final fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/lang/Void;
+	public final fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/util/List;
+	public final fun validateAndThrow (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil : java/lang/Enum {

@@ -85,7 +85,7 @@ fun Application.restModule(
         post("/produserBrev") {
             val result = activityCounter.count {
                 val pdfRequest = call.receive<PDFRequest>()
-                pdfRequest.letterMarkup.validate()
+                pdfRequest.letterMarkup.validateAndThrow()
                 pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
                     .let { blockingLatexService.producePDF(it.files) }
