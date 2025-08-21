@@ -2197,7 +2197,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 }
 
                 // Når feature toggelen slettes skal resten av if-en bli igjen, også det i orShow
-                showIf(FeatureToggles.pl7822EndretInntekt.expr().enabled() and pe.vedtaksdata_virkningfom().legacyGreaterThanOrEqual(LocalDate.of(2023, 1, 1)) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                showIf(FeatureToggles.pl7822EndretInntekt.toggle.expr().enabled() and pe.vedtaksdata_virkningfom().legacyGreaterThanOrEqual(LocalDate.of(2023, 1, 1)) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                     text(
                         Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen?",
                         Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen?",

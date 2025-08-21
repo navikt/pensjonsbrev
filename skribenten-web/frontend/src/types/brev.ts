@@ -24,8 +24,6 @@ export type BrevResponse = {
 };
 
 export interface DelvisOppdaterBrevRequest {
-  saksId: string;
-  brevId: string | number;
   laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;
@@ -90,7 +88,6 @@ export type Arkivert = { type: "Arkivert" };
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
   redigertBrev: EditedLetter;
-  signatur: string;
 };
 
 export enum Distribusjonstype {

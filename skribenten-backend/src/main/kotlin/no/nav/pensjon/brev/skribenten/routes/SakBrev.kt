@@ -53,7 +53,6 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 brevId = brevId,
                 nyeSaksbehandlerValg = request.saksbehandlerValg,
                 nyttRedigertbrev = request.redigertBrev,
-                signatur = request.signatur,
                 frigiReservasjon = frigiReservasjon,
             )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                 ?.onError { message, statusCode ->
@@ -158,7 +157,6 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                     brevId = brevId,
                     nyeSaksbehandlerValg = request.saksbehandlerValg,
                     nyttRedigertbrev = request.redigertBrev,
-                    signaturAttestant = request.signaturAttestant,
                     frigiReservasjon = frigiReservasjon,
                 )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                     ?.onError { message, statusCode ->

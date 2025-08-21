@@ -49,7 +49,7 @@ fun main() {
     }.start(wait = true)
 }
 
-fun Application.skribentenApp(skribentenConfig: Config) {
+suspend fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -124,6 +124,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
 
+    oneShotJobs(skribentenConfig) {
+        // Blir utført når appen starter
+    }
+
     monitor.subscribe(ApplicationStopPreparing) {
         Features.shutdown()
     }
@@ -136,8 +140,6 @@ fun Application.skribentenContenNegotiation() {
             registerModule(Edit.JacksonModule)
             registerModule(BrevkodeModule)
             registerModule(LetterMarkupModule)
-            registerModule(PrimitiveModule)
-            registerModule(FlexibleLocalDateModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }

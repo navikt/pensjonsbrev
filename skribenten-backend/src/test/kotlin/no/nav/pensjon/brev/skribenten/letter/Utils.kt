@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -8,10 +9,10 @@ import java.time.LocalDate
 
 fun letter(vararg blocks: LetterMarkup.Block) =
     LetterMarkupImpl(
-        title = "En tittel",
+        title = listOf(ParagraphContentImpl.TextImpl.LiteralImpl(1, "En tittel")),
         sakspart = SakspartImpl(
             gjelderNavn = "Test Testeson",
-            gjelderFoedselsnummer = "1234568910",
+            gjelderFoedselsnummer = Foedselsnummer("1234568910"),
             vergeNavn = null,
             saksnummer = "1234",
             dokumentDato = LocalDate.now()
@@ -20,15 +21,15 @@ fun letter(vararg blocks: LetterMarkup.Block) =
         signatur = SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn")
     )
 
-fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true): Edit.Letter =
+fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =
     Edit.Letter(
-        title = "En tittel",
+        title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(1, "En tittel"))),
         sakspart = SakspartImpl(
             gjelderNavn = "Test Testeson",
-            gjelderFoedselsnummer = "1234568910",
+            gjelderFoedselsnummer = Foedselsnummer("1234568910"),
             vergeNavn = null,
             saksnummer = "1234",
-            dokumentDato = LocalDate.now()
+            dokumentDato = dokumentDato
         ),
         blocks = if (fixParentIds) { blocks.map { it.fixParentIds(null) }.toList() } else blocks.toList(),
         signatur = SignaturImpl(
@@ -40,9 +41,6 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         ),
         deletedBlocks = deleted
     )
-
-fun Edit.Letter.fixParentIds(): Edit.Letter =
-    copy(blocks = blocks.map { it.fixParentIds(null) })
 
 private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
     when (this) {

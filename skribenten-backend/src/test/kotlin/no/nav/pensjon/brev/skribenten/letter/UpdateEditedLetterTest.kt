@@ -1,21 +1,15 @@
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title1Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title2Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.InstanceOfAssertFactories
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,7 +17,6 @@ import java.time.LocalDate
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
-import no.nav.pensjon.brev.skribenten.letter.Edit.Identifiable as E_Identifiable
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table as E_Table
@@ -41,10 +34,10 @@ class UpdateRenderedLetterTest {
     fun `updates fields of editedLetter from renderedLetter`() {
         val rendered = letter(Title1Impl(1, true, listOf(LiteralImpl(1, "Noe tekst"))))
         val next = rendered.copy(
-            title = "ny tittel11",
+            title = listOf(LiteralImpl(1, "ny tittel11")),
             sakspart = SakspartImpl(
                 gjelderNavn = "ny gjelder",
-                gjelderFoedselsnummer = "nytt fødselsnummer",
+                gjelderFoedselsnummer = Foedselsnummer("nytt fødselsnummer"),
                 vergeNavn = null,
                 saksnummer = "nytt saksnummer",
                 dokumentDato = LocalDate.now(),
@@ -1078,51 +1071,4 @@ class UpdateRenderedLetterTest {
         assertEquals(edited, edited.updateEditedLetter(next))
     }
 
-    @Test
-    fun `parentIds will be fixed for edited letters that does not have them`() {
-        val next = letter(
-            ParagraphImpl(
-                1, true,
-                listOf(
-                    LiteralImpl(11, "lit1"),
-                    VariableImpl(12, "var2"),
-                    ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
-                    LiteralImpl(14, "lit2"),
-                    TableImpl(
-                        15,
-                        listOf(RowImpl(152, listOf(CellImpl(1521, listOf(LiteralImpl(15211, "cell 1")))))),
-                        HeaderImpl(151, listOf(ColumnSpecImpl(1511, CellImpl(15111, listOf(LiteralImpl(151111, "title cell 1"))), ColumnAlignment.LEFT, 1))),
-                    ),
-                )
-            )
-        )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_Literal(11, "lit1"),
-                    E_Variable(12, "var2"),
-                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1"))))),
-                    E_Literal(14, "lit2"),
-                    E_Table(
-                        15,
-                        listOf(E_Row(152, listOf(E_Cell(1521, listOf(E_Literal(15211, "cell 1")))))),
-                        E_Header(151, listOf(E_ColumnSpec(1511, E_Cell(15111, listOf(E_Literal(151111, "title cell 1"))), E_Table.ColumnAlignment.LEFT, 1))),
-                    ),
-                )
-            ),
-            fixParentIds = false,
-        )
-
-        assertThat(edited.identifiable.toList()).allSatisfy { assertThat(it).extracting(E_Identifiable::parentId).isNull() }
-
-        val updated = edited.updateEditedLetter(next)
-        assertThat(updated.identifiable.filter { it !is Edit.Block }.toList()).allSatisfy {
-            assertThat(it).extracting(
-                E_Identifiable::parentId,
-                InstanceOfAssertFactories.INTEGER
-            )
-        }
-        assertEquals(edited.fixParentIds(), updated)
-    }
 }

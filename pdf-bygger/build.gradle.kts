@@ -54,9 +54,6 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
-
-    testImplementation(project(":brevbaker"))
-    testImplementation(testFixtures(project(":brevbaker")))
 }
 
 application {

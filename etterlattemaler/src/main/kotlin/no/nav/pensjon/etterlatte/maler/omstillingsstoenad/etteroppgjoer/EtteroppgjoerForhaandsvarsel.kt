@@ -112,8 +112,8 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 title2 {
                     textExpr(
                         Language.Bokmal to "Etteroppgjøret for ".expr() + data.etteroppgjoersAar.format() + " er nå avsluttet",
-                        Language.Nynorsk to "Etteroppgjeret for ".expr() + data.etteroppgjoersAar.format() + " er no avslutta.",
-                        Language.English to "Final settlement in ".expr() + data.etteroppgjoersAar.format() + " is now concluded.",
+                        Language.Nynorsk to "Etteroppgjeret for ".expr() + data.etteroppgjoersAar.format() + " er no avslutta",
+                        Language.English to "Final settlement in ".expr() + data.etteroppgjoersAar.format() + " is now concluded",
                     )
                 }
                 paragraph {
@@ -130,7 +130,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                     text(
                         Language.Bokmal to "Sjekk beregningen og meld fra hvis noe er feil",
                         Language.Nynorsk to "Sjekk utrekninga og meld frå viss noko er feil",
-                        Language.English to "Check the calculation and notify us if anything is incorrect. ",
+                        Language.English to "Check the calculation and notify us if anything is incorrect",
                     )
                 }
                 paragraph {

@@ -7,6 +7,7 @@ import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
@@ -71,7 +72,7 @@ export const LetterEditor = ({
             level="3"
             size="medium"
           >
-            {letter.title}
+            <EditedLetterTitle title={letter.title} />
           </Heading>
           <div onKeyDown={editorKeyboardShortcuts}>
             {blocks.map((block, blockIndex) => (

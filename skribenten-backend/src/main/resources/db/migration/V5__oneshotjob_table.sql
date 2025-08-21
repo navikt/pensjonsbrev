@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS oneshotjob
+(
+    "name" VARCHAR(255) PRIMARY KEY,
+    "completedAt" TIMESTAMP NOT NULL
+);

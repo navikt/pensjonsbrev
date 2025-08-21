@@ -28,7 +28,12 @@
         "vedtaksId": 9870
     },
     "redigertBrev": {
-        "title": "Bekreftelse på flyktningstatus",
+        "title": {
+          "text": [
+            { "id": 4, "parentId": null, "type": "LITERAL", "text": "Bekreftelse på flyktningstatus", "editedText": null, "tags": [] }
+          ],
+          "deletedContent": []
+        },
         "sakspart": {
             "gjelderNavn": "Pussig Cosinus",
             "gjelderFoedselsnummer": "15498407894",
@@ -122,7 +127,7 @@
             "hilsenTekst": "Med vennlig hilsen",
             "saksbehandlerRolleTekst": "Saksbehandler",
             "saksbehandlerNavn": "F_Z990297 E_Z990297",
-            "attesterendeSaksbehandlerNavn": "",
+            "attesterendeSaksbehandlerNavn": null,
             "navAvsenderEnhet": "Nav familie- og pensjonsytelser Steinkjer"
         },
         "deletedBlocks": []

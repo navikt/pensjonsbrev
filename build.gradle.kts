@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
@@ -27,6 +29,12 @@ allprojects {
          */
         compilerOptions {
             freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
+        }
+    }
+    tasks.withType<Test>{
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }

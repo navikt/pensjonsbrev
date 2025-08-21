@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 import java.time.Month
@@ -60,12 +61,12 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
             grunnpensjon = Kroner(200)
         ),
         erEtterbetaling1Maaned = true,
-        dineRettigheterOgMulighetTilAaKlage = createDineRettigheterOgMulighetTilAaKlageDto(),
         maanedligPensjonFoerSkatt = createMaanedligPensjonFoerSkatt(),
         maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025(),
         opplysningerBruktIBeregningen = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto(),
         opplysningerOmAvdoedBruktIBeregning = null,
-        informasjonOmMedlemskapOgHelserettigheterDto = InformasjonOmMedlemskapOgHelserettigheterDto(erEOSLand = true)
+        informasjonOmMedlemskapOgHelserettigheterDto = InformasjonOmMedlemskapOgHelserettigheterDto(erEOSLand = true),
+        orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto()
     )
 )

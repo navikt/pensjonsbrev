@@ -157,7 +157,7 @@ class LetterRoutesITest {
 
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<LetterResponse>()
-        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
+        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title.joinToString("") { it.text }))
     }
 
     @Test
@@ -173,7 +173,7 @@ class LetterRoutesITest {
     }
 }
 
-private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
+private fun <T : Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
     kode = kode,
     letterData = this.letterData,
     felles = this.felles,

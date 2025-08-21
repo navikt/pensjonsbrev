@@ -138,7 +138,7 @@ class Letter2MarkupTest {
         val result = Letter2Markup.render(LetterImpl(template, EmptyBrevdata, Bokmal, felles))
 
         assertThat(
-            result.letterMarkup.title,
+            result.letterMarkup.title.joinToString("") { it.text },
             equalTo("noe tekst 2024")
         )
     }

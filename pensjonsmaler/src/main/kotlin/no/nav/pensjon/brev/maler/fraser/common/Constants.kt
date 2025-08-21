@@ -15,6 +15,7 @@ object Constants {
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val DIN_UFOERETRYGD_URL = "$NAV_URL/dinuføretrygd"
     const val DIN_PENSJON_URL = "$NAV_URL/dinpensjon"
+    const val DIN_PENSJON_URL_INNLOGGET = "$NAV_URL/din-pensjon"
     const val PENSJON_URL = "$NAV_URL/pensjon"
     const val DITT_NAV = "$NAV_URL/dittnav"
     const val ETTEROPPGJOR_URL = "$NAV_URL/etteroppgjor"
@@ -35,7 +36,8 @@ object Constants {
     const val KONTAKT_ENG_URL = "$NAV_URL/contact"
     const val MEDLEMSKAP_URL = "$NAV_URL/medlemskap"
     const val MINSIDE_URL = "$NAV_URL/minside"
-    const val NAV_KONTAKTSENTER_AAPNINGSTID = "09:00-15:00"
+    const val NAV_KONTAKTSENTER_AAPNINGSTID = "09.00-15.00"
+    const val NAV_KONTAKTSENTER_OPEN_HOURS = "09:00-15:00"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
     val navKontaktsenterPensjon = Telefonnummer("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()

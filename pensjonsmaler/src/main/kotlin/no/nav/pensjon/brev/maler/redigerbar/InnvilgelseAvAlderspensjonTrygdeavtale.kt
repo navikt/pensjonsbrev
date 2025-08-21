@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.avtalelandNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.borIAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.borINorge
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erMellombehandling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erSluttbehandlingNorgeUtland
@@ -37,11 +36,11 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderspensjonAP2025
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.vedtaksresultatUtland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.innvilgelseAPellerOektUttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.nyBeregningAvInnvilgetAP
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.oekningIPensjonen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.reduksjonIPensjonen
@@ -72,11 +71,11 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -88,8 +87,9 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isEmpty
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -142,7 +142,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             pesysData.inngangOgEksportVurdering_safe.harOppfyltVedSammenlegging_safe.ifNull(then = false)
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
         val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
-        val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe.ifNull(then = "LANDNAVN")
+        val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe
         val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val privatAFPErBrukt = pesysData.alderspensjonVedVirk.privatAFPErBrukt
         val regelverkType = pesysData.regelverkType
@@ -154,25 +154,14 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
 
         title {
-            showIf(erMellombehandling) {
+            showIf(not(erMellombehandling) and saksbehandlerValg.nyBeregningAvInnvilgetAP) {
+                includePhrase(BeregnaPaaNytt(pesysData.kravVirkDatoFom))
+            }.orShow {
                 textExpr(
                     Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
                 )
-            }.orShowIf(
-                erSluttbehandlingNorgeUtland or not(erMellombehandling and not(erSluttbehandlingNorgeUtland))
-            ) {
-                showIf(saksbehandlerValg.innvilgelseAPellerOektUttaksgrad) {
-                    textExpr(
-                        Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
-                        Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
-                        English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
-                    )
-                }
-                showIf(saksbehandlerValg.nyBeregningAvInnvilgetAP) {
-                    includePhrase(BeregnaPaaNytt(pesysData.kravVirkDatoFom))
-                }
             }
         }
 
@@ -181,18 +170,26 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             showIf(antallLandVilkarsprovd.greaterThan(0)) {
                 // mottattInfoFraEttLand / mottattInfoFraFlereLan
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ".expr()
-                                + landNavn + ".",
-                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ".expr()
-                                + landNavn + ".",
-                        English to "We have received information from foreign national insurance authorities regarding your accumulated rights in ".expr()
-                                + landNavn + "."
+                    text(
+                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ",
+                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ",
+                        English to "We have received information from foreign national insurance authorities regarding your accumulated rights in "
                     )
+                    showIf(landNavn.isNull()) {
+                        eval(fritekst("LANDNAVN"))
+                    }
+                    ifNotNull(landNavn) { land ->
+                        showIf (land.isEmpty()) {
+                            eval(fritekst("LANDNAVN"))
+                        }.orShow {
+                            eval(land.format())
+                        }
+                    }
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
             }
 
-            showIf(erMellombehandling or saksbehandlerValg.innvilgelseAPellerOektUttaksgrad) {
+            showIf(erMellombehandling) {
                 // nyBeregningAPInnledn
                 paragraph {
                     textExpr(
@@ -204,11 +201,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                                 + kravVirkDatoFom + ".",
                     )
                 }
-            }
-            showIf(
-                erSluttbehandlingNorgeUtland or
-                        (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling))
-            ) {
+            }.orShow {
                 showIf(saksbehandlerValg.oekningIPensjonen) {
                         // nyBeregningAPØkning
                         paragraph {
@@ -238,37 +231,30 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     }
                 }
             }
-// innvilgelseAPogUTInnledn,innvilgelseAPInnledn,
+            // innvilgelseAPogUTInnledn,innvilgelseAPInnledn,
             paragraph {
                 textExpr(
-                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr()
-                            + kravVirkDatoFom + "".expr()
-                            + ifElse(
-                        uforeKombinertMedAlder,
-                        ifTrue = ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        ifFalse = " i alderspensjon fra folketrygden."
-                    ),
-                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr()
-                            + kravVirkDatoFom + "".expr()
-                            + ifElse(
-                        uforeKombinertMedAlder,
-                        ifTrue = ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        ifFalse = " i alderspensjon frå folketrygda."
-                    ),
-                    English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr()
-                            + kravVirkDatoFom + "".expr()
-                            + ifElse(
-                        uforeKombinertMedAlder,
-                        ifTrue = ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
-                        ifFalse = " as retirement pension from the National Insurance Scheme."
-                    )
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom,
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom,
+                    English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom,
                 )
+                showIf(uforeKombinertMedAlder) {
+                    text(
+                        Bokmal to ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to " i alderspensjon fra folketrygden.",
+                        Nynorsk to " i alderspensjon frå folketrygda.",
+                        English to " as retirement pension from the National Insurance Scheme.",
+                    )
+                }
             }
 
             showIf(privatAFPErBrukt) {
-                includePhrase(
-                    AfpPrivatErBrukt(uttaksgrad)
-                )
+                includePhrase(AfpPrivatErBrukt(uttaksgrad))
             }
 
             showIf(afpPrivatResultatFellesKontoret) { includePhrase(SoktAFPPrivatInfo) }
@@ -293,12 +279,18 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
             includePhrase(
                 EOSLandAvtaleHjemmel(
-                    borINorge, eksportTrygdeavtaleEOS, erEOSLand, harOppfyltVedSammenlegging
+                    borINorge = borINorge,
+                    eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
+                    erEOSLand = erEOSLand,
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn, eksportTrygdeavtaleAvtaleland, erEOSLand, borINorge
+                    avtalelandNavn = avtalelandNavn,
+                    eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
+                    erEOSLand = erEOSLand,
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
 
@@ -307,14 +299,13 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             }
 
             showIf(
-                saksbehandlerValg.supplerendeStoenad and uttaksgrad.equalTo(100) and borINorge and not(
-                    fullTrygdetid
-                ) and not(innvilgetFor67)
+                saksbehandlerValg.supplerendeStoenad
+                        and uttaksgrad.equalTo(100)
+                        and borINorge
+                        and not(fullTrygdetid)
+                        and not(innvilgetFor67)
             ) {
                 includePhrase(SupplerendeStoenadAP)
-            }
-            showIf(borINorge) {
-
             }
             includePhrase(SkattAP)
 
@@ -327,22 +318,21 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             includePhrase(ReguleringAvAlderspensjon)
             includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
 
-            includePhrase(
-                ArbeidsinntektOgAlderspensjon(innvilgetFor67, uttaksgrad, uforeKombinertMedAlder)
-            )
+            includePhrase(ArbeidsinntektOgAlderspensjon(innvilgetFor67, uttaksgrad, uforeKombinertMedAlder))
+
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
 
             showIf(borIAvtaleland) { includePhrase(RettTilKlageUtland) }
 
-            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+        includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderspensjon)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderspensjonAP2025)
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
     }
 }

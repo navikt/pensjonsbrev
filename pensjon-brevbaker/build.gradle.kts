@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -53,13 +50,11 @@ tasks {
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
         }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = TestExceptionFormat.FULL
-        }
     }
-
+    val test by testing.suites.existing(JvmTestSuite::class)
     register<Test>("integrationTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
@@ -69,19 +64,13 @@ tasks {
         useJUnitPlatform {
             includeTags = setOf("integration-test")
         }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = TestExceptionFormat.FULL
-        }
     }
     register<Test>("manualTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("manual-test")
-        }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }
@@ -133,7 +122,8 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.mockk)
+
+    testImplementation(libs.pdfbox)
 
     testImplementation(testFixtures(project(":brevbaker")))
 }

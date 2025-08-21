@@ -39,12 +39,14 @@ import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016Auto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
+import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
@@ -52,8 +54,10 @@ import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
+import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
@@ -65,8 +69,11 @@ import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingOpplysningerFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.InnvilgelseAvAlderspensjon
+import no.nav.pensjon.brev.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtale
 import no.nav.pensjon.brev.maler.redigerbar.OmsorgEgenManuell
+import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmForlengetSaksbehandlingstid
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.redigerbar.OversettelseAvDokumenter
 import no.nav.pensjon.brev.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloep
 import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.VarselRevurderingAvPensjon
@@ -81,6 +88,8 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMell
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.*
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -104,6 +113,7 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselOpphoerMedHvilendeRett,
         AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+        OmregningAlderUfore2016Auto,
         AvslagGradsendringFoerNormertPensjonsalder2016Auto,
         AvslagGradsendringFoerNormertPensjonsalderAuto,
         AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
@@ -136,17 +146,21 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
         VedtakGjpOpphorArskull6070Utland,
+        FeilBelopInntekstendringsbrev,
+        FeilBelopInntekstendringsbrev_AvkortetTil0,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
-        AvslagPaaGjenlevenderettIAlderspensjon,
+        AvslagForLiteTrygdetidAP,
         AvslagGradsendringFoerNormertPensjonsalder,
         AvslagGradsendringFoerNormertPensjonsalderAP2016,
         AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
+        BrukerTestBrev,
         EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
@@ -158,15 +172,20 @@ object ProductionTemplates : AllTemplates {
         InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseAvAlderspensjon,
+        InnvilgelseAvAlderspensjonTrygdeavtale,
+        OmregningAlderUfore2016,
         OmsorgEgenManuell,
+        OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
+        OversettelseAvDokumenter,
+        SamletMeldingOmPensjonsvedtak,
         TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
-        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
+        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvUttaksgrad,
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,

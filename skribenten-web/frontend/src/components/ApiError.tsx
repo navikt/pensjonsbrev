@@ -13,6 +13,8 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
   useEffect(() => {
     if (error) {
       // eslint-disable-next-line no-console
+      console.log(error);
+      // eslint-disable-next-line no-console
       logError(error).catch(() => console.error("Unable to log error message"));
     }
   }, [error]);

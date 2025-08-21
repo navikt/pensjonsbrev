@@ -27,7 +27,7 @@ jobs:
       common: ${{ steps.changes.outputs.common }}
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
@@ -45,7 +45,7 @@ jobs:
       packages: write
     needs: [ changes ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: gradle/actions/wrapper-validation@v4
@@ -58,12 +58,12 @@ jobs:
         run: "./gradlew :brevbaker-api-model-common:build"
       - name: "Release maven artifact"
         if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.common == 'true' }}
-        run: "./gradlew :brevbaker-api-model-common:publish"
+        run: "./gradlew :brevbaker-api-model-common:publish -Dorg.gradle.configuration-cache=false"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven manually"
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :brevbaker-api-model-common:publish
+        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :brevbaker-api-model-common:publish -Dorg.gradle.configuration-cache=false
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -75,7 +75,7 @@ jobs:
     needs: [ release-common, changes ]
     if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped' || github.event_name == 'workflow_dispatch') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: gradle/actions/wrapper-validation@v4
@@ -92,11 +92,11 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
         if:  ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.pensjonsbrev == 'true' }}
-        run: "./gradlew :pensjon-brevbaker-api-model:publish"
+        run: "./gradlew :pensjon-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven manually"
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :pensjon-brevbaker-api-model:publish
+        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :pensjon-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

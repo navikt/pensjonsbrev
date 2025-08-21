@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto.Pensjonsopptjening.Merknad
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 import java.time.Month
@@ -54,6 +55,15 @@ fun createOpplysningerBruktIBeregningAlderAP2025Dto() = OpplysningerBruktIBeregn
         harUforepensjonKonvertertTilUforetrygd = false,
         harUforepensjon = false,
         harMerknadType = false,
-        pensjonsopptjeninger = listOf()
+        pensjonsopptjeninger = listOf(
+            OpplysningerBruktIBeregningenAlderAP2025Dto.Pensjonsopptjening(
+                aarstall = 2020,
+                pensjonsgivendeinntekt = Kroner(1234),
+                gjennomsnittligG = Kroner(1234),
+                merknader = listOf(
+                    Merknad.OMSORGSOPPTJENING
+                )
+            )
+        )
     )
 )

@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.ConfigValueFactory
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -35,10 +33,8 @@ class ExternalAPIServiceTest {
         mottaker = null,
         avsenderEnhetId = "0001",
         spraak = LanguageCode.BOKMAL,
-        signaturSignerende = "Sak Sakeson",
         journalpostId = null,
         attestertAv = null,
-        signaturAttestant = null,
         status = Dto.BrevStatus.KLADD
     )
     val brevmal = TemplateDescription.Redigerbar(
@@ -57,12 +53,10 @@ class ExternalAPIServiceTest {
     )
     private val externalAPIService = ExternalAPIService(
         config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to skribentenWebUrl)).toConfig(),
-        brevredigeringService = mockk<BrevredigeringService> {
-            coEvery { hentBrevForAlleSaker(eq(setOf(saksId))) } returns listOf(brevDto)
+        hentBrevService = object : HentBrevService {
+            override fun hentBrevForAlleSaker(saksIder: Set<Long>) = listOf(brevDto)
         },
-        brevbakerService = mockk<BrevbakerService> {
-            coEvery { getRedigerbarTemplate(Testbrevkoder.INFORMASJONSBREV) } returns brevmal
-        },
+        brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
     )
 
 
