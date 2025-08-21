@@ -31,9 +31,9 @@ const EditorTableTools = () => {
 
       <InsertTableDialog
         onCancel={() => setIsInsertTableDialogOpen(false)}
-        onInsert={(columnCount, rowCount, includeHeader) => {
+        onInsert={(columnCount, rowCount) => {
           const focus = focusAtOpen ?? editorState.focus;
-          applyAction(Actions.insertTable, setEditorState, focus, rowCount, columnCount, includeHeader);
+          applyAction(Actions.insertTable, setEditorState, focus, rowCount, columnCount);
           setIsInsertTableDialogOpen(false);
         }}
         open={isInsertTableDialogOpen}

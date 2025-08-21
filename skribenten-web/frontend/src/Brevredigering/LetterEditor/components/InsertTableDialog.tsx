@@ -1,17 +1,16 @@
 import { css } from "@emotion/react";
-import { Button, Checkbox, HStack, Label, Modal, TextField, VStack } from "@navikt/ds-react";
+import { Button, HStack, Label, Modal, TextField, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 
 interface InsertTableDialogProps {
   open: boolean;
   onCancel: () => void;
-  onInsert: (cols: number, rows: number, includeHeader: boolean) => void;
+  onInsert: (cols: number, rows: number) => void;
 }
 
 function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps) {
   const [columnCount, setColumnCount] = useState("3");
   const [rowCount, setRowCount] = useState("2");
-  const [includeHeader, setIncludeHeader] = useState(true);
 
   const numCols = Number(columnCount) || 0;
   const numRows = Number(rowCount) || 0;
@@ -95,9 +94,6 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               value={rowCount}
             />
           </HStack>
-          <Checkbox checked={includeHeader} onChange={(e) => setIncludeHeader(e.target.checked)} size="small">
-            Inkluder overskriftsrad
-          </Checkbox>
         </VStack>
       </Modal.Body>
 
@@ -109,7 +105,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
           <Button
             data-cy="insert-table-confirm-btn"
             disabled={numCols < 1 || numRows < 1}
-            onClick={() => onInsert(Math.max(1, numCols), Math.max(1, numRows), includeHeader)}
+            onClick={() => onInsert(Math.max(1, numCols), Math.max(1, numRows))}
             size="small"
             type="button"
           >

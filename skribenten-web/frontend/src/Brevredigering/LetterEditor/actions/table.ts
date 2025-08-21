@@ -53,33 +53,21 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   });
 };
 
-export const insertTable: Action<
-  LetterEditorState,
-  [focus: Focus, rows: number, cols: number, includeHeader: boolean]
-> = produce((draft, focus, rows, cols, includeHeader) => {
-  const block = draft.redigertBrev.blocks[focus.blockIndex];
-  if (block.type !== PARAGRAPH) return;
+export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number, cols: number]> = produce(
+  (draft, focus, rows, cols) => {
+    const block = draft.redigertBrev.blocks[focus.blockIndex];
+    if (block.type !== PARAGRAPH) return;
 
-  const table = newTable(rows, cols);
+    const table = newTable(rows, cols);
 
-  const safeContentIndex = safeIndex(focus.contentIndex, block.content);
-  const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
-  addElements([table], insertAt, block.content, block.deletedContent);
+    const safeContentIndex = safeIndex(focus.contentIndex, block.content);
+    const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
+    addElements([table], insertAt, block.content, block.deletedContent);
 
-  const inserted = block.content[insertAt];
-  if (isTable(inserted)) {
-    if (includeHeader) {
-      updateDefaultHeaderLabels(inserted);
-    } else {
-      // Clear header text so <thead> won’t render
-      for (let c = 0; c < inserted.header.colSpec.length; c++) {
-        inserted.header.colSpec[c].headerContent.text = [newLiteral({ editedText: "" })];
-      }
-    }
-  }
-  draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
-  draft.isDirty = true;
-});
+    draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
+    draft.isDirty = true;
+  },
+);
 
 export const removeTableRow = produce<LetterEditorState>((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
