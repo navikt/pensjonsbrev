@@ -76,19 +76,8 @@ export const insertTable: Action<
         inserted.header.colSpec[c].headerContent.text = [newLiteral({ editedText: "" })];
       }
     }
-
-    draft.focus = {
-      blockIndex: focus.blockIndex,
-      contentIndex: insertAt,
-      rowIndex: 0,
-      cellIndex: 0,
-      cellContentIndex: 0,
-      cursorPosition: 0,
-    };
-  } else {
-    draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt, cursorPosition: 0 };
   }
-
+  draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
   draft.isDirty = true;
 });
 
