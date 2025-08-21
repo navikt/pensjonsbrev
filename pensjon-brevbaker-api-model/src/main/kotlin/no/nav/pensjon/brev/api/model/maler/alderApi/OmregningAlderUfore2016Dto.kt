@@ -38,8 +38,8 @@ data class OmregningAlderUfore2016Dto(
     ):BrevbakerBrevdata
 
 data class PersongrunnlagAvdod(
-    val avdodNavn: String,
-    val avdodFnr: String,
+    val avdodNavn: String?,
+    val avdodFnr: String?,
 )
 
 data class InngangOgEksportVurdering(
