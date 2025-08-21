@@ -88,6 +88,8 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isEmpty
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -140,7 +142,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             pesysData.inngangOgEksportVurdering_safe.harOppfyltVedSammenlegging_safe.ifNull(then = false)
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
         val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
-        val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe.ifNull(then = "LANDNAVN")
+        val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe
         val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val privatAFPErBrukt = pesysData.alderspensjonVedVirk.privatAFPErBrukt
         val regelverkType = pesysData.regelverkType
@@ -168,14 +170,22 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             showIf(antallLandVilkarsprovd.greaterThan(0)) {
                 // mottattInfoFraEttLand / mottattInfoFraFlereLan
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ".expr()
-                                + landNavn + ".",
-                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ".expr()
-                                + landNavn + ".",
-                        English to "We have received information from foreign national insurance authorities regarding your accumulated rights in ".expr()
-                                + landNavn + "."
+                    text(
+                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ",
+                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ",
+                        English to "We have received information from foreign national insurance authorities regarding your accumulated rights in "
                     )
+                    showIf(landNavn.isNull()) {
+                        eval(fritekst("LANDNAVN"))
+                    }
+                    ifNotNull(landNavn) { land ->
+                        showIf (land.isEmpty()) {
+                            eval(fritekst("LANDNAVN"))
+                        }.orShow {
+                            eval(land.format())
+                        }
+                    }
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
             }
 
