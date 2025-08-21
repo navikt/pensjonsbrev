@@ -5,12 +5,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.New
 object LetterMarkupValidator {
     private const val SKAL_VALIDERE_TOMT_AVSNITT = false
 
+    fun validateAndThrow(letterMarkup: LetterMarkup) {
+        val valideringsfeil = validate(letterMarkup)
+        if (valideringsfeil.isNotEmpty()) {
+            throw IllegalLetterMarkupException(valideringsfeil.joinToString(", ") { it.name })
+        }
+    }
+
     fun validate(letterMarkup: LetterMarkup) = validate(letterMarkup.blocks)
 
     private fun validate(blocks: List<LetterMarkup.Block>) =
-        blocks.flatMap { validate(it) }.takeIf { it.isNotEmpty() }?.let {
-            throw IllegalLetterMarkupException(it.joinToString(", ") { it.name })
-        }
+        blocks.flatMap { validate(it) }.takeIf { it.isNotEmpty() } ?: emptyList()
 
     private fun validate(block: LetterMarkup.Block) = when (block) {
         is LetterMarkup.Block.Paragraph -> validateParagraph(block)
