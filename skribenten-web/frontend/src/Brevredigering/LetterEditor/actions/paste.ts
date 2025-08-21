@@ -770,22 +770,18 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
   for (const node of traverseChildren(paragraph, font)) {
     switch (node.type) {
       case "TEXT": {
-        buffer = mergeNeighbouringText([...buffer, node]) as Text[];
+        buffer.push(node);
         break;
       }
 
-      case "ITEM": {
-        flushBuffer();
-        result.push(node);
-        break;
-      }
+      case "ITEM":
       case "H1":
       case "H2":
-      case "P": {
+      case "P":
         flushBuffer();
         result.push(node);
         break;
-      }
+
       case "TABLE": {
         // Tables should not be nested inside <p>. Ignore.
         flushBuffer();
