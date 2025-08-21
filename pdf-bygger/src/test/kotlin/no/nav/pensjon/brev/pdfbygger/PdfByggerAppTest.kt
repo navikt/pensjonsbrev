@@ -127,34 +127,6 @@ class PdfByggerAppTest {
         }
     }
 
-    // TODO: Fjern når string-tittel kompatibilitet fjernes
-    @Test
-    fun `verifiser at lettermarkup med string tittel kan deserialiseres`() {
-        val json = """
-            {
-              "title" : "Tittel 1",
-              "sakspart" : {
-                "gjelderNavn" : "Navn Navnesen",
-                "gjelderFoedselsnummer" : "12345678901",
-                "vergeNavn" : null,
-                "saksnummer" : "123",
-                "dokumentDato" : "2025-01-01"
-              },
-              "blocks" : [ ],
-              "signatur" : {
-                "hilsenTekst" : "hilsen",
-                "saksbehandlerRolleTekst" : "saksbehandler",
-                "saksbehandlerNavn" : "Saksbehandler Saksbehandlersen",
-                "attesterendeSaksbehandlerNavn" : null,
-                "navAvsenderEnhet" : "Nav sentralt"
-              }
-            }
-        """.trimIndent()
-
-        assertThat(objectMapper.readValue<LetterMarkup>(json), isA<LetterMarkup>())
-        assertThat(objectMapper.readValue<LetterMarkup>(json).title.joinToString("") { it.text }, equalTo("Tittel 1"))
-    }
-
     private fun ApplicationTestBuilder.appConfig(latexCommand: String? = null, parallelism: Int? = null, compileTimeout: Duration? = null, queueTimeout: Duration? = null) =
         environment {
             val overrides = listOfNotNull(
