@@ -37,8 +37,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val supplerendeStoenad: Boolean,
         @DisplayText("Hvis kildeskatt")
         val kildeskatt: Boolean,
-        @DisplayText("Etterbetaling")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(

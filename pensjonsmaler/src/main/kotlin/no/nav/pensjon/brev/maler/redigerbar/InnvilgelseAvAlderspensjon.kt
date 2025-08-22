@@ -536,7 +536,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 includePhrase(Skatteplikt)
             }
 
-            showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+            showIf(vedtakEtterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 

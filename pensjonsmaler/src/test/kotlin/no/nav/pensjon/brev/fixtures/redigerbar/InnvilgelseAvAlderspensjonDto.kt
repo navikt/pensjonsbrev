@@ -21,7 +21,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             egenOpptjening = false,
             supplerendeStoenad = false,
             kildeskatt = false,
-            etterbetaling = false,
         ),
         pesysData = InnvilgelseAvAlderspensjonDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
