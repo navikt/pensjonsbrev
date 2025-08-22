@@ -59,7 +59,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun apply(first: Int, second: Language): String = CurrencyFormatKroner(denominator = false).apply(Kroner(first), second)
     }
 
-    class CurrencyFormatKroner(val denominator: Boolean = false) : LocalizedFormatter<Kroner>() {
+    class CurrencyFormatKroner(val denominator: Boolean = true) : LocalizedFormatter<Kroner>() {
         override fun stableHashCode(): Int = "CurrencyFormat".hashCode()
         override fun apply(first: Kroner, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
