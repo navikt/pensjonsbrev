@@ -43,11 +43,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonsutbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendetilleggTittel
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visGjenlevendetilleggPensjonsrettigheter
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visTilleggspensjonavsnittAP1967
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
@@ -86,7 +83,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.KronerSelectors.value_safe
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 import java.time.Month
