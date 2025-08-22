@@ -448,8 +448,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
+                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
                                         )
                                     }
                                 }
@@ -472,9 +472,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     BOLD
                                 )
                             }
@@ -503,8 +503,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
+                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
                                         )
                                     }
                                 }
@@ -529,9 +529,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell {
                                     textExpr(
                                         Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
-                                            .format(true) + " kr",
+                                            .format(false) + " kr",
                                         Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
-                                            .format(true) + " kr",
+                                            .format(false) + " kr",
                                         BOLD
                                     )
                                 }
@@ -666,32 +666,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr",
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(false) + " kr",
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(false) + " kr",
                                     )
                                 }
                             }
@@ -708,32 +696,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(false) + " kr",
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(false) + " kr",
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(false) + " kr",
                                     )
                                 }
                             }
@@ -750,34 +726,22 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(false) + " kr",
                                     )
 
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(false) + " kr",
                                     )
 
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(false) + " kr",
                                     )
 
                                 }
@@ -801,12 +765,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell { }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr",
                                         BOLD
                                     )
                                 }
@@ -831,12 +791,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell { }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr",
                                         BOLD
                                     )
                                 }
@@ -917,8 +873,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
+                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
                                         )
                                     }
                                 }
@@ -942,9 +898,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                 )
                             }
                         }
@@ -961,8 +917,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             cell { }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.ut_inntekt_trukket_fra_personinntekt().format(true) + " kr",
-                                    Nynorsk to pe.ut_inntekt_trukket_fra_personinntekt().format(true) + " kr",
+                                    Bokmal to pe.ut_inntekt_trukket_fra_personinntekt().format(false) + " kr",
+                                    Nynorsk to pe.ut_inntekt_trukket_fra_personinntekt().format(false) + " kr",
                                     BOLD
                                 )
                             }
@@ -1032,8 +988,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
+                                            Bokmal to inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
                                         )
                                     }
                                 }
@@ -1052,9 +1008,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     BOLD
                                 )
                             }
@@ -1134,8 +1090,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
+                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
                                         )
                                     }
                                 }
@@ -1172,9 +1128,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
-                                        .format(true) + " kr",
+                                        .format(false) + " kr",
                                     BOLD
                                 )
                             }
@@ -1197,8 +1153,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(true) + " kr",
+                                            Bokmal to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr",
                                         )
                                     }
                                 }
@@ -1227,12 +1183,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
-                                            true
-                                        ) + " kr",
-                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
-                                            true
-                                        ) + " kr",
+                                        Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr",
+                                        Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr",
                                     )
                                 }
                             }
@@ -1256,8 +1208,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell {}
                                 cell {
                                     textExpr(
-                                        Bokmal to pe.ut_sum_inntekterbt_totalbeloput().format(true) + " kr",
-                                        Nynorsk to pe.ut_sum_inntekterbt_totalbeloput().format(true) + " kr",
+                                        Bokmal to pe.ut_sum_inntekterbt_totalbeloput().format(false) + " kr",
+                                        Nynorsk to pe.ut_sum_inntekterbt_totalbeloput().format(false) + " kr",
                                         BOLD
                                     )
                                 }

@@ -121,24 +121,24 @@ data class TBU038V_3(
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                        Nynorsk to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                        English to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(true) + " NOK",
+                                        Bokmal to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                        Nynorsk to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                        English to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " NOK",
                                     )
                                 }
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
                                         textExpr(
-                                            Bokmal to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            English to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(true) + " NOK",
+                                            Bokmal to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            English to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " NOK",
                                             BOLD,
                                         )
                                     }.orShow {
                                         textExpr(
-                                            Bokmal to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            Nynorsk to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(true) + " kr",
-                                            English to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(true) + " NOK",
+                                            Bokmal to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            Nynorsk to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
+                                            English to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " NOK",
                                         )
                                     }
                                     text (

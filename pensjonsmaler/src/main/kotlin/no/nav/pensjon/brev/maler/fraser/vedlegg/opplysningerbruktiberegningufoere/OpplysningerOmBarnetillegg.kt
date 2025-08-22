@@ -702,7 +702,7 @@ data class OpplysningerOmBarnetillegg(
                                 "is recalculated to an annual amount of",
                                 "is"
                             )
-                            + " NOK " + avkortningsbeloepAar.format(true) + "."
+                            + " " + avkortningsbeloepAar.format() + "."
                 )
 
                 showIf(not(harJusteringsbeloep)) {
@@ -758,9 +758,7 @@ data class OpplysningerOmBarnetillegg(
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet")
                                 + " som ikkje bur saman med begge foreldra.",
 
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + saerkullTilleggNetto.format(
-                            true
-                        ) +
+                        English to "You will receive a monthly child supplement payment of ".expr() + saerkullTilleggNetto.format() +
                                 " before tax for the " + ifElse(harFlereSaerkullsbarn, "children", "child")
                                 + " who do not live together with both parents."
                     )
@@ -768,9 +766,7 @@ data class OpplysningerOmBarnetillegg(
                     textExpr(
                         Bokmal to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " i måneden før skatt i barnetillegg.",
                         Nynorsk to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " i månaden før skatt i barnetillegg.",
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + saerkullTilleggNetto.format(
-                            true
-                        ) + " before tax."
+                        English to "You will receive a monthly child supplement payment of ".expr() + saerkullTilleggNetto.format() + " before tax."
                     )
                 }
             }
@@ -833,9 +829,7 @@ data class OpplysningerOmBarnetillegg(
                                 ifElse(harFlereBarn, "barna", "barnet") +
                                 " som bur saman med begge foreldra sine.",
 
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + barnetilleggFellesbarn.format(
-                            true
-                        ) + " for the " +
+                        English to "You will receive a monthly child supplement payment of ".expr() + barnetilleggFellesbarn.format() + " for the " +
                                 ifElse(harFlereBarn, "children who live", "child who lives") +
                                 " together with both parents."
                     )
@@ -843,9 +837,7 @@ data class OpplysningerOmBarnetillegg(
                     textExpr(
                         Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " i måneden før skatt i barnetillegg.",
                         Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " i månaden før skatt i barnetillegg.",
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + barnetilleggFellesbarn.format(
-                            true
-                        ) + "."
+                        English to "You will receive a monthly child supplement payment of ".expr() + barnetilleggFellesbarn.format() + "."
                     )
                 }
             }
@@ -1123,7 +1115,7 @@ data class OpplysningerOmBarnetillegg(
                     textExpr(
                         Bokmal to " ".expr() + avkortningsbeloepAar.format() + ".",
                         Nynorsk to " ".expr() + avkortningsbeloepAar.format() + ".",
-                        English to " NOK ".expr() + avkortningsbeloepAar.format(true) + ".",
+                        English to " ".expr() + avkortningsbeloepAar.format() + ".",
                     )
                 }
                 showIf(not(harJusteringsbeloep)) {
@@ -1166,7 +1158,7 @@ data class OpplysningerOmBarnetillegg(
                 textExpr(
                     Bokmal to " ".expr() + avkortningsbeloepAar.format() + ".",
                     Nynorsk to " ".expr() + avkortningsbeloepAar.format() + ".",
-                    English to " NOK ".expr() + avkortningsbeloepAar.format(true) + ".",
+                    English to " ".expr() + avkortningsbeloepAar.format() + ".",
                 )
 
                 showIf(not(harJusteringsbeloep)) {

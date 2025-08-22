@@ -57,8 +57,8 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                         pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ".",
                 Nynorsk to " Folketrygdas grunnbeløp (G) nytta i berekninga er ".expr() +
                         pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ".",
-                English to " The national insurance basic amount (G) used in the calculation is NOK ".expr()
-                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(true) + ".",
+                English to " The national insurance basic amount (G) used in the calculation is ".expr()
+                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ".",
             )
         }
 

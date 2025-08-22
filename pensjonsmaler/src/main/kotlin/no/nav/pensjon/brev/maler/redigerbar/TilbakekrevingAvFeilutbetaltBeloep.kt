@@ -85,36 +85,24 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
 
                     English to "You have received too much ".expr() + sakstype
                             + " in the period from ".expr() + startPeriodeForTilbakekreving.format() + " to ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". This amounts to NOK ".expr() + feilutbetaltTotalBeloep.format(true) + " including tax.",
+                            + ". This amounts to ".expr() + feilutbetaltTotalBeloep.format() + " including tax.",
                 )
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.FULL_TILBAKEKREV)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format(
-                            true
-                        ) + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format(
-                            true
-                        ) + " kroner etter at skatten er trekt frå.",
-                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format(
-                            true
-                        ) + " after deduction of tax."
+                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trekt frå.",
+                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
                     )
                 }
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.DELVIS_TILBAKEKREV)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format(
-                            true
-                        ) + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format(
-                            true
-                        ) + " kroner etter at skatten er trektfrå.",
-                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format(
-                            true
-                        ) + " after deduction of tax."
+                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trektfrå.",
+                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
                     )
                 }
             }

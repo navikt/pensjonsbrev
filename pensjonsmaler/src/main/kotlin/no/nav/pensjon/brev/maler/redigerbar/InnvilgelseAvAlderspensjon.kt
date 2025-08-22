@@ -206,16 +206,14 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                                 kravVirkDatoFom + ".",
                         Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt frå ".expr() +
                                 kravVirkDatoFom + ".",
-                        English to "You will receive NOK ".expr() + totalPensjon.format(true) + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
+                        English to "You will receive ".expr() + totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
                                 kravVirkDatoFom + "."
                     )
                     showIf(not(gjenlevendetilleggInnvilget)) {
                         textExpr(
                             Bokmal to " Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format() + ".",
                             Nynorsk to " Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + ".",
-                            English to " Of this, the survivor’s supplement is NOK ".expr() + gjenlevendetilleggKap19.format(
-                                true
-                            ) + "."
+                            English to " Of this, the survivor’s supplement is ".expr() + gjenlevendetilleggKap19.format() + "."
                         )
                     }
                     showIf(uforeKombinertMedAlder) {
@@ -233,7 +231,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     textExpr(
                         Bokmal to "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom,
                         Nynorsk to "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom,
-                        English to "You will receive NOK ".expr() + totalPensjon.format(true) + " every month before tax from ".expr() + kravVirkDatoFom
+                        English to "You will receive ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom
                     )
                     showIf(uforeKombinertMedAlder and innvilgetFor67) {
                         // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd

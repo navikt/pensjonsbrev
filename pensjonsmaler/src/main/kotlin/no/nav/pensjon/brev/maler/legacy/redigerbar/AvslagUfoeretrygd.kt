@@ -684,8 +684,8 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                                 .format() + ". I tillegg kan du ikke motta gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon.",
                             Nynorsk to "Når du søkjer om uføretrygd mellom fylte 62 og 67 år, må den pensjonsgivande inntekta di ha vore minst grunnbeløpet i folketrygda i året før uføretidspunktet. Dersom du ikkje oppfyller dette vilkåret, må du ha tent minst tre gonger grunnbeløpet i folketrygda gjennom dei tre siste åra før dette tidspunktet. Grunnbeløpet utgjer ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
                                 .format() + ". I tillegg kan du ikkje få attlevandepensjon eller ha rett til å ta ut heil alderspensjon.",
-                            English to "When you apply for disability benefit between the ages of 62 and 67, your pensionable income the year prior to your disability must be no less than the National Insurance basic amount. If you do not meet this requirement, your income must be no less than three times the National Insurance basic amount for the last three years before this date. The National Insurance basic amount is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                                .format(true) + ". In addition, you cannot be receiving survivor's pension or be entitled to a full retirement pension.",
+                            English to "When you apply for disability benefit between the ages of 62 and 67, your pensionable income the year prior to your disability must be no less than the National Insurance basic amount. If you do not meet this requirement, your income must be no less than three times the National Insurance basic amount for the last three years before this date. The National Insurance basic amount is ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
+                                .format() + ". In addition, you cannot be receiving survivor's pension or be entitled to a full retirement pension.",
                         )
                     }
                 }
@@ -1272,9 +1272,9 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             Nynorsk to "Inntekta di før du blei ufør, er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format() + ". " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi svarer dette til ei inntekt på " + oppjustertIfuFritekst + " kroner. Du har ei inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
                                 .format() + ", og vi har derfor fastsett den nedsette inntektsevna di til " + ufoeregradFritekst + " prosent.",
-                            English to "Your income prior to your disability was determined as NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format(true) + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". Your current income is NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format(true) + ", and we have thus determined your reduction in earning ability to " + ufoeregradFritekst + " percent.",
+                            English to "Your income prior to your disability was determined as ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                                .format() + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of " + oppjustertIfuFritekst + ". Your current income is " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + ", and we have thus determined your reduction in earning ability to " + ufoeregradFritekst + " percent.",
                         )
                     }
                 }
@@ -1297,9 +1297,9 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             Nynorsk to "Inntekta di før du blei ufør, er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format() + ". " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi svarer dette til ei inntekt på " + oppjustertIfuFritekst + " kroner. Det er dokumentert at du har moglegheiter for å skaffe inntekter som du ikkje nyttar, og desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
                                 .format() + ", og den nedsette inntektsevna di er derfor fastsett til " + ufoeregradFritekst + " prosent.",
-                            English to "Your income prior to your disability was established as NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format(true) + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". It has been documented that you have options for gainful employment that you are not taking advantage of, and these will be included when your income after your disability is calculated. Your income after your disability was determined as NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format(true) + ", and your reduction in earning ability has been determined as " + ufoeregradFritekst + " percent.",
+                            English to "Your income prior to your disability was established as ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                                .format() + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". It has been documented that you have options for gainful employment that you are not taking advantage of, and these will be included when your income after your disability is calculated. Your income after your disability was determined as " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + ", and your reduction in earning ability has been determined as " + ufoeregradFritekst + " percent.",
                         )
                     }
                 }

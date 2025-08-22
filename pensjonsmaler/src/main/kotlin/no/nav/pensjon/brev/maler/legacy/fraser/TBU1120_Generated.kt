@@ -26,9 +26,7 @@ data class TBU1120_Generated(
 			textExpr (
 				Bokmal to "Du får ".expr() + beregningUfore_totalNetto.format() + " i uføretrygd per måned før skatt" ,
 				Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " i uføretrygd per månad før skatt",
-				English to "Your monthly disability benefit payment will be NOK ".expr() + beregningUfore_totalNetto.format(
-                    true
-                ) + " before tax",
+				English to "Your monthly disability benefit payment will be ".expr() + beregningUfore_totalNetto.format() + " before tax",
 			)
 			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
 				textExpr (

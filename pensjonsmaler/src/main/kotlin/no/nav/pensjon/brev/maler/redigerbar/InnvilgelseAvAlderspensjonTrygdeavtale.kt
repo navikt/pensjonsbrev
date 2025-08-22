@@ -236,7 +236,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 textExpr(
                     Bokmal to "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom,
                     Nynorsk to "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom,
-                    English to "You will receive NOK ".expr() + totalPensjon.format(true) + " every month before tax from ".expr() + kravVirkDatoFom,
+                    English to "You will receive ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom,
                 )
                 showIf(uforeKombinertMedAlder) {
                     text(

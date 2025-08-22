@@ -67,7 +67,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
             beregnetPensjonPerManedGjeldende.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.EGEN)
                 .isOneOf(AlderspensjonBeregnetEtter.AVDOD)
 
-        val grunnbeloep = beregnetPensjonPerManedGjeldende.grunnbeloep.format(true)
+        val grunnbeloep = beregnetPensjonPerManedGjeldende.grunnbeloep.format()
 
         val grunnpensjonSats = alderspensjonGjeldende.grunnpensjonSats.format()
         ifNotNull(
@@ -83,9 +83,9 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                             FontType.BOLD
                         )
                         textExpr(
-                            Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep + " kroner.",
-                            Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep + " kroner.",
-                            English to "is calculated on the basis of the National Insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep + ".",
+                            Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep + ".",
+                            Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep + ".",
+                            English to "is calculated on the basis of the National Insurance basic amount (G), which is currently ".expr() + grunnbeloep + ".",
                         )
                     }
                 }
@@ -205,12 +205,12 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     includePhrase(GrunnpensjonBold)
                     textExpr(
                         Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg.",
+                                ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg.",
 
                         Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg.",
+                                ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg.",
 
-                        English to "is calculated on the basis of the National Insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                        English to "is calculated on the basis of the National Insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                 ". When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you.",
                     )
                 }
@@ -221,14 +221,14 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     includePhrase(GrunnpensjonBold)
                     textExpr(
                         Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
+                                ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
                                 " prosent av beløpet fordi samboeren din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for.",
 
                         Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
+                                ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
                                 " prosent av beløpet fordi sambuaren din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for.",
 
-                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                 ". The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The basic pension is adjusted to " + grunnpensjonSats +
                                 " percent of this amount because your cohabitant is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points.",
                     )
@@ -245,16 +245,16 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     includePhrase(GrunnpensjonBold)
                     textExpr(
                         Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. " +
+                                ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. " +
                                 "Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
                                 " prosent av beløpet fordi samboeren din har årlig inntekt over to ganger grunnbeløpet.",
 
                         Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. " +
+                                ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. " +
                                 "Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
                                 " prosent av beløpet fordi sambuaren din har årleg inntekt over to gonger grunnbeløpet.",
 
-                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                 ". The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. " +
                                 "Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The basic pension is adjusted to " + grunnpensjonSats +
                                 " percent of this amount because your cohabitant has an annual income that exceeds twice the national insurance basic amount.",
@@ -272,12 +272,12 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     includePhrase(GrunnpensjonBold)
                     textExpr(
                         Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
+                                ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
                                 " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet.",
                         Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                " kroner. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
+                                ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
                                 " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet.",
-                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                 ". When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. The basic pension is adjusted to " + grunnpensjonSats +
                                 " percent of this amount because the annual income of your cohabitant is lower than twice the national insurance basic amount.",
                     )
@@ -316,12 +316,12 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
 
                     textExpr(
                         Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                " kroner. Fordi du ikke bor i Norge og har mindre enn 20 års medlemstid, er grunnpensjonen beregnet etter antall år med pensjonspoeng.",
+                                ". Fordi du ikke bor i Norge og har mindre enn 20 års medlemstid, er grunnpensjonen beregnet etter antall år med pensjonspoeng.",
 
                         Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                " kroner. Fordi du ikkje bur i Noreg og har mindre enn 20 års medlemstid, er grunnpensjonen berekna etter talet på år med pensjonspoeng.",
+                                ". Fordi du ikkje bur i Noreg og har mindre enn 20 års medlemstid, er grunnpensjonen berekna etter talet på år med pensjonspoeng.",
 
-                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                        English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                 ". Because you live outside of Norway and have less than 20 years of national insurance coverage, the basic pension is calculated by using your number of pension point earning years.",
                     )
                 }
@@ -330,12 +330,12 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     includePhrase(GrunnpensjonBold)
                     textExpr(
                         Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                " kroner. Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Fordi du har mindre enn 40 års trygdetid, vil grunnpensjonen reduseres tilsvarende.",
+                                ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Fordi du har mindre enn 40 års trygdetid, vil grunnpensjonen reduseres tilsvarende.",
 
                         Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                " kroner. Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Fordi du har mindre enn 40 års trygdetid, vil grunnpensjonen bli redusert tilsvarande.",
+                                ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Fordi du har mindre enn 40 års trygdetid, vil grunnpensjonen bli redusert tilsvarande.",
 
-                        English to "is calculated on the basis of the National Insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                        English to "is calculated on the basis of the National Insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                 ". Your period of national insurance cover is the years that you lived and/or worked in Norway after the age of 16. Your basic pension has been reduced proportionately because you have less than 40 years of national insurance cover.",
                     )
                 }
@@ -392,12 +392,12 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                 includePhrase(GrunnpensjonBold)
                 textExpr(
                     Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                            " kroner. Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid.",
+                            ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid.",
 
                     Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                            " kroner. Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdøde si trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid.",
+                            ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdøde si trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid.",
 
-                    English to "is calculated on the basis of the National Insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                    English to "is calculated on the basis of the National Insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                             ". Your period of national insurance cover is the years that you lived and/or worked in Norway after the age of 16. When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. The deceased's period of national insurance cover was less than 40 years meaning your basic pension will be reduced proportionately.",
                 )
             }
@@ -409,15 +409,15 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         textExpr(
                             Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() +
                                     grunnbeloep +
-                                    " kroner. Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
+                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
                                     grunnpensjonSats + " prosent av beløpet fordi samboeren din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for.",
 
                             Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() +
                                     grunnbeloep +
-                                    " kroner. Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
+                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
                                     grunnpensjonSats + " prosent av beløpet fordi sambuaren din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for.",
 
-                            English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() +
+                            English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() +
                                     grunnbeloep +
                                     ". Your period of national insurance coverage is the years that you lived and/or worked in Norway after the age of 16. The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The deceased's period of national insurance coverage was less than 40 years meaning your basic pension will be reduced proportionately.  The basic pension has also been adjusted to " +
                                     grunnpensjonSats + " percent of the reduced amount because your cohabitant is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points.",
@@ -430,14 +430,14 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         includePhrase(GrunnpensjonBold)
                         textExpr(
                             Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                    " kroner. Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
+                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
                                     grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt over to ganger grunnbeløpet.",
 
                             Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                    " kroner. Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
+                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
                                     grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt over to gonger grunnbeløpet.",
 
-                            English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                            English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                     ". Your period of national insurance coverage is the years that you lived and/or worked in Norway after the age of 16. The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The deceased's period of national insurance coverage was less than 40 years meaning your basic pension will be reduced proportionately.  The basic pension has also been adjusted to " +
                                     grunnpensjonSats + " percent of the reduced amount because your cohabitant has an annual income that exceeds twice the national insurance basic amount (G).",
                         )
@@ -448,14 +448,14 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         includePhrase(GrunnpensjonBold)
                         textExpr(
                             Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
-                                    " kroner. Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
+                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
                                     grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet.",
 
                             Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
-                                    " kroner. Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
+                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
                                     grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet.",
 
-                            English to "is calculated on the basis of the national insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
+                            English to "is calculated on the basis of the national insurance basic amount (G), which is currently ".expr() + grunnbeloep +
                                     ". Your period of national insurance cover is the years that you lived and/or worked in Norway after the age of 16. When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. The deceased's period of national insurance cover was less than 40 years meaning your basic pension will be reduced proportionately. The basic pension has also been adjusted to " +
                                     grunnpensjonSats + " percent of this amount because the annual income of your cohabitant is lower than twice the national insurance basic amount.",
                         )

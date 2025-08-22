@@ -232,8 +232,8 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                             beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
-                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is NOK ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format(true) + ", and the divisor at the time of withdrawal is "
+                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
                 )
             }
@@ -251,8 +251,8 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                             beregningKap20VedVirk.delingstallLevealder.format() + ".  Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
-                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is NOK ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format(true) + ", and the divisor at the time of withdrawal is " +
+                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ". Since you are not withdrawing the full pension, you will only receive "
                             + alderspensjonVedVirk.uttaksgrad.format() + " percent of this amount.",
                 )

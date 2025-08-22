@@ -38,7 +38,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun flattenAndMergeTextExpr() {
-        val fourPlusThree = Kroner(4).expr().plus(Kroner(3).expr()).format(true)
+        val fourPlusThree = Kroner(4).expr().plus(Kroner(3).expr()).format(false)
         val expr = "hei hvordan ".expr() + "går det? 4 + 3 = " + fourPlusThree + " QED"
 
         val flattened = expr.flattenLiteralConcat()

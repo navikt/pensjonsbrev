@@ -23,8 +23,8 @@ data class TBU2261_Generated(
                     .format() + ".",
                 Nynorsk to "På bakgrunn av den innmelde inntekta di utgjer uføretrygda di ".expr() + pe.ut_nettoakk_pluss_nettorestar()
                     .format() + ".",
-                English to "On the basis of your reported income, your disability benefit will be total NOK ".expr() + pe.ut_nettoakk_pluss_nettorestar()
-                    .format(true) + ".",
+                English to "On the basis of your reported income, your disability benefit will be total ".expr() + pe.ut_nettoakk_pluss_nettorestar()
+                    .format() + ".",
             )
 
             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN      INCLUDE ENDIF
@@ -34,8 +34,7 @@ data class TBU2261_Generated(
                         .format() + ".",
                     Nynorsk to " Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
                         .format() + ".",
-                    English to " So far this year, you have been paid NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                        .format(true) + "."
+                    English to " So far this year, you have been paid ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "."
                 )
             }
             textExpr(
@@ -44,7 +43,7 @@ data class TBU2261_Generated(
                 Nynorsk to " Du har derfor rett til ei utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
                     .format() + " per månad for resten av kalenderåret.",
                 English to " Therefore, you are entitled to a disability benefit payment of ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                    .format(true) + " per month for the remainder of the calendar year."
+                    .format() + " per month for the remainder of the calendar year."
             )
         }
 

@@ -23,9 +23,7 @@ data class TBU2361_Generated(
 			textExpr (
 				Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " i år.",
 				Nynorsk to "Du har tidlegare meldt frå om ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " for dette kalenderåret.",
-				English to "You have previously reported an income of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format(
-                    true
-                ) + " for this calendar year.",
+				English to "You have previously reported an income of ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " for this calendar year.",
 			)
 
 			// Henger sammen med 2362 på engelsk Ikke gjør noe med dette før all konvertering er ferdig siden vi vet ikke hvordan frasen brukes enda.

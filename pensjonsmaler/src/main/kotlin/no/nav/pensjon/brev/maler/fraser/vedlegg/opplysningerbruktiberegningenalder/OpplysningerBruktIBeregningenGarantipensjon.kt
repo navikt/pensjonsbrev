@@ -74,8 +74,8 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                                     garantipensjonVedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er " +
                                     beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
-                            English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is NOK ".expr() +
-                                    garantipensjonVedVirk.beholdningForForsteUttak.format(true) + ", and the divisor at withdrawal is " +
+                            English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() + ", and the divisor at withdrawal is " +
                                     beregningKap20VedVirk.delingstallLevealder.format() + ".",
                         )
                     }

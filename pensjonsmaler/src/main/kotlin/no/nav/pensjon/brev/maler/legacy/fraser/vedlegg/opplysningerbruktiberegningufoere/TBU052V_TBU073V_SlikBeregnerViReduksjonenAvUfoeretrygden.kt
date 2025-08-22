@@ -38,9 +38,9 @@ data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
 
             paragraph {
                 textExpr (
-                    Bokmal to pe.functions.pe_ut_overskytende.format(true) + " kr",
-                    Nynorsk to pe.functions.pe_ut_overskytende.format(true) + " kr",
-                    English to "NOK ".expr() + pe.functions.pe_ut_overskytende.format(true),
+                    Bokmal to pe.functions.pe_ut_overskytende.format(false) + " kr",
+                    Nynorsk to pe.functions.pe_ut_overskytende.format(false) + " kr",
+                    English to "NOK ".expr() + pe.functions.pe_ut_overskytende.format(false),
                 )
                 text (
                     Bokmal to " x ",
@@ -61,9 +61,9 @@ data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
                     English to " = ",
                 )
                 textExpr (
-                    Bokmal to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(true),
-                    Nynorsk to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(true),
-                    English to "NOK ".expr() + pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(true),
+                    Bokmal to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(false),
+                    Nynorsk to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(false),
+                    English to "NOK ".expr() + pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(false),
                 )
                 text (
                     Bokmal to " kroner i reduksjon for året",

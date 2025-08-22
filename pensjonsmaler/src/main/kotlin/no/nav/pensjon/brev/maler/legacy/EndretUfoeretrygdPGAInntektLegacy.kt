@@ -304,12 +304,8 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
             showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())){
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format(
-                            true
-                        ) + " kroner når vi reduserer uføretrygden din for " + pe.ut_virkningfomar().format() + ". Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekten justert opp til dagens verdi.",
-                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format(
-                            true
-                        ) + " kroner når vi reduserer uføretrygda di for " + pe.ut_virkningfomar().format() + ". Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekta justert opp til dagens verdi.",
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " når vi reduserer uføretrygden din for " + pe.ut_virkningfomar().format() + ". Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekten justert opp til dagens verdi.",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " når vi reduserer uføretrygda di for " + pe.ut_virkningfomar().format() + ". Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar().format() + ", er inntekta justert opp til dagens verdi.",
                     )
                 }
 
@@ -417,9 +413,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
                         textExpr (
                             Bokmal to "for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format(true) + " kroner",
+                                .format(),
                             Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur med begge sine foreldra. For " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldrea vil vi bruke ei inntekt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                .format(true) + " kroner",
+                                .format(),
                         )
                     }
                     text (

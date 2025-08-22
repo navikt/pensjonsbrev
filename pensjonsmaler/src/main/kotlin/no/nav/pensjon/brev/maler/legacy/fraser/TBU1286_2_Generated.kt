@@ -40,9 +40,7 @@ data class TBU1286_2_Generated(
             textExpr(
                 Bokmal to " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
                 Nynorsk to "blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
-                English to "because your total income on its own is higher than NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(
-                    true
-                ) + ". You will not receive child supplement because your combined incomes exceed the income limit.",
+                English to "because your total income on its own is higher than NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". You will not receive child supplement because your combined incomes exceed the income limit.",
             )
         }
     }

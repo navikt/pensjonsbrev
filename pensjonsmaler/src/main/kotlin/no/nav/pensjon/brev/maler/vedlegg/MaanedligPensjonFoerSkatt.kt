@@ -492,8 +492,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                         Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer tillegget ditt ".expr() +
                                 it.format() + " kvar månad. Beløpet er berekna med same trygdetid som for grunnpensjonen.",
 
-                        English to "Before any adjustment according to your income, your supplement is calculated to NOK ".expr() +
-                                it.format(true) + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
+                        English to "Before any adjustment according to your income, your supplement is calculated to ".expr() +
+                                it.format() + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
                     )
                 }
             }
@@ -501,15 +501,9 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
             ifNotNull(beregnetPensjonPerManedGjeldende.inntektBruktIavkortningET) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Ektefelletillegget ditt er deretter beregnet på grunnlag av din samlede inntekt på ".expr() + it.format(
-                            true
-                        ) + " kroner.",
-                        Nynorsk to "Ektefelletillegget ditt er deretter berekna på grunnlag av din samla inntekt på ".expr() + it.format(
-                            true
-                        ) + " kroner.",
-                        English to "The spouse supplement is then adjusted according to your total income of NOK ".expr() + it.format(
-                            true
-                        ) + ".",
+                        Bokmal to "Ektefelletillegget ditt er deretter beregnet på grunnlag av din samlede inntekt på ".expr() + it.format() + ".",
+                        Nynorsk to "Ektefelletillegget ditt er deretter berekna på grunnlag av din samla inntekt på ".expr() + it.format() + ".",
+                        English to "The spouse supplement is then adjusted according to your total income of ".expr() + it.format() + ".",
                     )
                 }
             }
@@ -526,8 +520,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                                 it.format() + ". Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
                         Nynorsk to " er eit fastsett beløp vi bruker ved inntektsprøving av ektefelletillegg. Fribeløpet er for tida ".expr() +
                                 it.format() + ". Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
-                        English to " is a fixed figure that is used in income testing in connection with calculating spouse supplement. The exemption amount is NOK ".expr() +
-                                it.format(true) + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
+                        English to " is a fixed figure that is used in income testing in connection with calculating spouse supplement. The exemption amount is ".expr() +
+                                it.format() + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
                     )
                 }
             }
@@ -583,8 +577,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                         Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer barnetillegget ditt for fellesbarn ".expr() +
                                 it.format() + " kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
 
-                        English to "Before any adjustment according to your income, your child supplement is calculated to NOK ".expr() +
-                                it.format(true) + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
+                        English to "Before any adjustment according to your income, your child supplement is calculated to ".expr() +
+                                it.format() + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
                     )
                 }
             }
@@ -595,8 +589,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                                 it.format() + ".",
                         Nynorsk to "For barn som bur samen med begge foreldra (fellesbarn) tek vi omsyn til begge foreldras inntekter når vi fastset samla inntekt. Barnetillegget ditt er berekna på grunnlag av ei samla inntekt på ".expr() +
                                 it.format() + ".",
-                        English to "For children who live with both their parents, we take the sum total of both parents' income into account. The supplement is therefore adjusted according to your total income of NOK ".expr() +
-                                it.format(true) + ".",
+                        English to "For children who live with both their parents, we take the sum total of both parents' income into account. The supplement is therefore adjusted according to your total income of ".expr() +
+                                it.format() + ".",
                     )
                 }
             }
@@ -615,8 +609,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                         Nynorsk to "Fribeløp er eit fastsett beløp vi bruker ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
                                 it.format() + ". Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
 
-                        English to "is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is NOK ".expr() +
-                                it.format(true) + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
+                        English to "is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is ".expr() +
+                                it.format() + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
                     )
                 }
             }
@@ -632,8 +626,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                         Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer barnetillegget ditt for særkullsbarn ".expr() +
                                 it.format() + " kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
 
-                        English to "Before any adjustment according to your income, your child supplement for a child/children from a previous relationship, is calculated to NOK ".expr() +
-                                it.format(true) + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
+                        English to "Before any adjustment according to your income, your child supplement for a child/children from a previous relationship, is calculated to ".expr() +
+                                it.format() + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
                     )
                 }
             }
@@ -641,15 +635,9 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
             ifNotNull(beregnetPensjonPerManedGjeldende.inntektBruktIavkortningSB) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Barnetillegget ditt er deretter beregnet på grunnlag av din samlede inntekt på ".expr() + it.format(
-                            true
-                        ) + " kroner.",
-                        Nynorsk to "Barnetillegget ditt er deretter berekna på grunnlag av di samla inntekt på ".expr() + it.format(
-                            true
-                        ) + " kroner.",
-                        English to "The child supplement is then adjusted according to your total income of NOK ".expr() + it.format(
-                            true
-                        ) + ".",
+                        Bokmal to "Barnetillegget ditt er deretter beregnet på grunnlag av din samlede inntekt på ".expr() + it.format() + ".",
+                        Nynorsk to "Barnetillegget ditt er deretter berekna på grunnlag av di samla inntekt på ".expr() + it.format() + ".",
+                        English to "The child supplement is then adjusted according to your total income of ".expr() + it.format() + ".",
                     )
                 }
             }
@@ -668,8 +656,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                         Nynorsk to " er eit fastsett beløp vi bruker ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
                                 it.format() + ". Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
 
-                        English to " is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is NOK ".expr() +
-                                it.format(true) + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
+                        English to " is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is ".expr() +
+                                it.format() + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
                     )
                 }
             }
