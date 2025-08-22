@@ -25,8 +25,6 @@ data class InnvilgelseAvAlderspensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
-        @DisplayText("Gjenlevenderett er brukt i beregningen")
-        val harGjenlevenderett: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
         @DisplayText("Hvis kildeskatt")

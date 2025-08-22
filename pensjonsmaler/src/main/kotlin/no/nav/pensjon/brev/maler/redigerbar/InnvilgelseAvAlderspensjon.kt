@@ -267,11 +267,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(harAvdod) {
-                showIf(
-                    saksbehandlerValg.harGjenlevenderett
-                            and gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)
-                            and not(gjenlevendetilleggInnvilget)
-                ) {
+                showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget) and not(gjenlevendetilleggInnvilget)) {
                     paragraph {
                         textExpr(
                             Bokmal to "I beregningen vår har vi tatt utgangspunkt i pensjonsrettigheter du har etter ".expr() + avdodNavn + ". Dette gir deg en høyere pensjon enn om vi bare hadde tatt utgangspunkt i din egen opptjening.",
