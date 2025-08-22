@@ -122,14 +122,10 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
                 textExpr (
                     Bokmal to "Du har en inntektsgrense på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + " og den innmeldte inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format(true) + " kroner. Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format(
-                        true
-                    ) + " kroner.",
+                        .format() + ". Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format() + ".",
                     Nynorsk to "Du har ei inntektsgrense på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + ", og den innmelde inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format(true) + " kroner. Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format(
-                        true
-                    ) + " kroner.",
+                        .format() + ". Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format() + ".",
                     English to "Your income cap is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format(true) + ", and your reported income is NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
                         .format(true) + ". This means that your excess income is NOK " + pe.functions.pe_ut_overskytende.format(

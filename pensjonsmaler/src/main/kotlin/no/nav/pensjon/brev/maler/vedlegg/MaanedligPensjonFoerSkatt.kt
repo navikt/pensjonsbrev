@@ -523,9 +523,9 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                     )
                     textExpr(
                         Bokmal to " er et fastsatt beløp som benyttes ved inntektsprøving av ektefelletillegg. Fribeløpet er ".expr() +
-                                it.format(true) + " kroner. Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
+                                it.format() + ". Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
                         Nynorsk to " er eit fastsett beløp vi bruker ved inntektsprøving av ektefelletillegg. Fribeløpet er for tida ".expr() +
-                                it.format(true) + " kroner. Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
+                                it.format() + ". Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
                         English to " is a fixed figure that is used in income testing in connection with calculating spouse supplement. The exemption amount is NOK ".expr() +
                                 it.format(true) + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
                     )
@@ -592,9 +592,9 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                 paragraph {
                     textExpr(
                         Bokmal to "For barn som bor sammen med begge foreldrene (fellesbarn) tar vi hensyn til begge foreldrenes inntekter når vi fastsetter samlet inntekt. Barnetillegget ditt er beregnet på grunnlag av en samlet inntekt på ".expr() +
-                                it.format(true) + " kroner.",
+                                it.format() + ".",
                         Nynorsk to "For barn som bur samen med begge foreldra (fellesbarn) tek vi omsyn til begge foreldras inntekter når vi fastset samla inntekt. Barnetillegget ditt er berekna på grunnlag av ei samla inntekt på ".expr() +
-                                it.format(true) + " kroner.",
+                                it.format() + ".",
                         English to "For children who live with both their parents, we take the sum total of both parents' income into account. The supplement is therefore adjusted according to your total income of NOK ".expr() +
                                 it.format(true) + ".",
                     )
@@ -610,10 +610,10 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                     )
                     textExpr(
                         Bokmal to "er et fastsatt beløp som benyttes ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
-                                it.format(true) + " kroner. Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
+                                it.format() + ". Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
 
                         Nynorsk to "Fribeløp er eit fastsett beløp vi bruker ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
-                                it.format(true) + " kroner. Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
+                                it.format() + ". Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
 
                         English to "is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is NOK ".expr() +
                                 it.format(true) + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
@@ -663,10 +663,10 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                     )
                     textExpr(
                         Bokmal to " er et fastsatt beløp som benyttes ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
-                                it.format(true) + " kroner. Tillegget reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
+                                it.format() + ". Tillegget reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
 
                         Nynorsk to " er eit fastsett beløp vi bruker ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
-                                it.format(true) + " kroner. Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
+                                it.format() + ". Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
 
                         English to " is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is NOK ".expr() +
                                 it.format(true) + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",

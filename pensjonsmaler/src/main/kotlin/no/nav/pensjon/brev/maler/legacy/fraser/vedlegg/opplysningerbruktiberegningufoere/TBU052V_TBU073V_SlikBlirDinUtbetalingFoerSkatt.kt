@@ -162,12 +162,8 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
 
             paragraph {
                 textExpr (
-                    Bokmal to "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format(
-                        true
-                    ) + " kroner for dette året.",
-                    Nynorsk to "Uføretrygda di og inntekta di utgjer til saman ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format(
-                        true
-                    ) + " kroner i dette året.",
+                    Bokmal to "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format() + " for dette året.",
+                    Nynorsk to "Uføretrygda di og inntekta di utgjer til saman ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format() + " i dette året.",
                     English to "Your disability benefit and income together will total NOK ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format(
                         true
                     ) + " for this year.",
@@ -214,9 +210,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 textExpr (
                     Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        .format(true) + " kroner.",
+                        .format() + ".",
                     Nynorsk to "Du får ikkje utbetalt uføretrygd fordi inntekta di er høgare enn 80 prosent av inntekta du hadde før du blei ufør, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        .format(true) + " kroner.",
+                        .format() + ".",
                     English to "You will not receive disability benefit because your income exceeds 80 percent of your income prior to disability, which is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                         .format(true) + ". ",
                 )

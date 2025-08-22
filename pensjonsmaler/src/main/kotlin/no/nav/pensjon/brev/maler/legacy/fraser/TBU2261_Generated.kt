@@ -20,9 +20,9 @@ data class TBU2261_Generated(
         paragraph {
             textExpr(
                 Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() + pe.ut_nettoakk_pluss_nettorestar()
-                    .format(true) + " kroner.",
+                    .format() + ".",
                 Nynorsk to "På bakgrunn av den innmelde inntekta di utgjer uføretrygda di ".expr() + pe.ut_nettoakk_pluss_nettorestar()
-                    .format(true) + " kroner.",
+                    .format() + ".",
                 English to "On the basis of your reported income, your disability benefit will be total NOK ".expr() + pe.ut_nettoakk_pluss_nettorestar()
                     .format(true) + ".",
             )
@@ -31,9 +31,9 @@ data class TBU2261_Generated(
             showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())))) {
                 textExpr(
                     Bokmal to " Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                        .format(true) + " kroner.",
+                        .format() + ".",
                     Nynorsk to " Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                        .format(true) + " kroner.",
+                        .format() + ".",
                     English to " So far this year, you have been paid NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
                         .format(true) + "."
                 )

@@ -211,8 +211,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                     showIf(not(gjenlevendetilleggInnvilget)) {
                         textExpr(
-                            Bokmal to " Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format(true) + " kroner.",
-                            Nynorsk to " Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format(true) + " kroner.",
+                            Bokmal to " Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format() + ".",
+                            Nynorsk to " Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + ".",
                             English to " Of this, the survivor’s supplement is NOK ".expr() + gjenlevendetilleggKap19.format(
                                 true
                             ) + "."

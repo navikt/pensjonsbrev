@@ -429,10 +429,10 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     textExpr(
                         Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt. Av dette er gjenlevendetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
-                        ).format(true) + " kroner.",
+                        ).format() + ".",
                         Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
-                        ).format(true) + " kroner.",
+                        ).format() + ".",
                         English to "You receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax. Of this, the survivor’s supplement is NOK " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         ).format(true) + ".",
