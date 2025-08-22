@@ -19,7 +19,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
             oekningIPensjonen = false,
             reduksjonIPensjonen = false,
-            supplerendeStoenad = true,
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
