@@ -16,8 +16,12 @@ data class TBU2368_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Du har en inntekt tilsvarende ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " kroner. Gjenlevendetillegget er redusert ut fra dette.",
-				Nynorsk to "Du har ei inntekt tilsvarande ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " kroner. Attlevandetillegget er redusert ut frå dette.",
+				Bokmal to "Du har en inntekt tilsvarende ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format(
+                    true
+                ) + " kroner. Gjenlevendetillegget er redusert ut fra dette.",
+				Nynorsk to "Du har ei inntekt tilsvarande ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format(
+                    true
+                ) + " kroner. Attlevandetillegget er redusert ut frå dette.",
 			)
 		}
     }

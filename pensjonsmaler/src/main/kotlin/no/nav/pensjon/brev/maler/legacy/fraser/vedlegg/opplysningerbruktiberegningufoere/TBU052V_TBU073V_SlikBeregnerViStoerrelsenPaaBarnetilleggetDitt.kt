@@ -464,7 +464,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     textExpr(
                         Bokmal to "".expr(),
                         Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(),
+                            .format(true),
                         English to "".expr(),
                     )
                 }
@@ -474,7 +474,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     textExpr(
                         Bokmal to "".expr(),
                         Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(),
+                            .format(true),
                         English to "".expr(),
                     )
                 }
@@ -614,7 +614,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                     textExpr(
                         Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(),
+                            .format(true),
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
@@ -624,7 +624,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))) {
                     textExpr(
                         Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(),
+                            .format(true),
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
@@ -739,7 +739,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         Bokmal to "".expr(),
                         Nynorsk to "".expr(),
                         English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(),
+                            .format(true),
                     )
                 }
 
@@ -749,7 +749,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         Bokmal to "".expr(),
                         Nynorsk to "".expr(),
                         English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(),
+                            .format(true),
                     )
                 }
                 text(
@@ -832,18 +832,18 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                     textExpr(
-                        Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
-                        Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
-                        English to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
+                        Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(true),
+                        Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(true),
+                        English to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(true),
                     )
                 }
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
                     textExpr(
-                        Bokmal to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
-                        Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
-                        English to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
+                        Bokmal to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(true),
+                        Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(true),
+                        English to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(true),
                     )
                 }
                 text(
@@ -1159,11 +1159,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
                 textExpr(
                     Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + " kroner. ",
+                        .format(true) + " kroner. ",
                     Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + " kroner. ",
+                        .format(true) + " kroner. ",
                     English to " NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + ". ",
+                        .format(true) + ". ",
                 )
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0
@@ -1221,10 +1221,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
                 textExpr(
                     Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
                     Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                    English to " with NOK ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus().format() + ".",
+                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                    English to " with NOK ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus().format(true) + ".",
                 )
             }
         }
@@ -1301,11 +1301,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
                 textExpr(
                     Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + " kroner. ",
+                        .format(true) + " kroner. ",
                     Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + " kroner. ",
+                        .format(true) + " kroner. ",
                     English to " NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + ". ",
+                        .format(true) + ". ",
                 )
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0
@@ -1363,10 +1363,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
                 textExpr(
                     Bokmal to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
                     Nynorsk to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                        .format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                    English to " with NOK ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus().format() + ".",
+                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                    English to " with NOK ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus().format(true) + ".",
                 )
             }
         }
@@ -1415,11 +1415,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         cell {
                             textExpr(
                                 Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
-                                    .format(),
+                                    .format(true),
                             )
                         }
                     }
@@ -1427,11 +1427,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         cell {
                             textExpr(
                                 Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 Nynorsk to "Samla inntekt brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 English to "Total income applied in calculation of reduction in child supplement for joint children are NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .format(),
+                                    .format(true),
                             )
                         }
                         cell {
@@ -1454,11 +1454,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             cell {
                                 textExpr(
                                     Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                        .format(),
+                                        .format(true),
                                 )
                             }
                             cell { }
@@ -1477,11 +1477,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             cell {
                                 textExpr(
                                     Bokmal to "Inntekt over fribeløpet er ".expr() + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     Nynorsk to "Inntekt over fribeløpet er ".expr() + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     English to "Income exceeding the exemption amount NOK ".expr() + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
-                                        .format(),
+                                        .format(true),
                                 )
                             }
                             cell {}
@@ -1520,11 +1520,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                                        .format(),
+                                        .format(true),
                                     FontType.BOLD
                                 )
                             }
@@ -1571,10 +1571,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
-                                        .format() + " kr",
-                                    Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format() + " kr",
+                                        .format(true) + " kr",
+                                    Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(true) + " kr",
                                     English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
-                                        .format(),
+                                        .format(true),
                                 )
                             }
                         }
@@ -1598,9 +1598,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format() + " kr",
-                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format() + " kr",
-                                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(),
+                                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(
+                                        true
+                                    ) + " kr",
+                                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(
+                                        true
+                                    ),
                                     FontType.BOLD
                                 )
                             }
@@ -1628,11 +1634,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                        .format(),
+                                        .format(true),
                                 )
                             }
                         }
@@ -1653,9 +1659,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + " kr",
-                                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + " kr",
-                                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(),
+                                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(
+                                        true
+                                    ) + " kr",
+                                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(
+                                        true
+                                    ),
                                     FontType.BOLD
                                 )
                             }
@@ -1676,11 +1688,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             paragraph {
                 textExpr (
                     Bokmal to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .format() + " kroner i måneden før skatt i barnetillegg",
+                        .format(true) + " kroner i måneden før skatt i barnetillegg",
                     Nynorsk to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .format() + " kroner i månaden før skatt i barnetillegg",
+                        .format(true) + " kroner i månaden før skatt i barnetillegg",
                     English to "You will receive a monthly child supplement payment of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .format(),
+                        .format(true),
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF
@@ -1796,9 +1808,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         }
                         cell {
                             textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format() + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format() + " kr",
-                                English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(),
+                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(
+                                    true
+                                ) + " kr",
+                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(
+                                    true
+                                ) + " kr",
+                                English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(
+                                    true
+                                ),
                                 FontType.BOLD
                             )
                         }
@@ -1807,11 +1825,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         cell {
                             textExpr (
                                 Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 Nynorsk to "Samla inntekt brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 English to "Total income applied in calculation of reduction in child supplement from a previous relationship NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .format(),
+                                    .format(true),
                             )
                         }
                         cell {  }
@@ -1827,9 +1845,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         row {
                             cell {
                                 textExpr(
-                                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kr",
-                                    Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kr",
-                                    English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(),
+                                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to "Fribeløp brukt i fastsetting av barnetillegget er ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(
+                                        true
+                                    ) + " kr",
+                                    English to "Exemption amount applied in calculation of reduction in child supplement are NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(
+                                        true
+                                    ),
                                 )
                             }
                             cell {  }
@@ -1843,9 +1867,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         row {
                             cell {
                                 textExpr(
-                                    Bokmal to "Inntekt over fribeløpet er ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format() + " kr",
-                                    Nynorsk to "Inntekt over fribeløpet er ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format() + " kr",
-                                    English to "Income exceeding the exemption amount NOK ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(),
+                                    Bokmal to "Inntekt over fribeløpet er ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to "Inntekt over fribeløpet er ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(
+                                        true
+                                    ) + " kr",
+                                    English to "Income exceeding the exemption amount NOK ".expr() + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(
+                                        true
+                                    ),
                                 )
                             }
                             cell {  }
@@ -1880,9 +1910,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format() + " kr",
-                                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format() + " kr",
-                                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(),
+                                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(
+                                        true
+                                    ) + " kr",
+                                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(
+                                        true
+                                    ),
                                     FontType.BOLD
                                 )
                             }
@@ -1925,10 +1961,10 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
-                                        .format() + " kr",
-                                    Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format() + " kr",
+                                        .format(true) + " kr",
+                                    Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(true) + " kr",
                                     English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus()
-                                        .format(),
+                                        .format(true),
                                 )
                             }
                         }
@@ -1951,9 +1987,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format() + " kr",
-                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format() + " kr",
-                                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(),
+                                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(
+                                        true
+                                    ) + " kr",
+                                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(
+                                        true
+                                    ),
                                     FontType.BOLD
                                 )
                             }
@@ -1977,9 +2019,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format() + " kr",
-                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format() + " kr",
-                                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(),
+                                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(
+                                        true
+                                    ) + " kr",
+                                    English to "NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(
+                                        true
+                                    ),
                                 )
                             }
                         }
@@ -2001,9 +2049,15 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kr",
-                                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kr",
-                                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(),
+                                    Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(
+                                        true
+                                    ) + " kr",
+                                    Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(
+                                        true
+                                    ) + " kr",
+                                    English to "NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(
+                                        true
+                                    ),
                                     FontType.BOLD
                                 )
                             }
@@ -2024,11 +2078,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             paragraph {
                 textExpr (
                     Bokmal to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .format() + " kroner i måneden før skatt i barnetillegg",
+                        .format(true) + " kroner i måneden før skatt i barnetillegg",
                     Nynorsk to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .format() + " kroner i månaden før skatt i barnetillegg",
+                        .format(true) + " kroner i månaden før skatt i barnetillegg",
                     English to "You will receive a monthly child supplement payment of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .format(),
+                        .format(true),
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF

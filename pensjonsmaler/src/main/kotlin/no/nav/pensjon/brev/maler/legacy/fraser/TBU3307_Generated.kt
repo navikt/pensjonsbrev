@@ -17,8 +17,8 @@ data class TBU3307_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Til sammen har du fått ".expr() + pe.ut_avviksbeloputenminus().format() + " kroner for lite i ",
-				Nynorsk to "Til saman har du fått ".expr() + pe.ut_avviksbeloputenminus().format() + " kroner for lite i ",
+				Bokmal to "Til sammen har du fått ".expr() + pe.ut_avviksbeloputenminus().format(true) + " kroner for lite i ",
+				Nynorsk to "Til saman har du fått ".expr() + pe.ut_avviksbeloputenminus().format(true) + " kroner for lite i ",
 			)
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF

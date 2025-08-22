@@ -116,8 +116,16 @@ data class TBU4029_Generated(
                 }
 
                 textExpr (
-                    Bokmal to "Opplysningene om inntekt for deg og annen forelder viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format() + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format() + " kroner. Du har derfor fått " + pe.ut_avviksbeloptfbutenminus().format() + " kroner for ",
-                    Nynorsk to "Opplysningane om inntekta til deg og den andre forelderen viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format() + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format() + " kroner. Du har derfor fått " + pe.ut_avviksbeloptfbutenminus().format() + " kroner for ",
+                    Bokmal to "Opplysningene om inntekt for deg og annen forelder viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(
+                        true
+                    ) + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(
+                        true
+                    ) + " kroner. Du har derfor fått " + pe.ut_avviksbeloptfbutenminus().format(true) + " kroner for ",
+                    Nynorsk to "Opplysningane om inntekta til deg og den andre forelderen viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(
+                        true
+                    ) + " kroner i barnetillegg i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(
+                        true
+                    ) + " kroner. Du har derfor fått " + pe.ut_avviksbeloptfbutenminus().format(true) + " kroner for ",
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB > 0) THEN      INCLUDE ENDIF

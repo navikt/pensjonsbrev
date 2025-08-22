@@ -131,7 +131,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget
             val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
 
-            val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.format()
+            val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.format(true)
             val aarsakUtvandret = pesysData.krav.aarsak.equalTo(KravArsakType.UTVANDRET)
 
             val beloepUendret =

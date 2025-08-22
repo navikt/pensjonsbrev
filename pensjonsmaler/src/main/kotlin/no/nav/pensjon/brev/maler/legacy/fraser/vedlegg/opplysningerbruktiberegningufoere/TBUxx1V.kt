@@ -66,9 +66,15 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner.",
-                        Nynorsk to "Folketrygdas grunnbeløp (G) nytta i berekninga er ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner.",
-                        English to "The national insurance basic amount (G) used in the calculation is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ".",
+                        Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(
+                            true
+                        ) + " kroner.",
+                        Nynorsk to "Folketrygdas grunnbeløp (G) nytta i berekninga er ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(
+                            true
+                        ) + " kroner.",
+                        English to "The national insurance basic amount (G) used in the calculation is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(
+                            true
+                        ) + ".",
                     )
                 }
             }
@@ -134,11 +140,11 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         cell {
                             textExpr(
                                 Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_arsbelop()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_arsbelop()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_arsbelop()
-                                    .format() + " NOK",
+                                    .format(true) + " NOK",
                             )
                         }
                     }
@@ -256,11 +262,11 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodyrkesskadearsbelop()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodyrkesskadearsbelop()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodyrkesskadearsbelop()
-                                        .format() + " NOK",
+                                        .format(true) + " NOK",
                                 )
                             }
                         }
@@ -280,11 +286,11 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             cell {
                                 textExpr(
                                     Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_inntektvedskadetidspunktet()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_inntektvedskadetidspunktet()
-                                        .format() + " kr",
+                                        .format(true) + " kr",
                                     English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_inntektvedskadetidspunktet()
-                                        .format() + " NOK",
+                                        .format(true) + " NOK",
                                 )
                             }
                         }

@@ -222,9 +222,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 
     paragraph {
         textExpr(
-            Bokmal to "Folketrygdens grunnbeløp er per i dag ".expr()  + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
-            Nynorsk to "Grunnbeløpet i folketrygda er per i dag ".expr()  + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
-            English to "The national insurance basic amount currently amounts to NOK ".expr()  + grunnbeloep.format() + ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year.",
+            Bokmal to "Folketrygdens grunnbeløp er per i dag ".expr()  + grunnbeloep.format() + ". Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
+            Nynorsk to "Grunnbeløpet i folketrygda er per i dag ".expr()  + grunnbeloep.format() + ". Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
+            English to "The national insurance basic amount currently amounts to ".expr()  + grunnbeloep.format() + ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year.",
         )
     }
 }
@@ -249,28 +249,28 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             }
             textExpr(
                 Bokmal to "Når begge foreldrene er døde, blir den årlige pensjonen lik 2,25 ganger grunnbeløpet. ".expr() +
-                        "Folketrygdens grunnbeløp per i dag er " + grunnbeloep.format() + " kroner. " +
+                        "Folketrygdens grunnbeløp per i dag er " + grunnbeloep.format() + ". " +
                         "Dette deles på 12 måneder. Grunnbeløpet blir regulert 1. mai hvert år. " +
                         "Økningen etterbetales vanligvis i juni hvert år.",
                 Nynorsk to "Barnepensjonen per år utgjer 2,25 gongar grunnbeløpet i folketrygda (G) når begge ".expr() +
-                        "foreldra er døde.  Grunnbeløpet i folketrygda er per i dag " + grunnbeloep.format() + " kroner. " +
+                        "foreldra er døde.  Grunnbeløpet i folketrygda er per i dag " + grunnbeloep.format() + ". " +
                         "Beløpet blir fordelt på 12 utbetalingar i året.  Grunnbeløpet blir regulert 1. mai kvart år. " +
                         "Auken blir vanlegvis etterbetalt i juni kvart år.",
                 English to "When both parents are deceased, the children's pension per year amounts to 2,25 x the ".expr() +
                         "national insurance basic amount (G). The national insurance basic amount currently amounts " +
-                        "to NOK " + grunnbeloep.format() + ". This amount is distributed in 12 payments a year. The basic amount is " +
+                        "to " + grunnbeloep.format() + ". This amount is distributed in 12 payments a year. The basic amount is " +
                         "adjusted on 1 May each year. You will receive payment of any increase in June of each year. "
             )
         }.orShow {
             textExpr(
                 Bokmal to "Barnepensjonen utgjør en ganger folketrygdens grunnbeløp (G). ".expr() +
-                        "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner. " +
+                        "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + ". " +
                         "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år. ",
                 Nynorsk to "Barnepensjonen per år utgjer éin gong grunnbeløpet i folketrygda (G). ".expr() +
-                        "Grunnbeløpet i folketrygda er per i dag  " + grunnbeloep.format() + " kroner. " +
+                        "Grunnbeløpet i folketrygda er per i dag  " + grunnbeloep.format() + ". " +
                         "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
                 English to "The children's pension per year amounts to 1 x the national insurance basic ".expr() +
-                        "amount (G). The national insurance basic amount currently amounts to NOK " +
+                        "amount (G). The national insurance basic amount currently amounts to " +
                         grunnbeloep.format() + ".  The basic amount is adjusted on 1 May each year. " +
                         "You will receive payment of any increase in June of each year. ",
             )

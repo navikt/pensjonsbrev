@@ -145,7 +145,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
-        val totalPensjon = pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.format()
+        val totalPensjon = pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.format(true)
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
         val grunnbelop = pesysData.beregnetPensjonPerManedVedVirk.grunnbelop
@@ -570,10 +570,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Garantitillegget utgjør ".expr() + garantitillegg.format() + " kroner per måned før skatt fra ".expr() + kravVirkDatoFom + ".",
-                        Nynorsk to "Garantitillegget utgjer ".expr() + garantitillegg.format() + " kroner per månad før skatt frå ".expr() + kravVirkDatoFom + ".",
+                        Bokmal to "Garantitillegget utgjør ".expr() + garantitillegg.format(true) + " kroner per måned før skatt fra ".expr() + kravVirkDatoFom + ".",
+                        Nynorsk to "Garantitillegget utgjer ".expr() + garantitillegg.format(true) + " kroner per månad før skatt frå ".expr() + kravVirkDatoFom + ".",
                         English to "Your monthly guarantee supplement for accumulated pension capital rights will be NOK ".expr() +
-                                garantitillegg.format() + " before tax from ".expr() + kravVirkDatoFom + ".",
+                                garantitillegg.format(true) + " before tax from ".expr() + kravVirkDatoFom + ".",
                     )
                 }
             }
@@ -585,9 +585,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // SaerSatsBruktEpsUnder62
                     paragraph {
                         textExpr(
-                            Bokmal to sivilstandBestemtStorBokstav + " din du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnbelop.format() + " kroner.",
-                            Nynorsk to sivilstandBestemtStorBokstav + " din du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnbelop.format() + " kroner.",
-                            English to "Your ".expr() + sivilstandBestemtLitenBokstav + " you support has an income lower than the basic amount which is NOK ".expr() + grunnbelop.format() + ".",
+                            Bokmal to sivilstandBestemtStorBokstav + " din du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnbelop.format(
+                                true
+                            ) + " kroner.",
+                            Nynorsk to sivilstandBestemtStorBokstav + " din du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnbelop.format(
+                                true
+                            ) + " kroner.",
+                            English to "Your ".expr() + sivilstandBestemtLitenBokstav + " you support has an income lower than the basic amount which is NOK ".expr() + grunnbelop.format(
+                                true
+                            ) + ".",
                         )
                     }
                 }
@@ -596,9 +602,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // SaerSatsBruktEpsIkkeRettTilAP
                     paragraph {
                         textExpr(
-                            Bokmal to sivilstandBestemtStorBokstav + " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet ".expr() + grunnbelop.format() + " kroner.",
-                            Nynorsk to sivilstandBestemtStorBokstav + " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet ".expr() + grunnbelop.format() + " kroner.",
-                            English to "Your ".expr() + sivilstandBestemtLitenBokstav + " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is NOK ".expr() + grunnbelop.format() + "."
+                            Bokmal to sivilstandBestemtStorBokstav + " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet ".expr() + grunnbelop.format(
+                                true
+                            ) + " kroner.",
+                            Nynorsk to sivilstandBestemtStorBokstav + " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet ".expr() + grunnbelop.format(
+                                true
+                            ) + " kroner.",
+                            English to "Your ".expr() + sivilstandBestemtLitenBokstav + " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is NOK ".expr() + grunnbelop.format(
+                                true
+                            ) + "."
                         )
                     }
                 }
@@ -629,9 +641,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + sivilstandBestemtLitenBokstav + " din har inntekt høyere enn grunnbeløpet (".expr() + grunnpensjon.format() + " kroner).",
-                            Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + sivilstandBestemtLitenBokstav + " din har inntekt høgare enn grunnbeløpet (".expr() + grunnpensjon.format() + " kroner).",
-                            English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + sivilstandBestemtLitenBokstav + " has a higher income than the basic amount which is NOK ".expr() + grunnpensjon.format() + "."
+                            Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + sivilstandBestemtLitenBokstav + " din har inntekt høyere enn grunnbeløpet (".expr() + grunnpensjon.format(
+                                true
+                            ) + " kroner).",
+                            Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + sivilstandBestemtLitenBokstav + " din har inntekt høgare enn grunnbeløpet (".expr() + grunnpensjon.format(
+                                true
+                            ) + " kroner).",
+                            English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + sivilstandBestemtLitenBokstav + " has a higher income than the basic amount which is NOK ".expr() + grunnpensjon.format(
+                                true
+                            ) + "."
                         )
                     }
                 }

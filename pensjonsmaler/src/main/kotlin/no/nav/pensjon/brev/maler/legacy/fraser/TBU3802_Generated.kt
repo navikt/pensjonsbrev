@@ -35,8 +35,12 @@ data class TBU3802_Generated(
 				Nynorsk to "Fram til 31. desember ".expr() + pe.ut_virkningstidpunktar().format() + " kan ikkje uføretrygda di og barnetillegget ditt til saman vere høgare enn " + pe.ut_virkningstidpunkttilprosent().format() + " prosent av inntekta di før du blei ufør. Uføretrygda og barnetillegget ditt utgjer " + pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().format() + " prosent av det som var inntekta di før du blei ufør.",
 			)
 			textExpr (
-				Bokmal to pe.ut_virkningstidpunkttilprosent().format() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Uføretrygden og barnetillegget ditt er til sammen " + pe.ut_sumutbt_hoyere_lavere() + " enn dette.",
-				Nynorsk to pe.ut_virkningstidpunkttilprosent().format() + " prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Uføretrygda di og barnetillegget ditt er til saman " + pe.ut_sumutbt_hoyere_lavere() + " enn dette.",
+				Bokmal to pe.ut_virkningstidpunkttilprosent().format() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(
+                    true
+                ) + " kroner. Uføretrygden og barnetillegget ditt er til sammen " + pe.ut_sumutbt_hoyere_lavere() + " enn dette.",
+				Nynorsk to pe.ut_virkningstidpunkttilprosent().format() + " prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(
+                    true
+                ) + " kroner. Uføretrygda di og barnetillegget ditt er til saman " + pe.ut_sumutbt_hoyere_lavere() + " enn dette.",
 			)
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0) THEN     INCLUDE END IF
@@ -50,8 +54,12 @@ data class TBU3802_Generated(
 			//IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumUTBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU  AND NOT(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0)) THEN      INCLUDE ENDIF
 			showIf((pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu()) and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))){
 				textExpr (
-					Bokmal to " Årlig barnetillegg før reduksjon ut fra inntekt er derfor redusert til ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format() + " kroner.",
-					Nynorsk to " Brutto årleg barnetillegg før reduksjon ut frå inntekt er derfor redusert til ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format() + " kroner.",
+					Bokmal to " Årlig barnetillegg før reduksjon ut fra inntekt er derfor redusert til ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format(
+                        true
+                    ) + " kroner.",
+					Nynorsk to " Brutto årleg barnetillegg før reduksjon ut frå inntekt er derfor redusert til ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format(
+                        true
+                    ) + " kroner.",
 				)
 			}
 

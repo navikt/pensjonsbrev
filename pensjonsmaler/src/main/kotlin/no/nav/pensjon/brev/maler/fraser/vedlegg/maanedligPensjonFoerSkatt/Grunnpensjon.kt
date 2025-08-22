@@ -67,7 +67,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
             beregnetPensjonPerManedGjeldende.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.EGEN)
                 .isOneOf(AlderspensjonBeregnetEtter.AVDOD)
 
-        val grunnbeloep = beregnetPensjonPerManedGjeldende.grunnbeloep.format()
+        val grunnbeloep = beregnetPensjonPerManedGjeldende.grunnbeloep.format(true)
 
         val grunnpensjonSats = alderspensjonGjeldende.grunnpensjonSats.format()
         ifNotNull(

@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -55,9 +54,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                         }
                         cell {
                             textExpr (
-                                Bokmal to pe.ut_nettoakk_pluss_nettorestar().format() + " kr",
-                                Nynorsk to pe.ut_nettoakk_pluss_nettorestar().format() + " kr",
-                                English to pe.ut_nettoakk_pluss_nettorestar().format() + " NOK",
+                                Bokmal to pe.ut_nettoakk_pluss_nettorestar().format(true) + " kr",
+                                Nynorsk to pe.ut_nettoakk_pluss_nettorestar().format(true) + " kr",
+                                English to pe.ut_nettoakk_pluss_nettorestar().format(true) + " NOK",
                             )
                         }
                     }
@@ -72,11 +71,11 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                         cell {
                             textExpr (
                                 Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                                    .format() + " NOK",
+                                    .format(true) + " NOK",
                             )
                         }
                     }
@@ -91,11 +90,11 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                         cell {
                             textExpr (
                                 Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettorestar()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettorestar()
-                                    .format() + " kr",
+                                    .format(true) + " kr",
                                 English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettorestar()
-                                    .format() + " NOK",
+                                    .format(true) + " NOK",
                             )
                         }
                     }
@@ -137,11 +136,11 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 textExpr (
                     Bokmal to "Du vil få en månedlig reduksjon i uføretrygden din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " kroner i resterende måneder i kalenderåret.",
+                        .format(true) + " kroner i resterende måneder i kalenderåret.",
                     Nynorsk to "Du får ein månadleg reduksjon i uføretrygda di på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " kroner i resterande månader i kalenderåret.",
+                        .format(true) + " kroner i resterande månader i kalenderåret.",
                     English to "Your monthly disability benefit payments will be reduced by NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " for the remaining months of the calendar year.",
+                        .format(true) + " for the remaining months of the calendar year.",
                 )
             }
         }
@@ -163,9 +162,15 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
 
             paragraph {
                 textExpr (
-                    Bokmal to "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format() + " kroner for dette året.",
-                    Nynorsk to "Uføretrygda di og inntekta di utgjer til saman ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format() + " kroner i dette året.",
-                    English to "Your disability benefit and income together will total NOK ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format() + " for this year.",
+                    Bokmal to "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format(
+                        true
+                    ) + " kroner for dette året.",
+                    Nynorsk to "Uføretrygda di og inntekta di utgjer til saman ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format(
+                        true
+                    ) + " kroner i dette året.",
+                    English to "Your disability benefit and income together will total NOK ".expr() + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format(
+                        true
+                    ) + " for this year.",
                 )
             }
         }
@@ -187,11 +192,11 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 textExpr (
                     Bokmal to "Utbetalingen av uføretrygden din er redusert, fordi du har inntekt. Den innmeldte inntekten er høyere enn inntektsgrensen din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " kroner og uføretrygden blir derfor ikke utbetalt. ",
+                        .format(true) + " kroner og uføretrygden blir derfor ikke utbetalt. ",
                     Nynorsk to "Utbetalinga av uføretrygda di er redusert, fordi du har inntekt. Den innmelde inntekta er høgare enn inntektsgrensa di på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " kroner og uføretrygda blir derfor ikkje utbetalt.",
+                        .format(true) + " kroner og uføretrygda blir derfor ikkje utbetalt.",
                     English to "Your payment have been reduced because you have an income. The reported income is higher then your income cap of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + ". Your disability benefit will therefore not be paid.",
+                        .format(true) + ". Your disability benefit will therefore not be paid.",
                 )
             }
         }
@@ -209,11 +214,11 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 textExpr (
                     Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        .format() + " kroner.",
+                        .format(true) + " kroner.",
                     Nynorsk to "Du får ikkje utbetalt uføretrygd fordi inntekta di er høgare enn 80 prosent av inntekta du hadde før du blei ufør, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        .format() + " kroner.",
+                        .format(true) + " kroner.",
                     English to "You will not receive disability benefit because your income exceeds 80 percent of your income prior to disability, which is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                        .format() + ". ",
+                        .format(true) + ". ",
                 )
             }
         }

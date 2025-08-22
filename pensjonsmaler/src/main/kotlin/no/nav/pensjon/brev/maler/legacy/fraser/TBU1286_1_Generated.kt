@@ -45,9 +45,15 @@ data class TBU1286_1_Generated(
                 )
             }
             textExpr(
-                Bokmal to "har en samlet inntekt som er høyere enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
-                Nynorsk to "har ei samla inntekt som er høgare enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg. ",
-                English to "is higher than NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". You will not receive child supplement because your income exceeds the income limit. ",
+                Bokmal to "har en samlet inntekt som er høyere enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(
+                    true
+                ) + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
+                Nynorsk to "har ei samla inntekt som er høgare enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(
+                    true
+                ) + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg. ",
+                English to "is higher than NOK ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(
+                    true
+                ) + ". You will not receive child supplement because your income exceeds the income limit. ",
             )
         }
     }

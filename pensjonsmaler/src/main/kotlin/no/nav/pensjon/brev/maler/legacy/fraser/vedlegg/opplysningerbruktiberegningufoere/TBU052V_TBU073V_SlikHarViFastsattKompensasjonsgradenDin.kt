@@ -94,25 +94,25 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
             paragraph {
                 textExpr (
                     Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                        .format() + " kroner. For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + " kroner.",
+                        .format(true) + " kroner. For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format(true) + " kroner.",
                     Nynorsk to "Inntekta di før du blei ufør er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                        .format() + " kroner. For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + " kroner.",
+                        .format(true) + " kroner. For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format(true) + " kroner.",
                     English to "Your income before you became disabled has been determined to be NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                        .format() + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ".",
+                        .format(true) + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format(true) + ".",
                 )
             }
 
             paragraph {
                 textExpr (
                     Bokmal to "Du har rett til 100 prosent uføretrygd, som utgjør ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
+                        .format(true) + " kroner per år.",
                     Nynorsk to "Du har rett til 100 prosent uføretrygd, som utgjer ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
+                        .format(true) + " kroner per år.",
                     English to "For you, a 100-percent disability benefit will total NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " per year.",
+                        .format(true) + " per year.",
                 )
             }
 
@@ -120,29 +120,29 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                 textExpr (
                     Bokmal to "Du har rett til ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                         .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
+                        .format(true) + " kroner per år.",
                     Nynorsk to "Du har rett til ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                         .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
+                        .format(true) + " kroner per år.",
                     English to "You are entitled to ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                         .format() + " percent disability benefit. This equals NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " per year, as a 100-percent disability benefit.",
+                        .format(true) + " per year, as a 100-percent disability benefit.",
                 )
             }
 
             paragraph {
                 textExpr (
                     Bokmal to "Vi beregner kompensasjonsgraden din slik:(".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format(true) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format(true) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent.",
                     Nynorsk to "Vi bereknar kompensasjonsgraden din slik:(".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format(true) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format(true) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent.",
                     English to "We have calculated your degree of compensation as follows:(".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format(true) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format(true) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " percent.",
                 )
             }

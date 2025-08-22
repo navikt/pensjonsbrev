@@ -234,9 +234,9 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             // innvilgelseAPogUTInnledn,innvilgelseAPInnledn,
             paragraph {
                 textExpr(
-                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom,
-                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom,
-                    English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom,
+                    Bokmal to "Du får ".expr() + totalPensjon.format(true) + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom,
+                    Nynorsk to "Du får ".expr() + totalPensjon.format(true) + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom,
+                    English to "You will receive NOK ".expr() + totalPensjon.format(true) + " every month before tax from ".expr() + kravVirkDatoFom,
                 )
                 showIf(uforeKombinertMedAlder) {
                     text(

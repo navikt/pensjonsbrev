@@ -193,11 +193,11 @@ data class DuHarFaattAvviksBeloep(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
-                Bokmal to "Du fikk utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                Bokmal to "Du fikk utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " for " +
                         ifElse(harFaattForMye, "mye", "lite"),
-                Nynorsk to "Du fekk utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                Nynorsk to "Du fekk utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " for " +
                         ifElse(harFaattForMye, "mykje", "lite"),
-                English to "You have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
+                English to "You have received ".expr() + totaltAvvik.absoluteValue().format() + " too " +
                         ifElse(harFaattForMye, "much", "little"),
             )
             textExpr(
@@ -225,11 +225,11 @@ data class OmBeregningAvBarnetillegg(
             val skulleFaatt = barnetillegg.totaltResultat.skulleFaatt
             textExpr(
                 Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
-                        "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
+                        "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " for " + periode.format() + ".",
                 Nynorsk to "Når vi reknar ut barnetillegg, byrjar vi med å oppdatere kor mykje du skulle hatt i uføretrygd. ".expr() +
-                        "Etter denne utrekninga, blir barnetillegget ditt " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
+                        "Etter denne utrekninga, blir barnetillegget ditt " + skulleFaatt.format() + " for " + periode.format() + ".",
                 English to "In calculating the child supplement, we first updated the amount you should have received in disability benefit. ".expr() +
-                        "After this calculation, your child supplement is NOK " + skulleFaatt.format() + " for " + periode.format() + ".",
+                        "After this calculation, your child supplement is " + skulleFaatt.format() + " for " + periode.format() + ".",
             )
         }
         paragraph {
@@ -327,10 +327,10 @@ data class OmBeregningAvBarnetillegg(
                     }
                     item {
                         textExpr(
-                            Bokmal to "Fribeløpet er 4,6 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + " kroner.",
-                            Nynorsk to "Fribeløpet er 4,6 gonger grunnbeløpet i folketrygda. I ".expr() + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + " kroner.",
+                            Bokmal to "Fribeløpet er 4,6 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + ".",
+                            Nynorsk to "Fribeløpet er 4,6 gonger grunnbeløpet i folketrygda. I ".expr() + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + ".",
                             English to "The free allowance is 4.6 times the basic amount of the National Insurance Scheme. In ".expr() + periode.format() +
-                                    " the free allowance was NOK " + fellesbarn.fribeloep.format() + ".",
+                                    " the free allowance was " + fellesbarn.fribeloep.format() + ".",
                         )
                     }
                     item {
@@ -379,10 +379,10 @@ data class OmBeregningAvBarnetillegg(
                     }
                     item {
                         textExpr(
-                            Bokmal to "Fribeløpet er 3,1 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + " kroner.",
-                            Nynorsk to "Fribeløpet er 3,1 gongar grunnbeløpet i folketrygda. I ".expr() + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + " kroner.",
+                            Bokmal to "Fribeløpet er 3,1 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + ".",
+                            Nynorsk to "Fribeløpet er 3,1 gongar grunnbeløpet i folketrygda. I ".expr() + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + ".",
                             English to "The free allowance is 3.1 times the basic amount of the National Insurance Scheme. In ".expr() + periode.format() +
-                                    " the free allowance was NOK " + saerkull.fribeloep.format() + ".",
+                                    " the free allowance was " + saerkull.fribeloep.format() + ".",
                         )
                     }
                     item {
@@ -550,9 +550,9 @@ data class OmBeregningAvBarnetillegg(
                 ) {
                     paragraph {
                         textExpr(
-                            Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " kroner er holdt utenfor inntekten til annen forelder.",
-                            Nynorsk to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " kroner er halde utanfor inntekta til den andre forelderen.",
-                            English to "The National Insurance Scheme basic amount of up to NOK ".expr() + fellesbarn.grunnbelop.format() +
+                            Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " er holdt utenfor inntekten til annen forelder.",
+                            Nynorsk to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " er halde utanfor inntekta til den andre forelderen.",
+                            English to "The National Insurance Scheme basic amount of up to ".expr() + fellesbarn.grunnbelop.format() +
                                     " has been excluded from the income of the other parent.",
                         )
                     }
@@ -574,16 +574,16 @@ data class OmBeregningAvBarnetillegg(
                 paragraph {
                     textExpr(
                         Bokmal to "Du hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
-                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + " kroner. " +
-                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
+                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + ". " +
+                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + ".",
 
                         Nynorsk to "Du hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
-                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + " kroner. " +
-                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
+                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + ". " +
+                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + ".",
 
                         English to "In ".expr() + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
-                                "payment of the child supplement was NOK " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
-                                "for children from a previous relationship was NOK " + saerkull.inntektstakSamletInntekt.format() + ".",
+                                "payment of the child supplement was " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
+                                "for children from a previous relationship was " + saerkull.inntektstakSamletInntekt.format() + ".",
                     )
                 }
             }
@@ -594,16 +594,16 @@ data class OmBeregningAvBarnetillegg(
                 paragraph {
                     textExpr(
                         Bokmal to "Dere hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
-                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + " kroner. " +
-                                "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
+                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + ". " +
+                                "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + ".",
 
                         Nynorsk to "Dere hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
-                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + " kroner. " +
-                                "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
+                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + ". " +
+                                "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + ".",
 
                         English to "In ".expr() + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
-                                "payment of the child supplement was NOK " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
-                                "for joint children was NOK " + fellesbarn.inntektstakSamletInntekt.format() + ".",
+                                "payment of the child supplement was " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
+                                "for joint children was " + fellesbarn.inntektstakSamletInntekt.format() + ".",
                     )
                 }
             }
@@ -637,7 +637,7 @@ data class OmBeregningAvUfoeretrygd(
 
         paragraph {
             showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
-                val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
+                val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format(true)
                 textExpr(
                     Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
                     Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + " kroner.",
@@ -645,7 +645,7 @@ data class OmBeregningAvUfoeretrygd(
                 )
             }
             showIf(pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
-                val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
+                val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format(true)
                 textExpr(
                     Bokmal to " Etter fratrekk, viser beregningen vår at du hadde ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
                     Nynorsk to " Etter fråtrekk, viser berekninga vår at du hadde ".expr() + inntektEtterFratrekk + " kroner i pensjonsgjevande inntekt.",

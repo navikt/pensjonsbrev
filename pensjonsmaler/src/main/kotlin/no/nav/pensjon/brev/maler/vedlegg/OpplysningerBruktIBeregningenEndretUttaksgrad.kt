@@ -137,9 +137,11 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
             }
             paragraph {
                 textExpr(
-                    Bokmal to "Du har ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format() + " kroner i pensjonsgivende inntekt i dette året. ",
-                    Nynorsk to "Du har ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format() + " kroner i pensjonsgivande inntekt i dette året.",
-                    English to "Your pensionable income for this year is NOK ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format() + "."
+                    Bokmal to "Du har ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format(true) + " kroner i pensjonsgivende inntekt i dette året. ",
+                    Nynorsk to "Du har ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format(true) + " kroner i pensjonsgivande inntekt i dette året.",
+                    English to "Your pensionable income for this year is NOK ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format(
+                        true
+                    ) + "."
                 )
             }
         }

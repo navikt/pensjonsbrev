@@ -41,8 +41,12 @@ data class TBU3301_Generated(
 				)
 			}
 			textExpr (
-				Bokmal to "i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Resultatet av etteroppgjøret viser at du har fått " + pe.ut_avviksbeloputenminus().format() + " kroner for lite i ",
-				Nynorsk to "i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Resultatet av etteroppgjeret viser at du har fått " + pe.ut_avviksbeloputenminus().format() + " kroner for lite i ",
+				Bokmal to "i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Resultatet av etteroppgjøret viser at du har fått " + pe.ut_avviksbeloputenminus().format(
+                    true
+                ) + " kroner for lite i ",
+				Nynorsk to "i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Resultatet av etteroppgjeret viser at du har fått " + pe.ut_avviksbeloputenminus().format(
+                    true
+                ) + " kroner for lite i ",
 			)
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF

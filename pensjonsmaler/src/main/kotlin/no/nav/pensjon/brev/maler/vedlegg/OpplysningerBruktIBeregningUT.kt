@@ -39,7 +39,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
     ) {
         val inntektsgrenseErUnderTak =
             inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
-        val grunnbeloep = beregnetUTPerManedGjeldende.grunnbeloep.format()
+        val grunnbeloep = beregnetUTPerManedGjeldende.grunnbeloep.format(true)
 
         paragraph {
             val virkDatoFom = beregnetUTPerManedGjeldende.virkDatoFom.format()

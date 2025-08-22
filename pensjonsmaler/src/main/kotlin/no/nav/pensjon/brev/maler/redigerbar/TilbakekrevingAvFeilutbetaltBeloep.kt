@@ -77,32 +77,44 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 textExpr(
                     Bokmal to "Du har fått for mye ".expr() + sakstype
                             + " utbetalt fra ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " kroner inkludert skatt.",
+                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format(true) + " kroner inkludert skatt.",
 
                     Nynorsk to "Du har fått for mykje ".expr() + sakstype
                             + " utbetalt frå ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " kroner inkludert skatt.",
+                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format(true) + " kroner inkludert skatt.",
 
                     English to "You have received too much ".expr() + sakstype
                             + " in the period from ".expr() + startPeriodeForTilbakekreving.format() + " to ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". This amounts to NOK ".expr() + feilutbetaltTotalBeloep.format() + " including tax.",
+                            + ". This amounts to NOK ".expr() + feilutbetaltTotalBeloep.format(true) + " including tax.",
                 )
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.FULL_TILBAKEKREV)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trekt frå.",
-                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format(
+                            true
+                        ) + " kroner etter at skatten er trukket fra.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format(
+                            true
+                        ) + " kroner etter at skatten er trekt frå.",
+                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format(
+                            true
+                        ) + " after deduction of tax."
                     )
                 }
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.DELVIS_TILBAKEKREV)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trektfrå.",
-                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format(
+                            true
+                        ) + " kroner etter at skatten er trukket fra.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format(
+                            true
+                        ) + " kroner etter at skatten er trektfrå.",
+                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format(
+                            true
+                        ) + " after deduction of tax."
                     )
                 }
             }

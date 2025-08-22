@@ -54,11 +54,11 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         paragraph {
             textExpr(
                 Bokmal to " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() +
-                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner.",
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(true) + " kroner.",
                 Nynorsk to " Folketrygdas grunnbeløp (G) nytta i berekninga er ".expr() +
-                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner.",
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(true) + " kroner.",
                 English to " The national insurance basic amount (G) used in the calculation is NOK ".expr()
-                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ".",
+                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format(true) + ".",
             )
         }
 

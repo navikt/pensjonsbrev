@@ -98,14 +98,14 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             paragraph {
                 textExpr(
                     Language.Bokmal to "Du fikk ".expr() + utbetaltFoerReform.format()
-                            + " kroner per måned i pensjon til 31. desember 2023. " +
-                            "Du får " + utbetaltEtterReform.format() + " kroner før skatt per måned fra 1. januar 2024.",
+                            + " per måned i pensjon til 31. desember 2023. " +
+                            "Du får " + utbetaltEtterReform.format() + " før skatt per måned fra 1. januar 2024.",
                     Language.Nynorsk to "Du fekk ".expr() + utbetaltFoerReform.format()
-                            + " kroner per månad i pensjon til 31. desember 2023. " +
-                            "Du får " + utbetaltEtterReform.format() + " kroner før skatt per månad frå 1. januar 2024.",
-                    Language.English to "You were receiving NOK ".expr() + utbetaltFoerReform.format()
+                            + " per månad i pensjon til 31. desember 2023. " +
+                            "Du får " + utbetaltEtterReform.format() + " før skatt per månad frå 1. januar 2024.",
+                    Language.English to "You were receiving ".expr() + utbetaltFoerReform.format()
                             + " per month until 31 December 2023." +
-                            "The gross (pre-tax) amount you will receive is NOK " + utbetaltEtterReform.format()
+                            "The gross (pre-tax) amount you will receive is " + utbetaltEtterReform.format()
                             + " per month starting 1 January 2024.",
                 )
             }

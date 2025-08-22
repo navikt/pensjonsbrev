@@ -17,7 +17,7 @@ class GenerellFormattingTest {
 
     @Test
     fun `kan formattere nullable kroneverdi som er satt`(){
-        assertThat(Kroner(1234).expr().format().eval(testExpressionScope), equalTo("1\u00A0234"))
+        assertThat(Kroner(1234).expr().format(true).eval(testExpressionScope), equalTo("1\u00A0234"))
     }
 
     @Test

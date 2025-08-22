@@ -48,19 +48,19 @@ object OmstillingsstoenadInnvilgelseFraser {
                             textExpr(
                                 Bokmal to
                                         "Du får ".expr() + sisteUtbetaltBeloep.format() +
-                                        " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ". Fra ".expr() +
+                                        " hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ". Fra ".expr() +
                                         it.datoFOM.format() + " får du " +
                                         it.utbetaltBeloep.format() +
-                                        " kroner hver måned før skatt.",
+                                        " hver måned før skatt.",
                                 Nynorsk to
-                                        "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
+                                        "Du får ".expr() + sisteUtbetaltBeloep.format() + " kvar månad før " +
                                         "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". Frå og med ".expr() +
                                         it.datoFOM.format() + " får du " +
-                                        it.utbetaltBeloep.format() + " kroner kvar månad før skatt. ",
+                                        it.utbetaltBeloep.format() + " kvar månad før skatt. ",
                                 English to
-                                        "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
+                                        "You will receive ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                         "month before tax, starting on " + datoFomSisteBeregningsperiode.format() +
-                                        ". Starting from ".expr() + it.datoFOM.format() + ", you will receive NOK " +
+                                        ". Starting from ".expr() + it.datoFOM.format() + ", you will receive " +
                                         it.utbetaltBeloep.format() + " each month before tax.",
                             )
                         }
@@ -68,10 +68,10 @@ object OmstillingsstoenadInnvilgelseFraser {
                         paragraph {
                             textExpr(
                                 Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() +
-                                        " kroner hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
-                                Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner kvar månad før " +
+                                        " hver måned før skatt fra " + datoFomSisteBeregningsperiode.format() + ".",
+                                Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kvar månad før " +
                                         "skatt frå og med " + datoFomSisteBeregningsperiode.format() + ". ",
-                                English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
+                                English to "You will receive ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                         "month before tax, starting on " + datoFomSisteBeregningsperiode.format() + ".",
                             )
                         }
@@ -79,11 +79,11 @@ object OmstillingsstoenadInnvilgelseFraser {
                 }.orShow {
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner i stønad hver " +
+                            Bokmal to "Du får ".expr() + sisteUtbetaltBeloep.format() + " i stønad hver " +
                                     "måned før skatt.",
-                            Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " kroner i stønad kvar " +
+                            Nynorsk to "Du får ".expr() + sisteUtbetaltBeloep.format() + " i stønad kvar " +
                                     "månad før skatt.".expr(),
-                            English to "You will receive NOK ".expr() + sisteUtbetaltBeloep.format() + " each " +
+                            English to "You will receive ".expr() + sisteUtbetaltBeloep.format() + " each " +
                                     "month before tax.",
                         )
                     }

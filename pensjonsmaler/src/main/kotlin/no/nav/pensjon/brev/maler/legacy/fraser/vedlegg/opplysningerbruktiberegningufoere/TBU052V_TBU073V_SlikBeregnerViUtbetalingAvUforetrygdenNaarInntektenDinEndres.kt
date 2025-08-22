@@ -79,15 +79,15 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
                 textExpr (
                     Bokmal to "Uføretrygden reduseres med ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent av inntekten over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " kroner fordi du har en kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format(true) + " kroner fordi du har en kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent.",
                     Nynorsk to "Uføretrygda blir redusert med ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent av inntekta over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " kroner fordi du har ein kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format(true) + " kroner fordi du har ein kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent.",
                     English to "Your disability benefit is reduced by ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " percent of your income in excess of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + ", because your degree of compensation is " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format(true) + ", because your degree of compensation is " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " percent.",
                 )
             }
@@ -121,14 +121,20 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
             paragraph {
                 textExpr (
                     Bokmal to "Du har en inntektsgrense på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " kroner og den innmeldte inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format() + " kroner. Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format() + " kroner.",
+                        .format(true) + " kroner og den innmeldte inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                        .format(true) + " kroner. Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format(
+                        true
+                    ) + " kroner.",
                     Nynorsk to "Du har ei inntektsgrense på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " kroner, og den innmelde inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format() + " kroner. Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format() + " kroner.",
+                        .format(true) + " kroner, og den innmelde inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                        .format(true) + " kroner. Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format(
+                        true
+                    ) + " kroner.",
                     English to "Your income cap is NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + ", and your reported income is NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format() + ". This means that your excess income is NOK " + pe.functions.pe_ut_overskytende.format() + ".",
+                        .format(true) + ", and your reported income is NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                        .format(true) + ". This means that your excess income is NOK " + pe.functions.pe_ut_overskytende.format(
+                        true
+                    ) + ".",
                 )
             }
         }
