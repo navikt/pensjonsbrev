@@ -27,12 +27,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.SaksbehandlerValgSelectors.visOektOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.SaksbehandlerValgSelectors.visRedusertOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.SaksbehandlerValgSelectors.visUendretOpptjening
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.YtelseskomponentInformasjonSelectors.belopEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
@@ -195,7 +191,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
 
-                showIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.UENDRET) or saksbehandlerValg.visUendretOpptjening) {
+                showIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.UENDRET)) {
                     // ingenEndringPensjon_001
                     paragraph {
                         text(
@@ -204,7 +200,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                             English to "This does not affect your pension."
                         )
                     }
-                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_OKT) or saksbehandlerValg.visOektOpptjening) {
+                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_OKT)) {
                     //  nyBeregningAPØkning_001
                     paragraph {
                         text(
@@ -213,7 +209,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                             English to "This leads to an increase in your retirement pension."
                         )
                     }
-                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_RED) or saksbehandlerValg.visRedusertOpptjening) {
+                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_RED)) {
                     // nyBeregningAPReduksjon_001
                     paragraph {
                         text(
