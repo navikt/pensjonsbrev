@@ -212,7 +212,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.format()
+                                        Bokmal to tillegg.format(),
                                         Nynorsk to tillegg.format()
                                     )
                                 }
