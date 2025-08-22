@@ -16,7 +16,6 @@ import java.time.Month
 fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
-            gjenlevendetilleggTittel = true,
             visGjenlevendetilleggPensjonsrettigheter = true,
             visTilleggspensjonavsnittAP1967 = true,
             omregnetTilEnsligISammeVedtak = true,
