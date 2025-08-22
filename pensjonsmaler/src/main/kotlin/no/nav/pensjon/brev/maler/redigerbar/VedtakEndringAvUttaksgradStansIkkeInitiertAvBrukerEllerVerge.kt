@@ -5,17 +5,15 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg.Aarsak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.KravSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.krav
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.pensjonsopptjeningenErEndret
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.ufoeregradErOekt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.ufoeretrygdErInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.aarsak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.saksbehandlerValgSelector
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -26,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -64,7 +62,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            showIf(saksbehandlerValg.ufoeregradErOekt) {
+            showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.ufoeregradErOekt)) {
                 paragraph {
                     // stansAPOktUFG_001
                     textExpr(
@@ -73,9 +71,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                         Language.English to "We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because your degree of disability has changed.",
                     )
                 }
-            }
-
-            showIf(saksbehandlerValg.ufoeretrygdErInnvilget) {
+            }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget)) {
                 paragraph {
                     // stansAPInnvUT_001
                     textExpr(
@@ -84,9 +80,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                         Language.English to "We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because you have been granted disability benefit.",
                     )
                 }
-            }
-
-            showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+            }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                 paragraph {
                     // stansAPOpptjen_001
                     textExpr(
@@ -110,7 +104,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
                 // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
+                showIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                     paragraph {
                         text(
                             Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12.",
@@ -118,10 +112,9 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                             Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-                // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                    // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
+                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     paragraph {
                         text(
                             Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-11.",
@@ -132,7 +125,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) { // radiobuttons
                 // avslagAP2016TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                     paragraph {
                         text(
                             Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
@@ -140,9 +133,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                             Language.English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act."
                         )
                     }
-                }
-
-                showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
+                }.orShowIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                     // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
                     paragraph {
                         text(
@@ -152,10 +143,9 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                         )
                     }
                 }
-            }
-                .orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) { // radiobuttons
+            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) { // radiobuttons
                     // avslagAP2025TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                    showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                    showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                         paragraph {
                             text(
                                 Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
@@ -163,9 +153,8 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                                 Language.English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
                             )
                         }
-                    }
-                    // endrUtaksgradAP2025_001 - Uføretrygd er innvilget eller uføregrad er økt
-                    showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
+                    }.orShowIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
+                        // endrUtaksgradAP2025_001 - Uføretrygd er innvilget eller uføregrad er økt
                         paragraph {
                             text(
                                 Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16.",
