@@ -19,7 +19,7 @@ data class TBU1205_Generated(
 			textExpr (
 				Bokmal to "Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette ".expr() + pe.ut_inntektsgrense_faktisk().format() + ". Dette er inntektsgrensen din.",
 				Nynorsk to "Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette ".expr() + pe.ut_inntektsgrense_faktisk().format() + ". Dette er inntektsgrensa di.",
-				English to "You may have an annual income up to 40 percent of the National Insurance basic amount, without your disability benefit being reduced. This is currently NOK ".expr() + pe.ut_inntektsgrense_faktisk().format() + ", which is your income limit.",
+				English to "You may have an annual income up to 40 percent of the National Insurance basic amount, without your disability benefit being reduced. This is currently ".expr() + pe.ut_inntektsgrense_faktisk().format() + ", which is your income limit.",
 			)
 		}
     }
