@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -26,10 +27,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
-        @DisplayText("Slutthandling medfører: Økning i pensjonen")
-        val oekningIPensjonen: Boolean,
-        @DisplayText("Slutthandling medfører: Reduksjon i pensjonen")
-        val reduksjonIPensjonen: Boolean,
+        val beloepEndring: BeloepEndring
     ) : BrevbakerBrevdata
 
     data class PesysData(
