@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -53,12 +54,18 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     }
 
     object CurrencyFormat : LocalizedFormatter<Int>() {
+        override fun stableHashCode(): Int = "CurrencyFormatInt".hashCode()
+        override fun apply(first: Int, second: Language): String = CurrencyFormatKroner.apply(Kroner(first), second)
+    }
+
+    object CurrencyFormatKroner : LocalizedFormatter<Kroner>() {
         override fun stableHashCode(): Int = "CurrencyFormat".hashCode()
-        override fun apply(first: Int, second: Language): String =
+        override fun apply(first: Kroner, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
                 .replace(' ', NON_BREAKING_SPACE)
+
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
