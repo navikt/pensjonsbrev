@@ -61,13 +61,13 @@ data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
                     English to " = ",
                 )
                 textExpr (
-                    Bokmal to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(false),
-                    Nynorsk to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(false),
-                    English to "NOK ".expr() + pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(false),
+                    Bokmal to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(),
+                    Nynorsk to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(),
+                    English to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(),
                 )
                 text (
-                    Bokmal to " kroner i reduksjon for året",
-                    Nynorsk to " kroner i reduksjon for året",
+                    Bokmal to " i reduksjon for året",
+                    Nynorsk to " i reduksjon for året",
                     English to " in reductions for the year",
                 )
             }

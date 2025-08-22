@@ -826,29 +826,29 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     Bokmal to " ",
                     Nynorsk to " ",
-                    English to " with NOK ",
+                    English to " with ",
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                     textExpr(
-                        Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(false),
-                        Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(false),
-                        English to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(false),
+                        Bokmal to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
+                        Nynorsk to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
+                        English to pe.barnetilleggfelles_justeringsbelopperarutenminus().format(),
                     )
                 }
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
                     textExpr(
-                        Bokmal to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(false),
-                        Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(false),
-                        English to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(false),
+                        Bokmal to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
+                        Nynorsk to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
+                        English to pe.barnetilleggserkull_justeringsbelopperarutenminus().format(),
                     )
                 }
                 text(
-                    Bokmal to " kroner i beløpet vi reduserer barnetillegget med for resten av året. ",
-                    Nynorsk to " kroner i beløpet vi reduserer barnetillegget med for resten av året. ",
+                    Bokmal to " i beløpet vi reduserer barnetillegget med for resten av året. ",
+                    Nynorsk to " i beløpet vi reduserer barnetillegget med for resten av året. ",
                     English to ". ",
                 )
             }
