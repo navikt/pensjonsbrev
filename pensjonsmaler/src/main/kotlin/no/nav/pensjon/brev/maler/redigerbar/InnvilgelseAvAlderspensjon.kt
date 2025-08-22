@@ -306,7 +306,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(saksbehandlerValg.harGjenlevendetilleggKap19 and gjenlevendetilleggKap19Innvilget) {
+                showIf(gjenlevendetilleggKap19Innvilget) {
                     // beregningAPGjtKap19
                     paragraph {
                         textExpr(

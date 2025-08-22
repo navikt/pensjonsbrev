@@ -29,8 +29,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val harGjenlevenderett: Boolean,
         @DisplayText("Gjenlevendetillegg er større enn 0")
         val harGjenlevendetillegg: Boolean,
-        @DisplayText("GjenlevendetilleggKap19 kommer til utbetaling")
-        val harGjenlevendetilleggKap19: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
         @DisplayText("Hvis kildeskatt")

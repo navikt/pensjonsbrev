@@ -17,7 +17,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             kravVirkDatoFomSenereEnnOensketUttakstidspunkt = false,
             harGjenlevenderett = false,
             harGjenlevendetillegg = false,
-            harGjenlevendetilleggKap19 = false,
             egenOpptjening = false,
             kildeskatt = false,
         ),
