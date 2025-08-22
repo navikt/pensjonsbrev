@@ -17,12 +17,8 @@ data class TBU3304_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Skatteetaten har opplyst at du hadde en pensjonsgivende inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format(
-                    true
-                ) + " kroner. ",
-				Nynorsk to "Skatteetaten har opplyst at du hadde ei pensjonsgivande inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format(
-                    true
-                ) + " kroner. ",
+				Bokmal to "Skatteetaten har opplyst at du hadde en pensjonsgivende inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + ". ",
+				Nynorsk to "Skatteetaten har opplyst at du hadde ei pensjonsgivande inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + ". ",
 			)
 
 			//IF(Contains(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_GrunnIkkeReduksjon, "erstatning_innttap_erstoppgj") > 0) THEN      INCLUDE ENDIF
@@ -49,16 +45,8 @@ data class TBU3304_Generated(
 				)
 			}
 			textExpr (
-				Bokmal to "Disse opplysningene viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
-                    true
-                ) + " kroner i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(
-                    true
-                ) + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for ",
-				Nynorsk to "Desse opplysningane viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
-                    true
-                ) + " kroner i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(
-                    true
-                ) + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for ",
+				Bokmal to "Disse opplysningene viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format() + ". Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for ",
+				Nynorsk to "Desse opplysningane viser at du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format() + ". Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for ",
 			)
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT < 0) THEN      INCLUDE ENDIF
