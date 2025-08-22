@@ -32,8 +32,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val reduksjonIPensjonen: Boolean,
         @DisplayText("Hvis supplerende stønad")
         val supplerendeStoenad: Boolean,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(

@@ -311,7 +311,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             showIf(not(borINorge)) { includePhrase(Skatteplikt) }
 
-            showIf(vedtakEtterbetaling or (saksbehandlerValg.etterbetaling and not(vedtakEtterbetaling))) {
+            showIf(vedtakEtterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
