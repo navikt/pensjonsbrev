@@ -33,8 +33,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val harGjenlevendetilleggKap19: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
-        @DisplayText("Hvis supplerende stønad")
-        val supplerendeStoenad: Boolean,
         @DisplayText("Hvis kildeskatt")
         val kildeskatt: Boolean,
     ) : BrevbakerBrevdata

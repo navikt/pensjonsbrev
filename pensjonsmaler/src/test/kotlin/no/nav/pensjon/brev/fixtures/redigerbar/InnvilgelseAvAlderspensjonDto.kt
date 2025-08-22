@@ -19,7 +19,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             harGjenlevendetillegg = false,
             harGjenlevendetilleggKap19 = false,
             egenOpptjening = false,
-            supplerendeStoenad = false,
             kildeskatt = false,
         ),
         pesysData = InnvilgelseAvAlderspensjonDto.PesysData(

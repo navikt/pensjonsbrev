@@ -475,11 +475,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(gjenlevendetilleggKap19Innvilget) { includePhrase(ReguleringAvGjenlevendetillegg) }
 
-            showIf(
-                saksbehandlerValg.supplerendeStoenad and uttaksgrad.equalTo(100) and borINorge and not(
-                    fullTrygdetid
-                ) and not(innvilgetFor67)
-            ) {
+            showIf(uttaksgrad.equalTo(100) and borINorge and not(fullTrygdetid) and not(innvilgetFor67)) {
                 includePhrase(SupplerendeStoenadAP)
             }
 
