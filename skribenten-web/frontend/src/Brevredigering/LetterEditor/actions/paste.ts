@@ -139,8 +139,8 @@ function ensureLiteralAtIndex(arr: Draft<TextContent[]>, index: number): Draft<L
   while (arr.length <= index) {
     arr.push(newLiteral({ editedText: "" }));
   }
-  const candidate = arr[index];
-  if (isLiteral(candidate)) return candidate;
+  const elementAtIndex = arr.at(index);
+  if (isLiteral(elementAtIndex)) return elementAtIndex;
   const lit = newLiteral({ editedText: "" });
   arr.splice(index, 0, lit);
   return lit;
@@ -158,14 +158,13 @@ function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTex
     if (!cell) return undefined;
 
     // Make sure we have a literal to edit at the target slot
-    const literal = ensureLiteralAtIndex(cell.text as Draft<TextContent[]>, focus.cellContentIndex ?? 0);
+    const literal = ensureLiteralAtIndex(cell.text, focus.cellContentIndex ?? 0);
 
     return {
       content: literal,
-      // cells don't track deletedContent; pass an empty array
       parent: {
-        content: cell.text as unknown as Draft<Content[]>,
-        deletedContent: [] as Draft<number[]>,
+        content: cell.text,
+        deletedContent: [],
       },
       getContentIndex: () => focus.cellContentIndex ?? 0,
       setContentIndex: (f, value) => {
@@ -235,13 +234,11 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
   draft.isDirty = true;
 }
 
+// Ensure that every table row has exactly the same number of cells (colCount)
 function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): TableCell[] {
-  // Build exactly colCount cells, using existing ones when present.
-  return Array.from({ length: Math.max(0, colCount) }, (_, i) => {
-    const src = cells[i];
-    const content = Array.isArray(src?.content) ? src!.content : [];
-    return { content };
-  });
+  return Array.from({ length: Math.max(0, colCount) }, (_, i) => ({
+    content: cells[i]?.content ?? [],
+  }));
 }
 
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
@@ -275,25 +272,32 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
           return;
         }
         const headerCells = el.headerCells ?? [];
-        const bodyColMax = Math.max(1, ...el.rows.map((r) => r.cells.length));
+        // Determine the column count if there’s no header.
+        const bodyColMax = Math.max(1, ...el.rows.map((row) => row.cells.length));
+        //if there’s a header, use its length; otherwise, use the widest body row.
         const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
+        // If there are no header cells, we promote the first row to header.
+        // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
         const hasHeader = headerCells.length > 0;
         const shouldPromoteFirstRowToHeader = !hasHeader && el.rows.length > 0;
 
         const getHeaderSpec = (cells: TableCell[]) =>
-          cells.map((cell) => ({
-            text: cleansePastedText(cell.content.map((t) => t.text).join(" ")),
-            font: cell.content[0]?.font ?? FontType.PLAIN,
-          }));
+          cells.map((cell) => {
+            const mergedTexts = mergeNeighbouringText(cell.content);
+            return {
+              text: cleansePastedText(mergedTexts.map((txt) => txt.text).join(" ")),
+              font: mergedTexts[0]?.font ?? FontType.PLAIN,
+            };
+          });
 
         const headerSpecSource = hasHeader
           ? getHeaderSpec(headerCells)
           : getHeaderSpec(normalizeCells(el.rows[0]?.cells ?? [], colCount));
 
         const colSpec = newColSpec(colCount, headerSpecSource);
-        const effectiveRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
+        const bodyRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
 
-        const rows: Row[] = effectiveRows.map((row) => ({
+        const rows: Row[] = bodyRows.map((row) => ({
           id: null,
           parentId: null,
           cells: normalizeCells(row.cells, colCount).map((cell) => ({
@@ -301,7 +305,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
             parentId: null,
             text:
               cell.content.length > 0
-                ? cell.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }))
+                ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
                 : [newLiteral({ editedText: "" })],
           })),
         }));
@@ -559,8 +563,8 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
 }
 
 function traverseTable(element: Element, font: FontType): Table {
-  const flattenCellContent = (cellElement: Element) =>
-    traverseChildren(cellElement, font).flatMap((child) => {
+  const flattenCellContent = (cellElement: Element) => {
+    const cellContentElements = traverseChildren(cellElement, font).flatMap((child) => {
       switch (child.type) {
         case "TEXT":
           return [child];
@@ -570,33 +574,38 @@ function traverseTable(element: Element, font: FontType): Table {
         case "H1":
         case "H2":
         case "TABLE":
-          // Not allowed in table cells, ignore
           return [];
         default:
           return [];
       }
     });
+    // Drop whitespace-only TEXT nodes so the cell content contains only meaningful text.
+    const filteredCellTextContent = cellContentElements.filter(
+      (txt) => txt.type !== "TEXT" || txt.text.trim().length > 0,
+    );
+    return filteredCellTextContent;
+  };
 
   let rowElements = Array.from(element.querySelectorAll("tr"));
   let headerCells: TableCell[] | undefined;
 
   const theadRow = element.querySelector("thead tr");
   if (theadRow) {
-    const ths = Array.from(theadRow.querySelectorAll("th"));
-    if (ths.length > 0) {
-      headerCells = ths.map((cellElement) => ({
+    const headerCellElements = Array.from(theadRow.querySelectorAll("th"));
+    if (headerCellElements.length > 0) {
+      headerCells = headerCellElements.map((cellElement) => ({
         content: flattenCellContent(cellElement),
       }));
-      // Remove header row from body rows
+      // Remove the header row from body rows to avoid duplicating it as a regular row.
       rowElements = rowElements.filter((row) => row !== theadRow);
     }
   }
 
   if (!headerCells && rowElements.length > 0) {
     const firstRow = rowElements[0];
-    const ths = Array.from(firstRow.querySelectorAll("th"));
-    if (ths.length > 0) {
-      headerCells = ths.map((cellElement) => ({
+    const headerCellElements = Array.from(firstRow.querySelectorAll("th"));
+    if (headerCellElements.length > 0) {
+      headerCells = headerCellElements.map((cellElement) => ({
         content: flattenCellContent(cellElement),
       }));
       rowElements = rowElements.slice(1);
@@ -747,13 +756,6 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
   });
 }
 
-/**
- * - Traverses the immediate children of the paragraph using `traverseChildren`.
- * - Buffers consecutive text nodes and groups them into a `Paragraph` object.
- * - Handles other node types (`ITEM`, `P`, `TABLE`) by flushing the text buffer and adding them directly to the result.
- * - Ensures that tables are not nested inside paragraph tags by ignoring them during processing.
- *
- */
 type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element;
 
 function traverseParagraphChildren(paragraph: Element, font: FontType): ParagraphChild[] {
