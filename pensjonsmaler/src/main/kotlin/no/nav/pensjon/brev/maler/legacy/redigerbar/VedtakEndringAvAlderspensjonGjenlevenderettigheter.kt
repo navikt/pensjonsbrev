@@ -212,8 +212,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // beregningAPGjtKap19_001
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.visGjenlevendetilleggPensjonsrettigheter) {
+            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr() + pesysData.avdod.navn + ".",
