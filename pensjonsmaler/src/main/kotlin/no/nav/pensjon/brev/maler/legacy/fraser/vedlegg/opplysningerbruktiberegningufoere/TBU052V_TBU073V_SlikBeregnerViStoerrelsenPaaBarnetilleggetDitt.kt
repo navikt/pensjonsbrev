@@ -1221,9 +1221,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
                 textExpr(
                     Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                        .format() + " i beløpet vi reduserer barnetillegget med for resten av året.",
                     Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                        .format() + " i beløpet vi reduserer barnetillegget med for resten av året.",
                     English to " with NOK ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus().format(true) + ".",
                 )
             }
@@ -1363,9 +1363,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
                 textExpr(
                     Bokmal to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                        .format() + " i beløpet vi reduserer barnetillegget med for resten av året.",
                     Nynorsk to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                        .format(true) + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                        .format() + " i beløpet vi reduserer barnetillegget med for resten av året.",
                     English to " with NOK ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus().format(true) + ".",
                 )
             }
@@ -1688,9 +1688,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             paragraph {
                 textExpr (
                     Bokmal to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .format(true) + " kroner i måneden før skatt i barnetillegg",
+                        .format() + " i måneden før skatt i barnetillegg",
                     Nynorsk to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .format(true) + " kroner i månaden før skatt i barnetillegg",
+                        .format() + " i månaden før skatt i barnetillegg",
                     English to "You will receive a monthly child supplement payment of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                         .format(true),
                 )
@@ -2078,9 +2078,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             paragraph {
                 textExpr (
                     Bokmal to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .format(true) + " kroner i måneden før skatt i barnetillegg",
+                        .format() + " i måneden før skatt i barnetillegg",
                     Nynorsk to "Du vil få utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .format(true) + " kroner i månaden før skatt i barnetillegg",
+                        .format() + " i månaden før skatt i barnetillegg",
                     English to "You will receive a monthly child supplement payment of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
                         .format(true),
                 )

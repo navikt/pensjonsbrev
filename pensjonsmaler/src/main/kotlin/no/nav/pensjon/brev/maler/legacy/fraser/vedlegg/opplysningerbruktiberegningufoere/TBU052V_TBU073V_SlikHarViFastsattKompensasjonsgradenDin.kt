@@ -108,9 +108,9 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
             paragraph {
                 textExpr (
                     Bokmal to "Du har rett til 100 prosent uføretrygd, som utgjør ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format(true) + " kroner per år.",
+                        .format() + " per år.",
                     Nynorsk to "Du har rett til 100 prosent uføretrygd, som utgjer ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format(true) + " kroner per år.",
+                        .format() + " per år.",
                     English to "For you, a 100-percent disability benefit will total NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(true) + " per year.",
                 )
@@ -120,10 +120,10 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                 textExpr (
                     Bokmal to "Du har rett til ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                         .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format(true) + " kroner per år.",
+                        .format() + " per år.",
                     Nynorsk to "Du har rett til ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                         .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format(true) + " kroner per år.",
+                        .format() + " per år.",
                     English to "You are entitled to ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                         .format() + " percent disability benefit. This equals NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(true) + " per year, as a 100-percent disability benefit.",

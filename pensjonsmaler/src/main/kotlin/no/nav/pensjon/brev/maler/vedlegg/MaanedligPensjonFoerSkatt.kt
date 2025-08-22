@@ -487,10 +487,10 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                 paragraph {
                     textExpr(
                         Bokmal to "Før eventuell justering på grunn av inntekt, utgjør tillegget ditt ".expr() +
-                                it.format(true) + " kroner hver måned. Beløpet er beregnet med samme trygdetid som for grunnpensjonen.",
+                                it.format() + " hver måned. Beløpet er beregnet med samme trygdetid som for grunnpensjonen.",
 
                         Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer tillegget ditt ".expr() +
-                                it.format(true) + " kroner kvar månad. Beløpet er berekna med same trygdetid som for grunnpensjonen.",
+                                it.format() + " kvar månad. Beløpet er berekna med same trygdetid som for grunnpensjonen.",
 
                         English to "Before any adjustment according to your income, your supplement is calculated to NOK ".expr() +
                                 it.format(true) + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
@@ -578,10 +578,10 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                 paragraph {
                     textExpr(
                         Bokmal to "Før eventuell justering på grunn av inntekt, utgjør barnetillegget ditt for fellesbarn ".expr() +
-                                it.format(true) + " kroner hver måned. Beløpet er avkortet mot trygdetid på samme måte som for grunnpensjonen.",
+                                it.format() + " hver måned. Beløpet er avkortet mot trygdetid på samme måte som for grunnpensjonen.",
 
                         Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer barnetillegget ditt for fellesbarn ".expr() +
-                                it.format(true) + " kroner kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
+                                it.format() + " kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
 
                         English to "Before any adjustment according to your income, your child supplement is calculated to NOK ".expr() +
                                 it.format(true) + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
@@ -627,10 +627,10 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                 paragraph {
                     textExpr(
                         Bokmal to "Før eventuell justering på grunn av inntekt, utgjør barnetillegget ditt for særkullsbarn ".expr() +
-                                it.format(true) + " kroner hver måned. Beløpet er avkortet mot trygdetid på samme måte som for grunnpensjonen.",
+                                it.format() + " hver måned. Beløpet er avkortet mot trygdetid på samme måte som for grunnpensjonen.",
 
                         Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer barnetillegget ditt for særkullsbarn ".expr() +
-                                it.format(true) + " kroner kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
+                                it.format() + " kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
 
                         English to "Before any adjustment according to your income, your child supplement for a child/children from a previous relationship, is calculated to NOK ".expr() +
                                 it.format(true) + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",

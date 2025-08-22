@@ -136,9 +136,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 textExpr (
                     Bokmal to "Du vil få en månedlig reduksjon i uføretrygden din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format(true) + " kroner i resterende måneder i kalenderåret.",
+                        .format() + " i resterende måneder i kalenderåret.",
                     Nynorsk to "Du får ein månadleg reduksjon i uføretrygda di på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format(true) + " kroner i resterande månader i kalenderåret.",
+                        .format() + " i resterande månader i kalenderåret.",
                     English to "Your monthly disability benefit payments will be reduced by NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
                         .format(true) + " for the remaining months of the calendar year.",
                 )
@@ -192,9 +192,9 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 textExpr (
                     Bokmal to "Utbetalingen av uføretrygden din er redusert, fordi du har inntekt. Den innmeldte inntekten er høyere enn inntektsgrensen din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format(true) + " kroner og uføretrygden blir derfor ikke utbetalt. ",
+                        .format() + " og uføretrygden blir derfor ikke utbetalt. ",
                     Nynorsk to "Utbetalinga av uføretrygda di er redusert, fordi du har inntekt. Den innmelde inntekta er høgare enn inntektsgrensa di på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format(true) + " kroner og uføretrygda blir derfor ikkje utbetalt.",
+                        .format() + " og uføretrygda blir derfor ikkje utbetalt.",
                     English to "Your payment have been reduced because you have an income. The reported income is higher then your income cap of NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format(true) + ". Your disability benefit will therefore not be paid.",
                 )

@@ -77,11 +77,11 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 textExpr(
                     Bokmal to "Du har fått for mye ".expr() + sakstype
                             + " utbetalt fra ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format(true) + " kroner inkludert skatt.",
+                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " inkludert skatt.",
 
                     Nynorsk to "Du har fått for mykje ".expr() + sakstype
                             + " utbetalt frå ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format(true) + " kroner inkludert skatt.",
+                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " inkludert skatt.",
 
                     English to "You have received too much ".expr() + sakstype
                             + " in the period from ".expr() + startPeriodeForTilbakekreving.format() + " to ".expr() + sluttPeriodeForTilbakekreving.format()

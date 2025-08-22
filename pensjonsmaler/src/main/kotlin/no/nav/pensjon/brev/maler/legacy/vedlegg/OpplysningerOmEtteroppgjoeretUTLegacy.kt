@@ -154,9 +154,9 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         paragraph {
             textExpr(
                 Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                    .format(true) + " kroner er holdt utenfor inntekten til annen forelder.",
+                    .format() + " er holdt utenfor inntekten til annen forelder.",
                 Nynorsk to "Grunnbeløpet i folketrygda på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                    .format(true) + " kroner er halde utanfor inntekta til den andre forelderen.",
+                    .format() + " er halde utanfor inntekta til den andre forelderen.",
             )
         }
     }

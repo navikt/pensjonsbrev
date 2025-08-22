@@ -23,8 +23,8 @@ data class TBU1254_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format(true) + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt",
-				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format(true) + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt",
+				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per måned før skatt",
+				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per månad før skatt",
 				English to "Your monthly disability benefit, child supplement and spouse supplement payment will be NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format(
 					true
 				) + " before tax",

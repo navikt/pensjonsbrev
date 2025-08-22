@@ -21,12 +21,12 @@ data class TBU4020_Generated(
                     true
                 ) + " kroner i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(
                     true
-                ) + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format(true) + " kroner for ",
+                ) + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for ",
 				Nynorsk to "Du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(
                     true
                 ) + " kroner i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(
                     true
-                ) + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format(true) + " kroner for ",
+                ) + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for ",
 			)
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT < 0) THEN      INCLUDE ENDIF

@@ -40,9 +40,9 @@ data class TBU2261_Generated(
             }
             textExpr(
                 Bokmal to " Du har derfor rett til en utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                    .format(true) + " kroner per måned for resten av året.",
+                    .format() + " per måned for resten av året.",
                 Nynorsk to " Du har derfor rett til ei utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                    .format(true) + " kroner per månad for resten av kalenderåret.",
+                    .format() + " per månad for resten av kalenderåret.",
                 English to " Therefore, you are entitled to a disability benefit payment of ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
                     .format(true) + " per month for the remainder of the calendar year."
             )

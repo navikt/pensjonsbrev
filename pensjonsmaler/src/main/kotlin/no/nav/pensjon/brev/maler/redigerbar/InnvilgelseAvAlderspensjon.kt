@@ -202,9 +202,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 //  beloepApOgGjtvedVirkMedDato_001, beloepApOgGjvedVirkMedDato_002
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format(true) + " kroner i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt fra ".expr() +
+                        Bokmal to "Du får ".expr() + totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt fra ".expr() +
                                 kravVirkDatoFom + ".",
-                        Nynorsk to "Du får ".expr() + totalPensjon.format(true) + " kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt frå ".expr() +
+                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt frå ".expr() +
                                 kravVirkDatoFom + ".",
                         English to "You will receive NOK ".expr() + totalPensjon.format(true) + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
                                 kravVirkDatoFom + "."
@@ -231,8 +231,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             showIf(not(gjenlevendetilleggInnvilget) and not(gjenlevendetilleggKap19Innvilget)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format(true) + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom,
-                        Nynorsk to "Du får ".expr() + totalPensjon.format(true) + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom,
+                        Bokmal to "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom,
+                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom,
                         English to "You will receive NOK ".expr() + totalPensjon.format(true) + " every month before tax from ".expr() + kravVirkDatoFom
                     )
                     showIf(uforeKombinertMedAlder and innvilgetFor67) {

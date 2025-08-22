@@ -570,8 +570,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Garantitillegget utgjør ".expr() + garantitillegg.format(true) + " kroner per måned før skatt fra ".expr() + kravVirkDatoFom + ".",
-                        Nynorsk to "Garantitillegget utgjer ".expr() + garantitillegg.format(true) + " kroner per månad før skatt frå ".expr() + kravVirkDatoFom + ".",
+                        Bokmal to "Garantitillegget utgjør ".expr() + garantitillegg.format() + " per måned før skatt fra ".expr() + kravVirkDatoFom + ".",
+                        Nynorsk to "Garantitillegget utgjer ".expr() + garantitillegg.format() + " per månad før skatt frå ".expr() + kravVirkDatoFom + ".",
                         English to "Your monthly guarantee supplement for accumulated pension capital rights will be NOK ".expr() +
                                 garantitillegg.format(true) + " before tax from ".expr() + kravVirkDatoFom + ".",
                     )

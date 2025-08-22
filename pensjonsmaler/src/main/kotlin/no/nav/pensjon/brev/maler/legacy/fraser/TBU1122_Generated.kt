@@ -26,8 +26,8 @@ data class TBU1122_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format(true) + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt",
-				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format(true) + " kroner i uføretrygd og attlevandetillegg per månad før skatt",
+				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og gjenlevendetillegg per måned før skatt",
+				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og attlevandetillegg per månad før skatt",
 				English to "Your monthly disability benefit and survivor's supplement payment will be NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format(
                     true
                 ) + " before tax",

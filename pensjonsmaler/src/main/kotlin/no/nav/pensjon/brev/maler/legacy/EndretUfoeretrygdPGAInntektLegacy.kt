@@ -407,9 +407,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                             ))){
                         textExpr (
                             Bokmal to "vil vi bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                .format(true) + " kroner ",
+                                .format() + " ",
                             Nynorsk to "vil vi bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                .format(true) + " kroner ",
+                                .format() + " ",
                         )
                     }
 
@@ -443,9 +443,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 paragraph {
                     textExpr (
                         Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                            .format(true) + " kroner når vi reduserer barnetillegget ",
+                            .format() + " når vi reduserer barnetillegget ",
                         Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                            .format(true) + " kroner når vi reduserer barnetillegget ",
+                            .format() + " når vi reduserer barnetillegget ",
                     )
 
                     //IF((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)  OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)) THEN      INCLUDE ENDIF
@@ -547,10 +547,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                 paragraph {
                     textExpr (
                         Bokmal to "Vi vil bruke en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                            .format(true) + " kroner når vi reduserer barnetillegget ditt. Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar()
+                            .format() + " når vi reduserer barnetillegget ditt. Har du ikke meldt inn ny inntekt for " + pe.ut_virkningfomar()
                             .format() + ", er inntekten justert opp til dagens verdi.",
                         Nynorsk to "Vi vil bruke ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                            .format(true) + " kroner når vi reduserer barnetillegget ditt. Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar()
+                            .format() + " når vi reduserer barnetillegget ditt. Har du ikkje meldt inn ny inntekt for " + pe.ut_virkningfomar()
                             .format() + ", er inntekta justert opp til dagens verdi.",
                     )
                 }
@@ -875,11 +875,11 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     paragraph {
                         textExpr (
                             Bokmal to "Siden du har en inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format(true) + " kroner trekker vi " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
-                                .format(true) + " kroner fra uføretrygden ",
+                                .format() + " trekker vi " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
+                                .format() + " fra uføretrygden ",
                             Nynorsk to "Fordi du har ei inntekt på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format(true) + " kroner trekkjer vi " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
-                                .format(true) + " kroner frå uføretrygda ",
+                                .format() + " trekkjer vi " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortingsbelopperar()
+                                .format() + " frå uføretrygda ",
                         )
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN      INCLUDE ENDIF
@@ -919,10 +919,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         textExpr (
                             Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                                 .format(true) + " kroner. Inntekten vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format(true) + " kroner og du vil derfor ikke få utbetalt uføretrygd resten av året.",
+                                .format() + " og du vil derfor ikke få utbetalt uføretrygd resten av året.",
                             Nynorsk to "Du får ikkje utbetalt uføretrygd fordi inntekta di er høgare enn 80 prosent av inntekta du hadde før du blei ufør, det vil seie ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                                 .format(true) + " kroner. Inntekta vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format(true) + " kroner og du vil ikkje få utbetalt uføretrygd resten av året.",
+                                .format() + " og du vil ikkje få utbetalt uføretrygd resten av året.",
                         )
                     }
                 }
@@ -942,10 +942,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         textExpr (
                             Bokmal to "Det utbetales ikke uføretrygd når inntekten din utgjør mer enn inntektsgrensen, det vil si ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                                 .format(true) + " kroner. Inntekten vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format(true) + " kroner og du vil derfor ikke få utbetalt uføretrygd resten av året.",
+                                .format() + " og du vil derfor ikke få utbetalt uføretrygd resten av året.",
                             Nynorsk to "Det blir ikkje utbetalt uføretrygd når inntekta di utgjer meir enn inntektsgrensa di, det vil seie ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                                 .format(true) + " kroner. Inntekta vi har brukt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                .format(true) + " kroner og du vil derfor ikkje få utbetalt uføretrygd resten av året.",
+                                .format() + " og du vil derfor ikkje få utbetalt uføretrygd resten av året.",
                         )
                     }
                 }
@@ -1068,10 +1068,10 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                     paragraph {
                         textExpr(
                             Bokmal to "Vi har beregnet barnetillegget på nytt ut fra inntekten din på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning()
-                                .format(true) + " kroner og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
+                                .format() + " og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
                                 .format(true) + " kroner. ",
                             Nynorsk to "Vi har berekna barnetillegget på nytt ut frå inntekta di på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning()
-                                .format(true) + " kroner og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
+                                .format() + " og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder()
                                 .format(true) + " kroner. ",
                         )
 
@@ -1082,9 +1082,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         ) {
                             textExpr(
                                 Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                                    .format(true) + " kroner er holdt utenfor din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt. ",
+                                    .format() + " er holdt utenfor din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt. ",
                                 Nynorsk to "Grunnbeløpet i folketrygda på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                                    .format(true) + " kroner er held utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. ",
+                                    .format() + " er held utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. ",
                             )
                         }
                         textExpr(
@@ -1853,9 +1853,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         }
                         textExpr (
                             Bokmal to "Du har derfor rett til en utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                                .format(true) + " kroner per måned for resten av året.",
+                                .format() + " per måned for resten av året.",
                             Nynorsk to "Du har derfor rett til ei utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                                .format(true) + " kroner per månad for resten av året.",
+                                .format() + " per månad for resten av året.",
                         )
                     }
                 }
@@ -1926,16 +1926,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)){
                             textExpr (
                                 Bokmal to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                                    .format(true) + " kroner i det vi reduserer barnetillegget med for resten av året.",
+                                    .format() + " i det vi reduserer barnetillegget med for resten av året.",
                                 Nynorsk to " ".expr() + pe.barnetilleggfelles_justeringsbelopperarutenminus()
-                                    .format(true) + " kroner i det vi har redusert barnetillegget med for resten av året.",
+                                    .format() + " i det vi har redusert barnetillegget med for resten av året.",
                             )
                         }
                         textExpr (
                             Bokmal to " Du har derfor rett til en utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .format(true) + " kroner per måned for resten av året. ",
+                                .format() + " per måned for resten av året. ",
                             Nynorsk to " Du har derfor rett til ei utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                .format(true) + " kroner per månad for resten av året.",
+                                .format() + " per månad for resten av året.",
                         )
                     }
                 }
@@ -1990,16 +1990,16 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         ){
                             textExpr (
 								Bokmal to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                                    .format(true) + " kroner i det vi reduserer barnetillegget med for resten av året.",
+                                    .format() + " i det vi reduserer barnetillegget med for resten av året.",
 								Nynorsk to " ".expr() + pe.barnetilleggserkull_justeringsbelopperarutenminus()
-                                    .format(true) + " kroner i det vi reduserte barnetillegget med for resten av året.",
+                                    .format() + " i det vi reduserte barnetillegget med for resten av året.",
                             )
                         }
                         textExpr (
                             Bokmal to " Du har derfor rett til en utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .format(true) + " kroner per måned for resten av året.",
+                                .format() + " per måned for resten av året.",
                             Nynorsk to " Du har derfor rett til ei utbetaling av barnetillegg på ".expr() + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                                .format(true) + " kroner per månad for resten av året.",
+                                .format() + " per månad for resten av året.",
                         )
                     }
                 }

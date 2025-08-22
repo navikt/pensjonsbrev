@@ -119,8 +119,8 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                     // innvilgelseAPInstInnled_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " kroner før skatt fra " + pesysData.krav.virkDatoFom.format() + " og så lenge du er på helseinstitusjonen.",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " kroner før skatt frå " + pesysData.krav.virkDatoFom.format() + " og så lenge du er på helseinstitusjon.",
+                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " før skatt fra " + pesysData.krav.virkDatoFom.format() + " og så lenge du er på helseinstitusjonen.",
+                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " før skatt frå " + pesysData.krav.virkDatoFom.format() + " og så lenge du er på helseinstitusjon.",
                             English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(
                                 true
                             ) + " before tax from " + pesysData.krav.virkDatoFom.format() + " and as long as you are institutionalized.",
@@ -150,8 +150,8 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                         // innvilgelseAPSonerInnled_001
                         paragraph {
                             textExpr(
-                                Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " kroner før skatt fra " + pesysData.krav.virkDatoFom.format() + " og så lenge du er under straffegjennomføring.",
-                                Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " kroner før skatt frå " + pesysData.krav.virkDatoFom.format() + " og så lenge du er under straffegjennomføring.",
+                                Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " før skatt fra " + pesysData.krav.virkDatoFom.format() + " og så lenge du er under straffegjennomføring.",
+                                Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " før skatt frå " + pesysData.krav.virkDatoFom.format() + " og så lenge du er under straffegjennomføring.",
                                 English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(
                                     true
                                 ) + " before tax from " + pesysData.krav.virkDatoFom.format() + " and as long as you serving a criminal sentence.",
@@ -174,7 +174,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                             // innvilgelseAPogUTInnledn_001
                             paragraph {
                                 textExpr(
-                                    Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                                    Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
                                     Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(
                                         true
                                     ) + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
@@ -187,7 +187,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                             // innvilgelseAPInnledn_001
                             paragraph {
                                 textExpr(
-                                    Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(true) + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
+                                    Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
                                     Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format(
                                         true
                                     ) + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygda.",
