@@ -27,6 +27,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
+        @DisplayText("Er beløpet endret?")
         val beloepEndring: BeloepEndring
     ) : BrevbakerBrevdata
 
