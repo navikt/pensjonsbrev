@@ -421,7 +421,7 @@ const stripZeroWidth = (s: string) => s.replaceAll("\u200B", "");
  * Returns true if any provided column contains header content.
  * Counts VARIABLES and any non-empty literal (including “Kolonne N”).
  */
-export function hasHeaderContentCols(colSpec?: ColumnSpec[]): boolean {
+export function hasHeaderContentCols(colSpec: ColumnSpec[]): boolean {
   if (!colSpec || colSpec.length === 0) return false;
   return colSpec.some((col) =>
     col.headerContent.text.some((txt) => {
