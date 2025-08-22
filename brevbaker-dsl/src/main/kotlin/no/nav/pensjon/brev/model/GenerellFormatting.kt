@@ -31,9 +31,9 @@ fun Expression<Foedselsnummer>.format() = format(formatter = LocalizedFormatter.
 fun Expression<Foedselsnummer?>.format() = format(formatter = LocalizedFormatter.FoedselsnummerFormat)
 
 @JvmName("formatKroner")
-fun Expression<Kroner>.format() = format(formatter = LocalizedFormatter.CurrencyFormatKroner)
+fun Expression<Kroner>.format(denominator: Boolean = false) = format(formatter = LocalizedFormatter.CurrencyFormatKroner(denominator))
 @JvmName("formatKronerNullable")
-fun Expression<Kroner?>.format() = format(formatter = LocalizedFormatter.CurrencyFormatKroner)
+fun Expression<Kroner?>.format(denominator: Boolean = false) = format(formatter = LocalizedFormatter.CurrencyFormatKroner(denominator))
 
 @JvmName("formatIntValue")
 fun Expression<IntValue>.format() = select(intValueSelector).format()

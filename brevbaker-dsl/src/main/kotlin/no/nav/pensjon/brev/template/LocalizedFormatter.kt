@@ -9,6 +9,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.apply
 
 const val NON_BREAKING_SPACE = '\u00A0'
 
@@ -55,16 +56,23 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
 
     object CurrencyFormat : LocalizedFormatter<Int>() {
         override fun stableHashCode(): Int = "CurrencyFormatInt".hashCode()
-        override fun apply(first: Int, second: Language): String = CurrencyFormatKroner.apply(Kroner(first), second)
+        override fun apply(first: Int, second: Language): String = CurrencyFormatKroner(denominator = false).apply(Kroner(first), second)
     }
 
-    object CurrencyFormatKroner : LocalizedFormatter<Kroner>() {
+    class CurrencyFormatKroner(val denominator: Boolean = false) : LocalizedFormatter<Kroner>() {
         override fun stableHashCode(): Int = "CurrencyFormat".hashCode()
         override fun apply(first: Kroner, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
-                .replace(' ', NON_BREAKING_SPACE)
+                .replace(' ', NON_BREAKING_SPACE).let {
+                    when {
+                        !denominator -> it
+                        second in setOf(Language.Bokmal, Language.Nynorsk) -> "$it kroner"
+                        second == Language.English -> "NOK $it"
+                        else -> throw IllegalArgumentException("Uforventa feil, med kroner $first, språk $second og denominator true")
+                    }
+                }
 
     }
 
