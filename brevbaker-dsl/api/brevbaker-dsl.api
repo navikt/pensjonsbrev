@@ -52,8 +52,10 @@ public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 	public static final fun formatFoedselsnummerNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatFoedselsnummerStandard (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun formatIntValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun formatKroner (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun formatKronerNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun formatKroner (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun formatKroner$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun formatKronerNullable (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun formatKronerNullable$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatTelefonnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatTelefonnummerNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatTelefonnummerStandard (Ljava/lang/String;)Ljava/lang/String;
@@ -699,6 +701,16 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$CurrencyForma
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$CurrencyFormat;
 	public fun apply (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/LocalizedFormatter$CurrencyFormatKroner : no/nav/pensjon/brev/template/LocalizedFormatter {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply-ALD0akc (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public final fun getDenominator ()Z
 	public fun stableHashCode ()I
 }
 

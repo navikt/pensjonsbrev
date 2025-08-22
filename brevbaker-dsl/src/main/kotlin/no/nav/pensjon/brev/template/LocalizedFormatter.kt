@@ -64,7 +64,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun apply(first: Kroner, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
-                .format(first)
+                .format(first.value)
                 .replace(' ', NON_BREAKING_SPACE).let {
                     when {
                         !denominator -> it
