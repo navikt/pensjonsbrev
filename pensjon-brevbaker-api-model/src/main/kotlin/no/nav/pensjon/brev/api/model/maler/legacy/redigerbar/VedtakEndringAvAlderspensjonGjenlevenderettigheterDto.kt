@@ -18,7 +18,6 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
-        val visTilleggspensjonavsnittAP1967: Boolean,
         val omregnetTilEnsligISammeVedtak: Boolean,
         val pensjonenOeker: Boolean,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
