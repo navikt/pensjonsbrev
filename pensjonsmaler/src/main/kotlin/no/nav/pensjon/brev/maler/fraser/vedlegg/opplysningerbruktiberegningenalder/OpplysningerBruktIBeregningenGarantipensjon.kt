@@ -84,19 +84,19 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                     paragraph {
                         textExpr(
                             Bokmal to "Din årlige garantipensjon blir beregnet ved å dele garantipensjonsbeholdningen din på delingstallet ved uttak. Garantipensjonsbeholdningen din er på ".expr() +
-                                    garantipensjonVedVirk.beholdningForForsteUttak.format(true) +
-                                    " kroner, og delingstallet ved uttak er " + beregningKap20VedVirk.delingstallLevealder.format() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() +
+                                    ", og delingstallet ved uttak er " + beregningKap20VedVirk.delingstallLevealder.format() +
                                     ". Siden du ikke tar ut full pensjon, vil du kun få utbetalt " +
                                     alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
                             Nynorsk to "Den årlege garantipensjonen din blir rekna ut ved å dele garantipensjonsbeholdninga di på delingstalet ved uttak. Garantipensjonsbeholdninga di er på ".expr() +
-                                    garantipensjonVedVirk.beholdningForForsteUttak.format(true) +
-                                    " kroner, og delingstalet ved uttak er " + beregningKap20VedVirk.delingstallLevealder.format() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() +
+                                    ", og delingstalet ved uttak er " + beregningKap20VedVirk.delingstallLevealder.format() +
                                     ". Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt " +
                                     alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
-                            English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is NOK ".expr() +
-                                    garantipensjonVedVirk.beholdningForForsteUttak.format(true) +
+                            English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() +
                                     ", and the life expectancy divisor at withdrawal is " + beregningKap20VedVirk.delingstallLevealder.format() +
                                     ". Since you are not taking out full pension, you will only receive " +
                                     alderspensjonVedVirk.uttaksgrad.format() + " percent of this amount.",
@@ -379,19 +379,19 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                     }
                     //vedleggBeregnGarantipensjonsbeholdningRedusertTT_002
                     paragraph {
-                        val norskText = garantipensjonVedVirk.garantipensjonSatsPerAr.format(true) +
+                        val norskText = garantipensjonVedVirk.garantipensjonSatsPerAr.format(false) +
                                 " kr x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
                                 " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
-                                " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format(true) +
-                                " kr)) = " + garantipensjonVedVirk.beholdningForForsteUttak.format(true) + " kr"
+                                " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format(false) +
+                                " kr)) = " + garantipensjonVedVirk.beholdningForForsteUttak.format(false) + " kr"
                         textExpr(
                             Bokmal to norskText,
                             Nynorsk to norskText,
-                            English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format(true) +
+                            English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format(false) +
                                     " x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
                                     " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
-                                    " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format(true)
-                                    + ")) = NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(true),
+                                    " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format(false)
+                                    + ")) = NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(false),
                         )
                     }
                 }.orShow {
@@ -405,17 +405,17 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                     }
                     paragraph {
                         //vedleggBeregnGarantipensjonsbeholdningIkkeRedusertTT_002
-                        val norskText = garantipensjonVedVirk.garantipensjonSatsPerAr.format(true) +
+                        val norskText = garantipensjonVedVirk.garantipensjonSatsPerAr.format(false) +
                                 " kr x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
-                                " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format(true) +
-                                " kr)) = " + garantipensjonVedVirk.beholdningForForsteUttak.format(true) + " kr"
+                                " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format(false) +
+                                " kr)) = " + garantipensjonVedVirk.beholdningForForsteUttak.format(false) + " kr"
                         textExpr(
                             Bokmal to norskText, Nynorsk to norskText,
 
-                            English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format(true) +
+                            English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format(false) +
                                     " x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
-                                    " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format(true) +
-                                    ")) =  NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(true),
+                                    " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format(false) +
+                                    ")) =  NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(false),
                         )
                     }
                 }
