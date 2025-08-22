@@ -637,19 +637,19 @@ data class OmBeregningAvUfoeretrygd(
 
         paragraph {
             showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
-                val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format(true)
+                val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
                 textExpr(
-                    Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
-                    Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + " kroner.",
-                    English to "In ".expr() + periode.format() + ", your pensionable income was NOK " + inntektFoerFratrekk + ".",
+                    Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + ".",
+                    Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + ".",
+                    English to "In ".expr() + periode.format() + ", your pensionable income was " + inntektFoerFratrekk + ".",
                 )
             }
             showIf(pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
-                val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format(true)
+                val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
                 textExpr(
-                    Bokmal to " Etter fratrekk, viser beregningen vår at du hadde ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
-                    Nynorsk to " Etter fråtrekk, viser berekninga vår at du hadde ".expr() + inntektEtterFratrekk + " kroner i pensjonsgjevande inntekt.",
-                    English to " After deductions, our calculation shows that you had a pensionable income of NOK ".expr() + inntektEtterFratrekk + ".",
+                    Bokmal to " Etter fratrekk, viser beregningen vår at du hadde ".expr() + inntektEtterFratrekk + " i pensjonsgivende inntekt.",
+                    Nynorsk to " Etter fråtrekk, viser berekninga vår at du hadde ".expr() + inntektEtterFratrekk + " i pensjonsgjevande inntekt.",
+                    English to " After deductions, our calculation shows that you had a pensionable income of ".expr() + inntektEtterFratrekk + ".",
                 )
             }
         }

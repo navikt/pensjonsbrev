@@ -225,11 +225,11 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             paragraph {
                 textExpr(
                     Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format(true) + " kroner, og delingstallet ved uttak er "
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
                     Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format(true) + " kroner, og delingstalet ved uttak er "
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
                     English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is NOK ".expr() +
@@ -242,12 +242,12 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             paragraph {
                 textExpr(
                     Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format(true) + " kroner, og delingstallet ved uttak er " +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ". Siden du ikke tar ut full pensjon, vil du kun få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
                     Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format(true) + " kroner, og delingstalet ved uttak er " +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ".  Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 

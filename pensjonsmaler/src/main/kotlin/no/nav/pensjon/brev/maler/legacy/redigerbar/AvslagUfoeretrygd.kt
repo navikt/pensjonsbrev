@@ -1268,10 +1268,10 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         textExpr(
                             Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format(true) + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi tilsvarer dette en inntekt på " + oppjustertIfuFritekst + " kroner. Du har en inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format(true) + " kroner, og vi har derfor fastsatt din nedsatte inntektsevne til " + ufoeregradFritekst + " prosent.",
+                                .format() + ", og vi har derfor fastsatt din nedsatte inntektsevne til " + ufoeregradFritekst + " prosent.",
                             Nynorsk to "Inntekta di før du blei ufør, er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format(true) + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi svarer dette til ei inntekt på " + oppjustertIfuFritekst + " kroner. Du har ei inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format(true) + " kroner, og vi har derfor fastsett den nedsette inntektsevna di til " + ufoeregradFritekst + " prosent.",
+                                .format() + ", og vi har derfor fastsett den nedsette inntektsevna di til " + ufoeregradFritekst + " prosent.",
                             English to "Your income prior to your disability was determined as NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format(true) + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". Your current income is NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
                                 .format(true) + ", and we have thus determined your reduction in earning ability to " + ufoeregradFritekst + " percent.",
@@ -1293,10 +1293,10 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         textExpr(
                             Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format(true) + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi tilsvarer dette en inntekt på " + oppjustertIfuFritekst + " kroner. Det er dokumentert at du har inntektsmuligheter som du ikke benytter, og disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format(true) + " kroner, og din nedsatte inntektsevne er derfor fastsatt til " + ufoeregradFritekst + " prosent.",
+                                .format() + ", og din nedsatte inntektsevne er derfor fastsatt til " + ufoeregradFritekst + " prosent.",
                             Nynorsk to "Inntekta di før du blei ufør, er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format(true) + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi svarer dette til ei inntekt på " + oppjustertIfuFritekst + " kroner. Det er dokumentert at du har moglegheiter for å skaffe inntekter som du ikkje nyttar, og desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format(true) + " kroner, og den nedsette inntektsevna di er derfor fastsett til " + ufoeregradFritekst + " prosent.",
+                                .format() + ", og den nedsette inntektsevna di er derfor fastsett til " + ufoeregradFritekst + " prosent.",
                             English to "Your income prior to your disability was established as NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
                                 .format(true) + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". It has been documented that you have options for gainful employment that you are not taking advantage of, and these will be included when your income after your disability is calculated. Your income after your disability was determined as NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
                                 .format(true) + ", and your reduction in earning ability has been determined as " + ufoeregradFritekst + " percent.",

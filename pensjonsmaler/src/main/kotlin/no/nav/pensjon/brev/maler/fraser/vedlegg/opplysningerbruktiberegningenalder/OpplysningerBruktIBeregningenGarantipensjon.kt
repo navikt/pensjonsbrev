@@ -67,11 +67,11 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                     paragraph {
                         textExpr(
                             Bokmal to "Din årlige garantipensjon blir beregnet ved å dele garantipensjonsbeholdningen din på delingstallet ved uttak. Garantipensjonsbeholdningen din er på ".expr() +
-                                    garantipensjonVedVirk.beholdningForForsteUttak.format(true) + " kroner, og delingstallet ved uttak er " +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er " +
                                     beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
                             Nynorsk to "Den årlege garantipensjonen din blir rekna ut ved å dele garantipensjonsbeholdninga di på delingstalet ved uttak. Garantipensjonsbeholdninga di er på ".expr() +
-                                    garantipensjonVedVirk.beholdningForForsteUttak.format(true) + " kroner, og delingstalet ved uttak er " +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er " +
                                     beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
                             English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is NOK ".expr() +
