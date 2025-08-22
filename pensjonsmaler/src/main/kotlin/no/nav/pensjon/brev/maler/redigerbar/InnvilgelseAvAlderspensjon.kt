@@ -281,11 +281,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(
-                    saksbehandlerValg.harGjenlevendetillegg and gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(
-                        0
-                    )
-                ) {
+                showIf(gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(0)) {
                     // beregningAPGjtOpptj
                     paragraph {
                         text(

@@ -16,7 +16,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
         saksbehandlerValg = InnvilgelseAvAlderspensjonDto.SaksbehandlerValg(
             kravVirkDatoFomSenereEnnOensketUttakstidspunkt = false,
             harGjenlevenderett = false,
-            harGjenlevendetillegg = false,
             egenOpptjening = false,
             kildeskatt = false,
         ),

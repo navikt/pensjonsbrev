@@ -27,8 +27,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
         @DisplayText("Gjenlevenderett er brukt i beregningen")
         val harGjenlevenderett: Boolean,
-        @DisplayText("Gjenlevendetillegg er større enn 0")
-        val harGjenlevendetillegg: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
         @DisplayText("Hvis kildeskatt")
