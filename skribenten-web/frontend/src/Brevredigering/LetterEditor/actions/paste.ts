@@ -630,8 +630,6 @@ function traverseTable(element: Element, font: FontType): Table {
 function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
   if (element.children.length === 0) {
     const sanitizedText = cleansePastedText(element.textContent ?? "");
-    // Reject empty headings
-    if (sanitizedText.length === 0 && type !== "ITEM") return [];
     // allowed with empty list items
     return sanitizedText.length >= 0 ? [{ type, content: [{ type: "TEXT", font, text: sanitizedText }] }] : [];
   } else {
