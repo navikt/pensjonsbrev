@@ -798,13 +798,13 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
 
 function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
   return elements.reduce<T[]>((acc, curr) => {
-    const prev = acc.at(-1);
+    const previous = acc.at(-1);
 
-    if (prev?.type === "TEXT" && curr.type === "TEXT" && prev.font === curr.font) {
-      return [...acc.slice(0, -1), { ...prev, text: prev.text + curr.text }];
+    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
+      return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
+    } else {
+      return [...acc, curr];
     }
-
-    return [...acc, curr];
   }, []);
 }
 
