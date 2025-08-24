@@ -543,13 +543,20 @@ function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
   return moveOuterTextIntoNeighbouringParagraphs(elements);
 }
 
+function isOnlyWhitespace(node: Node) {
+  return !!node.textContent && !/[^\t\n\r ]/.test(node.textContent);
+}
+
 function traverseChildren(element: Element, font: FontType): TraversedElement[] {
   const traversedChildNodes: TraversedElement[] = [...element.childNodes].flatMap((node) => {
     switch (node.nodeType) {
       case Node.TEXT_NODE: {
-        const txt = cleansePastedText((node.textContent ?? "").trim());
-
-        return txt.length > 0 ? [{ type: "TEXT", font, text: txt }] : [];
+        if (!isOnlyWhitespace(node)) {
+          const text = cleansePastedText(node.textContent ?? "");
+          return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
+        } else {
+          return [];
+        }
       }
       case Node.ELEMENT_NODE: {
         return traverse(node as Element, font);
