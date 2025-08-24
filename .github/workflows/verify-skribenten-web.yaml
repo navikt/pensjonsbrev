@@ -77,7 +77,6 @@ jobs:
           command: npm run cypress:component
           browser: chrome
           component: true
-          start: npm run cypress
 
       - name: Run tests
         working-directory: skribenten-web/frontend
