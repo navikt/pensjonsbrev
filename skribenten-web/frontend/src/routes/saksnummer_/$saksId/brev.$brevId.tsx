@@ -425,6 +425,7 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
   const hasRequired = requiredFields.length > 0;
 
   const panelStyle = css`
+    /* stylelint-disable-next-line nesting-selector-no-missing-scoping-root */
     &[data-state="active"] {
       display: flex;
     }

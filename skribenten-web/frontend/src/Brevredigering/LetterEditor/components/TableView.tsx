@@ -21,7 +21,7 @@ const tableStyles = css`
   th {
     border: 1px solid #000;
     padding: 2mm;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   th {
