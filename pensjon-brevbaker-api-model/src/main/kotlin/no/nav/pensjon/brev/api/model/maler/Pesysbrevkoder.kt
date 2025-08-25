@@ -112,7 +112,8 @@ object Pesysbrevkoder {
         UT_AVSLAG_UFOERETRYGD,
         UT_INFORMASJON_OM_SAKSBEHANDLINGSTID,
         BRUKERTEST_BREV_PENSJON_2025,
-        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID;
+        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
+        UT_AVSLAG_UFOERETRYGD_V2;
 
         override fun kode(): String = this.name
     }
