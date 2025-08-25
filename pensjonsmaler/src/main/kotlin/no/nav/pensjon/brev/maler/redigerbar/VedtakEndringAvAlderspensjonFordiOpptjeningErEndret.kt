@@ -112,9 +112,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 ifNotNull(pesysData.alderspensjonVedVirk.skjermingstillegg) { skjermingstillegg ->
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is NOK " + skjermingstillegg.format() + "."
+                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "."
                         )
                     }
                 }
@@ -154,9 +154,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 ifNotNull(pesysData.alderspensjonVedVirk.skjermingstillegg) { skjermingstillegg ->
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får fortsatt ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            Nynorsk to "Du får framleis ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            English to "You will still receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is NOK " + skjermingstillegg.format() + "."
+                            Bokmal to "Du får fortsatt ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            Nynorsk to "Du får framleis ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            English to "You will still receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "."
                         )
                     }
                 }
@@ -228,9 +228,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     // innvilgelseAPInnledn_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygden.",
-                            English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
+                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
+                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygden.",
+                            English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
                         )
                     }
                 }.orShow {

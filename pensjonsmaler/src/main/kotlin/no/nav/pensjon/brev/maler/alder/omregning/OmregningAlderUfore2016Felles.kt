@@ -73,9 +73,9 @@ data class OmregningAlderUfore2016Felles(
 
         paragraph {
             textExpr(
-                Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkFom.format() + " i alderspensjon fra folketrygden.",
-                Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkFom.format() + " i alderspensjon frå folketrygda.",
-                English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkFom.format() + "  as retirement pension from the National Insurance Scheme"
+                Bokmal to "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå " + virkFom.format() + " i alderspensjon fra folketrygden.",
+                Nynorsk to "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra " + virkFom.format() + " i alderspensjon frå folketrygda.",
+                English to "You will receive ".expr() + totalPensjon.format() + " every month before tax from " + virkFom.format() + " as retirement pension from the National Insurance Scheme"
 
             )
         }
