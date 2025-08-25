@@ -47,6 +47,7 @@ import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoe
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
@@ -124,6 +125,7 @@ object ProductionTemplates : AllTemplates {
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
+        EndringPgaOpptjeningAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
