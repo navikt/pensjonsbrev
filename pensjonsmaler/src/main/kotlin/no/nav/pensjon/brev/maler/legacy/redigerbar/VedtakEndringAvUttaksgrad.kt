@@ -29,10 +29,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.vedtak
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.SaksbehandlerValgSelectors.visEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.VedtakSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
@@ -58,7 +56,6 @@ import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -304,8 +301,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             // skattAPendring_001
             includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
 
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
+            showIf(pesysData.vedtak.etterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }

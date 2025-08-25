@@ -43,11 +43,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonsutbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendetilleggTittel
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visGjenlevendetilleggPensjonsrettigheter
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visTilleggspensjonavsnittAP1967
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
@@ -114,8 +111,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(LocalDate.of(1944, Month.JANUARY, 1))
 
         title {
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.gjenlevendetilleggTittel) {
+            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                 text(
                     Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
                     Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
@@ -212,8 +208,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // beregningAPGjtKap19_001
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.visGjenlevendetilleggPensjonsrettigheter) {
+            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr() + pesysData.avdod.navn + ".",
@@ -369,8 +364,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // omregnetTPAvdod_001
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and saksbehandlerValg.visTilleggspensjonavsnittAP1967) {
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
                 paragraph {
                     text(
                         Bokmal to "Tilleggspensjonen til en gjenlevende alderspensjonist kan enten bestå av pensjonistens egen tilleggspensjon eller 55 prosent av summen av pensjonistens egen tilleggspensjon og den avdødes tilleggspensjon. Tilleggspensjonen din er gitt etter det siste alternativet, da dette gir det høyeste beløpet for deg.",
