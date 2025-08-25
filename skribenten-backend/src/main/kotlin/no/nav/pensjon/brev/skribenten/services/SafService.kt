@@ -11,7 +11,8 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
@@ -34,7 +35,19 @@ enum class JournalpostLoadingResult {
     ERROR, NOT_READY, READY
 }
 
-class SafService(config: Config, authService: AzureADService) : ServiceStatus {
+interface SafService {
+    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult
+    suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse>
+    suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray>
+
+    data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
+        data class Journalposter(val journalpost: Journalpost)
+        data class Journalpost(val journalpostId: String, val dokumenter: List<Dokument>)
+        data class Dokument(val dokumentInfoId: String)
+    }
+}
+
+class SafServiceHttp(config: Config, authService: AuthService) : SafService, ServiceStatus {
     private val safUrl = config.getString("url")
     private val safRestUrl = config.getString("rest_url")
     private val safScope = config.getString("scope")
@@ -53,12 +66,6 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
 
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
     data class HentJournalpostData(val journalpost: JournalPost)
-
-    data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
-        data class Journalposter(val journalpost: Journalpost)
-        data class Journalpost(val journalpostId: String, val dokumenter: List<Dokument>)
-        data class Dokument(val dokumentInfoId: String)
-    }
 
     data class JournalPost(val journalpostId: String, val journalstatus: Journalstatus)
     @Suppress("unused")
@@ -95,7 +102,7 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
                 JournalpostLoadingResult.ERROR
             }
 
-    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult =
+    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult =
         withTimeoutOrNull(TIMEOUT.seconds) {
             for (i in 1..TIMEOUT) {
                 delay(1000)
@@ -120,13 +127,13 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
             )
         }.toServiceResult<HentDokumenterResponse>()
 
-    suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse> =
+    override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse> =
         getDocumentsInJournal(journalpostId)
 
     /*
      * man kan spesifisere hvilket 'variantFormat' vi vil ha - per nå er vi bare interesert i 'ARKIV' versjonen
      */
-    suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> =
+    override suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> =
         hentFoersteDokumentInfoIdFraJournalpost(journalpostId).then { dokumentInfoId ->
             client.get("$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV").toServiceResult()
         }

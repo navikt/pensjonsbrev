@@ -22,9 +22,10 @@ fun <T : Any> Expression<T?>.ifNull(then: Expression<T>): Expression<T> =
 fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
     ifNull(then.expr())
 
-fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
+fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = isNull().not()
 
-fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> = equalTo(null)
+fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> =
+    BinaryOperation.Equal<T?>().invoke(this, Expression.Literal(null))
 
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> =
     BinaryOperation.EnumInList<Enum<T>>().invoke(this, enums.asList().expr())
@@ -62,18 +63,6 @@ fun <T> ifElse(condition: Expression<Boolean>, ifTrue: Expression<T>, ifFalse: E
 
 fun <In1, In2> Pair<Expression<In1>, Expression<In2>>.tuple(): Expression<Pair<In1, In2>> =
     BinaryOperation.Tuple<In1, In2>().invoke(first, second)
-
-fun <T> Expression<T>.notEqualTo(other: T): Expression<Boolean> =
-    not(equalTo(other))
-
-fun <T> Expression<T>.notEqualTo(other: Expression<T>): Expression<Boolean> =
-    not(equalTo(other))
-
-infix fun <T> Expression<T>.equalTo(other: T): Expression<Boolean> =
-    equalTo(other.expr())
-
-infix fun <T> Expression<T>.equalTo(other: Expression<T>): Expression<Boolean> =
-    BinaryOperation.Equal<T>().invoke(this, other)
 
 fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression =
     formatter(this, Expression.FromScope.Language)

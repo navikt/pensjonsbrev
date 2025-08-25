@@ -40,7 +40,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.beregnetpensjonPerMaanedVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.bruker
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.erEtterbetaling1Maaned
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurdering
@@ -53,6 +52,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.aarsakTilAtPensjonenOeker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonen
@@ -70,13 +70,13 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -101,6 +101,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
+//000117 i Doksys
 object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedFlyttingMellomLandDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -489,18 +490,18 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 // innvilgelseAPogUTInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                        Bokmal to "Du får ".expr() + totalPensjon + " hver måned før skatt fra " + virkDatoFom + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kvar månad før skatt frå " + virkDatoFom + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
                     )
                 }
             }.orShow {
                 // innvilgelseAPInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + " i alderspensjon fra folketrygden.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + " i alderspensjon frå folketrygda.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + " as retirement pension from the National Insurance Scheme."
+                        Bokmal to "Du får ".expr() + totalPensjon + " hver måned før skatt fra " + virkDatoFom + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kvar månad før skatt frå " + virkDatoFom + " i alderspensjon frå folketrygda.",
+                        English to "You will receive ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + " as retirement pension from the National Insurance Scheme."
                     )
                 }
             }
@@ -658,12 +659,12 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             includePhrase(InformasjonOmAlderspensjon)
 
             includePhrase(MeldFraOmEndringer2)
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
 
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlage)
+        includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkatt)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningen)

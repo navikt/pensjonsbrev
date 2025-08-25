@@ -160,9 +160,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     showIf(utbetalingData.avviksBeloep.absoluteValue().equalTo(0)) {
         paragraph {
             textExpr(
-                Bokmal to "Tabellen viser at du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format(),
-                Nynorsk to "Tabellen viser at du har fått utbetalt rett stønad i ".expr() + etteroppgjoersAar.format(),
-                English to "The table shows that you have been paid the correct amount of allowance in ".expr() + etteroppgjoersAar.format(),
+                Bokmal to "Tabellen viser at du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format() + ".",
+                Nynorsk to "Tabellen viser at du har fått utbetalt rett stønad i ".expr() + etteroppgjoersAar.format() + ".",
+                English to "The table shows that you have been paid the correct amount of allowance in ".expr() + etteroppgjoersAar.format() + ".",
             )
         }
     }
@@ -170,9 +170,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     .orShow {
         paragraph {
             textExpr(
-                Bokmal to "Du fikk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " kroner for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
-                Nynorsk to "Du fekk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " kroner for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
-                English to "You received NOK ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " in " + etteroppgjoersAar.format() + " including tax.",
+                Bokmal to "Du fikk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
+                Nynorsk to "Du fekk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
+                English to "You received ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " in " + etteroppgjoersAar.format() + " including tax.",
             )
         }
     }
@@ -328,9 +328,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
 
     paragraph {
         textExpr(
-            Bokmal to "I ".expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
-            Nynorsk to "Ifølgje opplysningar frå Skatteetaten og a-ordninga hadde du ei pensjonsgivande inntekt på ".expr() + grunnlag.inntekt.format() + " kroner inkludert skatt i " + etteroppgjoersAar.format()+ ".  Inntekta fordeler seg slik:",
-            English to "In ".expr() + etteroppgjoersAar.format()+ " your pensionable income was NOK " + grunnlag.inntekt.format() + " including tax, according to information obtained from the Tax Administration and A-scheme. This is distributed as follows: ",
+            Bokmal to "I ".expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
+            Nynorsk to "Ifølgje opplysningar frå Skatteetaten og a-ordninga hadde du ei pensjonsgivande inntekt på ".expr() + grunnlag.inntekt.format() + " inkludert skatt i " + etteroppgjoersAar.format()+ ".  Inntekta fordeler seg slik:",
+            English to "In ".expr() + etteroppgjoersAar.format()+ " your pensionable income was " + grunnlag.inntekt.format() + " including tax, according to information obtained from the Tax Administration and A-scheme. This is distributed as follows: ",
         )
     }
 
@@ -414,9 +414,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.in
 
     paragraph {
         textExpr(
-            Bokmal to "Vi har beregnet omstillingsstønaden din for ".expr() + etteroppgjoersAar.format() + " basert på en inntekt på " + grunnlagData.inntekt.format() + " kroner. Dette tilsvarer din pensjonsgivende inntekt minus fradragsbeløpet.",
-            Nynorsk to "Vi har rekna ut omstillingsstønaden din for ".expr() + etteroppgjoersAar.format() + " med utgangspunkt i ei inntekt på " + grunnlagData.inntekt.format() + " kroner. Dette svarer til den pensjonsgivande inntekta di minus frådragsbeløpet.",
-            English to "We have calculated your adjustment allowance for ".expr() + etteroppgjoersAar.format() + " based on an income of NOK " + grunnlagData.inntekt.format() + ". This corresponds to your pensionable income minus any deductions.",
+            Bokmal to "Vi har beregnet omstillingsstønaden din for ".expr() + etteroppgjoersAar.format() + " basert på en inntekt på " + grunnlagData.inntekt.format() + ". Dette tilsvarer din pensjonsgivende inntekt minus fradragsbeløpet.",
+            Nynorsk to "Vi har rekna ut omstillingsstønaden din for ".expr() + etteroppgjoersAar.format() + " med utgangspunkt i ei inntekt på " + grunnlagData.inntekt.format() + ". Dette svarer til den pensjonsgivande inntekta di minus frådragsbeløpet.",
+            English to "We have calculated your adjustment allowance for ".expr() + etteroppgjoersAar.format() + " based on an income of " + grunnlagData.inntekt.format() + ". This corresponds to your pensionable income minus any deductions.",
         )
     }
 

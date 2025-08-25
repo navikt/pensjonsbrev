@@ -28,7 +28,12 @@
         "vedtaksId": 9870
     },
     "redigertBrev": {
-        "title": "Bekreftelse på flyktningstatus",
+        "title": {
+          "text": [
+            { "id": 4, "parentId": null, "type": "LITERAL", "text": "Bekreftelse på flyktningstatus", "editedText": null, "tags": [] }
+          ],
+          "deletedContent": []
+        },
         "sakspart": {
             "gjelderNavn": "Pussig Cosinus",
             "gjelderFoedselsnummer": "15498407894",

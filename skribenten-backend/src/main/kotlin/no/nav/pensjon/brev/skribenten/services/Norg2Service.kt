@@ -12,9 +12,13 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
+interface Norg2Service {
+    suspend fun getEnhet(enhetId: String): NavEnhet?
+}
+
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2Service(val config: Config) {
-    private val logger = LoggerFactory.getLogger(Norg2Service::class.java)
+class Norg2ServiceHttp(val config: Config) : Norg2Service {
+    private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
     private val norgUrl = config.getString("url")
 
     private val client = HttpClient(CIO) {
@@ -30,7 +34,7 @@ class Norg2Service(val config: Config) {
     }
 
     private val enhetCache = Cache<String, NavEnhet>()
-    suspend fun getEnhet(enhetId: String) =
+    override suspend fun getEnhet(enhetId: String): NavEnhet? =
         enhetCache.cached(enhetId) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             client.get("api/v1/enhet/$enhetId")

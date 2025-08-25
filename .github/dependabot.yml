@@ -35,6 +35,8 @@ updates:
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
+    ignore:
+      - dependency-name: "no.nav.pensjon.brevbaker:brevbaker-api-model-common"
     groups:
       tjenestebuss:
         patterns:
@@ -56,7 +58,6 @@ updates:
           - "io.getunleash*"
           - "io.ktor*"
           - "io.micrometer*"
-          - "io.mockk*"
           - "net.logstash.logback:logstash-logback-encoder"
           - "no.nav*"
           - "org.assertj:assertj-core"

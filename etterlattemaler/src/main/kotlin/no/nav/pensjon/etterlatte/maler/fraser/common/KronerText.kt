@@ -16,9 +16,9 @@ data class KronerText(val kroner: Expression<Kroner>, val fontType: Element.Outl
     TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         textExpr(
-            Language.Bokmal to kroner.format() + " kr",
-            Language.Nynorsk to kroner.format() + " kr",
-            Language.English to "NOK ".expr() + kroner.format(),
+            Language.Bokmal to kroner.format(false) + " kr",
+            Language.Nynorsk to kroner.format(false) + " kr",
+            Language.English to "NOK ".expr() + kroner.format(false),
             fontType,
         )
 }

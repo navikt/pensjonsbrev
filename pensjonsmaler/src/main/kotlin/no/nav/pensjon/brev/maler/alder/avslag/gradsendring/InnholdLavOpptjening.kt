@@ -63,11 +63,11 @@ data class InnholdLavOpptjening(
                 item {
                     textExpr(
                         Bokmal to "For å kunne ta ut mer alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                ", må pensjonen din minst utgjøre ".expr() + minstePensjonssats.format() + " kroner i året.",
+                                ", må pensjonen din minst utgjøre ".expr() + minstePensjonssats.format() + " i året.",
                         Nynorsk to "For å kunne ta ut meir alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                ", må pensjonen din minst utgjer ".expr() + minstePensjonssats.format() + " kroner i året.",
+                                ", må pensjonen din minst utgjer ".expr() + minstePensjonssats.format() + " i året.",
                         English to "In order for you to be eligible for a higher retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year.",
+                                ", your retirement pension must be, at minimum, ".expr() + minstePensjonssats.format() + " a year.",
                     )
 
                     showIf(prorataBruktIBeregningen) {
@@ -90,13 +90,13 @@ data class InnholdLavOpptjening(
                     }
                     textExpr(
                         Bokmal to "Dersom du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon fra "
-                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i full pensjon når du blir ".expr() +
+                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " årlig i full pensjon når du blir ".expr() +
                                 normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                         Nynorsk to "Dersom du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon frå "
-                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årleg i full pensjon når du blir ".expr() +
+                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " årleg i full pensjon når du blir ".expr() +
                                 normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                         English to "If you draw a retirement pension of ".expr() + uttaksgrad.format() + " percent from "
-                                + virkFom.format() + ", your retirement pension is calculated to be NOK " + totalPensjon.format() + " a year at age ".expr() +
+                                + virkFom.format() + ", your retirement pension is calculated to be " + totalPensjon.format() + " a year at age ".expr() +
                                 normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                     )
                     showIf(afpBruktIBeregning) {

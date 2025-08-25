@@ -34,6 +34,7 @@ data class EndretUTPgaInntektDtoV2 (
         val nettoPerAr: Int,
         val nettoAkkumulert: Int,
         val nettoRestbelop: Int,
+        val totalNettoInnevarendeAr: Int?,
     )
 
     data class BarnetilleggFellesbarn(
@@ -45,6 +46,8 @@ data class EndretUTPgaInntektDtoV2 (
         val fribelop: Int,
         val inntektstak: Int,
         val antallBarn: Int,
+        val periodisert: Boolean?,
+        val totalNettoInnevarendeAr: Int?
     )
 
     data class BarnetilleggSaerkullsbarn(

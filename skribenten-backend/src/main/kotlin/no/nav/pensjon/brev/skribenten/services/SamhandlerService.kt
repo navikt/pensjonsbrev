@@ -11,13 +11,19 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
 import org.slf4j.LoggerFactory
 
-class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADService) : ServiceStatus {
+interface SamhandlerService {
+    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto
+    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto
+    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
+}
+
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -33,9 +39,9 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
         callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
     }
 
-    private val logger = LoggerFactory.getLogger(SamhandlerService::class.java)
+    private val logger = LoggerFactory.getLogger(SamhandlerServiceHttp::class.java)
 
-    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
+    override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
         samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
@@ -47,7 +53,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
             }
 
-    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
         samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
             url {
                 appendPathSegments(idTSSEkstern)
@@ -62,7 +68,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
             }
 
     private val samhandlerNavnCache = Cache<String, String>()
-    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
         hentSamhandler(idTSSEkstern).success?.navn
     }
 

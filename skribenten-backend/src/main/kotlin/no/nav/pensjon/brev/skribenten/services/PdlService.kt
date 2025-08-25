@@ -3,29 +3,40 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.accept
+import io.ktor.client.request.headers
+import io.ktor.client.request.options
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
 
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
 
-private val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
+private val hentNavnQuery = PdlServiceHttp::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
-private val hentAdressebeskyttelseQuery = PdlService::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
+private val hentAdressebeskyttelseQuery = PdlServiceHttp::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
 
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
-class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
+interface PdlService {
+    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String>
+    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>>
+}
+
+class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
@@ -81,7 +92,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
+    override suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
         return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -103,7 +114,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
+    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
         return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)

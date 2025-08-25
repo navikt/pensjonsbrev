@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON_GJENLEVEN
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_ENG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_OPEN_HOURS
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -150,7 +151,7 @@ object AdhocAlderspensjonGjtVarselBrev : AutobrevTemplate<EmptyBrevdata> {
                             "kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     English to "You can find more information about survivor's pension at $ALDERSPENSJON_GJENLEVENDE_URL_EN. " +
                             "At $KONTAKT_ENG_URL you can chat or write to us. If you do not find the answer at $NAV_URL, " +
-                            "you can call us at +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                            "you can call us at +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays $NAV_KONTAKTSENTER_OPEN_HOURS.",
                 )
             }
         }

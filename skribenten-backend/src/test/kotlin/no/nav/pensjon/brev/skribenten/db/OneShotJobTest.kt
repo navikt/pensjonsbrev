@@ -3,13 +3,8 @@ package no.nav.pensjon.brev.skribenten.db
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.oneShotJobs
-import no.nav.pensjon.brev.skribenten.services.LeaderElection
-import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -23,9 +18,6 @@ class OneShotJobTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
     private val config = ConfigFactory.parseMap(mapOf("services.leader.url" to null))
     private val jobnameCounter = AtomicInteger(0)
-    private val leaderService = mockk<LeaderService> {
-        every { isLeaderElectionEnabled } returns true
-    }
 
     init {
         postgres.start()
@@ -120,14 +112,8 @@ class OneShotJobTest {
         val name = jobName("not-leader-job")
         var isExecuted = false
 
-        coEvery { leaderService.electedLeader() } returns LeaderElection(
-            isThisInstanceLeader = false,
-            thisInstanceName = "not-leader-instance",
-            leaderName = "leader-instance"
-        )
-
         runBlocking {
-            oneShotJobs(leaderService) {
+            oneShotJobs(FakeLeaderService(true, false)) {
                 job(name) {
                     isExecuted = true
                 }
@@ -146,14 +132,8 @@ class OneShotJobTest {
         val name = jobName("leader-job")
         var isExecuted = false
 
-        coEvery { leaderService.electedLeader() } returns LeaderElection(
-            isThisInstanceLeader = true,
-            thisInstanceName = "leader-instance",
-            leaderName = "leader-instance"
-        )
-
         runBlocking {
-            oneShotJobs(leaderService) {
+            oneShotJobs(FakeLeaderService(true, true)) {
                 job(name) {
                     isExecuted = true
                 }

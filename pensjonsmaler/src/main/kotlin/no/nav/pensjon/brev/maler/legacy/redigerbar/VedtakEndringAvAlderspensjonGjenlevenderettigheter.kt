@@ -90,6 +90,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 import java.time.Month
 
+// 00126 i doksys
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
     RedigerbarTemplate<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto> {
@@ -271,7 +272,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
                 showIf(pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)) {
                     // forklaringberegningGjtKap19_148_11
-                    showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).equalTo(0)) {
+                    showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).equalTo(0)) {
                         paragraph {
                             text(
                                 Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening.",
@@ -453,13 +454,13 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             .format() + " etter gamle regler og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " etter nye regler.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         )
                             .format() + " etter gamle reglar og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " etter nye reglar.",
-                        English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         )
                             .format() + " according to old rules and " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(

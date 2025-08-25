@@ -167,8 +167,13 @@ export type Title2Block = Block & {
   readonly content: TextContent[];
 };
 
+export type Title = {
+  readonly text: TextContent[];
+  readonly deletedContent: number[];
+};
+
 export interface EditedLetter {
-  readonly title: string;
+  readonly title: Title;
   readonly sakspart: Sakspart;
   readonly blocks: AnyBlock[];
   readonly signatur: Signatur;

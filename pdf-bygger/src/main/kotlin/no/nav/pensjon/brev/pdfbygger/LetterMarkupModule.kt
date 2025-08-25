@@ -22,30 +22,30 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 internal object LetterMarkupModule : SimpleModule() {
     private fun readResolve(): Any = LetterMarkupModule
 
-    class DeserializationException(message: String): Exception(message)
+    class DeserializationException(message: String) : Exception(message)
 
     init {
         addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
 
-        addInterfaceDeserializer<LetterMarkup.Sakspart, SakspartImpl>()
-        addInterfaceDeserializer<LetterMarkup.Signatur, SignaturImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>()
-        addInterfaceDeserializer<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        addInterfaceDeserializer<LetterMarkup, LetterMarkupImpl>()
+        addAbstractTypeMapping<LetterMarkup.Sakspart, SakspartImpl>()
+        addAbstractTypeMapping<LetterMarkup.Signatur, SignaturImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>()
+        addAbstractTypeMapping<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
+        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
     }
 
     private fun blockDeserializer() =
@@ -101,7 +101,6 @@ fun pdfByggerObjectMapper() = jacksonObjectMapper().apply { pdfByggerConfig() }
 fun ObjectMapper.pdfByggerConfig() {
     registerModule(JavaTimeModule())
     registerModule(LetterMarkupModule)
-    registerModule(PrimitiveModule)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)

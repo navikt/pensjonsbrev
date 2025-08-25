@@ -124,6 +124,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
             override fun isEnabled(toggle: FeatureToggle): Boolean = true
+            override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
         })
     }
 

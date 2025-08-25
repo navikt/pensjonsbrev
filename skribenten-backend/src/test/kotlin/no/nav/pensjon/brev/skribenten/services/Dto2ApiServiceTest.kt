@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -14,7 +12,6 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
@@ -23,45 +20,48 @@ class Dto2ApiServiceTest {
     private val saksbehandler = NavIdent("Z123")
     private val attestant = NavIdent("A 456")
 
-    private val navansattService = mockk<NavansattService>()
-    private val norg2Service = mockk<Norg2Service>()
-    private val samhandlerService = mockk<SamhandlerService>()
-    private val dto2ApiService = Dto2ApiService(
-        brevbakerService = mockk {
-            coEvery { getRedigerbarTemplate(eq(Testbrevkoder.TESTBREV)) } returns TemplateDescription.Redigerbar(
-                name = Testbrevkoder.TESTBREV.kode(),
-                letterDataClass = EksempelRedigerbartDto::class.java.name,
-                languages = listOf(LanguageCode.BOKMAL),
-                metadata = LetterMetadata(
-                    "Redigerbart eksempelbrev",
-                    false,
-                    LetterMetadata.Distribusjonstype.VIKTIG,
-                    LetterMetadata.Brevtype.INFORMASJONSBREV
-                ),
-                kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
-                brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                sakstyper = Sakstype.all,
-            )
-        },
-        navansattService = navansattService,
-        norg2Service = norg2Service,
-        samhandlerService = samhandlerService,
-    )
-
-    @BeforeEach
-    fun stage() {
-        stageAnsatt(saksbehandler, "Saksbehandler", "Saksbehandlersen")
-        stageAnsatt(attestant, "Peder", "AAs")
-    }
+    private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service(), samhandlerService: SamhandlerService = FakeSamhandlerService()): Dto2ApiService =
+        Dto2ApiService(
+            brevbakerService = FakeBrevbakerService(
+                redigerbareMaler = mutableMapOf(Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
+                    name = Testbrevkoder.TESTBREV.kode(),
+                    letterDataClass = EksempelRedigerbartDto::class.java.name,
+                    languages = listOf(LanguageCode.BOKMAL),
+                    metadata = LetterMetadata(
+                        "Redigerbart eksempelbrev",
+                        false,
+                        LetterMetadata.Distribusjonstype.VIKTIG,
+                        LetterMetadata.Brevtype.INFORMASJONSBREV
+                    ),
+                    kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+                    brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+                    sakstyper = Sakstype.all,
+                ))),
+            navansattService = navansattService,
+            norg2Service = norg2Service,
+            samhandlerService = samhandlerService,
+        )
 
     @Test
     fun `henter navn for opprettetAv og sistredigertAv`(): Unit = runBlocking {
         val opprettetAv = NavIdent("Z100")
         val sistredigertAv = NavIdent("Z101")
-        stageAnsatt(opprettetAv, "Opprettet", "Av")
-        stageAnsatt(sistredigertAv, "Sist Redigert", "Av")
 
-        val result = dto2ApiService.toApi(createBrev(opprettetAv = opprettetAv, sistredigertAv = sistredigertAv))
+        val navansattService = FakeNavansattService(
+            navansatte = mapOf(
+                saksbehandler.id to "Saksbehandler Saksbehandlersen",
+                attestant.id to "Peder AAs",
+                opprettetAv.id to "Opprettet Av",
+                sistredigertAv.id to "Sist Redigert Av"
+            )
+        )
+
+        val result = lagDto2ApiService(navansattService).toApi(
+            createBrev(
+                opprettetAv = opprettetAv,
+                sistredigertAv = sistredigertAv
+            )
+        )
 
         assertThat(result.opprettetAv).isEqualTo(Api.NavAnsatt(opprettetAv, "Opprettet Av"))
         assertThat(result.sistredigertAv).isEqualTo(Api.NavAnsatt(sistredigertAv, "Sist Redigert Av"))
@@ -70,21 +70,26 @@ class Dto2ApiServiceTest {
     @Test
     fun `henter brevtittel fra brevbaker`(): Unit = runBlocking {
         val brev = createBrev()
-        assertThat(dto2ApiService.toApi(brev).brevtittel).isEqualTo("Redigerbart eksempelbrev")
+        assertThat(lagDto2ApiService().toApi(brev).brevtittel).isEqualTo("Redigerbart eksempelbrev")
     }
 
     @Test
     fun `henter navn paa avsenderEnhet`(): Unit = runBlocking {
         val brev = createBrev(avsenderEnhetId = "1234")
-        coEvery { norg2Service.getEnhet(eq("1234")) } returns NavEnhet("1234", "En kul enhet")
-        assertThat(dto2ApiService.toApi(brev).avsenderEnhet).isEqualTo(NavEnhet("1234", "En kul enhet"))
+        val norg2Service = FakeNorg2Service(mapOf("1234" to NavEnhet("1234", "En kul enhet")))
+        assertThat(lagDto2ApiService(norg2Service = norg2Service).toApi(brev).avsenderEnhet).isEqualTo(NavEnhet("1234", "En kul enhet"))
     }
 
     @Test
     fun `henter navn paa samhandler mottaker`(): Unit = runBlocking {
         val brev = createBrev(mottaker = Dto.Mottaker.samhandler("tss123"))
-        coEvery { samhandlerService.hentSamhandlerNavn(eq("tss123")) } returns "Verdens kuleste samhandler"
-        assertThat(dto2ApiService.toApi(brev).mottaker).isEqualTo(Api.OverstyrtMottaker.Samhandler("tss123", "Verdens kuleste samhandler"))
+        val samhandlerService = FakeSamhandlerService(mapOf("tss123" to "Verdens kuleste samhandler"))
+        assertThat(lagDto2ApiService(samhandlerService = samhandlerService).toApi(brev).mottaker).isEqualTo(
+            Api.OverstyrtMottaker.Samhandler(
+                "tss123",
+                "Verdens kuleste samhandler"
+            )
+        )
     }
 
     private fun createBrev(
@@ -115,8 +120,4 @@ class Dto2ApiServiceTest {
         attestertAv = attestertAv,
         status = Dto.BrevStatus.KLADD
     )
-
-    private fun stageAnsatt(id: NavIdent, fornavn: String, etternavn: String) {
-        coEvery { navansattService.hentNavansatt(eq(id.id)) } returns Navansatt(emptyList(), "$fornavn $etternavn", fornavn, etternavn)
-    }
 }
