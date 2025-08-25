@@ -154,4 +154,8 @@ interface LetterMarkup {
             }
         }
     }
+
+    fun validateAndThrow() = LetterMarkupValidator.validateAndThrow(this)
 }
+
+class IllegalLetterMarkupException(message: String) : Exception(message)

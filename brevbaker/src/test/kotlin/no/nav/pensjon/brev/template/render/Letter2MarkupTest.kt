@@ -47,7 +47,9 @@ class Letter2MarkupTest {
 
     @Test
     fun `paragraph element renders as block of type PARAGRAPH`() {
-        val result = renderTemplate(EmptyBrevdata) { paragraph { } }
+        val result = renderTemplate(EmptyBrevdata) { paragraph {
+            text(Bokmal to "hei")
+        } }
 
         assertEquals(LetterMarkup.Block.Type.PARAGRAPH, result.letterMarkup.blocks.firstOrNull()?.type)
     }
@@ -130,7 +132,7 @@ class Letter2MarkupTest {
                 textExpr(Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
             }
             outline {
-                paragraph { }
+                paragraph { text(Bokmal to "hei") }
             }
         }
         val result = Letter2Markup.render(LetterImpl(template, EmptyBrevdata, Bokmal, felles))
