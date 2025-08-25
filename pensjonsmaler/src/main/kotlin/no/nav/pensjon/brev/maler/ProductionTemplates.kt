@@ -85,6 +85,7 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansInitie
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringVedFlyttingMellomLand
 import no.nav.pensjon.brev.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjening
 import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLand
+import no.nav.pensjon.brev.maler.ufoereBrev.AvslagUforetrygd
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
@@ -192,6 +193,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakStansAlderspensjonFlyttingMellomLand,
+        AvslagUforetrygd,
     )
 
     override fun hentAutobrevmaler() = autobrev
