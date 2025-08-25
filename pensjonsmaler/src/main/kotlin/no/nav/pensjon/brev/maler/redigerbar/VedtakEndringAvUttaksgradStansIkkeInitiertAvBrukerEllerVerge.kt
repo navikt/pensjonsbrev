@@ -85,7 +85,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                     // stansAPOpptjen_001
                     textExpr(
                         Language.Bokmal to "Vi viser til varselbrevet vi har sendt deg. Nav stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du ikke lenger har høy nok opptjening.",
-                        Language.Nynorsk to "Vi viser til varselbrevet vi har sendt deg. Nav stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + "  fordi du ikkje lenger har høg nok opptening.",
+                        Language.Nynorsk to "Vi viser til varselbrevet vi har sendt deg. Nav stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du ikkje lenger har høg nok opptening.",
                         Language.English to "We refer to the notice letter we sent you. Nav is stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because you no longer have high enough pension earnings.",
                     )
                 }

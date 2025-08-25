@@ -4,13 +4,11 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -25,7 +23,6 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.dagensDato
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.norskInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.resultatType
@@ -113,18 +110,18 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Per 31. desember ".expr() + data.etteroppgjoersAar.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
-                    Language.Nynorsk to "Per 31. desember ".expr() + data.etteroppgjoersAar.format() + " er eitt rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
-                    Language.English to "As of 31 December ".expr() + data.etteroppgjoersAar.format() + " a standard court fee is NOK " + data.rettsgebyrBeloep.format() + ".",
+                    Language.Bokmal to "Per 31. desember ".expr() + data.etteroppgjoersAar.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + ".",
+                    Language.Nynorsk to "Per 31. desember ".expr() + data.etteroppgjoersAar.format() + " er eitt rettsgebyr " + data.rettsgebyrBeloep.format() + ".",
+                    Language.English to "As of 31 December ".expr() + data.etteroppgjoersAar.format() + " a standard court fee is " + data.rettsgebyrBeloep.format() + ".",
                 )
             }
 
             // dersom feilutbetalt beløp (tilbakekreving)
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)){
                 paragraph {
-                    textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
-                        Language.Nynorsk to "Utrekninga vår viser at du har fått ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for mykje i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet.",
-                        Language.English to "Our calculations show that you have been overpaid NOK ".expr() + data.avviksBeloep.absoluteValue().format() +" in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you.",
+                    textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + data.avviksBeloep.absoluteValue().format() +" for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
+                        Language.Nynorsk to "Utrekninga vår viser at du har fått ".expr() + data.avviksBeloep.absoluteValue().format() +" for mykje i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet.",
+                        Language.English to "Our calculations show that you have been overpaid ".expr() + data.avviksBeloep.absoluteValue().format() +" in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you.",
                     )
                 }
             }
@@ -133,9 +130,9 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.ETTERBETALING)){
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
-                        Language.Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for lite i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig 25 prosent av rettsgebyret.",
-                        Language.English to "Our calculations show that you have been paid NOK ".expr() + data.avviksBeloep.absoluteValue().format() +" too little in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds 25 percent of a standard court fee."
+                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
+                        Language.Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" for lite i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig 25 prosent av rettsgebyret.",
+                        Language.English to "Our calculations show that you have been paid ".expr() + data.avviksBeloep.absoluteValue().format() +" too little in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds 25 percent of a standard court fee."
                     )
                 }
 
@@ -162,9 +159,9 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                     // for lite utbetalt mindre en 0,25 RG eller for mye utbetalt mindre en 1 RG
                     paragraph {
                         textExpr(
-                            Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner "+ ifElse(data.avviksBeloep.greaterThan(0), "for mye", "for lite") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innenfor toleransegrensen, og det vil derfor ikke bli "+ ifElse(data.avviksBeloep.greaterThan(0),"tilbakekrevd","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
-                            Language.Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner "+ ifElse(data.avviksBeloep.greaterThan(0), "for mykje", "for lite") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innanfor toleransegrensa, og det vil difor ikkje bli "+ ifElse(data.avviksBeloep.greaterThan(0),"kravd tilbake","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
-                            Language.English to "Our calculations show that you have been paid NOK ".expr() + data.avviksBeloep.absoluteValue().format() +" "+ ifElse(data.avviksBeloep.greaterThan(0), "too much", "too little") +" in adjustment allowance for "+data.etteroppgjoersAar.format()+". This is within tolerance limits - therefore there will be no "+ ifElse(data.avviksBeloep.greaterThan(0),"demand for repayment","post-payment") +" of adjustment allowance for "+data.etteroppgjoersAar.format()+"."
+                            Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" "+ ifElse(data.avviksBeloep.greaterThan(0), "for mye", "for lite") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innenfor toleransegrensen, og det vil derfor ikke bli "+ ifElse(data.avviksBeloep.greaterThan(0),"tilbakekrevd","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
+                            Language.Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" "+ ifElse(data.avviksBeloep.greaterThan(0), "for mykje", "for lite") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innanfor toleransegrensa, og det vil difor ikkje bli "+ ifElse(data.avviksBeloep.greaterThan(0),"kravd tilbake","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
+                            Language.English to "Our calculations show that you have been paid ".expr() + data.avviksBeloep.absoluteValue().format() +" "+ ifElse(data.avviksBeloep.greaterThan(0), "too much", "too little") +" in adjustment allowance for "+data.etteroppgjoersAar.format()+". This is within tolerance limits - therefore there will be no "+ ifElse(data.avviksBeloep.greaterThan(0),"demand for repayment","post-payment") +" of adjustment allowance for "+data.etteroppgjoersAar.format()+"."
                         )
                     }
                 }
