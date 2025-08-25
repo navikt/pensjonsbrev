@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.fraser.common
 import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
@@ -19,9 +18,9 @@ data class KronerText(
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         textExpr(
-            Bokmal to kroner.format() + " kr",
-            Nynorsk to kroner.format() + " kr",
-            English to "NOK ".expr() + kroner.format(),
+            Bokmal to kroner.format(false) + " kr",
+            Nynorsk to kroner.format(false) + " kr",
+            English to "NOK ".expr() + kroner.format(false),
             fontType,
         )
 }
