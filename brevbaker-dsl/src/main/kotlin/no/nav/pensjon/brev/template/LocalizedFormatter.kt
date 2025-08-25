@@ -66,14 +66,13 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
                 .apply { maximumFractionDigits = 0 }
                 .format(first.value)
                 .replace(' ', NON_BREAKING_SPACE).let {
-                    when {
-                        !denominator -> it
-                        second in setOf(Language.Bokmal, Language.Nynorsk) -> "$it kroner"
-                        second == Language.English -> "NOK $it"
-                        else -> throw IllegalArgumentException("Uforventa feil, med kroner $first, språk $second og denominator true")
-                    }
+                    if (denominator) {
+                        when (second) {
+                            Language.Bokmal, Language.Nynorsk -> "$it kroner"
+                            Language.English -> "NOK $it"
+                        }
+                    } else it
                 }
-
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
