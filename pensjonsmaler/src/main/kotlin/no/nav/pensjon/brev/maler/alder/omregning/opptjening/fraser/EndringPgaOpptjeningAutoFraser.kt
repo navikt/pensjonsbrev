@@ -20,11 +20,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
@@ -159,32 +158,19 @@ data class AvsnittFlereBeregningsperioder(
         ) {
             paragraph {
                 text(
-                    Language.Bokmal to "I vedlegget \"",
-                    Language.Nynorsk to "I vedlegget \"",
-                    Language.English to "In the appendix \"",
+                    Language.Bokmal to "I vedlegget ",
+                    Language.Nynorsk to "I vedlegget ",
+                    Language.English to "In the appendix ",
                 )
-                showIf(
-                    regelverkType.equalTo(AlderspensjonRegelverkType.AP2011) or regelverkType.equalTo(
-                        AlderspensjonRegelverkType.AP2016
-                    )
-                ) {
-                    text(
-                        Language.Bokmal to "Opplysninger brukt i beregningen",
-                        Language.Nynorsk to "Opplysningar brukte i berekninga",
-                        Language.English to "Information about your calculation",
-                    )
-                }
-                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
-                    text(
-                        Language.Bokmal to "Slik har vi beregnet pensjonen din",
-                        Language.Nynorsk to "Slik har vi berekna pensjonen din",
-                        Language.English to "This is how we have calculated your pension",
-                    )
+                showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2011, AlderspensjonRegelverkType.AP2016)) {
+                    namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                }.orShowIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
+                    namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                 }
                 text(
-                    Language.Bokmal to "\" finner du detaljer om din månedlige pensjon.",
-                    Language.Nynorsk to "\" finn du detaljar om din månadlege pensjon.",
-                    Language.English to "\" you will find more details about your monthly pension.",
+                    Language.Bokmal to " finner du detaljer om din månedlige pensjon.",
+                    Language.Nynorsk to " finn du detaljar om din månadlege pensjon.",
+                    Language.English to " you will find more details about your monthly pension.",
                 )
             }
         }
@@ -434,32 +420,21 @@ data class AvsnittBegrunnelseForVedtaket(
             }
 
             text(
-                Language.Bokmal to "Du kan finne mer informasjon i vedlegget \"",
-                Language.Nynorsk to "Du kan finne meir informasjon i vedlegget \"",
-                Language.English to "You will find more information in the appendix \""
+                Language.Bokmal to "Du kan finne mer informasjon i vedlegget ",
+                Language.Nynorsk to "Du kan finne meir informasjon i vedlegget ",
+                Language.English to "You will find more information in the appendix "
             )
             showIf(
-                regelverkType.equalTo(AlderspensjonRegelverkType.AP2011) or regelverkType.equalTo(
-                    AlderspensjonRegelverkType.AP2016
-                )
-            ) {
-                text(
-                    Language.Bokmal to "Opplysninger brukt i beregningen",
-                    Language.Nynorsk to "Opplysningar brukte i berekninga",
-                    Language.English to "Information about your calculation",
-                )
+                regelverkType.isOneOf(AlderspensjonRegelverkType.AP2011, AlderspensjonRegelverkType.AP2016)) {
+                namedReference(vedleggOpplysningerBruktIBeregningenAlder)
             }
             showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
-                text(
-                    Language.Bokmal to "Slik har vi beregnet pensjonen din",
-                    Language.Nynorsk to "Slik har vi berekna pensjonen din",
-                    Language.English to "This is how we have calculated your pension",
-                )
+                namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
             }
             text(
-                Language.Bokmal to "\".",
-                Language.Nynorsk to "\".",
-                Language.English to "\".",
+                Language.Bokmal to ".",
+                Language.Nynorsk to ".",
+                Language.English to ".",
             )
         }
         showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING) and antallAarEndretOpptjening.greaterThan(0)) {
