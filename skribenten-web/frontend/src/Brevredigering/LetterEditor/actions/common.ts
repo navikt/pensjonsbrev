@@ -392,7 +392,7 @@ export function newRow(colCount: number): Row {
   };
 }
 
-export function newColSpec(colCount: number): ColumnSpec[] {
+export function newColSpec(colCount: number, headers?: { text: string; font?: FontType }[]): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
     parentId: null,
@@ -403,8 +403,8 @@ export function newColSpec(colCount: number): ColumnSpec[] {
       parentId: null,
       text: [
         newLiteral({
-          editedText: `Kolonne ${i + 1}`,
-          fontType: FontType.PLAIN,
+          editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
+          fontType: headers?.[i]?.font ?? FontType.PLAIN,
         }),
       ],
     },
@@ -413,4 +413,22 @@ export function newColSpec(colCount: number): ColumnSpec[] {
 
 export function safeIndex(index: number, array: unknown[]) {
   return Math.max(0, Math.min(index, array.length - 1));
+}
+
+const stripZeroWidth = (s: string) => s.replaceAll("\u200B", "");
+
+/**
+ * Returns true if any provided column contains header content.
+ * Counts VARIABLES and any non-empty literal (including “Kolonne N”).
+ */
+export function hasHeaderContentCols(colSpec: ColumnSpec[]): boolean {
+  if (!colSpec || colSpec.length === 0) return false;
+  return colSpec.some((col) =>
+    col.headerContent.text.some((txt) => {
+      if (txt.type === VARIABLE) return true;
+      const raw = text(txt) ?? "";
+      const cleaned = stripZeroWidth(cleanseText(raw)).trim();
+      return cleaned.length > 0;
+    }),
+  );
 }
