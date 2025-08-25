@@ -137,7 +137,7 @@ Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_
 
 ## Endring av obligatoriske felter i API-model
 
-Brevbakeren bruker pensjon-brevbaker-api-model for bestilling av brev.
+Brevbakeren bruker pensjon-brevbaker-api-model og ufoere-brevbaker-api-model for bestilling av brev.
 Api modellen eksporteres som artifakt og brukes av eksterne systemer for å fylle ut informasjon som kreves ved bestilling av brev.
 
 Vi må kunne endre på obligatoriske felter i api modellen uten å ødelegge pågående brevbestillinger i produksjon.

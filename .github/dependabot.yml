@@ -29,6 +29,8 @@ updates:
       - "/skribenten-backend"
       - "/template-model-generator"
       - "/tjenestebuss-integrasjon"
+      - "/ufoere-brevbaker-api-model"
+      - "/ufoeremaler"
     schedule:
       interval: "monthly"
       day: "sunday"
