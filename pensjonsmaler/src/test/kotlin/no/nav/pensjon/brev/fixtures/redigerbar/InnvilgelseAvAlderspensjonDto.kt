@@ -43,7 +43,7 @@ fun createInnvilgelseAvAlderspensjonDto() =
             ),
             avdodFnr = null,
             avdodNavn = null,
-            avtalelandNavn = null,
+            avtalelandNavn = "Sverige",
             borIAvtaleland = false,
             borINorge = false,
             erEOSLand = false,
