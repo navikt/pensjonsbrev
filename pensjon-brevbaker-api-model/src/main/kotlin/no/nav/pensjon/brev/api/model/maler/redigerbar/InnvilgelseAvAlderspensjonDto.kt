@@ -27,8 +27,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
-        @DisplayText("Hvis kildeskatt")
-        val kildeskatt: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(

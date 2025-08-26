@@ -16,7 +16,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
         saksbehandlerValg = InnvilgelseAvAlderspensjonDto.SaksbehandlerValg(
             kravVirkDatoFomSenereEnnOensketUttakstidspunkt = false,
             egenOpptjening = false,
-            kildeskatt = false,
         ),
         pesysData = InnvilgelseAvAlderspensjonDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
