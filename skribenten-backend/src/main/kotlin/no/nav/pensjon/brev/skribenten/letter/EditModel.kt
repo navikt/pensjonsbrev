@@ -5,11 +5,9 @@ package no.nav.pensjon.brev.skribenten.letter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.ArrayNode
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -186,41 +184,8 @@ object Edit {
             addDeserializer(Block::class.java, blockDeserializer())
             addDeserializer(ParagraphContent::class.java, paragraphContentDeserializer())
             addDeserializer(ParagraphContent.Text::class.java, textContentDeserializer())
-            // TODO: Fjern når databasen er oppdatert med Title som et objekt.
-            addDeserializer(Title::class.java, TitleAsMarkupOrStringDeserializer)
         }
 
-
-        private object TitleAsMarkupOrStringDeserializer : JsonDeserializer<Title>() {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Title {
-                val node = p.codec.readTree<JsonNode>(p)
-
-                return if (node.isTextual) {
-                    Title(
-                        listOf(
-                            Edit.ParagraphContent.Text.Literal(
-                                id = -1,
-                                text = node.textValue(),
-                                fontType = ParagraphContent.Text.FontType.PLAIN,
-                            )
-                        ), emptySet()
-                    )
-                } else if (node.isObject) {
-                    // Litt kjedelig å måtte gjøre det på denne måten, men sånn ble det.
-                    // Viser seg at det er vanskelig å delegere til rot-jackson deserializer når man ikke har et interface-lag i mellom.
-                    // Ender opp med evig rekursjon.
-                    Title(
-                        text = p.codec.treeToValue(node.get("text"), ArrayNode::class.java).map {
-                            p.codec.treeToValue(it, ParagraphContent.Text::class.java)
-                        },
-                        deletedContent = p.codec.treeToValue(node.get("deletedContent"), ArrayNode::class.java)
-                            .map { it.asInt() }.toSet(),
-                    )
-                } else {
-                    throw DeserializationException("Title must be either a string or an object with 'text' and 'deletedContent' properties.")
-                }
-            }
-        }
 
         private fun blockDeserializer() = object : StdDeserializer<Block>(Block::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Block {

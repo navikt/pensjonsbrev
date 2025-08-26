@@ -494,10 +494,10 @@ data class OpplysningerOmBarnetillegg(
             paragraph {
                 textExpr(
                     Bokmal to "*) Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() +
-                            inntektBruktIAvkortning.format() + " kroner",
+                            inntektBruktIAvkortning.format(),
                     Nynorsk to "*) Samla inntekt brukt i fastsetjinga av barnetillegget er ".expr() +
-                            inntektBruktIAvkortning.format() + " kroner",
-                    English to "*) Total income applied in calculation of reduction in child supplement is NOK".expr() +
+                            inntektBruktIAvkortning.format(),
+                    English to "*) Total income applied in calculation of reduction in child supplement is ".expr() +
                             inntektBruktIAvkortning.format(),
                 )
             }
@@ -505,21 +505,21 @@ data class OpplysningerOmBarnetillegg(
             paragraph {
                 textExpr(
                     Bokmal to "*) Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() +
-                            fribeloep.format() + " kroner",
+                            fribeloep.format(),
                     Nynorsk to "*) Fribeløp brukt i fastsetjinga av barnetillegget er ".expr() +
-                            fribeloep.format() + " kroner",
-                    English to "*) Exemption amount applied in calculation of reduction in child supplement is NOK ".expr() +
+                            fribeloep.format(),
+                    English to "*) Exemption amount applied in calculation of reduction in child supplement is ".expr() +
                             fribeloep.format(),
                 )
             }
             paragraph {
                 textExpr(
                     Bokmal to "*) Inntekt over fribeløpet er ".expr() +
-                            inntektOverFribeloep.format() + " kroner",
+                            inntektOverFribeloep.format() + ".",
                     Nynorsk to "*) Inntekt over fribeløpet er ".expr() +
-                            inntektOverFribeloep.format() + " kroner",
-                    English to "*) Income exceeding the exemption amount is NOK ".expr() +
-                            inntektOverFribeloep.format(),
+                            inntektOverFribeloep.format() + ".",
+                    English to "*) Income exceeding the exemption amount is ".expr() +
+                            inntektOverFribeloep.format() +".",
                 )
             }
         }
@@ -533,13 +533,13 @@ data class OpplysningerOmBarnetillegg(
             paragraph {
                 textExpr(
                     Bokmal to "Grensen for å få utbetalt barnetillegg er ".expr() + inntektstak.format() +
-                            " kroner. Samlet inntekt brukt i fastsettelse av barnetillegget er " + samletInntektBruktIAvkortning.format() + " kroner.",
+                            ". Samlet inntekt brukt i fastsettelse av barnetillegget er " + samletInntektBruktIAvkortning.format() + ".",
 
                     Nynorsk to "Grensa for å få utbetalt barnetillegg er ".expr() + inntektstak.format() +
-                            " kroner. Samla inntekt brukt i fastsetjinga av barnetillegget er " + samletInntektBruktIAvkortning.format() + " kroner.",
+                            ". Samla inntekt brukt i fastsetjinga av barnetillegget er " + samletInntektBruktIAvkortning.format() + ".",
 
-                    English to "The income threshold for receiving child supplement is NOK ".expr() + inntektstak.format() +
-                            ". Total income used in determining child supplement is NOK" + samletInntektBruktIAvkortning.format() + ".",
+                    English to "The income threshold for receiving child supplement is ".expr() + inntektstak.format() +
+                            ". Total income used in determining child supplement is " + samletInntektBruktIAvkortning.format() + ".",
                 )
             }
         }
@@ -678,7 +678,7 @@ data class OpplysningerOmBarnetillegg(
                                 "blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer",
                                 "er 50 prosent av den inntekten som overstiger fribeløpet"
                             )
-                            + " " + avkortningsbeloepAar.format() + " kroner.",
+                            + " " + avkortningsbeloepAar.format() + ".",
 
                     Nynorsk to "For ".expr() +
                             ifElse(harFlereSaerkullsbarn, "barna", "barnet")
@@ -688,7 +688,7 @@ data class OpplysningerOmBarnetillegg(
                                 "blir 50 prosent av den inntekta som overstig fribeløpet regna om til et årleg beløp som svarer til",
                                 "er 50 prosent av den inntekta som overstig fribeløpet"
                             )
-                            + " " + avkortningsbeloepAar.format() + " kroner.",
+                            + " " + avkortningsbeloepAar.format() + ".",
 
                     English to "For ".expr() +
                             ifElse(
@@ -702,7 +702,7 @@ data class OpplysningerOmBarnetillegg(
                                 "is recalculated to an annual amount of",
                                 "is"
                             )
-                            + " NOK " + avkortningsbeloepAar.format() + "."
+                            + " " + avkortningsbeloepAar.format() + "."
                 )
 
                 showIf(not(harJusteringsbeloep)) {
@@ -725,15 +725,15 @@ data class OpplysningerOmBarnetillegg(
                     textExpr(
                         Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor ".expr() +
                                 ifElse(oekeReduksjonenAvTilleggetSaerkullsbarn, "lagt til", "trukket fra")
-                                + " " + justeringsbeloep.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                                + " " + justeringsbeloep.format() + " i beløpet vi reduserer barnetillegget med for resten av året.",
 
                         Nynorsk to "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor ".expr() +
                                 ifElse(oekeReduksjonenAvTilleggetSaerkullsbarn, "lagt til", "trekt frå")
-                                + " " + justeringsbeloep.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.".expr(),
+                                + " " + justeringsbeloep.format() + " i beløpet vi reduserer barnetillegget med for resten av året.".expr(),
 
                         English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been ".expr() +
                                 ifElse(oekeReduksjonenAvTilleggetSaerkullsbarn, "increased", "reduced")
-                                + " with NOK " + justeringsbeloep.format() + "."
+                                + " with " + justeringsbeloep.format() + "."
                     )
                 }
             }
@@ -750,23 +750,23 @@ data class OpplysningerOmBarnetillegg(
             paragraph {
                 showIf(harInnvilgetBarnetilleggFellesbarn) {
                     textExpr(
-                        Bokmal to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " kroner i måneden før skatt i barnetillegg for " +
+                        Bokmal to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " i måneden før skatt i barnetillegg for " +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet")
                                 + " som ikke bor med begge sine foreldre.",
 
-                        Nynorsk to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " kroner i månaden før skatt i barnetillegg for " +
+                        Nynorsk to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " i månaden før skatt i barnetillegg for " +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet")
                                 + " som ikkje bur saman med begge foreldra.",
 
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + saerkullTilleggNetto.format() +
+                        English to "You will receive a monthly child supplement payment of ".expr() + saerkullTilleggNetto.format() +
                                 " before tax for the " + ifElse(harFlereSaerkullsbarn, "children", "child")
                                 + " who do not live together with both parents."
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " kroner i måneden før skatt i barnetillegg.",
-                        Nynorsk to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " kroner i månaden før skatt i barnetillegg.",
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + saerkullTilleggNetto.format() + " before tax."
+                        Bokmal to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " i måneden før skatt i barnetillegg.",
+                        Nynorsk to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " i månaden før skatt i barnetillegg.",
+                        English to "You will receive a monthly child supplement payment of ".expr() + saerkullTilleggNetto.format() + " before tax."
                     )
                 }
             }
@@ -821,23 +821,23 @@ data class OpplysningerOmBarnetillegg(
             paragraph {
                 showIf(harInnvilgetBarnetilleggSaerkullsbarn) {
                     textExpr(
-                        Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i måneden før skatt i barnetillegg for " +
+                        Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " i måneden før skatt i barnetillegg for " +
                                 ifElse(harFlereBarn, "barna", "barnet") +
                                 " som bor med begge sine foreldre.",
 
-                        Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i månaden før skatt i barnetillegg for " +
+                        Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " i månaden før skatt i barnetillegg for " +
                                 ifElse(harFlereBarn, "barna", "barnet") +
                                 " som bur saman med begge foreldra sine.",
 
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + barnetilleggFellesbarn.format() + " for the " +
+                        English to "You will receive a monthly child supplement payment of ".expr() + barnetilleggFellesbarn.format() + " for the " +
                                 ifElse(harFlereBarn, "children who live", "child who lives") +
                                 " together with both parents."
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i måneden før skatt i barnetillegg.",
-                        Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i månaden før skatt i barnetillegg.",
-                        English to "You will receive a monthly child supplement payment of NOK ".expr() + barnetilleggFellesbarn.format() + "."
+                        Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " i måneden før skatt i barnetillegg.",
+                        Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " i månaden før skatt i barnetillegg.",
+                        English to "You will receive a monthly child supplement payment of ".expr() + barnetilleggFellesbarn.format() + "."
                     )
                 }
             }
@@ -1113,9 +1113,9 @@ data class OpplysningerOmBarnetillegg(
 
                 showIf(avkortningsbeloepAar.greaterThan(0)) {
                     textExpr(
-                        Bokmal to " ".expr() + avkortningsbeloepAar.format() + " kroner.",
-                        Nynorsk to " ".expr() + avkortningsbeloepAar.format() + " kroner.",
-                        English to " NOK ".expr() + avkortningsbeloepAar.format() + ".",
+                        Bokmal to " ".expr() + avkortningsbeloepAar.format() + ".",
+                        Nynorsk to " ".expr() + avkortningsbeloepAar.format() + ".",
+                        English to " ".expr() + avkortningsbeloepAar.format() + ".",
                     )
                 }
                 showIf(not(harJusteringsbeloep)) {
@@ -1156,9 +1156,9 @@ data class OpplysningerOmBarnetillegg(
                 }
 
                 textExpr(
-                    Bokmal to " ".expr() + avkortningsbeloepAar.format() + " kroner.",
-                    Nynorsk to " ".expr() + avkortningsbeloepAar.format() + " kroner.",
-                    English to " NOK ".expr() + avkortningsbeloepAar.format() + ".",
+                    Bokmal to " ".expr() + avkortningsbeloepAar.format() + ".",
+                    Nynorsk to " ".expr() + avkortningsbeloepAar.format() + ".",
+                    English to " ".expr() + avkortningsbeloepAar.format() + ".",
                 )
 
                 showIf(not(harJusteringsbeloep)) {

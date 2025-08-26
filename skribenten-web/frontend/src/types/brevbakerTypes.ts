@@ -173,8 +173,7 @@ export type Title = {
 };
 
 export interface EditedLetter {
-  // TODO: Fjern string når skribenten-backend produserer Title-objekter
-  readonly title: Title | string;
+  readonly title: Title;
   readonly sakspart: Sakspart;
   readonly blocks: AnyBlock[];
   readonly signatur: Signatur;

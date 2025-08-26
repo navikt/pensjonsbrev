@@ -91,10 +91,4 @@ class BrevbakerServiceTest {
         assertEquals(markup, mapper.readValue<LetterMarkup>(mapper.writeValueAsString(markup)))
     }
 
-    // TODO: Kan fjernes når brevbaker støtter markup for title
-    @Test
-    fun `skriver tittel som string`() {
-        val json = mapper.writeValueAsString(markup)
-        assertThat(json).contains(""""title":"${markup.title.joinToString("") { it.text }}"""")
-    }
 }

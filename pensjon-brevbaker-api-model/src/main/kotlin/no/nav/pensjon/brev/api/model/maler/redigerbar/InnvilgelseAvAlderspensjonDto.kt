@@ -25,20 +25,10 @@ data class InnvilgelseAvAlderspensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
-        @DisplayText("Gjenlevenderett er brukt i beregningen")
-        val harGjenlevenderett: Boolean,
-        @DisplayText("Gjenlevendetillegg er større enn 0")
-        val harGjenlevendetillegg: Boolean,
-        @DisplayText("GjenlevendetilleggKap19 kommer til utbetaling")
-        val harGjenlevendetilleggKap19: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
-        @DisplayText("Hvis supplerende stønad")
-        val supplerendeStoenad: Boolean,
         @DisplayText("Hvis kildeskatt")
         val kildeskatt: Boolean,
-        @DisplayText("Etterbetaling")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
