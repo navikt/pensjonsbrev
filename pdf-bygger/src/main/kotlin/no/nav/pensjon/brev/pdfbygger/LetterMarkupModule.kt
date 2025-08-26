@@ -3,14 +3,11 @@ package no.nav.pensjon.brev.pdfbygger
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.brev.InterneDataklasser
@@ -48,30 +45,7 @@ internal object LetterMarkupModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        // TODO: Bytt tilbake til addAbstractTypeMapping når title som markup er tatt i bruk i brevbaker.
-//        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
-        addDeserializer(LetterMarkup::class.java, TitleAsMarkupOrStringDeserializer)
-    }
-
-    object TitleAsMarkupOrStringDeserializer : JsonDeserializer<LetterMarkup>() {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup {
-            val node = p.codec.readTree<JsonNode>(p)
-
-            if (node.isObject && node is ObjectNode) {
-                val titleNode = node.get("title")
-                if (titleNode.isTextual) {
-                    node.replace("title", ArrayNode(ctxt.nodeFactory).apply {
-                        addObject().apply {
-                            put("id", -1)
-                            put("text", titleNode.textValue())
-                            put("type", LetterMarkup.ParagraphContent.Type.LITERAL.name)
-                            put("fontType", LetterMarkup.ParagraphContent.Text.FontType.PLAIN.name)
-                        }
-                    })
-                }
-            }
-            return p.codec.treeToValue(node, LetterMarkupImpl::class.java)
-        }
+        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
     }
 
     private fun blockDeserializer() =

@@ -10,10 +10,7 @@ import java.time.Month
 
 fun createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
     saksbehandlerValg = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg(
-        ufoeretrygdErInnvilget = true,
-        ufoeregradErOekt = false,
-        pensjonsopptjeningenErEndret = false
-    ),
+        aarsak = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg.Aarsak.ufoeretrygdErInnvilget),
     pesysData = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData(
         krav = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Krav(
             virkDatoFom = LocalDate.of(2024, Month.JANUARY, 1)

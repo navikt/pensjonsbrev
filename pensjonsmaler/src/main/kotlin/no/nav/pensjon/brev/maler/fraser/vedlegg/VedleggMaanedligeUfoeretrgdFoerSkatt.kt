@@ -123,9 +123,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
-                Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + " kroner.",
-                Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + " kroner.",
-                English to "The National Insurance basic amount (G) applied in the calculation is NOK ".expr() + grunnbeloep.format() + ".",
+                Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + ".",
+                Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + ".",
+                English to "The National Insurance basic amount (G) applied in the calculation is ".expr() + grunnbeloep.format() + ".",
             )
     }
 

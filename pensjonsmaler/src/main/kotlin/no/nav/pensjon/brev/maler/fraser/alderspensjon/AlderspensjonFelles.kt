@@ -104,6 +104,7 @@ object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "Where can you find out more about your retirement pension?",
             )
         }
+        // infoAP_001
         paragraph {
             text(
                 Bokmal to
@@ -196,29 +197,35 @@ object MeldFraOmEndringer2 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
+object ArbeidsinntektOgAlderspensjonKort : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // arbInntektAPOverskrift_001
+        title1 {
+            text(
+                Bokmal to "Arbeidsinntekt og alderspensjon",
+                Nynorsk to "Arbeidsinntekt og alderspensjon",
+                English to "Earned income and retirement pension"
+            )
+        }
+
+        // arbInntektAP_001
+        paragraph {
+            text(
+                Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
+                Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
+                English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
+            )
+        }
+    }
+}
+
 data class ArbeidsinntektOgAlderspensjon(
     val innvilgetFor67: Expression<Boolean>,
     val uttaksgrad: Expression<Int>,
     val uforeKombinertMedAlder: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title1 {
-            text(
-                Bokmal to "Arbeidsinntekt og alderspensjon",
-                Nynorsk to "Arbeidsinntekt og alderspensjon",
-                English to "Earned income and retirement pension",
-            )
-        }
-        // arbInntektAP
-        paragraph {
-            text(
-                Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
-                Nynorsk to
-                    "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
-                English to
-                    "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension.",
-            )
-        }
+        includePhrase(ArbeidsinntektOgAlderspensjonKort)
         // nyOpptjeningHelAP
         showIf(uttaksgrad.equalTo(100)) {
             paragraph {
@@ -540,13 +547,13 @@ object UfoereAlder {
             paragraph {
                 textExpr(
                     Bokmal to
-                        "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkDatoFom.format() +
+                        "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra " + virkDatoFom.format() +
                         ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
                     Nynorsk to
-                        "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkDatoFom.format() +
+                        "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå " + virkDatoFom.format() +
                         ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
                     English to
-                        "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() +
+                        "You will receive ".expr() + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() +
                         ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
                 )
             }
@@ -585,10 +592,10 @@ class DuFaarHverMaaned(
         showIf(totalPensjon.greaterThan(0)) {
             paragraph {
                 textExpr(
-                    Bokmal to "Du får ".expr() + totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt.",
-                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt.",
+                    Bokmal to "Du får ".expr() + totalPensjon.format(false) + " i alderspensjon fra folketrygden hver måned før skatt.",
+                    Nynorsk to "Du får ".expr() + totalPensjon.format(false) + " i alderspensjon frå folketrygda kvar månad før skatt.",
                     English to
-                        "You will receive ".expr() + totalPensjon.format() +
+                        "You will receive ".expr() + totalPensjon.format(false) +
                         " every month before tax as retirement pension through the National Insurance Act.",
                 )
             }
