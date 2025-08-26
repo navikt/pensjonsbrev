@@ -19,7 +19,6 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
         val omregnetTilEnsligISammeVedtak: Boolean,
-        val pensjonenOeker: Boolean,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
         val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis avdøde har redusert trygdetid/poengår")

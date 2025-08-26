@@ -17,7 +17,6 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
             omregnetTilEnsligISammeVedtak = true,
-            pensjonenOeker = true,
             brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar = true,
             avdoedeHarRedusertTrygdetidEllerPoengaar = true,
             endringIPensjonsutbetaling = true,
