@@ -56,7 +56,10 @@ export default function BrevmalForDoksys({
     setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
   }, [setOnFormSubmitClick]);
 
-  const methods = useForm<z.infer<typeof validationSchema>>({
+  type FormIn = z.input<typeof validationSchema>;
+  type FormOut = z.output<typeof validationSchema>;
+
+  const methods = useForm<FormIn, unknown, FormOut>({
     defaultValues: defaultValues,
     resolver: zodResolver(validationSchema),
   });
