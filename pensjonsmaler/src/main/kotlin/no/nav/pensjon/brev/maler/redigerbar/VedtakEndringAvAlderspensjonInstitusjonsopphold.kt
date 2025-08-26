@@ -33,8 +33,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -371,7 +371,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
 
             // infoAPOverskrift_001
             // infoAP_001
-            includePhrase(HvorKanDuFaaViteMerOmAlderspensjonenDin)
+            includePhrase(InformasjonOmAlderspensjon)
 
             // TODO: Denne burde samkøyrast med Felles.MeldeFraEndringer
             // meldEndringerPesys_001

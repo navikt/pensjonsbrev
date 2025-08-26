@@ -104,6 +104,7 @@ object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "Where can you find out more about your retirement pension?",
             )
         }
+        // infoAP_001
         paragraph {
             text(
                 Bokmal to
