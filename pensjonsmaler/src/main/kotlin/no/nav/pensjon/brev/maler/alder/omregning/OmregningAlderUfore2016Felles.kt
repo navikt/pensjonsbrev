@@ -25,11 +25,11 @@ data class OmregningAlderUfore2016Felles(
     val totalPensjon: Expression<Kroner>,
     val antallBeregningsperioder: Expression<Int>,
     val gjenlevendetilleggKap19Innvilget: Expression<Boolean>,
-    val avdodNavn: Expression<String>,
-    val avdodFnr: Expression<String>,
+    val avdodNavn: Expression<String?>,
+    val avdodFnr: Expression<String?>,
     val gjenlevenderettAnvendt: Expression<Boolean>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
-    val faktiskBostedsland: Expression<String>,
+    val faktiskBostedsland: Expression<String?>,
     val erEksportberegnet: Expression<Boolean>,
     val eksportberegnetUtenGarantipensjon: Expression<Boolean>,
     val pensjonstilleggInnvilget: Expression<Boolean>,
@@ -73,9 +73,9 @@ data class OmregningAlderUfore2016Felles(
 
         paragraph {
             textExpr(
-                Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkFom.format() + " i alderspensjon fra folketrygden.",
-                Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkFom.format() + " i alderspensjon frå folketrygda.",
-                English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkFom.format() + "  as retirement pension from the National Insurance Scheme"
+                Bokmal to "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå " + virkFom.format() + " i alderspensjon fra folketrygden.",
+                Nynorsk to "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra " + virkFom.format() + " i alderspensjon frå folketrygda.",
+                English to "You will receive ".expr() + totalPensjon.format() + " every month before tax from " + virkFom.format() + " as retirement pension from the National Insurance Scheme"
 
             )
         }
@@ -100,8 +100,8 @@ data class OmregningAlderUfore2016Felles(
                 )
             }
         }
-
-        showIf(gjenlevendetilleggKap19Innvilget and avdodNavn.notNull()) {
+    ifNotNull(avdodNavn) { avdodNavn ->
+        showIf(gjenlevendetilleggKap19Innvilget) {
             paragraph {
                 textExpr(
                     Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr() + avdodNavn,
@@ -124,55 +124,59 @@ data class OmregningAlderUfore2016Felles(
                 )
             }
         }
-
-        showIf(gjenlevenderettAnvendt and avdodFnr.notNull()) {
-            title2 {
-                text(
-                    Bokmal to "Gjenlevenderett i alderspensjon",
-                    Nynorsk to "Attlevenderett i alderspensjon",
-                    English to "Survivor's rights in retirement pension"
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter ".expr() + avdodNavn,
-                    Nynorsk to "I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter ".expr() + avdodNavn,
-                    English to "We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after ".expr() + avdodNavn
-                )
-            }
-        }
-
-        showIf(eksportTrygdeavtaleEOS) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland + "Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
-                    Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland + "Dersom du skal flytte til eit land utanfor EØS-området, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
-                    English to "We presume that you live in ".expr() + faktiskBostedsland + "If you are moving to a country outside the EEA region, it is important that you contact Nav We will then reassess your eligibility for retirement pension."
-                )
+    }
+        ifNotNull(avdodNavn){ avdodNavn ->
+            showIf(gjenlevenderettAnvendt and avdodFnr.notNull()) {
+                title2 {
+                    text(
+                        Bokmal to "Gjenlevenderett i alderspensjon",
+                        Nynorsk to "Attlevenderett i alderspensjon",
+                        English to "Survivor's rights in retirement pension"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter ".expr() + avdodNavn,
+                        Nynorsk to "I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter ".expr() + avdodNavn,
+                        English to "We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after ".expr() + avdodNavn
+                    )
+                }
             }
         }
 
-        showIf(eksportTrygdeavtaleAvtaleland) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland + "Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
-                    Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland + "Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
-                    English to "We presume that you live in ".expr() + faktiskBostedsland + "If you are moving to another country, it is important that you contact Nav We will then reassess your eligibility for retirement pension."
-                )
+        ifNotNull(faktiskBostedsland) {faktiskBostedsland ->
+            showIf(eksportTrygdeavtaleEOS) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland + "Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
+                        Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland + "Dersom du skal flytte til eit land utanfor EØS-området, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
+                        English to "We presume that you live in ".expr() + faktiskBostedsland + "If you are moving to a country outside the EEA region, it is important that you contact Nav We will then reassess your eligibility for retirement pension."
+                    )
+                }
             }
-        }
 
-        showIf(erEksportberegnet and eksportberegnetUtenGarantipensjon) {
-            paragraph {
-                textExpr(
-                    Bokmal to "For å ha rett til full alderspensjon når du bor i ".expr() + faktiskBostedsland + ", må du ha vært medlem i folketrygden i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikke rett til full pensjon. " +
-                            "I vedleggene finner du mer detaljerte opplysninger.",
-                    Nynorsk to "For å ha rett til full alderspensjon når du bur i ".expr() + faktiskBostedsland + ", må du ha vore medlem i folketrygda i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikkje rett til full pensjon. " +
-                            "I vedlegga finn du meir detaljerte opplysningar.",
-                    English to "To be eligible for a full retirement pension while living in ".expr() + faktiskBostedsland + ", you must have been a member of the National Insurance scheme earning pension rights for at least 20 years. " +
-                            "You have been a member for less than 20 years, and are therefore not eligible for a full pension. " +
-                            "There is more detailed information in the attachments."
-                )
+            showIf(eksportTrygdeavtaleAvtaleland) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland + "Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
+                        Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland + "Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
+                        English to "We presume that you live in ".expr() + faktiskBostedsland + "If you are moving to another country, it is important that you contact Nav We will then reassess your eligibility for retirement pension."
+                    )
+                }
+            }
+
+            showIf(erEksportberegnet and eksportberegnetUtenGarantipensjon) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "For å ha rett til full alderspensjon når du bor i ".expr() + faktiskBostedsland + ", må du ha vært medlem i folketrygden i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikke rett til full pensjon. " +
+                                "I vedleggene finner du mer detaljerte opplysninger.",
+                        Nynorsk to "For å ha rett til full alderspensjon når du bur i ".expr() + faktiskBostedsland + ", må du ha vore medlem i folketrygda i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikkje rett til full pensjon. " +
+                                "I vedlegga finn du meir detaljerte opplysningar.",
+                        English to "To be eligible for a full retirement pension while living in ".expr() + faktiskBostedsland + ", you must have been a member of the National Insurance scheme earning pension rights for at least 20 years. " +
+                                "You have been a member for less than 20 years, and are therefore not eligible for a full pension. " +
+                                "There is more detailed information in the attachments."
+                    )
+                }
             }
         }
 

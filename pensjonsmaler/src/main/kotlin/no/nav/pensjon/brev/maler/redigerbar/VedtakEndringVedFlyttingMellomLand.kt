@@ -103,7 +103,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 //000117 i Doksys
 object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedFlyttingMellomLandDto> {
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND
@@ -490,18 +490,18 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 // innvilgelseAPogUTInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                        Bokmal to "Du får ".expr() + totalPensjon + " hver måned før skatt fra " + virkDatoFom + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kvar månad før skatt frå " + virkDatoFom + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
                     )
                 }
             }.orShow {
                 // innvilgelseAPInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + " i alderspensjon fra folketrygden.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + " i alderspensjon frå folketrygda.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + " as retirement pension from the National Insurance Scheme."
+                        Bokmal to "Du får ".expr() + totalPensjon + " hver måned før skatt fra " + virkDatoFom + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kvar månad før skatt frå " + virkDatoFom + " i alderspensjon frå folketrygda.",
+                        English to "You will receive ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + " as retirement pension from the National Insurance Scheme."
                     )
                 }
             }

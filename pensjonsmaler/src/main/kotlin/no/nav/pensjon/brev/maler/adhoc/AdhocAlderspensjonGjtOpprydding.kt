@@ -66,11 +66,11 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtO
 
             paragraph {
                 textExpr(
-                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner i alderspensjon før skatt fra " +
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " i alderspensjon før skatt fra " +
                             virkFom.format() + ".",
-                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner i alderspensjon før skatt frå " +
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon før skatt frå " +
                             virkFom.format() + ".",
-                    English to "You will receive NOK ".expr() + totalPensjon.format() + " in retirement pension before tax from " +
+                    English to "You will receive ".expr() + totalPensjon.format() + " in retirement pension before tax from " +
                             virkFom.format() + ".",
                 )
             }

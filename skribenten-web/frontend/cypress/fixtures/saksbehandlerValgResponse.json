@@ -33,7 +33,12 @@
         }
     },
     "redigertBrev": {
-        "title": "Information about application processing time",
+        "title": {
+          "text": [
+            { "id": 3, "parentId": null, "type": "LITERAL", "text": "Information about application processing time", "editedText": null, "tags": [] }
+          ],
+          "deletedContent": []
+        },
         "sakspart": {
             "gjelderNavn": "TRYGG ANBEFALING",
             "gjelderFoedselsnummer": "21418744917",

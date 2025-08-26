@@ -89,9 +89,13 @@ data class VedtakEndringVedFlyttingMellomLandDto(
     }
 
     enum class AarsakTilAtPensjonenOeker {
+        @DisplayText("Ingen")
         INGEN,
+        @DisplayText("Eksportberegning med redusert trygdetid")
         EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID,
+        @DisplayText("Eksportberegning ung ufør")
         EKSPORTFORBUD_UNG_UFOER,
+        @DisplayText("Eksportberegning flyktning")
         EKSPORTFORBUD_FLYKTNING
     }
 }

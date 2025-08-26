@@ -24,9 +24,9 @@ data class TBU1123_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt",
-				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt",
-				English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " before tax",
+				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt",
+				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og attlevandetillegg per månad før skatt",
+				English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " before tax",
 			)
 			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
 				textExpr (

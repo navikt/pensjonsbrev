@@ -288,9 +288,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     }
                     cell {
                         textExpr(
-                            Bokmal to pensjonsbeholdning.format() + " kr".expr(),
-                            Nynorsk to pensjonsbeholdning.format() + " kr".expr(),
-                            English to pensjonsbeholdning.format() + " NOK".expr()
+                            Bokmal to pensjonsbeholdning.format(false) + " kr".expr(),
+                            Nynorsk to pensjonsbeholdning.format(false) + " kr".expr(),
+                            English to pensjonsbeholdning.format(false) + " NOK".expr()
                         )
                     }
                 }

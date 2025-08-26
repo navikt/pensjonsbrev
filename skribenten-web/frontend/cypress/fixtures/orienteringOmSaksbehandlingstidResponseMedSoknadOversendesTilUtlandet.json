@@ -24,7 +24,12 @@
         "mottaker": null
     },
     "redigertBrev": {
-        "title": "Orientering om svartid",
+        "title": {
+          "text": [
+            { "id": 2, "parentId": null, "type": "LITERAL", "text": "Orientering om svartid", "editedText": null, "tags": [] }
+          ],
+          "deletedContent": []
+        },
         "sakspart": {
             "gjelderNavn": "TRYGG ANBEFALING",
             "gjelderFoedselsnummer": "21418744917",
