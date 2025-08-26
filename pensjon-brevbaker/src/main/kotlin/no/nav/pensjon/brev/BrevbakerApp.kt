@@ -2,7 +2,7 @@ package no.nav.pensjon.brev
 
 import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.maler.AlderTemplates
+import no.nav.pensjon.brev.maler.ProductionTemplates
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -10,8 +10,8 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.brevbakerModulePensjon() = this.brevbakerModule(pensjonOgUfoereProductionTemplates)
 
 val pensjonOgUfoereProductionTemplates = object : AllTemplates {
-    override fun hentAutobrevmaler() = AlderTemplates.hentAutobrevmaler() + UfoereTemplates.hentAutobrevmaler()
+    override fun hentAutobrevmaler() = ProductionTemplates.hentAutobrevmaler() + UfoereTemplates.hentAutobrevmaler()
 
-    override fun hentRedigerbareMaler() = AlderTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
+    override fun hentRedigerbareMaler() = ProductionTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
 
 }
