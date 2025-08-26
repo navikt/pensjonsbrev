@@ -436,17 +436,12 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))
 
-            showIf(innvilgetFor67) { includePhrase(AP2025TidligUttakHjemmel(regelverkType)) }
+            includePhrase(AP2025TidligUttakHjemmel(innvilgetFor67, regelverkType))
 
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
 
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
-            includePhrase(
-                InnvilgetGjRettKap19For2024(
-                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
-                )
-            )
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget))
+            includePhrase(InnvilgetGjRettKap19For2024(gjenlevenderettAnvendt, gjenlevendetilleggKap19Innvilget))
             includePhrase(
                 EOSLandAvtaleHjemmel(
                     borINorge = borINorge,

@@ -275,7 +275,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))
-            includePhrase(AP2025TidligUttakHjemmel(regelverkType))
+            includePhrase(AP2025TidligUttakHjemmel(innvilgetFor67 = innvilgetFor67, regelverkType = regelverkType))
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
             includePhrase(
                 EOSLandAvtaleHjemmel(

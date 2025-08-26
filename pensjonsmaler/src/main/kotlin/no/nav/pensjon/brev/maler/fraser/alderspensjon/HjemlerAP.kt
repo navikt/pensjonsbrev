@@ -148,10 +148,11 @@ data class SkjermingstilleggHjemmel(
 }
 
 data class AP2025TidligUttakHjemmel(
+    val innvilgetFor67: Expression<Boolean>,
     val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(regelverkType.isOneOf(AP2025)) {
+        showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
