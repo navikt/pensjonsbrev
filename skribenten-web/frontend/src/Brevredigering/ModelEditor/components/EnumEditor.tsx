@@ -23,11 +23,11 @@ export const EnumEditor = ({
   return (
     <Controller
       control={control}
-      defaultValue={values[0].value}
       name={fieldName}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <RadioGroup
           {...field}
+          error={fieldState.error?.message}
           legend={spec.displayText ?? convertFieldToReadableLabel(fieldName)}
           name={fieldName}
           onChange={(value) => {

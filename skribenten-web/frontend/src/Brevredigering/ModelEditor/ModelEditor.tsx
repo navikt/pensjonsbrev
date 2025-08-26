@@ -91,40 +91,47 @@ export const SaksbehandlerValgModelEditor = (props: {
   submitOnChange?: () => void;
 }) => {
   const { register } = useFormContext();
-  const { optionalFields, requiredFields } = createFormElementsFromSpecification({
+  const fieldsWithElements = createFormElementsFromSpecification({
     specificationFormElements: props.specificationFormElements,
     brevkode: props.brevkode,
     submitOnChange: props.submitOnChange,
   });
 
-  switch (props.fieldsToRender) {
-    case "required": {
-      /**
-       * Boolean felter har spesialbehandling. De er (nesten) alltid non-nullable og er flagg som styrer tekstvalg i malene
-       * som regnes som utenfor normen. Vi ønsker derfor ikke å vise dem i Brevvelger, da det ikke er særlig relevant der.
-       *
-       * Siden disse feltene er non-nullable så betyr det at vi må sende med en verdi for dem i Saksbehandlervalg-objektet,
-       * og derfor må de registreres i form-et med false som verdi.
-       */
-      for (const field of optionalFields) {
-        if (isBooleanField(field.fieldType)) {
-          register(`saksbehandlerValg.${field.field}`, { value: false });
-        }
+  if (props.fieldsToRender === "required") {
+    /**
+     * Boolean felter har spesialbehandling. De er (nesten) alltid non-nullable og er flagg som styrer tekstvalg i malene
+     * som regnes som utenfor normen. Vi ønsker derfor ikke å vise dem i Brevvelger, da det ikke er særlig relevant der.
+     *
+     * Siden disse feltene er non-nullable så betyr det at vi må sende med en verdi for dem i Saksbehandlervalg-objektet,
+     * og derfor må de registreres i form-et med false som verdi.
+     */
+    for (const field of fieldsWithElements.optionalFields) {
+      if (isBooleanField(field.fieldType)) {
+        register(`saksbehandlerValg.${field.field}`, { value: false });
       }
-      return (
-        <VStack gap="5" marginBlock="space-0 space-16">
-          {requiredFields.map((field) => field.element)}
-        </VStack>
-      );
     }
-    case "optional": {
-      return (
-        <VStack gap="5" marginBlock="space-0 space-16">
-          {optionalFields.map((field) => field.element)}
-        </VStack>
-      );
+    /**
+     * Enum felter kan foreløpig være non-nullable i mal-spesifikasjonen,
+     * men dette håndteres ikke av backend, så et enum-felt uten verdi fører til feil.
+     * Derfor legger vi på en validering her, sånn at saksbehandler må ta stilling
+     * og frontend slipper å sende ugyldige data til backend.
+     */
+    for (const field of fieldsWithElements.requiredFields) {
+      if (field.fieldType.type === "enum" && !field.fieldType.nullable) {
+        register(`saksbehandlerValg.${field.field}`, {
+          required: "Obligatorisk: du må velge et alternativ",
+        });
+      }
     }
   }
+
+  return (
+    <>
+      <VStack gap="5" marginBlock="space-0 space-16">
+        {fieldsWithElements[`${props.fieldsToRender}Fields`].map((field) => field.element)}
+      </VStack>
+    </>
+  );
 };
 
 function findSaksbehandlerValgTypeName(modelSpecification: LetterModelSpecification): string {

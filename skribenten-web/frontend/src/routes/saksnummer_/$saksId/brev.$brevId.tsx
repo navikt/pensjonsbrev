@@ -458,7 +458,7 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
     );
   }
 
-  if (!hasOptional && hasRequired)
+  if (hasRequired && !hasOptional)
     return (
       <>
         <Heading size="xsmall">Overstyring</Heading>
