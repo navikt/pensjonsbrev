@@ -4,6 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
@@ -135,7 +136,7 @@ class Letter2MarkupTest {
         val result = Letter2Markup.render(LetterImpl(template, EmptyBrevdata, Bokmal, felles))
 
         assertThat(
-            result.letterMarkup.title,
+            result.letterMarkup.title.joinToString("") { it.text },
             equalTo("noe tekst 2024")
         )
     }

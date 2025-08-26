@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
+import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -13,8 +14,9 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.createTempDirectory
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
+const val LATEX_CONFIG_PATH = "pdfBygger.latex"
 private const val COMPILATION_RUNS = 2
 
 class LatexCompileService(
@@ -22,6 +24,13 @@ class LatexCompileService(
     private val compileTimeout: Duration,
     private val tmpBaseDir: Path? = Path.of("/app/tmp")
 ) {
+    constructor(config: ApplicationConfig) : this(
+        latexCommand = config.propertyOrNull("latexCommand")?.getString()
+            ?: "xelatex --interaction=nonstopmode -halt-on-error",
+        compileTimeout = config.propertyOrNull("compileTimeout")?.getString()?.let { Duration.parse(it) }
+            ?: 300.seconds,
+        tmpBaseDir = Path.of(config.property("compileTmpDir").getString())
+    )
 
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
@@ -97,9 +106,7 @@ class LatexCompileService(
                     .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
                     .start()
 
-                while (process.isAlive) {
-                    delay(50.milliseconds)
-                }
+                process.onExit().await()
 
                 if (process.exitValue() == 0) {
                     Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))

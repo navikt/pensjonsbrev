@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -13,13 +14,9 @@ import no.nav.pensjon.brevbaker.api.model.Percent
 import java.time.LocalDate
 
 data class VedtakEndringAvUttaksgradDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: EmptyBrevdata,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringAvUttaksgradDto.SaksbehandlerValg, VedtakEndringAvUttaksgradDto.PesysData> {
-    data class SaksbehandlerValg(
-        val visEtterbetaling: Boolean
-    ) : BrevbakerBrevdata
-
+) : RedigerbarBrevdata<EmptyBrevdata, VedtakEndringAvUttaksgradDto.PesysData> {
     data class PesysData(
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
@@ -28,7 +25,7 @@ data class VedtakEndringAvUttaksgradDto(
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
         val vedtak: Vedtak,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto
+        val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?
     ) : BrevbakerBrevdata
 
     data class Krav(

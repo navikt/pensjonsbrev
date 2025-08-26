@@ -9,6 +9,5 @@ fun createInformasjonOmGjenlevenderettigheterDto() = InformasjonOmGjenlevenderet
     pesysData = InformasjonOmGjenlevenderettigheterDto.PesysData(
         sakstype = Sakstype.ALDER,
         gjenlevendesAlder = 65,
-        avdoedNavn = "Peder Ås",
     )
 )

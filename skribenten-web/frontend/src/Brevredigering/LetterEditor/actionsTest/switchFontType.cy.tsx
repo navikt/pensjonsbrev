@@ -41,6 +41,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       journalpostId: null,
       vedtaksId: null,
       brevtype: "INFORMASJONSBREV",
+      saksId: "22981081",
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",

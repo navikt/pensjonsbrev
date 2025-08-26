@@ -11,11 +11,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Mul
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
+import java.time.LocalDate
 
 @Suppress("unused")
 @InterneDataklasser
 data class LetterMarkupImpl(
-    override val title: String,
+    override val title: List<ParagraphContent.Text>,
     override val sakspart: LetterMarkup.Sakspart,
     override val blocks: List<Block>,
     override val signatur: LetterMarkup.Signatur
@@ -31,16 +32,17 @@ data class LetterMarkupImpl(
     @InterneDataklasser
     data class SakspartImpl(
         override val gjelderNavn: String,
-        override val gjelderFoedselsnummer: String,
+        override val gjelderFoedselsnummer: Foedselsnummer,
+        override val vergeNavn: String?,
         override val saksnummer: String,
-        override val dokumentDato: String
+        override val dokumentDato: LocalDate,
     ) : LetterMarkup.Sakspart
 
     @InterneDataklasser
     data class SignaturImpl(
         override val hilsenTekst: String,
         override val saksbehandlerRolleTekst: String,
-        override val saksbehandlerNavn: String,
+        override val saksbehandlerNavn: String?,
         override val attesterendeSaksbehandlerNavn: String?,
         override val navAvsenderEnhet: String,
     ) : LetterMarkup.Signatur

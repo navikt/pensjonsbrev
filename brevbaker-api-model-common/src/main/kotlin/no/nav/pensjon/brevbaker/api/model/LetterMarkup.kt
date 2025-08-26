@@ -1,7 +1,9 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import java.time.LocalDate
+
 interface LetterMarkup {
-    val title: String
+    val title: List<ParagraphContent.Text>
     val sakspart: Sakspart
     val blocks: List<Block>
     val signatur: Signatur
@@ -14,15 +16,16 @@ interface LetterMarkup {
 
     interface Sakspart {
         val gjelderNavn: String
-        val gjelderFoedselsnummer: String
+        val gjelderFoedselsnummer: Foedselsnummer
+        val vergeNavn: String?
         val saksnummer: String
-        val dokumentDato: String
+        val dokumentDato: LocalDate
     }
 
     interface Signatur {
         val hilsenTekst: String
         val saksbehandlerRolleTekst: String
-        val saksbehandlerNavn: String
+        val saksbehandlerNavn: String?
         val attesterendeSaksbehandlerNavn: String?
         val navAvsenderEnhet: String
     }

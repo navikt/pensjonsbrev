@@ -8,37 +8,19 @@ import org.junit.jupiter.api.Test
 
 
 class ExpressionEvalTest {
-
     data class SomeDto(val name: String, val kortNavn: String?)
 
-    private val nameSelector = object : TemplateModelSelector<SomeDto, String> {
-        override val className = "FakeSomeDtoNavnSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = SomeDto::name
-    }
-
+    private val nameSelector = SimpleSelector(SomeDto::name)
     private val Expression<SomeDto>.name
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(nameSelector))
+        get() = UnaryOperation.Select(nameSelector).invoke(this)
 
-    private val kortNavnSelector = object : TemplateModelSelector<SomeDto, String?> {
-        override val className = "FakeKortNavnSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = SomeDto::kortNavn
-    }
+    private val kortNavnSelector = SimpleSelector(SomeDto::kortNavn)
     private val Expression<SomeDto>.kortNavn
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(kortNavnSelector))
+        get() = UnaryOperation.Select(kortNavnSelector).invoke(this)
 
-    private val saksnummerSelector = object : TemplateModelSelector<Felles, String> {
-        override val className = "FakeFellesSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = Felles::saksnummer
-    }
-
+    private val saksnummerSelector = SimpleSelector(Felles::saksnummer)
     private val Expression<Felles>.saksnummer
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(saksnummerSelector))
+        get() = UnaryOperation.Select(saksnummerSelector).invoke(this)
 
     private val scope = ExpressionScope(SomeDto("Ole", null), FellesFactory.felles, Language.Bokmal)
     private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
@@ -83,22 +65,14 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval BinaryInvoke returns expected value`() {
-        val evaluated: String = Expression.BinaryInvoke(
-            Expression.Literal("h"),
-            Expression.Literal("ei"),
-            BinaryOperation.Concat
-        ).eval(scope)
+        val evaluated: String = BinaryOperation.Concat("h".expr(), "ei".expr()).eval(scope)
 
         assertEquals("hei", evaluated)
     }
 
     @Test
     fun `eval UnaryInvoke returns expected value`() {
-        val evaluated: String = Expression.UnaryInvoke(
-            Expression.Literal(4),
-            UnaryOperation.ToString
-        ).eval(scope)
-
+        val evaluated: String = UnaryOperation.ToString(4.expr()).eval(scope)
         assertEquals("4", evaluated)
     }
 
@@ -112,6 +86,42 @@ class ExpressionEvalTest {
     fun `eval FromScope will select a value from scope`() {
         val evaluated: Language = Expression.FromScope.Language.eval(scope)
         assertEquals(scope.language, evaluated)
+    }
+
+    @Test
+    fun `eval SafeApplication can be used for null-safe calls when value is null`() {
+        val evaluated: String? = argumentExpr.kortNavn.safe { plus("hei") }.eval(scope)
+        assertEquals(null, evaluated)
+    }
+
+    @Test
+    fun `eval SafeApplication can be used for null-safe calls when value is non-null`() {
+        val scope = ExpressionScope(SomeDto("Ole", "KortNavn"), FellesFactory.felles, Language.Bokmal)
+        val evaluated: String? = argumentExpr.kortNavn.safe { plus("hei") }.eval(scope)
+        assertEquals("KortNavnhei", evaluated)
+    }
+
+    internal data class NestedDto(val nested: SomeDto? = null)
+    private val nestedSelector = SimpleSelector(NestedDto::nested)
+    private val Expression<NestedDto>.nested
+        get() = UnaryOperation.Select(nestedSelector).invoke(this)
+
+    @Test
+    fun `eval SafeApplication can be nested when value is null`() {
+        val scope = ExpressionScope(NestedDto(), FellesFactory.felles, Language.Bokmal)
+        val argumentExpr = Expression.FromScope.Argument<NestedDto>()
+
+        val evaluated: String? = argumentExpr.nested.safe { kortNavn.safe { plus("hei") } }.eval(scope)
+        assertEquals(null, evaluated)
+    }
+
+    @Test
+    fun `eval SafeApplication can be nested when value is non-null`() {
+        val scope = ExpressionScope(NestedDto(SomeDto("Ole", "KortNavn")), FellesFactory.felles, Language.Bokmal)
+        val argumentExpr = Expression.FromScope.Argument<NestedDto>()
+
+        val evaluated: String? = argumentExpr.nested.safe { kortNavn.safe { plus("hei") } }.eval(scope)
+        assertEquals("KortNavnhei", evaluated)
     }
 
 }

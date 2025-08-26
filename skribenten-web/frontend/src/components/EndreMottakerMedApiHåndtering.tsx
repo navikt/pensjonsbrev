@@ -23,12 +23,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
 }) => {
   const queryClient = useQueryClient();
   const mottakerMutation = useMutation<DelvisOppdaterBrevResponse, AxiosError, Mottaker>({
-    mutationFn: (mottaker) =>
-      delvisOppdaterBrev({
-        saksId: props.saksId,
-        brevId: props.brev.id,
-        mottaker: mottaker,
-      }),
+    mutationFn: (mottaker) => delvisOppdaterBrev(props.saksId, props.brev.id, { mottaker: mottaker }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.routing
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.contains
 import com.natpryce.hamkrest.containsSubstring
@@ -108,6 +110,24 @@ class LetterRoutesITest {
     }
 
     @Test
+    fun `render pdf can deserialize standard JavaTimeModule formatted localdate`() {
+        val pesysJackson = jacksonObjectMapper().apply {
+            registerModule(JavaTimeModule())
+        }
+        println(pesysJackson.writeValueAsString(autoBrevRequest))
+
+        testBrevbakerApp { client2 ->
+            val response = client.post("/letter/autobrev/pdf") {
+                accept(ContentType.Application.Pdf)
+                contentType(ContentType.Application.Json)
+                setBody(pesysJackson.writeValueAsString(autoBrevRequest))
+            }
+            assertEquals(ContentType.Application.Pdf, response.contentType())
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
+    }
+
+    @Test
     fun `render pdf can respond with json`() = testBrevbakerApp { client ->
         val responseBody = client.post("/letter/autobrev/pdf") {
             accept(ContentType.Application.Json)
@@ -137,7 +157,7 @@ class LetterRoutesITest {
 
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<LetterResponse>()
-        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
+        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title.joinToString("") { it.text }))
     }
 
     @Test
@@ -153,7 +173,7 @@ class LetterRoutesITest {
     }
 }
 
-private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
+private fun <T : Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
     kode = kode,
     letterData = this.letterData,
     felles = this.felles,

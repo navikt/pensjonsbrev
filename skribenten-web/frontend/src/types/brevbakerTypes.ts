@@ -51,14 +51,16 @@ export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 export type Sakspart = {
   readonly gjelderNavn: string;
   readonly gjelderFoedselsnummer: string;
+  readonly vergeNavn?: string;
   readonly saksnummer: string;
+  // Formatert som 'yyyy-MM-dd'
   readonly dokumentDato: string;
 };
 
 export type Signatur = {
   readonly hilsenTekst: string;
   readonly saksbehandlerRolleTekst: string;
-  readonly saksbehandlerNavn: string;
+  readonly saksbehandlerNavn?: string;
   readonly attesterendeSaksbehandlerNavn?: string;
   readonly navAvsenderEnhet: string;
 };
@@ -137,7 +139,7 @@ export type ColumnSpec = Identifiable & {
 export type ColumnAlignment = "LEFT" | "RIGHT";
 
 export type TextContent = LiteralValue | VariableValue | NewLine;
-export type Content = ItemList | TextContent;
+export type Content = ItemList | TextContent | Table;
 
 export type Block = Identifiable & {
   readonly type: string;
@@ -165,8 +167,13 @@ export type Title2Block = Block & {
   readonly content: TextContent[];
 };
 
+export type Title = {
+  readonly text: TextContent[];
+  readonly deletedContent: number[];
+};
+
 export interface EditedLetter {
-  readonly title: string;
+  readonly title: Title;
   readonly sakspart: Sakspart;
   readonly blocks: AnyBlock[];
   readonly signatur: Signatur;

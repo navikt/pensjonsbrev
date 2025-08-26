@@ -8,8 +8,12 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class InnholdSoeknadFoerEttAar(
     val regelverkType: Expression<AlderspensjonRegelverkType>
@@ -66,13 +70,13 @@ data class InnholdSoeknadFoerEttAar(
         }
 
         paragraph {
-            text(
-                Bokmal to "Dersom du er usikker på når alderspensjonen din ble innvilget eller endret sist, " +
+            textExpr(
+                Bokmal to "Dersom du er usikker på når alderspensjonen din ble innvilget eller endret sist, ".expr() +
                         "kan du finne mer informasjon om dette i Din pensjon på ${Constants.DIN_PENSJON_URL}.",
-                Nynorsk to "Dersom du er usikker på når alderspensjonen din blei innvilga eller endra sist," +
+                Nynorsk to "Dersom du er usikker på når alderspensjonen din blei innvilga eller endra sist,".expr() +
                         " kan du finne meir informasjon om dette i nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL}.",
-                English to "If you are not sure when your retirement pension was granted or last changed, you can" +
-                        " find more information by logging on to the online service \"Din pensjon\" at" +
+                English to "If you are not sure when your retirement pension was granted or last changed, you can".expr() +
+                        " find more information by logging on to the online service " + quoted("Din pensjon") +" at" +
                         " ${Constants.DIN_PENSJON_URL}.",
             )
         }

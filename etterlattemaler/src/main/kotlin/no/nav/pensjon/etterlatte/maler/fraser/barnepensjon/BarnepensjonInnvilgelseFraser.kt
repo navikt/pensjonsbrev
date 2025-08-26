@@ -82,15 +82,15 @@ object BarnepensjonInnvilgelseFraser {
                 showIf(harUtbetaling) {
                     showIf(harFlereUtbetalingsperioder) {
                         textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
-                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + "."
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ".",
+                            Language.English to "You will receive ".expr() + formatertBeloep + " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + "."
                         )
                     }.orShow {
                         textExpr(
-                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
-                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
-                            Language.English to "You will receive NOK ".expr() + formatertBeloep + " each month before tax."
+                            Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned før skatt.",
+                            Language.Nynorsk to "Du får ".expr() + formatertBeloep + " per månad før skatt.",
+                            Language.English to "You will receive ".expr() + formatertBeloep + " each month before tax."
                         )
                     }
                 }.orShow {

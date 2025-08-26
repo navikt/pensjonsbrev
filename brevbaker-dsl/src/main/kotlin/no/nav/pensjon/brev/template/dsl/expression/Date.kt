@@ -4,8 +4,14 @@ import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 import java.time.YearMonth
 
-fun Expression<LocalDate>.format(short: Boolean = false) =
-    format(formatter = if(short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat)
+@JvmName("formatLocalDate")
+fun Expression<LocalDate>.format(short: Boolean = false): Expression<String> = format(dateFormatter(short))
+
+@JvmName("formatLocalDateNullable")
+fun Expression<LocalDate?>.format(short: Boolean = false): Expression<String?> = format(dateFormatter(short))
+
+private fun dateFormatter(short: Boolean): LocalizedFormatter<LocalDate> =
+    if (short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat
 
 fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
 

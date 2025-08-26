@@ -15,9 +15,15 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
-class BrevmetadataService(
+interface BrevmetadataService {
+    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto>
+    suspend fun getEblanketter(): List<BrevdataDto>
+    suspend fun getMal(brevkode: String): BrevdataDto
+}
+
+class BrevmetadataServiceHttp(
     config: Config,
-) : ServiceStatus {
+) : BrevmetadataService, ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = HttpClient(CIO) {
@@ -32,7 +38,7 @@ class BrevmetadataService(
         install(CallIdFromContext)
     }
 
-    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
+    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -44,14 +50,14 @@ class BrevmetadataService(
         }
     }
 
-    suspend fun getEblanketter(): List<BrevdataDto> {
+    override suspend fun getEblanketter(): List<BrevdataDto> {
         return httpClient.get("/api/brevdata/eblanketter") {
             contentType(ContentType.Application.Json)
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
     }
 
-    suspend fun getMal(brevkode: String): BrevdataDto {
+    override suspend fun getMal(brevkode: String): BrevdataDto {
         return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
@@ -135,5 +141,6 @@ object Brevkoder {
     const val POSTERINGSGRUNNLAG_VIRK0101_KODE = "PE_OK_06_101"
     const val POSTERINGSGRUNNLAG_VIRK0102_KODE = "PE_OK_06_102"
 
-    val ikkeRedigerbarBrevtittel = setOf(POSTERINGSGRUNNLAG_KODE, POSTERINGSGRUNNLAG_VIRK0101_KODE, POSTERINGSGRUNNLAG_VIRK0102_KODE)
+    val ikkeRedigerbarBrevtittel =
+        setOf(POSTERINGSGRUNNLAG_KODE, POSTERINGSGRUNNLAG_VIRK0101_KODE, POSTERINGSGRUNNLAG_VIRK0102_KODE)
 }

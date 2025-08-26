@@ -21,7 +21,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
     route("/${resource.name}") {
 
         get {
-            if (call.parameters["includeMetadata"] == "true") {
+            if (call.request.queryParameters["includeMetadata"] == "true") {
                 call.respond(resource.listTemplatesWithMetadata())
             } else {
                 call.respond(resource.listTemplatekeys())

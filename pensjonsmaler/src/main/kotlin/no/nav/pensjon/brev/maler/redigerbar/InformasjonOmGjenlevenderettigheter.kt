@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.avdoedNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.gjenlevendesAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.pesysData
@@ -16,12 +15,15 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -52,20 +54,11 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
         }
         outline {
             paragraph {
-                text(
-                    Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ",
-                    Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ",
-                    English to "We are writing to you because we have received notice that "
-                )
-                ifNotNull(pesysData.avdoedNavn) {
-                    eval(it)
-                }.orShow {
-                    eval(fritekst("avdød navn"))
-                }
-                text(
-                    Bokmal to " er død, og du kan ha rettigheter etter avdøde.",
-                    Nynorsk to " er død, og du kan ha rettar etter avdøde.",
-                    English to " has died ,and you may have rights as a surviving spouse."
+                val avdoedesNavn = fritekst("avdød navn")
+                textExpr(
+                    Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ".expr() + avdoedesNavn + " er død, og du kan ha rettigheter etter avdøde.",
+                    Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ".expr() + avdoedesNavn + " er død, og du kan ha rettar etter avdøde.",
+                    English to "We are writing to you because we have received notice that ".expr() + avdoedesNavn + " has died ,and you may have rights as a surviving spouse.",
                 )
             }
             showIf(pesysData.sakstype.isOneOf(Sakstype.ALDER)) {

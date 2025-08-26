@@ -22,6 +22,7 @@ import type {
   Sakspart,
   Signatur,
   TextContent,
+  Title,
   Title1Block,
   Title2Block,
   VariableValue,
@@ -55,14 +56,17 @@ export const nyRedigertBrev = ({
   signatur = nySignatur({}),
   deletedBlocks,
 }: {
-  title?: string;
+  title?: Title;
   sakspart?: Sakspart;
   blocks?: AnyBlock[];
   signatur?: Signatur;
   deletedBlocks?: number[];
 }): EditedLetter => {
   return {
-    title: title ?? "Information about application processing time",
+    title: title ?? {
+      text: [newLiteral({ text: "Information about application processing time" })],
+      deletedContent: [],
+    },
     sakspart: sakspart ?? {
       gjelderNavn: "TRYGG ANBEFALING",
       gjelderFoedselsnummer: "21418744917",
@@ -126,6 +130,7 @@ export const nyBrevInfo = (args: {
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
   vedtaksId?: Nullable<number>;
+  sadsId?: string;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -145,6 +150,7 @@ export const nyBrevInfo = (args: {
     spraak: args.spraak ?? SpraakKode.Engelsk,
     journalpostId: args.journalpostId ?? null,
     vedtaksId: args.vedtaksId ?? null,
+    saksId: args.sadsId ?? "22981081",
   };
 };
 

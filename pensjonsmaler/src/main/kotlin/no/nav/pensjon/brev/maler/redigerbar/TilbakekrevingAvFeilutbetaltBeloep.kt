@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbeta
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Redigerbar
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.model.format
@@ -27,6 +26,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -55,14 +55,14 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
         val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
         val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
         val sumTilInnkrevingTotalBeloep = pesysData.sumTilInnkrevingTotalBeloep
+        val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
 
         title {
-            text(
-                Bokmal to "Du må betale tilbake ",
-                Nynorsk to "Du må betale tilbake ",
-                English to "You have to repay "
+            textExpr(
+                Bokmal to "Du må betale tilbake ".expr() + sakstype,
+                Nynorsk to "Du må betale tilbake ".expr() + sakstype,
+                English to "You have to repay ".expr() + sakstype,
             )
-            includePhrase(Redigerbar.SaksType(pesysData.sakstype))
         }
         outline {
             paragraph {
@@ -74,39 +74,35 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Du har fått for mye ",
-                    Nynorsk to "Du har fått for mykje ",
-                    English to "You have received too much "
-                )
-                includePhrase(Redigerbar.SaksType(pesysData.sakstype))
                 textExpr(
-                    Bokmal to " utbetalt fra ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format() + ". ",
-                    Nynorsk to " utbetalt frå ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format() + ". ",
-                    English to " in the period from ".expr() + startPeriodeForTilbakekreving.format() + " to ".expr() + sluttPeriodeForTilbakekreving.format() + ". "
-                )
-                textExpr(
-                    Bokmal to "Dette er ".expr() + feilutbetaltTotalBeloep.format() + " kroner inkludert skatt.",
-                    Nynorsk to "Dette er ".expr() + feilutbetaltTotalBeloep.format() + " kroner inkludert skatt.",
-                    English to "This amounts to NOK ".expr() + feilutbetaltTotalBeloep.format() + " including tax."
+                    Bokmal to "Du har fått for mye ".expr() + sakstype
+                            + " utbetalt fra ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
+                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " inkludert skatt.",
 
+                    Nynorsk to "Du har fått for mykje ".expr() + sakstype
+                            + " utbetalt frå ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
+                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " inkludert skatt.",
+
+                    English to "You have received too much ".expr() + sakstype
+                            + " in the period from ".expr() + startPeriodeForTilbakekreving.format() + " to ".expr() + sluttPeriodeForTilbakekreving.format()
+                            + ". This amounts to ".expr() + feilutbetaltTotalBeloep.format() + " including tax.",
                 )
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.FULL_TILBAKEKREV)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trekt frå.",
-                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trekt frå.",
+                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
                     )
                 }
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.DELVIS_TILBAKEKREV)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trektfrå.",
-                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trektfrå.",
+                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
                     )
                 }
             }
@@ -126,9 +122,15 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             }
             paragraph {
                 text(
-                    Bokmal to "I vedlegget «Oversikt over feilutbetalinger» finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
-                    Nynorsk to "I vedlegget «Oversikt over feilutbetalinger» finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
-                    English to "The attachment titled 'Overview of Incorrect Payments' provides details on the periods with payment errors and the amounts that need to be repaid."
+                    Bokmal to "I vedlegget ",
+                    Nynorsk to "I vedlegget ",
+                    English to "The attachment titled "
+                )
+                namedReference(oversiktOverFeilutbetalingerPE)
+                text(
+                    Bokmal to " finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
+                    Nynorsk to " finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
+                    English to " provides details on the periods with payment errors and the amounts that need to be repaid."
                 )
             }
             title1 {

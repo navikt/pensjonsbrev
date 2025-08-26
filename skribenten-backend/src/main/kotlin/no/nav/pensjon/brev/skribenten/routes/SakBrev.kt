@@ -46,14 +46,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]
-            val frigiReservasjon = call.parameters["frigiReservasjon"].toBoolean()
+            val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
             brevredigeringService.oppdaterBrev(
                 saksId = sak.saksId,
                 brevId = brevId,
                 nyeSaksbehandlerValg = request.saksbehandlerValg,
                 nyttRedigertbrev = request.redigertBrev,
-                signatur = request.signatur,
                 frigiReservasjon = frigiReservasjon,
             )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                 ?.onError { message, statusCode ->
@@ -102,7 +101,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
         get("/{brevId}") {
             val sak: Pen.SakSelection = call.attributes[SakKey]
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val reserver = call.parameters["reserver"].toBoolean()
+            val reserver = call.request.queryParameters["reserver"].toBoolean()
 
             brevredigeringService.hentBrev(sak.saksId, brevId, reserver)
                 ?.onOk { brev ->
@@ -137,7 +136,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             get {
                 val sak: Pen.SakSelection = call.attributes[SakKey]
                 val brevId = call.parameters.getOrFail<Long>("brevId")
-                val reserver = call.parameters["reserver"].toBoolean()
+                val reserver = call.request.queryParameters["reserver"].toBoolean()
 
                 brevredigeringService.hentBrevAttestering(sak.saksId, brevId, reserver)
                     ?.onOk { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
@@ -151,14 +150,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             put<Api.OppdaterAttesteringRequest> { request ->
                 val brevId = call.parameters.getOrFail<Long>("brevId")
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                val frigiReservasjon = call.parameters["frigiReservasjon"].toBoolean()
+                val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
                 brevredigeringService.attester(
                     saksId = sak.saksId,
                     brevId = brevId,
                     nyeSaksbehandlerValg = request.saksbehandlerValg,
                     nyttRedigertbrev = request.redigertBrev,
-                    signaturAttestant = request.signaturAttestant,
                     frigiReservasjon = frigiReservasjon,
                 )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                     ?.onError { message, statusCode ->

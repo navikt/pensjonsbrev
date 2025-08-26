@@ -17,8 +17,11 @@ import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevende
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -153,31 +156,8 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage ",
-                    English to "You have the right to appeal  "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. ",
-                    English to "If you believe a decision was made in error, you have the right to appeal. The term of appeal is six weeks from the date on which you received notice of the decision. In the attached documents «Your rights and obligations», you can read more about how to proceed. The appeal form and more information can be found at nav.no/klage. "
-                )
-            }
-
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn ",
-                    English to "You have the right to access your file "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram.   ",
-                    English to "You have the right to access all the documents relevant to your case. In the attached «Your rights and obligations», you can read more about how to proceed."
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
+            includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
                 text(
@@ -192,31 +172,7 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål? ",
-                    English to "Do you have questions?  "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/gjenlevendepensjon. ",
-                    English to "You can read more at nav.no/gjenlevendepensjon. "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. ",
-                    English to "You can chat with us or write to us at nav.no/kontakt. "
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09:00-15:00. ",
-                    English to "If you can’t find the answers you need on nav.no, you can call us at tel. 55 55 33 34 on weekdays 09:00–15:00.  "
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
         includeAttachment(vedleggGjpDineRettigheterOgPlikter, EmptyBrevdata.expr())
 

@@ -14,6 +14,5 @@ data class InformasjonOmGjenlevenderettigheterDto(
     data class PesysData(
         val sakstype: Sakstype,
         val gjenlevendesAlder: Int,
-        val avdoedNavn: String?,
     ) : BrevbakerBrevdata
 }

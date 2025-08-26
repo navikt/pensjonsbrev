@@ -3,8 +3,7 @@ package no.nav.brev.brevbaker
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.render.Letter2Markup
-import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Attachment

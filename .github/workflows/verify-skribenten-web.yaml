@@ -3,7 +3,7 @@ name: "verify: skribenten-web"
 on:
   pull_request:
     branches:
-      - 'main'
+      - "main"
     paths:
       - .github/workflows/verify-skribenten-web.yaml
       - skribenten-web/**
@@ -15,14 +15,14 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
+          scope: "@navikt"
       - name: Install bff dependencies
         working-directory: skribenten-web/bff
         run: npm ci
@@ -47,20 +47,20 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
           cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies
         working-directory: skribenten-web/frontend
         run: npm ci
 
       - name: Cypress run e2e tests
-        uses: cypress-io/github-action@be1bab96b388bbd9ce3887e397d373c8557e15af
+        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
         with:
           working-directory: skribenten-web/frontend
           install: false
@@ -69,13 +69,12 @@ jobs:
           start: npm run dev
 
       - name: Cypress run component tests
-        uses: cypress-io/github-action@be1bab96b388bbd9ce3887e397d373c8557e15af
+        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
         with:
           working-directory: skribenten-web/frontend
           install: false
           browser: chrome
           component: true
-          start: npm run cypress
 
       - name: Run tests
         working-directory: skribenten-web/frontend
@@ -99,4 +98,3 @@ jobs:
         with:
           name: cypress-screenshots
           path: skribenten-web/frontend/cypress/screenshots
-

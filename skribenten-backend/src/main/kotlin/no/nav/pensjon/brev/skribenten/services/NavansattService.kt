@@ -4,18 +4,25 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.serialization.jackson.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.get
+import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import org.slf4j.LoggerFactory
+import kotlin.jvm.java
 
-class NavansattService(config: Config, authService: AzureADService) : ServiceStatus {
-    private val logger = LoggerFactory.getLogger(NavansattService::class.java)
+interface NavansattService {
+    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean>
+    suspend fun hentNavansatt(ansattId: String): Navansatt?
+    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
+}
+
+class NavansattServiceHttp(config: Config, authService: AuthService) : NavansattService, ServiceStatus {
+    private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
@@ -33,16 +40,16 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
         return client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
     }
 
-    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
+    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     private val navansattCache = Cache<String, Navansatt>()
-    suspend fun hentNavansatt(ansattId: String): Navansatt? =
+    override suspend fun hentNavansatt(ansattId: String): Navansatt? =
         navansattCache.cached(ansattId) {
             client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }

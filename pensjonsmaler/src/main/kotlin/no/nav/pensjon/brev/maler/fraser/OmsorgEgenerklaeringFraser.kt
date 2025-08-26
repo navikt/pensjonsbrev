@@ -36,7 +36,7 @@ data class OmsorgEgenerklaeringOutline(
                 Bokmal to
                         "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
                         + aarEgenerklaringOmsorgspoeng
-                        + ".Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
+                        + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
 
                 Nynorsk to
                         "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i ".expr()

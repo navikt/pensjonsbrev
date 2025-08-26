@@ -14,14 +14,15 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeil
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
 import no.nav.pensjon.brev.maler.fraser.vedlegg.vedleggVarselTilbakekreving
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
@@ -46,42 +47,34 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             brevtype = INFORMASJONSBREV
         )
     ) {
+        val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
         title {
-            text(
-                Bokmal to "Vi vurderer om du må betale tilbake ",
-                Nynorsk to "Vi vurderer om du må betale tilbake ",
-                English to "We are considering demanding repayment of incorrectly paid ",
+            textExpr(
+                Bokmal to "Vi vurderer om du må betale tilbake ".expr() + sakstype,
+                Nynorsk to "Vi vurderer om du må betale tilbake ".expr() + sakstype,
+                English to "We are considering demanding repayment of incorrectly paid ".expr() + sakstype,
             )
-            includePhrase(SaksType(pesysData.sakstype))
         }
         outline {
             paragraph {
+                val dato = fritekst("dato")
                 textExpr(
                     Bokmal to "Vi viser til vedtaket vårt ".expr()
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mye utbetalt i ",
+                            " kroner for mye utbetalt i " + sakstype + " fra og med ".expr()
+                            + dato + " til og med " + dato + ".",
 
                     Nynorsk to "Vi viser til vedtaket vårt ".expr()
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mykje utbetalt i ",
+                            " kroner for mykje utbetalt i " + sakstype + " frå og med ".expr()
+                            + dato + " til og med " + dato + ".",
 
                     English to "We refer to our decision dated ".expr()
-                            + felles.dokumentDato.format() +
-                            ". You have received NOK " + fritekst("beløp") +
-                            " too much in ",
-                )
-
-                includePhrase(SaksType(pesysData.sakstype))
-
-                textExpr(
-                    Bokmal to " fra og med ".expr() + fritekst("dato") + " til og med " +
-                            fritekst("dato") + ".",
-                    Nynorsk to " frå og med ".expr() + fritekst("dato") + " til og med " +
-                            fritekst("dato") + ".",
-                    English to " starting from ".expr() + fritekst("dato") + " up to and including " +
-                            fritekst("dato") + ".",
+                            + felles.dokumentDato.format() + ". You have received NOK " + fritekst("beløp") +
+                            " too much in " + sakstype + " starting from ".expr() + dato +
+                            " up to and including " + dato + ".",
                 )
             }
 
@@ -211,20 +204,20 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                     English to "How to make a statement",
                 )
             }
-            showIf(pesysData.sakstype.equalTo(Sakstype.ALDER)) {
+            showIf(pesysData.sakstype.equalTo(ALDER)) {
                 paragraph {
-                    text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge «Kontakt Nav om pensjon», eller logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på Din Pensjon og velje «Kontakt Nav om pensjon», eller logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to your personal “Din Pensjon” pension page and selecting “Kontakt Nav”, or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
+                    textExpr(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge ".expr() + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velge "+ quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på Din Pensjon og velje ".expr() + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " + quoted("Send beskjed til Nav") +". Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
+                        English to "You can submit your statement by logging in to your personal ".expr() + quoted("Din Pensjon") +" pension page and selecting " + quoted("Kontakt Nav") +", or by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }.orShow {
                 paragraph {
-                    text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
+                    textExpr(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge ".expr() + quoted("Send beskjed til Nav") + ". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje ".expr() + quoted("Send beskjed til Nav") +". Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
+                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting ".expr() + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }

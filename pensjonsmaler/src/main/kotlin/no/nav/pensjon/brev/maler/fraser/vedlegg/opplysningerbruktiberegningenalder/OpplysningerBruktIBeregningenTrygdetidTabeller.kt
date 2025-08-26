@@ -153,7 +153,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
         val trygdetidNorge: Expression<List<Trygdetid>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(trygdetidNorge.size().greaterThan(0)) {
+            showIf(trygdetidNorge.isNotEmpty()) {
                 paragraph {
                     table(
                         {

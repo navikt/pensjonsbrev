@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -17,11 +18,6 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
-        @DisplayText("Bruk alternativ tittel")
-        val gjenlevendetilleggTittel: Boolean,
-        @DisplayText("Vis avsnitt om gjenlevendetillegg pga pensjonsrettigheter")
-        val visGjenlevendetilleggPensjonsrettigheter: Boolean,
-        val visTilleggspensjonavsnittAP1967: Boolean,
         val omregnetTilEnsligISammeVedtak: Boolean,
         val pensjonenOeker: Boolean,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
@@ -84,16 +80,9 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val inntektspensjon: Int?,
+        val inntektspensjon: Kroner?,
         val gjenlevendetilleggKap19: Kroner?,
         val gjenlevendetillegg: Kroner?,
         val antallBeregningsperioderPensjon: Int,
     )
-
-    @Suppress("EnumEntryName")
-    enum class BeloepEndring {
-        ENDR_OKT,
-        ENDR_RED,
-        UENDRET
-    }
 }

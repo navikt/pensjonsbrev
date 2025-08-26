@@ -26,4 +26,15 @@ class LocalizedFormatterTest {
     fun `double formatteres ikke til mer enn 16 plasser`() {
         assertThat(2.0.expr().format(100).eval(testExpressionScope), equalTo("2," + "0".repeat(16)))
     }
+
+    @Test
+    fun `kan formattere double som nullable verdi`() {
+        assertThat(null.expr<Double?>().format(0).eval(testExpressionScope), equalTo(null))
+    }
+
+    @Test
+    fun `kan formattere integer som nullable verdi`() {
+        assertThat(null.expr<Int?>().format().eval(testExpressionScope), equalTo(null))
+    }
+
 }

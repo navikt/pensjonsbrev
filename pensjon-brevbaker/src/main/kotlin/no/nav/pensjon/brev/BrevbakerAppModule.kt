@@ -1,28 +1,37 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.config.*
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.callid.*
-import io.ktor.server.plugins.calllogging.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.util.date.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStopPreparing
+import io.ktor.server.application.ServerReady
+import io.ktor.server.application.install
+import io.ktor.server.application.log
+import io.ktor.server.auth.Authentication
+import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.ParameterConversionException
+import io.ktor.server.plugins.callid.CallId
+import io.ktor.server.plugins.callid.callIdMdc
+import io.ktor.server.plugins.callid.generate
+import io.ktor.server.plugins.calllogging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.path
+import io.ktor.server.response.respond
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.brev.brevbaker.LatexCompileException
 import no.nav.brev.brevbaker.LatexInvalidException
 import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
+import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -47,7 +56,6 @@ fun Application.brevbakerModule(
             !ignorePaths.contains(it.request.path())
         }
         mdc("x_response_code") { it.response.status()?.value?.toString() }
-        mdc("x_response_time") { it.processingTimeMillis(::getTimeMillis).toString() }
         mdc("x_brevkode") { it.useBrevkodeFromCallContext() }
     }
 
@@ -128,8 +136,12 @@ fun Application.brevbakerModule(
     val kafkaConfig = brevbakerConfig.config("kafka")
     val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
     val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
+        log.info("Oppretter Latex async compiler service")
         LatexAsyncCompilerService(kafkaConfig)
-    } else null
+    } else {
+        log.info("Starter uten Latex async compiler service")
+        null
+    }
 
     konfigurerUnleash(brevbakerConfig)
 
@@ -146,7 +158,7 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
             environment = stringProperty("environment")
             host = stringProperty("host")
             apiToken = stringProperty("apiToken")
-        }
+        }.also { FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle }) }
     }
 }
 

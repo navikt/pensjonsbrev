@@ -12,11 +12,10 @@ data class OpplysningerBruktIBeregningenEndretUttaksgradDto(
     val oppfrisketOpptjeningVedVirk: OppfrisketOpptjeningVedVirk,
     val bruker: Bruker,
     val krav: Krav,
-    val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
-    val beregningKap19VedVirk: BeregningKap19VedVirk,
+    val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk?,
+    val beregningKap19VedVirk: BeregningKap19VedVirk?,
     val endretUttaksgradVedVirk: EndretUttaksgradVedVirk,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
-    val alderspensjon: Alderspensjon,
     val beregningKap20VedVirk: BeregningKap20VedVirk?
 ) {
     data class AlderspensjonVedVirk(
@@ -63,10 +62,6 @@ data class OpplysningerBruktIBeregningenEndretUttaksgradDto(
 
     data class TrygdetidsdetaljerKap20VedVirk(
         val anvendtTT: Int
-    )
-
-    data class Alderspensjon(
-        val regelverkType: AlderspensjonRegelverkType
     )
 
     data class BeregningKap20VedVirk(

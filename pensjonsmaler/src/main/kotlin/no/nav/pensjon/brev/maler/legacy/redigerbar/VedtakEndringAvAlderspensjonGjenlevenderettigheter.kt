@@ -3,12 +3,12 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
@@ -43,22 +43,22 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonsutbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendetilleggTittel
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visGjenlevendetilleggPensjonsrettigheter
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visTilleggspensjonavsnittAP1967
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -87,6 +87,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 import java.time.Month
 
+// 00126 i doksys
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
     RedigerbarTemplate<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto> {
@@ -110,20 +111,16 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(LocalDate.of(1944, Month.JANUARY, 1))
 
         title {
-            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.gjenlevendetilleggTittel) {
+            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                 text(
                     Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
                     Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
                     English to "Survivor's supplement in retirement pension from "
                 )
+                eval(pesysData.krav.virkDatoFom.format())
             }.orShow {
-                text(
-                    Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ",
-                    Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ",
-                    English to "We have recalculated your retirement pension from "
-                )
+                includePhrase(BeregnaPaaNytt(pesysData.krav.virkDatoFom))
             }
-            eval(pesysData.krav.virkDatoFom.format())
         }
 
         outline {
@@ -211,7 +208,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // beregningAPGjtKap19_001
-            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.visGjenlevendetilleggPensjonsrettigheter) {
+            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr() + pesysData.avdod.navn + ".",
@@ -270,7 +267,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
                 showIf(pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)) {
                     // forklaringberegningGjtKap19_148_11
-                    showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).equalTo(0)) {
+                    showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).equalTo(0)) {
                         paragraph {
                             text(
                                 Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening.",
@@ -278,7 +275,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
                             )
                         }
-                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)) {
+                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).greaterThan(0)) {
                         // forklaringberegningGjtKap19_148_12
                         paragraph {
                             text(
@@ -301,7 +298,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0)
+                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0))
                                 .greaterThan(0)
                         ) {
                             text(
@@ -367,7 +364,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // omregnetTPAvdod_001
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and saksbehandlerValg.visTilleggspensjonavsnittAP1967) {
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
                 paragraph {
                     text(
                         Bokmal to "Tilleggspensjonen til en gjenlevende alderspensjonist kan enten bestå av pensjonistens egen tilleggspensjon eller 55 prosent av summen av pensjonistens egen tilleggspensjon og den avdødes tilleggspensjon. Tilleggspensjonen din er gitt etter det siste alternativet, da dette gir det høyeste beløpet for deg.",
@@ -409,19 +406,11 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // beløpAP_001
             showIf(
-                pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
-                        and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
+                not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
                         and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget)
             ) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt.",
-                        English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax as retirement pension through the National Insurance Act."
-                    )
-                }
+                includePhrase(DuFaarHverMaaned(pesysData.alderspensjonVedVirk.totalPensjon))
             }
 
             // beloepApOgGjtvedVirk_001
@@ -459,13 +448,13 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             .format() + " etter gamle regler og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " etter nye regler.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         )
                             .format() + " etter gamle reglar og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " etter nye reglar.",
-                        English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         )
                             .format() + " according to old rules and " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
@@ -489,21 +478,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // flereBeregningsperioderVedlegg_001
-                // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
-            showIf(
-                pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1)
-                        and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
-                        Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
-                        English to "There is more information about other calculation periods in the attachment."
-                    )
-                }
-            }
-
+            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967, AP2011, AP2016)) {
                 paragraph {
@@ -713,6 +688,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPopptjRedusPoengUnder67Aar_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
                         and saksbehandlerValg.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
@@ -726,7 +702,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             // infoAPopptjRedusPoengOver67Aar_001
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
@@ -742,8 +718,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // skattAPendring_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.harEndretPensjon and saksbehandlerValg.endringIPensjonsutbetaling) {
-                includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
             // pensjonFraAndreOverskrift_001
@@ -770,28 +747,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPOverskrift_001
-            title1 {
-                text(
-                    Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
-                    Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
-                    English to "Where can you find out more about your retirement pension?"
-                )
-            }
-            // infoAP_001
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON.",
-                    Nynorsk to "Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON.",
-                    English to "There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $ALDERSPENSJON."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
-                    Nynorsk to "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
-                    English to "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
-                )
-            }
+            includePhrase(HvorKanDuFaaViteMerOmAlderspensjonenDin)
 
             // meldEndringerPesysGjenlevende_001
             title1 {
@@ -826,6 +782,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         ) // v2
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto) // v3
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto) // v10
-        includeAttachmentIfNotNull(opplysningerOmAvdoedBruktIBeregning, pesysData.opplysningerOmAvdoedBruktIBeregningDto) // v6
+        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, pesysData.opplysningerOmAvdoedBruktIBeregningDto) // v6
     }
 }

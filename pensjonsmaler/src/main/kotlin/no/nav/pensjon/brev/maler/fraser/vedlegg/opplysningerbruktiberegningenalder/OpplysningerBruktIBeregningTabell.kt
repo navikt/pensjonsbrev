@@ -55,6 +55,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -427,7 +428,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     }
 
                     //tabellSkjermingstilleggSkjermingsgrad_001
-                    showIf(beregningKap19VedVirk.skjermingsgrad.greaterThan(0)) {
+                    showIf(beregningKap19VedVirk.skjermingsgrad.greaterThan(0.0)) {
                         row {
                             cell {
                                 text(
@@ -488,9 +489,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
                     row {
                         cell {
                             text(
-                                Bokmal to "Trygdetid etter kapittel 20",
-                                Nynorsk to "Trygdetid etter kapittel 20",
-                                English to "National insurance coverage pursuant to Chapter 20",
+                                Bokmal to "Trygdetid",
+                                Nynorsk to "Trygdetid",
+                                English to "National insurance coverage",
                             )
                         }
                         cell { includePhrase(AntallAarText(trygdetidsdetaljer.anvendtTT)) }
@@ -692,13 +693,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.flyktningstatusFraUDIrad(
 
 private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidAarRad(trygdetid: Expression<Int>) {
     row {
-        cell {
-            text(
-                Bokmal to "Trygdetid",
-                Nynorsk to "Trygdetid",
-                English to "National insurance coverage",
-            )
-        }
+        cell { includePhrase(Vedtak.TrygdetidText) }
         cell { includePhrase(AntallAarText(trygdetid)) }
     }
 }

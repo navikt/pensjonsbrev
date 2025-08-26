@@ -28,11 +28,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggserkull_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravmottattdato_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravmottattdato_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakListSelectors.vilkarsvedtak_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.virkningstidpunkt_safe
-import no.nav.pensjon.brev.maler.legacy.aarstall_trygdetid
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -93,7 +91,7 @@ fun Expression<PE>.ut_tbu056v_51() = (
         )
 
 
-fun Expression<PE>.pe_ut_tbu601v_tbu604v(): Expression.BinaryInvoke<Boolean, Boolean, Boolean> {
+fun Expression<PE>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
     val belopsendring = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe
     return vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.kravarsaktype_safe.equalTo("endret_inntekt") and
             (belopsendring.barnetilleggfellesyk_safe.belopgammelbtfb_safe.notEqualTo(belopsendring.barnetilleggfellesyk_safe.belopnybtfb_safe) or
@@ -149,14 +147,14 @@ fun Expression<PE>.pe_ut_barnet_barna_felles_serkull(): Expression<String> {
     val barnetilleggfelles = beregningytelseskomp.barnetilleggfelles_safe
 
     val erEttBarn = (barnetilleggfelles.antallbarnfelles_safe.ifNull(0).equalTo(1) and
-            barnetilleggfelles.btfbnetto_safe.ifNull(0).equalTo(0)) or
+            barnetilleggfelles.btfbnetto_safe.ifNull(Kroner(0)).equalTo(0)) or
             (barnetilleggserkull.antallbarnserkull_safe.ifNull(0).equalTo(1) and
-                    barnetilleggserkull.btsbnetto_safe.ifNull(0).equalTo(0))
+                    barnetilleggserkull.btsbnetto_safe.ifNull(Kroner(0)).equalTo(0))
 
     val erFlereBarn = (barnetilleggfelles.antallbarnfelles_safe.ifNull(0).greaterThan(1) and
-            barnetilleggfelles.btfbnetto_safe.ifNull(0).equalTo(0)) or
+            barnetilleggfelles.btfbnetto_safe.ifNull(Kroner(0)).equalTo(0)) or
             (barnetilleggserkull.antallbarnserkull_safe.ifNull(0).greaterThan(1) and
-                    barnetilleggserkull.btsbnetto_safe.ifNull(0).equalTo(0))
+                    barnetilleggserkull.btsbnetto_safe.ifNull(Kroner(0)).equalTo(0))
     return ifElse(
         erEttBarn, ifElse(erEngelsk, "child", "barnet"),
         ifElse(

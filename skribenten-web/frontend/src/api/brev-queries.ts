@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
 import type {
+  BrevInfo,
   BrevResponse,
   OppdaterBrevRequest,
   OpprettBrevRequest,
@@ -54,6 +55,16 @@ export const getBrevAttesteringQuery = (saksId: string, brevId: number, reserver
     ).data,
 });
 
+export const brevInfoKeys = {
+  all: ["BREV_META"] as const,
+  id: (brevId: number) => [...brevInfoKeys.all, brevId] as const,
+};
+
+export const getBrevInfoQuery = (brevId: number) => ({
+  queryKey: brevInfoKeys.id(brevId),
+  queryFn: async () => (await axios.get<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/info`)).data,
+});
+
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
 }
@@ -71,7 +82,6 @@ export async function oppdaterBrev(args: {
       {
         saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
-        signatur: args.request.signatur,
       },
     )
   ).data;
@@ -91,22 +101,6 @@ export async function oppdaterSaksbehandlerValg(brevId: number, saksbehandlerVal
     await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/saksbehandlerValg`, saksbehandlerValg)
   ).data;
 }
-
-export const oppdaterSignatur = async (brevId: number | string, signatur: string) =>
-  (
-    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/signatur`, signatur, {
-      //sendes som form-data hvis man ikke setter content-type til text/plain
-      headers: { "Content-Type": "text/plain" },
-    })
-  ).data;
-
-export const oppdaterAttestantSignatur = async (brevId: number | string, signatur: string) =>
-  (
-    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/attestant`, signatur, {
-      //sendes som form-data hvis man ikke setter content-type til text/plain
-      headers: { "Content-Type": "text/plain" },
-    })
-  ).data;
 
 export async function tilbakestillBrev(brevId: number) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/tilbakestill`)).data;

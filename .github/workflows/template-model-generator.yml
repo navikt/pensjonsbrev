@@ -20,7 +20,7 @@ jobs:
       packages: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: gradle/actions/wrapper-validation@v4
@@ -33,5 +33,3 @@ jobs:
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
           ./gradlew :template-model-generator:build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

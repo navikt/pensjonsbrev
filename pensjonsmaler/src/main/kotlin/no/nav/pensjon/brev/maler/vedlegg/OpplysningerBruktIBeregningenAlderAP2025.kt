@@ -37,8 +37,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vedtak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vilkarsVedtak
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenGarantipensjon
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -46,10 +48,12 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
+// V00011 i metaforce
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025Dto>(
@@ -221,14 +225,14 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             paragraph {
                 textExpr(
                     Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er "
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
                     Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er "
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
-                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is NOK ".expr() +
+                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is ".expr() +
                             beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
                 )
@@ -238,16 +242,16 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             paragraph {
                 textExpr(
                     Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er " +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ". Siden du ikke tar ut full pensjon, vil du kun få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
                     Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er " +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ".  Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
-                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is NOK ".expr() +
+                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is ".expr() +
                             beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ". Since you are not withdrawing the full pension, you will only receive "
                             + alderspensjonVedVirk.uttaksgrad.format() + " percent of this amount.",
@@ -298,17 +302,9 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             )
         )
 
-        showIf(beregningKap20VedVirk.redusertTrygdetid and not(avslattGarantipensjon)) {
-            title1 {
-                text(
-                    Bokmal to "Trygdetid",
-                    Nynorsk to "Trygdetid",
-                    English to "Period of national insurance coverage",
-                )
-            }
-            showIf(trygdetidNorge.size().greaterThan(0)) {
-                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
-            }
+        showIf(beregningKap20VedVirk.redusertTrygdetid and not(avslattGarantipensjon) and trygdetidNorge.size().greaterThan(0)) {
+            includePhrase(Vedtak.TrygdetidOverskrift)
+            includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
             includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid(trygdetidNorge))
         }
         //vedleggBeregnPensjonsOpptjeningKap20_001
@@ -395,10 +391,10 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         }
 
         paragraph {
-            text(
-                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL får du oversikt over pensjonsopptjeningen din for hvert enkelt år. Nav mottar opplysninger om pensjonsgivende inntekt fra Skatteetaten. Ta kontakt med Skatteetaten hvis du mener at inntektene i tabellen er feil.",
-                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL får du oversikt over pensjonsoppteninga di for kvart enkelt år. Nav får opplysningar om pensjonsgivande inntekt frå Skatteetaten. Ta kontakt med Skatteetaten dersom du meiner at inntektene i tabellen er feil.",
-                English to "Our online service \"Din pensjon\" at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Nav receives information about pensionable income from the Norwegian Tax Administration. Contact the tax authorities if you think that this income is wrong.",
+            textExpr(
+                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL får du oversikt over pensjonsopptjeningen din for hvert enkelt år. Nav mottar opplysninger om pensjonsgivende inntekt fra Skatteetaten. Ta kontakt med Skatteetaten hvis du mener at inntektene i tabellen er feil.".expr(),
+                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL får du oversikt over pensjonsoppteninga di for kvart enkelt år. Nav får opplysningar om pensjonsgivande inntekt frå Skatteetaten. Ta kontakt med Skatteetaten dersom du meiner at inntektene i tabellen er feil.".expr(),
+                English to "Our online service ".expr() + quoted("Din pensjon") + " at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Nav receives information about pensionable income from the Norwegian Tax Administration. Contact the tax authorities if you think that this income is wrong.",
             )
         }
         showIf(pensjonsopptjeningKap20VedVirk.harMerknadType) {
@@ -413,21 +409,21 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregni
 ) {
     paragraph {
         table({
-            column {
+            column(columnSpan = 1, alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "År",
                     Nynorsk to "År",
                     English to "Year",
                 )
             }
-            column {
+            column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Pensjonsgivende inntekt (kr)",
                     Nynorsk to "Pensjonsgivande inntekt (kr)",
                     English to "Pensionable income (NOK)",
                 )
             }
-            column {
+            column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Gjennomsnittlig G (kr)",
                     Nynorsk to "Gjennomsnittlig G (kr)",
@@ -435,7 +431,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregni
                 )
             }
             if (medMerknader) {
-                column(columnSpan = 2) {
+                column(columnSpan = 4) {
                     text(
                         Bokmal to "Andre typer opptjeningsgrunnlag registrert",
                         Nynorsk to "Andre typer oppteningsgrunnlag registrert",

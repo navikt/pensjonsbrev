@@ -1,7 +1,12 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.KravInitiertAv.*
+import no.nav.pensjon.brev.api.model.KravInitiertAv.ADVOKAT
+import no.nav.pensjon.brev.api.model.KravInitiertAv.BRUKER
+import no.nav.pensjon.brev.api.model.KravInitiertAv.KONV
+import no.nav.pensjon.brev.api.model.KravInitiertAv.NAV
+import no.nav.pensjon.brev.api.model.KravInitiertAv.SOSIALKONTOR
+import no.nav.pensjon.brev.api.model.KravInitiertAv.VERGE
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -24,10 +29,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.vedtak
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.SaksbehandlerValgSelectors.visEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.VedtakSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -45,12 +52,10 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -60,6 +65,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.Percent
 
 @TemplateModelHelpers
+// 00100 i doksys
 object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -142,21 +148,14 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }
 
             showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
-                // Phrase innvilgelseAPogUTInnledn_001
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
-                    )
-                }
+                includePhrase(UfoereAlder.DuFaar(pesysData.alderspensjonVedVirk.totalPensjon, pesysData.krav.virkDatoFom))
             }.orShow {
                 // innvilgelseAPInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygda.",
-                        English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
+                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygda.",
+                        English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
                     )
                 }
             }
@@ -181,16 +180,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 )
             }
 
-            showIf(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon.greaterThan(1) and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
-                // flereBeregningsperioderVedlegg_001
-                paragraph {
-                    text(
-                        Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
-                        Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
-                        English to "There is more information about other calculation periods in the attachment."
-                    )
-                }
-            }
+            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
                 //  endrUtaksgradAP2011_001
@@ -309,30 +299,15 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }
 
             // skattAPendring_001
-            includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+            includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
 
-            showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
+            showIf(pesysData.vedtak.etterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }
 
             // arbInntektAPOverskrift_001
-            title1 {
-                text(
-                    Bokmal to "Arbeidsinntekt og alderspensjon",
-                    Nynorsk to "Arbeidsinntekt og alderspensjon",
-                    English to "Earned income and retirement pension"
-                )
-            }
-
-            // arbInntektAP_001
-            paragraph {
-                text(
-                    Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
-                    Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
-                    English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
-                )
-            }
+            includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
 
             showIf(pesysData.alderspensjonVedVirk.uttaksgrad.equalTo(Percent(100))) {
                 // nyOpptjeningHelAP_001
@@ -354,40 +329,9 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 }
             }
 
-            showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
-                // arbInntektAPogUT_001
-                paragraph {
-                    text(
-                        Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                        Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                        English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
-                    )
-                }
-            }
+            includePhrase(UfoereAlder.UfoereKombinertMedAlder(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder))
 
-            // meldEndringerPesys_002
-            // TODO: Denne er så godt som lik mange av dei andre meld fra om endringer. Bør samkjøres og legges i felles.
-            title1 {
-                text(
-                    Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "Du må melde frå om endringar",
-                    English to "You must notify Nav if anything changes"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
-                    English to "If your circumstances change, you must inform Nav immediately. The appendix specifies which changes you are obligated to notify us of."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
-                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
-                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
-                )
-            }
+            includePhrase(MeldFraOmEndringer2)
             includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
@@ -396,6 +340,6 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
         includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
-        includeAttachment(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, pesysData.opplysningerBruktIBeregningenEndretUttaksgradDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, pesysData.opplysningerBruktIBeregningenEndretUttaksgradDto)
     }
 }

@@ -51,17 +51,17 @@ class OmstillingsstoenadRevurderingFraser {
                         paragraph {
                             textExpr(
                                 Language.Bokmal to "Omstillingsstønaden din er endret fra ".expr() +
-                                    formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned " +
+                                    formatertVirkningsdato + ". Du får " + formatertBeloep + " hver måned " +
                                     "før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se beløp for " +
                                     "tidligere perioder og hvordan vi har beregnet omstillingsstønaden i " +
                                     "vedlegg «Beregning av omstillingsstønad».",
                                 Language.Nynorsk to "Omstillingsstønaden din har blitt endra frå ".expr() +
-                                    formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner kvar " +
+                                    formatertVirkningsdato + ". Du får " + formatertBeloep + " kvar " +
                                     "månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom +
                                     ". Du finn meir informasjon om beløp for tidlegare periodar i vedlegget " +
                                     "«Utrekning av omstillingsstønad».",
                                 Language.English to "Your adjustment allowance will change on ".expr() +
-                                    formatertVirkningsdato + ". You will receive NOK " + formatertBeloep +
+                                    formatertVirkningsdato + ". You will receive " + formatertBeloep +
                                     " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                     ". Read more about amounts for previous periods and how we have calculated " +
                                     "your adjustment allowance in the attachment: Calculation of " +
@@ -81,11 +81,11 @@ class OmstillingsstoenadRevurderingFraser {
                         }
                         paragraph {
                             textExpr(
-                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned " +
+                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned " +
                                     "før skatt. ",
-                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner kvar " +
+                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kvar " +
                                     "månad før skatt.",
-                                Language.English to "You will receive NOK ".expr() + formatertBeloep +
+                                Language.English to "You will receive ".expr() + formatertBeloep +
                                     " each month before tax."
                             )
                         }
@@ -149,10 +149,10 @@ class OmstillingsstoenadRevurderingFraser {
                         )
                         showIf(harUtbetaling) {
                             textExpr(
-                                Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " kroner per " +
+                                Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " per " +
                                     "måned før skatt.",
-                                Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                                Language.English to "You will continue to receive NOK ".expr() + formatertBeloep + " per month before tax.".expr()
+                                Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " per månad før skatt.".expr(),
+                                Language.English to "You will continue to receive ".expr() + formatertBeloep + " per month before tax.".expr()
                             )
                         }.orShow {
                             text(
@@ -204,9 +204,9 @@ class OmstillingsstoenadRevurderingFraser {
                 showIf(inntekt.greaterThan(0)) {
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har lagt til grunn at du har ".expr() + inntekt.format() + " kroner som forventet inntekt i innvilgede måneder i " + inntektsAar.format() + ".",
-                            Nynorsk to "Vi har lagt til grunn at du har ".expr() + inntekt.format() + " kroner som forventa inntekt i innvilga månader i " + inntektsAar.format() + ".",
-                            English to "We have assumed an expected income of NOK ".expr() + inntekt.format() + " for months with granted adjustment allowance in " + inntektsAar.format() + ".",
+                            Bokmal to "Vi har lagt til grunn at du har ".expr() + inntekt.format() + " som forventet inntekt i innvilgede måneder i " + inntektsAar.format() + ".",
+                            Nynorsk to "Vi har lagt til grunn at du har ".expr() + inntekt.format() + " som forventa inntekt i innvilga månader i " + inntektsAar.format() + ".",
+                            English to "We have assumed an expected income of ".expr() + inntekt.format() + " for months with granted adjustment allowance in " + inntektsAar.format() + ".",
                         )
                     }
                 }.orShow {

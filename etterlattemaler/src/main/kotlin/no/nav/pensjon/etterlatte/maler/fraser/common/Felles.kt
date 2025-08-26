@@ -132,15 +132,15 @@ object Felles {
             title2 {
                 text(
                     Bokmal to "Hvordan melder du fra?",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Slik melder du frå",
+                    English to "How to notify us ",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Meld fra til oss ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Meld frå til oss ved å fylle ut endringsskjemaet eller ettersende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}.",
+                    English to "You can notify us by using the amendment form, and/or you can forward documentation at: ${Constants.ETTERSENDE_OMS_URL}.",
                 )
             }
         }

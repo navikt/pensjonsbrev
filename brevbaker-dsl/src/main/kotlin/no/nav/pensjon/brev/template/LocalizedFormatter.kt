@@ -2,12 +2,14 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.apply
 
 const val NON_BREAKING_SPACE = '\u00A0'
 
@@ -25,16 +27,16 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     }
 
     object MonthYearFormatter : LocalizedFormatter<LocalDate>() {
-        override fun apply(date: LocalDate, second: Language): String {
-            return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
+        override fun apply(first: LocalDate, second: Language): String {
+            return first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
         }
 
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
     }
 
     object YearMonthFormatter : LocalizedFormatter<YearMonth>() {
-        override fun apply(date: YearMonth, second: Language): String {
-            return MonthYearFormatter.apply(date.atDay(1), second)
+        override fun apply(first: YearMonth, second: Language): String {
+            return MonthYearFormatter.apply(first.atDay(1), second)
         }
 
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
@@ -53,12 +55,24 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     }
 
     object CurrencyFormat : LocalizedFormatter<Int>() {
+        override fun stableHashCode(): Int = "CurrencyFormatInt".hashCode()
+        override fun apply(first: Int, second: Language): String = CurrencyFormatKroner(denominator = false).apply(Kroner(first), second)
+    }
+
+    class CurrencyFormatKroner(val denominator: Boolean = true) : LocalizedFormatter<Kroner>() {
         override fun stableHashCode(): Int = "CurrencyFormat".hashCode()
-        override fun apply(first: Int, second: Language): String =
+        override fun apply(first: Kroner, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
-                .format(first)
-                .replace(' ', NON_BREAKING_SPACE)
+                .format(first.value)
+                .replace(' ', NON_BREAKING_SPACE).let {
+                    if (denominator) {
+                        when (second) {
+                            Language.Bokmal, Language.Nynorsk -> "$it kroner"
+                            Language.English -> "NOK $it"
+                        }
+                    } else it
+                }
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
@@ -89,5 +103,3 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
 
     }
 }
-
-private fun ch(): Char = NON_BREAKING_SPACE

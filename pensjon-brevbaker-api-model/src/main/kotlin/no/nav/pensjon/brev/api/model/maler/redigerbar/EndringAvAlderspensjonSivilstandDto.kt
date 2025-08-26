@@ -4,11 +4,10 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -89,7 +88,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
     ) : BrevbakerBrevdata
 
     data class EpsVedVirk(
@@ -101,6 +100,7 @@ data class EndringAvAlderspensjonSivilstandDto(
 
     data class AlderspensjonVedVirk(
         val garantipensjonInnvilget: Boolean,
+        val innvilgetFor67: Boolean,
         val minstenivaaIndividuellInnvilget: Boolean,
         val minstenivaaPensjonsistParInnvilget: Boolean,
         val pensjonstilleggInnvilget: Boolean,

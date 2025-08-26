@@ -8,27 +8,14 @@ interface IntValue {
     val value: Int
 }
 
-class Telefonnummer(val value: String) {
-    override fun equals(other: Any?): Boolean {
-        if (other !is Telefonnummer) return false
-        return value == other.value
-    }
+@JvmInline
+value class Telefonnummer(val value: String)
 
-    override fun hashCode() = value.hashCode()
+@JvmInline
+value class Foedselsnummer(val value: String)
 
-    override fun toString(): String = "Telefonnummer(value='$value')"
-}
-
-class Foedselsnummer(val value: String) {
-    override fun equals(other: Any?): Boolean {
-        if (other !is Foedselsnummer) return false
-        return value == other.value
-    }
-
-    override fun hashCode() = value.hashCode()
-}
-
-data class Kroner(override val value: Int) : IntValue
+@JvmInline
+value class Kroner(override val value: Int) : IntValue
 
 @JvmInline
 value class Year(override val value: Int) : IntValue
@@ -52,18 +39,3 @@ class Broek(val teller: Int, val nevner: Int) {
 
     override fun toString() = "Broek(teller=$teller, nevner=$nevner)"
 }
-
-
-// TODO: Alle disse under her skal slettes når pesys er oppdatert til ny modell
-data class YearWrapper(override val value: Int) : IntWrapper
-
-data class MonthsWrapper(override val value: Int) : IntWrapper
-
-data class DaysWrapper(override val value: Int) : IntWrapper
-
-data class PercentWrapper(override val value: Int) : IntWrapper
-
-interface IntWrapper {
-    val value: Int
-}
-

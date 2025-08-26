@@ -2,14 +2,23 @@ package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.OMSTILLINGSSTOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -99,8 +108,8 @@ data class UtbetalingUfoeretrygd(
         showIf(faarUtbetaltUfoeretrygd) {
             paragraph {
                 textExpr(
-                    Bokmal to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " kroner i uføretrygd".expr(),
-                    Nynorsk to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " kroner i uføretrygd".expr(),
+                    Bokmal to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " i uføretrygd".expr(),
+                    Nynorsk to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " i uføretrygd".expr(),
                     English to "Your monthly disability benefit".expr(),
                 )
                 showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
@@ -113,7 +122,7 @@ data class UtbetalingUfoeretrygd(
                 textExpr(
                     Bokmal to " per måned før skatt.".expr(),
                     Nynorsk to " kvar månad før skatt.".expr(),
-                    English to " will be NOK ".expr() + totalUfoereMaanedligBeloep.format() + " before tax.".expr()
+                    English to " will be ".expr() + totalUfoereMaanedligBeloep.format() + " before tax.".expr()
                 )
                 showIf(harFlereUfoeretrygdPerioder) {
                     text(
@@ -217,15 +226,15 @@ data class EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
         paragraph {
             textExpr(
                 Bokmal to "Sivilstandsendring har også betydning for inntekten din før du ble ufør. Denne utgjør ".expr()
-                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
-                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Kompensasjonsgraden din er satt til ".expr()
+                        + inntektFoerUfoerhet.format() + " som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + ". Kompensasjonsgraden din er satt til ".expr()
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Endringar i sivilstanden påverkar også inntekta di før du blei ufør. Denne utgjer ".expr()
-                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
-                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Kompensasjonsgraden din er fastsett til ".expr()
+                        + inntektFoerUfoerhet.format() + " som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + ". Kompensasjonsgraden din er fastsett til ".expr()
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
-                English to "The change in your marital status also affects your income prior to disability, which is determined to be NOK ".expr()
-                        + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
+                English to "The change in your marital status also affects your income prior to disability, which is determined to be ".expr()
+                        + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + ". Your degree of compensation is determined to be ".expr()
                         + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
             )
@@ -243,15 +252,15 @@ data class EndretMinstInntektFoerUfoerhetDoedEPS(
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr()
-                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
-                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
+                        + inntektFoerUfoerhet.format() + " som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + ". Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Inntekta di før du blei ufør er fastsett til minstenivå, som er avhengig av sivilstand. For deg er inntekta di før du blei ufør fastsett til ".expr()
-                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
-                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Dette kan ha noko å seie for kompensasjonsgraden din, som er fastsett til ".expr()
+                        + inntektFoerUfoerhet.format() + " som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + ". Dette kan ha noko å seie for kompensasjonsgraden din, som er fastsett til ".expr()
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
-                English to "Your income prior to disability is set to the minimum level, which depends on marital status. The change in your marital status affects your income prior to disability, which is determined to be NOK ".expr()
-                        + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
+                English to "Your income prior to disability is set to the minimum level, which depends on marital status. The change in your marital status affects your income prior to disability, which is determined to be ".expr()
+                        + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + ". This may affect your degree of compensation, which has been determined to be ".expr()
                         + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
             )
@@ -519,13 +528,13 @@ data class IkkeRedusertBarnetilleggSaerkullsbarnPgaInntekt(
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er lavere enn fribeløpet ditt på ".expr()
-                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget ikke redusert ut fra inntekt.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " er lavere enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + ". Derfor er barnetillegget ikke redusert ut fra inntekt.".expr(),
                 Nynorsk to "Inntekta di på ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er lågare enn fribeløpet ditt på ".expr()
-                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget ikkje redusert ut frå inntekt.".expr(),
-                English to "Your income of NOK ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is lower than your exemption amount of NOK ".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " er lågare enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + ". Derfor er barnetillegget ikkje redusert ut frå inntekt.".expr(),
+                English to "Your income of ".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is lower than your exemption amount of ".expr()
                         + barnetilleggSaerkullsbarnFribeloep.format() + ". Therefore, your child supplement has not been reduced on the basis of your income.".expr()
             )
         }
@@ -540,13 +549,13 @@ data class RedusertBarnetilleggSaerkullsbarnPgaInntekt(
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er høyere enn fribeløpet ditt på ".expr()
-                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget redusert ut fra inntekt.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " er høyere enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + ". Derfor er barnetillegget redusert ut fra inntekt.".expr(),
                 Nynorsk to "Inntekta di på ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er høgare enn fribeløpet ditt på ".expr()
-                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget redusert ut frå inntekt.".expr(),
-                English to "Your income of NOK ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is higher than your exemption amount of NOK ".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " er høgare enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + ". Derfor er barnetillegget redusert ut frå inntekt.".expr(),
+                English to "Your income of ".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is higher than your exemption amount of ".expr()
                         + barnetilleggSaerkullsbarnFribeloep.format() + ". Therefore, your child supplement has been reduced on the basis of your income.".expr()
             )
         }
@@ -588,13 +597,13 @@ data class IkkeUtbetaltBarnetilleggSaerkullsbarnPgaInntekt(
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er over ".expr()
-                        + barnetilleggSaerkullsbarnInntektstak.format() + " kroner som er grensen for å få utbetalt barnetillegg. Derfor får du ikke utbetalt barnetillegg.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " er over ".expr()
+                        + barnetilleggSaerkullsbarnInntektstak.format() + " som er grensen for å få utbetalt barnetillegg. Derfor får du ikke utbetalt barnetillegg.".expr(),
                 Nynorsk to "Inntekta di på ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er over ".expr()
-                        + barnetilleggSaerkullsbarnInntektstak.format() + " kroner, som er grensa for å få utbetalt barnetillegg. Derfor får du ikkje utbetalt barnetillegg.".expr(),
-                English to "Your income of NOK ".expr()
-                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is over the income limit for receiving a child supplement, which is NOK ".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " er over ".expr()
+                        + barnetilleggSaerkullsbarnInntektstak.format() + ", som er grensa for å få utbetalt barnetillegg. Derfor får du ikkje utbetalt barnetillegg.".expr(),
+                English to "Your income of ".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is over the income limit for receiving a child supplement, which is ".expr()
                         + barnetilleggSaerkullsbarnInntektstak.format() + ". Therefore, you will not receive child supplement.".expr()
             )
         }
@@ -679,15 +688,15 @@ data class StoerrelseOmstillingsstoenad(val grunnbeloepVedVirk: Expression<Krone
         paragraph {
             textExpr(
                 Bokmal to "Stønaden er 2,25 ganger grunnbeløpet i folketrygden per år. ".expr() +
-                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + " kroner. " +
+                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + ". " +
                         "Hvis den avdøde har bodd utenfor Norge etter fylte 16 år, kan det påvirke størrelsen.",
 
                 Nynorsk to "Stønaden er 2,25 gongar grunnbeløpet i folketrygda per år. ".expr() +
-                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + " kronar. " +
+                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + ". " +
                         "Viss den avdøde har budd utanfor Noreg etter fylte 16 år, kan det påverke stønaden.",
 
                 English to "The allowance is 2.25 times the basic amount in the National Insurance Scheme per year. ".expr() +
-                        "The basic amount is NOK " + grunnbeloepVedVirk.format() + ". " +
+                        "The basic amount is " + grunnbeloepVedVirk.format() + ". " +
                         "If the deceased lived outside Norway after the age of 16, it may affect the amount.",
             )
         }
@@ -766,9 +775,9 @@ data class SoekGjenlevendetilleggEtter2024(val borIAvtaleLand: Expression<Boolea
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon og søknad på nav.no/omstillingsstonad.",
-                Nynorsk to "Du finn informasjon og søknad på nav.no/omstillingsstonad.",
-                English to "You will find information and the application form at nav.no/omstillingsstonad.",
+                Bokmal to "Du finner mer informasjon og søknad på $OMSTILLINGSSTOENAD_URL.",
+                Nynorsk to "Du finn informasjon og søknad på $OMSTILLINGSSTOENAD_URL.",
+                English to "You will find information and the application form at $OMSTILLINGSSTOENAD_URL.",
             )
         }
         showIf(borIAvtaleLand) {

@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.jetbrains.exposed.exceptions.ExposedSQLException
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.testcontainers.containers.PostgreSQLContainer
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class MottakerTest {
@@ -95,14 +97,25 @@ class MottakerTest {
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             redigertBrev = Edit.Letter(
-                "a",
-                LetterMarkupImpl.SakspartImpl("b", "c", "d", "e"),
+                Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
+                LetterMarkupImpl.SakspartImpl(
+                    gjelderNavn = "b",
+                    gjelderFoedselsnummer = Foedselsnummer("c"),
+                    vergeNavn = null,
+                    saksnummer = "d",
+                    dokumentDato = LocalDate.now(),
+                ),
                 emptyList(),
-                LetterMarkupImpl.SignaturImpl("f", "g", "h", "i", "j"),
+                LetterMarkupImpl.SignaturImpl(
+                    hilsenTekst = "f",
+                    saksbehandlerRolleTekst = "g",
+                    saksbehandlerNavn = "en signatur",
+                    attesterendeSaksbehandlerNavn = "i",
+                    navAvsenderEnhet = "j",
+                ),
                 emptySet(),
             )
             sistRedigertAvNavIdent = principal
-            signaturSignerende = "en signatur"
         }
     }
 }

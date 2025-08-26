@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -15,9 +16,6 @@ import java.time.Month
 fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
-            gjenlevendetilleggTittel = true,
-            visGjenlevendetilleggPensjonsrettigheter = true,
-            visTilleggspensjonavsnittAP1967 = true,
             omregnetTilEnsligISammeVedtak = true,
             pensjonenOeker = true,
             brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar = true,
@@ -50,32 +48,20 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 harEndretPensjon = true
             ),
             ytelseskomponentInformasjon = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.YtelseskomponentInformasjon(
-                beloepEndring = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeloepEndring.ENDR_OKT
+                beloepEndring = BeloepEndring.ENDR_OKT
             ),
             gjenlevendetilleggKapittel19VedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.GjenlevendetilleggKapittel19VedVirk(
                 apKap19utenGJR = 90
             ),
             beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeregnetPensjonPerManedVedVirk(
-                inntektspensjon = 100,
+                inntektspensjon = Kroner(100),
                 gjenlevendetilleggKap19 = Kroner(2500),
                 gjenlevendetillegg = Kroner(750),
                 antallBeregningsperioderPensjon = 2
             ),
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
-            maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
-                beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
-                    inntektspensjon = Kroner(1000),
-                    totalPensjon = Kroner(2000),
-                    garantipensjonInnvilget = Kroner(500),
-                    garantipensjon = Kroner(1000),
-                    minstenivaIndividuell = Kroner(0),
-                    virkDatoFom = LocalDate.now(),
-                    virkDatoTom = null
-                ),
-                beregnetPensjonperManed = listOf(),
-                kravVirkFom = LocalDate.now()
-            ),
+                maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025(),
             opplysningerOmAvdoedBruktIBeregningDto = OpplysningerOmAvdoedBruktIBeregningDto(
                 bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
                     foedselsdato = LocalDate.now()

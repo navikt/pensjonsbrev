@@ -4,6 +4,7 @@ import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
 import no.nav.pensjon.brev.maler.example.LetterExample
 
 val alleAutobrevmaler = try {
@@ -13,7 +14,7 @@ val alleAutobrevmaler = try {
 }
 
 val alleRedigerbareMaler = try {
-    ProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart
+    ProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart + EnkeltRedigerbartTestbrev
 } catch(e: ExceptionInInitializerError) {
     formaterOgSkrivUtFeil(e, "Feila under initialisering av redigerbare maler: ")
 }
