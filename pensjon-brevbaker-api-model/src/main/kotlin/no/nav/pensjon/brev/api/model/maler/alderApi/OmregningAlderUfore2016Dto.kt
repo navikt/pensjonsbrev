@@ -27,7 +27,7 @@ data class OmregningAlderUfore2016Dto(
     val innvilgetFor67: Boolean,
     val fullTrygdetid: Boolean,
     val persongrunnlagAvdod: PersongrunnlagAvdod,
-    val faktiskBostedsland: String,
+    val faktiskBostedsland: String?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
@@ -38,8 +38,8 @@ data class OmregningAlderUfore2016Dto(
     ):BrevbakerBrevdata
 
 data class PersongrunnlagAvdod(
-    val avdodNavn: String,
-    val avdodFnr: String,
+    val avdodNavn: String?,
+    val avdodFnr: String?,
 )
 
 data class InngangOgEksportVurdering(

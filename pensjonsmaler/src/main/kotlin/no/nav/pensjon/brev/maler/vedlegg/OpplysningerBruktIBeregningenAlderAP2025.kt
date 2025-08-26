@@ -40,7 +40,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenGarantipensjon
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -226,14 +225,14 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             paragraph {
                 textExpr(
                     Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er "
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
                     Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er "
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
 
-                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is NOK ".expr() +
+                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is ".expr() +
                             beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is "
                             + beregningKap20VedVirk.delingstallLevealder.format() + ".",
                 )
@@ -243,16 +242,16 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             paragraph {
                 textExpr(
                     Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er " +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstallet ved uttak er " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ". Siden du ikke tar ut full pensjon, vil du kun få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
                     Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
-                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er " +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", og delingstalet ved uttak er " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ".  Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt "
                             + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
 
-                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is NOK ".expr() +
+                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is ".expr() +
                             beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is " +
                             beregningKap20VedVirk.delingstallLevealder.format() + ". Since you are not withdrawing the full pension, you will only receive "
                             + alderspensjonVedVirk.uttaksgrad.format() + " percent of this amount.",

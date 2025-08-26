@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
@@ -17,10 +17,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
-            oekningIPensjonen = false,
-            reduksjonIPensjonen = false,
-            supplerendeStoenad = true,
-            etterbetaling = false,
+            beloepEndring = BeloepEndring.UENDRET
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
             afpPrivatResultatFellesKontoret = false,

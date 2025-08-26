@@ -80,18 +80,18 @@ export const byggEBlankettOnSubmitRequest = (argz: {
 export const createValidationSchema = (template: LetterMetadata) => {
   return z
     .object({
-      enhetsId: z.coerce.string().min(1, "Obligatorisk"),
+      enhetsId: z.coerce.string().min(1, { error: "Obligatorisk" }),
 
       //disse valideres gjennom superRefine
-      isSensitive: z.boolean({ required_error: "Obligatorisk" }).optional(),
-      spraak: z.nativeEnum(SpraakKode).optional(),
+      isSensitive: z.boolean({ error: "Obligatorisk" }).optional(),
+      spraak: z.enum(SpraakKode).optional(),
       brevtittel: z.string().optional(),
     })
     .superRefine((data, refinementContext) => {
       //validerer språk for alle templates unntatt 'Notat'
       if (template.id !== "PE_IY_03_156" && !data.spraak) {
         refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Obligatorisk",
           path: ["spraak"],
         });
@@ -100,7 +100,7 @@ export const createValidationSchema = (template: LetterMetadata) => {
       //isSensitive skal kun sjekkes for brev som ikke er doksys
       if (template.brevsystem !== BrevSystem.DokSys && data.isSensitive === undefined) {
         refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Obligatorisk",
           path: ["isSensitive"],
         });
@@ -109,18 +109,16 @@ export const createValidationSchema = (template: LetterMetadata) => {
       //validerer brevtittel for templates som har redigerbar brevtittel
       if (template.redigerbarBrevtittel && !data.brevtittel) {
         refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Obligatorisk",
           path: ["brevtittel"],
         });
       }
-
-      return refinementContext;
     });
 };
 
 export const brevmalBrevbakerFormSchema = z.object({
-  spraak: z.nativeEnum(SpraakKode),
+  spraak: z.enum(SpraakKode),
   enhetsId: z.string(),
 });
 

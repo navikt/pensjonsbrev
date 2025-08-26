@@ -80,10 +80,10 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 paragraph {
                     textExpr(
                         Bokmal to "Vår beregning viser at du har fått ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik.absoluteValue()
-                            .format() + " kroner for mye utbetalt.",
+                            .format() + " for mye utbetalt.",
                         Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik.absoluteValue()
-                            .format() + " kroner for mykje.",
-                        English to "Our calculations show that you have received an overpayment of NOK ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik.absoluteValue()
+                            .format() + " for mykje.",
+                        English to "Our calculations show that you have received an overpayment of ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik.absoluteValue()
                             .format() + "."
                     )
                 }
@@ -165,14 +165,14 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     }
                     paragraph {
                         textExpr(
-                            Bokmal to "I ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + " var 80 prosent av inntekten din før du ble ufør " + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                            Nynorsk to "I ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + " var 80 prosent av inntekta di før du blei ufør " + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                            English to "In ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + ", 80 percent of your pre-disability benefit income was NOK " + oppjustertInntektFoerUfoerhet.format() + ". "
+                            Bokmal to "I ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + " var 80 prosent av inntekten din før du ble ufør " + oppjustertInntektFoerUfoerhet.format() + ". ",
+                            Nynorsk to "I ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + " var 80 prosent av inntekta di før du blei ufør " + oppjustertInntektFoerUfoerhet.format() + ". ",
+                            English to "In ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + ", 80 percent of your pre-disability benefit income was " + oppjustertInntektFoerUfoerhet.format() + ". "
                         )
                         textExpr(
-                            Bokmal to "Du tjente ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i " + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + ".",
-                            Nynorsk to "Du tente ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i " + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + ".",
-                            English to "You earned NOK ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen.format() + " in " + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + "."
+                            Bokmal to "Du tjente ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen.format() + " i " + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + ".",
+                            Nynorsk to "Du tente ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen.format() + " i " + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + ".",
+                            English to "You earned ".expr() + opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen.format() + " in " + opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format() + "."
                         )
                     }
                 }

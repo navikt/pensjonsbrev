@@ -13,7 +13,12 @@
     "mottaker": null
   },
   "redigertBrev": {
-    "title": "Informasjon om saksbehandlingstiden vår",
+    "title": {
+      "text": [
+        { "id": 1, "parentId": null, "type": "LITERAL", "text": "Informasjon om saksbehandlingstiden vår", "editedText": null, "tags": [] }
+      ],
+      "deletedContent": []
+    },
     "sakspart": {
       "gjelderNavn": "Tydelig Bakke",
       "gjelderFoedselsnummer": "09417320595",
