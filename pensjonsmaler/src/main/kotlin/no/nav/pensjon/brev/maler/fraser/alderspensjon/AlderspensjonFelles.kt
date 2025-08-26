@@ -217,7 +217,7 @@ data class ArbeidsinntektOgAlderspensjon(
             text(
                 Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
                 Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
-                English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension.",
+                English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
             )
         }
         // nyOpptjeningHelAP
