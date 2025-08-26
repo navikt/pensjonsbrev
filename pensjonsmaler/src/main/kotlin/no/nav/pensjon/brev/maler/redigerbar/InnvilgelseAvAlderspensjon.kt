@@ -285,8 +285,15 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         )
                     }
                 }
-
                 showIf(gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(0)) {
+                    // beregningAPGjtOpptj
+                    paragraph {
+                        text(
+                            Bokmal to "Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
+                            Nynorsk to "Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
+                            English to "The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
+                        )
+                    }
                     paragraph {
                         text(
                             Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
