@@ -26,8 +26,6 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis endring i pensjonsutbetaling")
         val endringIPensjonsutbetaling: Boolean,
-        @DisplayText("Hvis etterbetaling av pensjon")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -54,7 +52,8 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
 
     data class Krav(
         val virkDatoFom: LocalDate,
-        val kravInitiertAv: KravInitiertAv
+        val kravInitiertAv: KravInitiertAv,
+        val etterbetaling: Boolean,
     )
 
     data class AlderspensjonVedVirk(
