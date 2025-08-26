@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.UfoereProductionTemplates
+import no.nav.pensjon.brev.UfoereTemplates
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -67,7 +67,7 @@ class GenererAlleMaleneTest {
 
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
-        val malKoder = (UfoereProductionTemplates.hentAutobrevmaler() + UfoereProductionTemplates.hentRedigerbareMaler())
+        val malKoder = (UfoereTemplates.hentAutobrevmaler() + UfoereTemplates.hentRedigerbareMaler())
             .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
@@ -86,8 +86,8 @@ class GenererAlleMaleneTest {
         fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> {
             FeatureToggleSingleton.init(FeatureToggleDummy)
             return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
-                (UfoereProductionTemplates.hentAutobrevmaler() +
-                        UfoereProductionTemplates.hentRedigerbareMaler()
+                (UfoereTemplates.hentAutobrevmaler() +
+                        UfoereTemplates.hentRedigerbareMaler()
                         ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
                     .map { Arguments.of(it.template, it.kode, Fixtures.create(it.template.letterDataType), spraak) }
             }

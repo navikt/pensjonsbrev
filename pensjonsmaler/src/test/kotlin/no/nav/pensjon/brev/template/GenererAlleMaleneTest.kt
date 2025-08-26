@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.AlderTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import org.junit.jupiter.api.Tag
@@ -66,7 +66,7 @@ class GenererAlleMaleneTest {
 
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
-        val malKoder = (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler())
+        val malKoder = (AlderTemplates.hentAutobrevmaler() + AlderTemplates.hentRedigerbareMaler())
             .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
@@ -85,8 +85,8 @@ class GenererAlleMaleneTest {
         fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> {
             FeatureToggleSingleton.init(FeatureToggleDummy)
             return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
-                (ProductionTemplates.hentAutobrevmaler() +
-                        ProductionTemplates.hentRedigerbareMaler()
+                (AlderTemplates.hentAutobrevmaler() +
+                        AlderTemplates.hentRedigerbareMaler()
                         + LetterExample
                         + EksempelbrevRedigerbart
                         ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }

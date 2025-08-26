@@ -93,7 +93,7 @@ import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
-object ProductionTemplates : AllTemplates {
+object AlderTemplates : AllTemplates {
     private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
