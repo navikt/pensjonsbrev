@@ -42,7 +42,8 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
+          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
           ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal 
           ./gradlew :skribenten-backend:build
         env:

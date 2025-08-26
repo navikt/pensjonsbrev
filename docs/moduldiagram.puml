@@ -4,16 +4,21 @@ object "pensjon-brevbaker" as brevbaker
 brevbaker : dagens applikasjon
 
 object pensjonsmalene #pink
-pensjonsmalene : - her ligger malene og malkodene
+pensjonsmalene : - her ligger malene og malkodene. \n denne skal bort
 
 object ufoeremalene #pink
 ufoeremalene : - her ligger malene og malkodene
 
+object aldersmalene #pink
+aldersmalene : - her ligger malene og malkodene
 
 object "etterlattemaler" as etterlatte #pink
 
 object "pensjon-brevbaker-api-model" as pensjonapimodel #pink
-pensjonapimodel : som i dag
+pensjonapimodel : denne skal bort
+
+object "alder-brevbaker-api-model" as alderapimodel #pink
+alderapimodel : som i dag
 
 object "ufoere-brevbaker-api-model" as ufoereapimodel #pink
 ufoereapimodel : som i dag
@@ -41,15 +46,18 @@ Skribenten : som i dag
 
 bibliotek --> dsl
 brevbaker --> pensjonsmalene
+brevbaker --> aldersmalene
 brevbaker --> ufoeremalene
 brevbaker --> etterlatte
 pensjonsmalene --> pensjonapimodel
 
+aldersmalene --> alderapimodel
 ufoeremalene --> ufoereapimodel
 
 pensjonsmalene -> bibliotek
 etterlatte --> bibliotek
 pensjonapimodel --> modelcommon
+alderapimodel --> modelcommon
 ufoereapimodel --> modelcommon
 dsl --> modelcommon
 tmg --> dsl
@@ -59,6 +67,7 @@ ufoeremalene ..> tmg
 bibliotek ..> tmg
 
 PEN --> pensjonapimodel
+PEN --> alderapimodel
 PEN --> ufoereapimodel
 Gjenny --> modelcommon
 

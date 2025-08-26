@@ -1,5 +1,7 @@
 rootProject.name = "pensjonsbrev"
 
+include("alder-brevbaker-api-model")
+include("aldersmaler")
 include("brevbaker")
 include("brevbaker-api-model-common")
 include("brevbaker-dsl")

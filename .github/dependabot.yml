@@ -18,6 +18,8 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
+      - "/alder-brevbaker-api-model"
+      - "/aldersmaler"
       - "/brevbaker-api-model-common"
       - "/brevbaker"
       - "/brevbaker-dsl"

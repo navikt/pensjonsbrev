@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.connect.runtime)
 
     implementation(project(":pensjonsmaler"))
+    implementation(project(":aldersmaler"))
     implementation(project(":ufoeremaler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker"))
