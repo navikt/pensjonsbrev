@@ -56,7 +56,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -241,29 +240,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL.",
                         English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
                     )
-                }
-
-                val harOpplysningerBruktIBeregningenAlder = pesysData.opplysningerBruktIBeregningenAlder.notNull()
-                val harOpplysningerBruktIBeregningenAlderAP2025 = pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()
-                showIf(harOpplysningerBruktIBeregningenAlder or harOpplysningerBruktIBeregningenAlderAP2025) {
-                    paragraph {
-                        // flereBeregningsperioderVedleggOpptjening_001
-                        text(
-                            Bokmal to "I vedlegget ",
-                            Nynorsk to "I vedlegget ",
-                            English to "In the appendix "
-                        )
-                        showIf(harOpplysningerBruktIBeregningenAlder) {
-                            namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                        }.orShowIf(harOpplysningerBruktIBeregningenAlderAP2025) {
-                            namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
-                        }
-                        text(
-                            Bokmal to " finner du detaljer om din månedlige pensjon.",
-                            Nynorsk to " finn du detaljar om din månadlege pensjon.",
-                            English to " you will find more details about your monthly pension."
-                        )
-                    }
                 }
             }
 
