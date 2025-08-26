@@ -197,11 +197,7 @@ object MeldFraOmEndringer2 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-data class ArbeidsinntektOgAlderspensjon(
-    val innvilgetFor67: Expression<Boolean>,
-    val uttaksgrad: Expression<Int>,
-    val uforeKombinertMedAlder: Expression<Boolean>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object ArbeidsinntektOgAlderspensjonKort : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // arbInntektAPOverskrift_001
         title1 {
@@ -220,6 +216,16 @@ data class ArbeidsinntektOgAlderspensjon(
                 English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
             )
         }
+    }
+}
+
+data class ArbeidsinntektOgAlderspensjon(
+    val innvilgetFor67: Expression<Boolean>,
+    val uttaksgrad: Expression<Int>,
+    val uforeKombinertMedAlder: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        includePhrase(ArbeidsinntektOgAlderspensjonKort)
         // nyOpptjeningHelAP
         showIf(uttaksgrad.equalTo(100)) {
             paragraph {
