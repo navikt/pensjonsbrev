@@ -208,9 +208,10 @@ data class ArbeidsinntektOgAlderspensjon(
             text(
                 Bokmal to "Arbeidsinntekt og alderspensjon",
                 Nynorsk to "Arbeidsinntekt og alderspensjon",
-                English to "Earned income and retirement pension",
+                English to "Earned income and retirement pension"
             )
         }
+
         // arbInntektAP_001
         paragraph {
             text(
