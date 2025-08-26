@@ -64,7 +64,7 @@ jobs:
         with:
           working-directory: skribenten-web/frontend
           install: false
-          command: npm run cypress:e2e
+          # command: npm run cypress:e2e
           browser: chrome
           component: false
           start: npm run dev
@@ -74,7 +74,7 @@ jobs:
         with:
           working-directory: skribenten-web/frontend
           install: true
-          command: npm run cypress:component
+          # command: npm run cypress:component
           browser: chrome
           component: true
 
