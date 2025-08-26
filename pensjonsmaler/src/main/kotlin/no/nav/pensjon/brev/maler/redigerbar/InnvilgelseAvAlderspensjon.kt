@@ -413,16 +413,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))
 
             showIf(innvilgetFor67) { includePhrase(AP2025TidligUttakHjemmel(regelverkType)) }
-
-            includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
-
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
-            includePhrase(
-                InnvilgetGjRettKap19For2024(
-                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
-                )
-            )
             includePhrase(
                 EOSLandAvtaleHjemmel(
                     borINorge = borINorge,
@@ -437,6 +427,16 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,
                     harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
+                )
+            )
+
+            includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
+
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
+            includePhrase(
+                InnvilgetGjRettKap19For2024(
+                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
+                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
                 )
             )
             title1 {
