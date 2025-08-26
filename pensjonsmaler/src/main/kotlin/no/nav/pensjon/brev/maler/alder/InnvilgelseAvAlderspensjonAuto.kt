@@ -228,7 +228,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn = avtalelandNavn,
+                    avtalelandNavn = avtalelandNavn.ifNull(),
                     eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,
                     harOppfyltVedSammenlegging = inngangOgEksportVurdering.harOppfyltVedSammenlegging

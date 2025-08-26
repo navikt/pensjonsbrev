@@ -254,7 +254,7 @@ data class EOSLandAvtaleHjemmel(
 }
 
 data class BilateralAvtaleHjemmel(
-    val avtalelandNavn: Expression<String>,
+    val avtalelandNavn: Expression<String?>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
     val erEOSLand: Expression<Boolean>,
     val harOppfyltVedSammenlegging: Expression<Boolean>,
