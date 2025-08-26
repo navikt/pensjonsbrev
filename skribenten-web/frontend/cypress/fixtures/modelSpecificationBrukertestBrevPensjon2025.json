@@ -1,0 +1,57 @@
+{
+  "types": {
+    "no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto": {
+      "pesysData": {
+        "nullable": false,
+        "typeName": "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
+        "displayText": null,
+        "type": "object"
+      },
+      "saksbehandlerValg": {
+        "nullable": false,
+        "typeName": "no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.SaksbehandlerValg",
+        "displayText": null,
+        "type": "object"
+      }
+    },
+    "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata": {},
+    "no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.SaksbehandlerValg": {
+      "utsiktenFraKontoret": {
+        "nullable": false,
+        "values": [
+          {
+            "value": "MOT_PARKERINGSPLASSEN",
+            "displayText": "Mot parkeringsplassen"
+          },
+          { "value": "MOT_TRAER_OG_NATUR", "displayText": "Mot trær og natur" }
+        ],
+        "displayText": "Utsikten fra kontoret",
+        "type": "enum"
+      },
+      "denBesteKaken": {
+        "nullable": false,
+        "values": [
+          { "value": "RULLEKAKE", "displayText": "Rullekake" },
+          { "value": "KAKENERLOEGN", "displayText": "Kaken er en løgn" },
+          { "value": "OSTEKAKE", "displayText": "Ostekake" },
+          { "value": "GULROTKAKE", "displayText": "Gulrotkake" }
+        ],
+        "displayText": "Den beste kaken er",
+        "type": "enum"
+      },
+      "kaffemaskinensTilgjengelighet": {
+        "nullable": false,
+        "kind": "BOOLEAN",
+        "displayText": "Kaffemaskinens tilgjengelighet",
+        "type": "scalar"
+      },
+      "kontorplantenTorlill": {
+        "nullable": false,
+        "kind": "BOOLEAN",
+        "displayText": "Kontorplanten TorLill",
+        "type": "scalar"
+      }
+    }
+  },
+  "letterModelTypeName": "no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto"
+}
