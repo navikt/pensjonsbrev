@@ -2,6 +2,8 @@
 
 package no.nav.pensjon.brev.api.model
 
+import no.nav.pensjon.brevbaker.api.model.DisplayText
+
 // Brukerens egen sivilstand tolket ut fra om beregningsresultat fra PREG
 enum class Sivilstand {
     ENSLIG,
@@ -183,8 +185,11 @@ enum class KravArsakType{
 }
 
 enum class BeloepEndring {
+    @DisplayText("Økning av beløpet")
     ENDR_OKT,
+    @DisplayText("Reduksjon av beløpet")
     ENDR_RED,
+    @DisplayText("Uendret beløp")
     UENDRET
 }
 
