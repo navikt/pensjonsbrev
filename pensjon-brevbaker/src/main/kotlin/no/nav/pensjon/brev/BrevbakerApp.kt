@@ -10,8 +10,10 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.brevbakerModulePensjon() = this.brevbakerModule(pensjonOgUfoereProductionTemplates)
 
 val pensjonOgUfoereProductionTemplates = object : AllTemplates {
-    override fun hentAutobrevmaler() = ProductionTemplates.hentAutobrevmaler() + UfoereTemplates.hentAutobrevmaler()
+    override fun hentAutobrevmaler() =
+        ProductionTemplates.hentAutobrevmaler() + AlderTemplates.hentAutobrevmaler() + UfoereTemplates.hentAutobrevmaler()
 
-    override fun hentRedigerbareMaler() = ProductionTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
+    override fun hentRedigerbareMaler() =
+        ProductionTemplates.hentRedigerbareMaler() + AlderTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
 
 }
