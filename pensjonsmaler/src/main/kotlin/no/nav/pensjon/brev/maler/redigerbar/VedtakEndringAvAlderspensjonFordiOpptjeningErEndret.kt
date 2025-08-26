@@ -57,6 +57,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -298,17 +299,20 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         )
                     }
                 }
-                text(
-                    Bokmal to "Du kan finne mer informasjon i vedlegget ",
-                    Nynorsk to "Du kan finne meir informasjon i vedlegget ",
-                    English to "You will find more information in the appendix "
-                )
-                showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
-                    namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
-                    namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+
+                showIf(pesysData.opplysningerBruktIBeregningenAlder.notNull() or pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
+                    text(
+                        Bokmal to "Du kan finne mer informasjon i vedlegget ",
+                        Nynorsk to "Du kan finne meir informasjon i vedlegget ",
+                        English to "You will find more information in the appendix "
+                    )
+                    showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                    }
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
-                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011)) {
