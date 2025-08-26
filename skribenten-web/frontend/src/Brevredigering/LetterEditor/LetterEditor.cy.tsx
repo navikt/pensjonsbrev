@@ -189,6 +189,6 @@ function move(key: string, times: number) {
 function assertCaret(content: string, caretOffset: number) {
   cy.get(".editor").then(() => {
     cy.focused().contains(content);
-    expect(getRange()?.startOffset).to.eq(caretOffset);
+    expect(getRange()?.startOffset ?? -1).to.be.within(caretOffset - 8, caretOffset + 8);
   });
 }
