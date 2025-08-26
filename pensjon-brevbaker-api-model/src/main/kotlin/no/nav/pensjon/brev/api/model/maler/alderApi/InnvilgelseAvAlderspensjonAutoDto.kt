@@ -15,7 +15,7 @@ data class InnvilgelseAvAlderspensjonAutoDto(
     val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
-    val avtalelandNavn: String,  // v1.Land
+    val avtalelandNavn: String?,  // v1.Land
     val borIAvtaleland: Boolean,  // v3.Person
     val borINorge: Boolean,  // v3.Person
     val erEOSLand: Boolean,  // v1.Land
