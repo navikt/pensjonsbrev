@@ -19,14 +19,15 @@
     "express": "5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "jwt-decode": "4.0.0",
-    "morgan": "^1.10.1",
-    "lusca": "^1.7.0"
+    "lusca": "^1.7.0",
+    "morgan": "^1.10.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.30.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/express": "5.0.3",
+    "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
     "@typescript-eslint/eslint-plugin": "8.35.1",
     "@typescript-eslint/parser": "8.35.1",
