@@ -19,7 +19,7 @@ services:
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
       - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render
       # Allows requests without auth-header #opens up debug port
-      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015 -Dconfig.resource=application-local.conf
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"

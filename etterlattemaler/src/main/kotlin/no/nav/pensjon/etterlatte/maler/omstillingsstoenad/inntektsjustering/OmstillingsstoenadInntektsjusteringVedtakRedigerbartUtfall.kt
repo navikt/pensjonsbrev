@@ -70,9 +70,9 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
                 showIf(inntektsbeloep.notEqualTo(0)){
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventet inntekt i innvilgede måneder i  ".expr()+inntektsaar.format()+".",
-                            Nynorsk to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventa inntekt i innvilga månader i ".expr()+inntektsaar.format()+".",
-                            English to "We have assumed a basis of NOK ".expr()+inntektsbeloep.format() + " in expected income for the granted months in ".expr()+inntektsaar.format()+".",
+                            Bokmal to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " som forventet inntekt i innvilgede måneder i  ".expr()+inntektsaar.format()+".",
+                            Nynorsk to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " som forventa inntekt i innvilga månader i ".expr()+inntektsaar.format()+".",
+                            English to "We have assumed a basis of ".expr()+inntektsbeloep.format() + " in expected income for the granted months in ".expr()+inntektsaar.format()+".",
                         )
                     }
                 }.orShow {

@@ -100,5 +100,6 @@ object FeatureToggleDummy : FeatureToggleService {
     private val toggles: MutableMap<FeatureToggle, Boolean> = mutableMapOf()
 
     override fun isEnabled(toggle: FeatureToggle): Boolean = toggles[toggle] ?: false
+    override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
 
 }

@@ -85,7 +85,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", letter.title)
+        appendCmd("Title", renderTextsToString(letter.title))
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -97,7 +97,7 @@ internal object LatexDocumentRenderer {
         appendln("""\documentclass{pensjonsbrev_v4}""", escape = false)
         appendCmd("begin", "document")
         appendCmd("firstpage")
-        appendCmd("tittel", letter.title)
+        appendCmd("tittel", renderTextsToString(letter.title))
         renderBlocks(letter.blocks)
         appendCmd("closing")
         attachments.indices.forEach { id ->
@@ -140,7 +140,7 @@ internal object LatexDocumentRenderer {
     private fun LatexAppendable.sakspartCommands(sakspart: LetterMarkup.Sakspart, language: Language) {
         appendNewCmd("feltdato", sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)))
         appendNewCmd("feltsaksnummer", sakspart.saksnummer)
-        appendNewCmd("feltfoedselsnummerbruker", Foedselsnummer(sakspart.gjelderFoedselsnummer).format())
+        appendNewCmd("feltfoedselsnummerbruker", sakspart.gjelderFoedselsnummer.format())
         appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
         val verge = sakspart.vergeNavn?.also { appendNewCmd("feltvergenavn", it) }
 

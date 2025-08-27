@@ -22,7 +22,7 @@ import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
   mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
-  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+  isSensitive: z.boolean({ error: "Obligatorisk" }),
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 

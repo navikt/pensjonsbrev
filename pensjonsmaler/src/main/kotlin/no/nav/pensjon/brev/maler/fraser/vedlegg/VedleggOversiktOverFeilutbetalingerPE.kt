@@ -190,7 +190,7 @@ private data class TilbakekrevingerTabell(
                             includePhrase(KronerText(tilbakekreves.bruttobeloepTilbakekrevd.ifNull(Kroner(0))))
                         }
                     }
-                    showIf(tilbakekreves.skattefradragSomInnkreves.notEqualTo(Kroner(0))) {
+                    showIf(tilbakekreves.skattefradragSomInnkreves.notEqualTo(0)) {
                         row {
                             cell {
                                 text(

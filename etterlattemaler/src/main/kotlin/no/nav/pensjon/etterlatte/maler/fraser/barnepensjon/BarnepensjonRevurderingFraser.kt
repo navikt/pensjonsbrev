@@ -47,15 +47,15 @@ object BarnepensjonRevurderingFraser {
                     showIf(harFlereUtbetalingsperioder) {
                         paragraph {
                             textExpr(
-                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før " +
+                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned før " +
                                         "skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se beløp for " +
                                         "tidligere perioder og hvordan vi har beregnet barnepensjonen din i vedlegg " +
                                         "«Beregning av barnepensjon».",
-                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før " +
+                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " per månad før " +
                                         "skatt frå " + formatertNyesteUtbetalingsperiodeDatoFom + ". I " +
                                         "vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare " +
                                         "periodar og korleis vi har rekna ut barnepensjonen din.",
-                                Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
+                                Language.English to "You will receive ".expr() + formatertBeloep + " each " +
                                         "month before tax, starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                         ". You can see amounts for previous periods and how we calculated your " +
                                         "children's pension in the attachment, Calculation of Children’s Pension."
@@ -65,11 +65,11 @@ object BarnepensjonRevurderingFraser {
                     }.orShow {
                         paragraph {
                             textExpr(
-                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " kroner hver måned før " +
+                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned før " +
                                         "skatt.",
-                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner per månad før " +
+                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " per månad før " +
                                         "skatt.",
-                                Language.English to "You will receive NOK ".expr() + formatertBeloep + " each " +
+                                Language.English to "You will receive ".expr() + formatertBeloep + " each " +
                                         "month before tax. "
                             )
                         }
@@ -115,11 +115,11 @@ object BarnepensjonRevurderingFraser {
                     )
                     showIf(harUtbetaling) {
                         textExpr(
-                            Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " kroner per måned " +
+                            Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " per måned " +
                                     "før skatt.",
-                            Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " kroner per månad " +
+                            Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " per månad " +
                                     "før skatt.",
-                            Language.English to "You will continue to receive NOK ".expr() + formatertBeloep +
+                            Language.English to "You will continue to receive ".expr() + formatertBeloep +
                                     " per month before tax. "
                         )
                     }.orShow {

@@ -27,13 +27,11 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.SaksbehandlerValgSelectors.visOektOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.SaksbehandlerValgSelectors.visRedusertOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.SaksbehandlerValgSelectors.visUendretOpptjening
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.YtelseskomponentInformasjonSelectors.belopEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -112,9 +110,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 ifNotNull(pesysData.alderspensjonVedVirk.skjermingstillegg) { skjermingstillegg ->
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is NOK " + skjermingstillegg.format() + "."
+                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "."
                         )
                     }
                 }
@@ -154,9 +152,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 ifNotNull(pesysData.alderspensjonVedVirk.skjermingstillegg) { skjermingstillegg ->
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får fortsatt ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            Nynorsk to "Du får framleis ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + " kroner.",
-                            English to "You will still receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is NOK " + skjermingstillegg.format() + "."
+                            Bokmal to "Du får fortsatt ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            Nynorsk to "Du får framleis ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
+                            English to "You will still receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "."
                         )
                     }
                 }
@@ -195,7 +193,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
 
-                showIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.UENDRET) or saksbehandlerValg.visUendretOpptjening) {
+                showIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.UENDRET)) {
                     // ingenEndringPensjon_001
                     paragraph {
                         text(
@@ -204,7 +202,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                             English to "This does not affect your pension."
                         )
                     }
-                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_OKT) or saksbehandlerValg.visOektOpptjening) {
+                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_OKT)) {
                     //  nyBeregningAPØkning_001
                     paragraph {
                         text(
@@ -213,7 +211,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                             English to "This leads to an increase in your retirement pension."
                         )
                     }
-                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_RED) or saksbehandlerValg.visRedusertOpptjening) {
+                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_RED)) {
                     // nyBeregningAPReduksjon_001
                     paragraph {
                         text(
@@ -228,9 +226,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     // innvilgelseAPInnledn_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygden.",
-                            English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
+                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
+                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygden.",
+                            English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
                         )
                     }
                 }.orShow {
@@ -244,29 +242,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL.",
                         English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
                     )
-                }
-
-                val harOpplysningerBruktIBeregningenAlder = pesysData.opplysningerBruktIBeregningenAlder.notNull()
-                val harOpplysningerBruktIBeregningenAlderAP2025 = pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()
-                showIf(harOpplysningerBruktIBeregningenAlder or harOpplysningerBruktIBeregningenAlderAP2025) {
-                    paragraph {
-                        // flereBeregningsperioderVedleggOpptjening_001
-                        text(
-                            Bokmal to "I vedlegget ",
-                            Nynorsk to "I vedlegget ",
-                            English to "In the appendix "
-                        )
-                        showIf(harOpplysningerBruktIBeregningenAlder) {
-                            namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                        }.orShowIf(harOpplysningerBruktIBeregningenAlderAP2025) {
-                            namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
-                        }
-                        text(
-                            Bokmal to " finner du detaljer om din månedlige pensjon.",
-                            Nynorsk to " finn du detaljar om din månadlege pensjon.",
-                            English to " you will find more details about your monthly pension."
-                        )
-                    }
                 }
             }
 
@@ -324,17 +299,20 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         )
                     }
                 }
-                text(
-                    Bokmal to "Du kan finne mer informasjon i vedlegget ",
-                    Nynorsk to "Du kan finne meir informasjon i vedlegget ",
-                    English to "You will find more information in the appendix "
-                )
-                showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
-                    namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
-                    namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+
+                showIf(pesysData.opplysningerBruktIBeregningenAlder.notNull() or pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
+                    text(
+                        Bokmal to "Du kan finne mer informasjon i vedlegget ",
+                        Nynorsk to "Du kan finne meir informasjon i vedlegget ",
+                        English to "You will find more information in the appendix "
+                    )
+                    showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                    }
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
-                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011)) {
@@ -454,7 +432,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 )
             }
 
-            includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
+            includePhrase(ArbeidsinntektOgAlderspensjonKort)
 
             showIf(pesysData.alderspensjonVedVirk.fullUttaksgrad) {
                 // nyOpptjeningHelAP_001
@@ -478,6 +456,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
 
             includePhrase(UfoereAlder.UfoereKombinertMedAlder(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder))
 
+            includePhrase(InformasjonOmAlderspensjon)
 
             // TODO: Det kjens som dette burde vera standardtekst i felles
             //  meldEndringerPesys_001

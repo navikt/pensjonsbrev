@@ -31,62 +31,62 @@ object Ufoeretrygd {
                 showIf(ufoeretrygd) {
                     showIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i uføretrygd per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i uføretrygd per månad før skatt.".expr(),
+                            English to "Your monthly disability benefit payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and not(gjenlevende) and not(ektefelle)) {
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i uføretrygd og barnetillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i uføretrygd og barnetillegg per månad før skatt.".expr(),
+                            English to "Your monthly disability benefit and child supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and gjenlevende) {
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og attlevandetillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i uføretrygd og gjenlevendetillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i uføretrygd og attlevandetillegg per månad før skatt.".expr(),
+                            English to "Your monthly disability benefit and survivor's supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i uføretrygd, barne- og ektefelletillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i uføretrygd, barne- og ektefelletillegg per månad før skatt.".expr(),
+                            English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf(not(fellesbarn) and not(saerkullsbarn) and ektefelle and not(gjenlevende)) {
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit and spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i uføretrygd og ektefelletillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i uføretrygd og ektefelletillegg per månad før skatt.".expr(),
+                            English to "Your monthly disability benefit and spouse supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and not(ektefelle) and gjenlevende) {
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit, child supplement and spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i uføretrygd, barne- og attlevandetillegg per månad før skatt.".expr(),
+                            English to "Your monthly disability benefit, child supplement and spouse supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }
                 }.orShow {
                     showIf((fellesbarn or saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
                         // TBU4082
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i barnetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i barnetillegg per månad før skatt.".expr(),
-                            English to "Your monthly child supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i barnetillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i barnetillegg per månad før skatt.".expr(),
+                            English to "Your monthly child supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
                         // TBU4083
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i barne- og ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i barne- og ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly child supplement and spouse supplement  payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i barne- og ektefelletillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i barne- og ektefelletillegg per månad før skatt.".expr(),
+                            English to "Your monthly child supplement and spouse supplement  payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }.orShowIf(not(fellesbarn or saerkullsbarn) and not(gjenlevende) and (ektefelle)) {
                         // TBU4084
                         textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                            Bokmal to "Du får ".expr() + kroner + " i ektefelletillegg per måned før skatt.".expr(),
+                            Nynorsk to "Du får ".expr() + kroner + " i ektefelletillegg per månad før skatt.".expr(),
+                            English to "Your monthly spouse supplement payment will be ".expr() + kroner + " before tax.".expr()
                         )
                     }
                 }

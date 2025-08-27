@@ -131,7 +131,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
             }
 
             paragraph {
-                showIf(FeatureToggles.pl7231ForventetSvartid.expr().enabled() and true.expr()) {
+                showIf(FeatureToggles.pl7231ForventetSvartid.toggle.expr().enabled() and true.expr()) {
                     text(
                         Bokmal to "a",
                         Nynorsk to "b",
@@ -169,8 +169,8 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                         ifNotNull(tillegg.tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format(),
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format(),
                                 )
                             }
                         }
@@ -245,16 +245,16 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.format() + " Kr".expr(),
-                                        Nynorsk to tillegg.format() + " Kr".expr()
+                                        Bokmal to tillegg.format(),
+                                        Nynorsk to tillegg.format()
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg3) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.format() + " Kr".expr(),
-                                        Nynorsk to tillegg.format() + " Kr".expr()
+                                        Bokmal to tillegg.format(),
+                                        Nynorsk to tillegg.format()
                                     )
                                 }
                             }

@@ -31,9 +31,31 @@ export default [
       "plugin:@typescript-eslint/recommended",
       "plugin:@tanstack/eslint-plugin-query/recommended",
       "prettier",
-      "plugin:testing-library/react",
       "plugin:react-hooks/recommended",
     ),
+  ),
+  ...fixupConfigRules(
+    compat.config({
+      overrides: [
+        {
+          files: ["src/**/*.{test,spec}.{js,jsx,ts,tsx}", "cypress/component/**/*.{cy,spec}.{js,jsx,ts,tsx}"],
+          extends: ["plugin:testing-library/react"],
+        },
+      ],
+    }),
+  ),
+  // Cypress e2e: use Cypress rules, disable testing-library rules
+  ...fixupConfigRules(
+    compat.config({
+      overrides: [
+        {
+          files: ["cypress/e2e/**/*.cy.{ts,tsx}"],
+          rules: {
+            "testing-library/no-node-access": "off",
+          },
+        },
+      ],
+    }),
   ),
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],

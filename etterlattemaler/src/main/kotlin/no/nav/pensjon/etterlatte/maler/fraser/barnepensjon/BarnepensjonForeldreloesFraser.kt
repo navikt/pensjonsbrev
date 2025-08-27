@@ -92,17 +92,17 @@ object BarnepensjonForeldreloesFraser {
                     showIf(flerePerioder) {
                         textExpr(
                             Language.Bokmal to " Du får ".expr() + formatertBeloep +
-                                    " kroner hver måned før skatt fra " + formatertFom + ".",
+                                    " hver måned før skatt fra " + formatertFom + ".",
                             Language.Nynorsk to " Du får ".expr() + formatertBeloep +
-                                    " kroner per månad før skatt frå " + formatertFom + ".",
-                            Language.English to " You will receive NOK ".expr() + formatertBeloep +
+                                    " per månad før skatt frå " + formatertFom + ".",
+                            Language.English to " You will receive ".expr() + formatertBeloep +
                                     " each month before tax, starting on " + formatertFom + "."
                         )
                     }.orShow {
                         textExpr(
-                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " kroner hver måned før skatt.",
-                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " kroner per månad før skatt.",
-                            Language.English to " You will receive NOK ".expr() + formatertBeloep + " each month before tax.",
+                            Language.Bokmal to " Du får ".expr() + formatertBeloep + " hver måned før skatt.",
+                            Language.Nynorsk to " Du får ".expr() + formatertBeloep + " per månad før skatt.",
+                            Language.English to " You will receive ".expr() + formatertBeloep + " each month before tax.",
                         )
                     }
                 }.orShow {

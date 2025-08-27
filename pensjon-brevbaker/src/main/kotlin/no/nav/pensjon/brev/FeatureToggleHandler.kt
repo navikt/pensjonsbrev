@@ -8,11 +8,13 @@ import io.getunleash.util.UnleashConfig
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import kotlin.properties.Delegates
 
 const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
 object FeatureToggleHandler : FeatureToggleService {
     private lateinit var unleash: Unleash
+    private var isFakeUnleash by Delegates.notNull<Boolean>()
 
     override fun isEnabled(toggle: FeatureToggle): Boolean =
         unleash.isEnabled(unleashTogglePrefix + toggle.key(), UnleashContext.builder().build())
@@ -24,10 +26,12 @@ object FeatureToggleHandler : FeatureToggleService {
 
     private fun createUnleash(config: FeatureToggleConfig): Unleash = with(config) {
         if (useFakeUnleash) {
+            isFakeUnleash = true
             FakeUnleash().apply {
                 if (fakeUnleashEnableAll) enableAll() else disableAll()
             }
         } else {
+            isFakeUnleash = false
             DefaultUnleash(
                 UnleashConfig.builder()
                     .appName(appName!!)
@@ -39,6 +43,17 @@ object FeatureToggleHandler : FeatureToggleService {
     }
 
     fun shutdown() = unleash.shutdown()
+
+    override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) {
+        if (isFakeUnleash) {
+            return
+        }
+        val alleDefinerteBrytere = unleash.more().featureToggleNames
+        val malerIkkeIUnleash = entries.filterNot {
+            alleDefinerteBrytere.contains("pensjonsbrev.brevbaker.${it.name}")
+        }
+        require(malerIkkeIUnleash.isEmpty()) { "Alle toggles må være definert i Unleash, men $malerIkkeIUnleash" }
+    }
 }
 
 class FeatureToggleConfig {

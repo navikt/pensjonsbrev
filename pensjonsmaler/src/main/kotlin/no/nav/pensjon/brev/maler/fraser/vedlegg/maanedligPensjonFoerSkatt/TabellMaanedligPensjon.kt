@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSele
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fasteUtgifter
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantipensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.grunnpensjon
@@ -211,28 +210,32 @@ data class TabellMaanedligPensjonKap19(
                     }
 
                     ifNotNull(beregnetPensjon.barnetilleggSB) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Barnetillegg særkullsbarn",
-                                    Nynorsk to "Barnetillegg særkullsbarn",
-                                    English to "Supplement for child(ren) of former marriages/relationships",
-                                )
+                        showIf(it.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Barnetillegg særkullsbarn",
+                                        Nynorsk to "Barnetillegg særkullsbarn",
+                                        English to "Supplement for child(ren) of former marriages/relationships",
+                                    )
+                                }
+                                cell { includePhrase(KronerText(it)) }
                             }
-                            cell { includePhrase(KronerText(it)) }
                         }
                     }
 
                     ifNotNull(beregnetPensjon.barnetilleggFB) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Barnetillegg fellesbarn",
-                                    Nynorsk to "Barnetillegg fellesbarn",
-                                    English to "Supplement for child(ren) of the marriages/relationship",
-                                )
+                        showIf(it.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Barnetillegg fellesbarn",
+                                        Nynorsk to "Barnetillegg fellesbarn",
+                                        English to "Supplement for child(ren) of the marriages/relationship",
+                                    )
+                                }
+                                cell { includePhrase(KronerText(it)) }
                             }
-                            cell { includePhrase(KronerText(it)) }
                         }
                     }
                 }
