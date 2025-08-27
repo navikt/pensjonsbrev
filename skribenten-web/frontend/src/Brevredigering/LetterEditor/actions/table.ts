@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { LiteralValue, Table, TextContent } from "~/types/brevbakerTypes";
+import type { Table, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -10,6 +10,7 @@ import { newTable } from "../model/tableHelpers";
 import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
 import {
   addElements,
+  cleanseText,
   createNewLine,
   isTable,
   newColSpec,
@@ -20,7 +21,6 @@ import {
   safeIndex,
   text,
 } from "./common";
-import { updateLiteralText } from "./updateContentText";
 
 /**
  * Re‑number default header labels (“Kolonne N”) so they match the current
@@ -36,18 +36,13 @@ import { updateLiteralText } from "./updateContentText";
 
 const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   const isDefault = (s: string) => /^Kolonne\s+\d+$/i.test(s);
+  const stripZWSP = (s: string) => s.replace(/\u200B/g, "");
 
   table.header.colSpec.forEach((col, idx) => {
-    let litIdx = col.headerContent.text.findIndex((txt) => txt.type === LITERAL);
-    if (litIdx === -1) {
-      col.headerContent.text.splice(0, col.headerContent.text.length, newLiteral({ editedText: "" }));
-      litIdx = 0;
-    }
-    const literal = col.headerContent.text[litIdx] as LiteralValue;
-    const current = (text(literal) ?? "").trim();
+    const headerCellText = stripZWSP(cleanseText(col.headerContent.text.map((txt) => text(txt) ?? "").join(""))).trim();
 
-    if (current === "" || isDefault(current)) {
-      updateLiteralText(literal, `Kolonne ${idx + 1}`);
+    if (headerCellText === "" || isDefault(headerCellText)) {
+      col.headerContent.text.splice(0, col.headerContent.text.length, newLiteral({ editedText: `Kolonne ${idx + 1}` }));
     }
   });
 };
