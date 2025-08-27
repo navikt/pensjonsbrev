@@ -75,7 +75,7 @@ export const removeTableRow = produce<LetterEditorState>((draft) => {
       col.headerContent.text = [newLiteral({ editedText: "" })];
     }
 
-    const nextRow = table.rows.length > 0 ? 0 : 0;
+    const nextRow = table.rows.length > 0 ? 0 : -1;
     draft.focus = {
       blockIndex,
       contentIndex,
