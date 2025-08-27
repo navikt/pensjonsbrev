@@ -18,7 +18,7 @@ class InnvilgelseAvAlderspensjonAutoTest {
     fun testPdf() {
         LetterTestImpl(
             InnvilgelseAvAlderspensjonAuto.template,
-            Fixtures.create< InnvilgelseAvAlderspensjonAutoDto>(),
+            Fixtures.create<InnvilgelseAvAlderspensjonAutoDto>(),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(InnvilgelseAvAlderspensjonAuto.kode.name)
