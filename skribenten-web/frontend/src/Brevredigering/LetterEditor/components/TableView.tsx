@@ -32,7 +32,9 @@ const tableStyles = css`
 `;
 
 const selectedBackgroundStyle = css`
-  background: var(--a-surface-info-subtle, #d0e7ff) !important;
+  && {
+    background: var(--a-surface-info-subtle, #d0e7ff);
+  }
 `;
 
 // TODO: render <ContentGroup> once that component
