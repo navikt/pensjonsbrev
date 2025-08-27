@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.ufoereBrev
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDto
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
-object AvslagUforetrygd : RedigerbarTemplate<AvslagUforetrygdDto> {
+object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD_V2
+    override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD_DEMO
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -22,7 +22,7 @@ object AvslagUforetrygd : RedigerbarTemplate<AvslagUforetrygdDto> {
 
     override val template = createTemplate(
         name = "Avslag uføretrygd demo",
-        letterDataType = AvslagUforetrygdDto::class,
+        letterDataType = AvslagUforetrygdDemoDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd demo",

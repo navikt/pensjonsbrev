@@ -144,7 +144,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakStansAlderspensjonFlyttingMellomLand,
-        AvslagUforetrygd,
+        AvslagUforetrygdDemo,
     )
 
     override fun hentAutobrevmaler() = autobrev
