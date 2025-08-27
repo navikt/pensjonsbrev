@@ -185,23 +185,9 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   draft.isDirty = true;
 });
 
-// Deep-clone TextContent[] into fresh, “new” values (ids reset)
-function cloneTexts(source: Draft<TextContent[]>): TextContent[] {
-  return source.map((t) => {
-    switch (t.type) {
-      case LITERAL:
-        return newLiteral({
-          editedText: text(t) ?? "",
-          fontType: t.editedFontType ?? t.fontType,
-          editedFontType: t.editedFontType ?? null,
-          tags: t.tags,
-        });
-      case VARIABLE:
-        return newVariable({ text: t.text, fontType: t.fontType });
-      case NEW_LINE:
-        return createNewLine();
-    }
-  });
+function extractTexts(source: Draft<TextContent[]>): TextContent[] {
+  const movedTextes = source.splice(0, source.length);
+  return movedTextes;
 }
 
 /**
@@ -230,7 +216,7 @@ export const promoteRowToHeader: Action<
   for (let c = 0; c < colCount; c++) {
     const sourceTexts = row.cells[c].text;
     table.header.colSpec[c].headerContent.text =
-      sourceTexts.length > 0 ? cloneTexts(sourceTexts) : [newLiteral({ editedText: "" })];
+      sourceTexts.length > 0 ? extractTexts(sourceTexts) : [newLiteral({ editedText: "" })];
   }
   // If header is still empty (e.g., promoted an empty body row to header), set default labels so header renders
   if (isEmptyTableHeader(table.header)) {
@@ -261,7 +247,7 @@ export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, c
     const newBodyRow = newRow(colCount);
     for (let c = 0; c < colCount; c++) {
       const headerTexts = table.header.colSpec[c].headerContent.text as Draft<TextContent[]>;
-      const cloned = cloneTexts(headerTexts);
+      const cloned = extractTexts(headerTexts);
       newBodyRow.cells[c].text.splice(0, newBodyRow.cells[c].text.length, ...cloned);
     }
 
