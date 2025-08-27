@@ -10,6 +10,7 @@ enum class FeatureToggles(private val key: String) {
     pl7914EndretInntektPilot("pl_7914.ut_endret_pga_inntekt_test_pilot"),
     brevMedFritekst("brevMedFritekst"),
     brevmalUtAvslag("brevmalUtAvslag"),
+    utAvslagUforetrygdDemo("pensjonsbrev.brevbaker.avslaguforetrygd"),
     apAvslagGjenlevenderett("apAvslagGjenlevenderett"),
     apAvslagGradsendringNormertPensjonsalder("ap_avslag_gradsendring_norm_redigerbar"),
     apAvslagGradsendringNormertPensjonsalderAP2016("ap_avslag_gradsendring_norm_redigerbar_ap2016"),
