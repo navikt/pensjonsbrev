@@ -17,7 +17,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
-            beloepEndring = BeloepEndring.UENDRET
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
@@ -41,6 +40,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             erEOSLand = false,
             erMellombehandling = true,
             erSluttbehandlingNorgeUtland = false,
+            beloepEndring = BeloepEndring.ENDR_OKT,
             fullTrygdtid = false,
             harFlereBeregningsperioder = false,
             inngangOgEksportVurdering = InnvilgelseAvAlderspensjonTrygdeavtaleDto.InngangOgEksportVurdering(
