@@ -566,18 +566,22 @@ public final class no/nav/pensjon/brev/template/Expression$UnaryInvoke : no/nav/
 	public fun stableHashCode ()I
 }
 
-public class no/nav/pensjon/brev/template/ExpressionScope {
-	public fun <init> (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brev/template/Language;)V
-	public final fun assign (Ljava/lang/Object;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;)Lno/nav/pensjon/brev/template/ExpressionScope$WithAssignment;
-	public final fun getArgument ()Ljava/lang/Object;
-	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public final fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
+public abstract interface class no/nav/pensjon/brev/template/ExpressionScope {
+	public static final field Companion Lno/nav/pensjon/brev/template/ExpressionScope$Companion;
+	public fun assign (Ljava/lang/Object;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public abstract fun getArgument ()Ljava/lang/Object;
+	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
+	public abstract fun markUsage (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 }
 
-public final class no/nav/pensjon/brev/template/ExpressionScope$WithAssignment : no/nav/pensjon/brev/template/ExpressionScope {
-	public final fun getExpr ()Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;
-	public final fun getValue ()Ljava/lang/Object;
-	public final fun lookup (Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;)Ljava/lang/Object;
+public final class no/nav/pensjon/brev/template/ExpressionScope$Companion {
+	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
+}
+
+public final class no/nav/pensjon/brev/template/ExpressionScope$DefaultImpls {
+	public static fun assign (Lno/nav/pensjon/brev/template/ExpressionScope;Ljava/lang/Object;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;)Lno/nav/pensjon/brev/template/ExpressionScope;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/HasModel {
@@ -1442,6 +1446,12 @@ public final class no/nav/pensjon/brev/template/expression/IntToYear : no/nav/pe
 	public fun getApply ()Lkotlin/reflect/KFunction;
 	public fun getName ()Ljava/lang/String;
 	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/expression/SelectorUsage {
+	public fun <init> ()V
+	public final fun getPropertyUsage ()Ljava/util/Set;
+	public final fun plusAssign (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 }
 
 public abstract interface class no/nav/pensjon/brev/template/render/Document {

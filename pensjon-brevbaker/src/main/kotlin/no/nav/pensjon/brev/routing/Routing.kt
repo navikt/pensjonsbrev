@@ -65,8 +65,8 @@ fun Application.brevRouting(
                 )
                 autobrevRoutes(etterlatteResource)
 
-                post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") {
-                    call.respond(etterlatteResource.renderJSON(it).let { EtterlatteMaler.somSlate(it) })
+                post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") { request ->
+                    call.respond(etterlatteResource.renderJSON(request).let { EtterlatteMaler.somSlate(it) })
                 }
             }
             get("/ping_authorized") {
