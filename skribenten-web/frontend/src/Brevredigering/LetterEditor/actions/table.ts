@@ -7,11 +7,10 @@ import { LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
-import { isTableCellIndex } from "../model/utils";
+import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
 import {
   addElements,
   createNewLine,
-  hasHeaderContentCols,
   isTable,
   newColSpec,
   newLiteral,
@@ -225,7 +224,7 @@ export const promoteRowToHeader: Action<
   if (rowIndex < 0 || rowIndex >= table.rows.length) return;
 
   // if header already has meaningful content, do nothing
-  if (hasHeaderContentCols(table.header?.colSpec)) return;
+  if (!isEmptyTableHeader(table.header)) return;
 
   const row = table.rows[rowIndex];
 
@@ -239,7 +238,7 @@ export const promoteRowToHeader: Action<
       sourceTexts.length > 0 ? cloneTexts(sourceTexts) : [newLiteral({ editedText: "" })];
   }
   // If header is still empty (e.g., promoted an empty body row to header), set default labels so header renders
-  if (!hasHeaderContentCols(table.header?.colSpec)) {
+  if (isEmptyTableHeader(table.header)) {
     updateDefaultHeaderLabels(table);
   }
   // Remove promoted row from body
@@ -259,7 +258,7 @@ export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, c
     const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
     if (!isTable(table)) return;
 
-    if (!hasHeaderContentCols(table.header?.colSpec)) return;
+    if (isEmptyTableHeader(table.header)) return;
 
     const colCount = table.header.colSpec.length;
 

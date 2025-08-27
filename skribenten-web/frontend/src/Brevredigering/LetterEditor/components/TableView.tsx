@@ -8,8 +8,8 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
 
-import { hasHeaderContentCols } from "../actions/common";
 import type { TableCellIndex } from "../model/state";
+import { isEmptyTableHeader } from "../model/utils";
 import { TableCellContent } from "./TableCellContent";
 import TableContextMenu from "./TableContextMenu";
 
@@ -53,7 +53,7 @@ const TableView: React.FC<{
 
   const menuTargetRef = useRef<{ rowIndex: number; colIndex: number } | null>(null);
 
-  const headerHasContent = hasHeaderContentCols(node.header?.colSpec);
+  const headerHasContent = !isEmptyTableHeader(node.header);
   const hasHeader = node.header?.colSpec?.length > 0;
   const canPromoteHeader = !headerHasContent;
 
