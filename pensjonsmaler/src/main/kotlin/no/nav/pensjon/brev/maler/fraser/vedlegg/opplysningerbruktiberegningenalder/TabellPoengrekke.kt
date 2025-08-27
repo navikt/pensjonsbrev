@@ -68,17 +68,17 @@ data class TabellPoengrekke(val pensjonspoeng: Expression<List<Pensjonspoeng>>) 
 
                         cell {
                             showIf(bruktIBeregningen) {
-                                eval(it.pensjonsgivendeinntekt.format(), BOLD)
+                                eval(it.pensjonsgivendeinntekt.format(false), BOLD)
                             }.orShow {
-                                eval(it.pensjonsgivendeinntekt.format())
+                                eval(it.pensjonsgivendeinntekt.format(false))
                             }
                         }
 
                         cell {
                             showIf(bruktIBeregningen) {
-                                eval(it.grunnbelopVeiet.format(), BOLD)
+                                eval(it.grunnbelopVeiet.format(false), BOLD)
                             }.orShow {
-                                eval(it.grunnbelopVeiet.format())
+                                eval(it.grunnbelopVeiet.format(false))
                             }
                         }
 

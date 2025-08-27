@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravInitiertAv
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningenEndretUttaksgradDto
@@ -13,9 +14,7 @@ import java.time.Month
 
 fun createVedtakEndringAvUttaksgradDto() =
     VedtakEndringAvUttaksgradDto(
-        saksbehandlerValg = VedtakEndringAvUttaksgradDto.SaksbehandlerValg(
-            visEtterbetaling = false
-        ),
+        saksbehandlerValg = EmptyBrevdata,
         pesysData = VedtakEndringAvUttaksgradDto.PesysData(
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),

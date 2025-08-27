@@ -2,19 +2,18 @@ package no.nav.pensjon.brev
 
 import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
 import no.nav.pensjon.brev.maler.example.LetterExample
 
 val alleAutobrevmaler = try {
-    ProductionTemplates.hentAutobrevmaler() + LetterExample
+    pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + LetterExample
 } catch(e: ExceptionInInitializerError) {
     formaterOgSkrivUtFeil(e, "Feila under initialisering av autobrev-maler: ")
 }
 
 val alleRedigerbareMaler = try {
-    ProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart + EnkeltRedigerbartTestbrev
+    pensjonOgUfoereProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart + EnkeltRedigerbartTestbrev
 } catch(e: ExceptionInInitializerError) {
     formaterOgSkrivUtFeil(e, "Feila under initialisering av redigerbare maler: ")
 }

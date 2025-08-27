@@ -61,8 +61,11 @@ export default function BrevmalForExstream({
     setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit() });
   }, [setOnFormSubmitClick]);
 
-  const methods = useForm<z.infer<typeof validationSchema>>({
-    defaultValues: defaultValues,
+  type FormIn = z.input<typeof validationSchema>;
+  type FormOut = z.output<typeof validationSchema>;
+
+  const methods = useForm<FormIn, unknown, FormOut>({
+    defaultValues,
     resolver: zodResolver(validationSchema),
   });
 
