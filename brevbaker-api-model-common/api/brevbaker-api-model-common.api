@@ -296,6 +296,12 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/ElementTags;
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public fun tilPDFVedlegg ()Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
 	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)V
 	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -636,6 +642,19 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSider ()Ljava/util/List;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
+	public abstract fun tilPDFVedlegg ()Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
 	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Percent;
 	public static fun constructor-impl (I)I
@@ -648,6 +667,16 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Side {
+	public fun <init> (IILjava/util/Map;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelt ()Ljava/util/Map;
+	public final fun getOriginalSide ()I
+	public final fun getSidenummer ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
@@ -766,6 +795,15 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/VedleggType {
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getTittel ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brevbaker/api/model/IntValue {

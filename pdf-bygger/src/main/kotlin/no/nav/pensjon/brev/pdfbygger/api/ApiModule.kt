@@ -21,6 +21,9 @@ import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
+import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 fun Application.restModule(
     prometheusMeterRegistry: PrometheusMeterRegistry
@@ -79,12 +82,13 @@ fun Application.restModule(
     routing {
 
         post("/produserBrev") {
+            val pdfRequest = call.receive<PDFRequest>()
             val result = activityCounter.count {
-                call.receive<PDFRequest>()
+                pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
                     .let { blockingLatexService.producePDF(it.files) }
             }
-            handleResult(result, call.application.environment.log)
+            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
         }
 
         get("/isAlive") {
@@ -107,10 +111,18 @@ fun Application.restModule(
 
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
+    pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
+    spraak: LanguageCode,
 ) {
     when (result) {
-        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
+        is PDFCompilationResponse.Success -> {
+            if (pdfvedlegg.isNotEmpty()) {
+                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak).pdfCompilationOutput)
+            } else {
+                call.respond(result.pdfCompilationOutput)
+            }
+        }
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {
