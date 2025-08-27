@@ -186,8 +186,7 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
 });
 
 function extractTexts(source: Draft<TextContent[]>): TextContent[] {
-  const movedTextes = source.splice(0, source.length);
-  return movedTextes;
+  return source.splice(0, source.length);
 }
 
 /**
