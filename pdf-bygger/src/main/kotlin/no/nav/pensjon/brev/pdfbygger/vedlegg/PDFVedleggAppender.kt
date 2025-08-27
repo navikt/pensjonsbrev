@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
@@ -25,7 +26,7 @@ internal object PDFVedleggAppender {
 
         val merger = PDFMergerUtility()
         val target = PDDocument()
-        val originaltDokument = pdfCompilationResponse.pdfCompilationOutput.bytes.let { PDDocument.load(it) }
+        val originaltDokument = pdfCompilationResponse.pdfCompilationOutput.bytes.let { Loader.loadPDF(it) }
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
         attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) }.forEach {

@@ -4,8 +4,10 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.Side
 import no.nav.pensjon.brevbaker.api.model.VedleggType
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
+import java.nio.file.Paths
 
 internal object VedleggAppender {
 
@@ -32,6 +34,7 @@ internal object VedleggAppender {
         }
 
     private fun lesInnPDF(vedleggType: VedleggType, filnavn: String, spraak: LanguageCode): PDDocument =
-        PDDocument.load(javaClass.getResourceAsStream("/vedlegg/${vedleggType.name}/${spraak.name}/$filnavn"))
-
+        javaClass.getResource("/vedlegg/${vedleggType.name}/${spraak.name}/$filnavn")?.let {
+            Loader.loadPDF(it.readBytes())
+        } ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn for type ${vedleggType.name}")
 }
