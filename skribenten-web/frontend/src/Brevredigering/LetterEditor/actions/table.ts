@@ -2,7 +2,7 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { Table, TextContent } from "~/types/brevbakerTypes";
-import { LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
+import { PARAGRAPH } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
@@ -11,12 +11,10 @@ import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
 import {
   addElements,
   cleanseText,
-  createNewLine,
   isTable,
   newColSpec,
   newLiteral,
   newRow,
-  newVariable,
   removeElements,
   safeIndex,
   text,
