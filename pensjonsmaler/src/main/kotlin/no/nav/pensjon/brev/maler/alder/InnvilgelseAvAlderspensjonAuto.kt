@@ -85,6 +85,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -226,14 +227,16 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                     harOppfyltVedSammenlegging = inngangOgEksportVurdering.harOppfyltVedSammenlegging
                 )
             )
-            includePhrase(
-                BilateralAvtaleHjemmel(
-                    avtalelandNavn = avtalelandNavn.ifNull(),
-                    eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
-                    erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = inngangOgEksportVurdering.harOppfyltVedSammenlegging
+            ifNotNull(avtalelandNavn) { avtalelandNavn ->
+                includePhrase(
+                    BilateralAvtaleHjemmel(
+                        avtalelandNavn = avtalelandNavn,
+                        eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
+                        erEOSLand = erEOSLand,
+                        harOppfyltVedSammenlegging = inngangOgEksportVurdering.harOppfyltVedSammenlegging
+                    )
                 )
-            )
+            }
             paragraph {
                 text(
                     Bokmal to "Du finner informasjon om utbetalingene dine på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
