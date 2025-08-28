@@ -35,6 +35,7 @@ import type {
 } from "~/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
+  ColumnSpec,
   Content,
   LiteralValue,
   Row,
@@ -241,6 +242,17 @@ function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): Tabl
   }));
 }
 
+function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
+  return {
+    type: TABLE,
+    id: null,
+    parentId: null,
+    header: { id: null, parentId: null, colSpec },
+    deletedRows: [],
+    rows,
+  };
+}
+
 // Insert a parsed table element at current focus.
 function insertTable(draft: Draft<LetterEditorState>, el: Table) {
   if (isTableCellIndex(draft.focus)) {
@@ -289,14 +301,7 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
     })),
   }));
 
-  const tableContent: BrevbakerTable = {
-    type: TABLE,
-    id: null,
-    parentId: null,
-    header: { id: null, parentId: null, colSpec },
-    deletedRows: [],
-    rows,
-  };
+  const table = createTable(colSpec, rows);
 
   const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
   if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
@@ -304,7 +309,7 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
     splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
 
     const tableIndex = draft.focus.contentIndex + 1;
-    addElements([tableContent], tableIndex, currentBlock.content, currentBlock.deletedContent);
+    addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
 
     const focusRowIndex = rows.length > 0 ? 0 : -1;
 
