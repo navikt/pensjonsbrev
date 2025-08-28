@@ -244,7 +244,7 @@ export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, c
     const newBodyRow = newRow(colCount);
     for (let c = 0; c < colCount; c++) {
       const headerTexts = table.header.colSpec[c].headerContent.text as Draft<TextContent[]>;
-      const cloned = extractTexts(headerTexts);
+      const cloned = extractTextContent(headerTexts);
       newBodyRow.cells[c].text.splice(0, newBodyRow.cells[c].text.length, ...cloned);
     }
 
