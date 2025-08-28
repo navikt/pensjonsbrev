@@ -35,6 +35,7 @@ import type {
 } from "~/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
+  Cell,
   ColumnSpec,
   Content,
   LiteralValue,
@@ -242,6 +243,25 @@ function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): Tabl
   }));
 }
 
+function createCell(cell: TableCell): Cell {
+  return {
+    id: null,
+    parentId: null,
+    text:
+      cell.content.length > 0
+        ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
+        : [newLiteral({ editedText: "" })],
+  };
+}
+
+function createRow(source: TableRow, colCount: number): Row {
+  return {
+    id: null,
+    parentId: null,
+    cells: normalizeCells(source.cells, colCount).map(createCell),
+  };
+}
+
 function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
   return {
     type: TABLE,
@@ -288,18 +308,7 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
   const colSpec = newColSpec(colCount, headerSpecSource);
   const bodyRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
 
-  const rows: Row[] = bodyRows.map((row) => ({
-    id: null,
-    parentId: null,
-    cells: normalizeCells(row.cells, colCount).map((cell) => ({
-      id: null,
-      parentId: null,
-      text:
-        cell.content.length > 0
-          ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
-          : [newLiteral({ editedText: "" })],
-    })),
-  }));
+  const rows: Row[] = bodyRows.map((row) => createRow(row, colCount));
 
   const table = createTable(colSpec, rows);
 
