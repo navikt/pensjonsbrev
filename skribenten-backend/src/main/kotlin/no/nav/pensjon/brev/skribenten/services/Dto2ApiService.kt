@@ -21,6 +21,7 @@ class Dto2ApiService(
             redigertBrev = brevredigering.redigertBrev,
             redigertBrevHash = brevredigering.redigertBrevHash,
             saksbehandlerValg = brevredigering.saksbehandlerValg,
+            propertyUsage = brevredigering.coverage,
         )
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {

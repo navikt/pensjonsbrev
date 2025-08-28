@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
 import java.time.LocalDate
 
@@ -18,6 +19,7 @@ object Dto {
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: EditLetterHash,
         val saksbehandlerValg: SaksbehandlerValg,
+        val coverage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
     data class BrevInfo(
