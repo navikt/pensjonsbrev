@@ -19,7 +19,7 @@ object Dto {
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: EditLetterHash,
         val saksbehandlerValg: SaksbehandlerValg,
-        val coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
     data class BrevInfo(

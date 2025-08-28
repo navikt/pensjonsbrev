@@ -463,7 +463,7 @@ class BrevredigeringServiceTest {
 
         assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = original.info.id))
             .isInstanceOfSatisfying<ServiceResult.Ok<*>> {
-                assertThat(it.result).isEqualTo(oppdatert.copy(coverage = null))
+                assertThat(it.result).isEqualTo(oppdatert.copy(propertyUsage = null))
             }
 
         assertNotEquals(original.saksbehandlerValg, oppdatert.saksbehandlerValg)
@@ -539,7 +539,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         assertEquals(
-            brev.copy(coverage = null),
+            brev.copy(propertyUsage = null),
             brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)
                 ?.resultOrNull()
         )
