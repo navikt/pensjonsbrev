@@ -5,6 +5,7 @@ import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateC
 import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
+  Cell,
   ColumnSpec,
   Content,
   ElementTags,
@@ -377,6 +378,14 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
     blockIndex: blockIndex + 1,
     contentIndex: 0,
     cursorPosition: 0,
+  };
+}
+
+export function newCell(text?: TextContent[]): Cell {
+  return {
+    id: null,
+    parentId: null,
+    text: text ?? [newLiteral({ editedText: "" })],
   };
 }
 
