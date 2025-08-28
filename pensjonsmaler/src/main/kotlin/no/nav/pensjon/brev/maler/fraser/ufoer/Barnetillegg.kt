@@ -353,8 +353,8 @@ object Barnetillegg {
             val harFradragForEnBarnetilleggYtelse = (harFradragSaerkullsbarn and not(harFradragFellesbarn)) or
                     (not(harFradragSaerkullsbarn) and harFradragFellesbarn)
 
-            paragraph {
-                showIf(faarUtbetaltBarnetilleggSaerkullsbarn and not(harJusteringsbeloepSaerkullsbarn)) {
+            showIf(faarUtbetaltBarnetilleggSaerkullsbarn and not(harJusteringsbeloepSaerkullsbarn)) {
+                paragraph {
                     textExpr(
                         Bokmal to "Inntekten din er ".expr() +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "høyere", "lavere") +

@@ -325,6 +325,10 @@ public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/IllegalLetterMarkupException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {
 	public abstract fun getValue ()I
 }
@@ -357,6 +361,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
 	public abstract fun getTitle ()Ljava/util/List;
+	public fun validateAndThrow ()V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
@@ -405,6 +410,10 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type : 
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$DefaultImpls {
+	public static fun validateAndThrow (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
@@ -582,6 +591,22 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$Paragraph
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl {
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValidator {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValidator;
+	public final fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/util/List;
+	public final fun validateAndThrow (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil : java/lang/Enum {
+	public static final field AVSNITT_UTEN_INNHOLD Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
+	public static final field FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
+	public static final field FORSKJELLIG_ANTALL_KOLONNER_I_RADER Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
+	public static final field TO_ETTERFOELGENDE_NEWLINE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata {
