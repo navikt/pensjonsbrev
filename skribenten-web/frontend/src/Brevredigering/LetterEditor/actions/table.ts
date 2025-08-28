@@ -183,7 +183,7 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   draft.isDirty = true;
 });
 
-function extractTexts(source: Draft<TextContent[]>): TextContent[] {
+function extractTextContent(source: Draft<TextContent[]>): TextContent[] {
   return source.splice(0, source.length);
 }
 
@@ -213,7 +213,7 @@ export const promoteRowToHeader: Action<
   for (let c = 0; c < colCount; c++) {
     const sourceTexts = row.cells[c].text;
     table.header.colSpec[c].headerContent.text =
-      sourceTexts.length > 0 ? extractTexts(sourceTexts) : [newLiteral({ editedText: "" })];
+      sourceTexts.length > 0 ? extractTextContent(sourceTexts) : [newLiteral({ editedText: "" })];
   }
   // If header is still empty (e.g., promoted an empty body row to header), set default labels so header renders
   if (isEmptyTableHeader(table.header)) {
