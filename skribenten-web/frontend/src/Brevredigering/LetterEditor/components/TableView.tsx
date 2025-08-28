@@ -95,32 +95,30 @@ const TableView: React.FC<{
           setMenuAnchor({ x: e.clientX, y: e.clientY });
         }}
       >
-        {hasHeader && (
-          <thead>
-            <tr>
-              {node.header.colSpec.map((col: ColumnSpec, colIdx) => {
-                const isHeaderHighlighted =
-                  !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIdx);
-                return (
-                  <th
-                    css={isHeaderHighlighted && selectedBackgroundStyle}
-                    data-cy={`table-header-${colIdx}`}
-                    key={colIdx}
-                    scope="col"
-                  >
-                    {renderCellText(col.headerContent, colIdx, {
-                      blockIndex,
-                      contentIndex,
-                      rowIndex: -1,
-                      cellIndex: colIdx,
-                      cellContentIndex: 0,
-                    })}
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-        )}
+        <thead>
+          <tr>
+            {node.header.colSpec.map((col: ColumnSpec, colIdx) => {
+              const isHeaderHighlighted =
+                !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIdx);
+              return (
+                <th
+                  css={isHeaderHighlighted && selectedBackgroundStyle}
+                  data-cy={`table-header-${colIdx}`}
+                  key={colIdx}
+                  scope="col"
+                >
+                  {renderCellText(col.headerContent, colIdx, {
+                    blockIndex,
+                    contentIndex,
+                    rowIndex: -1,
+                    cellIndex: colIdx,
+                    cellContentIndex: 0,
+                  })}
+                </th>
+              );
+            })}
+          </tr>
+        </thead>
         <tbody>
           {node.rows.map((row, rowIdx) => {
             return (
