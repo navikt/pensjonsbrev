@@ -636,7 +636,7 @@ function traverseTable(element: Element, font: FontType): Table {
   return {
     type: "TABLE",
     rows: tableRows,
-    ...(headerCells ? { headerCells } : {}),
+    headerCells,
   };
 }
 
