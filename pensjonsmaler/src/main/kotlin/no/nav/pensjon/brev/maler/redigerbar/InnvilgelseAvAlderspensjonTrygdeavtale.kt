@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.avtalelandNavn_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.borIAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erEOSLand
@@ -41,55 +42,20 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.vedtaksresultatUtland_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.nyBeregningAvInnvilgetAP
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.VedtaksresultatUtlandSelectors.antallLandVilkarsprovd_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.VedtaksresultatUtlandSelectors.landNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isEmpty
-import no.nav.pensjon.brev.template.dsl.expression.isNull
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -176,7 +142,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                         eval(fritekst("LANDNAVN"))
                     }
                     ifNotNull(landNavn) { land ->
-                        showIf (land.isEmpty()) {
+                        showIf(land.isEmpty()) {
                             eval(fritekst("LANDNAVN"))
                         }.orShow {
                             eval(land.format())
@@ -199,25 +165,25 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     )
                 }
             }.orShow {
-                showIf(saksbehandlerValg.beloepEndring.equalTo(BeloepEndring.ENDR_OKT)) {
-                        // nyBeregningAPØkning
-                        paragraph {
-                            text(
-                                Bokmal to "Dette fører til at pensjonen din øker.",
-                                Nynorsk to "Dette fører til at pensjonen din aukar.",
-                                English to "This leads to an increase in your retirement pension."
-                            )
-                        }
-                    }.orShowIf(saksbehandlerValg.beloepEndring.equalTo(BeloepEndring.ENDR_RED)) {
-                        // nyBeregningAPReduksjon
-                        paragraph {
-                            text(
-                                Bokmal to "Dette fører til at pensjonen din blir redusert.",
-                                Nynorsk to "Dette fører til at pensjonen din blir redusert.",
-                                English to "This leads to a reduction in your retirement pension."
-                            )
-                        }
-                    }.orShow {
+                showIf(pesysData.beloepEndring.equalTo(BeloepEndring.ENDR_OKT)) {
+                    // nyBeregningAPØkning
+                    paragraph {
+                        text(
+                            Bokmal to "Dette fører til at pensjonen din øker.",
+                            Nynorsk to "Dette fører til at pensjonen din aukar.",
+                            English to "This leads to an increase in your retirement pension."
+                        )
+                    }
+                }.orShowIf(pesysData.beloepEndring.equalTo(BeloepEndring.ENDR_RED)) {
+                    // nyBeregningAPReduksjon
+                    paragraph {
+                        text(
+                            Bokmal to "Dette fører til at pensjonen din blir redusert.",
+                            Nynorsk to "Dette fører til at pensjonen din blir redusert.",
+                            English to "This leads to a reduction in your retirement pension."
+                        )
+                    }
+                }.orShow {
                     // nyBeregningAPIngenEndring
                     paragraph {
                         text(
