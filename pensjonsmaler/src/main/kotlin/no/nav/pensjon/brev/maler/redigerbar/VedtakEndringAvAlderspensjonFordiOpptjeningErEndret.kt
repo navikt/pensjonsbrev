@@ -29,7 +29,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.YtelseskomponentInformasjonSelectors.belopEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -241,29 +243,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
                     )
                 }
-
-                val harOpplysningerBruktIBeregningenAlder = pesysData.opplysningerBruktIBeregningenAlder.notNull()
-                val harOpplysningerBruktIBeregningenAlderAP2025 = pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()
-                showIf(harOpplysningerBruktIBeregningenAlder or harOpplysningerBruktIBeregningenAlderAP2025) {
-                    paragraph {
-                        // flereBeregningsperioderVedleggOpptjening_001
-                        text(
-                            Bokmal to "I vedlegget ",
-                            Nynorsk to "I vedlegget ",
-                            English to "In the appendix "
-                        )
-                        showIf(harOpplysningerBruktIBeregningenAlder) {
-                            namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                        }.orShowIf(harOpplysningerBruktIBeregningenAlderAP2025) {
-                            namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
-                        }
-                        text(
-                            Bokmal to " finner du detaljer om din månedlige pensjon.",
-                            Nynorsk to " finn du detaljar om din månadlege pensjon.",
-                            English to " you will find more details about your monthly pension."
-                        )
-                    }
-                }
             }
 
             // endretOpptjeningBegrunn_004
@@ -320,17 +299,20 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         )
                     }
                 }
-                text(
-                    Bokmal to "Du kan finne mer informasjon i vedlegget ",
-                    Nynorsk to "Du kan finne meir informasjon i vedlegget ",
-                    English to "You will find more information in the appendix "
-                )
-                showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
-                    namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
-                    namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+
+                showIf(pesysData.opplysningerBruktIBeregningenAlder.notNull() or pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
+                    text(
+                        Bokmal to "Du kan finne mer informasjon i vedlegget ",
+                        Nynorsk to "Du kan finne meir informasjon i vedlegget ",
+                        English to "You will find more information in the appendix "
+                    )
+                    showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                    }
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
-                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011)) {
@@ -450,7 +432,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 )
             }
 
-            includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
+            includePhrase(ArbeidsinntektOgAlderspensjonKort)
 
             showIf(pesysData.alderspensjonVedVirk.fullUttaksgrad) {
                 // nyOpptjeningHelAP_001
@@ -474,6 +456,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
 
             includePhrase(UfoereAlder.UfoereKombinertMedAlder(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder))
 
+            includePhrase(InformasjonOmAlderspensjon)
 
             // TODO: Det kjens som dette burde vera standardtekst i felles
             //  meldEndringerPesys_001
