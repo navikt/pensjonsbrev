@@ -334,7 +334,7 @@ function RedigerBrev({
           <div
             css={css`
               display: grid;
-              grid-template-columns: 25% 75%;
+              grid-template-columns: minmax(min-content, 25%) auto;
 
               > :first-of-type {
                 padding: var(--a-spacing-6);
