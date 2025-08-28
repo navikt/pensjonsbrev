@@ -241,6 +241,86 @@ function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): Tabl
   }));
 }
 
+// Insert a parsed table element at current focus.
+function insertTable(draft: Draft<LetterEditorState>, el: Table) {
+  if (isTableCellIndex(draft.focus)) {
+    return;
+  }
+  if ((el.headerCells?.length ?? 0) === 0 && el.rows.length === 0) {
+    return;
+  }
+
+  const headerCells = el.headerCells ?? [];
+  // Determine the column count if there’s no header.
+  const bodyColMax = Math.max(1, ...el.rows.map((row) => row.cells.length));
+  //if there’s a header, use its length; otherwise, use the widest body row.
+  const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
+  // If there are no header cells, we promote the first row to header.
+  // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
+  const hasHeader = headerCells.length > 0;
+  const shouldPromoteFirstRowToHeader = !hasHeader && el.rows.length > 0;
+
+  const getHeaderSpec = (cells: TableCell[]) =>
+    cells.map((cell) => {
+      const mergedTexts = mergeNeighbouringText(cell.content);
+      return {
+        text: cleansePastedText(mergedTexts.map((txt) => txt.text).join(" ")),
+        font: mergedTexts[0]?.font ?? FontType.PLAIN,
+      };
+    });
+
+  const headerSpecSource = hasHeader
+    ? getHeaderSpec(headerCells)
+    : getHeaderSpec(normalizeCells(el.rows[0]?.cells ?? [], colCount));
+
+  const colSpec = newColSpec(colCount, headerSpecSource);
+  const bodyRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
+
+  const rows: Row[] = bodyRows.map((row) => ({
+    id: null,
+    parentId: null,
+    cells: normalizeCells(row.cells, colCount).map((cell) => ({
+      id: null,
+      parentId: null,
+      text:
+        cell.content.length > 0
+          ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
+          : [newLiteral({ editedText: "" })],
+    })),
+  }));
+
+  const tableContent: BrevbakerTable = {
+    type: TABLE,
+    id: null,
+    parentId: null,
+    header: { id: null, parentId: null, colSpec },
+    deletedRows: [],
+    rows,
+  };
+
+  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
+    // Split current literal at cursor so trailing text stays after table.
+    splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+
+    const tableIndex = draft.focus.contentIndex + 1;
+    addElements([tableContent], tableIndex, currentBlock.content, currentBlock.deletedContent);
+
+    const focusRowIndex = rows.length > 0 ? 0 : -1;
+
+    draft.focus = {
+      blockIndex: draft.focus.blockIndex,
+      contentIndex: tableIndex,
+      rowIndex: focusRowIndex,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
+
+    draft.isDirty = true;
+  }
+}
+
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
   elements.forEach((el) => {
     switch (el.type) {
@@ -265,81 +345,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
-        if (isTableCellIndex(draft.focus)) {
-          return;
-        }
-        if ((el.headerCells?.length ?? 0) === 0 && el.rows.length === 0) {
-          return;
-        }
-        const headerCells = el.headerCells ?? [];
-        // Determine the column count if there’s no header.
-        const bodyColMax = Math.max(1, ...el.rows.map((row) => row.cells.length));
-        //if there’s a header, use its length; otherwise, use the widest body row.
-        const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
-        // If there are no header cells, we promote the first row to header.
-        // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
-        const hasHeader = headerCells.length > 0;
-        const shouldPromoteFirstRowToHeader = !hasHeader && el.rows.length > 0;
-
-        const getHeaderSpec = (cells: TableCell[]) =>
-          cells.map((cell) => {
-            const mergedTexts = mergeNeighbouringText(cell.content);
-            return {
-              text: cleansePastedText(mergedTexts.map((txt) => txt.text).join(" ")),
-              font: mergedTexts[0]?.font ?? FontType.PLAIN,
-            };
-          });
-
-        const headerSpecSource = hasHeader
-          ? getHeaderSpec(headerCells)
-          : getHeaderSpec(normalizeCells(el.rows[0]?.cells ?? [], colCount));
-
-        const colSpec = newColSpec(colCount, headerSpecSource);
-        const bodyRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
-
-        const rows: Row[] = bodyRows.map((row) => ({
-          id: null,
-          parentId: null,
-          cells: normalizeCells(row.cells, colCount).map((cell) => ({
-            id: null,
-            parentId: null,
-            text:
-              cell.content.length > 0
-                ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
-                : [newLiteral({ editedText: "" })],
-          })),
-        }));
-
-        const tableContent: BrevbakerTable = {
-          type: TABLE,
-          id: null,
-          parentId: null,
-          header: { id: null, parentId: null, colSpec },
-          deletedRows: [],
-          rows,
-        };
-
-        const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
-        if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
-          // Split current literal at cursor so trailing text stays after table.
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
-
-          const tableIndex = draft.focus.contentIndex + 1;
-          addElements([tableContent], tableIndex, currentBlock.content, currentBlock.deletedContent);
-
-          const focusRowIndex = rows.length > 0 ? 0 : -1;
-
-          draft.focus = {
-            blockIndex: draft.focus.blockIndex,
-            contentIndex: tableIndex,
-            rowIndex: focusRowIndex,
-            cellIndex: 0,
-            cellContentIndex: 0,
-            cursorPosition: 0,
-          };
-
-          draft.isDirty = true;
-        }
+        insertTable(draft, el);
         break;
       }
     }
