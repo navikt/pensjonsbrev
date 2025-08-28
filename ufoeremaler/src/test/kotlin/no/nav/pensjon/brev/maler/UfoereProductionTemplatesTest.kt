@@ -1,12 +1,15 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.UfoereTemplates
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Ufoerebrevkoder
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.collections.filterNot
@@ -37,5 +40,17 @@ class UfoereProductionTemplatesTest {
                     "Alle maler annoteres med @TemplateModelHelpers, for å få generert selectors. Det har ikke ${it.javaClass.simpleName}"
                 )
             }
+    }
+
+    @Test
+    fun `brev som er deklarert med brevtype vedtaksbrev skal ha brevkontekst vedtak`() {
+        assertEquals(
+            emptyList<String>(),
+            UfoereTemplates.hentRedigerbareMaler()
+                .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
+                .map { it.javaClass.simpleName }
+            ,
+        )
     }
 }
