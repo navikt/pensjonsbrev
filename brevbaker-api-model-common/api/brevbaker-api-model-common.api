@@ -584,6 +584,16 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$Paragraph
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl;
 }
 
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage {
+	public abstract fun getLetterDataUsage ()Ljava/util/Set;
+	public abstract fun getMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage$Property {
+	public abstract fun getPropertyName ()Ljava/lang/String;
+	public abstract fun getTypeName ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata {
 	public fun <init> (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
 	public fun equals (Ljava/lang/Object;)Z

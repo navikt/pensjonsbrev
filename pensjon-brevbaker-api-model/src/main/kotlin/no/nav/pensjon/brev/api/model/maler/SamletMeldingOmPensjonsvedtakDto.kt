@@ -110,12 +110,11 @@ data class P1Dto(
         val poststed: Poststed,
         val postnummer: Postnummer,
         val landkode: Landkode,
-        val institusjonsID: String,
+        val institusjonsID: String?,
         val faksnummer: String?,
         val telefonnummer: Telefonnummer?,
-        val epost: Epost,
+        val epost: Epost?,
         val dato: LocalDate,
-        val underskrift: String,
     )
 
     @JvmInline

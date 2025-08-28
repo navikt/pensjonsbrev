@@ -1,4 +1,13 @@
-package no.nav.pensjon.brev.template
+package no.nav.brev.brevbaker.template.render
+
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.ContentOrControlStructure
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.IncludeAttachment
+import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.brev.brevbaker.template.toScope
 
 internal abstract class LetterRenderer<R : Any> {
 
