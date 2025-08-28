@@ -50,7 +50,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -745,7 +745,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPOverskrift_001
-            includePhrase(HvorKanDuFaaViteMerOmAlderspensjonenDin)
+            includePhrase(InformasjonOmAlderspensjon)
 
             // meldEndringerPesysGjenlevende_001
             title1 {

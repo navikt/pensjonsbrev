@@ -268,27 +268,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(0)) {
-                    // beregningAPGjtOpptj
-                    paragraph {
-                        text(
-                            Bokmal to "Fra januar 2024 er gjenlevenderett i alderspensjonen din skilt ut som et eget gjenlevendetillegg." +
-                                    " Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
-                            Nynorsk to "Frå januar 2024 er attlevanderett i alderspensjonen din skild ut som eit eige attlevandetillegg." +
-                                    " Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
-                            English to "From January 2024, the survivor’s right in your retirement pension is separated out as a separate survivor’s supplement." +
-                                    " The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
-                            Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
-                            English to "The survivor's supplement will not be adjusted when the pension increases from 1 May every year."
-                        )
-                    }
-                }
-
                 showIf(gjenlevendetilleggKap19Innvilget) {
                     // beregningAPGjtKap19
                     paragraph {
@@ -299,6 +278,23 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                                     + avdodNavn + ".",
                             English to "You receive a survivor’s supplement in retirement pension because you have pension rights after ".expr()
                                     + avdodNavn + "."
+                        )
+                    }
+                }
+                showIf(gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(0)) {
+                    // beregningAPGjtOpptj
+                    paragraph {
+                        text(
+                            Bokmal to "Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
+                            Nynorsk to "Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
+                            English to "The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
+                            Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
+                            English to "The survivor's supplement will not be adjusted when the pension increases from 1 May every year."
                         )
                     }
                 }
@@ -413,16 +409,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))
 
             showIf(innvilgetFor67) { includePhrase(AP2025TidligUttakHjemmel(regelverkType)) }
-
-            includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
-
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
-            includePhrase(
-                InnvilgetGjRettKap19For2024(
-                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
-                )
-            )
             includePhrase(
                 EOSLandAvtaleHjemmel(
                     borINorge = borINorge,
@@ -437,6 +423,16 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,
                     harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
+                )
+            )
+
+            includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
+
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
+            includePhrase(
+                InnvilgetGjRettKap19For2024(
+                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
+                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
                 )
             )
             title1 {

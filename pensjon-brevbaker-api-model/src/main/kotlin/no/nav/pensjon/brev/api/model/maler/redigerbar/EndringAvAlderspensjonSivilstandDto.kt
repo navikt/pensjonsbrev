@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -59,12 +60,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val epsTarUtUfoeretrygd: Boolean,
 
         // Betydning for pensjons utbetaling?
-        @DisplayText("Betydning får omregulering for pensjon? Ingen")
-        val ingenBetydning: Boolean,
-        @DisplayText("Betydning får omregulering for pensjon? Pensjonen øker")
-        val pensjonenOeker: Boolean,
-        @DisplayText("Betydning får omregulering for pensjon? Pensjonen blir redusert")
-        val pensjonenRedusert: Boolean,
+        @DisplayText("Er beløpet endret?")
+        val beloepEndring: BeloepEndring,
 
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,

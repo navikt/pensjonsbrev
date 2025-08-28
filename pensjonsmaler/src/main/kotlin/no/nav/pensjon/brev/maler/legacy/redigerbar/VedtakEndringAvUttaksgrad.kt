@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.vedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.VedtakSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
@@ -307,7 +308,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }
 
             // arbInntektAPOverskrift_001
-            includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
+            includePhrase(ArbeidsinntektOgAlderspensjonKort)
 
             showIf(pesysData.alderspensjonVedVirk.uttaksgrad.equalTo(Percent(100))) {
                 // nyOpptjeningHelAP_001
