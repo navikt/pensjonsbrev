@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -19,6 +17,12 @@ fun Route.redigerbarRoutes(
             val markup = redigerbareBrev.renderLetterMarkup(brevbestilling)
             call.respond(markup)
         }
+
+        post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup-usage") { brevbestilling ->
+            val markup = redigerbareBrev.renderLetterMarkupWithDataUsage(brevbestilling)
+            call.respond(markup)
+        }
+
         post<BestillRedigertBrevRequest<Brevkode.Redigerbart>>("/pdf") { brevbestilling ->
             installBrevkodeInCallContext(brevbestilling.kode)
             call.respond(redigerbareBrev.renderPDF(brevbestilling))
