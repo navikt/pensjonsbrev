@@ -2,12 +2,16 @@ import type { Draft } from "immer";
 
 import type {
   AnyBlock,
+  Cell,
   Content,
+  Header,
   Identifiable,
   Item,
   ItemList,
   LiteralValue,
   ParagraphBlock,
+  Row,
+  Table,
   TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
@@ -49,26 +53,25 @@ export function isEmptyContent(content: Content) {
       return text(content).trim().replaceAll("​", "").length === 0;
     }
     case ITEM_LIST: {
-      return content.items.length === 1 && isEmptyItem(content.items[0]);
+      return content.items.length === 0 || content.items.every(isEmptyItem);
     }
     case TABLE: {
-      // A table counts as “non-empty” if it has at least one row.
-      return content.rows.length === 0;
+      return isEmptyTable(content);
     }
   }
 }
 
 export function isEmptyContentGroup(group: ContentGroup) {
-  return group.content.length === 1 && isEmptyContent(group.content[0]);
+  return group.content.length === 0 || group.content.every(isEmptyContent);
 }
 
 export function isEmptyItem(item: Item): boolean {
-  return item.content.length === 0 || (item.content.length === 1 && isEmptyContent(item.content[0]));
+  return item.content.length === 0 || item.content.every(isEmptyContent);
 }
 
 export function isEmptyContentList(content: Content[]): boolean {
-  if (!Array.isArray(content)) return true;
-  return content.length === 0 || (content.length === 1 && isEmptyContent(content[0]));
+  if (!Array.isArray(content) || content.length === 0) return true;
+  return content.every(isEmptyContent);
 }
 
 export function isEmptyBlock(block: AnyBlock): boolean {
@@ -89,4 +92,22 @@ export function isTableCellIndex(idx: Focus | LiteralIndex | undefined): idx is 
     "cellContentIndex" in idx &&
     typeof idx.cellContentIndex === "number"
   );
+}
+
+export function isEmptyCell(cell: Cell): boolean {
+  return isEmptyContentList(cell.text);
+}
+
+export function isEmptyRow(row: Row): boolean {
+  return row.cells.length === 0 || row.cells.every(isEmptyCell);
+}
+
+export function isEmptyTable(table: Table): boolean {
+  const headerEmpty = isEmptyTableHeader(table.header);
+  const bodyEmpty = table.rows.length === 0 || table.rows.every(isEmptyRow);
+  return headerEmpty && bodyEmpty;
+}
+
+export function isEmptyTableHeader(header: Header): boolean {
+  return header.colSpec.length === 0 || header.colSpec.every((col) => isEmptyCell(col.headerContent));
 }

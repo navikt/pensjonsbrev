@@ -8,82 +8,44 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as TemplateMalTypeTemplateIdRouteImport } from './routes/template.$malType.$templateId'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as TemplatesImport } from './routes/templates'
-import { Route as IndexImport } from './routes/index'
-import { Route as TemplateMalTypeTemplateIdImport } from './routes/template.$malType.$templateId'
-
-// Create/Update Routes
-
-const TemplatesRoute = TemplatesImport.update({
+const TemplatesRoute = TemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TemplateMalTypeTemplateIdRoute = TemplateMalTypeTemplateIdImport.update({
-  id: '/template/$malType/$templateId',
-  path: '/template/$malType/$templateId',
-  getParentRoute: () => rootRoute,
-} as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/templates': {
-      id: '/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof TemplatesImport
-      parentRoute: typeof rootRoute
-    }
-    '/template/$malType/$templateId': {
-      id: '/template/$malType/$templateId'
-      path: '/template/$malType/$templateId'
-      fullPath: '/template/$malType/$templateId'
-      preLoaderRoute: typeof TemplateMalTypeTemplateIdImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
+const TemplateMalTypeTemplateIdRoute =
+  TemplateMalTypeTemplateIdRouteImport.update({
+    id: '/template/$malType/$templateId',
+    path: '/template/$malType/$templateId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/templates' | '/template/$malType/$templateId'
@@ -92,11 +54,36 @@ export interface FileRouteTypes {
   id: '__root__' | '/' | '/templates' | '/template/$malType/$templateId'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TemplatesRoute: typeof TemplatesRoute
   TemplateMalTypeTemplateIdRoute: typeof TemplateMalTypeTemplateIdRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/template/$malType/$templateId': {
+      id: '/template/$malType/$templateId'
+      path: '/template/$malType/$templateId'
+      fullPath: '/template/$malType/$templateId'
+      preLoaderRoute: typeof TemplateMalTypeTemplateIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -104,31 +91,6 @@ const rootRouteChildren: RootRouteChildren = {
   TemplatesRoute: TemplatesRoute,
   TemplateMalTypeTemplateIdRoute: TemplateMalTypeTemplateIdRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/templates",
-        "/template/$malType/$templateId"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/templates": {
-      "filePath": "templates.tsx"
-    },
-    "/template/$malType/$templateId": {
-      "filePath": "template.$malType.$templateId.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
