@@ -18,12 +18,12 @@ class TemplateTableTest {
             paragraph {
                 table(header = {
                     column {
-                        text(Language.Bokmal to "header")
+                        text(bokmal { +"header" })
                     }
                 }) {
                     row {
                         cell {
-                            text(Language.Bokmal to "joda")
+                            text(bokmal { +"joda" })
                         }
                     }
                 }
@@ -72,20 +72,20 @@ class TemplateTableTest {
                 paragraph {
                     table(header = {
                         column {
-                            text(Language.Bokmal to "header")
+                            text(bokmal { +"header" })
                         }
                     }) {
                         row {
                             cell {
-                                text(Language.Bokmal to "en enkel celle")
+                                text(bokmal { +"en enkel celle" })
                             }
                         }
                         row {
                             cell {
-                                text(Language.Bokmal to "en Henkel celle")
+                                text(bokmal { +"en Henkel celle" })
                             }
                             cell {
-                                text(Language.Bokmal to "en celle for mye")
+                                text(bokmal { +"en celle for mye" })
                             }
                         }
                     }
@@ -101,7 +101,7 @@ class TemplateTableTest {
                 paragraph {
                     table(header = {
                         column {
-                            text(Language.Bokmal to "header")
+                            text(bokmal { +"header" })
                         }
                     }) {
                         row {
@@ -120,21 +120,21 @@ class TemplateTableTest {
             paragraph {
                 table(header = {
                     column {
-                        text(Language.Bokmal to "header")
+                        text(bokmal { +"header" })
                     }
                 }) {
                     showIf(true.expr()) {
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "hei",
+                                    bokmal { +"hei" },
                                 )
                             }
                         }
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "heihå",
+                                    bokmal { +"heihå" },
                                 )
                             }
                         }

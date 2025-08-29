@@ -16,13 +16,13 @@ class TemplateTableTest {
     @Test
     fun `table is not rendered when all the rows are filtered out`() {
         val doc = outlineTestTemplate<Unit> {
-            title1 { text(Language.Bokmal to "THIS TEXT SHOULD RENDER") }
+            title1 { text(bokmal { +"THIS TEXT SHOULD RENDER" }) }
             paragraph {
                 table(
                     header = {
                         column {
                             text(
-                                Language.Bokmal to "This text should not render1",
+                                bokmal { +"This text should not render1" },
                             )
                         }
                     }
@@ -31,7 +31,7 @@ class TemplateTableTest {
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "This text should not render2",
+                                    bokmal { +"This text should not render2" },
                                 )
                             }
                         }
@@ -58,7 +58,7 @@ class TemplateTableTest {
                     header = {
                         column {
                             text(
-                                Language.Bokmal to "This text should render 1",
+                                bokmal { +"This text should render 1" },
                             )
                         }
                     }
@@ -67,7 +67,7 @@ class TemplateTableTest {
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "This text should render 2",
+                                    bokmal { +"This text should render 2" },
                                 )
                             }
                         }

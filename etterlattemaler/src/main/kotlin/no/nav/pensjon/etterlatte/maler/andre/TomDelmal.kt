@@ -31,9 +31,9 @@ object TomDelmal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     ) {
         title {
             text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {
@@ -49,16 +49,16 @@ object TomDelmalTekst : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
             text(
-                Language.Bokmal to "Dette er en tom brevmal",
-                Language.Nynorsk to "Dette er en tom brevmal",
-                Language.English to "Dette er en tom brevmal",
+                bokmal { +"Dette er en tom brevmal" },
+                nynorsk { +"Dette er en tom brevmal" },
+                english { +"Dette er en tom brevmal" },
             )
         }
         paragraph {
             text(
-                Language.Bokmal to "Det finnes ingen brevmal for denne sak- eller vedtakstypen.",
-                Language.Nynorsk to "Det finnes ingen brevmal for denne sak- eller vedtakstypen.",
-                Language.English to "Det finnes ingen brevmal for denne sak- eller vedtakstypen.",
+                bokmal { +"Det finnes ingen brevmal for denne sak- eller vedtakstypen." },
+                nynorsk { +"Det finnes ingen brevmal for denne sak- eller vedtakstypen." },
+                english { +"Det finnes ingen brevmal for denne sak- eller vedtakstypen." },
             )
         }
     }

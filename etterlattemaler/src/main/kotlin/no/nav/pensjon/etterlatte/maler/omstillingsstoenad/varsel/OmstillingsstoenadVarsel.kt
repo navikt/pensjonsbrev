@@ -30,9 +30,9 @@ object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevMedTittelDTO>, H
     ) {
         title {
             text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to ""
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" }
             )
         }
 

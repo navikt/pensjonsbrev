@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -58,112 +57,112 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
         val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
 
         title {
-            textExpr(
-                Bokmal to "Du må betale tilbake ".expr() + sakstype,
-                Nynorsk to "Du må betale tilbake ".expr() + sakstype,
-                English to "You have to repay ".expr() + sakstype,
+            text(
+                bokmal { + "Du må betale tilbake " + sakstype },
+                nynorsk { + "Du må betale tilbake " + sakstype },
+                english { + "You have to repay " + sakstype },
             )
         }
         outline {
             paragraph {
                 val dato = fritekst("dato")
-                textExpr(
-                    Bokmal to "Vi viser til forhåndsvarselet vårt ".expr() + dato + ".",
-                    Nynorsk to "Vi viser til førehandsvarselet vårt ".expr() + dato + ".",
-                    English to "This is in reference to our advance notification dated ".expr() + dato + "."
+                text(
+                    bokmal { + "Vi viser til forhåndsvarselet vårt " + dato + "." },
+                    nynorsk { + "Vi viser til førehandsvarselet vårt " + dato + "." },
+                    english { + "This is in reference to our advance notification dated " + dato + "." }
                 )
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Du har fått for mye ".expr() + sakstype
-                            + " utbetalt fra ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " inkludert skatt.",
+                text(
+                    bokmal { + "Du har fått for mye " + sakstype
+                            + " utbetalt fra " + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format()
+                            + ". Dette er " + feilutbetaltTotalBeloep.format() + " inkludert skatt." },
 
-                    Nynorsk to "Du har fått for mykje ".expr() + sakstype
-                            + " utbetalt frå ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". Dette er ".expr() + feilutbetaltTotalBeloep.format() + " inkludert skatt.",
+                    nynorsk { + "Du har fått for mykje " + sakstype
+                            + " utbetalt frå " + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format()
+                            + ". Dette er " + feilutbetaltTotalBeloep.format() + " inkludert skatt." },
 
-                    English to "You have received too much ".expr() + sakstype
-                            + " in the period from ".expr() + startPeriodeForTilbakekreving.format() + " to ".expr() + sluttPeriodeForTilbakekreving.format()
-                            + ". This amounts to ".expr() + feilutbetaltTotalBeloep.format() + " including tax.",
+                    english { + "You have received too much " + sakstype
+                            + " in the period from " + startPeriodeForTilbakekreving.format() + " to " + sluttPeriodeForTilbakekreving.format()
+                            + ". This amounts to " + feilutbetaltTotalBeloep.format() + " including tax." },
                 )
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.FULL_TILBAKEKREV)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trekt frå.",
-                        English to "We have concluded that you must repay the full excess payment you have received. This amounts to ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                    text(
+                        bokmal { + "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si " + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra." },
+                        nynorsk { + "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie " + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trekt frå." },
+                        english { + "We have concluded that you must repay the full excess payment you have received. This amounts to " + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax." }
                     )
                 }
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.DELVIS_TILBAKEKREV)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trektfrå.",
-                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                    text(
+                        bokmal { + "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si " + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trukket fra." },
+                        nynorsk { + "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie " + sumTilInnkrevingTotalBeloep.format() + " etter at skatten er trektfrå." },
+                        english { + "We have concluded that you must repay some of the excess payment you have received. This amounts to " + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax." }
                     )
                 }
             }
             paragraph {
                 text(
-                    Bokmal to "Beløpet som er trukket i skatt vil Nav få tilbake av Skatteetaten.",
-                    Nynorsk to "Beløpet som er trekt i skatt vil Nav få tilbake av Skatteetaten.",
-                    English to "Nav will collect the tax amount from the Norwegian Tax Administration."
+                    bokmal { + "Beløpet som er trukket i skatt vil Nav få tilbake av Skatteetaten." },
+                    nynorsk { + "Beløpet som er trekt i skatt vil Nav få tilbake av Skatteetaten." },
+                    english { + "Nav will collect the tax amount from the Norwegian Tax Administration." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 22-15.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 22-15.",
-                    English to "This decision is made pursuant to the provisions of section 22-15 of the National Insurance Act."
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 22-15." },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova § 22-15." },
+                    english { + "This decision is made pursuant to the provisions of section 22-15 of the National Insurance Act." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "I vedlegget ",
-                    Nynorsk to "I vedlegget ",
-                    English to "The attachment titled "
+                    bokmal { + "I vedlegget " },
+                    nynorsk { + "I vedlegget " },
+                    english { + "The attachment titled " }
                 )
                 namedReference(oversiktOverFeilutbetalingerPE)
                 text(
-                    Bokmal to " finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
-                    Nynorsk to " finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
-                    English to " provides details on the periods with payment errors and the amounts that need to be repaid."
+                    bokmal { + " finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake." },
+                    nynorsk { + " finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake." },
+                    english { + " provides details on the periods with payment errors and the amounts that need to be repaid." }
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Betydning for skatteoppgjøret",
-                    Nynorsk to "Betydning for skatteoppgjeret",
-                    English to "Significance for the tax settlement"
+                    bokmal { + "Betydning for skatteoppgjøret" },
+                    nynorsk { + "Betydning for skatteoppgjeret" },
+                    english { + "Significance for the tax settlement" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vi rapporterer endringen til Skatteetaten. De vil korrigere skatteoppgjøret ditt ut fra denne endringen.",
-                    Nynorsk to "Vi rapporterer endringa til Skatteetaten. Dei vil korrigere skatteoppgjeret ditt ut frå denne endringa.",
-                    English to "We will report the change to the Norwegian Tax Administration. They will correct your tax settlement in view of this change."
+                    bokmal { + "Vi rapporterer endringen til Skatteetaten. De vil korrigere skatteoppgjøret ditt ut fra denne endringen." },
+                    nynorsk { + "Vi rapporterer endringa til Skatteetaten. Dei vil korrigere skatteoppgjeret ditt ut frå denne endringa." },
+                    english { + "We will report the change to the Norwegian Tax Administration. They will correct your tax settlement in view of this change." }
                 )
             }
             includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             paragraph {
                 text(
-                    Bokmal to "Selv om du klager på vedtaket, må du begynne å betale tilbake. Dette går frem av forvaltningsloven § 42 og hvordan vi må praktisere regelverket.",
-                    Nynorsk to "Sjølv om du klagar på vedtaket, må du begynne å betale tilbake. Dette går fram av forvaltningslova § 42 og korleis vi må praktisere regelverket.",
-                    English to "Even if you appeal this decision, you must start repaying. " +
-                            "This is stated in section 42 of the Public Administration Act and in the the guidelines for our application of the regulations."
+                    bokmal { + "Selv om du klager på vedtaket, må du begynne å betale tilbake. Dette går frem av forvaltningsloven § 42 og hvordan vi må praktisere regelverket." },
+                    nynorsk { + "Sjølv om du klagar på vedtaket, må du begynne å betale tilbake. Dette går fram av forvaltningslova § 42 og korleis vi må praktisere regelverket." },
+                    english { + "Even if you appeal this decision, you must start repaying. " +
+                            "This is stated in section 42 of the Public Administration Act and in the the guidelines for our application of the regulations." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vi kan utsette tilbakekrevingen til klagen er behandlet, for eksempel hvis det er sannsynlig at vedtaket blir omgjort. " +
-                            "Du kan også søke om utsettelse av tilbakebetaling, men vi kan ikke ta hensyn til den økonomiske situasjonen din når vi vurderer om du kan utsette og betale tilbake.",
-                    Nynorsk to "Vi kan utsetje tilbakekrevjinga til klaga er behandla, for eksempel dersom det er sannsynleg at vedtaket blir gjort om. " +
-                            "Du kan også søkje om utsetjing av tilbakebetalinga, men vi kan ikkje ta omsyn til den økonomiske situasjonen din når vi vurderer om du kan utsetje å betale tilbake.",
-                    English to "We may postpone sending you the claim for repayment until your appeal has been processed; for example, if it seems likely that the decision will be overturned. " +
-                            "You can also apply for deferral of the repayment, but we cannot take your financial situation into account when assessing whether you qualify for a deferral."
+                    bokmal { + "Vi kan utsette tilbakekrevingen til klagen er behandlet, for eksempel hvis det er sannsynlig at vedtaket blir omgjort. " +
+                            "Du kan også søke om utsettelse av tilbakebetaling, men vi kan ikke ta hensyn til den økonomiske situasjonen din når vi vurderer om du kan utsette og betale tilbake." },
+                    nynorsk { + "Vi kan utsetje tilbakekrevjinga til klaga er behandla, for eksempel dersom det er sannsynleg at vedtaket blir gjort om. " +
+                            "Du kan også søkje om utsetjing av tilbakebetalinga, men vi kan ikkje ta omsyn til den økonomiske situasjonen din når vi vurderer om du kan utsetje å betale tilbake." },
+                    english { + "We may postpone sending you the claim for repayment until your appeal has been processed; for example, if it seems likely that the decision will be overturned. " +
+                            "You can also apply for deferral of the repayment, but we cannot take your financial situation into account when assessing whether you qualify for a deferral." }
                 )
             }
             includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))

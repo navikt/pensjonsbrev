@@ -39,9 +39,9 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvsl
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
-                Language.Nynorsk to "Vi har avslått søknaden din om barnepensjon",
-                Language.English to "We have rejected your application for a children's pension",
+                bokmal { +"Vi har avslått søknaden din om barnepensjon" },
+                nynorsk { +"Vi har avslått søknaden din om barnepensjon" },
+                english { +"We have rejected your application for a children's pension" },
             )
         }
 

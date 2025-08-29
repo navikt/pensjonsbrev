@@ -26,9 +26,9 @@ data class TBU1382(
         showIf((pe.ut_trygdetid_avdod() and (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_trygdetidavdod_fatteos().greaterThan(0)))){
             paragraph {
                 text (
-                    Bokmal to "Trygdetiden til avdøde i andre EØS-land er fastsatt ut fra følgende perioder:",
-                    Nynorsk to "Trygdetida til den avdøde i andre EØS-land er fastsett ut frå følgjande periodar:",
-                    English to "The period of national insurance coverage for the decedent in other EEA countries has been establsihed on the basis of the following periods:",
+                    bokmal { + "Trygdetiden til avdøde i andre EØS-land er fastsatt ut fra følgende perioder:" },
+                    nynorsk { + "Trygdetida til den avdøde i andre EØS-land er fastsett ut frå følgjande periodar:" },
+                    english { + "The period of national insurance coverage for the decedent in other EEA countries has been establsihed on the basis of the following periods:" },
                 )
             }
             includePhrase(TrygdetidsListeEOSTabell(pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlageos_trygdetidsgrunnlageos()))

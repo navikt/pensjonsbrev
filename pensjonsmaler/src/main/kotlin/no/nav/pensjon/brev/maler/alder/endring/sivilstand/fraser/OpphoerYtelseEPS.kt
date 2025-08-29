@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class OpphoerYtelseEPS(
     val sivilstand: Expression<MetaforceSivilstand>,
@@ -20,11 +20,11 @@ data class OpphoerYtelseEPS(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // opphorYtelseEPS
         paragraph {
-            textExpr(
-                Language.Bokmal to sivilstandBestemtStorBokstav + " din mottar ikke lenger egen pensjon eller uføretrygd.",
-                Language.Nynorsk to sivilstandBestemtStorBokstav + " din får ikkje lenger eigen pensjon eller eiga uføretrygd.",
-                Language.English to
-                    "Your ".expr() + sivilstandBestemtLitenBokstav + " no longer receives a pension or disability benefit.",
+            text(
+                bokmal { + sivilstandBestemtStorBokstav + " din mottar ikke lenger egen pensjon eller uføretrygd." },
+                nynorsk { + sivilstandBestemtStorBokstav + " din får ikkje lenger eigen pensjon eller eiga uføretrygd." },
+                english { + 
+                    "Your " + sivilstandBestemtLitenBokstav + " no longer receives a pension or disability benefit." },
             )
         }
     }

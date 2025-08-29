@@ -26,9 +26,9 @@ data class TBU1384(
 
             paragraph {
                 text (
-                    Bokmal to "Trygdetiden til avdøde i land som Norge har trygdeavtale med, er fastsatt ut fra følgende perioder:",
-                    Nynorsk to "Trygdetida til den avdøde i land som Noreg har trygdeavtale med, er fastsett ut frå følgjande periodar:",
-                    English to "The period of national insurance coverage for the decedent in countries with which Norway has a national insurance agreement, has been established on the basis of the following periods:",
+                    bokmal { + "Trygdetiden til avdøde i land som Norge har trygdeavtale med, er fastsatt ut fra følgende perioder:" },
+                    nynorsk { + "Trygdetida til den avdøde i land som Noreg har trygdeavtale med, er fastsett ut frå følgjande periodar:" },
+                    english { + "The period of national insurance coverage for the decedent in countries with which Norway has a national insurance agreement, has been established on the basis of the following periods:" },
                 )
             }
 

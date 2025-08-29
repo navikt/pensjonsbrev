@@ -34,9 +34,9 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {

@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List<Trygdetidsgrunnlag>>): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -21,16 +20,16 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                 header = {
                     column {
                         text(
-                            Bokmal to "Fra og med",
-                            Nynorsk to "Frå og med",
-                            English to "From (and including)",
+                            bokmal { + "Fra og med" },
+                            nynorsk { + "Frå og med" },
+                            english { + "From (and including)" },
                         )
                     }
                     column {
                         text(
-                            Bokmal to "Til og med",
-                            Nynorsk to "Til og med",
-                            English to "To (and including)",
+                            bokmal { + "Til og med" },
+                            nynorsk { + "Til og med" },
+                            english { + "To (and including)" },
                         )
                     }
                 }
@@ -39,19 +38,19 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                     row {
                         cell {
                             ifNotNull(trygdetidsgrunnlag.trygdetidfom){
-                                textExpr(
-                                    Bokmal to it.format(),
-                                    Nynorsk to it.format(),
-                                    English to it.format(),
+                                text(
+                                    bokmal { + it.format() },
+                                    nynorsk { + it.format() },
+                                    english { + it.format() },
                                 )
                             }
                         }
                         cell {
                             ifNotNull(trygdetidsgrunnlag.trygdetidtom){
-                                textExpr(
-                                    Bokmal to it.format(),
-                                    Nynorsk to it.format(),
-                                    English to it.format(),
+                                text(
+                                    bokmal { + it.format() },
+                                    nynorsk { + it.format() },
+                                    english { + it.format() },
                                 )
                             }
                         }

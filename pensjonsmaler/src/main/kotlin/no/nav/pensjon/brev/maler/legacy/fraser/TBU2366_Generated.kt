@@ -10,9 +10,9 @@ object TBU2366_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		title1 {
 			text (
-				Bokmal to "Du må melde fra om endringer i inntekten",
-				Nynorsk to "Du må melde frå om endringar i inntekta",
-				English to "You must report all changes in income",
+				bokmal { + "Du må melde fra om endringer i inntekten" },
+				nynorsk { + "Du må melde frå om endringar i inntekta" },
+				english { + "You must report all changes in income" },
 			)
 		}
     }

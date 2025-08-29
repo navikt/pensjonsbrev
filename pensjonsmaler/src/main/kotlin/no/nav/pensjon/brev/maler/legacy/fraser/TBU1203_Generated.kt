@@ -10,9 +10,9 @@ object TBU1203_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		title1 {
 			text (
-				Bokmal to "For deg som kombinerer uføretrygd og inntekt",
-				Nynorsk to "For deg som kombinerer uføretrygd og inntekt",
-				English to "If you are combining disability benefit and income",
+				bokmal { + "For deg som kombinerer uføretrygd og inntekt" },
+				nynorsk { + "For deg som kombinerer uføretrygd og inntekt" },
+				english { + "If you are combining disability benefit and income" },
 			)
 		}
     }

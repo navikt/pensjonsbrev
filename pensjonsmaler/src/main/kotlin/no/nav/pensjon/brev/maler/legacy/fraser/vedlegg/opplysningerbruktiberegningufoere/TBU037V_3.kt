@@ -31,7 +31,6 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
@@ -48,10 +47,10 @@ data class TBU037V_3(
                 //[TBU037V_3]
 
                 paragraph {
-                    textExpr (
-                        Bokmal to "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra ".expr() + virkFom.format(),
-                        Nynorsk to "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå ".expr() + virkFom.format(),
-                        English to "Income on which to calculate the disability benefit for the decedent of ".expr() + virkFom.format(),
+                    text (
+                        bokmal { + "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra " + virkFom.format() },
+                        nynorsk { + "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå " + virkFom.format() },
+                        english { + "Income on which to calculate the disability benefit for the decedent of " + virkFom.format() },
                         BOLD
                     )
                 }
@@ -61,30 +60,30 @@ data class TBU037V_3(
                     table(header = {
                         column {
                             text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                                English to "Year",
+                                bokmal { + "År" },
+                                nynorsk { + "År" },
+                                english { + "Year" },
                             )
                         }
                         column {
                             text(
-                                Bokmal to "Pensjonsgivende inntekt",
-                                Nynorsk to "Pensjonsgivande inntekt",
-                                English to "Pensionable income",
+                                bokmal { + "Pensjonsgivende inntekt" },
+                                nynorsk { + "Pensjonsgivande inntekt" },
+                                english { + "Pensionable income" },
                             )
                         }
                         column {
                             text(
-                                Bokmal to "Inntekt justert med folketrygdens grunnbeløp",
-                                Nynorsk to "Inntekt justert med grunnbeløpet i folketrygda",
-                                English to "Income adjusted in accordance with the National Insurance basic amount",
+                                bokmal { + "Inntekt justert med folketrygdens grunnbeløp" },
+                                nynorsk { + "Inntekt justert med grunnbeløpet i folketrygda" },
+                                english { + "Income adjusted in accordance with the National Insurance basic amount" },
                             )
                         }
                         column {
                             text(
-                                Bokmal to "Merknad",
-                                Nynorsk to "Merknad",
-                                English to "Comments",
+                                bokmal { + "Merknad" },
+                                nynorsk { + "Merknad" },
+                                english { + "Comments" },
                             )
                         }
                     }){
@@ -92,57 +91,57 @@ data class TBU037V_3(
                             row {
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            Nynorsk to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            English to opptjeningUt.ar_safe.ifNull(0).format(),
+                                        text(
+                                            bokmal { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            nynorsk { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            english { + opptjeningUt.ar_safe.ifNull(0).format() },
                                             BOLD,
                                         )
                                     }.orShow {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            Nynorsk to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            English to opptjeningUt.ar_safe.ifNull(0).format(),
+                                        text(
+                                            bokmal { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            nynorsk { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            english { + opptjeningUt.ar_safe.ifNull(0).format() },
                                         )
                                     }
                                 }
                                 cell {
-                                    textExpr(
-                                        Bokmal to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr",
-                                        Nynorsk to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr",
-                                        English to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " NOK",
+                                    text(
+                                        bokmal { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                        nynorsk { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                        english { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " NOK" },
                                     )
                                 }
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
-                                            Nynorsk to opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
-                                            English to opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " NOK",
+                                        text(
+                                            bokmal { + opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            english { + opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " NOK" },
                                             BOLD,
                                         )
                                     }.orShow {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
-                                            Nynorsk to opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr",
-                                            English to opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " NOK",
+                                        text(
+                                            bokmal { + opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            english { + opptjeningUt.justertbelop_safe.ifNull(Kroner(0)).format(false) + " NOK" },
                                         )
                                     }
                                 }
                                 cell {
                                     showIf(opptjeningUt.forstegansgstjeneste_safe.ifNull(0).notEqualTo(0)){
                                         text (
-                                            Bokmal to "Førstegangsteneste * ",
-                                            Nynorsk to "Førstegongsteneste * ",
-                                            English to "Initial service * ",
+                                            bokmal { + "Førstegangsteneste * " },
+                                            nynorsk { + "Førstegongsteneste * " },
+                                            english { + "Initial service * " },
                                         )
                                     }
 
                                     showIf(opptjeningUt.omsorgsaar_safe.ifNull(false)){
                                         text (
-                                            Bokmal to "Omsorgsår *",
-                                            Nynorsk to "Omsorgsår *",
-                                            English to "Care Work *",
+                                            bokmal { + "Omsorgsår *" },
+                                            nynorsk { + "Omsorgsår *" },
+                                            english { + "Care Work *" },
                                         )
                                     }
                                 }

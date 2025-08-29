@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -74,16 +73,16 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
 
             title {
                 ifNotNull(datoVedtakOmgjoering) {
-                    textExpr(
-                        Bokmal to "Vi har omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        Nynorsk to "Vi har gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                        English to "We have reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                    text(
+                        bokmal { +"Vi har omgjort vedtaket om omstillingsstønad av " + it.format() },
+                        nynorsk { +"Vi har gjort om vedtaket om omstillingsstønad av " + it.format() },
+                        english { +"We have reversed our decision regarding the adjustment allowance on " + it.format() },
                     )
                 }.orShow {
                     text(
-                        Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
-                        Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
-                        English to "We have granted your application for adjustment allowance",
+                        bokmal { +"Vi har innvilget søknaden din om omstillingsstønad" },
+                        nynorsk { +"Vi har innvilga søknaden din om omstillingsstønad" },
+                        english { +"We have granted your application for adjustment allowance" },
                     )
                 }
             }

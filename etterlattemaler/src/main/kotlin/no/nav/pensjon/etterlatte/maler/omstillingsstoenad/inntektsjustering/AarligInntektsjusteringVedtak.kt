@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -64,19 +63,19 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             ),
         ) {
             title {
-                textExpr(
-                    Bokmal to "Utkast - Vedtak om omstillingsstønad fra 1. januar ".expr() + inntektsaar.format(),
-                    Nynorsk to "Utkast - Vedtak om omstillingsstønad frå 1. januar ".expr() + inntektsaar.format(),
-                    English to "Draft document - decision regarding adjustment allowance from January 1, ".expr() + inntektsaar.format(),
+                text(
+                    bokmal { +"Utkast - Vedtak om omstillingsstønad fra 1. januar " + inntektsaar.format() },
+                    nynorsk { +"Utkast - Vedtak om omstillingsstønad frå 1. januar " + inntektsaar.format() },
+                    english { +"Draft document - decision regarding adjustment allowance from January 1, " + inntektsaar.format() },
                 )
             }
             outline {
                 showIf(endringIUtbetaling){
                     paragraph {
-                        textExpr(
-                            Bokmal to "Omstillingsstønaden din er endret fra 1. januar ".expr() + inntektsaar.format() + ".",
-                            Nynorsk to "Omstillingsstønaden din er endra frå 1. januar  ".expr() + inntektsaar.format() + ".",
-                            English to "Your adjustment allowance has changed from January 1, ".expr() + inntektsaar.format() + ".",
+                        text(
+                            bokmal { +"Omstillingsstønaden din er endret fra 1. januar " + inntektsaar.format() + "." },
+                            nynorsk { +"Omstillingsstønaden din er endra frå 1. januar  " + inntektsaar.format() + "." },
+                            english { +"Your adjustment allowance has changed from January 1, " + inntektsaar.format() + "." },
                         )
                     }
 
@@ -84,24 +83,24 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 }.orShow {
                     val sisteUtbetalteBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
                     paragraph {
-                        textExpr(
-                            Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + ". "
-                                    + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ sisteUtbetalteBeloep +" per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()),
-                            Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + ". "
-                                    + ifElse(harUtbetaling, "Du får framleis ".expr()+ sisteUtbetalteBeloep +" per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
-                            English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + ". "
-                                    + ifElse(harUtbetaling, "You will continue to receive ".expr()+ sisteUtbetalteBeloep +" per month before tax.", "You will still not be paid the allowance.".expr()),
+                        text(
+                            bokmal { + "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + ". "
+                                    + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ sisteUtbetalteBeloep +" per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()) },
+                            nynorsk { +"Omstillingsstønaden din er vurdert på nytt frå 1. januar ".expr() + inntektsaar.format() + ". "
+                                    + ifElse(harUtbetaling, "Du får framleis ".expr()+ sisteUtbetalteBeloep +" per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()) },
+                            english { + "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + ". "
+                                    + ifElse(harUtbetaling, "You will continue to receive ".expr()+ sisteUtbetalteBeloep +" per month before tax.", "You will still not be paid the allowance.".expr())},
                         )
                     }
 
                     paragraph {
                         text(
-                            Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av " +
-                                    "omstillingsstønad».",
-                            Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
-                                    "rekna ut omstillingsstønaden din.",
-                            English to
-                                    "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
+                            bokmal { +"Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av " +
+                                    "omstillingsstønad»." },
+                            nynorsk { +"Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
+                                    "rekna ut omstillingsstønaden din." },
+                            english { +
+                                    "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance." },
                         )
                     }
                 }
@@ -109,9 +108,9 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
 
                 title2 {
                     text(
-                        Bokmal to "Begrunnelse for vedtaket",
-                        Nynorsk to "Grunngiving for vedtaket",
-                        English to "Grounds for the decision",
+                        bokmal { +"Begrunnelse for vedtaket" },
+                        nynorsk { +"Grunngiving for vedtaket" },
+                        english { +"Grounds for the decision" },
                     )
                 }
 

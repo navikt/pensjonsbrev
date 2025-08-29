@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
@@ -87,18 +86,18 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
         title {
             // Ingen endring
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
-                textExpr(
-                    Language.Bokmal to "Informasjon om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                    Language.Nynorsk to "Informasjon om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                    Language.English to "Information concerning final settlement of adjustment allowance for ".expr() + data.etteroppgjoersAar.format(),
+                text(
+                    bokmal { +"Informasjon om etteroppgjør av omstillingsstønad for " + data.etteroppgjoersAar.format() },
+                    nynorsk { +"Informasjon om etteroppgjer av omstillingsstønad for " + data.etteroppgjoersAar.format() },
+                    english { +"Information concerning final settlement of adjustment allowance for " + data.etteroppgjoersAar.format() },
                 )
             }
                 // Tilbakekreving eller Etterbetaling
                 .orShow {
-                    textExpr(
-                        Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "Førehandsvarsel om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                        Language.English to "Advance notice of final settlement of adjustment allowance for ".expr() + data.etteroppgjoersAar.format(),
+                    text(
+                        bokmal { +"Forhåndsvarsel om etteroppgjør av omstillingsstønad for " + data.etteroppgjoersAar.format() },
+                        nynorsk { +"Førehandsvarsel om etteroppgjer av omstillingsstønad for " + data.etteroppgjoersAar.format() },
+                        english { +"Advance notice of final settlement of adjustment allowance for " + data.etteroppgjoersAar.format() },
                     )
                 }
         }
@@ -110,17 +109,17 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             // Ingen endring
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
                 title2 {
-                    textExpr(
-                        Language.Bokmal to "Etteroppgjøret for ".expr() + data.etteroppgjoersAar.format() + " er nå avsluttet",
-                        Language.Nynorsk to "Etteroppgjeret for ".expr() + data.etteroppgjoersAar.format() + " er no avslutta",
-                        Language.English to "Final settlement in ".expr() + data.etteroppgjoersAar.format() + " is now concluded",
+                    text(
+                        bokmal { +"Etteroppgjøret for " + data.etteroppgjoersAar.format() + " er nå avsluttet" },
+                        nynorsk { +"Etteroppgjeret for " + data.etteroppgjoersAar.format() + " er no avslutta" },
+                        english { +"Final settlement in " + data.etteroppgjoersAar.format() + " is now concluded" },
                     )
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”. Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer.",
-                        Language.Nynorsk to "Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret». Gi oss beskjed dersom opplysningane inneheld feil.",
-                        Language.English to "You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement». Please notify us if you find that any of the information is incorrect.",
+                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”. Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
+                        nynorsk { +"Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret». Gi oss beskjed dersom opplysningane inneheld feil." },
+                        english { +"You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement». Please notify us if you find that any of the information is incorrect." },
                     )
                 }
             }
@@ -128,41 +127,41 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             .orShow {
                 title2 {
                     text(
-                        Language.Bokmal to "Sjekk beregningen og meld fra hvis noe er feil",
-                        Language.Nynorsk to "Sjekk utrekninga og meld frå viss noko er feil",
-                        Language.English to "Check the calculation and notify us if anything is incorrect",
+                        bokmal { +"Sjekk beregningen og meld fra hvis noe er feil" },
+                        nynorsk { +"Sjekk utrekninga og meld frå viss noko er feil" },
+                        english { +"Check the calculation and notify us if anything is incorrect" },
                     )
                 }
                 paragraph {
-                    textExpr(
-                        Language.Bokmal to "Se ny beregning av omstillingsstønaden din for inntektsåret ".expr() + data.etteroppgjoersAar.format() + " i vedlegget “Opplysninger om etteroppgjøret”. Du må kontrollere om inntektene som er oppgitt er riktig.",
-                        Language.Nynorsk to "Sjå den nye utrekninga av omstillingsstønaden din for inntektsåret ".expr() + data.etteroppgjoersAar.format() + " i vedlegget «Opplysningar om etteroppgjeret». Du må kontrollere at inntektene som er oppgitt, stemmer.",
-                        Language.English to "See the new calculation of your adjustment allowance for the income year ".expr() + data.etteroppgjoersAar.format() + " in the appendix “Information concerning final settlement”. You must check whether the stated income is correct. "
+                    text(
+                        bokmal { +"Se ny beregning av omstillingsstønaden din for inntektsåret " + data.etteroppgjoersAar.format() + " i vedlegget “Opplysninger om etteroppgjøret”. Du må kontrollere om inntektene som er oppgitt er riktig." },
+                        nynorsk { +"Sjå den nye utrekninga av omstillingsstønaden din for inntektsåret " + data.etteroppgjoersAar.format() + " i vedlegget «Opplysningar om etteroppgjeret». Du må kontrollere at inntektene som er oppgitt, stemmer." },
+                        english { +"See the new calculation of your adjustment allowance for the income year " + data.etteroppgjoersAar.format() + " in the appendix “Information concerning final settlement”. You must check whether the stated income is correct. " }
                     )
                 }
 
                 paragraph {
                     text(
-                        Language.Bokmal to "Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak. ",
-                        Language.Nynorsk to "Dersom du melder frå om feil, vil vi vurdere dei nye opplysningane før du får eit vedtak. ",
-                        Language.English to "If you report an error, we will evaluate the new information before sending a decision.",
+                        bokmal { +"Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak. " },
+                        nynorsk { +"Dersom du melder frå om feil, vil vi vurdere dei nye opplysningane før du får eit vedtak. " },
+                        english { +"If you report an error, we will evaluate the new information before sending a decision." },
                     )
                 }
 
                 paragraph {
                     text(
-                        Language.Bokmal to "Hvis opplysningene er feil, må du gi beskjed innen tre uker. Nye opplysninger må dokumenteres. Hvis du ikke svarer, får du et vedtak basert på de opplysningene som står i vedlegget. Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak.",
-                        Language.Nynorsk to "Dersom opplysningane er feil, må du gi beskjed innan tre veker. Nye opplysningar må dokumenterast. Dersom du ikkje svarer, får du eit vedtak basert på opplysningane som står i vedlegget.",
-                        Language.English to "If the information is incorrect, you must notify us within three weeks. New information must be documented. If you do not reply, a decision will be made based on the information in the appendix.",
+                        bokmal { +"Hvis opplysningene er feil, må du gi beskjed innen tre uker. Nye opplysninger må dokumenteres. Hvis du ikke svarer, får du et vedtak basert på de opplysningene som står i vedlegget. Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak." },
+                        nynorsk { +"Dersom opplysningane er feil, må du gi beskjed innan tre veker. Nye opplysningar må dokumenterast. Dersom du ikkje svarer, får du eit vedtak basert på opplysningane som står i vedlegget." },
+                        english { +"If the information is incorrect, you must notify us within three weeks. New information must be documented. If you do not reply, a decision will be made based on the information in the appendix." },
                     )
                 }
 
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {
                         text(
-                            Language.Bokmal to "I vedtaket får du informasjon om hvordan du kan betale tilbake for mye utbetalt omstillingsstønad og hvordan du kan klage på vedtaket.",
-                            Language.Nynorsk to "I vedtaket får du informasjon om korleis du kan betale tilbake for mykje utbetalt omstillingsstønad, og korleis du kan klage på vedtaket.",
-                            Language.English to "The decision will contain information about how to repay any overpaid adjustment allowance, and about how you can appeal against the decision.",
+                            bokmal { +"I vedtaket får du informasjon om hvordan du kan betale tilbake for mye utbetalt omstillingsstønad og hvordan du kan klage på vedtaket." },
+                            nynorsk { +"I vedtaket får du informasjon om korleis du kan betale tilbake for mykje utbetalt omstillingsstønad, og korleis du kan klage på vedtaket." },
+                            english { +"The decision will contain information about how to repay any overpaid adjustment allowance, and about how you can appeal against the decision." },
                         )
                     }
                 }

@@ -31,75 +31,75 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
     ) {
         title {
             text(
-                Bokmal to "Vi har ved en feil gitt noen andre tilgang til dine opplysninger.",
+                bokmal { + "Vi har ved en feil gitt noen andre tilgang til dine opplysninger." },
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Nav har sendt brev om alderspensjonen din til en person du bodde sammen med da brevet ble sendt. Vi hadde ikke lov til å dele opplysningene i brevet med den personen. " +
+                    bokmal { + "Nav har sendt brev om alderspensjonen din til en person du bodde sammen med da brevet ble sendt. Vi hadde ikke lov til å dele opplysningene i brevet med den personen. " +
                             "Dette er et brudd på Navs taushetsplikt og er et personvernbrudd. Feilen er rettet opp ved at fremtidige brev sendes til riktig person. " +
-                            "Det kan være du har fått eller lest brevet allerede. Vi vil uansett sende deg riktig brev."
+                            "Det kan være du har fått eller lest brevet allerede. Vi vil uansett sende deg riktig brev." }
                 )
             }
 
             title2 {
                 text(
-                    Bokmal to "Hvem har hatt tilgang til personopplysningene?"
+                    bokmal { + "Hvem har hatt tilgang til personopplysningene?" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "En person du bodde sammen med på tidspunktet da brevet ble sendt, har fått brevet. " +
-                            "Personen er nå kontaktet og bedt om å slette brevet. "
+                    bokmal { + "En person du bodde sammen med på tidspunktet da brevet ble sendt, har fått brevet. " +
+                            "Personen er nå kontaktet og bedt om å slette brevet. " }
                 )
             }
 
             title2 {
                 text(
-                    Bokmal to "Hvordan har denne feilen oppstått?"
+                    bokmal { + "Hvordan har denne feilen oppstått?" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vi gjorde en feil da vi satte inn navn og adresse i brevet."
+                    bokmal { + "Vi gjorde en feil da vi satte inn navn og adresse i brevet." }
                 )
             }
 
             title2 {
                 text(
-                    Bokmal to "Hvilke personopplysninger har en annen person hatt tilgang til?"
+                    bokmal { + "Hvilke personopplysninger har en annen person hatt tilgang til?" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Personen har fått tilgang til opplysningene som står i brevet fra Nav. " +
-                            "Brevet inneholder følgende opplysninger:"
+                    bokmal { + "Personen har fått tilgang til opplysningene som står i brevet fra Nav. " +
+                            "Brevet inneholder følgende opplysninger:" }
                 )
                 list {
                     item {
                         text(
-                            Bokmal to "navnet ditt"
+                            bokmal { + "navnet ditt" }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "fødselsnummeret ditt"
+                            bokmal { + "fødselsnummeret ditt" }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "adressen din"
+                            bokmal { + "adressen din" }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "opplysninger om beregning av din alderspensjon"
+                            bokmal { + "opplysninger om beregning av din alderspensjon" }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "informasjon om at du tidligere har hatt uføretrygd"
+                            bokmal { + "informasjon om at du tidligere har hatt uføretrygd" }
                         )
                     }
                 }
@@ -107,43 +107,43 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
 
             title2 {
                 text(
-                    Bokmal to "Mulige konsekvenser av personvernbruddet"
+                    bokmal { + "Mulige konsekvenser av personvernbruddet" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Det en risiko for at denne personen kan ha opplysninger om deg som vedkommende ikke skulle hatt tilgang til. " +
+                    bokmal { + "Det en risiko for at denne personen kan ha opplysninger om deg som vedkommende ikke skulle hatt tilgang til. " +
                             "Der personopplysninger er på avveie, kan det i verste fall være en risiko for at vedkommende misbruker disse personopplysningene. " +
-                            "Vi beklager konsekvensene dette kan ha fått for deg."
+                            "Vi beklager konsekvensene dette kan ha fått for deg." }
                 )
             }
 
             title2 {
                 text(
-                    Bokmal to "Vil du vite hvordan Nav håndterer personvernopplysninger?"
+                    bokmal { + "Vil du vite hvordan Nav håndterer personvernopplysninger?" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan lese mer på $PERSONVERNERKLAERING_URL."
+                    bokmal { + "Du kan lese mer på $PERSONVERNERKLAERING_URL." }
                 )
             }
 
             title2 {
                 text(
-                    Bokmal to "Har du spørsmål?"
+                    bokmal { + "Har du spørsmål?" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
-                            "Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager kl.$NAV_KONTAKTSENTER_AAPNINGSTID."
+                    bokmal { + "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
+                            "Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager kl.$NAV_KONTAKTSENTER_AAPNINGSTID." }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Vi beklager feilen."
+                    bokmal { + "Vi beklager feilen." }
                 )
             }
 

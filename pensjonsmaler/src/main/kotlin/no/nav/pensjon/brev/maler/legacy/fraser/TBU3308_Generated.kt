@@ -10,8 +10,8 @@ object TBU3308_Generated : OutlinePhrase<LangBokmalNynorsk>() {
 
 		title1 {
 			text (
-				Bokmal to "Etterbetaling av beløpet",
-				Nynorsk to "Etterbetaling av beløpet",
+				bokmal { + "Etterbetaling av beløpet" },
+				nynorsk { + "Etterbetaling av beløpet" },
 			)
 		}
     }

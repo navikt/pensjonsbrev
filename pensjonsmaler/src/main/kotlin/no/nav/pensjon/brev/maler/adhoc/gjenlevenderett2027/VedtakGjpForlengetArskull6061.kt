@@ -48,63 +48,63 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     ) {
         title {
             text(
-                Bokmal to "Vedtak – Gjenlevendepensjonen din forlenges ",
-                Nynorsk to "Vedtak – Gjenlevandepensjonen din blir forlenga "
+                bokmal { + "Vedtak – Gjenlevendepensjonen din forlenges " },
+                nynorsk { + "Vedtak – Gjenlevandepensjonen din blir forlenga " }
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. ",
-                    Nynorsk to "Vi viser til tidlegare informasjon om at Stortinget har vedteke endringar i reglane i folketrygdlova som gjeld ytingar til etterlatne. Endringa gjeld frå 1. januar 2024. "
+                    bokmal { + "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. " },
+                    nynorsk { + "Vi viser til tidlegare informasjon om at Stortinget har vedteke endringar i reglane i folketrygdlova som gjeld ytingar til etterlatne. Endringa gjeld frå 1. januar 2024. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du fyller vilkårene for rett til gjenlevendepensjon frem til du fyller 67 år. ",
-                    Nynorsk to "Du oppfyller vilkåra for rett til gjenlevandepensjon fram til du fyller 67 år. "
+                    bokmal { + "Du fyller vilkårene for rett til gjenlevendepensjon frem til du fyller 67 år. " },
+                    nynorsk { + "Du oppfyller vilkåra for rett til gjenlevandepensjon fram til du fyller 67 år. " }
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Begrunnelse for vedtaket ",
-                    Nynorsk to "Grunngiving for vedtaket "
+                    bokmal { + "Begrunnelse for vedtaket " },
+                    nynorsk { + "Grunngiving for vedtaket " }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A-3. ",
-                    Nynorsk to "Opplysningar om inntekta di i perioden 2019–2023 viser at du oppfyller vilkåra i folketrygdlova § 17 A-3. "
+                    bokmal { + "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A-3. " },
+                    nynorsk { + "Opplysningar om inntekta di i perioden 2019–2023 viser at du oppfyller vilkåra i folketrygdlova § 17 A-3. " }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du beholder derfor retten til gjenlevendepensjon frem til du fyller 67 år, under forutsetning av at de øvrige vilkårene er oppfylt. ",
-                    Nynorsk to "Du beheld difor retten til gjenlevandepensjon fram til du fyller 67 år, under føresetnad av at dei resterande vilkåra er oppfylte. "
+                    bokmal { + "Du beholder derfor retten til gjenlevendepensjon frem til du fyller 67 år, under forutsetning av at de øvrige vilkårene er oppfylt. " },
+                    nynorsk { + "Du beheld difor retten til gjenlevandepensjon fram til du fyller 67 år, under føresetnad av at dei resterande vilkåra er oppfylte. " }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. ",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 17 A-3. "
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 17 A-3. " },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova § 17 A-3. " }
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Hva er inntektsgrensen? ",
-                    Nynorsk to "Kva er inntektsgrensa? "
+                    bokmal { + "Hva er inntektsgrensen? " },
+                    nynorsk { + "Kva er inntektsgrensa? " }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: ",
-                    Nynorsk to "Pensjonsgivande inntekt må ha vore under tre gongar gjennomsnittleg grunnbeløp i folketrygda (G) i både 2022 og 2023: "
+                    bokmal { + "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: " },
+                    nynorsk { + "Pensjonsgivande inntekt må ha vore under tre gongar gjennomsnittleg grunnbeløp i folketrygda (G) i både 2022 og 2023: " }
                 )
             }
 
@@ -112,10 +112,10 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
-                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. ",
-                    Nynorsk to "I tillegg må inntekta di i 2019–2023 ha vore under to gongar grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra. " +
-                            "Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. "
+                    bokmal { + "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
+                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. " },
+                    nynorsk { + "I tillegg må inntekta di i 2019–2023 ha vore under to gongar grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra. " +
+                            "Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. " }
                 )
             }
 
@@ -124,22 +124,22 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             title1 {
                 text(
-                    Bokmal to "Hvilke opplysninger har vi om deg? ",
-                    Nynorsk to "Kva opplysningar har vi om deg? "
+                    bokmal { + "Hvilke opplysninger har vi om deg? " },
+                    nynorsk { + "Kva opplysningar har vi om deg? " }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Det er din inntekt i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjon. ",
-                    Nynorsk to "Det er inntekta di i åra 2019–2023 som avgjer om du kan behalde gjenlevandepensjon. "
+                    bokmal { + "Det er din inntekt i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjon. " },
+                    nynorsk { + "Det er inntekta di i åra 2019–2023 som avgjer om du kan behalde gjenlevandepensjon. " }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019–2023 hatt følgende inntekter: ",
-                    Nynorsk to "Ifølgje registeropplysningar vi har om deg frå Skatteetaten, har du i åra 2019–2023 hatt følgjande inntekter: "
+                    bokmal { + "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019–2023 hatt følgende inntekter: " },
+                    nynorsk { + "Ifølgje registeropplysningar vi har om deg frå Skatteetaten, har du i åra 2019–2023 hatt følgjande inntekter: " }
                 )
             }
 
@@ -147,34 +147,34 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært lavere enn inntektsgrensene i årene 2019–2023. ",
-                    Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore lågare enn inntektsgrensene i åra 2019–2023. "
+                    bokmal { + "Din inntekt har ifølge opplysninger fra Skatteetaten vært lavere enn inntektsgrensene i årene 2019–2023. " },
+                    nynorsk { + "Inntekta di har ifølgje opplysningar frå Skatteetaten vore lågare enn inntektsgrensene i åra 2019–2023. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Under forutsetning av at de øvrige vilkårene er oppfylt vil du ha rett til pengestøtte som gjenlevende frem til du fyller 67 år. ",
-                    Nynorsk to "Under føresetnad av at dei resterande vilkåra er oppfylte, vil du ha rett til pengestøtte som attlevande fram til du fyller 67 år. "
+                    bokmal { + "Under forutsetning av at de øvrige vilkårene er oppfylt vil du ha rett til pengestøtte som gjenlevende frem til du fyller 67 år. " },
+                    nynorsk { + "Under føresetnad av at dei resterande vilkåra er oppfylte, vil du ha rett til pengestøtte som attlevande fram til du fyller 67 år. " }
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Du har rett til å klage ",
-                    Nynorsk to "Du har rett til å klage "
+                    bokmal { + "Du har rett til å klage " },
+                    nynorsk { + "Du har rett til å klage " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. " +
-                            "I vedlegget ",
-                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. " +
-                            "I vedlegget "
+                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. " +
+                            "I vedlegget " },
+                    nynorsk { + "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. " +
+                            "I vedlegget " }
                 )
                 namedReference(vedleggGjpDineRettigheterOgPlikter)
                 text(
-                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL.",
-                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL."
+                    bokmal { + " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL." },
+                    nynorsk { + " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL." }
                 )
             }
 
@@ -182,14 +182,14 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             title1 {
                 text(
-                    Bokmal to "Meld fra om endringer ",
-                    Nynorsk to "Meld frå om endringar "
+                    bokmal { + "Meld fra om endringer " },
+                    nynorsk { + "Meld frå om endringar " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. ",
-                    Nynorsk to "Dersom du planlegg å flytte til eit anna land eller du får endra inntekt, familiesituasjon eller jobbsituasjon, kan det påverke gjenlevandepensjonen din. I slike tilfelle må du difor straks melde frå til Nav. "
+                    bokmal { + "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
+                    nynorsk { + "Dersom du planlegg å flytte til eit anna land eller du får endra inntekt, familiesituasjon eller jobbsituasjon, kan det påverke gjenlevandepensjonen din. I slike tilfelle må du difor straks melde frå til Nav. " }
                 )
             }
 

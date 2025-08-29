@@ -57,9 +57,9 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {
@@ -76,12 +76,12 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to
-                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">",
-                        Nynorsk to
-                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">",
-                        English to
-                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">",)
+                        bokmal { +
+                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">" },
+                        nynorsk { +
+                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">" },
+                        english { +
+                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">" },)
                 }
             }
 

@@ -12,9 +12,9 @@ object TBU2275_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		title1 {
 			text (
-				Bokmal to "For deg som mottar ektefelletillegg",
-				Nynorsk to "For deg som får ektefelletillegg",
-				English to "For those receiving a spouse supplement",
+				bokmal { + "For deg som mottar ektefelletillegg" },
+				nynorsk { + "For deg som får ektefelletillegg" },
+				english { + "For those receiving a spouse supplement" },
 			)
 		}
     }

@@ -13,9 +13,9 @@ object Vedtak {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title2 {
                 text(
-                    Bokmal to "Begrunnelse for vedtaket",
-                    Nynorsk to "Grunngiving for vedtaket",
-                    English to "Grounds for the decision",
+                    bokmal { +"Begrunnelse for vedtaket" },
+                    nynorsk { +"Grunngiving for vedtaket" },
+                    english { +"Grounds for the decision" },
                 )
             }
     }

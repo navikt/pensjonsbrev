@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
@@ -49,9 +48,9 @@ val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, 
     )
     title1 {
         text(
-            Bokmal to "Detaljert oversikt over perioder med feilutbetalinger",
-            Nynorsk to "Detaljert oversikt over periodar med feilutbetalingar",
-            English to "Detailed overview of periods with incorrect payments",
+            bokmal { + "Detaljert oversikt over perioder med feilutbetalinger" },
+            nynorsk { + "Detaljert oversikt over periodar med feilutbetalingar" },
+            english { + "Detailed overview of periods with incorrect payments" },
         )
     }
     includePhrase(TilbakekrevingerTabell(tilbakekreving = tilbakekrevingPerMaaned))
@@ -69,9 +68,9 @@ private data class TilbakekrevingerTotalbeloepTabell(
                 header = {
                     column(columnSpan = 3) {
                         text(
-                            Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
-                            Nynorsk to "Beløp som skal krevjast tilbake i heile feilutbetalingsperioden",
-                            English to "Reimbursement amount for entire error period",
+                            bokmal { + "Beløp som skal kreves tilbake i hele feilutbetalingsperioden" },
+                            nynorsk { + "Beløp som skal krevjast tilbake i heile feilutbetalingsperioden" },
+                            english { + "Reimbursement amount for entire error period" },
                         )
                     }
                     column(columnSpan = 1, alignment = RIGHT) {}
@@ -80,9 +79,9 @@ private data class TilbakekrevingerTotalbeloepTabell(
                 row {
                     cell {
                         text(
-                            Bokmal to "Brutto tilbakekreving",
-                            Nynorsk to "Brutto tilbakekrevjing",
-                            English to "Gross amount to be repaid"
+                            bokmal { + "Brutto tilbakekreving" },
+                            nynorsk { + "Brutto tilbakekrevjing" },
+                            english { + "Gross amount to be repaid" }
                         )
                     }
                     cell {
@@ -92,9 +91,9 @@ private data class TilbakekrevingerTotalbeloepTabell(
                 row {
                     cell {
                         text(
-                            Bokmal to "- Fradrag skatt",
-                            Nynorsk to "- Frådrag skatt",
-                            English to "- Tax deduction",
+                            bokmal { + "- Fradrag skatt" },
+                            nynorsk { + "- Frådrag skatt" },
+                            english { + "- Tax deduction" },
                         )
                     }
                     cell {
@@ -105,9 +104,9 @@ private data class TilbakekrevingerTotalbeloepTabell(
                 row {
                     cell {
                         text(
-                            Bokmal to "Netto tilbakekreving",
-                            Nynorsk to "Netto tilbakekrevjing",
-                            English to "Net amount",
+                            bokmal { + "Netto tilbakekreving" },
+                            nynorsk { + "Netto tilbakekrevjing" },
+                            english { + "Net amount" },
                             fontType = FontType.BOLD,
                         )
                     }
@@ -118,9 +117,9 @@ private data class TilbakekrevingerTotalbeloepTabell(
                 row {
                     cell {
                         text(
-                            Bokmal to "+ Rentetillegg",
-                            Nynorsk to "+ Rentetillegg",
-                            English to "+ Interest surcharge"
+                            bokmal { + "+ Rentetillegg" },
+                            nynorsk { + "+ Rentetillegg" },
+                            english { + "+ Interest surcharge" }
                         )
                     }
                     cell {
@@ -141,10 +140,10 @@ private data class TilbakekrevingerTabell(
                 table(
                     header = {
                         column(columnSpan = 3) {
-                            textExpr(
-                                Bokmal to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
-                                Nynorsk to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
-                                English to tilbakekreves.maanedOgAar.formatMonthYear() + " - "
+                            text(
+                                bokmal { + tilbakekreves.maanedOgAar.formatMonthYear() + " - " },
+                                nynorsk { + tilbakekreves.maanedOgAar.formatMonthYear() + " - " },
+                                english { + tilbakekreves.maanedOgAar.formatMonthYear() + " - " }
                             )
                             includePhrase(
                                 KonteringTypeYtelseTextMappingStorBokstav(
@@ -152,9 +151,9 @@ private data class TilbakekrevingerTabell(
                                 )
                             )
                             text(
-                                Bokmal to " - ",
-                                Nynorsk to " - ",
-                                English to " - "
+                                bokmal { + " - " },
+                                nynorsk { + " - " },
+                                english { + " - " }
                             )
                             includePhrase(
                                 ResultatAvVurderingenTextMappingStorBokstav(
@@ -169,9 +168,9 @@ private data class TilbakekrevingerTabell(
                     row {
                         cell {
                             text(
-                                Bokmal to "Feilutbetalt beløp",
-                                Nynorsk to "Feilutbetalt beløp",
-                                English to "Incorrect payment"
+                                bokmal { + "Feilutbetalt beløp" },
+                                nynorsk { + "Feilutbetalt beløp" },
+                                english { + "Incorrect payment" }
                             )
                         }
                         cell {
@@ -181,9 +180,9 @@ private data class TilbakekrevingerTabell(
                     row {
                         cell {
                             text(
-                                Bokmal to "Brutto tilbakekreving",
-                                Nynorsk to "Brutto tilbakekrevjing",
-                                English to "Gross repayment amount"
+                                bokmal { + "Brutto tilbakekreving" },
+                                nynorsk { + "Brutto tilbakekrevjing" },
+                                english { + "Gross repayment amount" }
                             )
                         }
                         cell {
@@ -194,9 +193,9 @@ private data class TilbakekrevingerTabell(
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Fradrag skatt",
-                                    Nynorsk to "Frådrag skatt",
-                                    English to "Tax deduction"
+                                    bokmal { + "Fradrag skatt" },
+                                    nynorsk { + "Frådrag skatt" },
+                                    english { + "Tax deduction" }
                                 )
                             }
                             cell {
@@ -207,9 +206,9 @@ private data class TilbakekrevingerTabell(
                     row {
                         cell {
                             text(
-                                Bokmal to "Netto tilbakekreving",
-                                Nynorsk to "Netto tilbakekrevjing",
-                                English to "Net repayment amount"
+                                bokmal { + "Netto tilbakekreving" },
+                                nynorsk { + "Netto tilbakekrevjing" },
+                                english { + "Net repayment amount" }
                             )
                         }
                         cell {

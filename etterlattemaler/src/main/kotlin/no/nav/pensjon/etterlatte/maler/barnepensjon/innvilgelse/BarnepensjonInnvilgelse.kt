@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -76,23 +75,23 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         title {
 
             ifNotNull(datoVedtakOmgjoering) {
-                textExpr(
-                    Bokmal to "Vi har omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                    Nynorsk to "Vi har gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                    English to "We have reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                text(
+                    bokmal { +"Vi har omgjort vedtaket om omstillingsstønad av " + it.format() },
+                    nynorsk { +"Vi har gjort om vedtaket om omstillingsstønad av " + it.format() },
+                    english { +"We have reversed our decision regarding the adjustment allowance on " + it.format() },
                 )
             }
             .orShowIf(erGjenoppretting) {
                 text(
-                    Bokmal to "Du er innvilget barnepensjon på nytt",
-                    Nynorsk to "Du er innvilga barnepensjon på ny",
-                    English to "You have been granted children’s pension again",
+                    bokmal { +"Du er innvilget barnepensjon på nytt" },
+                    nynorsk { +"Du er innvilga barnepensjon på ny" },
+                    english { +"You have been granted children’s pension again" },
                 )
             }.orShow {
                 text(
-                    Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                    Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                    English to "We have granted your application for a children's pension",
+                    bokmal { +"Vi har innvilget søknaden din om barnepensjon" },
+                    nynorsk { +"Vi har innvilga søknaden din om barnepensjon" },
+                    english { +"We have granted your application for a children's pension" },
                 )
             }
         }

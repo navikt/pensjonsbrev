@@ -24,30 +24,30 @@ data class BeregningsperiodetabellEtterbetaling(
                 header = {
                     column(1) {
                         text(
-                            Language.Bokmal to "Periode",
-                            Language.Nynorsk to "Periode",
-                            Language.English to "Period",
+                            bokmal { +"Periode" },
+                            nynorsk { +"Periode" },
+                            english { +"Period" },
                         )
                     }
                     column(2) {
                         text(
-                            Language.Bokmal to "Stønad før reduksjon for inntekt",
-                            Language.Nynorsk to "Stønad før reduksjon",
-                            Language.English to "Allowance amount before reduction",
+                            bokmal { +"Stønad før reduksjon for inntekt" },
+                            nynorsk { +"Stønad før reduksjon" },
+                            english { +"Allowance amount before reduction" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Inntekt",
-                            Language.Nynorsk to "Inntekta di",
-                            Language.English to "Your income",
+                            bokmal { +"Inntekt" },
+                            nynorsk { +"Inntekta di" },
+                            english { +"Your income" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Utbetaling per måned",
-                            Language.Nynorsk to "Utbetaling per månad",
-                            Language.English to "Payout per month",
+                            bokmal { +"Utbetaling per måned" },
+                            nynorsk { +"Utbetaling per månad" },
+                            english { +"Payout per month" },
                         )
                     }
                 }

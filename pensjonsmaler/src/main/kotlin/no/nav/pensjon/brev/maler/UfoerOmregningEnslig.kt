@@ -75,9 +75,9 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
         title {
             text(
-                Bokmal to "Nav har regnet om uføretrygden din",
-                Nynorsk to "Nav har rekna om uføretrygda di",
-                English to "Nav has altered your disability benefit",
+                bokmal { + "Nav har regnet om uføretrygden din" },
+                nynorsk { + "Nav har rekna om uføretrygda di" },
+                english { + "Nav has altered your disability benefit" },
             )
         }
 

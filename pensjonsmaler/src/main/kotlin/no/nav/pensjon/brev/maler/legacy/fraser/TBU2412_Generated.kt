@@ -12,9 +12,9 @@ object TBU2412_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				Bokmal to "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd.",
-				Nynorsk to "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd.",
-				English to "You do not meet these requirements, and your application for disability benefit is thus denied.",
+				bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
+				nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
+				english { + "You do not meet these requirements, and your application for disability benefit is thus denied." },
 			)
 		}
     }

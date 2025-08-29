@@ -45,9 +45,9 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
     ) {
         title {
             text(
-                Bokmal to "Nav har avslått søknaden din om endring av alderspensjonen",
-                Nynorsk to "Nav har avslått søknaden din om endring av alderspensjonen",
-                English to "Your application to change your retirement pension has been declined",
+                bokmal { + "Nav har avslått søknaden din om endring av alderspensjonen" },
+                nynorsk { + "Nav har avslått søknaden din om endring av alderspensjonen" },
+                english { + "Your application to change your retirement pension has been declined" },
             )
         }
 

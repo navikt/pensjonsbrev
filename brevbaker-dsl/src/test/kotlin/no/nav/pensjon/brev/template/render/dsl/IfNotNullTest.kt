@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -35,19 +34,19 @@ class IfNotNullTest {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        title { text(Bokmal to "Heisann") }
+        title { text(bokmal { +"Heisann" }) }
 
         outline {
             paragraph {
-                text(Bokmal to "alltid med")
+                text(bokmal { +"alltid med" })
                 val nullTing1 = test1
                 ifNotNull(nullTing1) { ting ->
-                    textExpr(
-                        Bokmal to "hei: ".expr() + ting
+                    text(
+                        bokmal { +"hei: " + ting }
                     )
                 }.orIfNotNull(test2) { ting ->
-                    textExpr(
-                        Bokmal to "tall: ".expr() + ting
+                    text(
+                        bokmal { +"tall: " + ting }
                     )
                 }
             }

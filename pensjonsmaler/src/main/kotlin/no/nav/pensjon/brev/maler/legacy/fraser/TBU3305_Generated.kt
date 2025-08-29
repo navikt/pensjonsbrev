@@ -13,11 +13,11 @@ object TBU3305_Generated : OutlinePhrase<LangBokmalNynorsk>() {
 
 		paragraph {
 			text (
-				Bokmal to "Du kan lese mer om etteroppgjør i vedlegget ",
-				Nynorsk to "Du kan lese meir om etteroppgjer i vedlegget ",
+				bokmal { + "Du kan lese mer om etteroppgjør i vedlegget " },
+				nynorsk { + "Du kan lese meir om etteroppgjer i vedlegget " },
 			)
 			namedReference(opplysningerOmETteroppgjoeretUTLegacy)
-			text(Bokmal to ".", Nynorsk to ".")
+			text(bokmal { + "." }, nynorsk { + "." })
 		}
     }
 }

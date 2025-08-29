@@ -10,9 +10,9 @@ object TBU2223_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-				Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
-				English to "Your disability benefit will still be paid no later than the 20th of every month.",
+				bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+				nynorsk { + "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad." },
+				english { + "Your disability benefit will still be paid no later than the 20th of every month." },
 			)
 		}
     }

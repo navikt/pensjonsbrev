@@ -54,7 +54,7 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
         ),
     ) {
         title {
-            text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
+            text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
         }
         outline {
             includePhrase(

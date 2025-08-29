@@ -26,7 +26,7 @@ class LetterTest {
         ),
     ) {
         title {
-            text(Language.Bokmal to "test")
+            text(bokmal { +"test" })
         }
     }
 

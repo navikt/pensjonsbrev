@@ -7,23 +7,23 @@ import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
     TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         ifNotNull(datoTOM) { datoTOM ->
-            textExpr(
-                Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
-                Language.Nynorsk to datoFOM.format(true) + " - " + datoTOM.format(true),
-                Language.English to datoFOM.format(true) + " - " + datoTOM.format(true),
+            text(
+                bokmal { +datoFOM.format(true) + " - " + datoTOM.format(true) },
+                nynorsk { +datoFOM.format(true) + " - " + datoTOM.format(true) },
+                english { +datoFOM.format(true) + " - " + datoTOM.format(true) },
             )
         } orShow {
-            textExpr(
-                Language.Bokmal to datoFOM.format(true) + " - ",
-                Language.Nynorsk to datoFOM.format(true) + " - ",
-                Language.English to datoFOM.format(true) + " - ",
+            text(
+                bokmal { +datoFOM.format(true) + " - " },
+                nynorsk { +datoFOM.format(true) + " - " },
+                english { +datoFOM.format(true) + " - " },
             )
         }
 }

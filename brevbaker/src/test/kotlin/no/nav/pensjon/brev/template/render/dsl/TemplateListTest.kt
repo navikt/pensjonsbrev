@@ -16,11 +16,11 @@ class TemplateListTest {
     @Test
     fun `list is not rendered when items are filtered out`() {
         val doc = outlineTestTemplate<Unit> {
-            title1 { text(Language.Bokmal to "this text should render") }
+            title1 { text(bokmal { +"this text should render" }) }
             paragraph {
                 list {
                     showIf(false.expr()) {
-                        item { text(Language.Bokmal to "This text should not render") }
+                        item { text(bokmal { +"This text should not render" }) }
                     }
                 }
             }

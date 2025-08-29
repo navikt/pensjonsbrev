@@ -86,7 +86,7 @@ fun renderTestPdfOutline(
         )
     ) {
         title {
-            text(Bokmal to (title ?: testName))
+            text(bokmal { +(title ?: testName) })
         }
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }

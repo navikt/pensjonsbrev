@@ -17,9 +17,9 @@ data class OmregningGarantiPen(
             // omregning_GarantiPen
             paragraph {
                 text(
-                    Language.Bokmal to "Derfor har vi vurdert garantipensjonen din på nytt.",
-                    Language.Nynorsk to "Derfor har vi vurdert garantipensjonen din på nytt.",
-                    Language.English to "We have therefore recalculated your guaranteed pension.",
+                    bokmal { + "Derfor har vi vurdert garantipensjonen din på nytt." },
+                    nynorsk { + "Derfor har vi vurdert garantipensjonen din på nytt." },
+                    english { + "We have therefore recalculated your guaranteed pension." },
                 )
             }
         }

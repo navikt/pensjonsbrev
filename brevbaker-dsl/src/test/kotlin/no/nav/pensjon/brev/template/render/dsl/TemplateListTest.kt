@@ -17,7 +17,7 @@ class TemplateListTest {
             paragraph {
                 list {
                     item {
-                        text(Language.Bokmal to "Test")
+                        text(bokmal { +"Test" })
                     }
                 }
             }
@@ -78,7 +78,7 @@ class TemplateListTest {
                 list {
                     showIf(true.expr()) {
                         item {
-                            text(Language.Bokmal to "Test")
+                            text(bokmal { +"Test" })
                         }
                     }
                 }

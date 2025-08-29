@@ -109,13 +109,13 @@ val vedleggVarselTilbakekreving =
     }
 
 private fun TextOnlyScope<LangBokmalNynorskEnglish, VarselTilbakekrevingAvFeilutbetaltBeloepDto>.universalText(text: String) {
-    text(Bokmal to text, Nynorsk to text, English to text)
+    text(bokmal { + text }, nynorsk { + text }, english { + text })
 }
 
 private fun PlainTextOnlyScope<LangBokmalNynorskEnglish, VarselTilbakekrevingAvFeilutbetaltBeloepDto>.universalText(text: String) {
-    text(Bokmal to text, Nynorsk to text, English to text)
+    text(bokmal { + text }, nynorsk { + text }, english { + text })
 }
 
 private fun ParagraphOnlyScope<LangBokmalNynorskEnglish, VarselTilbakekrevingAvFeilutbetaltBeloepDto>.universalText(text: String) {
-    text(Bokmal to text, Nynorsk to text, English to text)
+    text(bokmal { + text }, nynorsk { + text }, english { + text })
 }

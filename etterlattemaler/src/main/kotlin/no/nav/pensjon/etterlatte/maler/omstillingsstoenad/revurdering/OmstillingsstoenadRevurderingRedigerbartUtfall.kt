@@ -61,9 +61,9 @@ object OmstillingsstoenadRevurderingRedigerbartUtfall:
     ) {
         title {
             text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {

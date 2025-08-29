@@ -22,9 +22,9 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 private object TilleggspensjonenBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "Tilleggspensjonen ",
-            Nynorsk to "Tilleggspensjonen ",
-            English to "Your supplementary pension ",
+            bokmal { + "Tilleggspensjonen " },
+            nynorsk { + "Tilleggspensjonen " },
+            english { + "Your supplementary pension " },
             FontType.BOLD
         )
     }
@@ -51,9 +51,9 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
                 paragraph {
                     includePhrase(TilleggspensjonenBold)
                     text(
-                        Bokmal to "din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp.",
-                        Nynorsk to "din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda.",
-                        English to "depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G).",
+                        bokmal { + "din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp." },
+                        nynorsk { + "din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda." },
+                        english { + "depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G)." },
                     )
                 }
             }
@@ -63,9 +63,9 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
                 paragraph {
                     includePhrase(TilleggspensjonenBold)
                     text(
-                        Bokmal to "din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp. Du får ikke full tilleggspensjon fordi du har opptjent pensjonspoeng i mindre enn 40 år.",
-                        Nynorsk to "din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda. Du får ikkje full tilleggspensjon fordi du har tent opp pensjonspoeng i mindre enn 40 år.",
-                        English to "depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G). You do not qualify for a full supplementary pension because you have earned pension points for less than 40 years.",
+                        bokmal { + "din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp. Du får ikke full tilleggspensjon fordi du har opptjent pensjonspoeng i mindre enn 40 år." },
+                        nynorsk { + "din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda. Du får ikkje full tilleggspensjon fordi du har tent opp pensjonspoeng i mindre enn 40 år." },
+                        english { + "depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G). You do not qualify for a full supplementary pension because you have earned pension points for less than 40 years." },
                     )
                 }
             }
@@ -75,9 +75,9 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
                 paragraph {
                     includePhrase(TilleggspensjonenBold)
                     text(
-                        Bokmal to "til en gjenlevende alderspensjonist kan enten bestå av pensjonistens egen tilleggspensjon eller 55 prosent av summen av pensjonistens egen tilleggspensjon og den avdødes tilleggspensjon. Tilleggspensjonen din er gitt etter det siste alternativet, da dette gir det høyeste beløpet for deg.",
-                        Nynorsk to "til ein attlevande alderspensjonist kan anten bestå av pensjonistens eigen tilleggspensjon eller 55 prosent av summen av pensjonistens eigen tilleggspensjon og tilleggspensjonen til den avdøde. Tilleggspensjonen din er gitt etter det siste alternativet då det gir det høgaste beløpet for deg.",
-                        English to "for a widowed old age pensioner can be calculated either as the pensioner's own supplementary pension or as 55 percent of the sum of the pensioner's own supplementary pension and the deceased's supplementary pension. Your supplementary pension has been calculated using the latter method, as this is more beneficial for you.",
+                        bokmal { + "til en gjenlevende alderspensjonist kan enten bestå av pensjonistens egen tilleggspensjon eller 55 prosent av summen av pensjonistens egen tilleggspensjon og den avdødes tilleggspensjon. Tilleggspensjonen din er gitt etter det siste alternativet, da dette gir det høyeste beløpet for deg." },
+                        nynorsk { + "til ein attlevande alderspensjonist kan anten bestå av pensjonistens eigen tilleggspensjon eller 55 prosent av summen av pensjonistens eigen tilleggspensjon og tilleggspensjonen til den avdøde. Tilleggspensjonen din er gitt etter det siste alternativet då det gir det høgaste beløpet for deg." },
+                        english { + "for a widowed old age pensioner can be calculated either as the pensioner's own supplementary pension or as 55 percent of the sum of the pensioner's own supplementary pension and the deceased's supplementary pension. Your supplementary pension has been calculated using the latter method, as this is more beneficial for you." },
                     )
                 }
             }
@@ -86,9 +86,9 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             showIf(tilleggspensjon.pgaYrkesskade and regelverkstype.isOneOf(AP2011, AP2016)) {
                 paragraph {
                     text(
-                        Bokmal to "Fordi uførheten din skyldes yrkesskade, er tilleggspensjonen din beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon enn en beregning etter ordinære regler for alderspensjon ville gitt deg.",
-                        Nynorsk to "Sidan uførleiken din skriv seg frå yrkesskade, har vi rekna ut tilleggspensjonen din etter eigne reglar for yrkesskade. Dette gir deg ein høgare tilleggspensjon enn ordinære reglar for alderspensjon.",
-                        English to "Since your disability is the result of an occupational injury, your supplementary pension is calculated using particular regulations. This grants you a higher supplementary pension than the ordinary regulations for retirement pension.",
+                        bokmal { + "Fordi uførheten din skyldes yrkesskade, er tilleggspensjonen din beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon enn en beregning etter ordinære regler for alderspensjon ville gitt deg." },
+                        nynorsk { + "Sidan uførleiken din skriv seg frå yrkesskade, har vi rekna ut tilleggspensjonen din etter eigne reglar for yrkesskade. Dette gir deg ein høgare tilleggspensjon enn ordinære reglar for alderspensjon." },
+                        english { + "Since your disability is the result of an occupational injury, your supplementary pension is calculated using particular regulations. This grants you a higher supplementary pension than the ordinary regulations for retirement pension." },
                     )
                 }
             }
@@ -97,9 +97,9 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             showIf(tilleggspensjon.pgaYrkesskadeAvdod and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
                 paragraph {
                     text(
-                        Bokmal to "Tilleggspensjonen etter avdøde er beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon.",
-                        Nynorsk to "Tilleggspensjonen etter den avdøde er rekna ut etter eigne reglar for yrkesskade. Dette gir deg ein høgare tilleggspensjon. ",
-                        English to "The deceased's supplementary pension is calculated using particular regulations for occupational injury. This grants you a higher supplementary pension.",
+                        bokmal { + "Tilleggspensjonen etter avdøde er beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon." },
+                        nynorsk { + "Tilleggspensjonen etter den avdøde er rekna ut etter eigne reglar for yrkesskade. Dette gir deg ein høgare tilleggspensjon. " },
+                        english { + "The deceased's supplementary pension is calculated using particular regulations for occupational injury. This grants you a higher supplementary pension." },
                     )
                 }
             }
@@ -108,16 +108,16 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             showIf(tilleggspensjon.pgaUngUfore and regelverkstype.isOneOf(AP2011, AP2016)) {
                 paragraph {
                     text(
-                        Bokmal to "Tilleggspensjonen din er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser. Denne beregningsfordelen videreføres ved overgang til alderspensjon.",
-                        Nynorsk to "Tilleggspensjonen din er rekna ut etter spesielle føresegner for unge uføre, som er gunstigare enn ordinære føresegner. Denne utrekningsfordelen blir vidareført ved overgang til alderspensjon.",
-                        English to "Your supplementary pension has been calculated in accordance with particular regulations for young people with disabilities, which are more beneficial than the ordinary regulations. This favourable calculation continues to be used when you start receiving a retirement pension.",
+                        bokmal { + "Tilleggspensjonen din er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser. Denne beregningsfordelen videreføres ved overgang til alderspensjon." },
+                        nynorsk { + "Tilleggspensjonen din er rekna ut etter spesielle føresegner for unge uføre, som er gunstigare enn ordinære føresegner. Denne utrekningsfordelen blir vidareført ved overgang til alderspensjon." },
+                        english { + "Your supplementary pension has been calculated in accordance with particular regulations for young people with disabilities, which are more beneficial than the ordinary regulations. This favourable calculation continues to be used when you start receiving a retirement pension." },
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Vær oppmerksom på at tilleggspensjonen din vil bli omregnet dersom du flytter fra Norge.",
-                        Nynorsk to "Ver merksam på at tilleggspensjonen din vil bli omrekna dersom du flyttar frå Noreg.",
-                        English to "Please note that your supplementary pension will be recalculated if you move away from Norway.",
+                        bokmal { + "Vær oppmerksom på at tilleggspensjonen din vil bli omregnet dersom du flytter fra Norge." },
+                        nynorsk { + "Ver merksam på at tilleggspensjonen din vil bli omrekna dersom du flyttar frå Noreg." },
+                        english { + "Please note that your supplementary pension will be recalculated if you move away from Norway." },
                     )
                 }
             }
@@ -126,16 +126,16 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             showIf(tilleggspensjon.pgaUngUforeAvdod and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
                 paragraph {
                     text(
-                        Bokmal to "Tilleggspensjonen etter avdøde er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser.",
-                        Nynorsk to "Tilleggspensjonen etter den avdøde er utrekna etter spesielle føresegner for unge uføre, som er gunstigare enn ordinære føresegner.",
-                        English to "The deceased's supplementary pension has been calculated in accordance with particular regulations for young people with disabilities, which are more beneficial than the ordinary regulations.",
+                        bokmal { + "Tilleggspensjonen etter avdøde er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser." },
+                        nynorsk { + "Tilleggspensjonen etter den avdøde er utrekna etter spesielle føresegner for unge uføre, som er gunstigare enn ordinære føresegner." },
+                        english { + "The deceased's supplementary pension has been calculated in accordance with particular regulations for young people with disabilities, which are more beneficial than the ordinary regulations." },
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Tilleggspensjonen etter avdøde er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser.",
-                        Nynorsk to "Ver merksam på at tilleggspensjonen din vil bli omrekna dersom du flyttar frå Noreg.",
-                        English to "Please note that your supplementary pension will be recalculated if you move away from Norway.",
+                        bokmal { + "Tilleggspensjonen etter avdøde er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser." },
+                        nynorsk { + "Ver merksam på at tilleggspensjonen din vil bli omrekna dersom du flyttar frå Noreg." },
+                        english { + "Please note that your supplementary pension will be recalculated if you move away from Norway." },
                     )
                 }
             }

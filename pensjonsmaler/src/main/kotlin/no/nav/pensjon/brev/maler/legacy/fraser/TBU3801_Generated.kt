@@ -19,32 +19,32 @@ data class TBU3801_Generated(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		paragraph {
 			text (
-				Bokmal to "Endringer i ",
-				Nynorsk to "Endringar i ",
-				English to "Changes in your ",
+				bokmal { + "Endringer i " },
+				nynorsk { + "Endringar i " },
+				english { + "Changes in your " },
 			)
 
 			//PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
 			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
-				textExpr (
-					Bokmal to "inntektene til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din ",
-					Nynorsk to "inntektene til deg og ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din ",
-					English to "and your ".expr() + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "'s ",
+				text (
+					bokmal { + "inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din " },
+					nynorsk { + "inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
+					english { + "and your " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "'s " },
 				)
 			}
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
 			showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
 				text (
-					Bokmal to "inntekten din ",
-					Nynorsk to "inntekta di ",
-					English to "",
+					bokmal { + "inntekten din " },
+					nynorsk { + "inntekta di " },
+					english { + "" },
 				)
 			}
-			textExpr (
-				Bokmal to "kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget ".expr() + quoted("uføretrygd") +" på $NAV_URL.",
-				Nynorsk to "kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet ".expr() + quoted("uføretrygd") +" på $NAV_URL.",
-				English to "income may affect your child supplement. You can easily report income changes under the menu option ".expr() + quoted("disability benefit") +" at $NAV_URL.",
+			text (
+				bokmal { + "kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på $NAV_URL." },
+				nynorsk { + "kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet " + quoted("uføretrygd") +" på $NAV_URL." },
+				english { + "income may affect your child supplement. You can easily report income changes under the menu option " + quoted("disability benefit") +" at $NAV_URL." },
 			)
 		}
     }

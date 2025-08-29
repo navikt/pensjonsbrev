@@ -32,9 +32,9 @@ object BarnepensjonVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTemplate<
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {

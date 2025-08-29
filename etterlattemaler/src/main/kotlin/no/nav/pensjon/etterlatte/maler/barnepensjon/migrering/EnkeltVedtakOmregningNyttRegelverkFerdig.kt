@@ -46,9 +46,9 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
     ) {
         title {
             text(
-                Bokmal to "Vedtak - endring av barnepensjon",
-                Nynorsk to "Vi har endra barnepensjonen din",
-                English to "Draft decision – adjustment of children's pension",
+                bokmal { +"Vedtak - endring av barnepensjon" },
+                nynorsk { +"Vi har endra barnepensjonen din" },
+                english { +"Draft decision – adjustment of children's pension" },
             )
         }
         outline {

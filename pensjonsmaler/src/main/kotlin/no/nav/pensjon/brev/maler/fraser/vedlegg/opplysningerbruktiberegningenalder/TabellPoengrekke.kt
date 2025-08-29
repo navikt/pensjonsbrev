@@ -27,33 +27,33 @@ data class TabellPoengrekke(val pensjonspoeng: Expression<List<Pensjonspoeng>>) 
             table({
                 column(alignment = RIGHT, columnSpan = 2) {
                     text(
-                        Bokmal to "År",
-                        Nynorsk to "År",
-                        English to "Year"
+                        bokmal { + "År" },
+                        nynorsk { + "År" },
+                        english { + "Year" }
                     )
                 }
                 column(alignment = RIGHT, columnSpan = 6) {
                     text(
-                        Bokmal to "Pensjonsgivende inntekt (kr)",
-                        Nynorsk to "Pensjonsgivande inntekt (kr)",
-                        English to "Pensionable income (NOK)"
+                        bokmal { + "Pensjonsgivende inntekt (kr)" },
+                        nynorsk { + "Pensjonsgivande inntekt (kr)" },
+                        english { + "Pensionable income (NOK)" }
                     )
                 }
                 column(alignment = RIGHT, columnSpan = 4) {
                     text(
-                        Bokmal to "Gj.snittlig G (kr)",
-                        Nynorsk to "Gj.snittleg G (kr)",
-                        English to "Average G (NOK)"
+                        bokmal { + "Gj.snittlig G (kr)" },
+                        nynorsk { + "Gj.snittleg G (kr)" },
+                        english { + "Average G (NOK)" }
                     )
                 }
                 column(alignment = RIGHT, columnSpan = 5) {
                     text(
-                        Bokmal to "Pensjonspoeng",
-                        Nynorsk to "Pensjonspoeng",
-                        English to "Pension points"
+                        bokmal { + "Pensjonspoeng" },
+                        nynorsk { + "Pensjonspoeng" },
+                        english { + "Pension points" }
                     )
                 }
-                column(columnSpan = 5) { text(Bokmal to "Merknad", Nynorsk to "Merknad", English to "Notes") }
+                column(columnSpan = 5) { text(bokmal { + "Merknad" }, nynorsk { + "Merknad" }, english { + "Notes" }) }
             }) {
                 forEach(pensjonspoeng) {
                     val bruktIBeregningen = it.bruktIBeregningen
@@ -113,16 +113,16 @@ data class TabellPoengrekke(val pensjonspoeng: Expression<List<Pensjonspoeng>>) 
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(poengTallsType.isOneOf(G, H, J, K, L)) {
                 text(
-                    Bokmal to "Omsorgspoeng er godskrevet",
-                    Nynorsk to "Omsorgspoeng er godskrevet",
-                    English to "Points for care work are credited",
+                    bokmal { + "Omsorgspoeng er godskrevet" },
+                    nynorsk { + "Omsorgspoeng er godskrevet" },
+                    english { + "Points for care work are credited" },
                     fontType
                 )
             }.orShowIf(poengTallsType.isOneOf(FPP)) {
                 text(
-                    Bokmal to "Framtidig pensjonspoeng",
-                    Nynorsk to "Framtidig pensjonspoeng",
-                    English to "Pension point earning year",
+                    bokmal { + "Framtidig pensjonspoeng" },
+                    nynorsk { + "Framtidig pensjonspoeng" },
+                    english { + "Pension point earning year" },
                     fontType
                 )
             }

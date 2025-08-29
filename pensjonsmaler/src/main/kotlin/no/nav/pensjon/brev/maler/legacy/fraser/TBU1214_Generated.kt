@@ -12,9 +12,9 @@ object TBU1214_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		title1 {
 			text (
-				Bokmal to "For deg som mottar gjenlevendetillegg",
-				Nynorsk to "For deg som mottar tillegg for attlevande ektefelle",
-				English to "For those receiving a surivor’s supplement",
+				bokmal { + "For deg som mottar gjenlevendetillegg" },
+				nynorsk { + "For deg som mottar tillegg for attlevande ektefelle" },
+				english { + "For those receiving a surivor’s supplement" },
 			)
 		}
     }

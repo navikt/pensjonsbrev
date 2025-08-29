@@ -45,9 +45,9 @@ object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal 
     ) {
         title {
             text(
-                Language.Bokmal to "Forhåndsvarsel om ny barnepensjon fra 1. januar 2024",
-                Language.Nynorsk to "Førehandsvarsel om ny barnepensjon frå 1. januar 2024",
-                Language.English to "Advance notice of new children’s pension from 1 January",
+                bokmal { +"Forhåndsvarsel om ny barnepensjon fra 1. januar 2024" },
+                nynorsk { +"Førehandsvarsel om ny barnepensjon frå 1. januar 2024" },
+                english { +"Advance notice of new children’s pension from 1 January" },
             )
         }
         outline {

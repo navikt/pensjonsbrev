@@ -10,9 +10,9 @@ object TBU1092_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		title1 {
 			text (
-				Bokmal to "Begrunnelse for vedtaket",
-				Nynorsk to "Grunngiving for vedtaket",
-				English to "Grounds for the decision",
+				bokmal { + "Begrunnelse for vedtaket" },
+				nynorsk { + "Grunngiving for vedtaket" },
+				english { + "Grounds for the decision" },
 			)
 		}
     }

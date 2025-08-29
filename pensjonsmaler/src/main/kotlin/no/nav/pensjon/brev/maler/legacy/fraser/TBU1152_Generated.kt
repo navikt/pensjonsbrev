@@ -12,9 +12,9 @@ object TBU1152_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				Bokmal to "For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert.",
-				Nynorsk to "For å bli innvilga rett som ung ufør er det eit krav at du blei ufør før du fylte 26 år på grunn av ein alvorleg og varig sjukdom eller skade, som er klart dokumentert.",
-				English to "To be eligible for rights as a young disabled person, you must have been disabled before turning 26, due to a serious and permanent illness or injury, which has been clearly documented.",
+				bokmal { + "For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." },
+				nynorsk { + "For å bli innvilga rett som ung ufør er det eit krav at du blei ufør før du fylte 26 år på grunn av ein alvorleg og varig sjukdom eller skade, som er klart dokumentert." },
+				english { + "To be eligible for rights as a young disabled person, you must have been disabled before turning 26, due to a serious and permanent illness or injury, which has been clearly documented." },
 			)
 		}
     }

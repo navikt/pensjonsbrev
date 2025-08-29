@@ -30,38 +30,38 @@ object UtsattKlagefrist : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Vi viser til vårt forhåndsvarsel og utkast til vedtak – endring av barnepensjonen.",
-                    Nynorsk to "",
-                    English to "",
+                    bokmal { +"Vi viser til vårt forhåndsvarsel og utkast til vedtak – endring av barnepensjonen." },
+                    nynorsk { +"" },
+                    english { +"" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På grunn av feil hos oss er det blitt en forsinkelse fra produksjon til utsendelse av “forhåndsvarsel om økt barnepensjon” og “utkast til vedtak – endring av barnepensjon”. Klagefristen er derfor utsatt.",
-                    Nynorsk to "",
-                    English to "",
+                    bokmal { +"På grunn av feil hos oss er det blitt en forsinkelse fra produksjon til utsendelse av “forhåndsvarsel om økt barnepensjon” og “utkast til vedtak – endring av barnepensjon”. Klagefristen er derfor utsatt." },
+                    nynorsk { +"" },
+                    english { +"" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du har klagefrist på seks uker fra 20. januar 2024 på utkast til vedtak, som er å regne som et vedtak fra 20. januar 2024.",
-                    Nynorsk to "",
-                    English to "",
+                    bokmal { +"Du har klagefrist på seks uker fra 20. januar 2024 på utkast til vedtak, som er å regne som et vedtak fra 20. januar 2024." },
+                    nynorsk { +"" },
+                    english { +"" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vi viser ellers til informasjon i tidligere utsendt forhåndsvarsel og utkast til vedtak.",
-                    Nynorsk to "",
-                    English to "",
+                    bokmal { +"Vi viser ellers til informasjon i tidligere utsendt forhåndsvarsel og utkast til vedtak." },
+                    nynorsk { +"" },
+                    english { +"" },
                 )
             }
         }

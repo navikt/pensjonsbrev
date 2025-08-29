@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -57,17 +56,17 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
     ) {
         title {
             text(
-                Bokmal to "Vi har opphørt barnepensjonen din",
-                Nynorsk to "Vi har avvikla barnepensjonen din",
-                English to "We have terminated your children's pension",
+                bokmal { +"Vi har opphørt barnepensjonen din" },
+                nynorsk { +"Vi har avvikla barnepensjonen din" },
+                english { +"We have terminated your children's pension" },
             )
         }
         outline {
             paragraph {
-                textExpr(
-                    Bokmal to "Barnepensjonen din opphører fra ".expr() + virkningsdato.format() + ".",
-                    Nynorsk to "Barnepensjonen din fell bort frå og med ".expr() + virkningsdato.format() + ".",
-                    English to "Your children's pension will terminate on ".expr() + virkningsdato.format() + ".",
+                text(
+                    bokmal { +"Barnepensjonen din opphører fra " + virkningsdato.format() + "." },
+                    nynorsk { +"Barnepensjonen din fell bort frå og med " + virkningsdato.format() + "." },
+                    english { +"Your children's pension will terminate on " + virkningsdato.format() + "." },
                 )
             }
             konverterElementerTilBrevbakerformat(innhold)

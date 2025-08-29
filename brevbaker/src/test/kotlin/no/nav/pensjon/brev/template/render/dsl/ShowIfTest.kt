@@ -74,11 +74,11 @@ class ShowIfTest {
     private val showIfTemplate = outlineTestTemplate<SomeDto> {
         paragraph {
             showIf(name equalTo "showIf") {
-                text(Language.Bokmal to "showIf tekst")
+                text(bokmal { +"showIf tekst" })
             }.orShowIf(name equalTo "orShowIf") {
-                text(Language.Bokmal to "orShowIf tekst")
+                text(bokmal { +"orShowIf tekst" })
             } orShow {
-                text(Language.Bokmal to "orShow tekst")
+                text(bokmal { +"orShow tekst" })
             }
         }
     }

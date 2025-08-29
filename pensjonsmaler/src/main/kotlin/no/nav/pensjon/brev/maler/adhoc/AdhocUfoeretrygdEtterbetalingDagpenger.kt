@@ -30,57 +30,57 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> 
     ) {
         title {
             text(
-                Bokmal to "Ny informasjon om etterbetaling av dagpenger"
+                bokmal { + "Ny informasjon om etterbetaling av dagpenger" }
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Du har tidligere fått et brev fra oss med informasjon om hvordan etterbetaling av dagpenger påvirker din uføretrygd. "
+                    bokmal { + "Du har tidligere fått et brev fra oss med informasjon om hvordan etterbetaling av dagpenger påvirker din uføretrygd. "
                             + "I brevet fikk du informasjon om at etterbetaling av dagpenger er pensjonsgivende inntekt som kan føre til reduksjon av uføretrygden, "
-                            + "dersom den overstiger inntektsgrensen."
+                            + "dersom den overstiger inntektsgrensen." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Etter at vi sendte brevet, har reglene endret seg til fordel for deg. Det er Arbeids- og inkluderingsdepartementet som har bestemt de nye reglene."
+                    bokmal { + "Etter at vi sendte brevet, har reglene endret seg til fordel for deg. Det er Arbeids- og inkluderingsdepartementet som har bestemt de nye reglene." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Regelendringen gjør at etterbetaling av trygdeytelser ikke lenger skal medføre reduksjon i uføretrygden."
+                    bokmal { + "Regelendringen gjør at etterbetaling av trygdeytelser ikke lenger skal medføre reduksjon i uføretrygden." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Etterbetalingen av dagpenger skal derfor ikke påvirke størrelsen på uføretrygden din fremover, og du trenger ikke å gjøre noe i denne saken."
+                    bokmal { + "Etterbetalingen av dagpenger skal derfor ikke påvirke størrelsen på uføretrygden din fremover, og du trenger ikke å gjøre noe i denne saken." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mottar barnetillegg i uføretrygden din, fører etterbetalingen av dagpenger heller ikke til reduksjon av barnetillegget fremover."
+                    bokmal { + "Hvis du mottar barnetillegg i uføretrygden din, fører etterbetalingen av dagpenger heller ikke til reduksjon av barnetillegget fremover." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Etterbetalingen av dagpenger "
+                    bokmal { + "Etterbetalingen av dagpenger " }
                 )
                 text(
-                    Bokmal to "kan",
+                    bokmal { + "kan" },
                             FontType.ITALIC
                 )
                 text(
-                    Bokmal to " likevel medføre reduksjon av barnetillegg for felles barn hvis det er den andre forelderen får utbetalt barnetillegget."
+                    bokmal { + " likevel medføre reduksjon av barnetillegg for felles barn hvis det er den andre forelderen får utbetalt barnetillegget." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis din uføretrygd eller barnetillegg allerede har blitt redusert som følge av etterbetalingen av dagpenger, vil dette bli rettet opp i etteroppgjøret for 2024."
+                    bokmal { + "Hvis din uføretrygd eller barnetillegg allerede har blitt redusert som følge av etterbetalingen av dagpenger, vil dette bli rettet opp i etteroppgjøret for 2024." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine side på $NAV_URL på vanlig måte."
+                    bokmal { + "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine side på $NAV_URL på vanlig måte." }
                 )
             }
             includePhrase(Felles.HarDuSpoersmaal(NAV_URL, Constants.NAV_KONTAKTSENTER_TELEFON))

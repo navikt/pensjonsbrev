@@ -41,46 +41,46 @@ object BarnepensjonInnhentingAvOpplysninger : EtterlatteTemplate<BarnepensjonInn
         ) {
             title {
                 text(
-                    Bokmal to "Du må sende oss flere opplysninger",
-                    Nynorsk to "Du må sende oss fleire opplysningar",
-                    English to "You must submit additional information",
+                    bokmal { +"Du må sende oss flere opplysninger" },
+                    nynorsk { +"Du må sende oss fleire opplysningar" },
+                    english { +"You must submit additional information" },
                 )
             }
 
             outline {
                 paragraph {
                     text(
-                        Bokmal to
-                            "<Redigerbar tekst for å fylle inn det som er nødvendig å innhente av opplysninger og/eller dokumentasjon.> ",
-                        Nynorsk to
-                            "<Redigerbar tekst for å fylle inn det som er nødvendig å innhente av opplysninger og/eller dokumentasjon.> ",
-                        English to
-                            "<Redigerbar tekst for å fylle inn det som er nødvendig å innhente av opplysninger og/eller dokumentasjon.> ",
+                        bokmal { +
+                            "<Redigerbar tekst for å fylle inn det som er nødvendig å innhente av opplysninger og/eller dokumentasjon.> " },
+                        nynorsk { +
+                            "<Redigerbar tekst for å fylle inn det som er nødvendig å innhente av opplysninger og/eller dokumentasjon.> " },
+                        english { +
+                            "<Redigerbar tekst for å fylle inn det som er nødvendig å innhente av opplysninger og/eller dokumentasjon.> " },
                     )
                 }
 
                 showIf(erOver18aar.not()) {
                     title2 {
                         text(
-                            Bokmal to "Hvordan sende opplysninger til oss?",
-                            Nynorsk to "Korleis melder du frå om endringar?",
-                            English to "How to submit information to Nav?",
+                            bokmal { +"Hvordan sende opplysninger til oss?" },
+                            nynorsk { +"Korleis melder du frå om endringar?" },
+                            english { +"How to submit information to Nav?" },
                         )
                     }
                     paragraph {
                         text(
-                            Bokmal to
+                            bokmal { +
                                 "Frem til barn fyller 18 år, kan du som forelder eller verge, " +
                                 "ikke logge deg inn på våre nettsider på vegne av barnet. " +
-                                "Du må sende opplysninger/dokumentasjon per post til denne adressen:",
-                            Nynorsk to
+                                "Du må sende opplysninger/dokumentasjon per post til denne adressen:" },
+                            nynorsk { +
                                 "Fram til barnet fyller 18 år, kan du som forelder eller verja, " +
                                 "ikkje logge deg inn på nettsidane våre på vegner av barnet. " +
-                                "Du må sende oss opplysningar og dokumentasjon til adressa:",
-                            English to
+                                "Du må sende oss opplysningar og dokumentasjon til adressa:" },
+                            english { +
                                 "The interests of children are attended to by a guardian until a child reaches the age of 18. " +
                                 "You may not log on to our website on behalf of your child. " +
-                                "If you want to send us something, you must use our mailing address:",
+                                "If you want to send us something, you must use our mailing address:" },
                         )
                     }
                     includePhrase(Felles.AdresseMedMellomrom(borIUtlandet))

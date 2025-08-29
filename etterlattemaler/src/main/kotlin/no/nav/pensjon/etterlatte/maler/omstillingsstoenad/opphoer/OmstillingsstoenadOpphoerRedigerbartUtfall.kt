@@ -40,9 +40,9 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
 
@@ -50,19 +50,19 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             paragraph {
                 text(
-                    Bokmal to "(utfall jamfør tekstbibliotek)",
-                    Nynorsk to "(utfall jamfør tekstbibliotek)",
-                    English to "(utfall jamfør tekstbibliotek)",
+                    bokmal { +"(utfall jamfør tekstbibliotek)" },
+                    nynorsk { +"(utfall jamfør tekstbibliotek)" },
+                    english { +"(utfall jamfør tekstbibliotek)" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i " +
-                            "folketrygdloven § <riktig paragrafhenvisning>.",
-                    Nynorsk to "Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova " +
-                            "§ <riktig paragrafhenvisning>.",
-                    English to "This decision has been made pursuant to the provisions regarding adjustment " +
-                            "allowance in the National Insurance Act – sections <riktig paragrafhenvisning>.",
+                    bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i " +
+                            "folketrygdloven § <riktig paragrafhenvisning>." },
+                    nynorsk { +"Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova " +
+                            "§ <riktig paragrafhenvisning>." },
+                    english { +"This decision has been made pursuant to the provisions regarding adjustment " +
+                            "allowance in the National Insurance Act – sections <riktig paragrafhenvisning>." },
                 )
             }
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {

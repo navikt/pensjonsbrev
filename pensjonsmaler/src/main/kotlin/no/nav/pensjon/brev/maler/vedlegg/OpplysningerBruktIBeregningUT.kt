@@ -43,10 +43,10 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
 
         paragraph {
             val virkDatoFom = beregnetUTPerManedGjeldende.virkDatoFom.format()
-            textExpr(
-                Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom + ". Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep + ".",
-                Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom + ". Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep + ".",
-                English to "Data we have used in the calculations as of ".expr() + virkDatoFom + ". The National Insurance basic amount (G) used in the calculation is ".expr() + grunnbeloep + ".",
+            text(
+                bokmal { + "Opplysninger vi har brukt i beregningen fra " + virkDatoFom + ". Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep + "." },
+                nynorsk { + "Opplysningar vi har brukt i utrekninga frå " + virkDatoFom + ". Grunnbeløpet i folketrygda (G) nytta i utrekninga er " + grunnbeloep + "." },
+                english { + "Data we have used in the calculations as of " + virkDatoFom + ". The National Insurance basic amount (G) used in the calculation is " + grunnbeloep + "." },
             )
         }
 
