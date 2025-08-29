@@ -19,32 +19,30 @@ const EditorBulletList = (props: {
     block?.content.every((contentItem) => contentItem.type === "ITEM_LIST") ?? true;
 
   return (
-    <div>
-      <Button
-        css={css`
-          width: 32px;
-          height: 32px;
+    <Button
+      css={css`
+        width: 32px;
+        height: 32px;
 
-          ${erAlleElementerIBlockenItemList &&
-          css`
-            background-color: #23262a;
-            color: #fff;
-            border-color: #999;
-            box-shadow: inset 0 0 5px rgb(0 0 0 / 20%);
-          `}
+        ${erAlleElementerIBlockenItemList &&
+        css`
+          background-color: #23262a;
+          color: #fff;
+          border-color: #999;
+          box-shadow: inset 0 0 5px rgb(0 0 0 / 20%);
         `}
-        data-cy="editor-bullet-list"
-        icon={<BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />}
-        onClick={() => {
-          applyAction(Actions.toggleBulletList, props.setEditorState, props.editorState.focus);
-          //setter fokuset tilbake til editor etter valg
-          applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
-        }}
-        size="small"
-        type="button"
-        variant="tertiary-neutral"
-      />
-    </div>
+      `}
+      data-cy="editor-bullet-list"
+      icon={<BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />}
+      onClick={() => {
+        applyAction(Actions.toggleBulletList, props.setEditorState, props.editorState.focus);
+        //setter fokuset tilbake til editor etter valg
+        applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
+      }}
+      size="small"
+      type="button"
+      variant="tertiary-neutral"
+    />
   );
 };
 

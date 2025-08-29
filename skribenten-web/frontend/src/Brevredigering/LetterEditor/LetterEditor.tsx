@@ -56,7 +56,14 @@ export const LetterEditor = ({
         >
           <EditorMenu />
         </div>
-        <div className="editor">
+        <div
+          className="editor"
+          css={css`
+            align-self: start;
+            max-width: 694px;
+            min-width: 480px;
+          `}
+        >
           <SakspartView
             sakspart={letter.sakspart}
             wrapperStyles={css`

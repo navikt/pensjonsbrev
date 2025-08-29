@@ -1,7 +1,14 @@
 {
   "title": {
     "text": [
-      { "id": 1, "parentId": null, "type": "LITERAL", "text": "Informasjon om saksbehandlingstiden vår", "editedText": null, "tags": [] }
+      {
+        "id": 1,
+        "parentId": null,
+        "type": "LITERAL",
+        "text": "Informasjon om saksbehandlingstiden vår",
+        "editedText": null,
+        "tags": []
+      }
     ],
     "deletedContent": []
   },
@@ -104,7 +111,7 @@
         {
           "id": 33,
           "parentId": 3,
-          "text": " teste om piltast opp/ned fungerer mellom egne avsnitt[CP2-3]",
+          "text": " teste om pil opp/ned fungerer mellom avsnitt [CP2-3]",
           "type": "LITERAL",
           "fontType": "PLAIN",
           "editedFontType": null,
