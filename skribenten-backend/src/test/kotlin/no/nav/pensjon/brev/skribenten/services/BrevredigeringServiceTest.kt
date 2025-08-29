@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.time.delay
 import no.nav.brev.Landkode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -135,7 +134,10 @@ class BrevredigeringServiceTest {
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
             felles: Felles
-        ) = renderMarkupResultat(felles).also { renderMarkupKall.add(Pair(brevkode, spraak)) }
+        ): ServiceResult<LetterMarkupWithDataUsage> =
+            renderMarkupResultat(felles)
+                .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
+                .map { LetterMarkupWithDataUsageImpl(it, emptySet()) }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
@@ -461,7 +463,7 @@ class BrevredigeringServiceTest {
 
         assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = original.info.id))
             .isInstanceOfSatisfying<ServiceResult.Ok<*>> {
-                assertThat(it.result).isEqualTo(oppdatert)
+                assertThat(it.result).isEqualTo(oppdatert.copy(propertyUsage = null))
             }
 
         assertNotEquals(original.saksbehandlerValg, oppdatert.saksbehandlerValg)
@@ -537,7 +539,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         assertEquals(
-            brev,
+            brev.copy(propertyUsage = null),
             brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)
                 ?.resultOrNull()
         )
