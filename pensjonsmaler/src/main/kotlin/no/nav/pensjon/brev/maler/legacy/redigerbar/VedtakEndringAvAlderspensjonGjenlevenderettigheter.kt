@@ -258,7 +258,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             textExpr(
                                 Bokmal to "Du får utbetalt ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med gjenlevendetillegg.",
                                 Nynorsk to "Du får utbetalt ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med attlevandetillegg.",
-                                English to "You receive".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension with survivor’s supplement."
+                                English to "You receive ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension with survivor’s supplement."
                             )
                         }
                     }
