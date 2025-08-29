@@ -52,8 +52,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.egenOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kildeskatt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kravVirkDatoFomSenereEnnOensketUttakstidspunkt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
@@ -79,8 +77,6 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -126,7 +122,7 @@ hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
     override val kategori: TemplateDescription.Brevkategori = FOERSTEGANGSBEHANDLING
-    override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE
     override val template = createTemplate(
@@ -303,7 +299,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(saksbehandlerValg.egenOpptjening and not(gjenlevenderettAnvendt)) {
+                showIf(not(gjenlevenderettAnvendt) and not(gjenlevendetilleggKap19Innvilget) and not(gjenlevendetilleggInnvilget)) {
                     // beregningAPGjRettOpptjEgen_002
                     title1 {
                         text(
@@ -461,7 +457,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(borINorge) {
                 includePhrase(SkattAP)
-            }.orShowIf(saksbehandlerValg.kildeskatt) {
+            }.orShow {
                 title1 {
                     text(
                         Bokmal to "Skatteregler for deg som bor i utlandet",
@@ -474,35 +470,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         Bokmal to "Du må i utgangspunktet betale kildeskatt til Norge når du bor i utlandet. Vi trekker derfor 15 prosent i skatt av pensjonen din.",
                         Nynorsk to "Du må i utgangspunktet betale kjeldeskatt til Noreg når du bur i utlandet. Vi trekkjer derfor 15 prosent i skatt av pensjonen din.",
                         English to "As a general rule you have to pay withholding tax when you live abroad. We therefor deduct 15 percent tax from your pension."
-                    )
-                }
-                includePhrase(Skatteplikt)
-            }.orShowIf(not(saksbehandlerValg.kildeskatt)) {
-                title1 {
-                    text(
-                        Bokmal to "Det er egne skatteregler for pensjon",
-                        Nynorsk to "Det er eigne skattereglar for pensjon",
-                        English to "Pensions are subject to special tax rules"
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL." +
-                                " Der får du også mer informasjon om skattekort for pensjonister. Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
-                        Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL." +
-                                " Der får du også meir informasjon om skattekort for pensjonistar. Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss.",
-                        English to "When you start draw retirement pension, you should change your tax deduction card. You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL." +
-                                " There you will find more information regarding tax deduction card for pensioners. We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us.",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "På $DIN_PENSJON_URL kan du se hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det." +
-                                " Dersom du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed.",
-                        Nynorsk to "På $DIN_PENSJON_URL kan du sjå kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det." +
-                                " Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
-                        English to "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want." +
-                                " If you change your income tax rate, this will be applied from the month after we have been notified of the change."
                     )
                 }
                 includePhrase(Skatteplikt)

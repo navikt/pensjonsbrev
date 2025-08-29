@@ -88,9 +88,9 @@ sealed class Expression<out Out> : StableHash {
 
         class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {
             override fun eval(scope: ExpressionScope<*>): Out =
-                if (scope is ExpressionScope.WithAssignment<*, *>) {
+                if (scope is AssignmentExpressionScope<*, *>) {
                     @Suppress("UNCHECKED_CAST")
-                    (scope as ExpressionScope.WithAssignment<*, Out>).lookup(this)
+                    (scope as AssignmentExpressionScope<*, Out>).lookup(this)
                 } else {
                     throw InvalidScopeTypeException("Requires scope to be ${this::class.qualifiedName}, but was: ${scope::class.qualifiedName}")
                 }
@@ -109,7 +109,12 @@ sealed class Expression<out Out> : StableHash {
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
-        override fun eval(scope: ExpressionScope<*>): Out = operation.apply(value.eval(scope))
+        override fun eval(scope: ExpressionScope<*>): Out {
+            if (operation is UnaryOperation.Select) {
+                scope.markUsage(operation.selector)
+            }
+            return operation.apply(value.eval(scope))
+        }
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false

@@ -310,7 +310,6 @@ fun createP1Dto() = P1Dto(
             telefonnummer = Telefonnummer("+123 45678901"),
             epost = Epost("lars.holm@tøys.nfp.no"),
             dato = LocalDate.now(),
-            underskrift = "Lars Holm, saksbehandler",
         )
     )
 
