@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
@@ -112,6 +113,7 @@ object Api {
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: EditLetterHash,
         val saksbehandlerValg: BrevbakerBrevdata,
+        val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
     data class ReservasjonResponse(
