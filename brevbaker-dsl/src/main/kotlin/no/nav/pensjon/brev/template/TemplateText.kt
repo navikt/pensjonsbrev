@@ -243,12 +243,12 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
             lang3.first to lang3Value.str,
             fontType
         ).also { addTextContent(Content(it)) }
-.also { addTextContent(Content(it)) }
+            .also { addTextContent(Content(it)) }
     } else {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to (lang1.second as LiteralWrapper).str,
-            lang2.first to (lang2.second as LiteralWrapper).str,
-            lang3.first to (lang3.second as LiteralWrapper).str,
+        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+            lang1.first to lang1Value.expr,
+            lang2.first to lang2Value.expr,
+            lang3.first to lang3Value.expr,
             fontType
         ).also { addTextContent(Content(it)) }
     }
@@ -287,7 +287,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<Lan
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1.second.expr,
-            lang2.first to lang2.second.expr
+            lang2.first to lang2.second.expr,
         ).also { addTextContent(Content(it)) }
     }
 }
@@ -305,14 +305,14 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
         Element.OutlineContent.ParagraphContent.Text.Literal.create(
             lang1.first to lang1Value.str,
             lang2.first to lang2Value.str,
-            lang3.first to lang3Value.str
+            lang3.first to lang3Value.str,
         ).also { addTextContent(Content(it)) }
             .also { addTextContent(Content(it)) }
     } else {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to (lang1.second as LiteralWrapper).str,
-            lang2.first to (lang2.second as LiteralWrapper).str,
-            lang3.first to (lang3.second as LiteralWrapper).str
+        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+            lang1.first to lang1Value.expr,
+            lang2.first to lang2Value.expr,
+            lang3.first to lang3Value.expr,
         ).also { addTextContent(Content(it)) }
     }
 }

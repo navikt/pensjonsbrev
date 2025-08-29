@@ -16,160 +16,160 @@ data class KonteringTypeYtelseTextMappingStorBokstav(
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AFP_KOMP_TILLEGG)) {
             text(
-                Bokmal to "AFP kompensasjonstillegg",
-                Nynorsk to "AFP kompensasjonstillegg",
-                English to "AFP compensation supplement"
+                bokmal { + "AFP kompensasjonstillegg" },
+                nynorsk { + "AFP kompensasjonstillegg" },
+                english { + "AFP compensation supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AFP_KRONETILLEGG)) {
             text(
-                Bokmal to "AFP kronetillegg",
-                Nynorsk to "AFP kronetillegg",
-                English to "AFP krone supplement"
+                bokmal { + "AFP kronetillegg" },
+                nynorsk { + "AFP kronetillegg" },
+                english { + "AFP krone supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AFP_LIVSVARIG)) {
             text(
-                Bokmal to "AFP livsvarig del",
-                Nynorsk to "AFP livsvarig del",
-                English to "AFP life long part"
+                bokmal { + "AFP livsvarig del" },
+                nynorsk { + "AFP livsvarig del" },
+                english { + "AFP life long part" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AFP_T)) {
             text(
-                Bokmal to "AFP-tillegg",
-                Nynorsk to "AFP-tillegg",
-                English to "AFP supplement"
+                bokmal { + "AFP-tillegg" },
+                nynorsk { + "AFP-tillegg" },
+                english { + "AFP supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNEPENSJON)) {
             text(
-                Bokmal to "barnepensjon",
-                Nynorsk to "barnepensjon",
-                English to "children's pension",
+                bokmal { + "barnepensjon" },
+                nynorsk { + "barnepensjon" },
+                english { + "children's pension" },
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNETILSYN)) {
             text(
-                Bokmal to "Barnetillegg",
-                Nynorsk to "Barnetillegg",
-                English to "Child supplement"
+                bokmal { + "Barnetillegg" },
+                nynorsk { + "Barnetillegg" },
+                english { + "Child supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.ET)) {
             text(
-                Bokmal to "Ektefelletillegg",
-                Nynorsk to "Ektefelletillegg",
-                English to "Spouse supplement"
+                bokmal { + "Ektefelletillegg" },
+                nynorsk { + "Ektefelletillegg" },
+                english { + "Spouse supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.FAM_T)) {
             text(
-                Bokmal to "Familietillegg",
-                Nynorsk to "Familietillegg",
-                English to "Family supplement"
+                bokmal { + "Familietillegg" },
+                nynorsk { + "Familietillegg" },
+                english { + "Family supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.GAP)) {
             text(
-                Bokmal to "Garantipensjon",
-                Nynorsk to "Garantipensjon",
-                English to "Guarantee pension"
+                bokmal { + "Garantipensjon" },
+                nynorsk { + "Garantipensjon" },
+                english { + "Guarantee pension" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.GARANTITILLEGG, KonteringType.GAT)) {
             text(
-                Bokmal to "Garantitillegg",
-                Nynorsk to "Garantitillegg",
-                English to "Guarantee supplement"
+                bokmal { + "Garantitillegg" },
+                nynorsk { + "Garantitillegg" },
+                english { + "Guarantee supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AP_GJT_KAP19, KonteringType.AP_GJT)) {
             text(
-                Bokmal to "Gjenlevendetillegg",
-                Nynorsk to "Attlevandetillegg",
-                English to "Survivor's supplement"
+                bokmal { + "Gjenlevendetillegg" },
+                nynorsk { + "Attlevandetillegg" },
+                english { + "Survivor's supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.GP)) {
             text(
-                Bokmal to "Grunnpensjon",
-                Nynorsk to "Grunnpensjon",
-                English to "Basic pension"
+                bokmal { + "Grunnpensjon" },
+                nynorsk { + "Grunnpensjon" },
+                english { + "Basic pension" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.IP)) {
             text(
-                Bokmal to "Inntektspensjon",
-                Nynorsk to "Inntektspensjon",
-                English to "Income pensjon"
+                bokmal { + "Inntektspensjon" },
+                nynorsk { + "Inntektspensjon" },
+                english { + "Income pensjon" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.KRIG_GY)) {
             text(
-                Bokmal to "Krigspensjon / gammel yrkesskade",
-                Nynorsk to "Krigspensjon / gammel yrkesskade",
-                English to "War pension / old work injury"
+                bokmal { + "Krigspensjon / gammel yrkesskade" },
+                nynorsk { + "Krigspensjon / gammel yrkesskade" },
+                english { + "War pension / old work injury" }
 
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.MIN_NIVA_TILL_INDV)) {
             text(
-                Bokmal to "Minstenivåtillegg individuelt",
-                Nynorsk to "Minstenivåtillegg individuelt",
-                English to "Minimum supplement individual",
+                bokmal { + "Minstenivåtillegg individuelt" },
+                nynorsk { + "Minstenivåtillegg individuelt" },
+                english { + "Minimum supplement individual" },
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.MIN_NIVA_TILL_PPAR)) {
             text(
-                Bokmal to "Minstenivåtillegg pensjonistpar",
-                Nynorsk to "Minstenivåtillegg pensjonistpar",
-                English to "Minimum supplement couple"
+                bokmal { + "Minstenivåtillegg pensjonistpar" },
+                nynorsk { + "Minstenivåtillegg pensjonistpar" },
+                english { + "Minimum supplement couple" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.MISK)) {
             text(
-                Bokmal to "Militær skadekur",
-                Nynorsk to "Militær skadekur",
-                English to "Military injury treatment"
+                bokmal { + "Militær skadekur" },
+                nynorsk { + "Militær skadekur" },
+                english { + "Military injury treatment" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.PT)) {
             text(
-                Bokmal to "Pensjonstillegg",
-                Nynorsk to "Pensjonstillegg",
-                English to "Pension supplement"
+                bokmal { + "Pensjonstillegg" },
+                nynorsk { + "Pensjonstillegg" },
+                english { + "Pension supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.P_8_5_1_T)) {
             text(
-                Bokmal to "Tillegg",
-                Nynorsk to "Tillegg",
-                English to "Supplement"
+                bokmal { + "Tillegg" },
+                nynorsk { + "Tillegg" },
+                english { + "Supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.SKATT_F_GP)) {
             text(
-                Bokmal to "Skattefri grunnpensjon",
-                Nynorsk to "Skattefri grunnpensjon",
-                English to "Tax free basic pension"
+                bokmal { + "Skattefri grunnpensjon" },
+                nynorsk { + "Skattefri grunnpensjon" },
+                english { + "Tax free basic pension" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.SKJERMT)) {
             text(
-                Bokmal to "Skjermingstillegg",
-                Nynorsk to "Skjermingstillegg",
-                English to "Supplement for the disabled"
+                bokmal { + "Skjermingstillegg" },
+                nynorsk { + "Skjermingstillegg" },
+                english { + "Supplement for the disabled" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.ST)) {
             text(
-                Bokmal to "Særtillegg",
-                Nynorsk to "Særtillegg",
-                English to "Special supplement"
+                bokmal { + "Særtillegg" },
+                nynorsk { + "Særtillegg" },
+                english { + "Special supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TFB)) {
             text(
-                Bokmal to "Barnetillegg fellesbarn",
-                Nynorsk to "Barnetillegg fellesbarn",
-                English to "Child supplement"
+                bokmal { + "Barnetillegg fellesbarn" },
+                nynorsk { + "Barnetillegg fellesbarn" },
+                english { + "Child supplement" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TJENESTEPENSJON)) {
             text(
-                Bokmal to "Tjenestepensjon",
-                Nynorsk to "Tjenestepensjon",
-                English to "Occupational pension"
+                bokmal { + "Tjenestepensjon" },
+                nynorsk { + "Tjenestepensjon" },
+                english { + "Occupational pension" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TP)) {
             text(
-                Bokmal to "Tilleggspensjon",
-                Nynorsk to "Tilleggspensjon",
-                English to "Supplementary pension"
+                bokmal { + "Tilleggspensjon" },
+                nynorsk { + "Tilleggspensjon" },
+                english { +  "Supplementary pension" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TSB)) {
             text(
-                Bokmal to "Barnetillegg særkullsbarn",
-                Nynorsk to "Barnetillegg særkullsbarn",
-                English to "Child supplement"
+                bokmal { +  "Barnetillegg særkullsbarn" },
+                nynorsk { +  "Barnetillegg særkullsbarn" },
+                english { +  "Child supplement" }
             )
         }
     }

@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class TBU1120_Generated(
@@ -23,22 +23,22 @@ data class TBU1120_Generated(
 		//[TBU1120NN, TBU1120, TBU1120EN]
 		val beregningUfore_totalNetto: Expression<Kroner> = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 		paragraph {
-			textExpr (
-				Bokmal to "Du får ".expr() + beregningUfore_totalNetto.format() + " i uføretrygd per måned før skatt" ,
-				Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " i uføretrygd per månad før skatt",
-				English to "Your monthly disability benefit payment will be ".expr() + beregningUfore_totalNetto.format() + " before tax",
+			text (
+				bokmal { + "Du får " + beregningUfore_totalNetto.format() + " i uføretrygd per måned før skatt" } ,
+				nynorsk { + "Du får " + beregningUfore_totalNetto.format() + " i uføretrygd per månad før skatt" },
+				english { + "Your monthly disability benefit payment will be " + beregningUfore_totalNetto.format() + " before tax" },
 			)
 			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
-				textExpr (
-					Bokmal to " fra ".expr() + it.formatMonthYear(),
-					Nynorsk to " frå ".expr() + it.formatMonthYear() ,
-					English to " starting ".expr() + it.formatMonthYear(),
+				text (
+					bokmal { + " fra " + it.formatMonthYear() },
+					nynorsk { + " frå " + it.formatMonthYear() } ,
+					english { + " starting " + it.formatMonthYear() },
 				)
 			}
 			text(
-				Bokmal to ".",
-				Nynorsk to ".",
-				English to ".",
+				bokmal { + "." },
+				nynorsk { + "." },
+				english { + "." },
 			)
 		}
     }

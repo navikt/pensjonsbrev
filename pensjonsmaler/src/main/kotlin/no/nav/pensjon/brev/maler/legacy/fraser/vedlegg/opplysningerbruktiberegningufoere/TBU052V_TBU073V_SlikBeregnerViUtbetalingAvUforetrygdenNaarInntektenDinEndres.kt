@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
     val pe: Expression<PE>,
@@ -36,17 +36,17 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
 
             title1 {
                 text (
-                    Bokmal to "Slik beregner vi utbetaling av uføretrygden når inntekten din endres",
-                    Nynorsk to "Slik bereknar vi utbetaling av uføretrygda når inntekta di er endra",
-                    English to "This is how your disability benefit payments are calculated when your income changes",
+                    bokmal { + "Slik beregner vi utbetaling av uføretrygden når inntekten din endres" },
+                    nynorsk { + "Slik bereknar vi utbetaling av uføretrygda når inntekta di er endra" },
+                    english { + "This is how your disability benefit payments are calculated when your income changes" },
                 )
             }
 
             paragraph {
                 text (
-                    Bokmal to "Utbetalingen av uføretrygden din er beregnet på nytt, fordi inntekten din er endret. Det er den innmeldte inntekten din og uføretrygden du har fått utbetalt hittil i år, som avgjør hvor mye du får utbetalt i de månedene som er igjen i kalenderåret.",
-                    Nynorsk to "Utbetalinga av uføretrygda di er berekna på nytt fordi inntekta di er endra. Det er den innmelde inntekta di og uføretrygda du har fått utbetalt hittil i år, som avgjer kor mykje du får utbetalt i dei månadene som er att av kalenderåret.",
-                    English to "Your disability benefit payment has been recalculated, because your income has changed. It is your reported income and the disability benefit you have been paid so far this year that determine how much you will be paid for the remainder of the calendar year.",
+                    bokmal { + "Utbetalingen av uføretrygden din er beregnet på nytt, fordi inntekten din er endret. Det er den innmeldte inntekten din og uføretrygden du har fått utbetalt hittil i år, som avgjør hvor mye du får utbetalt i de månedene som er igjen i kalenderåret." },
+                    nynorsk { + "Utbetalinga av uføretrygda di er berekna på nytt fordi inntekta di er endra. Det er den innmelde inntekta di og uføretrygda du har fått utbetalt hittil i år, som avgjer kor mykje du får utbetalt i dei månadene som er att av kalenderåret." },
+                    english { + "Your disability benefit payment has been recalculated, because your income has changed. It is your reported income and the disability benefit you have been paid so far this year that determine how much you will be paid for the remainder of the calendar year." },
                 )
             }
         }
@@ -76,19 +76,19 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
             //[TBU052V-TBU073V]
 
             paragraph {
-                textExpr (
-                    Bokmal to "Uføretrygden reduseres med ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                text (
+                    bokmal { + "Uføretrygden reduseres med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent av inntekten over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + " fordi du har en kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " prosent.",
-                    Nynorsk to "Uføretrygda blir redusert med ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " prosent." },
+                    nynorsk { + "Uføretrygda blir redusert med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent av inntekta over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + " fordi du har ein kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " prosent.",
-                    English to "Your disability benefit is reduced by ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " prosent." },
+                    english { + "Your disability benefit is reduced by " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " percent of your income in excess of " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + ", because your degree of compensation is " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " percent.",
+                        .format() + " percent." },
                 )
             }
         }
@@ -119,16 +119,16 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
             //[TBU052V-TBU073V]
 
             paragraph {
-                textExpr (
-                    Bokmal to "Du har en inntektsgrense på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                text (
+                    bokmal { + "Du har en inntektsgrense på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + " og den innmeldte inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format() + ". Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format() + ".",
-                    Nynorsk to "Du har ei inntektsgrense på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                        .format() + ". Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format() + "." },
+                    nynorsk { + "Du har ei inntektsgrense på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + ", og den innmelde inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format() + ". Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format() + ".",
-                    English to "Your income cap is ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                        .format() + ". Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format() + "." },
+                    english { + "Your income cap is " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + ", and your reported income is " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                        .format() + ". This means that your excess income is " + pe.functions.pe_ut_overskytende.format() + ".",
+                        .format() + ". This means that your excess income is " + pe.functions.pe_ut_overskytende.format() + "." },
                 )
             }
         }

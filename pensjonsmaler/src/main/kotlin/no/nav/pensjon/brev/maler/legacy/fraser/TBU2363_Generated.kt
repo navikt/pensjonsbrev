@@ -10,8 +10,8 @@ object TBU2363_Generated : OutlinePhrase<LangBokmalNynorsk>() {
 
 		paragraph {
 			text (
-				Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
-				Nynorsk to "Vi har derfor auka utbetaling av uføretrygda di for resten av kalenderåret.",
+				bokmal { + "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret." },
+				nynorsk { + "Vi har derfor auka utbetaling av uføretrygda di for resten av kalenderåret." },
 			)
 		}
     }

@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class InnvilgetYtelseEPS(
     val sivilstand: Expression<MetaforceSivilstand>
@@ -20,10 +20,10 @@ data class InnvilgetYtelseEPS(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // innvilgetYtelseEPS
         paragraph {
-            textExpr(
-                Language.Bokmal to sivilstandBestemtStorBokstav + " din har fått innvilget egen pensjon eller uføretrygd.",
-                Language.Nynorsk to sivilstandBestemtStorBokstav + " din har fått innvilga eigen pensjon eller eiga uføretrygd.",
-                Language.English to "Your ".expr() + sivilstandBestemtLitenBokstav + " has been granted a pension or disability benefit.",
+            text(
+                bokmal { + sivilstandBestemtStorBokstav + " din har fått innvilget egen pensjon eller uføretrygd." },
+                nynorsk { + sivilstandBestemtStorBokstav + " din har fått innvilga eigen pensjon eller eiga uføretrygd." },
+                english { + "Your " + sivilstandBestemtLitenBokstav + " has been granted a pension or disability benefit." },
             )
         }
     }

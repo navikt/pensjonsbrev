@@ -52,7 +52,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -76,27 +76,27 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         title {
             showIf(endretUt and not(btfbEndret or btsbEndret)) {
                 text(
-                    Bokmal to "Vi endrer din utbetaling av uføretrygd fra neste år",
-                    Nynorsk to "Vi endrar din utbetaling av uføretrygd frå neste år",
+                    bokmal { + "Vi endrer din utbetaling av uføretrygd fra neste år" },
+                    nynorsk { + "Vi endrar din utbetaling av uføretrygd frå neste år" },
                 )
             }.orShowIf(endretUt and (btfbEndret or btsbEndret)) {
                 text(
-                    Bokmal to "Vi endrer din utbetaling av uføretrygd og barnetillegg fra neste år",
-                    Nynorsk to "Vi endrar din utbetaling av uføretrygd og barnetillegg frå neste år",
+                    bokmal { + "Vi endrer din utbetaling av uføretrygd og barnetillegg fra neste år" },
+                    nynorsk { + "Vi endrar din utbetaling av uføretrygd og barnetillegg frå neste år" },
                 )
             }.orShow {
                 text(
-                    Bokmal to "Vi endrer din utbetaling av barnetillegg fra neste år",
-                    Nynorsk to "Vi endrar din utbetaling av barnetillegg frå neste år",
+                    bokmal { + "Vi endrer din utbetaling av barnetillegg fra neste år" },
+                    nynorsk { + "Vi endrar din utbetaling av barnetillegg frå neste år" },
                 )
             }
         }
 
         outline {
             title1 {
-                textExpr(
-                    Bokmal to "Endring i utbetalingen gjelder fra ".expr() + virkningFom.format(),
-                    Nynorsk to "Endring i utbetalinga gjeld frå ".expr() + virkningFom.format(),
+                text(
+                    bokmal { + "Endring i utbetalingen gjelder fra " + virkningFom.format() },
+                    nynorsk { + "Endring i utbetalinga gjeld frå " + virkningFom.format() },
                 )
             }
             paragraph {
@@ -108,8 +108,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
                         ) {
                             text(
-                                Bokmal to "Beløp før skatt per måned",
-                                Nynorsk to "Beløp før skatt per månad",
+                                bokmal { + "Beløp før skatt per måned" },
+                                nynorsk { + "Beløp før skatt per månad" },
                             )
                         }
                     }
@@ -118,14 +118,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     row {
                         cell {
                             text(
-                                Bokmal to "Uføretrygd",
-                                Nynorsk to "Uføretrygd"
+                                bokmal { + "Uføretrygd" },
+                                nynorsk { + "Uføretrygd" }
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to uforetrygd.netto.format(CurrencyFormat) + " kroner",
-                                Nynorsk to uforetrygd.netto.format(CurrencyFormat) + " kroner",
+                            text(
+                                bokmal { + uforetrygd.netto.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + uforetrygd.netto.format(CurrencyFormat) + " kroner" },
                             )
                         }
                     }
@@ -133,14 +133,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Barnetillegg for særkullsbarn",
-                                    Nynorsk to "Barnetillegg for særkullsbarn",
+                                    bokmal { + "Barnetillegg for særkullsbarn" },
+                                    nynorsk { + "Barnetillegg for særkullsbarn" },
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to barnetilleggSB.netto.format(CurrencyFormat) + " kroner",
-                                    Nynorsk to barnetilleggSB.netto.format(CurrencyFormat) + " kroner"
+                                text(
+                                    bokmal { + barnetilleggSB.netto.format(CurrencyFormat) + " kroner" },
+                                    nynorsk { + barnetilleggSB.netto.format(CurrencyFormat) + " kroner" }
                                 )
                             }
                         }
@@ -149,14 +149,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Barnetillegg for fellesbarn",
-                                    Nynorsk to "Barnetillegg for fellesbarn",
+                                    bokmal { + "Barnetillegg for fellesbarn" },
+                                    nynorsk { + "Barnetillegg for fellesbarn" },
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to barnetilleggFB.netto.format(CurrencyFormat) + " kroner",
-                                    Nynorsk to barnetilleggFB.netto.format(CurrencyFormat) + " kroner"
+                                text(
+                                    bokmal { + barnetilleggFB.netto.format(CurrencyFormat) + " kroner" },
+                                    nynorsk { + barnetilleggFB.netto.format(CurrencyFormat) + " kroner" }
                                 )
                             }
                         }
@@ -165,14 +165,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Gjenlevendetillegg",
-                                    Nynorsk to "Gjenlevandetillegg",
+                                    bokmal { + "Gjenlevendetillegg" },
+                                    nynorsk { + "Gjenlevandetillegg" },
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to gjenlevendetillegg.belop.format(CurrencyFormat) + " kroner",
-                                    Nynorsk to gjenlevendetillegg.belop.format(CurrencyFormat) + " kroner"
+                                text(
+                                    bokmal { + gjenlevendetillegg.belop.format(CurrencyFormat) + " kroner" },
+                                    nynorsk { + gjenlevendetillegg.belop.format(CurrencyFormat) + " kroner" }
                                 )
                             }
                         }
@@ -180,15 +180,15 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     row {
                         cell {
                             text(
-                                Bokmal to "Sum før skatt",
-                                Nynorsk to "Sum før skatt",
+                                bokmal { + "Sum før skatt" },
+                                nynorsk { + "Sum før skatt" },
                                 FontType.BOLD
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to totalNetto.format(CurrencyFormat) + " kroner",
-                                Nynorsk to totalNetto.format(CurrencyFormat) + " kroner",
+                            text(
+                                bokmal { + totalNetto.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + totalNetto.format(CurrencyFormat) + " kroner" },
                                 FontType.BOLD
                             )
                         }
@@ -196,15 +196,15 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 }
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Endringen av utbetalingen din i ".expr() + virkningFom.year.format() + " påvirker ikke utbetalingen din i " + virkningFom.year.minus(1).format(),
-                    Nynorsk to "Endringa av utbetalinga di i ".expr() + virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + virkningFom.year.minus(1).format()
+                text(
+                    bokmal { + "Endringen av utbetalingen din i " + virkningFom.year.format() + " påvirker ikke utbetalingen din i " + virkningFom.year.minus(1).format() },
+                    nynorsk { + "Endringa av utbetalinga di i " + virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + virkningFom.year.minus(1).format() }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-                    Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. kvar månad.",
+                    bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                    nynorsk { + "Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
                 )
             }
 
@@ -213,97 +213,97 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 showIf(barnetilleggFB.inntektAnnenForelder.greaterThan(0) and barnetilleggFB.inntektBruker.greaterThan(0)) {
                     title1 {
                         text(
-                            Bokmal to "Derfor oppjusterer vi din og annen forelders inntekt",
-                            Nynorsk to "Derfor oppjusterer vi inntekta di og annen forelder",
+                            bokmal { + "Derfor oppjusterer vi din og annen forelders inntekt" },
+                            nynorsk { + "Derfor oppjusterer vi inntekta di og annen forelder" },
                         )
                     }
                     paragraph {
-                        textExpr(
-                            Bokmal to "Vi oppjusterer din inntekt og annen forelders inntekt for neste år, fordi du ikke har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
+                        text(
+                            bokmal { + "Vi oppjusterer din inntekt og annen forelders inntekt for neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
                                 1
-                            ).format() + ".",
-                            Nynorsk to "Vi oppjusterer inntekta di og inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                            ).format() + "." },
+                            nynorsk { + "Vi oppjusterer inntekta di og inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
                                 1
-                            ).format() + "."
+                            ).format() + "." }
                         )
                     }
                 }.orShowIf(barnetilleggFB.inntektAnnenForelder.greaterThan(0)) {
                     title1 {
                         text(
-                            Bokmal to "Derfor oppjusterer vi inntekten til annen forelder",
-                            Nynorsk to "Derfor oppjusterer vi inntekta til annen forelder",
+                            bokmal { + "Derfor oppjusterer vi inntekten til annen forelder" },
+                            nynorsk { + "Derfor oppjusterer vi inntekta til annen forelder" },
                         )
                     }
                     paragraph {
-                        textExpr(
-                            Bokmal to "Vi oppjusterer annen forelders inntekt neste år, fordi du ikke har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
+                        text(
+                            bokmal { + "Vi oppjusterer annen forelders inntekt neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
                                 1
-                            ).format() + ".",
-                            Nynorsk to "Vi oppjusterer inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                            ).format() + "." },
+                            nynorsk { + "Vi oppjusterer inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
                                 1
-                            ).format() + "."
+                            ).format() + "." }
                         )
                     }
                 }
             }.orShow {
                 title1 {
                     text(
-                        Bokmal to "Derfor oppjusterer vi inntekten din",
-                        Nynorsk to "Derfor oppjusterer vi inntekta di",
+                        bokmal { + "Derfor oppjusterer vi inntekten din" },
+                        nynorsk { + "Derfor oppjusterer vi inntekta di" },
                     )
                 }
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
+                    text(
+                        bokmal { + "Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
                             1
-                        ).format() + ".",
-                        Nynorsk to "Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                        ).format() + "." },
+                        nynorsk { + "Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
                             1
-                        ).format() + "."
+                        ).format() + "." }
                     )
                 }
             }
 
             paragraph {
-                textExpr(
-                    Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + virkningFom.year.minus(1)
-                        .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". ",
-                    Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + virkningFom.year.minus(1)
-                        .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". "
+                text(
+                    bokmal { + "Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
+                        .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". " },
+                    nynorsk { + "Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
+                        .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". " }
                 )
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Den årlige inntekten vi vil bruke for deg er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
-                            " kroner. Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner. ",
-                    Nynorsk to "Den årlege inntekta vi vil bruke for deg er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
-                            " kroner. Det gjev deg rett til ei årleg utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner. "
+                text(
+                    bokmal { + "Den årlige inntekten vi vil bruke for deg er " + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                            " kroner. Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner. " },
+                    nynorsk { + "Den årlege inntekta vi vil bruke for deg er " + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                            " kroner. Det gjev deg rett til ei årleg utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner. " }
                 )
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Tjener du mer enn din inntektsgrense på ".expr() + uforetrygd.inntektsgrense.format(CurrencyFormat) +
-                            " kroner per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn inntektsgrensen som gir lavere utbetaling av uføretrygd. ",
-                    Nynorsk to "Dersom du tener meir enn din inntektsgrense på ".expr() + uforetrygd.inntektsgrense.format(CurrencyFormat) +
-                            " kroner per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn inntektsgrensa, som gir lågare utbetaling av uføretrygd. "
+                text(
+                    bokmal { + "Tjener du mer enn din inntektsgrense på " + uforetrygd.inntektsgrense.format(CurrencyFormat) +
+                            " kroner per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn inntektsgrensen som gir lavere utbetaling av uføretrygd. " },
+                    nynorsk { + "Dersom du tener meir enn din inntektsgrense på " + uforetrygd.inntektsgrense.format(CurrencyFormat) +
+                            " kroner per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn inntektsgrensa, som gir lågare utbetaling av uføretrygd. " }
                 )
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Tjener du mer enn ".expr() + uforetrygd.inntektstak.format(CurrencyFormat) +
-                            " kroner per år, får du ikke utbetalt uføretrygd. Du beholder likevel retten til uføretrygd uten utbetaling, og du kan igjen få utbetaling av uføretrygd hvis inntekten din endrer seg i fremtiden. ",
-                    Nynorsk to "Viss du tener meir enn ".expr() + uforetrygd.inntektstak.format(CurrencyFormat) +
-                            " kroner per år, får du ikkje utbetalt uføretrygd. Du beheld likevel retten til uføretrygd utan utbetaling, og du kan igjen få utbetaling av uføretrygd dersom inntekta di seinare skulle endre seg. "
+                text(
+                    bokmal { + "Tjener du mer enn " + uforetrygd.inntektstak.format(CurrencyFormat) +
+                            " kroner per år, får du ikke utbetalt uføretrygd. Du beholder likevel retten til uføretrygd uten utbetaling, og du kan igjen få utbetaling av uføretrygd hvis inntekten din endrer seg i fremtiden. " },
+                    nynorsk { + "Viss du tener meir enn " + uforetrygd.inntektstak.format(CurrencyFormat) +
+                            " kroner per år, får du ikkje utbetalt uføretrygd. Du beheld likevel retten til uføretrygd utan utbetaling, og du kan igjen få utbetaling av uføretrygd dersom inntekta di seinare skulle endre seg. " }
                 )
             }
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                 showIf(barnetilleggFellesbarn.inntektAnnenForelder.greaterThan(0)) {
                     paragraph {
-                        textExpr(
-                            Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
-                                    "Dette påvirker bare utbetalingen av barnetillegget. Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt.",
-                            Nynorsk to "Den årlege inntekta vi vil bruke for den andre forelderen, er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
-                                    "Dette påverkar berre utbetalinga av barnetillegget. Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen."
+                        text(
+                            bokmal { + "Den årlige inntekten vi vil bruke for annen forelder er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                    "Dette påvirker bare utbetalingen av barnetillegget. Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt." },
+                            nynorsk { + "Den årlege inntekta vi vil bruke for den andre forelderen, er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                    "Dette påverkar berre utbetalinga av barnetillegget. Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen." }
                         )
                     }
                 }
@@ -311,70 +311,70 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             paragraph {
                 ifNotNull(barnetilleggFellesbarn) {
 
-                    textExpr(
-                        Bokmal to "Forventer du og/eller annen forelder en annen inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
-                        Nynorsk to "Forventar du og/eller den andre forelderen ei anna inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
+                    text(
+                        bokmal { + "Forventer du og/eller annen forelder en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL." },
+                        nynorsk { + "Forventar du og/eller den andre forelderen ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL." }
                     )
                 }.orShow {
-                    textExpr(
-                        Bokmal to "Forventer du en annen inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
-                        Nynorsk to "Forventar du ei anna inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
+                    text(
+                        bokmal { + "Forventer du en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL." },
+                        nynorsk { + "Forventar du ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL." }
                     )
                 }
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du gjør dette, får du en ny beregning og et nytt brev på $DIN_UFOERETRYGD_URL. ",
-                    Nynorsk to "Hvis du gjer dette, får du ei ny berekning og eit nytt brev på $DIN_UFOERETRYGD_URL. "
+                    bokmal { + "Hvis du gjør dette, får du en ny beregning og et nytt brev på $DIN_UFOERETRYGD_URL. " },
+                    nynorsk { + "Hvis du gjer dette, får du ei ny berekning og eit nytt brev på $DIN_UFOERETRYGD_URL. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På $UFOERE_JOBB_URL finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: $KONTAKT_URL",
-                    Nynorsk to "På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL"
+                    bokmal { + "På $UFOERE_JOBB_URL finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: $KONTAKT_URL" },
+                    nynorsk { + "På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL" }
                 )
             }
             showIf(sokerMottarApIlaAret) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Fordi du får alderspensjon fra ".expr() + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd.",
-                        Nynorsk to "Fordi du får alderspensjon frå ".expr() + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd."
+                    text(
+                        bokmal { + "Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
+                        nynorsk { + "Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
                     )
                 }
             }
             ifNotNull(gjenlevendetillegg) {
                 title1 {
                     text(
-                        Bokmal to "Ditt gjenlevendetillegg",
-                        Nynorsk to "Ditt gjenlevandetillegg"
+                        bokmal { + "Ditt gjenlevendetillegg" },
+                        nynorsk { + "Ditt gjenlevandetillegg" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du får gjenlevendetillegg i uføretrygden din. Oppjusteringen av din inntekt påvirker utbetalingen av ditt gjenlevendetillegg. Gjenlevendetillegget endres med samme prosent som uføretrygden.",
-                        Nynorsk to "Du får gjenlevandetillegg i uføretrygda di. Oppjusteringa i di inntekt påverkar utbetalinga av gjenlevandetillegg. Gjenlevandetillegget endrast med same prosent som uføretrygda."
+                        bokmal { + "Du får gjenlevendetillegg i uføretrygden din. Oppjusteringen av din inntekt påvirker utbetalingen av ditt gjenlevendetillegg. Gjenlevendetillegget endres med samme prosent som uføretrygden." },
+                        nynorsk { + "Du får gjenlevandetillegg i uføretrygda di. Oppjusteringa i di inntekt påverkar utbetalinga av gjenlevandetillegg. Gjenlevandetillegget endrast med same prosent som uføretrygda." }
                     )
                 }
             }
             showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
                 title1 {
                     text(
-                        Bokmal to "Barnetillegg",
-                        Nynorsk to "Barnetillegg"
+                        bokmal { + "Barnetillegg" },
+                        nynorsk { + "Barnetillegg" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Inntekten din har betydning for hvor mye du får utbetalt i barnetillegg. Uføretrygden din regnes med som inntekt. For fellesbarn bruker vi i tillegg den andre forelderens inntekt når vi beregner størrelsen på barnetillegget. ",
-                        Nynorsk to "Inntekta di verkar inn på kor mykje du får utbetalt i barnetillegg. Uføretrygda di blir teken med som inntekt. For fellesbarn bruker vi inntekta til begge foreldre når vi reknar ut storleiken på barnetillegget. "
+                        bokmal { + "Inntekten din har betydning for hvor mye du får utbetalt i barnetillegg. Uføretrygden din regnes med som inntekt. For fellesbarn bruker vi i tillegg den andre forelderens inntekt når vi beregner størrelsen på barnetillegget. " },
+                        nynorsk { + "Inntekta di verkar inn på kor mykje du får utbetalt i barnetillegg. Uføretrygda di blir teken med som inntekt. For fellesbarn bruker vi inntekta til begge foreldre når vi reknar ut storleiken på barnetillegget. " }
                     )
                 }
 
                 showIf(barnetilleggFellesbarn.periodisert_safe.ifNull(false) or barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)) {
                     paragraph {
                         text(
-                            Bokmal to "Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløp for neste år justert slik at det kun gjelder for perioden du mottar barnetillegg.",
-                            Nynorsk to "Fordi du har barnetillegg som fell bort i løpet av neste år, er inntektane og fribeløpet for neste år justerte slik at dei berre gjeld for perioden du får barnetillegg."
+                            bokmal { + "Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløp for neste år justert slik at det kun gjelder for perioden du mottar barnetillegg." },
+                            nynorsk { + "Fordi du har barnetillegg som fell bort i løpet av neste år, er inntektane og fribeløpet for neste år justerte slik at dei berre gjeld for perioden du får barnetillegg." }
                         )
                     }
                 }
@@ -382,60 +382,60 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
                     title2 {
                         text(
-                            Bokmal to "Dine barnetillegg",
-                            Nynorsk to "Dine barnetillegg"
+                            bokmal { + "Dine barnetillegg" },
+                            nynorsk { + "Dine barnetillegg" }
                         )
                     }
                     paragraph {
                         text(
-                            Bokmal to "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder.",
-                            Nynorsk to "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bur saman med den andre forelderen til barnet. Du får barnetillegg for særkullsbarn når du ikkje bur saman med den andre forelderen til barnet."
+                            bokmal { + "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder." },
+                            nynorsk { + "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bur saman med den andre forelderen til barnet. Du får barnetillegg for særkullsbarn når du ikkje bur saman med den andre forelderen til barnet." }
                         )
                     }
                     paragraph {
-                        textExpr(
-                            Bokmal to "Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på ".expr() + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. Barnetillegg for " +
+                        text(
+                            bokmal { + "Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. Barnetillegg for " +
                                     "fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
-                                    " kroner. Du får derfor en utbetaling av barnetillegg på " + barnetilleggSB.netto.plus(barnetilleggFB.netto).format(CurrencyFormat) + " kroner per måned fra neste år.",
-                            Nynorsk to "Barnetillegg for særkullsbarn, er rekna ut med utgangspunkt i inntekta di på ".expr() + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. Barnetillegget for " +
+                                    " kroner. Du får derfor en utbetaling av barnetillegg på " + barnetilleggSB.netto.plus(barnetilleggFB.netto).format(CurrencyFormat) + " kroner per måned fra neste år." },
+                            nynorsk { + "Barnetillegg for særkullsbarn, er rekna ut med utgangspunkt i inntekta di på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. Barnetillegget for " +
                                     "fellesbarn, er i tillegg rekna ut frå inntekta til den andre forelderen på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
-                                    " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggSB.netto.plus(barnetilleggFB.netto).format(CurrencyFormat) + " kroner per månad frå neste år."
+                                    " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggSB.netto.plus(barnetilleggFB.netto).format(CurrencyFormat) + " kroner per månad frå neste år." }
                         )
                     }
                 }.orShow {
                     ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                         title2 {
                             text(
-                                Bokmal to "Barnetillegg for fellesbarn",
-                                Nynorsk to "Barnetillegg for fellesbarn"
+                                bokmal { + "Barnetillegg for fellesbarn" },
+                                nynorsk { +  "Barnetillegg for fellesbarn" }
                             )
                         }
                         paragraph {
-                            textExpr(
-                                Bokmal to "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på ".expr() +
+                            text(
+                                bokmal { +  "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på " +
                                 barnetilleggFB.inntektBruker.format(CurrencyFormat) + " kroner og personinntekten til barnets andre forelder på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
-                                        " kroner. Du får derfor en utbetaling av barnetillegg på kroner " + barnetilleggFB.netto.format(CurrencyFormat) + " kroner per måned fra neste år.",
-                                Nynorsk to "Du får barnetillegg for fellesbarn fordi du bur saman med den andre forelderen til barnet. Vi har endra barnetillegget ut frå personinntekta di på ".expr() +
+                                        " kroner. Du får derfor en utbetaling av barnetillegg på kroner " + barnetilleggFB.netto.format(CurrencyFormat) + " kroner per måned fra neste år." },
+                                nynorsk { +  "Du får barnetillegg for fellesbarn fordi du bur saman med den andre forelderen til barnet. Vi har endra barnetillegget ut frå personinntekta di på " +
                                         barnetilleggFB.inntektBruker.format(CurrencyFormat) + " kroner og personinntekta til den andre forelderen på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
-                                        " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggFB.netto.format(CurrencyFormat) + " kroner per månad frå neste år."
+                                        " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggFB.netto.format(CurrencyFormat) + " kroner per månad frå neste år." }
                             )
                         }
                     }
                     ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
                         title2 {
                             text(
-                                Bokmal to "Barnetillegg for særkullsbarn",
-                                Nynorsk to "Barnetillegg for særkullsbarn"
+                                bokmal { +  "Barnetillegg for særkullsbarn" },
+                                nynorsk { +  "Barnetillegg for særkullsbarn" }
                             )
                         }
                         paragraph {
-                            textExpr(
-                                Bokmal to "Du får barnetillegg for særkullsbarn fordi du ikke bor sammen med barnets andre forelder. ".expr() +
+                            text(
+                                bokmal { +  "Du får barnetillegg for særkullsbarn fordi du ikke bor sammen med barnets andre forelder. " +
                                         "Vi har endret barnetillegget ut fra din personinntekt på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) +
-                                        " kroner. Du får derfor en utbetaling av barnetillegg på " + barnetilleggSB.netto.format(CurrencyFormat) + " kroner per måned fra neste år.",
-                                Nynorsk to "Du får barnetillegg for særkullsbarn fordi du ikkje bur saman med den andre forelderen til barnet. ".expr() +
+                                        " kroner. Du får derfor en utbetaling av barnetillegg på " + barnetilleggSB.netto.format(CurrencyFormat) + " kroner per måned fra neste år." },
+                                nynorsk { +  "Du får barnetillegg for særkullsbarn fordi du ikkje bur saman med den andre forelderen til barnet. " +
                                         "Vi har endra barnetillegget ut frå personinntekta di på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) +
-                                        " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggSB.netto.format(CurrencyFormat) + " kroner per månad frå neste år."
+                                        " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggSB.netto.format(CurrencyFormat) + " kroner per månad frå neste år." }
                             )
                         }
                     }
@@ -443,8 +443,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet».",
-                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»."
+                    bokmal { +  "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet»." },
+                    nynorsk { +  "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»." }
                 )
             }
             paragraph {
@@ -454,206 +454,206 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             and gjenlevendetillegg.notNull() //UT, BT og GJT
                 ) {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12." }
                     )
                 }.orShowIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
                             and (barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) //UT og BT
                 ) {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12." }
                     )
                 }.orShowIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
                             and gjenlevendetillegg.notNull() //UT og GJT
                 ) {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12." }
                     )
                 }.orShow { //Bare UT
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-14 og 22-12."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14 og 22-12." }
                     )
                 }
 
             }
             title1 {
                 text(
-                    Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "Du må melde frå om endringar"
+                    bokmal { +  "Du må melde fra om endringer" },
+                    nynorsk { +  "Du må melde frå om endringar" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Endringer i inntekt og din situasjon kan påvirke hvor mye du får utbetalt fra oss. Derfor er det viktig at du sier ifra så fort det skjer en endring, slik at vi kan beregne riktig utbetaling. ",
-                    Nynorsk to "Endringar i inntekt og situasjonen din kan påverke kor mykje du får utbetalt frå oss. Difor er det viktig at du seier frå så snart det skjer ei endring, slik at vi kan rekne ut rett utbetaling. "
+                    bokmal { +  "Endringer i inntekt og din situasjon kan påvirke hvor mye du får utbetalt fra oss. Derfor er det viktig at du sier ifra så fort det skjer en endring, slik at vi kan beregne riktig utbetaling. " },
+                    nynorsk { +  "Endringar i inntekt og situasjonen din kan påverke kor mykje du får utbetalt frå oss. Difor er det viktig at du seier frå så snart det skjer ei endring, slik at vi kan rekne ut rett utbetaling. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL",
-                    Nynorsk to "Du kan melde inn forventa inntekt i inntektsplanleggjaren på $INNTEKTSPLANLEGGEREN_URL"
+                    bokmal { +  "Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL" },
+                    nynorsk { +  "Du kan melde inn forventa inntekt i inntektsplanleggjaren på $INNTEKTSPLANLEGGEREN_URL" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Alle andre endringer kan du melde inn på $MELDE_URL",
-                    Nynorsk to "Alle andre endringar kan meldast inn på $MELDE_URL"
+                    bokmal { +  "Alle andre endringer kan du melde inn på $MELDE_URL" },
+                    nynorsk { +  "Alle andre endringar kan meldast inn på $MELDE_URL" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Les mer om dette i vedlegget «Dine rettigheter og plikter».",
-                    Nynorsk to "Les meir om dette i vedlegget «Dine rettar og plikter»."
+                    bokmal { +  "Les mer om dette i vedlegget «Dine rettigheter og plikter»." },
+                    nynorsk { +  "Les meir om dette i vedlegget «Dine rettar og plikter»." }
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Etteroppgjør",
-                    Nynorsk to "Etteroppgjer"
+                    bokmal { +  "Etteroppgjør" },
+                    nynorsk { +  "Etteroppgjer" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før.",
-                    Nynorsk to "Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du har fått utbetalt rett beløp frå oss året før. "
+                    bokmal { +  "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før." },
+                    nynorsk { +  "Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du har fått utbetalt rett beløp frå oss året før. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør.",
-                    Nynorsk to "Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer."
+                    bokmal { +  "Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør." },
+                    nynorsk { +  "Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake.",
-                    Nynorsk to "Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake."
+                    bokmal { +  "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake." },
+                    nynorsk { +  "Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake." }
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Inntekter som ikke skal gi lavere utbetaling av uføretrygden",
-                    Nynorsk to "Inntekter som ikkje skal gje lågare utbetaling av uføretrygda"
+                    bokmal { +  "Inntekter som ikke skal gi lavere utbetaling av uføretrygden" },
+                    nynorsk { +  "Inntekter som ikkje skal gje lågare utbetaling av uføretrygda" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Det gjelder hvis du har fått utbetalt erstatning for inntektstap ved:",
-                    Nynorsk to "Det gjeld dersom du har fått utbetalt erstatning for inntektstap ved:"
+                    bokmal { +  "Det gjelder hvis du har fått utbetalt erstatning for inntektstap ved:" },
+                    nynorsk { +  "Det gjeld dersom du har fått utbetalt erstatning for inntektstap ved:" }
                 )
                 list {
                     item {
                         text(
-                            Bokmal to "Skade ",
-                            Nynorsk to "Skade "
+                            bokmal { +  "Skade " },
+                            nynorsk { +  "Skade " }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Yrkesskade ",
-                            Nynorsk to "Yrkesskade "
+                            bokmal { +  "Yrkesskade " },
+                            nynorsk { +  "Yrkesskade " }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Pasientskade ",
-                            Nynorsk to "Pasientskade "
+                            bokmal { +  "Pasientskade " },
+                            nynorsk { +  "Pasientskade " }
                         )
                     }
                 }
                 text(
-                    Bokmal to "Skadeerstatningsloven § 3-1, Yrkesskadeforsikringsloven § 13, Pasientskadeloven § 4 første ledd.",
-                    Nynorsk to "Skadeerstatningslova § 3-1, Yrkesskadeforsikringslova § 13, Pasientskadeloven § 4 første ledd.",
+                    bokmal { +  "Skadeerstatningsloven § 3-1, Yrkesskadeforsikringsloven § 13, Pasientskadeloven § 4 første ledd." },
+                    nynorsk { +  "Skadeerstatningslova § 3-1, Yrkesskadeforsikringslova § 13, Pasientskadeloven § 4 første ledd." },
                     FontType.ITALIC
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Dette kan gjelde inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel: ",
-                    Nynorsk to "Dette kan gjelde inntekt frå arbeid eller verksemd som vart heilt avslutta før du fekk innvilga uføretrygd, til dømes: ",
+                    bokmal { +  "Dette kan gjelde inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel: " },
+                    nynorsk { +  "Dette kan gjelde inntekt frå arbeid eller verksemd som vart heilt avslutta før du fekk innvilga uføretrygd, til dømes: " },
                 )
                 list {
                     item {
                         text(
-                            Bokmal to "Utbetalte feriepenger. Opptjeningen må ha skjedd før du fikk innvilget uføretrygd. ",
-                            Nynorsk to "Utbetalte feriepengar. Oppteninga må ha skjedd før du fekk innvilga uføretrygd. "
+                            bokmal { +  "Utbetalte feriepenger. Opptjeningen må ha skjedd før du fikk innvilget uføretrygd. " },
+                            nynorsk { +  "Utbetalte feriepengar. Oppteninga må ha skjedd før du fekk innvilga uføretrygd. " }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten ",
-                            Nynorsk to "Inntekter frå sal av produksjonsmiddel i samband med opphøyr av verksemda "
+                            bokmal { +  "Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten " },
+                            nynorsk { +  "Inntekter frå sal av produksjonsmiddel i samband med opphøyr av verksemda " }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Produksjonstillegg og andre overføringer til gårdbrukere ",
-                            Nynorsk to "Produksjonstillegg og andre overføringar til gardsbrukarar "
+                            bokmal { +  "Produksjonstillegg og andre overføringer til gårdbrukere " },
+                            nynorsk { +  "Produksjonstillegg og andre overføringar til gardsbrukarar " }
                         )
                     }
                 }
             }
             paragraph {
                 text(
-                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere.",
-                    Nynorsk to "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i 2024 eller seinare."
+                    bokmal { +  "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere." },
+                    nynorsk { +  "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i 2024 eller seinare." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du sender oss dokumentasjon som viser at du har en slik inntekt, kan vi gjøre en ny beregning av uføretrygden din.",
-                    Nynorsk to "Dersom du sender oss dokumentasjon som viser at du har slik inntekt, kan vi gjere ei ny utrekning av uføretrygda di.",
+                    bokmal { +  "Hvis du sender oss dokumentasjon som viser at du har en slik inntekt, kan vi gjøre en ny beregning av uføretrygden din." },
+                    nynorsk { +  "Dersom du sender oss dokumentasjon som viser at du har slik inntekt, kan vi gjere ei ny utrekning av uføretrygda di." },
                 )
             }
             ifNotNull(barnetilleggFellesbarn) {
                 paragraph {
                     text(
-                        Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen? ",
-                        Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen? ",
+                        bokmal { +  "Hva kan holdes utenfor personinntekten til den andre forelderen? " },
+                        nynorsk { +  "Kva kan haldast utanfor personinntekta til den andre forelderen? " },
                     )
 
                     list {
                         item {
                             text(
-                                Bokmal to "Erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav",
-                                Nynorsk to "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav"
+                                bokmal { +  "Erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav" },
+                                nynorsk { +  "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav" }
                             )
                         }
                     }
                     text(
-                        Bokmal to "Dersom vi mottar dokumentasjon fra deg som bekrefter slik inntekt, kan vi gjøre en ny beregning. ",
-                        Nynorsk to "Dersom vi mottar dokumentasjon frå deg som stadfestar slik inntekt, kan vi gjere ei ny berekning. ",
+                        bokmal { +  "Dersom vi mottar dokumentasjon fra deg som bekrefter slik inntekt, kan vi gjøre en ny beregning. " },
+                        nynorsk { +  "Dersom vi mottar dokumentasjon frå deg som stadfestar slik inntekt, kan vi gjere ei ny berekning. " },
                     )
 
                 }
             }
             title1 {
                 text(
-                    Bokmal to "Du har rett til å klage",
-                    Nynorsk to "Du har rett til å klage"
+                    bokmal { +  "Du har rett til å klage" },
+                    nynorsk { +  "Du har rett til å klage" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL.",
-                    Nynorsk to "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL."
+                    bokmal { +  "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL." },
+                    nynorsk { +  "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL." }
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn"
+                    bokmal { +  "Du har rett til innsyn" },
+                    nynorsk { +  "Du har rett til innsyn" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram."
+                    bokmal { +  "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage." },
+                    nynorsk { +  "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram." }
                 )
             }
 
@@ -662,39 +662,39 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
 
             title1 {
                 text(
-                    Bokmal to "Sjekk utbetalingene dine",
-                    Nynorsk to "Sjekk utbetalingane dine"
+                    bokmal { +  "Sjekk utbetalingene dine" },
+                    nynorsk { +  "Sjekk utbetalingane dine" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt.",
-                    Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt."
+                    bokmal { +  "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
+                    nynorsk { +  "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." }
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Skattekort",
-                    Nynorsk to "Skattekort"
+                    bokmal { +  "Skattekort" },
+                    nynorsk { +  "Skattekort" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til oss, vi får skatteopplysningene dine elektronisk fra Skatteetaten. Du bør likevel sjekke at skattekortet ditt er riktig. Skattekortet kan du endre på skatteetaten.no. Du kan også få hjelp av Skatteetaten hvis du har spørsmål om skatt. ",
-                    Nynorsk to "Uføretrygd blir skattlagt som lønsinntekt. Du treng ikkje levere skattekort ditt til oss, då vi får skatteopplysningane dine elektronisk frå Skatteetaten. Du bør likevel sjekke at skattekortet ditt stemmer. Ved behov kan du endre skattekortet på skatteetaten.no. Du kan også få hjelp frå Skatteetaten dersom du har spørsmål om skatt. "
+                    bokmal { +  "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til oss, vi får skatteopplysningene dine elektronisk fra Skatteetaten. Du bør likevel sjekke at skattekortet ditt er riktig. Skattekortet kan du endre på skatteetaten.no. Du kan også få hjelp av Skatteetaten hvis du har spørsmål om skatt. " },
+                    nynorsk { +  "Uføretrygd blir skattlagt som lønsinntekt. Du treng ikkje levere skattekort ditt til oss, då vi får skatteopplysningane dine elektronisk frå Skatteetaten. Du bør likevel sjekke at skattekortet ditt stemmer. Ved behov kan du endre skattekortet på skatteetaten.no. Du kan også få hjelp frå Skatteetaten dersom du har spørsmål om skatt. " }
                 )
             }
             showIf(not(brukerBorINorge)) {
                 title1 {
                     text(
-                        Bokmal to "Skatt for deg som bor i utlandet ",
-                        Nynorsk to "Skatt for deg som bur i utlandet "
+                        bokmal { +  "Skatt for deg som bor i utlandet " },
+                        nynorsk { +  "Skatt for deg som bur i utlandet " }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor.",
-                        Nynorsk to "Bur du i utlandet og betaler kildeskatt, finn du meir informasjon om kildeskatt på skatteetaten.no. Dersom du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur."
+                        bokmal { +  "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor." },
+                        nynorsk { +  "Bur du i utlandet og betaler kildeskatt, finn du meir informasjon om kildeskatt på skatteetaten.no. Dersom du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur." }
                     )
                 }
             }

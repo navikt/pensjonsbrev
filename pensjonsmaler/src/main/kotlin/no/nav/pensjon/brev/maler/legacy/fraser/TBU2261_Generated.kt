@@ -18,32 +18,32 @@ data class TBU2261_Generated(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            textExpr(
-                Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() + pe.ut_nettoakk_pluss_nettorestar()
-                    .format() + ".",
-                Nynorsk to "På bakgrunn av den innmelde inntekta di utgjer uføretrygda di ".expr() + pe.ut_nettoakk_pluss_nettorestar()
-                    .format() + ".",
-                English to "On the basis of your reported income, your disability benefit will be total ".expr() + pe.ut_nettoakk_pluss_nettorestar()
-                    .format() + ".",
+            text(
+                bokmal { + "Ut fra den årlige inntekten din vil uføretrygden utgjøre " + pe.ut_nettoakk_pluss_nettorestar()
+                    .format() + "." },
+                nynorsk { + "På bakgrunn av den innmelde inntekta di utgjer uføretrygda di " + pe.ut_nettoakk_pluss_nettorestar()
+                    .format() + "." },
+                english { + "On the basis of your reported income, your disability benefit will be total " + pe.ut_nettoakk_pluss_nettorestar()
+                    .format() + "." },
             )
 
             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_VedtaksData_VirkningFOM) = false) THEN      INCLUDE ENDIF
             showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())))) {
-                textExpr(
-                    Bokmal to " Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                        .format() + ".",
-                    Nynorsk to " Hittil i år har du fått utbetalt ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
-                        .format() + ".",
-                    English to " So far this year, you have been paid ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "."
+                text(
+                    bokmal { + " Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
+                        .format() + "." },
+                    nynorsk { + " Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk()
+                        .format() + "." },
+                    english { + " So far this year, you have been paid " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." }
                 )
             }
-            textExpr(
-                Bokmal to " Du har derfor rett til en utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                    .format() + " per måned for resten av året.",
-                Nynorsk to " Du har derfor rett til ei utbetaling av uføretrygd på ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                    .format() + " per månad for resten av kalenderåret.",
-                English to " Therefore, you are entitled to a disability benefit payment of ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
-                    .format() + " per month for the remainder of the calendar year."
+            text(
+                bokmal { + " Du har derfor rett til en utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
+                    .format() + " per måned for resten av året." },
+                nynorsk { + " Du har derfor rett til ei utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
+                    .format() + " per månad for resten av kalenderåret." },
+                english { + " Therefore, you are entitled to a disability benefit payment of " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto()
+                    .format() + " per month for the remainder of the calendar year." }
             )
         }
 

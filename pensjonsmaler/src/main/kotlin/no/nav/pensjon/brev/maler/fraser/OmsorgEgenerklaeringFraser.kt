@@ -13,14 +13,14 @@ import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 object OmsorgEgenerklaeringTittel : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
-            Nynorsk to "Du må sende oss eigenmelding om pleie- og omsorgsarbeid",
-            English to "Personal declaration about the circumstances of care",
+            bokmal { + "Du må sende oss egenerklæring om pleie- og omsorgsarbeid" },
+            nynorsk { + "Du må sende oss eigenmelding om pleie- og omsorgsarbeid" },
+            english { + "Personal declaration about the circumstances of care" },
         )
     }
 
@@ -32,28 +32,28 @@ data class OmsorgEgenerklaeringOutline(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            textExpr(
-                Bokmal to
-                        "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
+            text(
+                bokmal { + 
+                        "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i "
                         + aarEgenerklaringOmsorgspoeng
-                        + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
+                        + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker." },
 
-                Nynorsk to
-                        "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i ".expr()
+                nynorsk { + 
+                        "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i "
                         + aarEgenerklaringOmsorgspoeng
-                        + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker.",
+                        + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker." },
 
-                English to
-                        "We need you to confirm that you have provided nursing and care work in ".expr()
+                english { + 
+                        "We need you to confirm that you have provided nursing and care work in "
                         + aarEgenerklaringOmsorgspoeng
-                        + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
+                        + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks." },
             )
         }
         paragraph {
-            textExpr(
-                Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
-                Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
-                English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
+            text(
+                bokmal { + "Du har fått godkjent pensjonsopptjening for " + aarInnvilgetOmsorgspoeng + "." },
+                nynorsk { + "Du har fått godkjend pensjonsopptening for " + aarInnvilgetOmsorgspoeng + "." },
+                english { + "You have accumulated pensionable earnings for " + aarInnvilgetOmsorgspoeng + "." },
             )
         }
         includePhrase(Felles.HarDuSpoersmaal.omsorg)

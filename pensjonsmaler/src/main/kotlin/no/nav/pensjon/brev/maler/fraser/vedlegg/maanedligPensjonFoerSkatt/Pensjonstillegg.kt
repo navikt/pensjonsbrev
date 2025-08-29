@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class MaanedligPensjonFoerSkattPensjonstillegg(
     val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattTabell.AlderspensjonPerManed>,
@@ -33,30 +33,30 @@ data class MaanedligPensjonFoerSkattPensjonstillegg(
             //vedleggBelopPt_001
             paragraph {
                 text(
-                    Bokmal to "Pensjonstillegget ",
-                    Nynorsk to "Pensjonstillegget ",
-                    English to "A pension supplement ",
+                    bokmal { + "Pensjonstillegget " },
+                    nynorsk { + "Pensjonstillegget " },
+                    english { + "A pension supplement " },
                     BOLD,
                 )
                 text(
-                    Bokmal to "er gitt for å sikre et minste pensjonsnivå til deg som har liten eller ingen opptjening av tilleggspensjon. Størrelsen på minste pensjonsnivå avhenger av sivilstanden din.",
-                    Nynorsk to "er gitt for å sikre eit minste pensjonsnivå til deg som har lita eller inga opptening av tilleggspensjon. Storleiken på minste pensjonsnivå avheng av sivilstanden din.",
-                    English to "is granted to ensure a minimum pension level for people who are not eligible for a supplementary pension or only qualify for a small supplementary pension. The minimum pension level depends on your marital status.",
+                    bokmal { + "er gitt for å sikre et minste pensjonsnivå til deg som har liten eller ingen opptjening av tilleggspensjon. Størrelsen på minste pensjonsnivå avhenger av sivilstanden din." },
+                    nynorsk { + "er gitt for å sikre eit minste pensjonsnivå til deg som har lita eller inga opptening av tilleggspensjon. Storleiken på minste pensjonsnivå avheng av sivilstanden din." },
+                    english { + "is granted to ensure a minimum pension level for people who are not eligible for a supplementary pension or only qualify for a small supplementary pension. The minimum pension level depends on your marital status." },
                 )
             }
 
             //vedleggBelopSaerSats_001
             showIf(saerskiltSatsGjeldende.saerskiltSatsErBrukt_safe.ifNull(false)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Fordi du forsørger ".expr() + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
-                                + " din som er over 60 år, er tillegget fastsatt etter en særskilt sats for minste pensjonsnivå.",
+                    text(
+                        bokmal { + "Fordi du forsørger " + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
+                                + " din som er over 60 år, er tillegget fastsatt etter en særskilt sats for minste pensjonsnivå." },
 
-                        Nynorsk to "Fordi du forsørgjer ".expr() + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
-                                + " din som er over 60 år, er tillegget fastsett etter ein særskilt sats for minste pensjonsnivå.",
+                        nynorsk { + "Fordi du forsørgjer " + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
+                                + " din som er over 60 år, er tillegget fastsett etter ein særskilt sats for minste pensjonsnivå." },
 
-                        English to "Because you provide for your ".expr() + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
-                                + " who is over the age of 60, you are granted the minimum pension level according to a special rate.",
+                        english { + "Because you provide for your " + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
+                                + " who is over the age of 60, you are granted the minimum pension level according to a special rate." },
                     )
                 }
             }
@@ -66,15 +66,15 @@ data class MaanedligPensjonFoerSkattPensjonstillegg(
                     showIf(alderspensjonGjeldende.erEksportberegnet) {
                         // vedleggBelopPenTAvkorterRedusertTTEksport_001
                         text(
-                            Bokmal to "Pensjonstillegget ditt er beregnet etter antall år med pensjonspoeng på samme måte som grunnpensjonen.",
-                            Nynorsk to "Pensjonstillegget ditt er berekna etter talet på år med pensjonspoeng på same måte som grunnpensjonen.",
-                            English to "Your pension supplement is calculated on your number of pension point earning years in the same way as the basic pension.",
+                            bokmal { + "Pensjonstillegget ditt er beregnet etter antall år med pensjonspoeng på samme måte som grunnpensjonen." },
+                            nynorsk { + "Pensjonstillegget ditt er berekna etter talet på år med pensjonspoeng på same måte som grunnpensjonen." },
+                            english { + "Your pension supplement is calculated on your number of pension point earning years in the same way as the basic pension." },
                         )
                     }.orShow {
                         text(
-                            Bokmal to "Vi har avkortet pensjonstillegget ditt mot trygdetid på samme måte som for grunnpensjonen.",
-                            Nynorsk to "Vi har avkorta pensjonstillegget ditt mot trygdetid på same måte som for grunnpensjonen.",
-                            English to "Your pension supplement is calculated on the same period of national insurance cover as the basic pension.",
+                            bokmal { + "Vi har avkortet pensjonstillegget ditt mot trygdetid på samme måte som for grunnpensjonen." },
+                            nynorsk { + "Vi har avkorta pensjonstillegget ditt mot trygdetid på same måte som for grunnpensjonen." },
+                            english { + "Your pension supplement is calculated on the same period of national insurance cover as the basic pension." },
                         )
                     }
                 }

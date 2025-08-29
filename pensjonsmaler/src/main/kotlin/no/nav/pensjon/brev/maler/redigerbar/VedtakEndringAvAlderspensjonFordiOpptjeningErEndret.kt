@@ -62,7 +62,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -95,90 +95,90 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 // skjermTillUtbetEndret_001
                 paragraph {
                     text(
-                        Bokmal to "Stortinget har vedtatt nye regler som gjør at du får skjermingstillegg i alderspensjonen din fra folketrygden.",
-                        Nynorsk to "Stortinget har vedtatt nye reglar som gjer at du får skjermingstillegg i alderspensjonen din frå folketrygda.",
-                        English to "The Storting has passed new rules that grant you a supplement for the disabled in your retirement pension from the National Insurance Scheme."
+                        bokmal { + "Stortinget har vedtatt nye regler som gjør at du får skjermingstillegg i alderspensjonen din fra folketrygden." },
+                        nynorsk { + "Stortinget har vedtatt nye reglar som gjer at du får skjermingstillegg i alderspensjonen din frå folketrygda." },
+                        english { + "The Storting has passed new rules that grant you a supplement for the disabled in your retirement pension from the National Insurance Scheme." }
                     )
                 }
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi har derfor beregnet pensjonen din på nytt fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Det gjør at du får mer i alderspensjon.",
-                        Nynorsk to "Vi har difor rekna ut pensjonen din på nytt frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Det gjer at du får meir i alderspensjon.",
-                        English to "Therefore, we have recalculated your pension from ".expr() + pesysData.krav.virkDatoFom.format() + ". This means you will receive more in retirement pension."
+                    text(
+                        bokmal { + "Vi har derfor beregnet pensjonen din på nytt fra " + pesysData.krav.virkDatoFom.format() + ". Det gjør at du får mer i alderspensjon." },
+                        nynorsk { + "Vi har difor rekna ut pensjonen din på nytt frå " + pesysData.krav.virkDatoFom.format() + ". Det gjer at du får meir i alderspensjon." },
+                        english { + "Therefore, we have recalculated your pension from " + pesysData.krav.virkDatoFom.format() + ". This means you will receive more in retirement pension." }
                     )
                 }
                 ifNotNull(pesysData.alderspensjonVedVirk.skjermingstillegg) { skjermingstillegg ->
                     paragraph {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
-                            English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "."
+                        text(
+                            bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + "." },
+                            nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + "." },
+                            english { + "You will receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "." }
                         )
                     }
                 }
 
                 // etterbetalingSkjermTill_003
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du får etterbetalt skjermingstillegg fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen blir vanligvis utbetalt i løpet av 7 virkedager. Skattetrekk kan gjøre at etterbetalingen blir redusert. Du kan sjekke fradrag i utbetalingsmeldingen på $MINSIDE_URL.",
-                        Nynorsk to "Du får etterbetalt skjermingstillegget frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis utbetalt i løpet av 7 vyrkedagar. Skattetrekk kan gjere at etterbetalinga blir redusert. Du kan sjekke frådrag i utbetalingsmeldinga på $MINSIDE_URL.",
-                        English to "You will receive a retroactive payment of the supplement for the disabled from ".expr() + pesysData.krav.virkDatoFom.format() + ". Retroactive payments are normally made in the course of 7 working days. Tax deductions may reduce the retroactive payment. You can check the deductions in the payment notification at $MINSIDE_URL."
+                    text(
+                        bokmal { + "Du får etterbetalt skjermingstillegg fra " + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen blir vanligvis utbetalt i løpet av 7 virkedager. Skattetrekk kan gjøre at etterbetalingen blir redusert. Du kan sjekke fradrag i utbetalingsmeldingen på $MINSIDE_URL." },
+                        nynorsk { + "Du får etterbetalt skjermingstillegget frå " + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis utbetalt i løpet av 7 vyrkedagar. Skattetrekk kan gjere at etterbetalinga blir redusert. Du kan sjekke frådrag i utbetalingsmeldinga på $MINSIDE_URL." },
+                        english { + "You will receive a retroactive payment of the supplement for the disabled from " + pesysData.krav.virkDatoFom.format() + ". Retroactive payments are normally made in the course of 7 working days. Tax deductions may reduce the retroactive payment. You can check the deductions in the payment notification at $MINSIDE_URL." }
                     )
                 }
                 title1 {
                     text(
-                        Bokmal to "Har du offentlig tjenestepensjon?",
-                        Nynorsk to "Har du offentleg tenestepensjon?",
-                        English to "Do you have a public service pension?"
+                        bokmal { + "Har du offentlig tjenestepensjon?" },
+                        nynorsk { + "Har du offentleg tenestepensjon?" },
+                        english { + "Do you have a public service pension?" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis pensjon fra folketrygden (Nav) endres, må tjenestepensjonsordningen også beregne sin pensjon på nytt. Derfor kan det ta inntil 9 uker før Nav kan starte utbetaling av nytt beløp. Krav fra tjenestepensjonsordningen kan også gjøre at etterbetalingen blir redusert.",
-                        Nynorsk to "Om pensjon frå folketrygda (Nav) blir endra, må tenestepensjonsordninga også berekne pensjonen sin på nytt. Difor kan det ta inntil 9 veker før Nav kan starte utbetaling av nytt beløp. Krav frå tenestepensjonsordninga kan også gjere at etterbetalinga blir redusert.",
-                        English to "If the pension from the National Insurance Scheme (Nav) changes, the public service pension scheme must also recalculate its pension. Therefore, it may take up to 9 weeks before Nav can start paying the new amount. Claims from the public service pension scheme may also reduce the retroactive payment."
+                        bokmal { + "Hvis pensjon fra folketrygden (Nav) endres, må tjenestepensjonsordningen også beregne sin pensjon på nytt. Derfor kan det ta inntil 9 uker før Nav kan starte utbetaling av nytt beløp. Krav fra tjenestepensjonsordningen kan også gjøre at etterbetalingen blir redusert." },
+                        nynorsk { + "Om pensjon frå folketrygda (Nav) blir endra, må tenestepensjonsordninga også berekne pensjonen sin på nytt. Difor kan det ta inntil 9 veker før Nav kan starte utbetaling av nytt beløp. Krav frå tenestepensjonsordninga kan også gjere at etterbetalinga blir redusert." },
+                        english { + "If the pension from the National Insurance Scheme (Nav) changes, the public service pension scheme must also recalculate its pension. Therefore, it may take up to 9 weeks before Nav can start paying the new amount. Claims from the public service pension scheme may also reduce the retroactive payment." }
                     )
                 }
 
                 // skjermTillUtbetIkkeEndret_001
                 paragraph {
-                    textExpr(
-                        Bokmal to "Stortinget har vedtatt nye regler for skjermingstillegg i alderspensjon fra folketrygden. Vi har derfor beregnet pensjonen din på nytt fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Det påvirker ikke utbetalingen din.",
-                        Nynorsk to "Stortinget har vedtatt nye reglar for skjermingstillegg i alderspensjon frå folketrygda. Vi har difor berekna pensjonen din på nytt frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Det påverkar ikkje utbetalinga di.",
-                        English to "The Storting has adopted new rules for a supplement for the disabled in retirement pensions from the National Insurance Scheme. Therefore, we have recalculated your pension from ".expr() + pesysData.krav.virkDatoFom.format() + ". This does not affect your payment."
+                    text(
+                        bokmal { + "Stortinget har vedtatt nye regler for skjermingstillegg i alderspensjon fra folketrygden. Vi har derfor beregnet pensjonen din på nytt fra " + pesysData.krav.virkDatoFom.format() + ". Det påvirker ikke utbetalingen din." },
+                        nynorsk { + "Stortinget har vedtatt nye reglar for skjermingstillegg i alderspensjon frå folketrygda. Vi har difor berekna pensjonen din på nytt frå " + pesysData.krav.virkDatoFom.format() + ". Det påverkar ikkje utbetalinga di." },
+                        english { + "The Storting has adopted new rules for a supplement for the disabled in retirement pensions from the National Insurance Scheme. Therefore, we have recalculated your pension from " + pesysData.krav.virkDatoFom.format() + ". This does not affect your payment." }
                     )
                 }
 
                 ifNotNull(pesysData.alderspensjonVedVirk.skjermingstillegg) { skjermingstillegg ->
                     paragraph {
-                        textExpr(
-                            Bokmal to "Du får fortsatt ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
-                            Nynorsk to "Du får framleis ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + ".",
-                            English to "You will still receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "."
+                        text(
+                            bokmal { + "Du får fortsatt " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + "." },
+                            nynorsk { + "Du får framleis " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt. Av dette er skjermingstillegget " + skjermingstillegg.format() + "." },
+                            english { + "You will still receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension from the National Insurance Scheme each month before tax. Of this, the supplement for the disabled is " + skjermingstillegg.format() + "." }
                         )
                     }
                 }
                 title1 {
                     text(
-                        Bokmal to "Hvorfor øker ikke utbetalingen din?",
-                        Nynorsk to "Kvifor aukar ikkje utbetalinga di?",
-                        English to "Why is your payment not increasing?"
+                        bokmal { + "Hvorfor øker ikke utbetalingen din?" },
+                        nynorsk { + "Kvifor aukar ikkje utbetalinga di?" },
+                        english { + "Why is your payment not increasing?" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du har hatt et minstenivåtillegg for å sikre at pensjonen din blir den samme som minstenivået som gjelder for årskullet ditt. Det nye skjermingstillegget gjør at pensjonen din blir like høy som minstenivået, og derfor blir det gamle tillegget redusert. Det er altså bare beregningen av pensjonen din som er forandret, og du får fortsatt utbetalt samme beløp.",
-                        Nynorsk to "Du har hatt eit minstenivåtillegg for å sikre at pensjonen din blir den same som minstenivået som gjeld for årskullet ditt. Det nye skjermingstillegget gjer at pensjonen din blir like høg som minstenivået, og difor blir det gamle tillegget redusert. Det er altså berre berekninga av pensjonen din som er endra, og du får framleis utbetalt same beløp.",
-                        English to "You previously received a minimum pension supplement to ensure your pension met the minimum level for your age cohort. With the introduction of the new supplement for the disabled, your pension now matches the minimum level, resulting in a reduction of the old supplement. Consequently, only the calculation of your pension has changed, and you will continue to receive the same amount."
+                        bokmal { + "Du har hatt et minstenivåtillegg for å sikre at pensjonen din blir den samme som minstenivået som gjelder for årskullet ditt. Det nye skjermingstillegget gjør at pensjonen din blir like høy som minstenivået, og derfor blir det gamle tillegget redusert. Det er altså bare beregningen av pensjonen din som er forandret, og du får fortsatt utbetalt samme beløp." },
+                        nynorsk { + "Du har hatt eit minstenivåtillegg for å sikre at pensjonen din blir den same som minstenivået som gjeld for årskullet ditt. Det nye skjermingstillegget gjer at pensjonen din blir like høg som minstenivået, og difor blir det gamle tillegget redusert. Det er altså berre berekninga av pensjonen din som er endra, og du får framleis utbetalt same beløp." },
+                        english { + "You previously received a minimum pension supplement to ensure your pension met the minimum level for your age cohort. With the introduction of the new supplement for the disabled, your pension now matches the minimum level, resulting in a reduction of the old supplement. Consequently, only the calculation of your pension has changed, and you will continue to receive the same amount." }
                     )
                 }
 
                 //  skjermTillAndreUtbet_001
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har tjenestepensjon eller andre ytelser fra Nav, blir disse utbetalt i tillegg til alderspensjonen.",
-                        Nynorsk to "Om du har tenestepensjon eller andre ytingar frå Nav, blir disse utbetalte i tillegg til alderspensjonen.",
-                        English to "If you have an occupational pension or other benefits from Nav, these will be paid in addition to the retirement pension."
+                        bokmal { + "Hvis du har tjenestepensjon eller andre ytelser fra Nav, blir disse utbetalt i tillegg til alderspensjonen." },
+                        nynorsk { + "Om du har tenestepensjon eller andre ytingar frå Nav, blir disse utbetalte i tillegg til alderspensjonen." },
+                        english { + "If you have an occupational pension or other benefits from Nav, these will be paid in addition to the retirement pension." }
                     )
                 }
             }
@@ -186,10 +186,10 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             showIf(pesysData.krav.arsakErEndretOpptjening) {
                 paragraph {
                     val fritekst = fritekst("år")
-                    textExpr(
-                        Bokmal to "Pensjonsopptjeningen for ".expr() + fritekst + " er endret.",
-                        Nynorsk to "Pensjonsoppteninga for ".expr() + fritekst + " er endra.",
-                        English to "Your pension earnings for the income year(s) ".expr() + fritekst + " has(have) been changed."
+                    text(
+                        bokmal { + "Pensjonsopptjeningen for " + fritekst + " er endret." },
+                        nynorsk { + "Pensjonsoppteninga for " + fritekst + " er endra." },
+                        english { + "Your pension earnings for the income year(s) " + fritekst + " has(have) been changed." }
                     )
                 }
 
@@ -197,27 +197,27 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     // ingenEndringPensjon_001
                     paragraph {
                         text(
-                            Bokmal to "Dette får ingen betydning for pensjonen din.",
-                            Nynorsk to "Dette får ingen følgjer for pensjonen din.",
-                            English to "This does not affect your pension."
+                            bokmal { + "Dette får ingen betydning for pensjonen din." },
+                            nynorsk { + "Dette får ingen følgjer for pensjonen din." },
+                            english { + "This does not affect your pension." }
                         )
                     }
                 }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_OKT)) {
                     //  nyBeregningAPØkning_001
                     paragraph {
                         text(
-                            Bokmal to "Dette fører til at pensjonen din øker.",
-                            Nynorsk to "Dette fører til at pensjonen din aukar.",
-                            English to "This leads to an increase in your retirement pension."
+                            bokmal { + "Dette fører til at pensjonen din øker." },
+                            nynorsk { + "Dette fører til at pensjonen din aukar." },
+                            english { + "This leads to an increase in your retirement pension." }
                         )
                     }
                 }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_RED)) {
                     // nyBeregningAPReduksjon_001
                     paragraph {
                         text(
-                            Bokmal to "Dette fører til at pensjonen din blir redusert.",
-                            Nynorsk to "Dette fører til at pensjonen din blir redusert.",
-                            English to "This leads to a reduction in your retirement pension."
+                            bokmal { + "Dette fører til at pensjonen din blir redusert." },
+                            nynorsk { + "Dette fører til at pensjonen din blir redusert." },
+                            english { + "This leads to a reduction in your retirement pension." }
                         )
                     }
                 }
@@ -225,10 +225,10 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 showIf(not(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder)) {
                     // innvilgelseAPInnledn_001
                     paragraph {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                            Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygden.",
-                            English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
+                        text(
+                            bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden." },
+                            nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygden." },
+                            english { + "You will receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme." },
                         )
                     }
                 }.orShow {
@@ -238,9 +238,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 // utbetalingsInfoMndUtbet_001
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL.",
-                        Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL.",
-                        English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
+                        bokmal { + "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
+                        nynorsk { + "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." },
+                        english { + "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL." }
                     )
                 }
             }
@@ -249,69 +249,69 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             includePhrase(Vedtak.BegrunnelseOverskrift)
             paragraph {
                 text(
-                    Bokmal to "Pensjonsopptjeningen din er endret fordi:",
-                    Nynorsk to "Pensjonsoppteninga di er endra fordi:",
-                    English to "Your pension earnings have been changed because:"
+                    bokmal { + "Pensjonsopptjeningen din er endret fordi:" },
+                    nynorsk { + "Pensjonsoppteninga di er endra fordi:" },
+                    english { + "Your pension earnings have been changed because:" }
                 )
                 list {
                     item {
                         text(
-                            Bokmal to "Skatteetaten har endret skatteoppgjøret ditt.",
-                            Nynorsk to "Skatteetaten har endra skatteoppgjeret ditt.",
-                            English to "The Norwegian Tax Administration has amended one or several tax returns."
+                            bokmal { + "Skatteetaten har endret skatteoppgjøret ditt." },
+                            nynorsk { + "Skatteetaten har endra skatteoppgjeret ditt." },
+                            english { + "The Norwegian Tax Administration has amended one or several tax returns." }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Skatteetaten har endret den pensjonsgivende inntekten din.",
-                            Nynorsk to "Skatteetaten har endra den pensjonsgivande inntekta di.",
-                            English to "The Norwegian Tax Administration has amended your pensionable income."
+                            bokmal { + "Skatteetaten har endret den pensjonsgivende inntekten din." },
+                            nynorsk { + "Skatteetaten har endra den pensjonsgivande inntekta di." },
+                            english { + "The Norwegian Tax Administration has amended your pensionable income." }
                         )
                     }
                     item {
                         val fritekst = fritekst("dette året / disse årene")
-                        textExpr(
-                            Bokmal to "Du har fått medregnet inntekten din for ".expr() + fritekst + ".",
-                            Nynorsk to "Du har fått rekna med inntekta di for ".expr() + fritekst + ".",
-                            English to "Your pensionable income for has been added to your pension reserves for ".expr() + fritekst + ".",
+                        text(
+                            bokmal { + "Du har fått medregnet inntekten din for " + fritekst + "." },
+                            nynorsk { + "Du har fått rekna med inntekta di for " + fritekst + "." },
+                            english { + "Your pensionable income for has been added to your pension reserves for " + fritekst + "." },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Du har fått omsorgsopptjening fordi du har hatt omsorg for små barn eller pleietrengende personer.",
-                            Nynorsk to "Du har fått omsorgsopptening fordi du har hatt omsorg for små barn eller pleietrengande personer.",
-                            English to "You have been granted pension rights for unpaid care work. (Care for sick, disabled or elderly people, or care for children under the age of six years.)"
+                            bokmal { + "Du har fått omsorgsopptjening fordi du har hatt omsorg for små barn eller pleietrengende personer." },
+                            nynorsk { + "Du har fått omsorgsopptening fordi du har hatt omsorg for små barn eller pleietrengande personer." },
+                            english { + "You have been granted pension rights for unpaid care work. (Care for sick, disabled or elderly people, or care for children under the age of six years.)" }
                         )
                     }
                     item {
                         val fritekst = fritekst("dette året / disse årene")
-                        textExpr(
-                            Bokmal to "Du har fått lagt til trygdetid for ".expr() + fritekst + ".",
-                            Nynorsk to "Du har fått lagt til trygdetid for ".expr() + fritekst + ".",
-                            English to "You have been granted national insurance coverage for ".expr() + fritekst + ".",
+                        text(
+                            bokmal { + "Du har fått lagt til trygdetid for " + fritekst + "." },
+                            nynorsk { + "Du har fått lagt til trygdetid for " + fritekst + "." },
+                            english { + "You have been granted national insurance coverage for " + fritekst + "." },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Dagpengene eller uføretrygden din er endret.",
-                            Nynorsk to "Dagpengane eller uføretrygda di er endra.",
-                            English to "Your unemployment benefit or disability benefit has been changed."
+                            bokmal { + "Dagpengene eller uføretrygden din er endret." },
+                            nynorsk { + "Dagpengane eller uføretrygda di er endra." },
+                            english { + "Your unemployment benefit or disability benefit has been changed." }
                         )
                     }
                 }
 
                 showIf(pesysData.opplysningerBruktIBeregningenAlder.notNull() or pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
                     text(
-                        Bokmal to "Du kan finne mer informasjon i vedlegget ",
-                        Nynorsk to "Du kan finne meir informasjon i vedlegget ",
-                        English to "You will find more information in the appendix "
+                        bokmal { + "Du kan finne mer informasjon i vedlegget " },
+                        nynorsk { + "Du kan finne meir informasjon i vedlegget " },
+                        english { + "You will find more information in the appendix " }
                     )
                     showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
                         namedReference(vedleggOpplysningerBruktIBeregningenAlder)
                     }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
                         namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                     }
-                    text(Bokmal to ".", Nynorsk to ".", English to ".")
+                    text(bokmal { + "." }, nynorsk { + "." }, english { + "." })
                 }
             }
 
@@ -319,9 +319,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 // hjemmelAP2011Opptjening_001
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-13.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-13.",
-                        English to "This decision was made pursuant to the provisions of § 19-13 of the National Insurance Act."
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven § 19-13." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova § 19-13." },
+                        english { + "This decision was made pursuant to the provisions of § 19-13 of the National Insurance Act." }
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
@@ -329,9 +329,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     // hjemmelAP2016Opptjening_001
                     paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19.",
-                            English to "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act."
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19." },
+                            english { + "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act." }
                         )
                     }
                 }
@@ -339,9 +339,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     // skjermTillHjemmel_001
                     paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter reglene i folketrygdloven §§ 19-9 a, og 4-7 i tilhørende forskrift om alderspensjon i folketrygden.",
-                            Nynorsk to "Vedtaket er gjort etter reglane i folketrygdlova §§ 19-9 a, og 4-7 i tilhøyrande forskrift om alderspensjon i folketrygda.",
-                            English to "The decision is made in accordance with the provisions of the National Insurance Act § 19-9a and § 4-7 in the associated regulations on retirement pension in the National Insurance Scheme."
+                            bokmal { + "Vedtaket er gjort etter reglene i folketrygdloven §§ 19-9 a, og 4-7 i tilhørende forskrift om alderspensjon i folketrygden." },
+                            nynorsk { + "Vedtaket er gjort etter reglane i folketrygdlova §§ 19-9 a, og 4-7 i tilhøyrande forskrift om alderspensjon i folketrygda." },
+                            english { + "The decision is made in accordance with the provisions of the National Insurance Act § 19-9a and § 4-7 in the associated regulations on retirement pension in the National Insurance Scheme." }
                         )
                     }
                 }
@@ -351,18 +351,18 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         // AP2025TidligUttakHjemmel_001
                         paragraph {
                             text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                                English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act."
+                                bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13." },
+                                nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13." },
+                                english { + "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act." }
                             )
                         }
                     }.orShow {
                         // hjemmelAP2025Opptjening_001
                         paragraph {
                             text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-17.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-17.",
-                                English to "This decision was made pursuant to the provision of § 20-7 of the National Insurance Act."
+                                bokmal { + "Vedtaket er gjort etter folketrygdloven § 20-17." },
+                                nynorsk { + "Vedtaket er gjort etter folketrygdlova § 20-17." },
+                                english { + "This decision was made pursuant to the provision of § 20-7 of the National Insurance Act." }
                             )
                         }
                     }
@@ -374,35 +374,35 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 // skjermTillForklaring_001
                 title1 {
                     text(
-                        Bokmal to "Hva er skjermingstillegg?",
-                        Nynorsk to "Kva er skjermingstillegg?",
-                        English to "What is the supplement for the disabled?"
+                        bokmal { + "Hva er skjermingstillegg?" },
+                        nynorsk { + "Kva er skjermingstillegg?" },
+                        english { + "What is the supplement for the disabled?" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Når levealderen i befolkningen øker, må folk jobbe lenger for å få samme alderspensjon som tidligere årskull. Det kalles levealdersjustering. Uføre har ikke samme muligheten som andre til å jobbe lenger for å få mer i pensjon. Derfor får du som har hatt uføretrygd, et skjermingstillegg.",
-                        Nynorsk to "Når levealderen i befolkninga aukar, må folk jobbe lenger for å få same alderspensjon som tidlegare årskull. Det blir kalla levealdersjustering. Uføre har ikkje same moglegheita som andre til å jobbe lenger for å få meir i pensjon. Difor får du som har hatt uføretrygd, eit skjermingstillegg.",
-                        English to "When life expectancy in the population increases, people have to work longer to receive the same retirement pension as previous cohorts. This is called life expectancy adjustment. Individuals who receive disabilty benefit do not have the same opportunity as others to work longer to receive more pension. Therefore, those who have received disability benefit receive a supplement for the disabled."
+                        bokmal { + "Når levealderen i befolkningen øker, må folk jobbe lenger for å få samme alderspensjon som tidligere årskull. Det kalles levealdersjustering. Uføre har ikke samme muligheten som andre til å jobbe lenger for å få mer i pensjon. Derfor får du som har hatt uføretrygd, et skjermingstillegg." },
+                        nynorsk { + "Når levealderen i befolkninga aukar, må folk jobbe lenger for å få same alderspensjon som tidlegare årskull. Det blir kalla levealdersjustering. Uføre har ikkje same moglegheita som andre til å jobbe lenger for å få meir i pensjon. Difor får du som har hatt uføretrygd, eit skjermingstillegg." },
+                        english { + "When life expectancy in the population increases, people have to work longer to receive the same retirement pension as previous cohorts. This is called life expectancy adjustment. Individuals who receive disabilty benefit do not have the same opportunity as others to work longer to receive more pension. Therefore, those who have received disability benefit receive a supplement for the disabled." }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du finner flere detaljer om pensjonen din i vedlegget ",
-                        Nynorsk to "Du finn fleire detaljar om pensjonen din i vedlegget ",
-                        English to "You will find more details about your pension in the attachment ",
+                        bokmal { + "Du finner flere detaljer om pensjonen din i vedlegget " },
+                        nynorsk { + "Du finn fleire detaljar om pensjonen din i vedlegget " },
+                        english { + "You will find more details about your pension in the attachment " },
                     )
 
                     showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
                         namedReference(vedleggMaanedligPensjonFoerSkatt)
-                        text(Bokmal to " og ", Nynorsk to " og ", English to " and ")
+                        text(bokmal { + " og " }, nynorsk { + " og " }, english { + " and " })
                         namedReference(vedleggOpplysningerBruktIBeregningenAlder)
                     }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
                         namedReference(vedleggMaanedligPensjonFoerSkattAp2025)
-                        text(Bokmal to " og ", Nynorsk to " og ", English to " and ")
+                        text(bokmal { + " og " }, nynorsk { + " og " }, english { + " and " })
                         namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                     }
-                    text(Bokmal to ".", Nynorsk to ".", English to ".")
+                    text(bokmal { + "." }, nynorsk { + "." }, english { +  "." })
                 }
             }
 
@@ -412,23 +412,23 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             // etterbetalingAP_002
             title1 {
                 text(
-                    Bokmal to "Etterbetaling",
-                    Nynorsk to "Etterbetaling",
-                    English to "Retroactive payment"
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får etterbetalt pensjon fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV",
-                    Nynorsk to "Du får etterbetalt pensjon frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
-                    English to "You will receive retroactive pension payments from ".expr() + pesysData.krav.virkDatoFom.format() + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV."
+                    bokmal { +  "Etterbetaling" },
+                    nynorsk { +  "Etterbetaling" },
+                    english { +  "Retroactive payment" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
-                    Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
-                    English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates."
+                    bokmal { +  "Du får etterbetalt pensjon fra " + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV" },
+                    nynorsk { +  "Du får etterbetalt pensjon frå " + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV." },
+                    english { +  "You will receive retroactive pension payments from " + pesysData.krav.virkDatoFom.format() + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +  "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
+                    nynorsk { +  "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten." },
+                    english { +  "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates." }
                 )
             }
 
@@ -438,18 +438,18 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 // nyOpptjeningHelAP_001
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
-                        Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
-                        English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed."
+                        bokmal { +  "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig." },
+                        nynorsk { +  "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig." },
+                        english { +  "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." }
                     )
                 }
             }.orShow {
                 //  nyOpptjeningGradertAP_001
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
-                        Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
-                        English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated."
+                        bokmal { +  "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå." },
+                        nynorsk { +  "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no." },
+                        english { +  "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated." }
                     )
                 }
             }
@@ -462,23 +462,23 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             //  meldEndringerPesys_001
             title1 {
                 text(
-                    Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "Du må melde frå om endringar",
-                    English to "You must notify Nav if anything changes"
+                    bokmal { +  "Du må melde fra om endringer" },
+                    nynorsk { +  "Du må melde frå om endringar" },
+                    english { +  "You must notify Nav if anything changes" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet, eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra Nav. I slike tilfeller må du derfor straks melde fra til oss. I vedlegget ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "Dersom du får endringar i familiesituasjonen, planlegg opphald i utlandet, eller ektefellen, partnaren eller sambuaren din får endringar i inntekta, kan det få noko å seie for beløpet du får utbetalt frå Nav. I slike tilfelle må du derfor straks melde frå til oss. I vedlegget ser du kva endringar du må seie frå om.",
-                    English to "If there are changes in your family situation or you are planning a long-term stay abroad, or there are changes in the income of your spouse or co-habiting partner, these might affect the payments you receive from Nav. In such cases, you must notify Nav immediately. The appendix specifies which changes you are obligated to notify us of."
+                    bokmal { +  "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet, eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra Nav. I slike tilfeller må du derfor straks melde fra til oss. I vedlegget ser du hvilke endringer du må si fra om." },
+                    nynorsk { +  "Dersom du får endringar i familiesituasjonen, planlegg opphald i utlandet, eller ektefellen, partnaren eller sambuaren din får endringar i inntekta, kan det få noko å seie for beløpet du får utbetalt frå Nav. I slike tilfelle må du derfor straks melde frå til oss. I vedlegget ser du kva endringar du må seie frå om." },
+                    english { +  "If there are changes in your family situation or you are planning a long-term stay abroad, or there are changes in the income of your spouse or co-habiting partner, these might affect the payments you receive from Nav. In such cases, you must notify Nav immediately. The appendix specifies which changes you are obligated to notify us of." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
-                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
-                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
+                    bokmal { +  "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
+                    nynorsk { +  "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
+                    english { +  "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav." }
                 )
             }
 

@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 
 data class TBU1122_Generated(
@@ -25,22 +25,22 @@ data class TBU1122_Generated(
 		//[TBU1122NN, TBU1122, TBU1122EN]
 
 		paragraph {
-			textExpr (
-				Bokmal to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og gjenlevendetillegg per måned før skatt",
-				Nynorsk to "Du får ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og attlevandetillegg per månad før skatt",
-				English to "Your monthly disability benefit and survivor's supplement payment will be ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " before tax",
+			text (
+				bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og gjenlevendetillegg per måned før skatt" },
+				nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og attlevandetillegg per månad før skatt" },
+				english { + "Your monthly disability benefit and survivor's supplement payment will be " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " before tax" },
 			)
 			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
-				textExpr (
-					Bokmal to " fra ".expr() + it.formatMonthYear(),
-					Nynorsk to " frå ".expr() + it.formatMonthYear() ,
-					English to " starting ".expr() + it.formatMonthYear(),
+				text (
+					bokmal { + " fra " + it.formatMonthYear() },
+					nynorsk { + " frå " + it.formatMonthYear() } ,
+					english { + " starting " + it.formatMonthYear() },
 				)
 			}
 			text(
-				Bokmal to ".",
-				Nynorsk to ".",
-				English to ".",
+				bokmal { + "." },
+				nynorsk { + "." },
+				english { + "." },
 			)
 		}
     }

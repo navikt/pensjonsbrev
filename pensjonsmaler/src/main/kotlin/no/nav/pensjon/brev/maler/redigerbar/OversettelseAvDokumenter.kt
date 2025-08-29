@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -37,39 +37,39 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     ) {
         title {
             text(
-                Bokmal to "Oversettelse av dokumenter",
+                bokmal { + "Oversettelse av dokumenter" },
             )
         }
         outline {
             paragraph {
-                textExpr(
-                    Bokmal to "Vi ber om bistand til å få oversatt vedlagte dokumenter fra ".expr() + fritekst("språk") + " til norsk.".expr()
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Det som ønskes oversatt er markert ".expr() + fritekst("med tusj, se vedlegg") + ".".expr()
+                text(
+                    bokmal { + "Vi ber om bistand til å få oversatt vedlagte dokumenter fra " + fritekst("språk") + " til norsk." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Husk å merke svarbrevet med saksreferansen."
+                    bokmal { + "Det som ønskes oversatt er markert " + fritekst("med tusj, se vedlegg") + "." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Husk å merke svarbrevet med saksreferansen." }
                 )
             }
             paragraph {
                 // TODO: Kan felles.avsenderEnhet.navn redigeres i fritekst felt?
-                textExpr(
-                    Bokmal to "Honorar for oversettelsen vil mot regning bli dekket av ".expr() + fritekst("felles.avsenderEnhet.navn") + ".".expr()
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to fritekst("Svar for regning sendes til følgende adresse:") + "".expr()
+                text(
+                    bokmal { + "Honorar for oversettelsen vil mot regning bli dekket av " + fritekst("felles.avsenderEnhet.navn") + "." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På forhånd takk for hjelpen."
+                    bokmal { + fritekst("Svar for regning sendes til følgende adresse:") + "" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "På forhånd takk for hjelpen." }
                 )
             }
         }

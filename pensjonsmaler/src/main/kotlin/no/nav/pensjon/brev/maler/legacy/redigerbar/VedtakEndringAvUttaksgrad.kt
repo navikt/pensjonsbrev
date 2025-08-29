@@ -61,7 +61,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.Percent
 
@@ -86,17 +86,17 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
         title {
             // innvilgelseAPTittel_001
             showIf(pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)) {
-                textExpr(
-                    Bokmal to "Vi har innvilget søknaden din om ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon",
-                    Nynorsk to "Vi har innvilga søknaden din om ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon",
-                    English to "We have granted your application for ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension",
+                text(
+                    bokmal { + "Vi har innvilget søknaden din om " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon" },
+                    nynorsk { + "Vi har innvilga søknaden din om " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon" },
+                    english { + "We have granted your application for " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension" },
                 )
             }.orShow {
                 // endringAPTittel_002
                 text(
-                    Bokmal to "Vi endrer alderspensjonen din",
-                    Nynorsk to "Vi endrar alderspensjonen din",
-                    English to "We are altering your retirement pension"
+                    bokmal { + "Vi endrer alderspensjonen din" },
+                    nynorsk { + "Vi endrar alderspensjonen din" },
+                    english { + "We are altering your retirement pension" }
                 )
             }
         }
@@ -105,9 +105,9 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             // vedtakOverskriftPesys_001
             title1 {
                 text(
-                    Bokmal to "Vedtak",
-                    Nynorsk to "Vedtak",
-                    English to "Decision"
+                    bokmal { + "Vedtak" },
+                    nynorsk { + "Vedtak" },
+                    english { + "Decision" }
                 )
             }
 
@@ -121,18 +121,18 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 paragraph {
                     // endringGradAPOktUFGInnledn_001
                     text(
-                        Bokmal to "Vi endrer alderspensjonen din fordi uføregraden din har økt.",
-                        Nynorsk to "Vi endrar alderspensjonen din fordi uføregraden din har auka.",
-                        English to "We are altering your retirement pension because your degree of disability has increased."
+                        bokmal { + "Vi endrer alderspensjonen din fordi uføregraden din har økt." },
+                        nynorsk { + "Vi endrar alderspensjonen din fordi uføregraden din har auka." },
+                        english { + "We are altering your retirement pension because your degree of disability has increased." }
                     )
                 }
 
                 paragraph {
                     // endringGradAPInnvUTInnledn_001
                     text(
-                        Bokmal to "Vi endrer alderspensjonen din fordi du har fått innvilget uføretrygd.",
-                        Nynorsk to "Vi endrar alderspensjonen din fordi du har fått innvilga uføretrygd.",
-                        English to "We are altering your retirement pension because you have been granted disability benefit."
+                        bokmal { + "Vi endrer alderspensjonen din fordi du har fått innvilget uføretrygd." },
+                        nynorsk { + "Vi endrar alderspensjonen din fordi du har fått innvilga uføretrygd." },
+                        english { + "We are altering your retirement pension because you have been granted disability benefit." }
                     )
                 }
             }
@@ -141,9 +141,9 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 paragraph {
                     // endringAPOpptjenInnledn_001
                     text(
-                        Bokmal to "Vi viser til varselbrevet vi har sendt deg. Vi endrer alderspensjonen din fordi du ikke lenger har høy nok opptjening.",
-                        Nynorsk to "Vi viser til varselbrevet vi har sendt deg. Vi endrar alderspensjonen din fordi du ikkje lenger har høg nok opptening.",
-                        English to "Please refer to the notice letter we sent you. We are changing your retirement pension because you no longer have high enough pensionable earnings."
+                        bokmal { + "Vi viser til varselbrevet vi har sendt deg. Vi endrer alderspensjonen din fordi du ikke lenger har høy nok opptjening." },
+                        nynorsk { + "Vi viser til varselbrevet vi har sendt deg. Vi endrar alderspensjonen din fordi du ikkje lenger har høg nok opptening." },
+                        english { + "Please refer to the notice letter we sent you. We are changing your retirement pension because you no longer have high enough pensionable earnings." }
                     )
                 }
             }
@@ -153,10 +153,10 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }.orShow {
                 // innvilgelseAPInnledn_001
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygda.",
-                        English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme.",
+                    text(
+                        bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden." },
+                        nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygda." },
+                        english { + "You will receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme." },
                     )
                 }
             }
@@ -164,10 +164,10 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             showIf(pesysData.alderspensjonVedVirk.privatAFPErBrukt) {
                 // innvilgelseAPogAFPPrivat_001
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefestede pensjonen din (AFP) gjør at du har rett til alderspensjon før du fyller 67 år.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år.",
-                        English to "You have been granted ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67."
+                    text(
+                        bokmal { + "Du får " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefestede pensjonen din (AFP) gjør at du har rett til alderspensjon før du fyller 67 år." },
+                        nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år." },
+                        english { + "You have been granted " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67." }
                     )
                 }
             }
@@ -175,9 +175,9 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             paragraph {
                 // utbetalingsInfoMndUtbet_001
                 text(
-                    Bokmal to "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL.",
-                    Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL.",
-                    English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
+                    bokmal { +  "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
+                    nynorsk { +  "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." },
+                    english { +  "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL." }
                 )
             }
 
@@ -187,36 +187,36 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 //  endrUtaksgradAP2011_001
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12." },
+                        english { +  "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) {
                 // endrUtaksgradAP2016_001
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                        english { +  "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025) and pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)) {
                 // endrUtaksgradAP2025Soknad_001
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-14, 20-16 og 22-13.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-14, 20-16 og 22-13.",
-                        English to "This decision was made pursuant to the provisions of §§ 20-14, 20-16 and 22-13 of the National Insurance Act."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 20-14, 20-16 og 22-13." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 20-14, 20-16 og 22-13." },
+                        english { +  "This decision was made pursuant to the provisions of §§ 20-14, 20-16 and 22-13 of the National Insurance Act." }
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025) and pesysData.krav.kravInitiertAv.isOneOf(NAV, SOSIALKONTOR, KONV, ADVOKAT)) {
                 // endrUtaksgradAP2025_001
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-14 og 20-16.",
-                        English to "This decision was made pursuant to the provisions of §§ 20-14 and 20-16 of the National Insurance Act."
+                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16." },
+                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 20-14 og 20-16." },
+                        english { +  "This decision was made pursuant to the provisions of §§ 20-14 and 20-16 of the National Insurance Act." }
                     )
                 }
             }
@@ -225,28 +225,28 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 showIf(pesysData.alderspensjonVedVirk.opphortEktefelletillegg and not(pesysData.alderspensjonVedVirk.opphortBarnetillegg)) {
                     paragraph {
                         // opphorETBegrunn_001
-                        textExpr(
-                            Bokmal to "Ektefelletillegget opphører fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du bare kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdloven § 3-24.",
-                            Nynorsk to "Ektefelletillegget vert avslutta frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du berre kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdlova § 3-24.",
-                            English to "You will no longer receive spouse supplement from ".expr() + pesysData.krav.virkDatoFom.format() + " because you can only receive this supplement when you are receiving a full (100 percent) retirement pension. This follows from section 3-24 of the National Insurance Act."
+                        text(
+                            bokmal { +  "Ektefelletillegget opphører fra " + pesysData.krav.virkDatoFom.format() + " fordi du bare kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdloven § 3-24." },
+                            nynorsk { +  "Ektefelletillegget vert avslutta frå " + pesysData.krav.virkDatoFom.format() + " fordi du berre kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdlova § 3-24." },
+                            english { +  "You will no longer receive spouse supplement from " + pesysData.krav.virkDatoFom.format() + " because you can only receive this supplement when you are receiving a full (100 percent) retirement pension. This follows from section 3-24 of the National Insurance Act." }
                         )
                     }
                 }.orShowIf(not(pesysData.alderspensjonVedVirk.opphortEktefelletillegg) and pesysData.alderspensjonVedVirk.opphortBarnetillegg) {
                     // opphorBTBegrunn_001
                     paragraph {
-                        textExpr(
-                            Bokmal to "Barnetillegget opphører fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du bare kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdloven § 3-25.",
-                            Nynorsk to "Barnetillegget vert avslutta frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du berre kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdlova § 3-25.",
-                            English to "You will no longer receive child supplement from ".expr() + pesysData.krav.virkDatoFom.format() + " because you can only receive this supplement when you are receiving a full (100 percent) retirement pension. This follows from section 3-25 of the National Insurance Act."
+                        text(
+                            bokmal { +  "Barnetillegget opphører fra " + pesysData.krav.virkDatoFom.format() + " fordi du bare kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdloven § 3-25." },
+                            nynorsk { +  "Barnetillegget vert avslutta frå " + pesysData.krav.virkDatoFom.format() + " fordi du berre kan få dette tillegget når du har 100 prosent alderspensjon. Dette går fram av folketrygdlova § 3-25." },
+                            english { +  "You will no longer receive child supplement from " + pesysData.krav.virkDatoFom.format() + " because you can only receive this supplement when you are receiving a full (100 percent) retirement pension. This follows from section 3-25 of the National Insurance Act." }
                         )
                     }
                 }.orShowIf(pesysData.alderspensjonVedVirk.opphortEktefelletillegg and pesysData.alderspensjonVedVirk.opphortBarnetillegg) {
                     // opphorBTETBegrunn_001
                     paragraph {
-                        textExpr(
-                            Bokmal to "Barne- og ektefelletillegget opphører fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du må ha 100 prosent alderspensjon for å ha rett til disse tilleggene. Dette går fram av folketrygdloven §§ 3-25 og 3-24.",
-                            Nynorsk to "Barne- og ektefelletillegget vert avslutta frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du må ha 100 prosent alderspensjon for å ha rett til desse tillegga. Dette går fram av folketrygdlova §§ 3-25 og 3-24.",
-                            English to "You will no longer receive child supplement and spouse supplement from ".expr() + pesysData.krav.virkDatoFom.format() + " because you must be receiving a full (100 percent) retirement pension to be entitled to these supplements. This follows from sections 3-25 and 3-24 of the National Insurance Act."
+                        text(
+                            bokmal { +  "Barne- og ektefelletillegget opphører fra " + pesysData.krav.virkDatoFom.format() + " fordi du må ha 100 prosent alderspensjon for å ha rett til disse tilleggene. Dette går fram av folketrygdloven §§ 3-25 og 3-24." },
+                            nynorsk { +  "Barne- og ektefelletillegget vert avslutta frå " + pesysData.krav.virkDatoFom.format() + " fordi du må ha 100 prosent alderspensjon for å ha rett til desse tillegga. Dette går fram av folketrygdlova §§ 3-25 og 3-24." },
+                            english { +  "You will no longer receive child supplement and spouse supplement from " + pesysData.krav.virkDatoFom.format() + " because you must be receiving a full (100 percent) retirement pension to be entitled to these supplements. This follows from sections 3-25 and 3-24 of the National Insurance Act." }
                         )
                     }
                 }
@@ -255,9 +255,9 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     // gradsendrAPSoknadInfo_001
                     paragraph {
                         text(
-                            Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
-                            Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
-                            English to "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
+                            bokmal { +  "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
+                            nynorsk { +  "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden." },
+                            english { +  "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
                         )
                     }
                 }
@@ -270,30 +270,30 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     // endringGradAPOktUFGBegrunn_001
                     includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
-                        textExpr(
-                            Bokmal to "Fordi uføregraden din har økt, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden.",
-                            Nynorsk to "Fordi uføregraden din har auka, kan du ikkje ta ut like mykje alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høgast moglege graden.",
-                            English to "Because your degree of disability has increased, you are no longer entitled to draw the same amount of retirement pension as before. We have therefore reduced your retirement pension to ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + "percent, which is the highest possible withdrawal rate."
+                        text(
+                            bokmal { +  "Fordi uføregraden din har økt, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden." },
+                            nynorsk { +  "Fordi uføregraden din har auka, kan du ikkje ta ut like mykje alderspensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høgast moglege graden." },
+                            english { +  "Because your degree of disability has increased, you are no longer entitled to draw the same amount of retirement pension as before. We have therefore reduced your retirement pension to " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + "percent, which is the highest possible withdrawal rate." }
                         )
                     }
 
                     //  endringGradAPInnvUTBegrunn_001
                     includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
-                        textExpr(
-                            Bokmal to "Fordi du har fått innvilget uføretrygd, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden.",
-                            Nynorsk to "Fordi du har fått innvilga uføretrygd, kan du ikkje ta ut like mykje alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høgast moglege graden.",
-                            English to "Because you have been granted disability benefit, you are no longer entitled to draw the same amount of retirement pension as before. We have therefore reduced your retirement pension to ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent, which is the highest possible withdrawal rate."
+                        text(
+                            bokmal { +  "Fordi du har fått innvilget uføretrygd, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden." },
+                            nynorsk { +  "Fordi du har fått innvilga uføretrygd, kan du ikkje ta ut like mykje alderspensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høgast moglege graden." },
+                            english { +  "Because you have been granted disability benefit, you are no longer entitled to draw the same amount of retirement pension as before. We have therefore reduced your retirement pension to " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent, which is the highest possible withdrawal rate." }
                         )
                     }
                 }.orShow {
                     // endringAPOpptjenBegrunn_001
                     includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
-                        textExpr(
-                            Bokmal to "Fordi opptjeningsgrunnlaget ditt er endret kan du ikke lenger ta ut like mye pensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent.",
-                            Nynorsk to "Fordi oppteningsgrunnlaget ditt er endra kan du ikkje lenger ta ut like mykje pensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent.",
-                            English to "Because your basis for accumulating pension rights has changed, you are no longer entitled to draw the same amount of pension as before. We have therefore reduced your retirement pension to ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent."
+                        text(
+                            bokmal { +  "Fordi opptjeningsgrunnlaget ditt er endret kan du ikke lenger ta ut like mye pensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent." },
+                            nynorsk { +  "Fordi oppteningsgrunnlaget ditt er endra kan du ikkje lenger ta ut like mykje pensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent." },
+                            english { +  "Because your basis for accumulating pension rights has changed, you are no longer entitled to draw the same amount of pension as before. We have therefore reduced your retirement pension to " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent." }
                         )
                     }
                 }
@@ -314,18 +314,18 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 // nyOpptjeningHelAP_001
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
-                        Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
-                        English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed."
+                        bokmal { +  "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig." },
+                        nynorsk { +  "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig." },
+                        english { +  "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." }
                     )
                 }
             }.orShow {
                 // nyOpptjeningGradertAP_001
                 paragraph {
                     text(
-                        Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
-                        Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
-                        English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated."
+                        bokmal { +  "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå." },
+                        nynorsk { +  "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no." },
+                        english { +  "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated." }
                     )
                 }
             }

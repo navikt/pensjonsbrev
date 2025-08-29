@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 
 data class TBU1286_2_Generated(
@@ -24,23 +24,23 @@ data class TBU1286_2_Generated(
 
         paragraph {
             text(
-                Bokmal to "Barnetillegget",
-                Nynorsk to "Barnetillegget ",
-                English to "You will not receive child supplement ",
+                bokmal { + "Barnetillegget" },
+                nynorsk { + "Barnetillegget " },
+                english { + "You will not receive child supplement " },
             )
 
             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
-                textExpr(
-                    Bokmal to " for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre,",
-                    Nynorsk to "for ".expr() + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine, ",
-                    English to "for the ".expr() + pe.ut_barnet_barna_felles() + " who live" + pe.ut_barnet_barna_felles_en_entall_flertall() + " together with both parents ",
+                text(
+                    bokmal { + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre," },
+                    nynorsk { + "for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine, " },
+                    english { + "for the " + pe.ut_barnet_barna_felles() + " who live" + pe.ut_barnet_barna_felles_en_entall_flertall() + " together with both parents " },
                 )
             }
-            textExpr(
-                Bokmal to " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
-                Nynorsk to "blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
-                English to "because your total income on its own is higher than ".expr() + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". You will not receive child supplement because your combined incomes exceed the income limit.",
+            text(
+                bokmal { + " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg." },
+                nynorsk { + "blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg." },
+                english { + "because your total income on its own is higher than " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". You will not receive child supplement because your combined incomes exceed the income limit." },
             )
         }
     }

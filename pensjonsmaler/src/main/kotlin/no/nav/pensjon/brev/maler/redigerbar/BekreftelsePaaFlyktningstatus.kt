@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
@@ -43,18 +43,18 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
     ) {
         title {
             text(
-                Bokmal to "Bekreftelse på flyktningstatus"
+                bokmal { + "Bekreftelse på flyktningstatus" }
             )
         }
         outline {
             paragraph {
-                textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " ønsker å få bekreftet om " + felles.bruker.fulltNavn() + " med fødselsnummer " +
-                            felles.bruker.foedselsnummer.value + " er registrert med flyktningstatus hos dere."
+                text(
+                    bokmal { + felles.avsenderEnhet.navn + " ønsker å få bekreftet om " + felles.bruker.fulltNavn() + " med fødselsnummer " +
+                            felles.bruker.foedselsnummer.value + " er registrert med flyktningstatus hos dere." }
                 )
             }
             paragraph {
-                text(Bokmal to "Vi ønsker i den forbindelse kopi av vedtaket og dato for ankomst til Norge.")
+                text(bokmal { + "Vi ønsker i den forbindelse kopi av vedtaket og dato for ankomst til Norge." })
             }
         }
     }

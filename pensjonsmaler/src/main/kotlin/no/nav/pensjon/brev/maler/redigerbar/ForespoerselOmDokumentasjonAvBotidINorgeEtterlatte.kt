@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -41,23 +41,23 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<F
     ) {
         title {
             text(
-                Bokmal to "Forespørsel om dokumentasjon av botid i Norge",
+                bokmal { + "Forespørsel om dokumentasjon av botid i Norge" },
             )
         }
         outline {
             //IF(PE_SaksData_Sakstype = "gjenlev" OR PE_SaksData_Sakstype = "barnep") THEN      INCLUDE ENDIF
             paragraph {
                 text(
-                    Bokmal to "Vi ber med dette om å få tilsendt oversikt over botiden (kopi av ",
+                    bokmal { + "Vi ber med dette om å få tilsendt oversikt over botiden (kopi av " },
                 )
-                text(Bokmal to "hovedregisterkort/navnekort", fontType = BOLD)
-                textExpr(
-                    Bokmal to " e.l) for ".expr() + fritekst("avdødes navn") + " med fødselsnummer " + fritekst("avdødes fødselsnummer") + ". ",
+                text(bokmal { + "hovedregisterkort/navnekort" }, fontType = BOLD)
+                text(
+                    bokmal { + " e.l) for " + fritekst("avdødes navn") + " med fødselsnummer " + fritekst("avdødes fødselsnummer") + ". " },
                 )
                 showIf(saksbehandlerValg.opplystOmBotid) {
                     val dato = fritekst("mm.dd.år")
-                    textExpr(
-                        Bokmal to "Det er opplyst om at ".expr() + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + ".",
+                    text(
+                        bokmal { + "Det er opplyst om at " + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + "." },
                     )
                 }
             }
@@ -65,18 +65,18 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<F
 
             paragraph {
                 text(
-                    Bokmal to "All",
+                    bokmal { + "All" },
                     BOLD,
                 )
                 text(
-                    Bokmal to " botid i Norge bes oppgitt.",
+                    bokmal { + " botid i Norge bes oppgitt." },
                 )
             }
             //[PE_IY_03_167_tekst]
 
             paragraph {
                 text(
-                    Bokmal to "På forhånd takk for hjelpen.",
+                    bokmal { + "På forhånd takk for hjelpen." },
                 )
             }
         }

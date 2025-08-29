@@ -56,7 +56,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.nettside
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
@@ -82,26 +82,26 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         showIf(brukerBorINorge) {
                             item {
                                 text(
-                                    Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
-                                    Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
-                                    English to "you intend to stay in a foreign country for an extended period of time or intend to move to another country"
+                                    bokmal { + "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land" },
+                                    nynorsk { + "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land" },
+                                    english { + "you intend to stay in a foreign country for an extended period of time or intend to move to another country" }
                                 )
                             }
                         }.orShow {
                             item {
                                 text(
-                                    Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
-                                    Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
-                                    English to "you move to another country, move back to Norway or if you change address in your country of residence"
+                                    bokmal { + "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland" },
+                                    nynorsk { + "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no" },
+                                    english { + "you move to another country, move back to Norway or if you change address in your country of residence" }
                                 )
                             }
                         }
                         showIf(sivilstand.isOneOf(ENKE, ENSLIG, UKJENT)) {
                             item {
                                 text(
-                                    Bokmal to "du gifter deg eller inngår samboerskap",
-                                    Nynorsk to "du giftar deg eller inngår sambuarskap",
-                                    English to "you marry or get a cohabiting partner",
+                                    bokmal { + "du gifter deg eller inngår samboerskap" },
+                                    nynorsk { + "du giftar deg eller inngår sambuarskap" },
+                                    english { + "you marry or get a cohabiting partner" },
                                 )
                             }
                         }
@@ -110,27 +110,27 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         showIf(sivilstand.equalTo(GIFT)) {
                             item {
                                 text(
-                                    Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
-                                    Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til ektefellen din endrar seg",
-                                    English to "the employment income, pension, disability benefit or investment income changes for your spouse",
+                                    bokmal { + "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din" },
+                                    nynorsk { + "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til ektefellen din endrar seg" },
+                                    english { + "the employment income, pension, disability benefit or investment income changes for your spouse" },
                                 )
                             }
                         }
                         showIf(sivilstand.equalTo(PARTNER)) {
                             item {
                                 text(
-                                    Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
-                                    Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til partnaren din endrar seg",
-                                    English to "the employment income, pension, disability benefit or investment income changes for your partner",
+                                    bokmal { + "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din" },
+                                    nynorsk { + "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til partnaren din endrar seg" },
+                                    english { + "the employment income, pension, disability benefit or investment income changes for your partner" },
                                 )
                             }
                         }
                         showIf((sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2))) {
                             item {
                                 text(
-                                    Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din",
-                                    Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til sambuaren din endrar seg",
-                                    English to "the employment income, pension, disability benefit or investment income changes for your cohabiting partner",
+                                    bokmal { + "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din" },
+                                    nynorsk { + "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til sambuaren din endrar seg" },
+                                    english { + "the employment income, pension, disability benefit or investment income changes for your cohabiting partner" },
                                 )
                             }
                         }
@@ -138,9 +138,9 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         showIf(sivilstand.equalTo(GIFT) and erIkkePaaInstitusjon) {
                             item {
                                 text(
-                                    Bokmal to "du og ektefellen din flytter fra hverandre",
-                                    Nynorsk to "du og ektefellen din flyttar frå kvarandre",
-                                    English to "you and your spouse separate",
+                                    bokmal { + "du og ektefellen din flytter fra hverandre" },
+                                    nynorsk { + "du og ektefellen din flyttar frå kvarandre" },
+                                    english { + "you and your spouse separate" },
                                 )
                             }
                         }
@@ -148,39 +148,39 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         showIf(sivilstand.equalTo(PARTNER) and erIkkePaaInstitusjon) {
                             item {
                                 text(
-                                    Bokmal to "du og partneren din flytter fra hverandre",
-                                    Nynorsk to "du og partnaren din flyttar frå kvarandre",
-                                    English to "you and your partner separate",
+                                    bokmal { + "du og partneren din flytter fra hverandre" },
+                                    nynorsk { + "du og partnaren din flyttar frå kvarandre" },
+                                    english { + "you and your partner separate" },
                                 )
                             }
                         }
                         showIf(sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2) and erIkkePaaInstitusjon) {
                             item { // vedleggPlikterAP18_001
                                 text(
-                                    Bokmal to "du og samboeren din flytter fra hverandre",
-                                    Nynorsk to "du og sambuaren din flyttar frå kvarandre",
-                                    English to "you and your cohabiting partner separate",
+                                    bokmal { + "du og samboeren din flytter fra hverandre" },
+                                    nynorsk { + "du og sambuaren din flyttar frå kvarandre" },
+                                    english { + "you and your cohabiting partner separate" },
                                 )
                             }
                             item { // vedleggPlikterAP16_001
                                 text(
-                                    Bokmal to "du gifter deg",
-                                    Nynorsk to "du giftar deg",
-                                    English to "you marry",
+                                    bokmal { + "du gifter deg" },
+                                    nynorsk { + "du giftar deg" },
+                                    english { + "you marry" },
                                 )
                             }
                             item { // vedleggPlikterAP17_001
                                 text(
-                                    Bokmal to "du får barn med samboeren din",
-                                    Nynorsk to "du får barn med sambuaren din",
-                                    English to "you and your cohabiting partner have a child together",
+                                    bokmal { + "du får barn med samboeren din" },
+                                    nynorsk { + "du får barn med sambuaren din" },
+                                    english { + "you and your cohabiting partner have a child together" },
                                 )
                             }
                             item { // vedleggPlikterAP19_001
                                 text(
-                                    Bokmal to "samboeren din dør",
-                                    Nynorsk to "sambuaren din døyr",
-                                    English to "your cohabiting partner dies",
+                                    bokmal { + "samboeren din dør" },
+                                    nynorsk { + "sambuaren din døyr" },
+                                    english { + "your cohabiting partner dies" },
                                 )
                             }
                         }
@@ -189,18 +189,18 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT) and not(borSammenMedBruker)) { // vedleggPlikterAP8_001
                             item {
                                 text(
-                                    Bokmal to "du og ektefellen din flytter sammen igjen",
-                                    Nynorsk to "du og ektefellen din flyttar saman igjen",
-                                    English to "you and your spouse move back together",
+                                    bokmal { + "du og ektefellen din flytter sammen igjen" },
+                                    nynorsk { + "du og ektefellen din flyttar saman igjen" },
+                                    english { + "you and your spouse move back together" },
                                 )
                             }
                         }
                         showIf(sivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER, PARTNER) and not(borSammenMedBruker)) { //  vedleggPlikterAP11_001
                             item {
                                 text(
-                                    Bokmal to "du og partneren din flytter sammen igjen",
-                                    Nynorsk to "du og partnaren din flyttar saman igjen",
-                                    English to "you and your partner move back together",
+                                    bokmal { + "du og partneren din flytter sammen igjen" },
+                                    nynorsk { + "du og partnaren din flyttar saman igjen" },
+                                    english { + "you and your partner move back together" },
                                 )
                             }
                         }
@@ -208,27 +208,27 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)) { // vedleggPlikterAP9_001
                         item {
                             text(
-                                Bokmal to "du blir skilt",
-                                Nynorsk to "du blir skild",
-                                English to "you divorce",
+                                bokmal { + "du blir skilt" },
+                                nynorsk { + "du blir skild" },
+                                english { + "you divorce" },
                             )
                         }
                     }
                     showIf(sivilstand.isOneOf(GIFT, GLAD_EKT, SEPARERT)) { // vedleggPlikterAP7_001
                         item {
                             text(
-                                Bokmal to "ektefellen din dør",
-                                Nynorsk to "ektefellen din døyr",
-                                English to "your spouse dies",
+                                bokmal { + "ektefellen din dør" },
+                                nynorsk { + "ektefellen din døyr" },
+                                english { + "your spouse dies" },
                             )
                         }
                     }
                     showIf(sivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER, PARTNER)) { // vedleggPlikterAP12_001
                         item {
                             text(
-                                Bokmal to "partneren din dør",
-                                Nynorsk to "partnaren din døyr",
-                                English to "your partner dies",
+                                bokmal { + "partneren din dør" },
+                                nynorsk { + "partnaren din døyr" },
+                                english { + "your partner dies" },
                             )
                         }
                     }
@@ -237,37 +237,37 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     ) { // vedleggPlikterAP10_001
                         item {
                             text(
-                                Bokmal to "du får ny samboer",
-                                Nynorsk to "du får ny sambuar",
-                                English to "you get a new cohabiting partner",
+                                bokmal { + "du får ny samboer" },
+                                nynorsk { + "du får ny sambuar" },
+                                english { + "you get a new cohabiting partner" },
                             )
                         }
                     }
                     showIf(sivilstand.isNotAnyOf(ENSLIG, ENKE, UKJENT) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
                         // vedleggPlikterAP5_001
                         item {
-                            textExpr(
-                                Bokmal to "en av dere får et varig opphold i institusjon".expr(),
-                                Nynorsk to "ein av dykk får et varig opphald i institusjon".expr(),
-                                English to "either you or your ".expr() + sivilstand.ubestemtForm() + " get permanent residency in an institution",
+                            text(
+                                bokmal { + "en av dere får et varig opphold i institusjon" },
+                                nynorsk { + "ein av dykk får et varig opphald i institusjon" },
+                                english { + "either you or your " + sivilstand.ubestemtForm() + " get permanent residency in an institution" },
                             )
                         }
                     }
                     showIf(sivilstand.isOneOf(ENSLIG, ENKE, UKJENT) and erIkkePaaInstitusjon and brukerBorINorge) { // vedleggPlikterAP26_001
                         item {
                             text(
-                                Bokmal to "du får et varig opphold i institusjon",
-                                Nynorsk to "du blir innlagd på institusjon",
-                                English to "you get permanent residency in an institution",
+                                bokmal { + "du får et varig opphold i institusjon" },
+                                nynorsk { + "du blir innlagd på institusjon" },
+                                english { + "you get permanent residency in an institution" },
                             )
                         }
                     }
                     showIf(erIkkePaaInstitusjon and brukerBorINorge) { // vedleggPlikterAP27_001
                         item {
                             text(
-                                Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
-                                Nynorsk to "du sit i varetekt, sonar straff eller er under forvaring",
-                                English to "you are held in detention, incarcerated or in custody",
+                                bokmal { + "du sitter i varetekt, soner straff eller er under forvaring" },
+                                nynorsk { + "du sit i varetekt, sonar straff eller er under forvaring" },
+                                english { + "you are held in detention, incarcerated or in custody" },
                             )
                         }
                     }
@@ -275,25 +275,25 @@ val vedleggOrienteringOmRettigheterOgPlikter =
             }
             paragraph { // vedleggPlikterHvorforMeldeAP_001
                 text(
-                    Bokmal to "Skjer det endringer, kan det få betydning for hvor mye du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mulig.",
-                    Nynorsk to "Skjer det endringar, kan det få betydning for kor mykje du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mogleg.",
-                    English to "To make sure you get the right amount of retirement pension, you need to report any changes in your circumstances that can influence the assessment of the supplement you receive. It is important that you notify any change to us as soon as possible.",
+                    bokmal { + "Skjer det endringer, kan det få betydning for hvor mye du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mulig." },
+                    nynorsk { + "Skjer det endringar, kan det få betydning for kor mykje du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mogleg." },
+                    english { + "To make sure you get the right amount of retirement pension, you need to report any changes in your circumstances that can influence the assessment of the supplement you receive. It is important that you notify any change to us as soon as possible." },
                 )
             }
         }
         showIf(sakstype.equalTo(Sakstype.UFOREP)) {
             title1 {
                 text(
-                    Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
-                    Nynorsk to "Plikt til å opplyse om endringar - folketrygdlova § 21-3",
-                    English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
+                    bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
+                    nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
+                    english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
                 )
             }
             paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
                 text(
-                    Bokmal to "Du må melde fra til Nav hvis",
-                    Nynorsk to "Du må melde frå til Nav om",
-                    English to "You must notify Nav if",
+                    bokmal { + "Du må melde fra til Nav hvis" },
+                    nynorsk { + "Du må melde frå til Nav om" },
+                    english { + "You must notify Nav if" },
                 )
             }
             paragraph {
@@ -318,18 +318,18 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     showIf(sivilstand.isOneOf(ENSLIG, ENKE, UKJENT)) {
                         item { // vedleggPlikterUT6_001
                             text(
-                                Bokmal to "du gifter deg eller inngår samboerskap",
-                                Nynorsk to "du giftar deg eller inngår sambuarskap",
-                                English to "you get married or get a cohabitant"
+                                bokmal { + "du gifter deg eller inngår samboerskap" },
+                                nynorsk { + "du giftar deg eller inngår sambuarskap" },
+                                english { + "you get married or get a cohabitant" }
                             )
                         }
                     }
                     showIf(harBarnetillegg.notNull()) {
                         item { // vedleggPlikterUT7_001
                             text(
-                                Bokmal to "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen",
-                                Nynorsk to "barn du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen",
-                                English to "the child(ren) in your care earn an income exceeding the National Insurance basic amount or there are changes in the care situation",
+                                bokmal { + "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen" },
+                                nynorsk { + "barn du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen" },
+                                english { + "the child(ren) in your care earn an income exceeding the National Insurance basic amount or there are changes in the care situation" },
                             )
                         }
                     }

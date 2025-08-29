@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class TrygdetidsListeBilateralTabell(
     val trygdetidsgrunnlagListeBilateral: Expression<List<TrygdetidsgrunnlagBilateral>>
@@ -22,23 +22,23 @@ data class TrygdetidsListeBilateralTabell(
                 header = {
                     column {
                         text(
-                            Bokmal to "Land",
-                            Nynorsk to "Land",
-                            English to "Country",
+                            bokmal { + "Land" },
+                            nynorsk { + "Land" },
+                            english { + "Country" },
                         )
                     }
                     column {
                         text(
-                            Bokmal to "Fra og med",
-                            Nynorsk to "Frå og med",
-                            English to "From (and including)",
+                            bokmal { + "Fra og med" },
+                            nynorsk { + "Frå og med" },
+                            english { + "From (and including)" },
                         )
                     }
                     column {
                         text(
-                            Bokmal to "Til og med",
-                            Nynorsk to "Til og med",
-                            English to "To (and including)",
+                            bokmal { + "Til og med" },
+                            nynorsk { + "Til og med" },
+                            english { + "To (and including)" },
                         )
                     }
                 }
@@ -47,28 +47,28 @@ data class TrygdetidsListeBilateralTabell(
                     row {
                         cell {
                             ifNotNull(trygdetidBilateral.trygdetidbilateralland) {
-                                textExpr(
-                                    Bokmal to it,
-                                    Nynorsk to it,
-                                    English to it,
+                                text(
+                                    bokmal { + it },
+                                    nynorsk { + it },
+                                    english { + it },
                                 )
                             }
                         }
                         cell {
                             ifNotNull(trygdetidBilateral.trygdetidfombilateral) {
-                                textExpr(
-                                    Bokmal to it.format(),
-                                    Nynorsk to it.format(),
-                                    English to it.format(),
+                                text(
+                                    bokmal { + it.format() },
+                                    nynorsk { + it.format() },
+                                    english { + it.format() },
                                 )
                             }
                         }
                         cell {
                             ifNotNull(trygdetidBilateral.trygdetidtombilateral) { tom ->
-                                textExpr(
-                                    Bokmal to tom.format(),
-                                    Nynorsk to tom.format(),
-                                    English to tom.format(),
+                                text(
+                                    bokmal { + tom.format() },
+                                    nynorsk { + tom.format() },
+                                    english { + tom.format() },
                                 )
                             }
                         }
