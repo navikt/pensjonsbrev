@@ -2,6 +2,16 @@ package no.nav.pensjon.brevbaker.api.model
 
 import java.time.LocalDate
 
+interface LetterMarkupWithDataUsage {
+    val markup: LetterMarkup
+    val letterDataUsage: Set<Property>
+
+    interface Property {
+        val typeName: String
+        val propertyName: String
+    }
+}
+
 interface LetterMarkup {
     val title: List<ParagraphContent.Text>
     val sakspart: Sakspart

@@ -35,6 +35,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
@@ -48,7 +50,7 @@ interface BrevbakerService {
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkup>
+    ): ServiceResult<LetterMarkupWithDataUsage>
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
@@ -91,8 +93,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkup> =
-        client.post("/letter/redigerbar/markup") {
+    ): ServiceResult<LetterMarkupWithDataUsage> =
+        client.post("/letter/redigerbar/markup-usage") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -174,6 +176,8 @@ internal object LetterMarkupModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
         addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
+        addAbstractTypeMapping<LetterMarkupWithDataUsage, LetterMarkupWithDataUsageImpl>()
+        addAbstractTypeMapping<LetterMarkupWithDataUsage.Property, LetterMarkupWithDataUsageImpl.PropertyImpl>()
     }
 
     private fun blockDeserializer() =

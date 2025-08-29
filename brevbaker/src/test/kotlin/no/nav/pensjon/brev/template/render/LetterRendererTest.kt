@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.LetterRenderer
+import no.nav.brev.brevbaker.template.render.LetterRenderer
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.ParagraphContentElement
@@ -27,7 +27,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
-import no.nav.pensjon.brev.template.toScope
+import no.nav.brev.brevbaker.template.toScope
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test

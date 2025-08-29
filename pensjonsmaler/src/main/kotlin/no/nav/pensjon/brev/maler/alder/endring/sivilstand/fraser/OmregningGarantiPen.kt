@@ -1,0 +1,27 @@
+package no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser
+
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.text
+
+data class OmregningGarantiPen(
+    val regelverkType: Expression<AlderspensjonRegelverkType>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
+            // omregning_GarantiPen
+            paragraph {
+                text(
+                    Language.Bokmal to "Derfor har vi vurdert garantipensjonen din på nytt.",
+                    Language.Nynorsk to "Derfor har vi vurdert garantipensjonen din på nytt.",
+                    Language.English to "We have therefore recalculated your guaranteed pension.",
+                )
+            }
+        }
+    }
+}
