@@ -277,7 +277,7 @@ data class AvsnittHjemmel(
                         )
                     }
                     text(
-                        Language.Bokmal to ", 22-17",
+                        Language.Bokmal to ", 20-17",
                         Language.Nynorsk to ", 20-17",
                         Language.English to ", 20-17"
                     )
@@ -335,7 +335,7 @@ data class AvsnittHjemmel(
                         )
                     }
                     text(
-                        Language.Bokmal to ", 22-17",
+                        Language.Bokmal to ", 20-17",
                         Language.Nynorsk to ", 20-17",
                         Language.English to ", 20-17"
                     )
