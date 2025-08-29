@@ -43,6 +43,7 @@ class AlderTemplatesTest {
             }
     }
 
+    // Dette er ei hypotese vi på brevteamet har. Oppdater eller fjern testen hvis dere skulle finne et scenario hvor hypotesa ikke holder
     @Test
     fun `brev som er deklarert med brevtype vedtaksbrev skal ha brevkontekst vedtak`() {
         assertEquals(
