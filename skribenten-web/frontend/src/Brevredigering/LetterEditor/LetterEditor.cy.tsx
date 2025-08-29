@@ -66,13 +66,14 @@ describe("<LetterEditor />", () => {
       move("{end}", 1);
       move("{leftArrow}", 10);
       move("{upArrow}", 1);
-      assertCaret("[CP1-2]", 22);
+      assertCaret("[CP1-2]", 31);
     });
     it("ArrowDown works within sibling contenteditables", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP1-1").click();
+      move("{rightArrow}", 10);
       move("{downArrow}", 1);
-      assertCaret("[CP1-2]", 74);
+      assertCaret("[CP1-2]", 109);
     });
     it("ArrowUp moves to the right of a variable if that is closest", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
@@ -112,6 +113,7 @@ describe("<LetterEditor />", () => {
     it("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP2-1").click();
+      move("{end}", 1);
       move("{leftArrow}", 10);
       move("{downArrow}", 1);
       assertCaret("[CP2-3]", 0);
@@ -123,7 +125,7 @@ describe("<LetterEditor />", () => {
       move("{upArrow}", 1);
       assertCaret("[CP3-2]", 28);
       move("{upArrow}", 1);
-      assertCaret("[CP3-1]", 136);
+      assertCaret("[CP3-1]", 103);
       move("{upArrow}", 1);
       assertCaret("[CP3-1]", 29);
       move("{upArrow}", 1);
@@ -134,7 +136,7 @@ describe("<LetterEditor />", () => {
       // CP3
       cy.contains("CP3-1").click();
       move("{home}", 1);
-      assertCaret("[CP3-1]", 108);
+      assertCaret("[CP3-1]", 90);
       move("{downArrow}", 1);
       assertCaret("[CP3-2]", 0);
       move("{downArrow}", 1);
