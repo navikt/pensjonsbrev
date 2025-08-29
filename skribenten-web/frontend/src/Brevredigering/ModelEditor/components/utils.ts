@@ -50,6 +50,6 @@ export function getFieldDefaultValue(defaults: { [x: string]: any } | undefined,
   return defaults[fieldName];
 }
 
-export const isBooleanField = (fieldType: FieldType) => fieldType.type === "scalar" && fieldType.kind === "BOOLEAN";
+export const isBooleanField = (field: FieldType) => field.type === "scalar" && field.kind === "BOOLEAN";
 
-export const isFieldNullableOrBoolean = (fieldType: FieldType) => fieldType.nullable || isBooleanField(fieldType);
+export const isFieldNullableOrBoolean = (field: FieldType) => field.nullable || isBooleanField(field);

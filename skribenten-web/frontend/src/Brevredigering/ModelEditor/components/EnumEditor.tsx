@@ -1,4 +1,4 @@
-import { Select } from "@navikt/ds-react";
+import { Radio, RadioGroup } from "@navikt/ds-react";
 import { Controller, useFormContext } from "react-hook-form";
 
 import type { TEnum } from "~/types/brevbakerTypes";
@@ -23,24 +23,25 @@ export const EnumEditor = ({
   return (
     <Controller
       control={control}
-      defaultValue={values[0].value}
       name={fieldName}
-      render={({ field }) => (
-        <Select
-          label={spec.displayText ?? convertFieldToReadableLabel(fieldName)}
-          size="small"
+      render={({ field, fieldState }) => (
+        <RadioGroup
           {...field}
-          onChange={(e) => {
-            field.onChange(e.target.value);
+          error={fieldState.error?.message}
+          legend={spec.displayText ?? convertFieldToReadableLabel(fieldName)}
+          name={fieldName}
+          onChange={(value) => {
+            field.onChange(value);
             submitOnChange?.();
           }}
+          size="small"
         >
           {values.map((value) => (
-            <option key={value.value} value={value.value}>
+            <Radio key={value.value} value={value.value}>
               {value.displayText ?? value.value}
-            </option>
+            </Radio>
           ))}
-        </Select>
+        </RadioGroup>
       )}
     />
   );

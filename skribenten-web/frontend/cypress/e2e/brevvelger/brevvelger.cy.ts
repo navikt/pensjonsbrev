@@ -6,28 +6,29 @@ describe("Brevvelger spec", () => {
 
   it("Søk med saksnummer", () => {
     cy.visit("/");
+    cy.contains("Brevmeny").should("not.exist");
     cy.contains("Saksnummer").click();
     cy.focused().type("123{enter}");
     cy.contains("Finner ikke saksnummer").should("exist");
     cy.focused().type("456{enter}");
-
-    cy.contains("Søk etter brevmal"); // TODO: assert something smarter?
+    cy.contains("Brevmeny");
   });
+
   it("Søk etter brevmal", () => {
     cy.visit("/saksnummer/123456/brevvelger");
 
     cy.getDataCy("brevmal-search").click();
     cy.focused().type("b");
     cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 23);
+    cy.getDataCy("brevmal-button").should("have.length", 24);
 
     cy.focused().type("r");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 6);
+    cy.getDataCy("brevmal-button").should("have.length", 7);
 
     cy.focused().type("e");
     cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 3);
+    cy.getDataCy("brevmal-button").should("have.length", 4);
 
     cy.focused().type("!");
     cy.getDataCy("category-item").should("have.length", 0);

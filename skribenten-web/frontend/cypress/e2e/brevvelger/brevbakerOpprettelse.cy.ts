@@ -56,7 +56,7 @@ describe("Oppretter brevbakerbrev", () => {
       });
 
       req.reply({ fixture: "brevResponse.json" });
-    }).as("createBrev");
+    });
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
 
@@ -88,7 +88,7 @@ describe("Oppretter brevbakerbrev", () => {
         vedtaksId: null,
       });
       req.reply({ fixture: "brevResponse.json" });
-    }).as("createBrev");
+    });
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID");
 
@@ -119,9 +119,74 @@ describe("Oppretter brevbakerbrev", () => {
         vedtaksId: null,
       });
       req.reply({ fixture: "brevResponse.json" });
-    }).as("createBrev");
+    });
 
     cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
+    cy.contains("Åpne brev").click("left");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+  });
+
+  it("oppretter brev som har tomme nullable enum felt", () => {
+    cy.fixture("modelSpecificationBrukertestBrevPensjon2025").then((spec) => {
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].utsiktenFraKontoret.nullable = true;
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].denBesteKaken.nullable = true;
+
+      cy.intercept("GET", "/bff/skribenten-backend/brevmal/BRUKERTEST_BREV_PENSJON_2025/modelSpecification", spec).as(
+        "modelSpecification",
+      );
+    });
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", { fixture: "brevResponseTestBrev.json" });
+
+    cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
+    cy.wait("@modelSpecification");
+
+    cy.contains("Brevmeny").should("exist");
+
+    cy.contains("Mot trær og natur").should("not.exist");
+
+    cy.contains("Åpne brev").click("left");
+
+    cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
+
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+  });
+
+  it("oppretter ikke brev som har tomme non-nullable enum felt", () => {
+    cy.fixture("modelSpecificationBrukertestBrevPensjon2025").then((spec) => {
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].utsiktenFraKontoret.nullable = false;
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].denBesteKaken.nullable = false;
+      cy.intercept("GET", "/bff/skribenten-backend/brevmal/BRUKERTEST_BREV_PENSJON_2025/modelSpecification", spec).as(
+        "modelSpecification",
+      );
+    });
+    cy.fixture("brevResponseTestBrev.json").then((brev) => {
+      cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", {
+        ...brev,
+        ...{
+          saksbehandlerValg: {
+            utsiktenFraKontoret: "MOT_TRAER_OG_NATUR",
+            denBesteKaken: "OSTEKAKE",
+          },
+        },
+      });
+    });
+
+    cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
+    cy.wait("@modelSpecification");
+    cy.contains("Brevmeny").should("exist");
+
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
+    cy.get("select[name=spraak]").should("have.value", "NB");
+
+    cy.contains("Åpne brev").click("left");
+
+    cy.url().should("not.eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
+
+    cy.contains("Mot trær og natur").click();
+    cy.contains("Ostekake").click();
+    cy.contains("@errorMessage").should("not.exist");
+
     cy.contains("Åpne brev").click("left");
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });
