@@ -319,9 +319,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     }
                     cell {
                         text(
-                            bokmal { +  delingstallVedUttak.format() },
-                            nynorsk { +  delingstallVedUttak.format() },
-                            english { +  delingstallVedUttak.format() }
+                            bokmal { + delingstallVedUttak.format() },
+                            nynorsk { + delingstallVedUttak.format() },
+                            english { + delingstallVedUttak.format() }
                         )
                     }
                 }
@@ -331,9 +331,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                             cell { includePhrase(DelingstallVed67Aar) }
                             cell {
                                 text(
-                                    bokmal { +  delingstall.format() },
-                                    nynorsk { +  delingstall.format() },
-                                    english { +  delingstall.format() }
+                                    bokmal { + delingstall.format() },
+                                    nynorsk { + delingstall.format() },
+                                    english { + delingstall.format() }
                                 )
                             }
                         }
@@ -346,13 +346,13 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             ifNotNull(sisteOpptjeningsAar) { sisteAar ->
                 paragraph {
                     text(
-                        bokmal { +  "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. " +
+                        bokmal { + "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. " +
                                 "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
                                 "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + "." },
-                        nynorsk { +  "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. " +
+                        nynorsk { + "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. " +
                                 "Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. " +
                                 "I berekninga er det derfor brukt pensjonsopptening til og med " + sisteAar.format() + "." },
-                        english { +  "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. " +
+                        english { + "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. " +
                                 "This applies even if your tax settlement is ready earlier. " +
                                 "Therefore, the calculation considers pension accrual up to and including " + sisteAar.format() + "." }
                     )
@@ -364,9 +364,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             ifNotNull(sisteOpptjeningsAar) { sisteAar ->
                 paragraph {
                     text(
-                        bokmal { +  "Pensjonsbeholdningen i tabellen er beregnet ut fra den pensjonen du har tatt ut og pensjonsbeholdningen din." },
-                        nynorsk { +  "Pensjonsbehaldninga i tabellen er berekna ut frå den pensjonen du har tatt ut og pensjonsbehaldninga di." },
-                        english { +  "The accumulated pension capital is calculated from your current pension and your remaining pension capital." }
+                        bokmal { + "Pensjonsbeholdningen i tabellen er beregnet ut fra den pensjonen du har tatt ut og pensjonsbeholdningen din." },
+                        nynorsk { + "Pensjonsbehaldninga i tabellen er berekna ut frå den pensjonen du har tatt ut og pensjonsbehaldninga di." },
+                        english { + "The accumulated pension capital is calculated from your current pension and your remaining pension capital." }
                     )
                 }
             }
@@ -374,31 +374,31 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
 
         paragraph {
             text(
-                bokmal { +  "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. Logg inn på ${Constants.DIN_PENSJON_URL} for å se hvilke inntekter og opplysninger om opptjening vi har registrert." },
-                nynorsk { +  "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. Logg inn på ${Constants.DIN_PENSJON_URL} for å sjå kva inntekter og opplysningar om opptening vi har registrert." },
-                english { +  "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Log in to ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital." }
+                bokmal { + "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. Logg inn på ${Constants.DIN_PENSJON_URL} for å se hvilke inntekter og opplysninger om opptjening vi har registrert." },
+                nynorsk { + "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. Logg inn på ${Constants.DIN_PENSJON_URL} for å sjå kva inntekter og opplysningar om opptening vi har registrert." },
+                english { + "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Log in to ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital." }
             )
         }
 
         showIf((opplysningerKap19.redusertTrygdetidKap19_safe.equalTo(true) or opplysningerKap20.redusertTrygdetidKap20) and opplysningerKap19.avslattKap19_safe.equalTo(false)) {
             paragraph {
                 text(
-                    bokmal { +  "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning av pensjonen din. Full trygdetid er 40 år." +
+                    bokmal { + "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning av pensjonen din. Full trygdetid er 40 år." +
                             " Unntaket kan være hvis du har pensjonsopptjening fra et land Norge har trygdeavtale med." },
-                    nynorsk { +  "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning av pensjonen din. Full trygdetid er 40 år." +
+                    nynorsk { + "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning av pensjonen din. Full trygdetid er 40 år." +
                             " Unntaket kan vere om du har pensjonsopptening frå eit land Noreg har trygdeavtale med." },
-                    english { +  "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years." +
+                    english { + "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years." +
                             " The exception may be if you have pension accrual from a country that Norway has a social security agreement with." }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Reglene for fastsetting av trygdetid er litt ulike i kapittel 19 og kapittel 20 i folketrygdloven. " +
+                    bokmal { + "Reglene for fastsetting av trygdetid er litt ulike i kapittel 19 og kapittel 20 i folketrygdloven. " +
                             "Derfor kan trygdetid etter kapittel 19 i enkelte tilfeller være høyere enn trygdetid etter kapittel 20." },
-                    nynorsk { +  "Reglane for fastsetjing av trygdetid er ulike i kapittel 19 og kapittel 20 i folketrygdlova. " +
+                    nynorsk { + "Reglane for fastsetjing av trygdetid er ulike i kapittel 19 og kapittel 20 i folketrygdlova. " +
                             "Derfor kan trygdetid etter kapittel 19 i enkelte tilfelle vere høgare enn trygdetid etter kapittel 20." },
-                    english { +  "The provisions pertaining to accumulated pension rights differ in Chapters 19 and 20 in the National Insurance Act. " +
+                    english { + "The provisions pertaining to accumulated pension rights differ in Chapters 19 and 20 in the National Insurance Act. " +
                             "Consequently, national insurance coverage pursuant to Chapter 19 may, in some cases, be higher than years pursuant to Chapter 20." },
                 )
             }
@@ -409,16 +409,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                 table(header = {
                     column {
                         text(
-                            bokmal { +  "Fra og med" },
-                            nynorsk { +  "Frå og med" },
-                            english { +  "Start date" },
+                            bokmal { + "Fra og med" },
+                            nynorsk { + "Frå og med" },
+                            english { + "Start date" },
                         )
                     }
                     column(alignment = RIGHT) {
                         text(
-                            bokmal { +  "Til og med" },
-                            nynorsk { +  "Til og med" },
-                            english { +  "End date" }
+                            bokmal { + "Til og med" },
+                            nynorsk { + "Til og med" },
+                            english { + "End date" }
                         )
                     }
                 }) {
@@ -426,16 +426,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         row {
                             cell {
                                 text(
-                                    bokmal { +  periode.fom.format(short = true) },
-                                    nynorsk { +  periode.fom.format(short = true) },
-                                    english { +  periode.fom.format(short = true) }
+                                    bokmal { + periode.fom.format(short = true) },
+                                    nynorsk { + periode.fom.format(short = true) },
+                                    english { + periode.fom.format(short = true) }
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  periode.tom.format(short = true) },
-                                    nynorsk { +  periode.tom.format(short = true) },
-                                    english { +  periode.tom.format(short = true) }
+                                    bokmal { + periode.tom.format(short = true) },
+                                    nynorsk { + periode.tom.format(short = true) },
+                                    english { + periode.tom.format(short = true) }
                                 )
                             }
                         }
@@ -446,13 +446,13 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             showIf(trygdeperioderUtland.isNotEmpty()) {
                 paragraph {
                     text(
-                        bokmal { +  ("Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har" +
+                        bokmal { + ("Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har" +
                                 " trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før" +
                                 " du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + "." },
-                        nynorsk { +  ("Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg" +
+                        nynorsk { + ("Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg" +
                                 " har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon" +
                                 " før du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + "." },
-                        english { +  ("The table below shows your insurance coverage in countries with which Norway" +
+                        english { + ("The table below shows your insurance coverage in countries with which Norway" +
                                 " has a social security agreement. These periods have been used to assess whether" +
                                 " you are eligible for retirement pension before the age of ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + "." },
                     )
@@ -462,23 +462,23 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     table(header = {
                         column {
                             text(
-                                bokmal { +  "Land" },
-                                nynorsk { +  "Land" },
-                                english { +  "Country" }
+                                bokmal { + "Land" },
+                                nynorsk { + "Land" },
+                                english { + "Country" }
                             )
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +  "Fra og med" },
-                                nynorsk { +  "Frå og med" },
-                                english { +  "Start date" },
+                                bokmal { + "Fra og med" },
+                                nynorsk { + "Frå og med" },
+                                english { + "Start date" },
                             )
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +  "Til og med" },
-                                nynorsk { +  "Til og med" },
-                                english { +  "End date" }
+                                bokmal { + "Til og med" },
+                                nynorsk { + "Til og med" },
+                                english { + "End date" }
                             )
                         }
                     }) {
@@ -486,23 +486,23 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  utlandPeriode.land },
-                                        nynorsk { +  utlandPeriode.land },
-                                        english { +  utlandPeriode.land }
+                                        bokmal { + utlandPeriode.land },
+                                        nynorsk { + utlandPeriode.land },
+                                        english { + utlandPeriode.land }
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  utlandPeriode.fom.format(short = true) },
-                                        nynorsk { +  utlandPeriode.fom.format(short = true) },
-                                        english { +  utlandPeriode.fom.format(short = true) }
+                                        bokmal { + utlandPeriode.fom.format(short = true) },
+                                        nynorsk { + utlandPeriode.fom.format(short = true) },
+                                        english { + utlandPeriode.fom.format(short = true) }
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  utlandPeriode.tom.format(short = true) },
-                                        nynorsk { +  utlandPeriode.tom.format(short = true) },
-                                        english { +  utlandPeriode.tom.format(short = true) }
+                                        bokmal { + utlandPeriode.tom.format(short = true) },
+                                        nynorsk { + utlandPeriode.tom.format(short = true) },
+                                        english { + utlandPeriode.tom.format(short = true) }
                                     )
                                 }
                             }

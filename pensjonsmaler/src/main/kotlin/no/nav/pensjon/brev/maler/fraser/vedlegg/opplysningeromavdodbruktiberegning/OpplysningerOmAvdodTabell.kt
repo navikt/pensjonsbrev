@@ -765,9 +765,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.antallMaanederIfNotNull(
         row {
             cell {
                 text(
-                    bokmal { +  bokmalTekst },
-                    nynorsk { +  nynorskTekst },
-                    english { +  engelskTekst },
+                    bokmal { + bokmalTekst },
+                    nynorsk { + nynorskTekst },
+                    english { + engelskTekst },
                 )
             }
             cell { includePhrase(AntallMaanederText(it)) }

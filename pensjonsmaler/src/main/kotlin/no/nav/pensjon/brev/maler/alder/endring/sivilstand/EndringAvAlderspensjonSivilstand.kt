@@ -495,9 +495,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGP
                                 paragraph {
                                     text(
-                                        bokmal { +  "Derfor har vi beregnet grunnpensjonen din på nytt." },
-                                        nynorsk { +  "Derfor har vi berekna grunnpensjonen din på nytt." },
-                                        english { +  "We have therefore recalculated your basic pension." },
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen din på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen din på nytt." },
+                                        english { + "We have therefore recalculated your basic pension." },
                                     )
                                 }
                             }
@@ -525,9 +525,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGP_PenT
                                 paragraph {
                                     text(
-                                        bokmal { +  "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt." },
-                                        nynorsk { +  "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt." },
-                                        english { +  "We have therefore recalculated your basic pension and pension supplement." },
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt." },
+                                        english { + "We have therefore recalculated your basic pension and pension supplement." },
                                     )
                                 }
                             }
@@ -544,9 +544,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGPST
                                 paragraph {
                                     text(
-                                        bokmal { +  "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt." },
-                                        nynorsk { +  "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt." },
-                                        english { +  "We have therefore recalculated your basic pension and the special supplement." },
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt." },
+                                        english { + "We have therefore recalculated your basic pension and the special supplement." },
                                     )
                                 }
                             }.orShowIf((minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget)) {
@@ -673,8 +673,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         // SaerSatsBruktEpsGittAvkallUT
                         paragraph {
                             text(
-                                bokmal { +  sivilstandBestemtStorBokstav + " din har gitt avkall på sin uføretrygd fra folketrygden." },
-                                nynorsk { +  sivilstandBestemtStorBokstav + " din har gitt avkall på uføretrygda si frå folketrygda." },
+                                bokmal { + sivilstandBestemtStorBokstav + " din har gitt avkall på sin uføretrygd fra folketrygden." },
+                                nynorsk { + sivilstandBestemtStorBokstav + " din har gitt avkall på uføretrygda si frå folketrygda." },
                                 english { + 
                                     "Your " + sivilstandBestemtLitenBokstav +
                                     " has renounced their disability benefits through the National Insurance Act." },
@@ -792,15 +792,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 showIf(saerskiltSatsErBrukt and kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
                     paragraph {
                         text(
-                            bokmal { +  "Derfor har vi beregnet " },
-                            nynorsk { +  "Derfor har vi berekna " },
-                            english { +  "We have therefore recalculated your " },
+                            bokmal { + "Derfor har vi beregnet " },
+                            nynorsk { + "Derfor har vi berekna " },
+                            english { + "We have therefore recalculated your " },
                         )
                         showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
                             text(
-                                bokmal { +  "særtillegget" },
-                                nynorsk { +  "særtillegget" },
-                                english { +  "special supplement" },
+                                bokmal { + "særtillegget" },
+                                nynorsk { + "særtillegget" },
+                                english { + "special supplement" },
                             )
                         }.orShowIf(
                             regelverkType.isOneOf(
@@ -809,22 +809,22 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             ),
                         ) {
                             text(
-                                bokmal { +  "pensjonstillegget" },
-                                nynorsk { +  "pensjonstillegget" },
-                                english { +  "basic pension" },
+                                bokmal { + "pensjonstillegget" },
+                                nynorsk { + "pensjonstillegget" },
+                                english { + "basic pension" },
                             )
                         }
                         showIf(minstenivaaIndividuellInnvilget) {
                             text(
-                                bokmal { +  " og minstenivåtillegget" },
-                                nynorsk { +  " og minstenivåtillegget" },
-                                english { +  " and minimum pension supplement" },
+                                bokmal { + " og minstenivåtillegget" },
+                                nynorsk { + " og minstenivåtillegget" },
+                                english { + " and minimum pension supplement" },
                             )
                         }
                         text(
-                            bokmal { +  " ditt på nytt med særskilt sats." },
-                            nynorsk { +  " ditt på nytt med særskilt sats." },
-                            english { +  " according to a special rate." },
+                            bokmal { + " ditt på nytt med særskilt sats." },
+                            nynorsk { + " ditt på nytt med særskilt sats." },
+                            english { + " according to a special rate." },
                         )
                     }
                 }
@@ -893,9 +893,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // vedleggBeregnPensjonsOpptjeningOverskrift
                     title1 {
                         text(
-                            bokmal { +  "Pensjonsopptjeningen din" },
-                            nynorsk { +  "Pensjonsoppteninga di" },
-                            english { +  "Your accumulated pension capital" },
+                            bokmal { + "Pensjonsopptjeningen din" },
+                            nynorsk { + "Pensjonsoppteninga di" },
+                            english { + "Your accumulated pension capital" },
                         )
                     }
                     // vedleggBeregnPensjonsOpptjening

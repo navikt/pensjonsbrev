@@ -64,9 +64,9 @@ class FeilBelopInntekstendringsbrev {
                     text(bokmal { + "Dette beløpet er feil. Du finner det riktige beløpet i vedlegget " })
                     text(bokmal { + "\"Opplysninger om beregningen\"" }, FontType.ITALIC)
                     text(bokmal { + ", under avsnittet " })
-                    text(bokmal { +  "\"Slik beregner vi reduksjonen av uføretrygden\"" }, FontType.ITALIC)
-                    text(bokmal { +  ". Beløpet står der som " })
-                    text(bokmal { +  "\"Brutto beregnet uføretrygd som følge av innmeldt inntekt.\"" }, FontType.ITALIC)
+                    text(bokmal { + "\"Slik beregner vi reduksjonen av uføretrygden\"" }, FontType.ITALIC)
+                    text(bokmal { + ". Beløpet står der som " })
+                    text(bokmal { + "\"Brutto beregnet uføretrygd som følge av innmeldt inntekt.\"" }, FontType.ITALIC)
                 }
             }
         }

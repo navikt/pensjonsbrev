@@ -163,13 +163,13 @@ data class KonteringTypeYtelseTextMappingStorBokstav(
             text(
                 bokmal { + "Tilleggspensjon" },
                 nynorsk { + "Tilleggspensjon" },
-                english { +  "Supplementary pension" }
+                english { + "Supplementary pension" }
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TSB)) {
             text(
-                bokmal { +  "Barnetillegg særkullsbarn" },
-                nynorsk { +  "Barnetillegg særkullsbarn" },
-                english { +  "Child supplement" }
+                bokmal { + "Barnetillegg særkullsbarn" },
+                nynorsk { + "Barnetillegg særkullsbarn" },
+                english { + "Child supplement" }
             )
         }
     }

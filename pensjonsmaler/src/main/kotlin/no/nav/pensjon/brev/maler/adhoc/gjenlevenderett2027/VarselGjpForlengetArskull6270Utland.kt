@@ -111,23 +111,23 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
 
             title1 {
                 text(
-                    bokmal { +  "Hvilke opplysninger har vi om deg?" },
-                    english { +  "What information do we have about you?" }
+                    bokmal { + "Hvilke opplysninger har vi om deg?" },
+                    english { + "What information do we have about you?" }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Det er din reelle inntekt i årene 2019–2023 som avgjør om du kan beholde pengestøtte som gjenlevende. " },
-                    english { +  "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. " }
+                    bokmal { + "Det er din reelle inntekt i årene 2019–2023 som avgjør om du kan beholde pengestøtte som gjenlevende. " },
+                    english { + "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. " }
 
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter:" },
-                    english { +  "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income:" }
+                    bokmal { + "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter:" },
+                    english { + "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income:" }
 
                 )
             }
@@ -136,80 +136,80 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    bokmal { +  "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene. " },
-                    english { +  "According to our information, your income has been lower than the income cap. " }
+                    bokmal { + "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene. " },
+                    english { + "According to our information, your income has been lower than the income cap. " }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Dersom det er korrekt, beholder du gjenlevendepensjonen din til og med 31. desember 2028. " },
-                    english { +  "If this is correct, you will keep your survivor’s pension to 31 December 2028. " }
+                    bokmal { + "Dersom det er korrekt, beholder du gjenlevendepensjonen din til og med 31. desember 2028. " },
+                    english { + "If this is correct, you will keep your survivor’s pension to 31 December 2028. " }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Fra 1. januar 2029 vil gjenlevendepensjonen bli regnet om til omstillingsstønad. " },
-                    english { +  "From 01 January 2029 your survivor’s pension will be converted to an adjustment allowance. " }
+                    bokmal { + "Fra 1. januar 2029 vil gjenlevendepensjonen bli regnet om til omstillingsstønad. " },
+                    english { + "From 01 January 2029 your survivor’s pension will be converted to an adjustment allowance. " }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Omstillingsstønaden tilsvarer 2,25 ganger grunnbeløpet per 1. januar 2029. Dersom gjenlevendepensjonen din er beregnet med mindre enn 40 års trygdetid, vil omstillingsstønaden bli redusert tilsvarende." },
-                    english { +  "The adjustment allowance is equivalent to 2.25 times the National Insurance basic amount (G) as of 01 January 2029. If your survivor’s pension is based on a period of national insurance coverage of less than 40 years, your adjustment allowance will be reduced correspondingly." }
+                    bokmal { + "Omstillingsstønaden tilsvarer 2,25 ganger grunnbeløpet per 1. januar 2029. Dersom gjenlevendepensjonen din er beregnet med mindre enn 40 års trygdetid, vil omstillingsstønaden bli redusert tilsvarende." },
+                    english { + "The adjustment allowance is equivalent to 2.25 times the National Insurance basic amount (G) as of 01 January 2029. If your survivor’s pension is based on a period of national insurance coverage of less than 40 years, your adjustment allowance will be reduced correspondingly." }
                 )
             }
 
             title1 {
                 text(
-                    bokmal { +  "Hva må du gjøre?" },
-                    english { +  "What do you need to do?" }
+                    bokmal { + "Hva må du gjøre?" },
+                    english { + "What do you need to do?" }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Dersom du mener at opplysningene i dette brevet er korrekt, trenger du ikke å gjøre noe." },
-                    english { +  "If you believe the information in this letter is correct, you do not have to do anything." }
+                    bokmal { + "Dersom du mener at opplysningene i dette brevet er korrekt, trenger du ikke å gjøre noe." },
+                    english { + "If you believe the information in this letter is correct, you do not have to do anything." }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Dersom du mener at opplysningene om inntekten din i dette brevet er feil, må du gi oss en tilbakemelding innen fire uker fra du mottok dette forhåndsvarselet. " },
-                    english { +  "If you believe the information in this letter is incorrect, you must contact us within four weeks of receiving this advance notice. " }
+                    bokmal { + "Dersom du mener at opplysningene om inntekten din i dette brevet er feil, må du gi oss en tilbakemelding innen fire uker fra du mottok dette forhåndsvarselet. " },
+                    english { + "If you believe the information in this letter is incorrect, you must contact us within four weeks of receiving this advance notice. " }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Du må da sende oss lønnsslipper fra din arbeidsgiver, eller bekreftelse fra myndighetene der du bor, som viser hvilke inntekter du har hatt i perioden 2019–2023. " },
-                    english { +  "You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. " }
+                    bokmal { + "Du må da sende oss lønnsslipper fra din arbeidsgiver, eller bekreftelse fra myndighetene der du bor, som viser hvilke inntekter du har hatt i perioden 2019–2023. " },
+                    english { + "You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. " }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +  "Vi vil da vurdere de nye opplysningene før vi gjør vedtak i saken din. " },
-                    english { +  "We will then consider the new information before we make a decision in your case. " }
+                    bokmal { + "Vi vil da vurdere de nye opplysningene før vi gjør vedtak i saken din. " },
+                    english { + "We will then consider the new information before we make a decision in your case. " }
                 )
             }
 
 
             title1 {
                 text(
-                    bokmal { +  "Meld fra om endringer " },
-                    english { +  "Report changes " }
+                    bokmal { + "Meld fra om endringer " },
+                    english { + "Report changes " }
                 )
             }
 
 
             paragraph {
                 text(
-                    bokmal { +  "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
-                    english { +  "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur. " }
+                    bokmal { + "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
+                    english { + "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur. " }
                 )
             }
 

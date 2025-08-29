@@ -451,23 +451,23 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     text(
                         bokmal { + "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
                         nynorsk { + "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjonen. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden." },
-                        english { +  "You have to submit an application when you want to start drawing your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
+                        english { + "You have to submit an application when you want to start drawing your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
                     )
                 }
             }
             showIf(pesysData.borINorge and avslagsBegrunnelse.isOneOf(UNDER_1_AR_TT, UNDER_3_AR_TT, UNDER_5_AR_TT)) {
                 title1 {
                     text(
-                        bokmal { +  "Supplerende stønad" },
-                        nynorsk { +  "Supplerande stønad" },
-                        english { +  "Supplementary benefit" }
+                        bokmal { + "Supplerende stønad" },
+                        nynorsk { + "Supplerande stønad" },
+                        english { + "Supplementary benefit" }
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. Du kan lese mer om supplerende stønad på vår nettside $SUPPLERENDE_STOENAD_URL." },
-                        nynorsk { +  "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søke om supplerande stønad. Du kan lese meir om supplerande stønad på vår nettside $SUPPLERENDE_STOENAD_URL." },
-                        english { +  "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. You can read more about supplementary benefit at our website $SUPPLERENDE_STOENAD_URL." },
+                        bokmal { + "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. Du kan lese mer om supplerende stønad på vår nettside $SUPPLERENDE_STOENAD_URL." },
+                        nynorsk { + "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søke om supplerande stønad. Du kan lese meir om supplerande stønad på vår nettside $SUPPLERENDE_STOENAD_URL." },
+                        english { + "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. You can read more about supplementary benefit at our website $SUPPLERENDE_STOENAD_URL." },
                     )
                 }
             }
@@ -485,15 +485,15 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
     private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagForLiteTrygdetidAPDto>.avslagUnder1aar3aar5aarTT() {
         paragraph {
             text(
-                bokmal { +  "Våre opplysninger viser at du har bodd eller arbeidet i Norge i "
+                bokmal { + "Våre opplysninger viser at du har bodd eller arbeidet i Norge i "
                         + fritekst("X antall dager/måneder") +
                         ". /Våre opplysninger viser at du ikke har bodd eller arbeidet i Norge." },
 
-                nynorsk { +  "Våre opplysningar viser at du har budd eller arbeidd i Noreg i "
+                nynorsk { + "Våre opplysningar viser at du har budd eller arbeidd i Noreg i "
                         + fritekst("X antall dager/måneder") +
                         ". /Våre opplysningar viser at du ikkje har budd eller arbeidd i Noreg." },
 
-                english { +  "We have registered that you have been living or working in Norway "
+                english { + "We have registered that you have been living or working in Norway "
                         + fritekst("X days/months") +
                         ". /We have no record of you living or working in Norway." },
             )
@@ -504,21 +504,21 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(erEOSland and not(erAvtaleland)) {
                 text(
-                    bokmal { +  "EØS-land" },
-                    nynorsk { +  "EØS-land" },
-                    english { +  "an other EEA country" },
+                    bokmal { + "EØS-land" },
+                    nynorsk { + "EØS-land" },
+                    english { + "an other EEA country" },
                 )
             }.orShowIf(erAvtaleland and not(erEOSland)) {
                 text(
-                    bokmal { +  "avtaleland" },
-                    nynorsk { +  "avtaleland" },
-                    english { +  "an other signatory country" },
+                    bokmal { + "avtaleland" },
+                    nynorsk { + "avtaleland" },
+                    english { + "an other signatory country" },
                 )
             }.orShowIf(erEOSland and erAvtaleland) {
                 text(
-                    bokmal { +  "EØS- og avtaleland" },
-                    nynorsk { +  "EØS- og avtaleland" },
-                    english { +  "other EEA and signatory countries" },
+                    bokmal { + "EØS- og avtaleland" },
+                    nynorsk { + "EØS- og avtaleland" },
+                    english { + "other EEA and signatory countries" },
                 )
             }
 

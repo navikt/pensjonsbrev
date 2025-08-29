@@ -898,7 +898,7 @@ data class VirkningstidspunktUfoeretrygd(val kravVirkedatoFom: Expression<LocalD
             text(
                 bokmal { + "Uføretrygden din er omregnet fra " + kravVirkedatoFom.format() + "." },
                 nynorsk { + "Uføretrygda di er rekna om frå " + kravVirkedatoFom.format() + "." },
-                english { +  "Your disability benefit has been recalculated from " + kravVirkedatoFom.format() + "." }
+                english { + "Your disability benefit has been recalculated from " + kravVirkedatoFom.format() + "." }
             )
         }
 }
@@ -909,11 +909,11 @@ data class VirkningstidspunktUfoeretrygdIngenEndring(val kravVirkedatoFom: Expre
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                bokmal { +  "Uføretrygden din er omregnet fra "
+                bokmal { + "Uføretrygden din er omregnet fra "
                         + kravVirkedatoFom.format() + ", men dette fører ikke til endring i utbetalingen." },
-                nynorsk { +  " Uføretrygda di er rekna om frå "
+                nynorsk { + " Uføretrygda di er rekna om frå "
                         + kravVirkedatoFom.format() + ", men det fører ikkje til endring i utbetalinga." },
-                english { +  "We have recalculated your disability benefit from "
+                english { + "We have recalculated your disability benefit from "
                         + kravVirkedatoFom.format() + ", however this will not lead to change in your payment." }
             )
         }
@@ -925,11 +925,11 @@ data class VirkningstidspunktOmregningBarnetillegg(val kravVirkedatoFom: Express
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                bokmal { +  "Barnetillegget i uføretrygden din er omregnet fra "
+                bokmal { + "Barnetillegget i uføretrygden din er omregnet fra "
                         + kravVirkedatoFom.format() + "." },
-                nynorsk { +  "Barnetillegget i uføretrygda di er rekna om frå "
+                nynorsk { + "Barnetillegget i uføretrygda di er rekna om frå "
                         + kravVirkedatoFom.format() + "." },
-                english { +  "We have recalculated the child supplement in your disability benefit from "
+                english { + "We have recalculated the child supplement in your disability benefit from "
                         + kravVirkedatoFom.format() + "." }
             )
         }
@@ -941,11 +941,11 @@ data class VirkningstidspunktUfoeretrygdAvkortetTil0(val kravVirkedatoFom: Expre
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                bokmal { +  "Uføretrygden din er omregnet fra "
+                bokmal { + "Uføretrygden din er omregnet fra "
                         + kravVirkedatoFom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr." },
-                nynorsk { +  " Uføretrygda di er rekna om frå "
+                nynorsk { + " Uføretrygda di er rekna om frå "
                         + kravVirkedatoFom.format() + ", men det fører ikkje til endring i utbetalinga då uføretrygda er redusert til 0 kr." },
-                english { +  "We have recalculated your disability benefit from"
+                english { + "We have recalculated your disability benefit from"
                         + kravVirkedatoFom.format() + ". However this will not lead to change in your payment because your disability benefit is reduced to NOK 0." }
             )
         }

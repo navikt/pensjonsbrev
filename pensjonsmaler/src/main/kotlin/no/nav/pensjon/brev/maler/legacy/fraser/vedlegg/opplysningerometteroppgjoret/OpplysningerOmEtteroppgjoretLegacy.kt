@@ -169,22 +169,22 @@ object OpplysningerOmEtteroppgjoretLegacy {
             showIf(inntektsgrunnlag.registerkilde_safe.equalTo("a_ordning")) {
                 text(
                     bokmal { + "Elektronisk innmeldt fra arbeidsgiver" },
-                    nynorsk { +  "Elektronisk innmeld frå arbeidsgivar" },
+                    nynorsk { + "Elektronisk innmeld frå arbeidsgivar" },
                 )
             }.orShowIf(inntektsgrunnlag.registerkilde_safe.equalTo("skd")) {
                 text(
-                    bokmal { +  "Oppgitt av Skatteetaten" },
-                    nynorsk { +  "Opplyst av Skatteetaten" },
+                    bokmal { + "Oppgitt av Skatteetaten" },
+                    nynorsk { + "Opplyst av Skatteetaten" },
                 )
             }.orShowIf(inntektsgrunnlag.grunnikkereduksjon_safe.equalTo("etterbetaling")) {
                 text(
-                    bokmal { +  "Nav" },
-                    nynorsk { +  "Nav" },
+                    bokmal { + "Nav" },
+                    nynorsk { + "Nav" },
                 )
             }.orShow {
                 text(
-                    bokmal { +  "Oppgitt av deg" },
-                    nynorsk { +  "Opplyst av deg" },
+                    bokmal { + "Oppgitt av deg" },
+                    nynorsk { + "Opplyst av deg" },
                 )
             }
         }
@@ -196,38 +196,38 @@ object OpplysningerOmEtteroppgjoretLegacy {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(grunnIkkeReduksjonKode.equalTo("opptjent_for_innv_ut")) {
                 text(
-                    bokmal { +  "Inntekt før uføretrygden ble innvilget" },
-                    nynorsk { +  "Inntekt før du fekk innvilga uføretrygd" },
+                    bokmal { + "Inntekt før uføretrygden ble innvilget" },
+                    nynorsk { + "Inntekt før du fekk innvilga uføretrygd" },
                 )
             }
             showIf(grunnIkkeReduksjonKode.equalTo("opptjent_etter_innv_ut")) {
                 text(
-                    bokmal { +  "Inntekt etter at uføretrygden opphørte" },
-                    nynorsk { +  "Inntekt etter at uføretrygda di tok slutt" },
+                    bokmal { + "Inntekt etter at uføretrygden opphørte" },
+                    nynorsk { + "Inntekt etter at uføretrygda di tok slutt" },
                 )
             }
             showIf(grunnIkkeReduksjonKode.equalTo("erstatning_innttap_erstoppgj")) {
                 text(
-                    bokmal { +  "Erstatning for inntektstap ved erstatningsoppgjør" },
-                    nynorsk { +  "Erstatning for inntektstap ved erstatningsoppgjer" },
+                    bokmal { + "Erstatning for inntektstap ved erstatningsoppgjør" },
+                    nynorsk { + "Erstatning for inntektstap ved erstatningsoppgjer" },
                 )
             }
             showIf(grunnIkkeReduksjonKode.equalTo("etterslepsinnt_avslt_akt")) {
                 text(
-                    bokmal { +  "Inntekt fra helt avsluttet arbeid eller virksomhet" },
-                    nynorsk { +  "Inntekt frå heilt avslutta arbeid eller verksemd" },
+                    bokmal { + "Inntekt fra helt avsluttet arbeid eller virksomhet" },
+                    nynorsk { + "Inntekt frå heilt avslutta arbeid eller verksemd" },
                 )
             }
             showIf(grunnIkkeReduksjonKode.equalTo("ikke_red_annet")) {
                 text(
-                    bokmal { +  "Annet" },
-                    nynorsk { +  "Anna" },
+                    bokmal { + "Annet" },
+                    nynorsk { + "Anna" },
                 )
             }
             showIf(grunnIkkeReduksjonKode.equalTo("etterbetaling")) {
                 text(
-                    bokmal { +  "Etterbetaling fra Nav" },
-                    nynorsk { +  "Etterbetaling frå Nav" },
+                    bokmal { + "Etterbetaling fra Nav" },
+                    nynorsk { + "Etterbetaling frå Nav" },
                 )
             }
         }
@@ -239,33 +239,33 @@ object OpplysningerOmEtteroppgjoretLegacy {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(inntektstypeKode.equalTo("rap_arb")) {
                 text(
-                    bokmal { +  "Arbeidsinntekt" },
-                    nynorsk { +  "Arbeidsinntekt" },
+                    bokmal { + "Arbeidsinntekt" },
+                    nynorsk { + "Arbeidsinntekt" },
                 )
             }.orShowIf(inntektstypeKode.equalTo("forintutl")) {
                 text(
-                    bokmal { +  "Utlandsinntekt" },
-                    nynorsk { +  "Utanlandsinntekt" },
+                    bokmal { + "Utlandsinntekt" },
+                    nynorsk { + "Utanlandsinntekt" },
                 )
             }.orShowIf(inntektstypeKode.equalTo("rap_nar")) {
                 text(
-                    bokmal { +  "Næringsinntekt" },
-                    nynorsk { +  "Næringsinntekt" },
+                    bokmal { + "Næringsinntekt" },
+                    nynorsk { + "Næringsinntekt" },
                 )
             }.orShowIf(inntektstypeKode.equalTo("rap_and")) {
                 text(
-                    bokmal { +  "Pensjoner fra andre enn Nav" },
-                    nynorsk { +  "Pensjon frå andre enn Nav" },
+                    bokmal { + "Pensjoner fra andre enn Nav" },
+                    nynorsk { + "Pensjon frå andre enn Nav" },
                 )
             }.orShowIf(inntektstypeKode.equalTo("forpenutl")) {
                 text(
-                    bokmal { +  "Pensjon fra utlandet" },
-                    nynorsk { +  "Pensjon frå utlandet" },
+                    bokmal { + "Pensjon fra utlandet" },
+                    nynorsk { + "Pensjon frå utlandet" },
                 )
             }.orShowIf(inntektstypeKode.equalTo("ikke_red")) {
                 text(
-                    bokmal { +  "Inntekt som kan trekkes fra" },
-                    nynorsk { +  "Inntekt som kan bli trekt frå" },
+                    bokmal { + "Inntekt som kan trekkes fra" },
+                    nynorsk { + "Inntekt som kan bli trekt frå" },
                 )
             }
         }
@@ -277,28 +277,28 @@ object OpplysningerOmEtteroppgjoretLegacy {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(grunnIkkeReduksjonKode.equalTo("opptjent_for_innv_ut")) {
                 text(
-                    bokmal { +  "Inntekt før uføretrygden ble innvilget" },
-                    nynorsk { +  "Inntekt før du fekk innvilga uføretrygd" },
+                    bokmal { + "Inntekt før uføretrygden ble innvilget" },
+                    nynorsk { + "Inntekt før du fekk innvilga uføretrygd" },
                 )
             }.orShowIf(grunnIkkeReduksjonKode.equalTo("opptjent_etter_innv_ut")) {
                 text(
-                    bokmal { +  "Inntekt etter at uføretrygden opphørte" },
-                    nynorsk { +  "Inntekt etter at uføretrygda di tok slutt" },
+                    bokmal { + "Inntekt etter at uføretrygden opphørte" },
+                    nynorsk { + "Inntekt etter at uføretrygda di tok slutt" },
                 )
             }.orShowIf(grunnIkkeReduksjonKode.equalTo("erstatning_innttap_erstoppgj")) {
                 text(
-                    bokmal { +  "Erstatning for inntektstap ved erstatningsoppgjør" },
-                    nynorsk { +  "Erstatning for inntektstap ved erstatningsoppgjer" },
+                    bokmal { + "Erstatning for inntektstap ved erstatningsoppgjør" },
+                    nynorsk { + "Erstatning for inntektstap ved erstatningsoppgjer" },
                 )
             }.orShowIf(grunnIkkeReduksjonKode.equalTo("etterslepsinnt_avslt_akt")) {
                 text(
-                    bokmal { +  "Inntekt fra helt avsluttet arbeid eller virksomhet" },
-                    nynorsk { +  "Inntekt frå heilt avslutta arbeid eller verksemd" },
+                    bokmal { + "Inntekt fra helt avsluttet arbeid eller virksomhet" },
+                    nynorsk { + "Inntekt frå heilt avslutta arbeid eller verksemd" },
                 )
             }.orShowIf(grunnIkkeReduksjonKode.equalTo("ikke_red_annet")) {
                 text(
-                    bokmal { +  "Annet" },
-                    nynorsk { +  "Anna" },
+                    bokmal { + "Annet" },
+                    nynorsk { + "Anna" },
                 )
             }
         }
@@ -311,28 +311,28 @@ object OpplysningerOmEtteroppgjoretLegacy {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(inntektTypeKode.equalTo("rap_arb")) {
                 text(
-                    bokmal { +  "Arbeidsinntekt" },
-                    nynorsk { +  "Arbeidsinntekt" },
+                    bokmal { + "Arbeidsinntekt" },
+                    nynorsk { + "Arbeidsinntekt" },
                 )
             }.orShowIf(inntektTypeKode.equalTo("forintutl")) {
                 text(
-                    bokmal { +  "Utlandsinntekt" },
-                    nynorsk { +  "Utanlandsinntekt" },
+                    bokmal { + "Utlandsinntekt" },
+                    nynorsk { + "Utanlandsinntekt" },
                 )
             }.orShowIf(inntektTypeKode.equalTo("rap_nar")) {
                 text(
-                    bokmal { +  "Næringsinntekt" },
-                    nynorsk { +  "Næringsinntekt" },
+                    bokmal { + "Næringsinntekt" },
+                    nynorsk { + "Næringsinntekt" },
                 )
             }.orShowIf(inntektTypeKode.equalTo("rap_and")) {
                 text(
-                    bokmal { +  "Pensjoner fra andre enn Nav" },
-                    nynorsk { +  "Pensjon frå andre enn Nav" },
+                    bokmal { + "Pensjoner fra andre enn Nav" },
+                    nynorsk { + "Pensjon frå andre enn Nav" },
                 )
             }.orShowIf(inntektTypeKode.equalTo("forpenutl")) {
                 text(
-                    bokmal { +  "Pensjon fra utlandet" },
-                    nynorsk { +  "Pensjon frå utlandet" },
+                    bokmal { + "Pensjon fra utlandet" },
+                    nynorsk { + "Pensjon frå utlandet" },
                 )
             }
         }
@@ -344,18 +344,18 @@ object OpplysningerOmEtteroppgjoretLegacy {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(registerkilde.equalTo("a_ordning")) {
                 text(
-                    bokmal { +  "Elektronisk innmeldt fra arbeidsgiver" },
-                    nynorsk { +  "Elektronisk innmeld frå arbeidsgivar" },
+                    bokmal { + "Elektronisk innmeldt fra arbeidsgiver" },
+                    nynorsk { + "Elektronisk innmeld frå arbeidsgivar" },
                 )
             }.orShowIf(registerkilde.equalTo("skd")) {
                 text(
-                    bokmal { +  "Oppgitt av Skatteetaten" },
-                    nynorsk { +  "Opplyst av Skatteetaten" },
+                    bokmal { + "Oppgitt av Skatteetaten" },
+                    nynorsk { + "Opplyst av Skatteetaten" },
                 )
             }.orShow {
                 text(
-                    bokmal { +  "Oppgitt av deg" },
-                    nynorsk { +  "Opplyst av deg" },
+                    bokmal { + "Oppgitt av deg" },
+                    nynorsk { + "Opplyst av deg" },
                 )
             }
         }
@@ -367,18 +367,18 @@ object OpplysningerOmEtteroppgjoretLegacy {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(registerkilde.equalTo("a_ordning")) {
                 text(
-                    bokmal { +  "Elektronisk innmeldt fra arbeidsgiver" },
-                    nynorsk { +  "Elektronisk innmeld frå arbeidsgivar" },
+                    bokmal { + "Elektronisk innmeldt fra arbeidsgiver" },
+                    nynorsk { + "Elektronisk innmeld frå arbeidsgivar" },
                 )
             }.orShowIf(registerkilde.equalTo("skd")) {
                 text(
-                    bokmal { +  "Oppgitt av Skatteetaten" },
-                    nynorsk { +  "Opplyst av Skatteetaten" },
+                    bokmal { + "Oppgitt av Skatteetaten" },
+                    nynorsk { + "Opplyst av Skatteetaten" },
                 )
             }.orShow {
                 text(
-                    bokmal { +  "Oppgitt av deg" },
-                    nynorsk { +  "Opplyst av deg" },
+                    bokmal { + "Oppgitt av deg" },
+                    nynorsk { + "Opplyst av deg" },
                 )
             }
         }
@@ -393,8 +393,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
             ) {
                 title1 {
                     text(
-                        bokmal { +  "Beløp som er trukket fra inntekten din" },
-                        nynorsk { +  "Beløp som er trekt frå inntekta di" },
+                        bokmal { + "Beløp som er trukket fra inntekten din" },
+                        nynorsk { + "Beløp som er trekt frå inntekta di" },
                     )
                 }
 
@@ -402,26 +402,26 @@ object OpplysningerOmEtteroppgjoretLegacy {
                     table(header = {
                         column {
                             text(
-                                bokmal { +  "Inntektstype" },
-                                nynorsk { +  "Inntektstype" },
+                                bokmal { + "Inntektstype" },
+                                nynorsk { + "Inntektstype" },
                             )
                         }
                         column {
                             text(
-                                bokmal { +  "Årsak til at inntekt er trukket fra" },
-                                nynorsk { +  "Årsak til at inntekt er trekt frå" },
+                                bokmal { + "Årsak til at inntekt er trukket fra" },
+                                nynorsk { + "Årsak til at inntekt er trekt frå" },
                             )
                         }
                         column {
                             text(
-                                bokmal { +  "Mottatt av" },
-                                nynorsk { +  "Motteken av" },
+                                bokmal { + "Mottatt av" },
+                                nynorsk { + "Motteken av" },
                             )
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +  "Beløp" },
-                                nynorsk { +  "Beløp" },
+                                bokmal { + "Beløp" },
+                                nynorsk { + "Beløp" },
                             )
                         }
                     }) {
@@ -447,8 +447,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         text(
-                                            bokmal { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -457,8 +457,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Inntekt trukket fra pensjonsgivende inntekt" },
-                                    nynorsk { +  "Inntekt trekt frå pensjonsgivende inntekt" },
+                                    bokmal { + "Inntekt trukket fra pensjonsgivende inntekt" },
+                                    nynorsk { + "Inntekt trekt frå pensjonsgivende inntekt" },
                                     BOLD
                                 )
                             }
@@ -470,9 +470,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             }
                             cell {
                                 text(
-                                    bokmal { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
+                                    bokmal { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
                                         .format(false) + " kr" },
-                                    nynorsk { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
+                                    nynorsk { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
                                         .format(false) + " kr" },
                                     BOLD
                                 )
@@ -502,8 +502,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         text(
-                                            bokmal { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -518,8 +518,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Inntekt trukket fra personinntekt" },
-                                        nynorsk { +  "Inntekt trekt frå personinntekt" },
+                                        bokmal { + "Inntekt trukket fra personinntekt" },
+                                        nynorsk { + "Inntekt trekt frå personinntekt" },
                                         BOLD
                                     )
                                 }
@@ -527,9 +527,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell {}
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
+                                        bokmal { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
                                             .format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
+                                        nynorsk { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
                                             .format(false) + " kr" },
                                         BOLD
                                     )
@@ -552,15 +552,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
 
                 title1 {
                     text(
-                        bokmal { +  "Oversikt over om du har fått for mye eller for lite i " },
-                        nynorsk { +  "Oversikt over om du har fått for mykje eller for lite i " },
+                        bokmal { + "Oversikt over om du har fått for mye eller for lite i " },
+                        nynorsk { + "Oversikt over om du har fått for mykje eller for lite i " },
                     )
 
                     //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0))) {
                         text(
-                            bokmal { +  "uføretrygd" },
-                            nynorsk { +  "uføretrygd" },
+                            bokmal { + "uføretrygd" },
+                            nynorsk { + "uføretrygd" },
                         )
                     }
 
@@ -571,8 +571,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)))
                     ) {
                         text(
-                            bokmal { +  " og " },
-                            nynorsk { +  " og " },
+                            bokmal { + " og " },
+                            nynorsk { + " og " },
                         )
                     }
 
@@ -582,8 +582,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
                     ) {
                         text(
-                            bokmal { +  "barnetillegg" },
-                            nynorsk { +  "barnetillegg" },
+                            bokmal { + "barnetillegg" },
+                            nynorsk { + "barnetillegg" },
                         )
                     }
                 }
@@ -592,27 +592,27 @@ object OpplysningerOmEtteroppgjoretLegacy {
                     table(header = {
                         column(columnSpan = 5) {
                             text(
-                                bokmal { +  "Type stønad" },
-                                nynorsk { +  "Type stønad" },
+                                bokmal { + "Type stønad" },
+                                nynorsk { + "Type stønad" },
                             )
                         }
                         column(alignment = RIGHT, columnSpan = 6) {
                             text(
-                                bokmal { +  "Dette skulle du ha fått ut fra inntektsopplysninger fra Skatteetaten" },
-                                nynorsk { +  "Dette skulle du ha fått ut frå inntektsopplysningar frå Skatteetaten" },
+                                bokmal { + "Dette skulle du ha fått ut fra inntektsopplysninger fra Skatteetaten" },
+                                nynorsk { + "Dette skulle du ha fått ut frå inntektsopplysningar frå Skatteetaten" },
                             )
                         }
                         column(alignment = RIGHT, columnSpan = 4) {
                             text(
-                                bokmal { +  "Dette fikk du i " },
-                                nynorsk { +  "Dette fekk du i " },
+                                bokmal { + "Dette fikk du i " },
+                                nynorsk { + "Dette fekk du i " },
                             )
 
                             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
                             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0))) {
                                 text(
-                                    bokmal { +  "uføretrygd" },
-                                    nynorsk { +  "uføretrygd" },
+                                    bokmal { + "uføretrygd" },
+                                    nynorsk { + "uføretrygd" },
                                 )
                             }
 
@@ -623,8 +623,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)))
                             ) {
                                 text(
-                                    bokmal { +  " og " },
-                                    nynorsk { +  " og " },
+                                    bokmal { + " og " },
+                                    nynorsk { + " og " },
                                 )
                             }
 
@@ -634,15 +634,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
                             ) {
                                 text(
-                                    bokmal { +  "barnetillegg" },
-                                    nynorsk { +  "barnetillegg" },
+                                    bokmal { + "barnetillegg" },
+                                    nynorsk { + "barnetillegg" },
                                 )
                             }
                         }
                         column(alignment = RIGHT, columnSpan = 4) {
                             text(
-                                bokmal { +  "Beløp du har fått for mye eller for lite" },
-                                nynorsk { +  "Beløp du har fått for mykje eller for lite" },
+                                bokmal { + "Beløp du har fått for mye eller for lite" },
+                                nynorsk { + "Beløp du har fått for mykje eller for lite" },
                             )
                         }
                     }) {
@@ -651,34 +651,34 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Uføretrygd" },
-                                        nynorsk { +  "Uføretrygd" },
+                                        bokmal { + "Uføretrygd" },
+                                        nynorsk { + "Uføretrygd" },
                                     )
 
                                     //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
                                     showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
                                         text(
-                                            bokmal { +  " og gjenlevendetillegg" },
-                                            nynorsk { +  " og attlevandetillegg" },
+                                            bokmal { + " og gjenlevendetillegg" },
+                                            nynorsk { + " og attlevandetillegg" },
                                         )
                                     }
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format(false) + " kr" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().format(false) + " kr" },
                                     )
                                 }
                             }
@@ -689,26 +689,26 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Barnetillegg fellesbarn" },
-                                        nynorsk { +  "Barnetillegg fellesbarn" },
+                                        bokmal { + "Barnetillegg fellesbarn" },
+                                        nynorsk { + "Barnetillegg fellesbarn" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptfb().format(false) + " kr" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptfb().format(false) + " kr" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().format(false) + " kr" },
                                     )
                                 }
                             }
@@ -719,28 +719,28 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Barnetillegg særkullsbarn" },
-                                        nynorsk { +  "Barnetillegg særkullsbarn" },
+                                        bokmal { + "Barnetillegg særkullsbarn" },
+                                        nynorsk { + "Barnetillegg særkullsbarn" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(false) + " kr" },
-                                    )
-
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format(false) + " kr" },
                                     )
 
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format(false) + " kr" },
+                                    )
+
+                                }
+                                cell {
+                                    text(
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format(false) + " kr" },
                                     )
 
                                 }
@@ -753,9 +753,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Beløpet du har fått for mye i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                        bokmal { + "Beløpet du har fått for mye i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
                                             .format() + ":" },
-                                        nynorsk { +  "Beløpet du har fått for mykje i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                        nynorsk { + "Beløpet du har fått for mykje i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
                                             .format() + ":" },
                                         BOLD
                                     )
@@ -764,8 +764,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell { }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
                                         BOLD
                                     )
                                 }
@@ -779,9 +779,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Beløpet du har fått for lite i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                        bokmal { + "Beløpet du har fått for lite i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
                                             .format() + ":" },
-                                        nynorsk { +  "Beløpet du har fått for lite i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                        nynorsk { + "Beløpet du har fått for lite i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
                                             .format() + ":" },
                                         BOLD
                                     )
@@ -790,8 +790,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell { }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format(false) + " kr" },
                                         BOLD
                                     )
                                 }
@@ -817,34 +817,34 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 //[TBU705V_Overskrift, Text 4]
                 title1 {
                     text(
-                        bokmal { +  "Beløp som er trukket fra inntekten til annen forelder" },
-                        nynorsk { +  "Beløp som er trekt frå inntekta til den andre forelderen" },
+                        bokmal { + "Beløp som er trukket fra inntekten til annen forelder" },
+                        nynorsk { + "Beløp som er trekt frå inntekta til den andre forelderen" },
                     )
                 }
                 paragraph {
                     table(header = {
                         column(columnSpan = 3) {
                             text(
-                                bokmal { +  "Fradragstype" },
-                                nynorsk { +  "Frådragstype" },
+                                bokmal { + "Fradragstype" },
+                                nynorsk { + "Frådragstype" },
                             )
                         }
                         column(columnSpan = 5) {
                             text(
-                                bokmal { +  "Årsak til at inntekt er trukket fra" },
-                                nynorsk { +  "Årsak til at inntekt er trekt frå" },
+                                bokmal { + "Årsak til at inntekt er trukket fra" },
+                                nynorsk { + "Årsak til at inntekt er trekt frå" },
                             )
                         }
                         column(columnSpan = 2) {
                             text(
-                                bokmal { +  "Mottatt av" },
-                                nynorsk { +  "Motteken av" },
+                                bokmal { + "Mottatt av" },
+                                nynorsk { + "Motteken av" },
                             )
                         }
                         column(columnSpan = 2, alignment = RIGHT) {
                             text(
-                                bokmal { +  "Beløp" },
-                                nynorsk { +  "Beløp" },
+                                bokmal { + "Beløp" },
+                                nynorsk { + "Beløp" },
                             )
                         }
                     }) {
@@ -872,8 +872,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         text(
-                                            bokmal { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -883,22 +883,22 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Inntekt" },
-                                    nynorsk { +  "Inntekt" },
+                                    bokmal { + "Inntekt" },
+                                    nynorsk { + "Inntekt" },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  "Inntekt inntil ett grunnbeløp" },
-                                    nynorsk { +  "Inntekt inntil eit grunnbeløp" },
+                                    bokmal { + "Inntekt inntil ett grunnbeløp" },
+                                    nynorsk { + "Inntekt inntil eit grunnbeløp" },
                                 )
                             }
                             cell {}
                             cell {
                                 text(
-                                    bokmal { +  pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
                                         .format(false) + " kr" },
-                                    nynorsk { +  pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
                                         .format(false) + " kr" },
                                 )
                             }
@@ -907,8 +907,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Inntekt trukket fra personinntekt" },
-                                    nynorsk { +  "Inntekt trekt frå personinntekt" },
+                                    bokmal { + "Inntekt trukket fra personinntekt" },
+                                    nynorsk { + "Inntekt trekt frå personinntekt" },
                                     BOLD
                                 )
                             }
@@ -916,8 +916,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             cell { }
                             cell {
                                 text(
-                                    bokmal { +  pe.ut_inntekt_trukket_fra_personinntekt().format(false) + " kr" },
-                                    nynorsk { +  pe.ut_inntekt_trukket_fra_personinntekt().format(false) + " kr" },
+                                    bokmal { + pe.ut_inntekt_trukket_fra_personinntekt().format(false) + " kr" },
+                                    nynorsk { + pe.ut_inntekt_trukket_fra_personinntekt().format(false) + " kr" },
                                     BOLD
                                 )
                             }
@@ -939,8 +939,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 //[Text 3, Text 4, Text 2]
                 title1 {
                     text(
-                        bokmal { +  "Inntekten til annen forelder" },
-                        nynorsk { +  "Inntekta til den andre forelderen" },
+                        bokmal { + "Inntekten til annen forelder" },
+                        nynorsk { + "Inntekta til den andre forelderen" },
                     )
                 }
 
@@ -948,20 +948,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                     table(header = {
                         column(columnSpan = 3) {
                             text(
-                                bokmal { +  "Inntektstyper" },
-                                nynorsk { +  "Inntektstypar" },
+                                bokmal { + "Inntektstyper" },
+                                nynorsk { + "Inntektstypar" },
                             )
                         }
                         column(columnSpan = 3) {
                             text(
-                                bokmal { +  "Mottatt av" },
-                                nynorsk { +  "Motteken av" },
+                                bokmal { + "Mottatt av" },
+                                nynorsk { + "Motteken av" },
                             )
                         }
                         column(columnSpan = 2, alignment = RIGHT) {
                             text(
-                                bokmal { +  "Registrert inntekt" },
-                                nynorsk { +  "Registrert inntekt" },
+                                bokmal { + "Registrert inntekt" },
+                                nynorsk { + "Registrert inntekt" },
                             )
                         }
                     }) {
@@ -987,8 +987,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         text(
-                                            bokmal { +  inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { +  inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -998,17 +998,17 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Sum personinntekt" },
-                                    nynorsk { +  "Sum personinntekt" },
+                                    bokmal { + "Sum personinntekt" },
+                                    nynorsk { + "Sum personinntekt" },
                                     BOLD
                                 )
                             }
                             cell { }
                             cell {
                                 text(
-                                    bokmal { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
+                                    bokmal { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
                                         .format(false) + " kr" },
-                                    nynorsk { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
+                                    nynorsk { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
                                         .format(false) + " kr" },
                                     BOLD
                                 )
@@ -1034,8 +1034,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
             ) {
                 title1 {
                     text(
-                        bokmal { +  "Inntekten din" },
-                        nynorsk { +  "Inntekta di" },
+                        bokmal { + "Inntekten din" },
+                        nynorsk { + "Inntekta di" },
                     )
                 }
             }
@@ -1053,21 +1053,21 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         header = {
                             column(columnSpan = 3) {
                                 text(
-                                    bokmal { +  "Inntektstyper" },
-                                    nynorsk { +  "Inntektstypar" },
+                                    bokmal { + "Inntektstyper" },
+                                    nynorsk { + "Inntektstypar" },
                                 )
                             }
 
                             column(columnSpan = 3) {
                                 text(
-                                    bokmal { +  "Mottatt av" },
-                                    nynorsk { +  "Motteken av" },
+                                    bokmal { + "Mottatt av" },
+                                    nynorsk { + "Motteken av" },
                                 )
                             }
                             column(columnSpan = 2, alignment = RIGHT) {
                                 text(
-                                    bokmal { +  "Registrert inntekt" },
-                                    nynorsk { +  "Registrert inntekt" },
+                                    bokmal { + "Registrert inntekt" },
+                                    nynorsk { + "Registrert inntekt" },
                                 )
                             }
                         }
@@ -1089,8 +1089,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         text(
-                                            bokmal { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -1109,8 +1109,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 cell {}
                                 cell {
                                     text(
-                                        bokmal { +  "Skatteetaten opplyser at du ikke hadde pensjonsgivende inntekt" },
-                                        nynorsk { +  "Skatteetaten opplyser at du ikkje hadde pensjonsgivande inntekt" },
+                                        bokmal { + "Skatteetaten opplyser at du ikke hadde pensjonsgivende inntekt" },
+                                        nynorsk { + "Skatteetaten opplyser at du ikkje hadde pensjonsgivande inntekt" },
                                     )
                                 }
                             }
@@ -1118,17 +1118,17 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Sum pensjonsgivende inntekt" },
-                                    nynorsk { +  "Sum pensjonsgivande inntekt" },
+                                    bokmal { + "Sum pensjonsgivende inntekt" },
+                                    nynorsk { + "Sum pensjonsgivande inntekt" },
                                     BOLD
                                 )
                             }
                             cell {}
                             cell {
                                 text(
-                                    bokmal { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
+                                    bokmal { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
                                         .format(false) + " kr" },
-                                    nynorsk { +  pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
+                                    nynorsk { + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
                                         .format(false) + " kr" },
                                     BOLD
                                 )
@@ -1152,8 +1152,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     }
                                     cell {
                                         text(
-                                            bokmal { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { +  inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -1170,20 +1170,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Uføretrygd" },
-                                        nynorsk { +  "Uføretrygd" },
+                                        bokmal { + "Uføretrygd" },
+                                        nynorsk { + "Uføretrygd" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  "Beregnet av Nav" },
-                                        nynorsk { +  "Berekna av Nav" },
+                                        bokmal { + "Beregnet av Nav" },
+                                        nynorsk { + "Berekna av Nav" },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
-                                        nynorsk { +  pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
+                                        bokmal { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
+                                        nynorsk { + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format(false) + " kr" },
                                     )
                                 }
                             }
@@ -1199,16 +1199,16 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Sum personinntekt" },
-                                        nynorsk { +  "Sum personinntekt" },
+                                        bokmal { + "Sum personinntekt" },
+                                        nynorsk { + "Sum personinntekt" },
                                         BOLD
                                     )
                                 }
                                 cell {}
                                 cell {
                                     text(
-                                        bokmal { +  pe.ut_sum_inntekterbt_totalbeloput().format(false) + " kr" },
-                                        nynorsk { +  pe.ut_sum_inntekterbt_totalbeloput().format(false) + " kr" },
+                                        bokmal { + pe.ut_sum_inntekterbt_totalbeloput().format(false) + " kr" },
+                                        nynorsk { + pe.ut_sum_inntekterbt_totalbeloput().format(false) + " kr" },
                                         BOLD
                                     )
                                 }

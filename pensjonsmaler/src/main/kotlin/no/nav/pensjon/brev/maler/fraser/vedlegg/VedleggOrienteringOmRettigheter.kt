@@ -357,7 +357,7 @@ object VedleggInnsynSakUfoeretrygdPesysNoenDokumenter : OutlinePhrase<LangBokmal
             text(
                 bokmal { + "Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på ${Constants.DITT_NAV}. Du kan også ringe oss på telefon " + felles.avsenderEnhet.telefonnummer.format() + "." },
                 nynorsk { + "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på ${Constants.DITT_NAV}. Du kan også ringe oss på telefon " + felles.avsenderEnhet.telefonnummer.format() + "." },
-                english { +  "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at ${Constants.DITT_NAV}. You can also call us at tel.: " + felles.avsenderEnhet.telefonnummer.format() + "." },
+                english { + "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at ${Constants.DITT_NAV}. You can also call us at tel.: " + felles.avsenderEnhet.telefonnummer.format() + "." },
                 )
         }
     }
@@ -368,16 +368,16 @@ object VedleggHjelpFraAndre : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                bokmal { +  "Hjelp fra andre - forvaltningsloven § 12" },
-                nynorsk { +  "Hjelp frå andre - forvaltningslova § 12" },
-                english { +  "Assistance from a third party - Section 12 of the Public Administration Act" }
+                bokmal { + "Hjelp fra andre - forvaltningsloven § 12" },
+                nynorsk { + "Hjelp frå andre - forvaltningslova § 12" },
+                english { + "Assistance from a third party - Section 12 of the Public Administration Act" }
             )
         }
         paragraph {
             text(
-                bokmal { +  "Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel av advokat, rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne skjemaet du finner på $FULLMAKT_URL." },
-                nynorsk { +  "Du kan be om hjelp frå andre under heile saksbehandlinga, for eksempel av advokat, rettshjelpar, ein organisasjon du er medlem av, eller ein annan myndig person. Dersom den som hjelper deg, ikkje er advokat, må du gi denne personen ei skriftleg fullmakt. Bruk gjerne skjemaet du finn på $FULLMAKT_URL." },
-                english { +  "You can use the assistance of a third party throughout the administrative process, e.g. from a lawyer, legal services provider, an organisation of which you are a member, or another competent person. If the person assisting you is not a lawyer, you must issue a written power of attorney authorising them to help you. You can use the form found on $FULLMAKT_URL." }
+                bokmal { + "Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel av advokat, rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne skjemaet du finner på $FULLMAKT_URL." },
+                nynorsk { + "Du kan be om hjelp frå andre under heile saksbehandlinga, for eksempel av advokat, rettshjelpar, ein organisasjon du er medlem av, eller ein annan myndig person. Dersom den som hjelper deg, ikkje er advokat, må du gi denne personen ei skriftleg fullmakt. Bruk gjerne skjemaet du finn på $FULLMAKT_URL." },
+                english { + "You can use the assistance of a third party throughout the administrative process, e.g. from a lawyer, legal services provider, an organisation of which you are a member, or another competent person. If the person assisting you is not a lawyer, you must issue a written power of attorney authorising them to help you. You can use the form found on $FULLMAKT_URL." }
             )
         }
     }
@@ -390,66 +390,66 @@ data class VedleggKlagePaaVedtaket(val telefonnummer: Expression<Telefonnummer>)
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                bokmal { +  "Klage på vedtaket - folketrygdloven § 21-12" },
-                nynorsk { +  "Klage på vedtaket - folketrygdlova § 21-12" },
-                english { +  "Appealing a decision - Section 21-12 of the National Insurance Act" }
+                bokmal { + "Klage på vedtaket - folketrygdloven § 21-12" },
+                nynorsk { + "Klage på vedtaket - folketrygdlova § 21-12" },
+                english { + "Appealing a decision - Section 21-12 of the National Insurance Act" }
             )
         }
         paragraph {
             text(
-                bokmal { +  "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket vil da vurdere saken din på nytt." },
-                nynorsk { +  "Du kan klage på vedtaket innan seks veker frå du fekk det. Kontoret som har gjort vedtaket, vurderer då saka di på nytt." },
-                english { +  "You may appeal the decision within six weeks of receiving it. The department that made the decision will then review your case." }
+                bokmal { + "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket vil da vurdere saken din på nytt." },
+                nynorsk { + "Du kan klage på vedtaket innan seks veker frå du fekk det. Kontoret som har gjort vedtaket, vurderer då saka di på nytt." },
+                english { + "You may appeal the decision within six weeks of receiving it. The department that made the decision will then review your case." }
             )
         }
         paragraph {
             text(
-                bokmal { +  "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten." },
-                nynorsk { +  "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til Nav klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten." },
-                english { +  "If your complaint is declined, it will be forwarded to Nav Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court." }
+                bokmal { + "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten." },
+                nynorsk { + "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til Nav klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten." },
+                english { + "If your complaint is declined, it will be forwarded to Nav Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court." }
             )
         }
         paragraph {
             text(
-                bokmal { +  "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon " + telefonnummer.format() + "." },
-                nynorsk { +  "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon " + telefonnummer.format() + "." },
-                english { +  "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: " + telefonnummer.format() + "." }
+                bokmal { + "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon " + telefonnummer.format() + "." },
+                nynorsk { + "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon " + telefonnummer.format() + "." },
+                english { + "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: " + telefonnummer.format() + "." }
             )
         }
         paragraph {
-            text(bokmal { +  "Du må skrive" }, nynorsk { +  "Du må skrive" }, english { +  "You must specify" })
+            text(bokmal { + "Du må skrive" }, nynorsk { + "Du må skrive" }, english { + "You must specify" })
             list {
                 item {
                     text(
-                        bokmal { +  "hvilket vedtak du klager på" },
-                        nynorsk { +  "kva vedtak du klagar på" },
-                        english { +  "which decision you are appealing" }
+                        bokmal { + "hvilket vedtak du klager på" },
+                        nynorsk { + "kva vedtak du klagar på" },
+                        english { + "which decision you are appealing" }
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "hvilken endring i vedtaket du ber om" },
-                        nynorsk { +  "kva endring i vedtaket du ber om" },
-                        english { +  "how you believe the decision should be amended" }
+                        bokmal { + "hvilken endring i vedtaket du ber om" },
+                        nynorsk { + "kva endring i vedtaket du ber om" },
+                        english { + "how you believe the decision should be amended" }
                     )
                 }
             }
         }
         paragraph {
-            text(bokmal { +  "Du bør også" }, nynorsk { +  "Du bør også" }, english { +  "You should also" })
+            text(bokmal { + "Du bør også" }, nynorsk { + "Du bør også" }, english { + "You should also" })
             list {
                 item {
                     text(
-                        bokmal { +  "skrive hvorfor du mener vedtaket er feil" },
-                        nynorsk { +  "skrive kvifor du meiner vedtaket er feil" },
-                        english { +  "specify why you believe the decision is wrong" }
+                        bokmal { + "skrive hvorfor du mener vedtaket er feil" },
+                        nynorsk { + "skrive kvifor du meiner vedtaket er feil" },
+                        english { + "specify why you believe the decision is wrong" }
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "nevne erklæringer og andre dokumenter som du legger ved klagen" },
-                        nynorsk { +  "nemne erklæringar og andre dokument som du legg ved klaga" },
-                        english { +  "list statements and other documents attached to the appeal" }
+                        bokmal { + "nevne erklæringer og andre dokumenter som du legger ved klagen" },
+                        nynorsk { + "nemne erklæringar og andre dokument som du legg ved klaga" },
+                        english { + "list statements and other documents attached to the appeal" }
                     )
                 }
             }
@@ -457,23 +457,23 @@ data class VedleggKlagePaaVedtaket(val telefonnummer: Expression<Telefonnummer>)
 
         paragraph {
             text(
-                bokmal { +  "Husk å undertegne klagen, ellers må vi sende den i retur til deg." },
-                nynorsk { +  "Hugs å skrive under klaga, elles må vi sende henne i retur til deg." },
-                english { +  "Please remember to sign the appeal, otherwise it will be returned to you." }
+                bokmal { + "Husk å undertegne klagen, ellers må vi sende den i retur til deg." },
+                nynorsk { + "Hugs å skrive under klaga, elles må vi sende henne i retur til deg." },
+                english { + "Please remember to sign the appeal, otherwise it will be returned to you." }
             )
         }
         paragraph {
             text(
-                bokmal { +  "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos statsforvalteren, advokater eller Nav." },
-                nynorsk { +  "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos statsforvalteren, advokatar eller Nav." },
-                english { +  "If your appeal is successful, you may be eligible for compensation for costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers or Nav." }
+                bokmal { + "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos statsforvalteren, advokater eller Nav." },
+                nynorsk { + "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos statsforvalteren, advokatar eller Nav." },
+                english { + "If your appeal is successful, you may be eligible for compensation for costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers or Nav." }
             )
         }
         paragraph {
             text(
-                bokmal { +  "Du kan lese om saksomkostninger i forvaltningsloven § 36." },
-                nynorsk { +  "Du kan lese om saksomkostningar i forvaltningslova § 36." },
-                english { +  "Read more about costs of action in Section 36 of the Public Administration Act." }
+                bokmal { + "Du kan lese om saksomkostninger i forvaltningsloven § 36." },
+                nynorsk { + "Du kan lese om saksomkostningar i forvaltningslova § 36." },
+                english { + "Read more about costs of action in Section 36 of the Public Administration Act." }
             )
         }
     }

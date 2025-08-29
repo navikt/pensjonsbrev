@@ -406,15 +406,15 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         title2 {
                             text(
                                 bokmal { + "Barnetillegg for fellesbarn" },
-                                nynorsk { +  "Barnetillegg for fellesbarn" }
+                                nynorsk { + "Barnetillegg for fellesbarn" }
                             )
                         }
                         paragraph {
                             text(
-                                bokmal { +  "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på " +
+                                bokmal { + "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på " +
                                 barnetilleggFB.inntektBruker.format(CurrencyFormat) + " kroner og personinntekten til barnets andre forelder på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
                                         " kroner. Du får derfor en utbetaling av barnetillegg på kroner " + barnetilleggFB.netto.format(CurrencyFormat) + " kroner per måned fra neste år." },
-                                nynorsk { +  "Du får barnetillegg for fellesbarn fordi du bur saman med den andre forelderen til barnet. Vi har endra barnetillegget ut frå personinntekta di på " +
+                                nynorsk { + "Du får barnetillegg for fellesbarn fordi du bur saman med den andre forelderen til barnet. Vi har endra barnetillegget ut frå personinntekta di på " +
                                         barnetilleggFB.inntektBruker.format(CurrencyFormat) + " kroner og personinntekta til den andre forelderen på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
                                         " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggFB.netto.format(CurrencyFormat) + " kroner per månad frå neste år." }
                             )
@@ -423,16 +423,16 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
                         title2 {
                             text(
-                                bokmal { +  "Barnetillegg for særkullsbarn" },
-                                nynorsk { +  "Barnetillegg for særkullsbarn" }
+                                bokmal { + "Barnetillegg for særkullsbarn" },
+                                nynorsk { + "Barnetillegg for særkullsbarn" }
                             )
                         }
                         paragraph {
                             text(
-                                bokmal { +  "Du får barnetillegg for særkullsbarn fordi du ikke bor sammen med barnets andre forelder. " +
+                                bokmal { + "Du får barnetillegg for særkullsbarn fordi du ikke bor sammen med barnets andre forelder. " +
                                         "Vi har endret barnetillegget ut fra din personinntekt på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) +
                                         " kroner. Du får derfor en utbetaling av barnetillegg på " + barnetilleggSB.netto.format(CurrencyFormat) + " kroner per måned fra neste år." },
-                                nynorsk { +  "Du får barnetillegg for særkullsbarn fordi du ikkje bur saman med den andre forelderen til barnet. " +
+                                nynorsk { + "Du får barnetillegg for særkullsbarn fordi du ikkje bur saman med den andre forelderen til barnet. " +
                                         "Vi har endra barnetillegget ut frå personinntekta di på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) +
                                         " kroner. Du får difor ei utbetaling av barnetillegg på " + barnetilleggSB.netto.format(CurrencyFormat) + " kroner per månad frå neste år." }
                             )
@@ -442,8 +442,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    bokmal { +  "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet»." },
-                    nynorsk { +  "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»." }
+                    bokmal { + "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet»." },
+                    nynorsk { + "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»." }
                 )
             }
             paragraph {
@@ -453,206 +453,206 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             and gjenlevendetillegg.notNull() //UT, BT og GJT
                 ) {
                     text(
-                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12." },
-                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12." }
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12." }
                     )
                 }.orShowIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
                             and (barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) //UT og BT
                 ) {
                     text(
-                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12." },
-                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12." }
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12." }
                     )
                 }.orShowIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
                             and gjenlevendetillegg.notNull() //UT og GJT
                 ) {
                     text(
-                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12." },
-                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12." }
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12." }
                     )
                 }.orShow { //Bare UT
                     text(
-                        bokmal { +  "Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12." },
-                        nynorsk { +  "Vedtaket er gjort etter folketrygdlova §§ 12-14 og 22-12." }
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-14 og 22-12." }
                     )
                 }
 
             }
             title1 {
                 text(
-                    bokmal { +  "Du må melde fra om endringer" },
-                    nynorsk { +  "Du må melde frå om endringar" }
+                    bokmal { + "Du må melde fra om endringer" },
+                    nynorsk { + "Du må melde frå om endringar" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Endringer i inntekt og din situasjon kan påvirke hvor mye du får utbetalt fra oss. Derfor er det viktig at du sier ifra så fort det skjer en endring, slik at vi kan beregne riktig utbetaling. " },
-                    nynorsk { +  "Endringar i inntekt og situasjonen din kan påverke kor mykje du får utbetalt frå oss. Difor er det viktig at du seier frå så snart det skjer ei endring, slik at vi kan rekne ut rett utbetaling. " }
+                    bokmal { + "Endringer i inntekt og din situasjon kan påvirke hvor mye du får utbetalt fra oss. Derfor er det viktig at du sier ifra så fort det skjer en endring, slik at vi kan beregne riktig utbetaling. " },
+                    nynorsk { + "Endringar i inntekt og situasjonen din kan påverke kor mykje du får utbetalt frå oss. Difor er det viktig at du seier frå så snart det skjer ei endring, slik at vi kan rekne ut rett utbetaling. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL" },
-                    nynorsk { +  "Du kan melde inn forventa inntekt i inntektsplanleggjaren på $INNTEKTSPLANLEGGEREN_URL" }
+                    bokmal { + "Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL" },
+                    nynorsk { + "Du kan melde inn forventa inntekt i inntektsplanleggjaren på $INNTEKTSPLANLEGGEREN_URL" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Alle andre endringer kan du melde inn på $MELDE_URL" },
-                    nynorsk { +  "Alle andre endringar kan meldast inn på $MELDE_URL" }
+                    bokmal { + "Alle andre endringer kan du melde inn på $MELDE_URL" },
+                    nynorsk { + "Alle andre endringar kan meldast inn på $MELDE_URL" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Les mer om dette i vedlegget «Dine rettigheter og plikter»." },
-                    nynorsk { +  "Les meir om dette i vedlegget «Dine rettar og plikter»." }
+                    bokmal { + "Les mer om dette i vedlegget «Dine rettigheter og plikter»." },
+                    nynorsk { + "Les meir om dette i vedlegget «Dine rettar og plikter»." }
                 )
             }
             title1 {
                 text(
-                    bokmal { +  "Etteroppgjør" },
-                    nynorsk { +  "Etteroppgjer" }
+                    bokmal { + "Etteroppgjør" },
+                    nynorsk { + "Etteroppgjer" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før." },
-                    nynorsk { +  "Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du har fått utbetalt rett beløp frå oss året før. " }
+                    bokmal { + "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før." },
+                    nynorsk { + "Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du har fått utbetalt rett beløp frå oss året før. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør." },
-                    nynorsk { +  "Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer." }
+                    bokmal { + "Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør." },
+                    nynorsk { + "Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake." },
-                    nynorsk { +  "Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake." }
+                    bokmal { + "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake." },
+                    nynorsk { + "Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake." }
                 )
             }
             title1 {
                 text(
-                    bokmal { +  "Inntekter som ikke skal gi lavere utbetaling av uføretrygden" },
-                    nynorsk { +  "Inntekter som ikkje skal gje lågare utbetaling av uføretrygda" }
+                    bokmal { + "Inntekter som ikke skal gi lavere utbetaling av uføretrygden" },
+                    nynorsk { + "Inntekter som ikkje skal gje lågare utbetaling av uføretrygda" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Det gjelder hvis du har fått utbetalt erstatning for inntektstap ved:" },
-                    nynorsk { +  "Det gjeld dersom du har fått utbetalt erstatning for inntektstap ved:" }
+                    bokmal { + "Det gjelder hvis du har fått utbetalt erstatning for inntektstap ved:" },
+                    nynorsk { + "Det gjeld dersom du har fått utbetalt erstatning for inntektstap ved:" }
                 )
                 list {
                     item {
                         text(
-                            bokmal { +  "Skade " },
-                            nynorsk { +  "Skade " }
+                            bokmal { + "Skade " },
+                            nynorsk { + "Skade " }
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Yrkesskade " },
-                            nynorsk { +  "Yrkesskade " }
+                            bokmal { + "Yrkesskade " },
+                            nynorsk { + "Yrkesskade " }
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Pasientskade " },
-                            nynorsk { +  "Pasientskade " }
+                            bokmal { + "Pasientskade " },
+                            nynorsk { + "Pasientskade " }
                         )
                     }
                 }
                 text(
-                    bokmal { +  "Skadeerstatningsloven § 3-1, Yrkesskadeforsikringsloven § 13, Pasientskadeloven § 4 første ledd." },
-                    nynorsk { +  "Skadeerstatningslova § 3-1, Yrkesskadeforsikringslova § 13, Pasientskadeloven § 4 første ledd." },
+                    bokmal { + "Skadeerstatningsloven § 3-1, Yrkesskadeforsikringsloven § 13, Pasientskadeloven § 4 første ledd." },
+                    nynorsk { + "Skadeerstatningslova § 3-1, Yrkesskadeforsikringslova § 13, Pasientskadeloven § 4 første ledd." },
                     FontType.ITALIC
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Dette kan gjelde inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel: " },
-                    nynorsk { +  "Dette kan gjelde inntekt frå arbeid eller verksemd som vart heilt avslutta før du fekk innvilga uføretrygd, til dømes: " },
+                    bokmal { + "Dette kan gjelde inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel: " },
+                    nynorsk { + "Dette kan gjelde inntekt frå arbeid eller verksemd som vart heilt avslutta før du fekk innvilga uføretrygd, til dømes: " },
                 )
                 list {
                     item {
                         text(
-                            bokmal { +  "Utbetalte feriepenger. Opptjeningen må ha skjedd før du fikk innvilget uføretrygd. " },
-                            nynorsk { +  "Utbetalte feriepengar. Oppteninga må ha skjedd før du fekk innvilga uføretrygd. " }
+                            bokmal { + "Utbetalte feriepenger. Opptjeningen må ha skjedd før du fikk innvilget uføretrygd. " },
+                            nynorsk { + "Utbetalte feriepengar. Oppteninga må ha skjedd før du fekk innvilga uføretrygd. " }
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten " },
-                            nynorsk { +  "Inntekter frå sal av produksjonsmiddel i samband med opphøyr av verksemda " }
+                            bokmal { + "Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten " },
+                            nynorsk { + "Inntekter frå sal av produksjonsmiddel i samband med opphøyr av verksemda " }
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Produksjonstillegg og andre overføringer til gårdbrukere " },
-                            nynorsk { +  "Produksjonstillegg og andre overføringar til gardsbrukarar " }
+                            bokmal { + "Produksjonstillegg og andre overføringer til gårdbrukere " },
+                            nynorsk { + "Produksjonstillegg og andre overføringar til gardsbrukarar " }
                         )
                     }
                 }
             }
             paragraph {
                 text(
-                    bokmal { +  "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere." },
-                    nynorsk { +  "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i 2024 eller seinare." }
+                    bokmal { + "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere." },
+                    nynorsk { + "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i 2024 eller seinare." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du sender oss dokumentasjon som viser at du har en slik inntekt, kan vi gjøre en ny beregning av uføretrygden din." },
-                    nynorsk { +  "Dersom du sender oss dokumentasjon som viser at du har slik inntekt, kan vi gjere ei ny utrekning av uføretrygda di." },
+                    bokmal { + "Hvis du sender oss dokumentasjon som viser at du har en slik inntekt, kan vi gjøre en ny beregning av uføretrygden din." },
+                    nynorsk { + "Dersom du sender oss dokumentasjon som viser at du har slik inntekt, kan vi gjere ei ny utrekning av uføretrygda di." },
                 )
             }
             ifNotNull(barnetilleggFellesbarn) {
                 paragraph {
                     text(
-                        bokmal { +  "Hva kan holdes utenfor personinntekten til den andre forelderen? " },
-                        nynorsk { +  "Kva kan haldast utanfor personinntekta til den andre forelderen? " },
+                        bokmal { + "Hva kan holdes utenfor personinntekten til den andre forelderen? " },
+                        nynorsk { + "Kva kan haldast utanfor personinntekta til den andre forelderen? " },
                     )
 
                     list {
                         item {
                             text(
-                                bokmal { +  "Erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav" },
-                                nynorsk { +  "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav" }
+                                bokmal { + "Erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav" },
+                                nynorsk { + "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav" }
                             )
                         }
                     }
                     text(
-                        bokmal { +  "Dersom vi mottar dokumentasjon fra deg som bekrefter slik inntekt, kan vi gjøre en ny beregning. " },
-                        nynorsk { +  "Dersom vi mottar dokumentasjon frå deg som stadfestar slik inntekt, kan vi gjere ei ny berekning. " },
+                        bokmal { + "Dersom vi mottar dokumentasjon fra deg som bekrefter slik inntekt, kan vi gjøre en ny beregning. " },
+                        nynorsk { + "Dersom vi mottar dokumentasjon frå deg som stadfestar slik inntekt, kan vi gjere ei ny berekning. " },
                     )
 
                 }
             }
             title1 {
                 text(
-                    bokmal { +  "Du har rett til å klage" },
-                    nynorsk { +  "Du har rett til å klage" }
+                    bokmal { + "Du har rett til å klage" },
+                    nynorsk { + "Du har rett til å klage" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL." },
-                    nynorsk { +  "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL." }
+                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL." },
+                    nynorsk { + "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL." }
                 )
             }
             title1 {
                 text(
-                    bokmal { +  "Du har rett til innsyn" },
-                    nynorsk { +  "Du har rett til innsyn" }
+                    bokmal { + "Du har rett til innsyn" },
+                    nynorsk { + "Du har rett til innsyn" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage." },
-                    nynorsk { +  "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram." }
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage." },
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram." }
                 )
             }
 
@@ -661,39 +661,39 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
 
             title1 {
                 text(
-                    bokmal { +  "Sjekk utbetalingene dine" },
-                    nynorsk { +  "Sjekk utbetalingane dine" }
+                    bokmal { + "Sjekk utbetalingene dine" },
+                    nynorsk { + "Sjekk utbetalingane dine" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
-                    nynorsk { +  "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." }
+                    bokmal { + "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
+                    nynorsk { + "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." }
                 )
             }
             title1 {
                 text(
-                    bokmal { +  "Skattekort" },
-                    nynorsk { +  "Skattekort" }
+                    bokmal { + "Skattekort" },
+                    nynorsk { + "Skattekort" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til oss, vi får skatteopplysningene dine elektronisk fra Skatteetaten. Du bør likevel sjekke at skattekortet ditt er riktig. Skattekortet kan du endre på skatteetaten.no. Du kan også få hjelp av Skatteetaten hvis du har spørsmål om skatt. " },
-                    nynorsk { +  "Uføretrygd blir skattlagt som lønsinntekt. Du treng ikkje levere skattekort ditt til oss, då vi får skatteopplysningane dine elektronisk frå Skatteetaten. Du bør likevel sjekke at skattekortet ditt stemmer. Ved behov kan du endre skattekortet på skatteetaten.no. Du kan også få hjelp frå Skatteetaten dersom du har spørsmål om skatt. " }
+                    bokmal { + "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til oss, vi får skatteopplysningene dine elektronisk fra Skatteetaten. Du bør likevel sjekke at skattekortet ditt er riktig. Skattekortet kan du endre på skatteetaten.no. Du kan også få hjelp av Skatteetaten hvis du har spørsmål om skatt. " },
+                    nynorsk { + "Uføretrygd blir skattlagt som lønsinntekt. Du treng ikkje levere skattekort ditt til oss, då vi får skatteopplysningane dine elektronisk frå Skatteetaten. Du bør likevel sjekke at skattekortet ditt stemmer. Ved behov kan du endre skattekortet på skatteetaten.no. Du kan også få hjelp frå Skatteetaten dersom du har spørsmål om skatt. " }
                 )
             }
             showIf(not(brukerBorINorge)) {
                 title1 {
                     text(
-                        bokmal { +  "Skatt for deg som bor i utlandet " },
-                        nynorsk { +  "Skatt for deg som bur i utlandet " }
+                        bokmal { + "Skatt for deg som bor i utlandet " },
+                        nynorsk { + "Skatt for deg som bur i utlandet " }
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor." },
-                        nynorsk { +  "Bur du i utlandet og betaler kildeskatt, finn du meir informasjon om kildeskatt på skatteetaten.no. Dersom du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur." }
+                        bokmal { + "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor." },
+                        nynorsk { + "Bur du i utlandet og betaler kildeskatt, finn du meir informasjon om kildeskatt på skatteetaten.no. Dersom du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur." }
                     )
                 }
             }

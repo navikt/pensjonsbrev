@@ -273,17 +273,17 @@ object Tabeller {
                     header = {
                         column(1) {
                             text(
-                                bokmal { +  "År " },
-                                nynorsk { +  "År " },
-                                english { +  "Year " },
+                                bokmal { + "År " },
+                                nynorsk { + "År " },
+                                english { + "Year " },
 
                                 )
                         }
                         column(2) {
                             text(
-                                bokmal { +  "Gjennomsnittlig grunnbeløp (G) ganger 2" },
-                                nynorsk { +  "Gjennomsnittleg grunnbeløp (G) gongar 2" },
-                                english { +  "Average National Insurance basic amount (G) times 2" }
+                                bokmal { + "Gjennomsnittlig grunnbeløp (G) ganger 2" },
+                                nynorsk { + "Gjennomsnittleg grunnbeløp (G) gongar 2" },
+                                english { + "Average National Insurance basic amount (G) times 2" }
 
                             )
                         }
@@ -292,81 +292,81 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                bokmal { +  "2019" },
-                                nynorsk { +  "2019" },
-                                english { +  "2019" }
+                                bokmal { + "2019" },
+                                nynorsk { + "2019" },
+                                english { + "2019" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +  g2019.format(CurrencyFormat) +" kroner" },
-                                nynorsk { +  g2019.format(CurrencyFormat) +" kroner" },
-                                english { +  "NOK " + g2019.format(CurrencyFormat) }
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +  "2020" },
-                                nynorsk { +  "2020" },
-                                english { +  "2020" }
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +  g2020.format(CurrencyFormat) +" kroner" },
-                                nynorsk { +  g2020.format(CurrencyFormat) +" kroner" },
-                                english { +  "NOK " + g2020.format(CurrencyFormat) }
+                                bokmal { + g2019.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2019.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2019.format(CurrencyFormat) }
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                bokmal { +  "2021" },
-                                nynorsk { +  "2021" },
-                                english { +  "2021" }
+                                bokmal { + "2020" },
+                                nynorsk { + "2020" },
+                                english { + "2020" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +  g2021.format(CurrencyFormat) +" kroner" },
-                                nynorsk { +  g2021.format(CurrencyFormat) +" kroner" },
-                                english { +  "NOK " + g2021.format(CurrencyFormat) }
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +  "2022" },
-                                nynorsk { +  "2022" },
-                                english { +  "2022" }
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +  g2022.format(CurrencyFormat) +" kroner" },
-                                nynorsk { +  g2022.format(CurrencyFormat) +" kroner" },
-                                english { +  "NOK " + g2022.format(CurrencyFormat) }
+                                bokmal { + g2020.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2020.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2020.format(CurrencyFormat) }
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                bokmal { +  "2023" },
-                                nynorsk { +  "2023" },
-                                english { +  "2023" }
+                                bokmal { + "2021" },
+                                nynorsk { + "2021" },
+                                english { + "2021" }
+                            )
+                        }
+                        cell {
+                            text(
+                                bokmal { + g2021.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2021.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2021.format(CurrencyFormat) }
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { + "2022" },
+                                nynorsk { + "2022" },
+                                english { + "2022" }
+                            )
+                        }
+                        cell {
+                            text(
+                                bokmal { + g2022.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2022.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2022.format(CurrencyFormat) }
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { + "2023" },
+                                nynorsk { + "2023" },
+                                english { + "2023" }
 
                             )
                         }
                         cell {
                             text(
-                                bokmal { +  g2023.format(CurrencyFormat) +" kroner" },
-                                nynorsk { +  g2023.format(CurrencyFormat) +" kroner" },
-                                english { +  "NOK " + g2023.format(CurrencyFormat) }
+                                bokmal { + g2023.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2023.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2023.format(CurrencyFormat) }
                             )
                         }
                     }

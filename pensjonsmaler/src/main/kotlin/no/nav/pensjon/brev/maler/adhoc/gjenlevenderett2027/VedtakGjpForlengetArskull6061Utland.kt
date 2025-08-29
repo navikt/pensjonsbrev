@@ -102,7 +102,7 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
             paragraph {
                 text(
                     bokmal { + "Inntektene må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: " },
-                    english { +  "Your income must not have exceeded three times the average National Insurance basic amount (G) in 2022 or 2023: " }
+                    english { + "Your income must not have exceeded three times the average National Insurance basic amount (G) in 2022 or 2023: " }
                 )
             }
 
@@ -110,10 +110,10 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    bokmal { +  "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
+                    bokmal { + "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
                             "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. " },
 
-                    english { +  "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average during this five-year period. " +
+                    english { + "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average during this five-year period. " +
                             "This means your income could have exceeded two times the National Insurance basic amount in individual years, provided your average for the five-year period is lower. " }
                 )
             }
@@ -122,20 +122,20 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             title1 {
                 text(
-                    bokmal { +  "Hvilke opplysninger har vi om deg? " },
-                    english { +  "What information do we have about you? " }
+                    bokmal { + "Hvilke opplysninger har vi om deg? " },
+                    english { + "What information do we have about you? " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Det er dine reelle inntekter i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjon.  " },
-                    english { +  "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. " }
+                    bokmal { + "Det er dine reelle inntekter i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjon.  " },
+                    english { + "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter: " },
-                    english { +  "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income: " }
+                    bokmal { + "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter: " },
+                    english { + "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income: " }
                 )
             }
 
@@ -145,14 +145,14 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    bokmal { +  "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene i årene 2019–2023. " },
-                    english { +  "According to our information, your income has been lower than the income cap in the period 2019–2023. " }
+                    bokmal { + "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene i årene 2019–2023. " },
+                    english { + "According to our information, your income has been lower than the income cap in the period 2019–2023. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med måneden du fyller 67 år. " },
-                    english { +  "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until you turn 67 years old. " }
+                    bokmal { + "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med måneden du fyller 67 år. " },
+                    english { + "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until you turn 67 years old. " }
                 )
             }
 
@@ -161,14 +161,14 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             title1 {
                 text(
-                    bokmal { +  "Meld fra om endringer " },
-                    english { +  "Report changes " }
+                    bokmal { + "Meld fra om endringer " },
+                    english { + "Report changes " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
-                    english { +  "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur.  " }
+                    bokmal { + "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
+                    english { + "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur.  " }
                 )
             }
 

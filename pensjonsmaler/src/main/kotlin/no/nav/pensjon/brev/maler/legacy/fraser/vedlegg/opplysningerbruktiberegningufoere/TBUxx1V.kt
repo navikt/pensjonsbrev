@@ -442,8 +442,8 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                             cell {
                                 text(
                                     bokmal { + "Forholdstallet brukt ved avkorting av norsk framtidig trygdetid" },
-                                    nynorsk { +  "Forholdstalet brukt ved reduksjon av norsk framtidig trygdetid" },
-                                    english { +  "Ratio applied in reduction of future Norwegian insurance period" },
+                                    nynorsk { + "Forholdstalet brukt ved reduksjon av norsk framtidig trygdetid" },
+                                    english { + "Ratio applied in reduction of future Norwegian insurance period" },
                                 )
                             }
                             cell {
@@ -463,16 +463,16 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Samlet trygdetid brukt ved beregning av uføretrygd etter avkorting av framtidig tid" },
-                                    nynorsk { +  "Samla trygdetid brukt ved berekning av uføretrygd etter reduksjon av framtidig tid" },
-                                    english { +  "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s)" },
+                                    bokmal { + "Samlet trygdetid brukt ved beregning av uføretrygd etter avkorting av framtidig tid" },
+                                    nynorsk { + "Samla trygdetid brukt ved berekning av uføretrygd etter reduksjon av framtidig tid" },
+                                    english { + "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s)" },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  pe.ut_fattnorgeplusfatta10netto_avdod().format() + " måneder" },
-                                    nynorsk { +  pe.ut_fattnorgeplusfatta10netto_avdod().format() + " månader" },
-                                    english { +  pe.ut_fattnorgeplusfatta10netto_avdod().format() + " months" },
+                                    bokmal { + pe.ut_fattnorgeplusfatta10netto_avdod().format() + " måneder" },
+                                    nynorsk { + pe.ut_fattnorgeplusfatta10netto_avdod().format() + " månader" },
+                                    english { + pe.ut_fattnorgeplusfatta10netto_avdod().format() + " months" },
                                 )
                             }
                         }
@@ -484,16 +484,16 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i andre avtaleland" },
-                                    nynorsk { +  "Faktisk trygdetid i andre avtaleland" },
-                                    english { +  "Actual insurance period(s) in other partner countries" },
+                                    bokmal { + "Faktisk trygdetid i andre avtaleland" },
+                                    nynorsk { + "Faktisk trygdetid i andre avtaleland" },
+                                    english { + "Actual insurance period(s) in other partner countries" },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().format() + " måneder" },
-                                    nynorsk { +  pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().format() + " månader" },
-                                    english { +  pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().format() + " months" },
+                                    bokmal { + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().format() + " måneder" },
+                                    nynorsk { + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().format() + " månader" },
+                                    english { + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral().format() + " months" },
                                 )
                             }
                         }
@@ -505,16 +505,16 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Framtidig trygdetid" },
-                                    nynorsk { +  "Framtidig trygdetid" },
-                                    english { +  "Future insurance period(s)" },
+                                    bokmal { + "Framtidig trygdetid" },
+                                    nynorsk { + "Framtidig trygdetid" },
+                                    english { + "Future insurance period(s)" },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().format() + " måneder" },
-                                    nynorsk { +  pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().format() + " månader" },
-                                    english { +  pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().format() + " months" },
+                                    bokmal { + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().format() + " måneder" },
+                                    nynorsk { + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().format() + " månader" },
+                                    english { + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland().format() + " months" },
                                 )
                             }
                         }
@@ -526,16 +526,16 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
-                                    nynorsk { +  "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)" },
-                                    english { +  "Actual insurance period in Norway and partner countries (maximum 40 years)" },
+                                    bokmal { + "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
+                                    nynorsk { + "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)" },
+                                    english { + "Actual insurance period in Norway and partner countries (maximum 40 years)" },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  pe.ut_fattnorgeplusfattbilateral_avdod().format() + " måneder" },
-                                    nynorsk { +  pe.ut_fattnorgeplusfattbilateral_avdod().format() + " månader" },
-                                    english { +  pe.ut_fattnorgeplusfattbilateral_avdod().format() + " months" },
+                                    bokmal { + pe.ut_fattnorgeplusfattbilateral_avdod().format() + " måneder" },
+                                    nynorsk { + pe.ut_fattnorgeplusfattbilateral_avdod().format() + " månader" },
+                                    english { + pe.ut_fattnorgeplusfattbilateral_avdod().format() + " months" },
                                 )
                             }
                         }
@@ -547,9 +547,9 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Forholdstallet brukt ved beregning av uføretrygd" },
-                                    nynorsk { +  "Forholdstalet brukt ved berekning av uføretrygd" },
-                                    english { +  "Ratio applied in calculation of insurance period" },
+                                    bokmal { + "Forholdstallet brukt ved beregning av uføretrygd" },
+                                    nynorsk { + "Forholdstalet brukt ved berekning av uføretrygd" },
+                                    english { + "Ratio applied in calculation of insurance period" },
                                 )
                             }
                             cell {

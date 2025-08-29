@@ -216,7 +216,7 @@ data class TabellMaanedligPensjonKap19(
                                     text(
                                         bokmal { + "Barnetillegg særkullsbarn" },
                                         nynorsk { + "Barnetillegg særkullsbarn" },
-                                        english { +  "Supplement for child(ren) of former marriages/relationships" },
+                                        english { + "Supplement for child(ren) of former marriages/relationships" },
                                     )
                                 }
                                 cell { includePhrase(KronerText(it)) }
@@ -229,9 +229,9 @@ data class TabellMaanedligPensjonKap19(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Barnetillegg fellesbarn" },
-                                        nynorsk { +  "Barnetillegg fellesbarn" },
-                                        english { +  "Supplement for child(ren) of the marriages/relationship" },
+                                        bokmal { + "Barnetillegg fellesbarn" },
+                                        nynorsk { + "Barnetillegg fellesbarn" },
+                                        english { + "Supplement for child(ren) of the marriages/relationship" },
                                     )
                                 }
                                 cell { includePhrase(KronerText(it)) }
@@ -243,9 +243,9 @@ data class TabellMaanedligPensjonKap19(
                 row {
                     cell {
                         text(
-                            bokmal { +  "Sum pensjon før skatt" },
-                            nynorsk { +  "Sum pensjon før skatt" },
-                            english { +  "Total pension before tax" },
+                            bokmal { + "Sum pensjon før skatt" },
+                            nynorsk { + "Sum pensjon før skatt" },
+                            english { + "Total pension before tax" },
                             FontType.BOLD
                         )
                     }
@@ -260,16 +260,16 @@ private data class TabellOverskrift(val virkFom: Expression<LocalDate>, val virk
     PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            bokmal { +  "Din månedlige pensjon fra " + virkFom.format() },
-            nynorsk { +  "Din månadlege pensjon frå " + virkFom.format() },
-            english { +  "Your monthly pension from " + virkFom.format() },
+            bokmal { + "Din månedlige pensjon fra " + virkFom.format() },
+            nynorsk { + "Din månadlege pensjon frå " + virkFom.format() },
+            english { + "Your monthly pension from " + virkFom.format() },
         )
 
         ifNotNull(virkTom) {
             text(
-                bokmal { +  " til " + it.format() },
-                nynorsk { +  " til " + it.format() },
-                english { +  " to " + it.format() },
+                bokmal { + " til " + it.format() },
+                nynorsk { + " til " + it.format() },
+                english { + " to " + it.format() },
             )
         }
     }
@@ -278,7 +278,7 @@ private data class TabellOverskrift(val virkFom: Expression<LocalDate>, val virk
 private object PensjonPerMaaned : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            bokmal { +  "Pensjon per måned" }, nynorsk { +  "Pensjon per månad" }, english { +  "Pension per month" }
+            bokmal { + "Pensjon per måned" }, nynorsk { + "Pensjon per månad" }, english { + "Pension per month" }
         )
     }
 
@@ -306,9 +306,9 @@ data class TabellMaanedligPensjonKap20(
                 row {
                     cell {
                         text(
-                            bokmal { +  "Sum pensjon før skatt" },
-                            nynorsk { +  "Sum pensjon før skatt" },
-                            english { +  "Total pension before tax" },
+                            bokmal { + "Sum pensjon før skatt" },
+                            nynorsk { + "Sum pensjon før skatt" },
+                            english { + "Total pension before tax" },
                             FontType.BOLD
                         )
 
@@ -330,18 +330,18 @@ data class TabellMaanedligPensjonFlerePerioderInnledning(
         //vedleggBelopFlerePerioderTittel_001
         title1 {
             text(
-                bokmal { +  "Oversikt over pensjonen fra " + kravVirkFom.format() },
-                nynorsk { +  "Oversikt over pensjonen frå " + kravVirkFom.format() },
-                english { +  "Pension specifications as of " + kravVirkFom.format() },
+                bokmal { + "Oversikt over pensjonen fra " + kravVirkFom.format() },
+                nynorsk { + "Oversikt over pensjonen frå " + kravVirkFom.format() },
+                english { + "Pension specifications as of " + kravVirkFom.format() },
             )
         }
 
         // veldeggBelopFlerePerioder_001
         paragraph {
             text(
-                bokmal { +  "Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert, kan dette føre til en endring i hvor mye du får utbetalt. Nedenfor følger en oversikt over de månedlige pensjonsbeløpene dine." },
-                nynorsk { +  "Dersom det har vore endringar i nokre av opplysningane som ligg til grunn for utrekninga eller pensjonen har vore regulert, kan det føre til ei endring i kor mykje du får utbetalt. Nedanfor fylgjer ei oversikt over dei månadlege pensjonsbeløpa dine." },
-                english { +  "If there have been changes affecting how your pension is calculated in the period or amendments in the National Insurance basic amount, your pension may be adjusted accordingly. Below is a list of your monthly pension payments." },
+                bokmal { + "Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert, kan dette føre til en endring i hvor mye du får utbetalt. Nedenfor følger en oversikt over de månedlige pensjonsbeløpene dine." },
+                nynorsk { + "Dersom det har vore endringar i nokre av opplysningane som ligg til grunn for utrekninga eller pensjonen har vore regulert, kan det føre til ei endring i kor mykje du får utbetalt. Nedanfor fylgjer ei oversikt over dei månadlege pensjonsbeløpa dine." },
+                english { + "If there have been changes affecting how your pension is calculated in the period or amendments in the National Insurance basic amount, your pension may be adjusted accordingly. Below is a list of your monthly pension payments." },
             )
         }
     }
@@ -361,9 +361,9 @@ data class TabellMaanedligPensjonKap19og20(
             table(header = {
                 column(columnSpan = 3) {
                     text(
-                        bokmal { +  "Dette får du utbetalt etter gamle regler (kapittel 19)" },
-                        nynorsk { +  "Dette får du utbetalt etter gamle reglar (kapittel 19)" },
-                        english { +  "Your pension pursuant to the provisions in Chapter 19 of the National Insurance Act" },
+                        bokmal { + "Dette får du utbetalt etter gamle regler (kapittel 19)" },
+                        nynorsk { + "Dette får du utbetalt etter gamle reglar (kapittel 19)" },
+                        english { + "Your pension pursuant to the provisions in Chapter 19 of the National Insurance Act" },
                     )
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
@@ -374,9 +374,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Grunnpensjon" },
-                                nynorsk { +  "Grunnpensjon" },
-                                english { +  "Basic pension" },
+                                bokmal { + "Grunnpensjon" },
+                                nynorsk { + "Grunnpensjon" },
+                                english { + "Basic pension" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -387,9 +387,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Tilleggspensjon" },
-                                nynorsk { +  "Tilleggspensjon" },
-                                english { +  "Supplementary pension" },
+                                bokmal { + "Tilleggspensjon" },
+                                nynorsk { + "Tilleggspensjon" },
+                                english { + "Supplementary pension" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -400,9 +400,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Pensjonstillegg" },
-                                nynorsk { +  "Pensjonstillegg" },
-                                english { +  "Pension supplement" },
+                                bokmal { + "Pensjonstillegg" },
+                                nynorsk { + "Pensjonstillegg" },
+                                english { + "Pension supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -413,9 +413,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Skjermingstillegg til uføre" },
-                                nynorsk { +  "Skjermingstillegg til uføre" },
-                                english { +  "Supplement for the disabled" },
+                                bokmal { + "Skjermingstillegg til uføre" },
+                                nynorsk { + "Skjermingstillegg til uføre" },
+                                english { + "Supplement for the disabled" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -426,9 +426,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Gjenlevendetillegg" },
-                                nynorsk { +  "Attlevandetillegg" },
-                                english { +  "Survivor's supplement" },
+                                bokmal { + "Gjenlevendetillegg" },
+                                nynorsk { + "Attlevandetillegg" },
+                                english { + "Survivor's supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -439,9 +439,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Faste utgifter ved institusjonsopphold" },
-                                nynorsk { +  "Faste utgifter ved institusjonsopphald" },
-                                english { +  "Fixed costs when institutionalised" },
+                                bokmal { + "Faste utgifter ved institusjonsopphold" },
+                                nynorsk { + "Faste utgifter ved institusjonsopphald" },
+                                english { + "Fixed costs when institutionalised" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -452,9 +452,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Familietillegg ved institusjonsopphold" },
-                                nynorsk { +  "Familietillegg ved institusjonsopphald" },
-                                english { +  "Family supplement when institutionalised" },
+                                bokmal { + "Familietillegg ved institusjonsopphold" },
+                                nynorsk { + "Familietillegg ved institusjonsopphald" },
+                                english { + "Family supplement when institutionalised" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -465,9 +465,9 @@ data class TabellMaanedligPensjonKap19og20(
             table(header = {
                 column(columnSpan = 3) {
                     text(
-                        bokmal { +  "Dette får du utbetalt etter nye regler (kapittel 20)" },
-                        nynorsk { +  "Dette får du utbetalt etter nye reglar (kapittel 20)" },
-                        english { +  "Your pension pursuant to the provisions in Chapter 20 of the National Insurance Act" },
+                        bokmal { + "Dette får du utbetalt etter nye regler (kapittel 20)" },
+                        nynorsk { + "Dette får du utbetalt etter nye reglar (kapittel 20)" },
+                        english { + "Your pension pursuant to the provisions in Chapter 20 of the National Insurance Act" },
                     )
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
@@ -483,9 +483,9 @@ data class TabellMaanedligPensjonKap19og20(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Garantitillegg for opptjente rettigheter" },
-                                    nynorsk { +  "Garantitillegg for opptente rettar" },
-                                    english { +  "Guarantee supplements for accumulated rights" },
+                                    bokmal { + "Garantitillegg for opptjente rettigheter" },
+                                    nynorsk { + "Garantitillegg for opptente rettar" },
+                                    english { + "Guarantee supplements for accumulated rights" },
                                 )
                             }
                             cell { includePhrase(KronerText(it)) }
@@ -497,9 +497,9 @@ data class TabellMaanedligPensjonKap19og20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Gjenlevendetillegg" },
-                                nynorsk { +  "Attlevandetillegg" },
-                                english { +  "Survivor’s supplement" },
+                                bokmal { + "Gjenlevendetillegg" },
+                                nynorsk { + "Attlevandetillegg" },
+                                english { + "Survivor’s supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -511,9 +511,9 @@ data class TabellMaanedligPensjonKap19og20(
                 table(header = {
                     column(columnSpan = 3) {
                         text(
-                            bokmal { +  "Dette får du som minstenivåtillegg" },
-                            nynorsk { +  "Dette får du som minstenivåtillegg" },
-                            english { +  "Your minimum pension supplement" },
+                            bokmal { + "Dette får du som minstenivåtillegg" },
+                            nynorsk { + "Dette får du som minstenivåtillegg" },
+                            english { + "Your minimum pension supplement" },
                         )
                     }
                     column(alignment = RIGHT, columnSpan = 1) {
@@ -524,9 +524,9 @@ data class TabellMaanedligPensjonKap19og20(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Minstenivåtillegg pensjonistpar" },
-                                    nynorsk { +  "Minstenivåtillegg pensjonistpar" },
-                                    english { +  "Minimum supplement for pensioner couples" },
+                                    bokmal { + "Minstenivåtillegg pensjonistpar" },
+                                    nynorsk { + "Minstenivåtillegg pensjonistpar" },
+                                    english { + "Minimum supplement for pensioner couples" },
                                 )
                             }
                             cell { includePhrase(KronerText(it)) }
@@ -545,9 +545,9 @@ data class TabellMaanedligPensjonKap19og20(
                 table(header = {
                     column(columnSpan = 3) {
                         text(
-                            bokmal { +  "Dette får du som forsørgingstillegg" },
-                            nynorsk { +  "Dette får du som forsørgingstillegg" },
-                            english { +  "Your dependant supplement" },
+                            bokmal { + "Dette får du som forsørgingstillegg" },
+                            nynorsk { + "Dette får du som forsørgingstillegg" },
+                            english { + "Your dependant supplement" },
                         )
                     }
                     column(alignment = RIGHT, columnSpan = 1) {
@@ -559,9 +559,9 @@ data class TabellMaanedligPensjonKap19og20(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Ektefelletillegg" },
-                                        nynorsk { +  "Ektefelletillegg" },
-                                        english { +  "Spouse supplement" },
+                                        bokmal { + "Ektefelletillegg" },
+                                        nynorsk { + "Ektefelletillegg" },
+                                        english { + "Spouse supplement" },
                                     )
                                 }
                                 cell { includePhrase(KronerText(it)) }
@@ -574,9 +574,9 @@ data class TabellMaanedligPensjonKap19og20(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Barnetillegg særkullsbarn" },
-                                        nynorsk { +  "Barnetillegg særkullsbarn" },
-                                        english { +  "Supplement for child(ren) of former marriages/relationships" },
+                                        bokmal { + "Barnetillegg særkullsbarn" },
+                                        nynorsk { + "Barnetillegg særkullsbarn" },
+                                        english { + "Supplement for child(ren) of former marriages/relationships" },
                                     )
                                 }
                                 cell { includePhrase(KronerText(it)) }
@@ -589,9 +589,9 @@ data class TabellMaanedligPensjonKap19og20(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Barnetillegg fellesbarn" },
-                                        nynorsk { +  "Barnetillegg fellesbarn" },
-                                        english { +  "Supplement for child(ren) of the marriages/relationship" },
+                                        bokmal { + "Barnetillegg fellesbarn" },
+                                        nynorsk { + "Barnetillegg fellesbarn" },
+                                        english { + "Supplement for child(ren) of the marriages/relationship" },
                                     )
                                 }
                                 cell { includePhrase(KronerText(it)) }
@@ -602,9 +602,9 @@ data class TabellMaanedligPensjonKap19og20(
             }
 
             text(
-                bokmal { +  "Sum pensjon før skatt: " },
-                nynorsk { +  "Sum pensjon før skatt: " },
-                english { +  "Total pension before tax: " },
+                bokmal { + "Sum pensjon før skatt: " },
+                nynorsk { + "Sum pensjon før skatt: " },
+                english { + "Total pension before tax: " },
                 FontType.BOLD
             )
             includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD))
@@ -618,9 +618,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.inntektspensjon(inntektsp
         row {
             cell {
                 text(
-                    bokmal { +  "Inntektspensjon" },
-                    nynorsk { +  "Inntektspensjon" },
-                    english { +  "Income-based pension" },
+                    bokmal { + "Inntektspensjon" },
+                    nynorsk { + "Inntektspensjon" },
+                    english { + "Income-based pension" },
                 )
             }
             cell { includePhrase(KronerText(it)) }
@@ -633,9 +633,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.garantipensjon(garantipen
         row {
             cell {
                 text(
-                    bokmal { +  "Garantipensjon" },
-                    nynorsk { +  "Garantipensjon" },
-                    english { +  "Pension guarantee" },
+                    bokmal { + "Garantipensjon" },
+                    nynorsk { + "Garantipensjon" },
+                    english { + "Pension guarantee" },
                 )
             }
             cell { includePhrase(KronerText(it)) }
@@ -648,9 +648,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.minstenivaaIndividuell(mi
         row {
             cell {
                 text(
-                    bokmal { +  "Minstenivåtillegg individuelt" },
-                    nynorsk { +  "Minstenivåtillegg individuelt" },
-                    english { +  "Minimum pension supplement" },
+                    bokmal { + "Minstenivåtillegg individuelt" },
+                    nynorsk { + "Minstenivåtillegg individuelt" },
+                    english { + "Minimum pension supplement" },
                 )
             }
             cell { includePhrase(KronerText(it)) }

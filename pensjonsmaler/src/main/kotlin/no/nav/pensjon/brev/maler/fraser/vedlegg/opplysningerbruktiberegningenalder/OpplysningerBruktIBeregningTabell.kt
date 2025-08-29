@@ -327,8 +327,8 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         cell {
                             text(
                                 bokmal { + "Forholdstall ved levealdersjustering" },
-                                nynorsk { +  "Forholdstal ved levealdersjustering" },
-                                english { +  "Ratio for life expectancy adjustment" },
+                                nynorsk { + "Forholdstal ved levealdersjustering" },
+                                english { + "Ratio for life expectancy adjustment" },
                             )
                         }
                         cell { eval(beregningKap19VedVirk.forholdstallLevealder.format(scale = 3)) }
@@ -340,9 +340,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Ung ufør" },
-                                nynorsk { +  "Ung ufør" },
-                                english { +  "Young disabled person" },
+                                bokmal { + "Ung ufør" },
+                                nynorsk { + "Ung ufør" },
+                                english { + "Young disabled person" },
                             )
                         }
                         cell { includePhrase(Ja) }
@@ -354,9 +354,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Yrkesskade uføregrad" },
-                                nynorsk { +  "Yrkesskade uføregrad" },
-                                english { +  "Occupational injury - degree of disability" },
+                                bokmal { + "Yrkesskade uføregrad" },
+                                nynorsk { + "Yrkesskade uføregrad" },
+                                english { + "Occupational injury - degree of disability" },
                             )
                         }
                         cell { eval(it.yrkesskadeUforegrad.format() + " %") }
@@ -366,9 +366,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Sluttpoengtall ved yrkesskade" },
-                                nynorsk { +  "Sluttpoengtal ved yrkesskade" },
-                                english { +  "Final pension point score on occupational injury" },
+                                bokmal { + "Sluttpoengtall ved yrkesskade" },
+                                nynorsk { + "Sluttpoengtal ved yrkesskade" },
+                                english { + "Final pension point score on occupational injury" },
                             )
                         }
                         cell { eval(it.sluttpoengtall.format()) }
@@ -378,9 +378,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Antall poengår benyttet ved yrkesskadeberegningen" },
-                                nynorsk { +  "Talet på poengår benyttet ved yrkesskadeberekning" },
-                                english { +  "Number of pension point earning years used in the calculation of occupational injury" },
+                                bokmal { + "Antall poengår benyttet ved yrkesskadeberegningen" },
+                                nynorsk { + "Talet på poengår benyttet ved yrkesskadeberekning" },
+                                english { + "Number of pension point earning years used in the calculation of occupational injury" },
                             )
                         }
                         cell { includePhrase(AntallAarText(it.poengAr)) }
@@ -390,9 +390,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Antall år med pensjonsprosent 45 benyttet ved yrkesskadeberegning" },
-                                nynorsk { +  "Talet på år med pensjonsprosent 45 brukt ved yrkesskadeberekning" },
-                                english { +  "Number of years with pension percentage 45 used in the calculation of occupational injury" },
+                                bokmal { + "Antall år med pensjonsprosent 45 benyttet ved yrkesskadeberegning" },
+                                nynorsk { + "Talet på år med pensjonsprosent 45 brukt ved yrkesskadeberekning" },
+                                english { + "Number of years with pension percentage 45 used in the calculation of occupational injury" },
                             )
                         }
                         cell { includePhrase(AntallAarText(it.poengArf92)) }
@@ -402,9 +402,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Antall år med pensjonsprosent 42 benyttet ved yrkesskadeberegning" },
-                                nynorsk { +  "Talet på år med pensjonsprosent 42 brukt ved yrkesskadeberekning" },
-                                english { +  "Number of years with pension percentage 42 used in the calculation of occupational injury" },
+                                bokmal { + "Antall år med pensjonsprosent 42 benyttet ved yrkesskadeberegning" },
+                                nynorsk { + "Talet på år med pensjonsprosent 42 brukt ved yrkesskadeberekning" },
+                                english { + "Number of years with pension percentage 42 used in the calculation of occupational injury" },
                             )
                         }
                         cell { includePhrase(AntallAarText(it.poengAre91)) }
@@ -417,9 +417,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Uføregrad v/67 år brukt ved beregning av skjermingstillegg" },
-                                    nynorsk { +  "Uføregrad v/67 år brukt ved av berekning av skjermingstillegg" },
-                                    english { +  "Degree of disability at the age of 67 used for calculating the supplement for the disabled" },
+                                    bokmal { + "Uføregrad v/67 år brukt ved beregning av skjermingstillegg" },
+                                    nynorsk { + "Uføregrad v/67 år brukt ved av berekning av skjermingstillegg" },
+                                    english { + "Degree of disability at the age of 67 used for calculating the supplement for the disabled" },
                                 )
                             }
                             cell { eval(beregningKap19VedVirk.uforegradVed67.format() + " %") }
@@ -431,9 +431,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Prosentsats for fastsetting av skjermingstillegg til uføre" },
-                                    nynorsk { +  "Prosentsats for fastsetting av skjermingstillegg til uføre" },
-                                    english { +  "Percentage rate for determining the supplement for the disabled" },
+                                    bokmal { + "Prosentsats for fastsetting av skjermingstillegg til uføre" },
+                                    nynorsk { + "Prosentsats for fastsetting av skjermingstillegg til uføre" },
+                                    english { + "Percentage rate for determining the supplement for the disabled" },
                                 )
                             }
                             cell { eval(beregningKap19VedVirk.skjermingsgrad.format() + " %") }
@@ -445,9 +445,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Forholdstallet brukt ved beregningen av skjermingstillegg til uføre" },
-                                    nynorsk { +  "Forholdstal brukt ved berekning av skjermingstillegg" },
-                                    english { +  "Ratio for life expectancy adjustment used for calculating the supplement for the disabled" },
+                                    bokmal { + "Forholdstallet brukt ved beregningen av skjermingstillegg til uføre" },
+                                    nynorsk { + "Forholdstal brukt ved berekning av skjermingstillegg" },
+                                    english { + "Ratio for life expectancy adjustment used for calculating the supplement for the disabled" },
                                 )
                             }
                             cell { eval(beregningKap19VedVirk.forholdstall67Soeker.format(scale = 3)) }
@@ -469,9 +469,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { +  "For den delen av pensjonen din som er beregnet etter nye regler (kapittel 20) har vi brukt disse opplysningene i beregningen vår:" },
-                nynorsk { +  "For den delen av pensjonen din som er berekna etter nye reglar (kapittel 20), har vi brukt desse opplysningane i berekninga vår:" },
-                english { +  "We have used the following information to calculate the part of your pension that comes under the new provisions (Chapter 20):" },
+                bokmal { + "For den delen av pensjonen din som er beregnet etter nye regler (kapittel 20) har vi brukt disse opplysningene i beregningen vår:" },
+                nynorsk { + "For den delen av pensjonen din som er berekna etter nye reglar (kapittel 20), har vi brukt desse opplysningane i berekninga vår:" },
+                english { + "We have used the following information to calculate the part of your pension that comes under the new provisions (Chapter 20):" },
             )
 
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
@@ -488,9 +488,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Trygdetid" },
-                                nynorsk { +  "Trygdetid" },
-                                english { +  "National insurance coverage" },
+                                bokmal { + "Trygdetid" },
+                                nynorsk { + "Trygdetid" },
+                                english { + "National insurance coverage" },
                             )
                         }
                         cell { includePhrase(AntallAarText(trygdetidsdetaljer.anvendtTT)) }
@@ -527,9 +527,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Pensjonsbeholdning før førstegangsuttak" },
-                                        nynorsk { +  "Pensjonsbehaldning før førstegangsuttak" },
-                                        english { +  "Accumulated pension capital before initial withdrawal" },
+                                        bokmal { + "Pensjonsbeholdning før førstegangsuttak" },
+                                        nynorsk { + "Pensjonsbehaldning før førstegangsuttak" },
+                                        english { + "Accumulated pension capital before initial withdrawal" },
                                     )
                                 }
                                 cell { includePhrase(KronerText(it)) }
@@ -542,9 +542,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Ny opptjening" },
-                                    nynorsk { +  "Ny opptening" },
-                                    english { +  "New accumulated pension capital" },
+                                    bokmal { + "Ny opptjening" },
+                                    nynorsk { + "Ny opptening" },
+                                    english { + "New accumulated pension capital" },
                                 )
                             }
                             cell { includePhrase(KronerText(it)) }
@@ -555,9 +555,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Delingstall ved levealdersjustering" },
-                                    nynorsk { +  "Delingstal ved levealdersjustering" },
-                                    english { +  "Ratio for life expectancy adjustment" },
+                                    bokmal { + "Delingstall ved levealdersjustering" },
+                                    nynorsk { + "Delingstal ved levealdersjustering" },
+                                    english { + "Ratio for life expectancy adjustment" },
                                 )
                             }
                             cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
@@ -576,9 +576,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidEOSrad(
     row {
         cell {
             text(
-                bokmal { +  "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land" },
-                nynorsk { +  "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land" },
-                english { +  "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries" },
+                bokmal { + "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land" },
+                nynorsk { + "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land" },
+                english { + "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries" },
             )
         }
         cell { includePhrase(BroekText(tellerTTEOS, nevnerTTEOS)) }
@@ -600,9 +600,9 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                     //tabellBeholdningForForsteUttak_002
                     cell {
                         text(
-                            bokmal { +  "Pensjonsbeholdning ved uttak" },
-                            nynorsk { +  "Pensjonsbehaldning ved uttak" },
-                            english { +  "Accumulated pension capital before initial withdrawal" },
+                            bokmal { + "Pensjonsbeholdning ved uttak" },
+                            nynorsk { + "Pensjonsbehaldning ved uttak" },
+                            english { + "Accumulated pension capital before initial withdrawal" },
                         )
                     }
                     cell { includePhrase(KronerText(beregningKap20VedVirk.beholdningForForsteUttak)) }
@@ -612,9 +612,9 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                 row {
                     cell {
                         text(
-                            bokmal { +  "Delingstall ved uttak" },
-                            nynorsk { +  "Delingstal ved uttak" },
-                            english { +  "Life expectancy adjustment divisor at withdrawal" },
+                            bokmal { + "Delingstall ved uttak" },
+                            nynorsk { + "Delingstal ved uttak" },
+                            english { + "Life expectancy adjustment divisor at withdrawal" },
                         )
                     }
                     cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
@@ -634,15 +634,15 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Sats for garantipensjon (" },
-                                    nynorsk { +  "Sats for garantipensjon (" },
-                                    english { +  "Guaranteed pension rate (" },
+                                    bokmal { + "Sats for garantipensjon (" },
+                                    nynorsk { + "Sats for garantipensjon (" },
+                                    english { + "Guaranteed pension rate (" },
                                 )
                                 includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
                                 text(
-                                    bokmal { +  ")" },
-                                    nynorsk { +  ")" },
-                                    english { +  ")" },
+                                    bokmal { + ")" },
+                                    nynorsk { + ")" },
+                                    english { + ")" },
                                 )
 
                             }
@@ -668,9 +668,9 @@ fun opplysningerBruktIBeregningenHeader(beregningVirkDatoFom: Expression<LocalDa
         //vedleggBeregnTabellOverskrift_001
         column(columnSpan = 4) {
             text(
-                bokmal { +  "Opplysninger brukt i beregningen per " + beregningVirkDatoFom.format() },
-                nynorsk { +  "Opplysningar brukte i berekninga frå " + beregningVirkDatoFom.format() },
-                english { +  "Information used to calculate as of " + beregningVirkDatoFom.format() },
+                bokmal { + "Opplysninger brukt i beregningen per " + beregningVirkDatoFom.format() },
+                nynorsk { + "Opplysningar brukte i berekninga frå " + beregningVirkDatoFom.format() },
+                english { + "Information used to calculate as of " + beregningVirkDatoFom.format() },
             )
         }
         column(alignment = RIGHT) { }
@@ -681,9 +681,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.flyktningstatusFraUDIrad(
     row {
         cell {
             text(
-                bokmal { +  "Du er innvilget flyktningstatus fra UDI" },
-                nynorsk { +  "Du er innvilga flyktningstatus frå UDI" },
-                english { +  "You are registered with the status of a refugee granted by the UDI" },
+                bokmal { + "Du er innvilget flyktningstatus fra UDI" },
+                nynorsk { + "Du er innvilga flyktningstatus frå UDI" },
+                english { + "You are registered with the status of a refugee granted by the UDI" },
             )
         }
         cell { includePhrase(Ja) }
@@ -704,9 +704,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.prorataBroekRad(
     row {
         cell {
             text(
-                bokmal { +  "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland" },
-                nynorsk { +  "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland" },
-                english { +  "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement" },
+                bokmal { + "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland" },
+                nynorsk { + "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland" },
+                english { + "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement" },
             )
         }
         cell { includePhrase(BroekText(teller, nevner)) }
@@ -716,9 +716,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.prorataBroekRad(
 object DelingstallVed67Aar : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            bokmal { +  "Delingstall ved 67 år" },
-            nynorsk { +  "Delingstal ved 67 år" },
-            english { +  "Life expectancy adjustment divisor at 67 years" }
+            bokmal { + "Delingstall ved 67 år" },
+            nynorsk { + "Delingstal ved 67 år" },
+            english { + "Life expectancy adjustment divisor at 67 years" }
         )
     }
 

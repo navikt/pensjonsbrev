@@ -472,21 +472,21 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Dersom vi ikke får dokumentasjon på at inntekten til " +
+                        bokmal { + "Dersom vi ikke får dokumentasjon på at inntekten til " +
                                 fritekst("ektefellen/partneren/samboeren") + " din er under 2G vil du kun få en grunnpensjon på 90 prosent av grunnbeløpet." },
 
-                        nynorsk { +  "Dersom vi ikkje får dokumentasjon på at inntekta til " +
+                        nynorsk { + "Dersom vi ikkje får dokumentasjon på at inntekta til " +
                                 fritekst("ektefellen/partnaren/sambuaren") + " din er under 2G, vil du berre få ein grunnpensjon på 90 prosent av grunnbeløpet." },
 
-                        english { +  "If we do not receive documentation that your " +
+                        english { + "If we do not receive documentation that your " +
                                 fritekst("spouse/partner/cohabitant") + "’s income is below 2G, you will only receive a basic pension of 90 percent of the basic amount." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Du trenger ikke legge ved dokumentasjon dersom inntekten er over 2G. Du kan bare gi oss beskjed om dette." },
-                        nynorsk { +  "Du treng ikkje leggje ved dokumentasjon dersom inntekta er over 2G. Du kan berre gi oss beskjed om dette." },
-                        english { +  "You do not need to provide documentation if the income is over 2G. Simply notify us about this." },
+                        bokmal { + "Du trenger ikke legge ved dokumentasjon dersom inntekten er over 2G. Du kan bare gi oss beskjed om dette." },
+                        nynorsk { + "Du treng ikkje leggje ved dokumentasjon dersom inntekta er over 2G. Du kan berre gi oss beskjed om dette." },
+                        english { + "You do not need to provide documentation if the income is over 2G. Simply notify us about this." },
                     )
                 }
             }
@@ -494,16 +494,16 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             showIf(saksbehandlerValg.forsoergerEpsBosattIUtlandet) {
                 title1 {
                     text(
-                        bokmal { +  "Dokumentasjon på at du forsørger " + fritekst("ektefellen/partneren/samboeren") + " din" },
-                        nynorsk { +  "Dokumentasjon på at du forsørgjer " + fritekst("ektefellen/partnaren/sambuaren") + " din" },
-                        english { +  "Documentation that you provide for your " + fritekst("spouse/partner/cohabitant") },
+                        bokmal { + "Dokumentasjon på at du forsørger " + fritekst("ektefellen/partneren/samboeren") + " din" },
+                        nynorsk { + "Dokumentasjon på at du forsørgjer " + fritekst("ektefellen/partnaren/sambuaren") + " din" },
+                        english { + "Documentation that you provide for your " + fritekst("spouse/partner/cohabitant") },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Vi skal vurdere om du har rett til pensjon beregnet etter særskilt sats. Dette kan gi deg en høyere pensjon. For å få særskilt sats må du dokumentere at du forsørger din ektefelle/partner/samboer. Eksempler på dokumentasjon er bankoverføringer. Det må dokumenteres minst tre overføringer, du må stå som avsender og din ektefelle/partner/samboer som mottaker." },
-                        nynorsk { +  "Vi skal vurdere om du har rett til pensjon berekna etter særskilt sats. Dette kan gi deg ein høgare pensjon. For å få særskilt sats må du dokumentere at du forsørgjer din ektefelle/partnar/sambuar. Eksempel på dokumentasjon er bankoverføringar. Det må dokumenterast minst tre overføringar, du må stå som avsendar og din ektefelle/partnar/sambuar som mottakar." },
-                        english { +  "We will assess your eligibility for retirement pension according to a special rate. This may give you a higher pension. To get this special rate you must document that you provide for your spouse/partner/cohabitant. An example of such documentation is bank transfers, of which there must be at least three. You must be the person who transfers the money, and your spouse/partner/cohabitant must be the receiver." },
+                        bokmal { + "Vi skal vurdere om du har rett til pensjon beregnet etter særskilt sats. Dette kan gi deg en høyere pensjon. For å få særskilt sats må du dokumentere at du forsørger din ektefelle/partner/samboer. Eksempler på dokumentasjon er bankoverføringer. Det må dokumenteres minst tre overføringer, du må stå som avsender og din ektefelle/partner/samboer som mottaker." },
+                        nynorsk { + "Vi skal vurdere om du har rett til pensjon berekna etter særskilt sats. Dette kan gi deg ein høgare pensjon. For å få særskilt sats må du dokumentere at du forsørgjer din ektefelle/partnar/sambuar. Eksempel på dokumentasjon er bankoverføringar. Det må dokumenterast minst tre overføringar, du må stå som avsendar og din ektefelle/partnar/sambuar som mottakar." },
+                        english { + "We will assess your eligibility for retirement pension according to a special rate. This may give you a higher pension. To get this special rate you must document that you provide for your spouse/partner/cohabitant. An example of such documentation is bank transfers, of which there must be at least three. You must be the person who transfers the money, and your spouse/partner/cohabitant must be the receiver." },
                     )
                 }
             }
@@ -512,22 +512,22 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 title1 {
 
                     text(
-                        bokmal { +  "Manglende opptjening" },
-                        nynorsk { +  "Manglande opptening" },
-                        english { +  "Period(-s) with no pension earnings" },
+                        bokmal { + "Manglende opptjening" },
+                        nynorsk { + "Manglande opptening" },
+                        english { + "Period(-s) with no pension earnings" },
                     )
 
                 }
 
                 paragraph {
                     text(
-                        bokmal { +  "Ifølge opplysningene vi har mottatt, har du ikke hatt pensjonsopptjening i " +
+                        bokmal { + "Ifølge opplysningene vi har mottatt, har du ikke hatt pensjonsopptjening i " +
                                 fritekst("året/årene") + ". Vi ber om at du kort forklarer årsaken til dette." },
 
-                        nynorsk { +  "Ifølgje opplysningane vi har fått, har du ikkje hatt pensjonsopptening i " +
+                        nynorsk { + "Ifølgje opplysningane vi har fått, har du ikkje hatt pensjonsopptening i " +
                                 fritekst("året/åra") + ". Vi ber om at du kort forklarar årsaka til dette." },
 
-                        english { +  "According to the information we have received, you have no pension earnings for " +
+                        english { + "According to the information we have received, you have no pension earnings for " +
                                 fritekst("the year/the years") + ". We ask you to provide a brief account of the cause for this." },
                     )
                 }
@@ -536,16 +536,16 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             showIf(saksbehandlerValg.boOgArbeidsperioder) {
                 title1 {
                     text(
-                        bokmal { +  "Bo- og arbeidsperioder i Norge" },
-                        nynorsk { +  "Bu- og arbeidsperiodar  i Noreg" },
-                        english { +  "Periods in Norway" },
+                        bokmal { + "Bo- og arbeidsperioder i Norge" },
+                        nynorsk { + "Bu- og arbeidsperiodar  i Noreg" },
+                        english { + "Periods in Norway" },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Du må oppgi hvor og når du var bosatt og/eller arbeidet i Norge. For å sikre at vi har riktige opplysninger om dine arbeidsperioder ber vi deg om å dokumentere disse. Dette kan være kopier av attester, lønnslipper eller skattemelding." },
-                        nynorsk { +  "Du må gi opp kvar og når du var busett og/eller arbeidde i Noreg. For å sikre at vi har riktige opplysningar om arbeidsperiodane dine, ber vi deg om å dokumentere desse. Det kan vere kopiar av attestar, lønnsslippar eller skattemelding." },
-                        english { +  "You must state where and when you lived and/or worked in Norway. To ensure that we have the correct information about your work periods, we ask you to provide documentation, such as copies of references, pay slips or tax returns." },
+                        bokmal { + "Du må oppgi hvor og når du var bosatt og/eller arbeidet i Norge. For å sikre at vi har riktige opplysninger om dine arbeidsperioder ber vi deg om å dokumentere disse. Dette kan være kopier av attester, lønnslipper eller skattemelding." },
+                        nynorsk { + "Du må gi opp kvar og når du var busett og/eller arbeidde i Noreg. For å sikre at vi har riktige opplysningar om arbeidsperiodane dine, ber vi deg om å dokumentere desse. Det kan vere kopiar av attestar, lønnsslippar eller skattemelding." },
+                        english { + "You must state where and when you lived and/or worked in Norway. To ensure that we have the correct information about your work periods, we ask you to provide documentation, such as copies of references, pay slips or tax returns." },
                     )
                 }
             }
@@ -553,54 +553,54 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             showIf(saksbehandlerValg.bosattIEoesLandSedErEoesBlanketter) {
                 title1 {
                     text(
-                        bokmal { +  "Søknad fra EØS-land" },
-                        nynorsk { +  "Søknad frå EØS-land" },
-                        english { +  "Application from an EEA country " },
+                        bokmal { + "Søknad fra EØS-land" },
+                        nynorsk { + "Søknad frå EØS-land" },
+                        english { + "Application from an EEA country " },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Dersom man er bosatt i et EØS-land, og har opparbeidet seg pensjonsrettigheter i dette landet, følger det av EØS-reglementet at man skal søke om pensjon fra annet EØS-land gjennom bostedslandets nasjonale myndigheter. Vi ber derfor om at du kontakter " + fritekst(" ") + " trygdemyndigheter for oversendelse av SED-dokumentene P2000, P5000 og P4000, eventuelt EØS-blankettene E202, E205 og E207." },
-                        nynorsk { +  "Dersom man bur i eit EØS-land, og har opparbeida seg pensjonsrettighetar i dette landet, følgjer det av EØS-reglementet at man skal søkje om pensjon frå anna EØS-land gjennom bustadslandet sine nasjonale myndigheiter. Vi ber derfor om at du kontaktar " + fritekst(" ") + " trygdemyndigheiter for oversendelse av SED-dokumenta P2000, P5000 og P4000, eventuelt EØS-blankettane E202, E205 og E207." },
-                        english { +  "According to the EEA agreement, a resident of an EEA country has to forward his/her claim for benefits in another EEA country through the national authorities in the country of residence. In order for us to process your claim for retirement pension from the Norwegian National Insurance Scheme, you must contact your local authorities." },
+                        bokmal { + "Dersom man er bosatt i et EØS-land, og har opparbeidet seg pensjonsrettigheter i dette landet, følger det av EØS-reglementet at man skal søke om pensjon fra annet EØS-land gjennom bostedslandets nasjonale myndigheter. Vi ber derfor om at du kontakter " + fritekst(" ") + " trygdemyndigheter for oversendelse av SED-dokumentene P2000, P5000 og P4000, eventuelt EØS-blankettene E202, E205 og E207." },
+                        nynorsk { + "Dersom man bur i eit EØS-land, og har opparbeida seg pensjonsrettighetar i dette landet, følgjer det av EØS-reglementet at man skal søkje om pensjon frå anna EØS-land gjennom bustadslandet sine nasjonale myndigheiter. Vi ber derfor om at du kontaktar " + fritekst(" ") + " trygdemyndigheiter for oversendelse av SED-dokumenta P2000, P5000 og P4000, eventuelt EØS-blankettane E202, E205 og E207." },
+                        english { + "According to the EEA agreement, a resident of an EEA country has to forward his/her claim for benefits in another EEA country through the national authorities in the country of residence. In order for us to process your claim for retirement pension from the Norwegian National Insurance Scheme, you must contact your local authorities." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Din søknad kan ikke bli behandlet før vi mottar disse blankettene." },
-                        nynorsk { +  "Din søknad kan ikkje bli behandla før vi mottar desse blankettane." },
-                        english { +  "No decision will be made until the SED-documents P2000, P5000 and P4000, or the forms E202, E205 and E207 are provided." },
+                        bokmal { + "Din søknad kan ikke bli behandlet før vi mottar disse blankettene." },
+                        nynorsk { + "Din søknad kan ikkje bli behandla før vi mottar desse blankettane." },
+                        english { + "No decision will be made until the SED-documents P2000, P5000 and P4000, or the forms E202, E205 and E207 are provided." },
                     )
                 }
             }
             showIf(saksbehandlerValg.tidspunktForUttak) {
                 title1 {
                     text(
-                        bokmal { +  "Tidspunkt for uttak/ønsket uttaksgrad" },
-                        nynorsk { +  "Tidspunkt for uttak/ønska uttaksgrad " },
-                        english { +  "Statement for your pension " },
+                        bokmal { + "Tidspunkt for uttak/ønsket uttaksgrad" },
+                        nynorsk { + "Tidspunkt for uttak/ønska uttaksgrad " },
+                        english { + "Statement for your pension " },
                     )
                 }
                 paragraph {
                     val dato = fritekst("dato")
                     text(
-                        bokmal { +  "Du har ikke oppgitt når du ønsker å ta ut pensjon. Du må derfor fylle ut skjemaet du får sammen med dette brevet. Dersom du ikke sender oss informasjon om når du ønsker å ta ut pensjon, tar vi utgangspunkt i datoen du sendte søknaden til " +
+                        bokmal { + "Du har ikke oppgitt når du ønsker å ta ut pensjon. Du må derfor fylle ut skjemaet du får sammen med dette brevet. Dersom du ikke sender oss informasjon om når du ønsker å ta ut pensjon, tar vi utgangspunkt i datoen du sendte søknaden til " +
                                 fritekst("oss/trygdemyndighetene i bostedslandet ditt") + ". Det vil si " + dato },
-                        nynorsk { +  "Du har ikkje oppgitt når du ønskjer å ta ut pensjon. Du må derfor fylle ut skjemaet du får saman med dette brevet. Dersom du ikkje sender oss informasjon om når du ønskjer å ta ut pensjon, vil vi ta utgangspunkt i datoen då du sende søknaden til " +
+                        nynorsk { + "Du har ikkje oppgitt når du ønskjer å ta ut pensjon. Du må derfor fylle ut skjemaet du får saman med dette brevet. Dersom du ikkje sender oss informasjon om når du ønskjer å ta ut pensjon, vil vi ta utgangspunkt i datoen då du sende søknaden til " +
                                 fritekst("oss/trygdeorganet i bustadslandet ditt") + ". Det vil seie " + dato },
-                        english { +  "You have not stated when you want to start drawing your pension. Therefore, you must fill out the form enclosed with this letter. If you do not send us information about when you want to start drawing your pension, we will use the date you submitted the application to " +
+                        english { + "You have not stated when you want to start drawing your pension. Therefore, you must fill out the form enclosed with this letter. If you do not send us information about when you want to start drawing your pension, we will use the date you submitted the application to " +
                                 fritekst("us,/the National Insurance authorities in your country of residence,") + " i.e. " + dato },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +  "Du har ikke oppgitt hvilken uttaksgrad av alderspensjon du ønsker. " +
+                        bokmal { + "Du har ikke oppgitt hvilken uttaksgrad av alderspensjon du ønsker. " +
                                 fritekst("Vi kan ikke behandle søknaden din før vi får svar fra deg om dette./Dersom du ikke sender oss informasjon om uttaksgraden, setter vi den til 100 prosent.") },
 
-                        nynorsk { +  "Du har ikkje oppgitt kva uttaksgrad av alderspensjon du ønskjer å ta ut. " +
+                        nynorsk { + "Du har ikkje oppgitt kva uttaksgrad av alderspensjon du ønskjer å ta ut. " +
                                 fritekst("Vi kan ikkje behandle søknaden din før vi får svar frå deg om dette./Dersom du ikkje sender oss informasjon om uttaksgraden, set vi den til 100 prosent.") },
 
-                        english { +  "You have not stated what percentage of your retirement pension you want to draw. " +
+                        english { + "You have not stated what percentage of your retirement pension you want to draw. " +
                                 fritekst("We cannot process your application until we receive a response from you./If you do not send us information about what withdrawal percentage you want, the percentage will be set to 100 percent.") },
                     )
                 }
@@ -608,56 +608,56 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
             paragraph {
                 text(
-                    bokmal { +  "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg " + quoted("Send beskjed til Nav") + ", tema " + quoted("Beskjed – pensjon") + "." },
-                    nynorsk { +  "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel " + quoted("Send beskjed til Nav") +", tema " + quoted("Beskjed – pensjon") + "." },
-                    english { +  "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select " + quoted("Send beskjed til Nav") +" and the theme " + quoted("Beskjed – pensjon") + "." },
+                    bokmal { + "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg " + quoted("Send beskjed til Nav") + ", tema " + quoted("Beskjed – pensjon") + "." },
+                    nynorsk { + "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel " + quoted("Send beskjed til Nav") +", tema " + quoted("Beskjed – pensjon") + "." },
+                    english { + "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select " + quoted("Send beskjed til Nav") +" and the theme " + quoted("Beskjed – pensjon") + "." },
                 )
             }
             paragraph {
                 val svarfristDato = fritekst("dato svarfrist")
                 text(
-                    bokmal { +  "Skriftlig tilbakemelding per post og eventuell dokumentasjon må du sende innen "
+                    bokmal { + "Skriftlig tilbakemelding per post og eventuell dokumentasjon må du sende innen "
                             + svarfristDato + " til følgende adresse:" },
-                    nynorsk { +  "Skriftleg tilbakemelding per post og eventuell dokumentasjon må du sende innan "
+                    nynorsk { + "Skriftleg tilbakemelding per post og eventuell dokumentasjon må du sende innan "
                             + svarfristDato + " til følgande adresse:" },
-                    english { +  "Please send the required documentation within "
+                    english { + "Please send the required documentation within "
                             + svarfristDato + " to the address below:" },
                 )
             }
             includePhrase(Alderspensjon.Returadresse)
             paragraph {
                 text(
-                    bokmal { +  "Dersom vi ikke mottar nødvendig dokumentasjonen innen fristen, vil saken bli avgjort med de opplysninger som foreligger. Hvis vi ikke har nok opplysninger til å behandle søknaden din, kan saken bli avslått." },
-                    nynorsk { +  "Dersom vi ikkje mottar nødvendig dokumentasjon innan fristen, vil saka bli avgjord med de opplysningane som foreligg. Hvis vi ikkje har nok opplysningar til å behandle saka di, kan saka di bli avslått." },
-                    english { +  "If we do not receive the necessary documentation or an explanation within the deadline, your application will either be processed using the information available to us or postponed until we have received the information we need. If we do not receive the necessary information, we will not have enough information to process your case, and your application may be declined." },
+                    bokmal { + "Dersom vi ikke mottar nødvendig dokumentasjonen innen fristen, vil saken bli avgjort med de opplysninger som foreligger. Hvis vi ikke har nok opplysninger til å behandle søknaden din, kan saken bli avslått." },
+                    nynorsk { + "Dersom vi ikkje mottar nødvendig dokumentasjon innan fristen, vil saka bli avgjord med de opplysningane som foreligg. Hvis vi ikkje har nok opplysningar til å behandle saka di, kan saka di bli avslått." },
+                    english { + "If we do not receive the necessary documentation or an explanation within the deadline, your application will either be processed using the information available to us or postponed until we have received the information we need. If we do not receive the necessary information, we will not have enough information to process your case, and your application may be declined." },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Dette går fram av folketrygdloven §§ 21-3 og 21-7." },
-                    nynorsk { +  "Dette går fram av folketrygdlova §§ 21-3 og 21-7." },
-                    english { +  "This follows from sections 21-3 and 21-7 of the National Insurance Act." },
+                    bokmal { + "Dette går fram av folketrygdloven §§ 21-3 og 21-7." },
+                    nynorsk { + "Dette går fram av folketrygdlova §§ 21-3 og 21-7." },
+                    english { + "This follows from sections 21-3 and 21-7 of the National Insurance Act." },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Du kan finne mer informasjon om regelverket på $NAV_URL" },
-                    nynorsk { +  "Du kan finne meir informasjon om regelverket på $NAV_URL" },
-                    english { +  "You can find more information about the regulations at $NAV_URL" },
+                    bokmal { + "Du kan finne mer informasjon om regelverket på $NAV_URL" },
+                    nynorsk { + "Du kan finne meir informasjon om regelverket på $NAV_URL" },
+                    english { + "You can find more information about the regulations at $NAV_URL" },
                 )
             }
             title1 {
                 text(
-                    bokmal { +  "Svartid" },
-                    nynorsk { +  "Svartid" },
-                    english { +  "Response time" },
+                    bokmal { + "Svartid" },
+                    nynorsk { + "Svartid" },
+                    english { + "Response time" },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss." },
-                    nynorsk { +  "Saka vil bli behandla innan " + fritekst("talet på dagar/veker/månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss." },
-                    english { +  "Your case will be processed within " + fritekst("antall days/weeks/months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us." },
+                    bokmal { + "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss." },
+                    nynorsk { + "Saka vil bli behandla innan " + fritekst("talet på dagar/veker/månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss." },
+                    english { + "Your case will be processed within " + fritekst("antall days/weeks/months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us." },
                 )
             }
 
@@ -665,9 +665,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
             paragraph {
                 text(
-                    bokmal { +  "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
-                    nynorsk { +  "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
-                    english { +  "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav." },
+                    bokmal { + "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
+                    nynorsk { + "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
+                    english { + "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav." },
                 )
             }
 

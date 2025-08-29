@@ -276,29 +276,29 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Sivilstatus lagt til grunn i beregningen" },
-                                nynorsk { +  "Sivilstatus lagt til grunn i utrekninga" },
-                                english { +  "Marital status applied to calculation" }
+                                bokmal { + "Sivilstatus lagt til grunn i beregningen" },
+                                nynorsk { + "Sivilstatus lagt til grunn i utrekninga" },
+                                english { + "Marital status applied to calculation" }
                             )
                         }
                         cell {
                             ifNotNull(borMedSivilstand) {
                                 text(
-                                    bokmal { +  it.tableFormat() },
-                                    nynorsk { +  it.tableFormat() },
-                                    english { +  it.tableFormat() }
+                                    bokmal { + it.tableFormat() },
+                                    nynorsk { + it.tableFormat() },
+                                    english { + it.tableFormat() }
                                 )
                             }.orShowIf(brukersSivilstand.isOneOf(Sivilstand.ENKE)) {
                                 text(
-                                    bokmal { +  "Enke/Enkemann" },
-                                    nynorsk { +  "Enkje/Enkjemann" },
-                                    english { +  "Widow/widower" },
+                                    bokmal { + "Enke/Enkemann" },
+                                    nynorsk { + "Enkje/Enkjemann" },
+                                    english { + "Widow/widower" },
                                 )
                             }.orShow {
                                 text(
-                                    bokmal { +  "Enslig" },
-                                    nynorsk { +  "Einsleg" },
-                                    english { +  "Single" },
+                                    bokmal { + "Enslig" },
+                                    nynorsk { + "Einsleg" },
+                                    english { + "Single" },
                                 )
                             }
                         }
@@ -315,13 +315,13 @@ data class TabellUfoereOpplysninger(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Du eller "
+                                        bokmal { + "Du eller "
                                                 + ifElse(erGift, "ektefellen", "partneren") +
                                                 " er registrert med annet bosted, eller er på institusjon" },
-                                        nynorsk { +  "Du eller "
+                                        nynorsk { + "Du eller "
                                                 + ifElse(erGift, "ektefellen", "partnaren") +
                                                 " er registrert med annan bustad, eller er på institusjon" },
-                                        english { +  "You or your "
+                                        english { + "You or your "
                                                 + ifElse(erGift, "spouse", "partner") +
                                                 " have been registered as having a different address, or as living in an institution" },
                                     )
@@ -339,9 +339,9 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Ung ufør" },
-                                nynorsk { +  "Ung ufør" },
-                                english { +  "Young disabled" }
+                                bokmal { + "Ung ufør" },
+                                nynorsk { + "Ung ufør" },
+                                english { + "Young disabled" }
                             )
                         }
                         cell {
@@ -355,17 +355,17 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Yrkesskadegrad" },
-                                    nynorsk { +  "Yrkesskadegrad" },
-                                    english { +  "Degree of disability due to occupational injury" }
+                                    bokmal { + "Yrkesskadegrad" },
+                                    nynorsk { + "Yrkesskadegrad" },
+                                    english { + "Degree of disability due to occupational injury" }
                                 )
                             }
                             cell {
                                 val yrkesskadegrad = yrkesskade.yrkesskadegrad.format()
                                 text(
-                                    bokmal { +  yrkesskadegrad + " %" },
-                                    nynorsk { +  yrkesskadegrad + " %" },
-                                    english { +  yrkesskadegrad + " %" }
+                                    bokmal { + yrkesskadegrad + " %" },
+                                    nynorsk { + yrkesskadegrad + " %" },
+                                    english { + yrkesskadegrad + " %" }
                                 )
                             }
                         }
@@ -373,17 +373,17 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Skadetidspunktet for yrkesskaden" },
-                                nynorsk { +  "Skadetidspunktet for yrkesskaden" },
-                                english { +  "Date of injury" }
+                                bokmal { + "Skadetidspunktet for yrkesskaden" },
+                                nynorsk { + "Skadetidspunktet for yrkesskaden" },
+                                english { + "Date of injury" }
                             )
                         }
                         cell {
                             val skadetidspunkt = yrkesskade.skadetidspunkt.format()
                             text(
-                                bokmal { +  skadetidspunkt },
-                                nynorsk { +  skadetidspunkt },
-                                english { +  skadetidspunkt }
+                                bokmal { + skadetidspunkt },
+                                nynorsk { + skadetidspunkt },
+                                english { + skadetidspunkt }
                             )
                         }
                     }
@@ -391,9 +391,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Årlig arbeidsinntekt på skadetidspunktet" },
-                                    nynorsk { +  "Årleg arbeidsinntekt på skadetidspunktet" },
-                                    english { +  "Annual income at the date of injury" }
+                                    bokmal { + "Årlig arbeidsinntekt på skadetidspunktet" },
+                                    nynorsk { + "Årleg arbeidsinntekt på skadetidspunktet" },
+                                    english { + "Annual income at the date of injury" }
                                 )
                             }
                             cell {
@@ -409,9 +409,9 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Du er innvilget flyktningstatus fra UDI" },
-                                nynorsk { +  "Du er innvilga flyktningstatus frå UDI" },
-                                english { +  "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)" }
+                                bokmal { + "Du er innvilget flyktningstatus fra UDI" },
+                                nynorsk { + "Du er innvilga flyktningstatus frå UDI" },
+                                english { + "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)" }
                             )
                         }
                         cell {
@@ -423,17 +423,17 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Trygdetid (maksimalt 40 år)" },
-                                nynorsk { +  "Trygdetid (maksimalt 40 år)" },
-                                english { +  "Insurance period (maximum 40 years)" }
+                                bokmal { + "Trygdetid (maksimalt 40 år)" },
+                                nynorsk { + "Trygdetid (maksimalt 40 år)" },
+                                english { + "Insurance period (maximum 40 years)" }
                             )
                         }
                         cell {
                             val anvendtTT = trygdetidsdetaljerGjeldende.anvendtTT.format()
                             text(
-                                bokmal { +  anvendtTT + " år" },
-                                nynorsk { +  anvendtTT + " år" },
-                                english { +  anvendtTT + " years" }
+                                bokmal { + anvendtTT + " år" },
+                                nynorsk { + anvendtTT + " år" },
+                                english { + anvendtTT + " years" }
                             )
                         }
                     }
@@ -443,18 +443,18 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)" },
-                                nynorsk { +  "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i utrekninga (maksimalt 40 år)" },
-                                english { +  "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)" }
+                                bokmal { + "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)" },
+                                nynorsk { + "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i utrekninga (maksimalt 40 år)" },
+                                english { + "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)" }
                             )
                         }
                         // Implement logic for year/years
                         cell {
                             val anvendtTT = trygdetidsdetaljerGjeldende.anvendtTT.format()
                             text(
-                                bokmal { +  anvendtTT + " år" },
-                                nynorsk { +  anvendtTT + " år" },
-                                english { +  anvendtTT + " years" }
+                                bokmal { + anvendtTT + " år" },
+                                nynorsk { + anvendtTT + " år" },
+                                english { + anvendtTT + " years" }
                             )
                         }
                     }
@@ -471,17 +471,17 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)" },
-                                nynorsk { +  "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i utrekninga (maksimalt 40 år)" },
-                                english { +  "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)" }
+                                bokmal { + "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)" },
+                                nynorsk { + "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i utrekninga (maksimalt 40 år)" },
+                                english { + "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)" }
                             )
                         }
                         cell {
                             val anvendtTT = trygdetidsdetaljerGjeldende.anvendtTT.format()
                             text(
-                                bokmal { +  anvendtTT + " år" },
-                                nynorsk { +  anvendtTT + " år" },
-                                english { +  anvendtTT + " years" }
+                                bokmal { + anvendtTT + " år" },
+                                nynorsk { + anvendtTT + " år" },
+                                english { + anvendtTT + " years" }
                             )
                         }
                     }
@@ -491,9 +491,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i Norge" },
-                                    nynorsk { +  "Faktisk trygdetid i Noreg" },
-                                    english { +  "Actual insurance period in Norway" }
+                                    bokmal { + "Faktisk trygdetid i Norge" },
+                                    nynorsk { + "Faktisk trygdetid i Noreg" },
+                                    english { + "Actual insurance period in Norway" }
                                 )
                             }
                             cell {
@@ -508,9 +508,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i andre EØS-land" },
-                                    nynorsk { +  "Faktisk trygdetid i andre EØS-land" },
-                                    english { +  "Actual insurance period(s) in other EEA countries" }
+                                    bokmal { + "Faktisk trygdetid i andre EØS-land" },
+                                    nynorsk { + "Faktisk trygdetid i andre EØS-land" },
+                                    english { + "Actual insurance period(s) in other EEA countries" }
                                 )
                             }
                             cell {
@@ -523,9 +523,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)" },
-                                    nynorsk { +  "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)" },
-                                    english { +  "Actual insurance period in Norway and EEA countries (maximum 40 years)" }
+                                    bokmal { + "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)" },
+                                    nynorsk { + "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)" },
+                                    english { + "Actual insurance period in Norway and EEA countries (maximum 40 years)" }
                                 )
                             }
                             cell { includePhrase(Felles.MaanederText(nevnerTTEOS)) }
@@ -539,16 +539,16 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Forholdstallet brukt i beregning av trygdetid" },
-                                    nynorsk { +  "Forholdstalet brukt i utrekning av trygdetid" },
-                                    english { +  "Ratio applied in calculation of insurance period" }
+                                    bokmal { + "Forholdstallet brukt i beregning av trygdetid" },
+                                    nynorsk { + "Forholdstalet brukt i utrekning av trygdetid" },
+                                    english { + "Ratio applied in calculation of insurance period" }
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  tellerTTEOS.format() + " / " + nevnerTTEOS.format() },
-                                    nynorsk { +  tellerTTEOS.format() + " / " + nevnerTTEOS.format() },
-                                    english { +  tellerTTEOS.format() + " / " + nevnerTTEOS.format() }
+                                    bokmal { + tellerTTEOS.format() + " / " + nevnerTTEOS.format() },
+                                    nynorsk { + tellerTTEOS.format() + " / " + nevnerTTEOS.format() },
+                                    english { + tellerTTEOS.format() + " / " + nevnerTTEOS.format() }
                                 )
                             }
                         }
@@ -560,9 +560,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid" },
-                                    nynorsk { +  "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid" },
-                                    english { +  "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)" }
+                                    bokmal { + "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid" },
+                                    nynorsk { + "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid" },
+                                    english { + "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)" }
                                 )
                             }
                             cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
@@ -579,9 +579,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Norsk framtidig trygdetid" },
-                                    nynorsk { +  "Norsk framtidig trygdetid" },
-                                    english { +  "Future insurance period in Norway" }
+                                    bokmal { + "Norsk framtidig trygdetid" },
+                                    nynorsk { + "Norsk framtidig trygdetid" },
+                                    english { + "Future insurance period in Norway" }
                                 )
                             }
                             cell {
@@ -598,16 +598,16 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid" },
-                                    nynorsk { +  "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid" },
-                                    english { +  "Ratio applied in reduction of future Norwegian insurance period" }
+                                    bokmal { + "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid" },
+                                    nynorsk { + "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid" },
+                                    english { + "Ratio applied in reduction of future Norwegian insurance period" }
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format() },
-                                    nynorsk { +  tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format() },
-                                    english { +  tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format() }
+                                    bokmal { + tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format() },
+                                    nynorsk { + tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format() },
+                                    english { + tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format() }
                                 )
                             }
                         }
@@ -617,9 +617,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid" },
-                                    nynorsk { +  "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid" },
-                                    english { +  "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s" }
+                                    bokmal { + "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid" },
+                                    nynorsk { + "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid" },
+                                    english { + "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s" }
                                 )
                             }
                             cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
@@ -643,9 +643,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i annet avtaleland" },
-                                    nynorsk { +  "Faktisk trygdetid i anna avtaleland" },
-                                    english { +  "Actual insurance period(s) in another partner country" }
+                                    bokmal { + "Faktisk trygdetid i annet avtaleland" },
+                                    nynorsk { + "Faktisk trygdetid i anna avtaleland" },
+                                    english { + "Actual insurance period(s) in another partner country" }
                                 )
                             }
                             cell {
@@ -655,9 +655,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
-                                    nynorsk { +  "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)" },
-                                    english { +  "Actual insurance period in Norway and partner countries (maximum 40 years)" }
+                                    bokmal { + "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
+                                    nynorsk { + "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)" },
+                                    english { + "Actual insurance period in Norway and partner countries (maximum 40 years)" }
                                 )
                             }
                             cell {
@@ -667,16 +667,16 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Forholdstallet brukt i beregning av uføretrygd" },
-                                    nynorsk { +  "Forholdstalet brukt i utrekning av uføretrygd" },
-                                    english { +  "Ratio applied in calculation of insurance period" }
+                                    bokmal { + "Forholdstallet brukt i beregning av uføretrygd" },
+                                    nynorsk { + "Forholdstalet brukt i utrekning av uføretrygd" },
+                                    english { + "Ratio applied in calculation of insurance period" }
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +  tellerProRata.format() + " / " + nevnerProRata.format() },
-                                    nynorsk { +  tellerProRata.format() + " / " + nevnerProRata.format() },
-                                    english { +  tellerProRata.format() + " / " + nevnerProRata.format() }
+                                    bokmal { + tellerProRata.format() + " / " + nevnerProRata.format() },
+                                    nynorsk { + tellerProRata.format() + " / " + nevnerProRata.format() },
+                                    english { + tellerProRata.format() + " / " + nevnerProRata.format() }
                                 )
                             }
                         }
@@ -692,17 +692,17 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { +  "Totalt antall barn du har barnetillegg for" },
-                                nynorsk { +  "Totalt antall barn du har barnetillegg for" },
-                                english { +  "Total number of children for whom you receive child supplement" }
+                                bokmal { + "Totalt antall barn du har barnetillegg for" },
+                                nynorsk { + "Totalt antall barn du har barnetillegg for" },
+                                english { + "Total number of children for whom you receive child supplement" }
                             )
                         }
                         val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
                         cell {
                             text(
-                                bokmal { +  totaltAntallBarn.format() },
-                                nynorsk { +  totaltAntallBarn.format() },
-                                english { +  totaltAntallBarn.format() },
+                                bokmal { + totaltAntallBarn.format() },
+                                nynorsk { + totaltAntallBarn.format() },
+                                english { + totaltAntallBarn.format() },
                             )
                         }
                     }
@@ -710,9 +710,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Fribeløp for særkullsbarn" },
-                                    nynorsk { +  "Fribeløp for særkullsbarn" },
-                                    english { +  "Exemption amount for children from a previous relationship" }
+                                    bokmal { + "Fribeløp for særkullsbarn" },
+                                    nynorsk { + "Fribeløp for særkullsbarn" },
+                                    english { + "Exemption amount for children from a previous relationship" }
                                 )
                             }
                             cell {
@@ -724,9 +724,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Fribeløp for fellesbarn" },
-                                    nynorsk { +  "Fribeløp for fellessbarn" },
-                                    english { +  "Exemption amount for joint children" }
+                                    bokmal { + "Fribeløp for fellesbarn" },
+                                    nynorsk { + "Fribeløp for fellessbarn" },
+                                    english { + "Exemption amount for joint children" }
                                 )
                             }
                             cell {
@@ -747,9 +747,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Samlet inntekt som er brukt i fastsettelse av barnetillegg" },
-                                    nynorsk { +  "Samla inntekt som er brukt i fastsetjinga av barnetillegg" },
-                                    english { +  "Your income, which is used to calculate child supplement" }
+                                    bokmal { + "Samlet inntekt som er brukt i fastsettelse av barnetillegg" },
+                                    nynorsk { + "Samla inntekt som er brukt i fastsetjinga av barnetillegg" },
+                                    english { + "Your income, which is used to calculate child supplement" }
                                 )
                             }
                             cell {
@@ -766,9 +766,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg" },
-                                    nynorsk { +  "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg" },
-                                    english { +  "Income of the other parent, which is used to calculate child supplement" }
+                                    bokmal { + "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg" },
+                                    nynorsk { + "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg" },
+                                    english { + "Income of the other parent, which is used to calculate child supplement" }
                                 )
                             }
                             cell {
@@ -783,9 +783,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt" },
-                                    nynorsk { +  "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt" },
-                                    english { +  "Your income which means that no child supplement is received" }
+                                    bokmal { + "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt" },
+                                    nynorsk { + "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt" },
+                                    english { + "Your income which means that no child supplement is received" }
                                 )
                             }
                             cell {
@@ -798,9 +798,9 @@ data class TabellUfoereOpplysninger(
                             row {
                                 cell {
                                     text(
-                                        bokmal { +  "Beløp som er trukket fra annen forelders inntekt (inntil 1G)" },
-                                        nynorsk { +  "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)" },
-                                        english { +  "Amount deducted from the other parent's income (up to 1G)" },
+                                        bokmal { + "Beløp som er trukket fra annen forelders inntekt (inntil 1G)" },
+                                        nynorsk { + "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)" },
+                                        english { + "Amount deducted from the other parent's income (up to 1G)" },
                                     )
                                 }
                                 cell {
@@ -814,9 +814,9 @@ data class TabellUfoereOpplysninger(
                         row {
                             cell {
                                 text(
-                                    bokmal { +  "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt" },
-                                    nynorsk { +  "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt" },
-                                    english { +  "Total combined income which means that no child supplement is received" }
+                                    bokmal { + "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt" },
+                                    nynorsk { + "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt" },
+                                    english { + "Total combined income which means that no child supplement is received" }
                                 )
                             }
                             cell {

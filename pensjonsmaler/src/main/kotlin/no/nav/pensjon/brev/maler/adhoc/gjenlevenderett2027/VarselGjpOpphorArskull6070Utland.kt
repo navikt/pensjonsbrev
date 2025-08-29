@@ -215,30 +215,30 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
             paragraph {
                 text(
                     bokmal { + "Du må da sende oss bekreftelse på at skattemeldingen din er endret. " },
-                    english { +  "You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. " }
+                    english { + "You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. " }
                 )
             }
 
 
             paragraph {
                 text(
-                    bokmal { +  "Vi vil da vurdere de nye opplysningene før vi gjør vedtak i saken din. " },
-                    english { +  "We will then consider the new information before we make a decision in your case. " }
+                    bokmal { + "Vi vil da vurdere de nye opplysningene før vi gjør vedtak i saken din. " },
+                    english { + "We will then consider the new information before we make a decision in your case. " }
                 )
             }
 
             title1 {
                 text(
-                    bokmal { +  "Meld fra om endringer " },
-                    english { +  "Report changes " }
+                    bokmal { + "Meld fra om endringer " },
+                    english { + "Report changes " }
                 )
             }
 
 
             paragraph {
                 text(
-                    bokmal { +  "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
-                    english { +  "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur. " }
+                    bokmal { + "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
+                    english { + "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur. " }
                 )
             }
 

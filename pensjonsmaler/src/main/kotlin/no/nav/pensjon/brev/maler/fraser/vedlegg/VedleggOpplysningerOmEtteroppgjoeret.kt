@@ -313,47 +313,47 @@ data class OmBeregningAvBarnetillegg(
                 text(
                     bokmal { + "For barn som bor sammen med begge foreldrene:" },
                     nynorsk { + "For barn som bur saman med begge foreldra:" },
-                    english { +  "Child supplement for children living with both parents:" }
+                    english { + "Child supplement for children living with both parents:" }
                 )
             }
             paragraph {
                 list {
                     item {
                         text(
-                            bokmal { +  "Barnetillegget beregnes ut fra inntekten til deg og din " + fellesbarn.sivilstand.ubestemtForm() + "." },
-                            nynorsk { +  "Barnetillegget blir rekna ut med utgangspunkt i di eiga inntekt og inntekta til " + fellesbarn.sivilstand.ubestemtForm() + "." },
-                            english { +  "Child supplement is calculated based on the total income of you and your " + fellesbarn.sivilstand.ubestemtForm() + "." }
+                            bokmal { + "Barnetillegget beregnes ut fra inntekten til deg og din " + fellesbarn.sivilstand.ubestemtForm() + "." },
+                            nynorsk { + "Barnetillegget blir rekna ut med utgangspunkt i di eiga inntekt og inntekta til " + fellesbarn.sivilstand.ubestemtForm() + "." },
+                            english { + "Child supplement is calculated based on the total income of you and your " + fellesbarn.sivilstand.ubestemtForm() + "." }
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Fribeløpet er 4,6 ganger folketrygdens grunnbeløp. I " + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + "." },
-                            nynorsk { +  "Fribeløpet er 4,6 gonger grunnbeløpet i folketrygda. I " + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + "." },
-                            english { +  "The free allowance is 4.6 times the basic amount of the National Insurance Scheme. In " + periode.format() +
+                            bokmal { + "Fribeløpet er 4,6 ganger folketrygdens grunnbeløp. I " + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + "." },
+                            nynorsk { + "Fribeløpet er 4,6 gonger grunnbeløpet i folketrygda. I " + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + "." },
+                            english { + "The free allowance is 4.6 times the basic amount of the National Insurance Scheme. In " + periode.format() +
                                     " the free allowance was " + fellesbarn.fribeloep.format() + "." },
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Fribeløpet øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn." },
-                            nynorsk { +  "Fribeløpet aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn." },
-                            english { +  "The free allowance increases by 40 percent of the basic amount of the National Insurance Scheme for each additional child." },
+                            bokmal { + "Fribeløpet øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn." },
+                            nynorsk { + "Fribeløpet aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn." },
+                            english { + "The free allowance increases by 40 percent of the basic amount of the National Insurance Scheme for each additional child." },
                         )
                     }
                     showIf(barnetillegg.mindreEnn40AarTrygdetid) {
                         item {
                             text(
-                                bokmal { +  "Fribeløpet blir redusert ut fra trygdetiden du har." },
-                                nynorsk { +  "Fribeløpet blir redusert ut frå trygdetida du har." },
-                                english { +  "The free allowance is reduced based on your period of national insurance." }
+                                bokmal { + "Fribeløpet blir redusert ut fra trygdetiden du har." },
+                                nynorsk { + "Fribeløpet blir redusert ut frå trygdetida du har." },
+                                english { + "The free allowance is reduced based on your period of national insurance." }
                             )
                         }
                     }
                     item {
                         text(
-                            bokmal { +  "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet." },
-                            nynorsk { +  "Barnetillegget blir redusert med 50 prosent av inntekta som er over fribeløpet." },
-                            english { +  "Child supplement will be reduced by 50 percent of the income exceeding the free allowance." },
+                            bokmal { + "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet." },
+                            nynorsk { + "Barnetillegget blir redusert med 50 prosent av inntekta som er over fribeløpet." },
+                            english { + "Child supplement will be reduced by 50 percent of the income exceeding the free allowance." },
                         )
                     }
                 }
@@ -363,56 +363,56 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.saerkull) { saerkull ->
             title2 {
                 text(
-                    bokmal { +  "For barn som ikke bor sammen med begge foreldrene:" },
-                    nynorsk { +  "For barn som ikkje bur saman med begge foreldra:" },
-                    english { +  "Child supplement for children living with one parent:" },
+                    bokmal { + "For barn som ikke bor sammen med begge foreldrene:" },
+                    nynorsk { + "For barn som ikkje bur saman med begge foreldra:" },
+                    english { + "Child supplement for children living with one parent:" },
                 )
             }
             paragraph {
                 list {
                     item {
                         text(
-                            bokmal { +  "Barnetillegget beregnes ut fra inntekten din." },
-                            nynorsk { +  "Barnetillegget blir rekna ut på grunnlag av inntekta di." },
-                            english { +  "Child supplement is calculated based on your income." },
+                            bokmal { + "Barnetillegget beregnes ut fra inntekten din." },
+                            nynorsk { + "Barnetillegget blir rekna ut på grunnlag av inntekta di." },
+                            english { + "Child supplement is calculated based on your income." },
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Fribeløpet er 3,1 ganger folketrygdens grunnbeløp. I " + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + "." },
-                            nynorsk { +  "Fribeløpet er 3,1 gongar grunnbeløpet i folketrygda. I " + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + "." },
-                            english { +  "The free allowance is 3.1 times the basic amount of the National Insurance Scheme. In " + periode.format() +
+                            bokmal { + "Fribeløpet er 3,1 ganger folketrygdens grunnbeløp. I " + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + "." },
+                            nynorsk { + "Fribeløpet er 3,1 gongar grunnbeløpet i folketrygda. I " + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + "." },
+                            english { + "The free allowance is 3.1 times the basic amount of the National Insurance Scheme. In " + periode.format() +
                                     " the free allowance was " + saerkull.fribeloep.format() + "." },
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Fribeløpet øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn." },
-                            nynorsk { +  "Fribeløpet aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn." },
-                            english { +  "The free allowance increases by 40 percent of the basic amount of the National Insurance Scheme for each additional child." },
+                            bokmal { + "Fribeløpet øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn." },
+                            nynorsk { + "Fribeløpet aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn." },
+                            english { + "The free allowance increases by 40 percent of the basic amount of the National Insurance Scheme for each additional child." },
                         )
                     }
                     showIf(barnetillegg.mindreEnn40AarTrygdetid) {
                         item {
                             text(
-                                bokmal { +  "Fribeløpet blir redusert ut fra trygdetiden du har." },
-                                nynorsk { +  "Fribeløpet blir redusert ut frå trygdetida du har." },
-                                english { +  "The free allowance is reduced based on your period of the national insurance." },
+                                bokmal { + "Fribeløpet blir redusert ut fra trygdetiden du har." },
+                                nynorsk { + "Fribeløpet blir redusert ut frå trygdetida du har." },
+                                english { + "The free allowance is reduced based on your period of the national insurance." },
                             )
                         }
                     }
                     item {
                         text(
-                            bokmal { +  "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet." },
-                            nynorsk { +  "Barnetillegget blir redusert med 50 prosent av inntekta som er over fribeløpet." },
-                            english { +  "Child supplement will be reduced by 50 percent of the income exceeding the free allowance." },
+                            bokmal { + "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet." },
+                            nynorsk { + "Barnetillegget blir redusert med 50 prosent av inntekta som er over fribeløpet." },
+                            english { + "Child supplement will be reduced by 50 percent of the income exceeding the free allowance." },
                         )
                     }
                     item {
                         text(
-                            bokmal { +  "Inntekten til en ektefelle/parner/samboer som ikke er forelder for barnet, har ingen betydning." },
-                            nynorsk { +  "Inntekta til ein ektefelle/partnar/sambuer som ikkje er forelder til barnet, har inga betydning." },
-                            english { +  "The income of a spouse/partner/cohabitant that is not a parent of the child is of no significance." },
+                            bokmal { + "Inntekten til en ektefelle/parner/samboer som ikke er forelder for barnet, har ingen betydning." },
+                            nynorsk { + "Inntekta til ein ektefelle/partnar/sambuer som ikkje er forelder til barnet, har inga betydning." },
+                            english { + "The income of a spouse/partner/cohabitant that is not a parent of the child is of no significance." },
                         )
                     }
                 }
@@ -423,28 +423,28 @@ data class OmBeregningAvBarnetillegg(
         paragraph {
             val erflereTabellerPersonInntekt = (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
             text(
-                bokmal { +  ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
+                bokmal { + ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
                         + " under viser inntektene du"
                         + ifElse(harFellesTillegg, " og annen forelder", "") },
-                nynorsk { +  ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
+                nynorsk { + ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
                         + " under viser inntektene du"
                         + ifElse(harFellesTillegg, " og anna forelder", "") },
-                english { +  ifElse(erflereTabellerPersonInntekt, "The tables under show", "The table under shows")
+                english { + ifElse(erflereTabellerPersonInntekt, "The tables under show", "The table under shows")
                         + " the personal incomes you"
                         + ifElse(harFellesTillegg, " and the other parent", "") }
             )
             text(
-                bokmal { +  " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget." },
-                nynorsk { +  " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget." },
-                english { +  " have in " + periode.format() + ". These incomes were used to calculate your child supplement." }
+                bokmal { + " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget." },
+                nynorsk { + " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget." },
+                english { + " have in " + periode.format() + ". These incomes were used to calculate your child supplement." }
             )
         }
 
         title2 {
             text(
-                bokmal { +  "Personinntekten din" },
-                nynorsk { +  "Personinntekta di" },
-                english { +  "Your personal income" },
+                bokmal { + "Personinntekten din" },
+                nynorsk { + "Personinntekta di" },
+                english { + "Your personal income" },
             )
         }
         paragraph {
@@ -463,9 +463,9 @@ data class OmBeregningAvBarnetillegg(
 
         title2 {
             text(
-                bokmal { +  "Beløp som er trukket fra personinntekten din" },
-                nynorsk { +  "Beløp som er trekt frå personinntekta di" },
-                english { +  "Amounts deducted from your personal income" },
+                bokmal { + "Beløp som er trukket fra personinntekten din" },
+                nynorsk { + "Beløp som er trekt frå personinntekta di" },
+                english { + "Amounts deducted from your personal income" },
             )
         }
         paragraph {
@@ -483,11 +483,11 @@ data class OmBeregningAvBarnetillegg(
                 )
             } orShow {
                 text(
-                    bokmal { +  "Du har ikke hatt inntekter som er trukket fra personinntekten din i " + periode.format() +
+                    bokmal { + "Du har ikke hatt inntekter som er trukket fra personinntekten din i " + periode.format() +
                             ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker." },
-                    nynorsk { +  "Du har ikkje hatt inntekter som er trekte frå personinntekta di i " + periode.format() +
+                    nynorsk { + "Du har ikkje hatt inntekter som er trekte frå personinntekta di i " + periode.format() +
                             ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker." },
-                    english { +  "None of your personal income in " + periode.format() + " has been deducted. " +
+                    english { + "None of your personal income in " + periode.format() + " has been deducted. " +
                             "If you have had income that can be deducted, you must provide us with documentation within 3 weeks." },
                 )
             }
@@ -496,9 +496,9 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.felles) { fellesbarn ->
             title2 {
                 text(
-                    bokmal { +  "Personinntekten til annen forelder" },
-                    nynorsk { +  "Personinntekta til den andre forelderen" },
-                    english { +  "Personal income of the other parent" },
+                    bokmal { + "Personinntekten til annen forelder" },
+                    nynorsk { + "Personinntekta til den andre forelderen" },
+                    english { + "Personal income of the other parent" },
                 )
             }
             paragraph {
@@ -516,18 +516,18 @@ data class OmBeregningAvBarnetillegg(
             }
             paragraph {
                 text(
-                    bokmal { +  "Mottar annen forelder uføretrygd eller alderspensjon fra Nav, regnes dette også med som personinntekt." },
-                    nynorsk { +  "Mottar den andre forelderen uføretrygd eller alderspensjon frå Nav, blir dette også rekna som personinntekt." },
-                    english { +  "If the other parent receives disability benefit or retirement pension from Nav, this will also count as personal income." }
+                    bokmal { + "Mottar annen forelder uføretrygd eller alderspensjon fra Nav, regnes dette også med som personinntekt." },
+                    nynorsk { + "Mottar den andre forelderen uføretrygd eller alderspensjon frå Nav, blir dette også rekna som personinntekt." },
+                    english { + "If the other parent receives disability benefit or retirement pension from Nav, this will also count as personal income." }
                 )
             }
 
             showIf(fellesbarn.personinntektAnnenForelder.fratrekk.fratrekk.isNotEmpty()) {
                 title2 {
                     text(
-                        bokmal { +  "Beløp som er trukket fra annen forelder sin personinntekt" },
-                        nynorsk { +  "Beløp som er trekt frå personinntekta til den andre forelderen" },
-                        english { +  "Amounts deducted from the other parent's personal income" }
+                        bokmal { + "Beløp som er trukket fra annen forelder sin personinntekt" },
+                        nynorsk { + "Beløp som er trekt frå personinntekta til den andre forelderen" },
+                        english { + "Amounts deducted from the other parent's personal income" }
                     )
                 }
                 paragraph {
@@ -550,9 +550,9 @@ data class OmBeregningAvBarnetillegg(
                 ) {
                     paragraph {
                         text(
-                            bokmal { +  "Folketrygdens grunnbeløp på inntil " + fellesbarn.grunnbelop.format() + " er holdt utenfor inntekten til annen forelder." },
-                            nynorsk { +  "Folketrygdens grunnbeløp på inntil " + fellesbarn.grunnbelop.format() + " er halde utanfor inntekta til den andre forelderen." },
-                            english { +  "The National Insurance Scheme basic amount of up to " + fellesbarn.grunnbelop.format() +
+                            bokmal { + "Folketrygdens grunnbeløp på inntil " + fellesbarn.grunnbelop.format() + " er holdt utenfor inntekten til annen forelder." },
+                            nynorsk { + "Folketrygdens grunnbeløp på inntil " + fellesbarn.grunnbelop.format() + " er halde utanfor inntekta til den andre forelderen." },
+                            english { + "The National Insurance Scheme basic amount of up to " + fellesbarn.grunnbelop.format() +
                                     " has been excluded from the income of the other parent." },
                         )
                     }
@@ -560,9 +560,9 @@ data class OmBeregningAvBarnetillegg(
             } orShow {
                 paragraph {
                     text(
-                        bokmal { +  "Annen forelder har ikke hatt inntekt som er trukket fra sin personinntekt i " + periode.format() + "." },
-                        nynorsk { +  "Den andre forelderen har ikkje hatt inntekt som er trekt frå sin personinntekt i " + periode.format() + "." },
-                        english { +  "No income was deducted from the other parent's income in " + periode.format() + "." }
+                        bokmal { + "Annen forelder har ikke hatt inntekt som er trukket fra sin personinntekt i " + periode.format() + "." },
+                        nynorsk { + "Den andre forelderen har ikkje hatt inntekt som er trekt frå sin personinntekt i " + periode.format() + "." },
+                        english { + "No income was deducted from the other parent's income in " + periode.format() + "." }
                     )
                 }
             }
@@ -573,15 +573,15 @@ data class OmBeregningAvBarnetillegg(
             showIf(saerkull.harSamletInntektOverInntektstak) {
                 paragraph {
                     text(
-                        bokmal { +  "Du hadde for høy samlet inntekt i " + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
+                        bokmal { + "Du hadde for høy samlet inntekt i " + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
                                 "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + ". " +
                                 "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + "." },
 
-                        nynorsk { +  "Du hadde for høg samla inntekt i " + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
+                        nynorsk { + "Du hadde for høg samla inntekt i " + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
                                 "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + ". " +
                                 "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + "." },
 
-                        english { +  "In " + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
+                        english { + "In " + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
                                 "payment of the child supplement was " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
                                 "for children from a previous relationship was " + saerkull.inntektstakSamletInntekt.format() + "." },
                     )
@@ -593,15 +593,15 @@ data class OmBeregningAvBarnetillegg(
             showIf(fellesbarn.harSamletInntektOverInntektstak) {
                 paragraph {
                     text(
-                        bokmal { +  "Dere hadde for høy samlet inntekt i " + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
+                        bokmal { + "Dere hadde for høy samlet inntekt i " + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
                                 "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + ". " +
                                 "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + "." },
 
-                        nynorsk { +  "Dere hadde for høg samla inntekt i " + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
+                        nynorsk { + "Dere hadde for høg samla inntekt i " + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
                                 "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + ". " +
                                 "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + "." },
 
-                        english { +  "In " + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
+                        english { + "In " + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
                                 "payment of the child supplement was " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
                                 "for joint children was " + fellesbarn.inntektstakSamletInntekt.format() + "." },
                     )
@@ -622,15 +622,15 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                bokmal { +  "Om beregningen av uføretrygd" + ifElse(
+                bokmal { + "Om beregningen av uføretrygd" + ifElse(
                     harGjenlevendeTillegg,
                     " og gjenlevendetillegg", "")
                         + " for " + periode.format() },
-                nynorsk { +  "Om utrekning av uføretrygd" + ifElse(
+                nynorsk { + "Om utrekning av uføretrygd" + ifElse(
                     harGjenlevendeTillegg,
                     " og attlevandetillegg", "")
                         + " for " + periode.format() },
-                english { +  "Disability benefit" + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
+                english { + "Disability benefit" + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + " calculation for " + periode.format() },
             )
         }
@@ -639,69 +639,69 @@ data class OmBeregningAvUfoeretrygd(
             showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
                 val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
                 text(
-                    bokmal { +  "I " + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + "." },
-                    nynorsk { +  "I " + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + "." },
-                    english { +  "In " + periode.format() + ", your pensionable income was " + inntektFoerFratrekk + "." },
+                    bokmal { + "I " + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + "." },
+                    nynorsk { + "I " + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + "." },
+                    english { + "In " + periode.format() + ", your pensionable income was " + inntektFoerFratrekk + "." },
                 )
             }
             showIf(pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
                 val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
                 text(
-                    bokmal { +  " Etter fratrekk, viser beregningen vår at du hadde " + inntektEtterFratrekk + " i pensjonsgivende inntekt." },
-                    nynorsk { +  " Etter fråtrekk, viser berekninga vår at du hadde " + inntektEtterFratrekk + " i pensjonsgjevande inntekt." },
-                    english { +  " After deductions, our calculation shows that you had a pensionable income of " + inntektEtterFratrekk + "." },
+                    bokmal { + " Etter fratrekk, viser beregningen vår at du hadde " + inntektEtterFratrekk + " i pensjonsgivende inntekt." },
+                    nynorsk { + " Etter fråtrekk, viser berekninga vår at du hadde " + inntektEtterFratrekk + " i pensjonsgjevande inntekt." },
+                    english { + " After deductions, our calculation shows that you had a pensionable income of " + inntektEtterFratrekk + "." },
                 )
             }
         }
 
         paragraph {
             text(
-                bokmal { +  "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd"
+                bokmal { + "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd"
                         + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "")
                         + ". Dette står i § 3-15 i folketrygdloven. Pensjonsgivende inntekt er blant annet:" },
 
-                nynorsk { +  "Det er pensjonsgivande inntekt som avgjer kor mykje du får i uføretrygd"
+                nynorsk { + "Det er pensjonsgivande inntekt som avgjer kor mykje du får i uføretrygd"
                         + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", "")
                         + ". Dette står i § 3-15 i folketrygdlova. Døme på pensjonsgivande inntekt:" },
 
-                english { +  "The pensionable income determines how much you receive in disability benefit"
+                english { + "The pensionable income determines how much you receive in disability benefit"
                         + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + ". This is stated in § 3-15 of the National Insurance Act. Pensionable income includes:" },
             )
             list {
                 item {
                     text(
-                        bokmal { +  "brutto lønnsinntekt fra Norge inkludert feriepenger" },
-                        nynorsk { +  "brutto lønsinntekt frå Noreg, inkludert feriepengar" },
-                        english { +  "gross income from employment in Norway, including holiday pay" },
+                        bokmal { + "brutto lønnsinntekt fra Norge inkludert feriepenger" },
+                        nynorsk { + "brutto lønsinntekt frå Noreg, inkludert feriepengar" },
+                        english { + "gross income from employment in Norway, including holiday pay" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "lønnsinntekt fra utlandet" },
-                        nynorsk { +  "lønsinntekt frå utlandet" },
-                        english { +  "income from employment abroad" },
+                        bokmal { + "lønnsinntekt fra utlandet" },
+                        nynorsk { + "lønsinntekt frå utlandet" },
+                        english { + "income from employment abroad" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "inntekt fra selvstendig næringsvirksomhet" },
-                        nynorsk { +  "inntekt frå sjølvstendig næringsverksemd" },
-                        english { +  "income from self-employment" },
+                        bokmal { + "inntekt fra selvstendig næringsvirksomhet" },
+                        nynorsk { + "inntekt frå sjølvstendig næringsverksemd" },
+                        english { + "income from self-employment" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "inntekt som fosterforelder" },
-                        nynorsk { +  "inntekt som fosterforelder" },
-                        english { +  "income as a foster parent" },
+                        bokmal { + "inntekt som fosterforelder" },
+                        nynorsk { + "inntekt som fosterforelder" },
+                        english { + "income as a foster parent" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "omsorgslønn" },
-                        nynorsk { +  "omsorgsløn" },
-                        english { +  "care benefit" },
+                        bokmal { + "omsorgslønn" },
+                        nynorsk { + "omsorgsløn" },
+                        english { + "care benefit" },
                     )
                 }
             }
@@ -709,44 +709,44 @@ data class OmBeregningAvUfoeretrygd(
 
         paragraph {
             text(
-                bokmal { +  "Hva kan bli trukket fra den pensjonsgivende inntekten din?" },
-                nynorsk { +  "Kva kan trekkjast frå den pensjonsgivande inntekta?" },
-                english { +  "What can be deducted from your pensionable income?" },
+                bokmal { + "Hva kan bli trukket fra den pensjonsgivende inntekten din?" },
+                nynorsk { + "Kva kan trekkjast frå den pensjonsgivande inntekta?" },
+                english { + "What can be deducted from your pensionable income?" },
             )
             list {
                 item {
                     text(
-                        bokmal { +  "inntekt før du ble uføretrygdet" },
-                        nynorsk { +  "inntekt før du blei uføretrygda" },
-                        english { +  "income before you received disability benefit" },
+                        bokmal { + "inntekt før du ble uføretrygdet" },
+                        nynorsk { + "inntekt før du blei uføretrygda" },
+                        english { + "income before you received disability benefit" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "inntekt etter at uføretrygden din opphørte" },
-                        nynorsk { +  "inntekt etter at uføretrygda blei avvikla" },
-                        english { +  "income after your disability benefit ceased" },
+                        bokmal { + "inntekt etter at uføretrygden din opphørte" },
+                        nynorsk { + "inntekt etter at uføretrygda blei avvikla" },
+                        english { + "income after your disability benefit ceased" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "erstatningoppgjør for inntektstap" },
-                        nynorsk { +  "erstatningsoppgjer for inntektstap" },
-                        english { +  "compensation settlement payments for loss of income" },
+                        bokmal { + "erstatningoppgjør for inntektstap" },
+                        nynorsk { + "erstatningsoppgjer for inntektstap" },
+                        english { + "compensation settlement payments for loss of income" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "inntekt fra helt avsluttet arbeid eller virksomhet" },
-                        nynorsk { +  "inntekt frå heilt avslutta arbeid eller verksemd" },
-                        english { +  "income from fully concluded work or business" },
+                        bokmal { + "inntekt fra helt avsluttet arbeid eller virksomhet" },
+                        nynorsk { + "inntekt frå heilt avslutta arbeid eller verksemd" },
+                        english { + "income from fully concluded work or business" },
                     )
                 }
                 item {
                     text(
-                        bokmal { +  "etterbetaling du har fått fra Nav" },
-                        nynorsk { +  "etterbetalingar du har fått frå Nav" },
-                        english { +  "back payment you have received from Nav" },
+                        bokmal { + "etterbetaling du har fått fra Nav" },
+                        nynorsk { + "etterbetalingar du har fått frå Nav" },
+                        english { + "back payment you have received from Nav" },
                     )
                 }
             }
@@ -755,16 +755,16 @@ data class OmBeregningAvUfoeretrygd(
         showIf(barnetillegg.felles_safe.notNull() and periode.greaterThanOrEqual(2023)) {
             paragraph {
                 text(
-                    bokmal { +  "Hva kan holdes utenfor personinntekten til den andre forelderen?" },
-                    nynorsk { +  "Kva kan haldast utanfor personinntekta til den andre forelderen?" },
-                    english { +  "Income that can be excluded from the other parent's personal income?" },
+                    bokmal { + "Hva kan holdes utenfor personinntekten til den andre forelderen?" },
+                    nynorsk { + "Kva kan haldast utanfor personinntekta til den andre forelderen?" },
+                    english { + "Income that can be excluded from the other parent's personal income?" },
                 )
                 list {
                     item {
                         text(
-                            bokmal { +  "erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav" },
-                            nynorsk { +  "erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav" },
-                            english { +  "compensation settlement payments for loss of income if the other parent receives disability benefit or retirement pension from Nav" },
+                            bokmal { + "erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav" },
+                            nynorsk { + "erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav" },
+                            english { + "compensation settlement payments for loss of income if the other parent receives disability benefit or retirement pension from Nav" },
                         )
                     }
                 }
@@ -776,24 +776,24 @@ data class OmBeregningAvUfoeretrygd(
                 val erFlereTabellerPensjonsgivendeInntekt =
                     (pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty())
                 text(
-                    bokmal { +  ifElse(erFlereTabellerPensjonsgivendeInntekt, "Tabellene", "Tabellen") },
-                    nynorsk { +  ifElse(erFlereTabellerPensjonsgivendeInntekt, "Tabellene", "Tabellen") },
-                    english { +  ifElse(
+                    bokmal { + ifElse(erFlereTabellerPensjonsgivendeInntekt, "Tabellene", "Tabellen") },
+                    nynorsk { + ifElse(erFlereTabellerPensjonsgivendeInntekt, "Tabellene", "Tabellen") },
+                    english { + ifElse(
                         erFlereTabellerPensjonsgivendeInntekt,
                         "The tables below show",
                         "The table below show"
                     ) }
                 )
                 text(
-                    bokmal { +  " under viser inntektene du har hatt i " + periode.format()
+                    bokmal { + " under viser inntektene du har hatt i " + periode.format()
                             + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
                             + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", ".") },
 
-                    nynorsk { +  " under viser inntektene du har hatt i løpet av " + periode.format()
+                    nynorsk { + " under viser inntektene du har hatt i løpet av " + periode.format()
                             + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
                             + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", ".") },
 
-                    english { +  " the pensionable incomes you had in " + periode.format()
+                    english { + " the pensionable incomes you had in " + periode.format()
                             + ". These incomes were used to calculate your disability benefit"
                             + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", ".") },
                 )
@@ -802,9 +802,9 @@ data class OmBeregningAvUfoeretrygd(
 
         title1 {
             text(
-                bokmal { +  "Din pensjonsgivende inntekt" },
-                nynorsk { +  "Di pensjonsgivande inntekt" },
-                english { +  "Your pensionable income" },
+                bokmal { + "Din pensjonsgivende inntekt" },
+                nynorsk { + "Di pensjonsgivande inntekt" },
+                english { + "Your pensionable income" },
             )
         }
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
@@ -824,9 +824,9 @@ data class OmBeregningAvUfoeretrygd(
 
             title1 {
                 text(
-                    bokmal { +  "Beløp som er trukket fra den pensjonsgivende inntekten din" },
-                    nynorsk { +  "Beløp som er trekt frå den pensjonsgivande inntekta di" },
-                    english { +  "Amounts deducted from your pensionable income" }
+                    bokmal { + "Beløp som er trukket fra den pensjonsgivende inntekten din" },
+                    nynorsk { + "Beløp som er trekt frå den pensjonsgivande inntekta di" },
+                    english { + "Amounts deducted from your pensionable income" }
                 )
             }
             paragraph {
@@ -844,11 +844,11 @@ data class OmBeregningAvUfoeretrygd(
                     )
                 } orShow {
                     text(
-                        bokmal { +  "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din i "
+                        bokmal { + "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din i "
                                 + periode.format() + ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker." },
-                        nynorsk { +  "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di i "
+                        nynorsk { + "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di i "
                                 + periode.format() + ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker." },
-                        english { +  "No income has been deducted from your pensionable income in "
+                        english { + "No income has been deducted from your pensionable income in "
                                 + periode.format() + ". If you have had deductable income, you must provide us with documentation within 3 weeks." },
                     )
                 }
@@ -856,9 +856,9 @@ data class OmBeregningAvUfoeretrygd(
         } orShow {
             paragraph {
                 text(
-                    bokmal { +  "Du har ikke hatt pensjonsgivende inntekt i " + periode.format() + "." },
-                    nynorsk { +  "Du har ikkje hatt pensjonsgivande inntekt i " + periode.format() + "." },
-                    english { +  "You have not had any pensionable income in " + periode.format() + "." }
+                    bokmal { + "Du har ikke hatt pensjonsgivende inntekt i " + periode.format() + "." },
+                    nynorsk { + "Du har ikkje hatt pensjonsgivande inntekt i " + periode.format() + "." },
+                    english { + "You have not had any pensionable income in " + periode.format() + "." }
                 )
             }
         }
@@ -871,49 +871,49 @@ data class ErOpplysningeneOmInntektFeil(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                bokmal { +  "Er opplysningene om inntekt feil?" },
-                nynorsk { +  "Er opplysningane om inntekt feil?" },
-                english { +  "Are the income details incorrect?" },
+                bokmal { + "Er opplysningene om inntekt feil?" },
+                nynorsk { + "Er opplysningane om inntekt feil?" },
+                english { + "Are the income details incorrect?" },
             )
         }
         paragraph {
             text(
-                bokmal { +  "Mener du at inntektsopplysningene i skatteoppgjøret er feil, er det Skatteetaten som skal vurdere om inntekten kan endres." },
-                nynorsk { +  "Dersom du meiner at inntektsopplysningane i skatteoppgjeret er feil, er det Skatteetaten som skal vurdere om inntekta kan endrast." },
-                english { +  "If you believe that the income information in your tax settlement is incorrect, it is the Norwegian Tax Administration that must assess whether " +
+                bokmal { + "Mener du at inntektsopplysningene i skatteoppgjøret er feil, er det Skatteetaten som skal vurdere om inntekten kan endres." },
+                nynorsk { + "Dersom du meiner at inntektsopplysningane i skatteoppgjeret er feil, er det Skatteetaten som skal vurdere om inntekta kan endrast." },
+                english { + "If you believe that the income information in your tax settlement is incorrect, it is the Norwegian Tax Administration that must assess whether " +
                         "your income can be changed." },
             )
         }
         paragraph {
             text(
-                bokmal { +  "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt." },
-                nynorsk { +  "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt." },
-                english { +  "We will automatically issue a new settlement if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement." },
+                bokmal { + "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt." },
+                nynorsk { + "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt." },
+                english { + "We will automatically issue a new settlement if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement." },
             )
         }
 
         showIf(harFellesTillegg) {
             title2 {
                 text(
-                    bokmal { +  "Barnetillegg og feil i den andre forelderens inntektsopplysninger" },
-                    nynorsk { +  "Barnetillegg og feil i inntektsopplysningane til den andre forelderen" },
-                    english { +  "Child supplement and errors in the other parent's income information" },
+                    bokmal { + "Barnetillegg og feil i den andre forelderens inntektsopplysninger" },
+                    nynorsk { + "Barnetillegg og feil i inntektsopplysningane til den andre forelderen" },
+                    english { + "Child supplement and errors in the other parent's income information" },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du mener inntektsopplysningene for den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten." },
-                    nynorsk { +  "Dersom du meiner at inntektsopplysningane til den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten." },
-                    english { +  "If you believe that the income information for the other parent is incorrect, the other parent must contact the Norwegian Tax Administration." },
+                    bokmal { + "Hvis du mener inntektsopplysningene for den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten." },
+                    nynorsk { + "Dersom du meiner at inntektsopplysningane til den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten." },
+                    english { + "If you believe that the income information for the other parent is incorrect, the other parent must contact the Norwegian Tax Administration." },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Vi oppdaterer ikke automatisk etteroppgjøret ditt når vi får en korrigering fra Skatteetaten som gjelder den andre forelderen. " +
+                    bokmal { + "Vi oppdaterer ikke automatisk etteroppgjøret ditt når vi får en korrigering fra Skatteetaten som gjelder den andre forelderen. " +
                             "Du må derfor gi beskjed til oss. Vi gjør da et manuelt etteroppgjør. Du trenger ikke å sende inn dokumentasjon." },
-                    nynorsk { +  "Vi oppdaterer ikkje automatisk etteroppgjeret ditt når vi får ei korrigering frå Skatteetaten som gjeld den andre forelderen. " +
+                    nynorsk { + "Vi oppdaterer ikkje automatisk etteroppgjeret ditt når vi får ei korrigering frå Skatteetaten som gjeld den andre forelderen. " +
                             "Du må difor gi beskjed til oss. Vi utfører då eit etteroppgjer manuelt. Du treng ikkje sende inn dokumentasjon." },
-                    english { +  "We do not automatically update your settlement when we receive a correction from the the Norwegian Tax Administration regarding the other parent. " +
+                    english { + "We do not automatically update your settlement when we receive a correction from the the Norwegian Tax Administration regarding the other parent. " +
                             "Therefore, you need to inform us. We will then conduct a manual post-settlement. You do not need to submit documentation." },
                 )
             }
@@ -921,22 +921,22 @@ data class ErOpplysningeneOmInntektFeil(
 
         title2 {
             text(
-                bokmal { +  "Endringer i pensjonsytelser" },
-                nynorsk { +  "Endringar i pensjonsytingar" },
-                english { +  "Changes in pension payments" },
+                bokmal { + "Endringer i pensjonsytelser" },
+                nynorsk { + "Endringar i pensjonsytingar" },
+                english { + "Changes in pension payments" },
             )
         }
         paragraph {
             text(
-                bokmal { +  "Hvis inntekten din fra pensjonsytelser utenom Nav blir endret, må du gi beskjed til oss når endringen er gjort. " +
+                bokmal { + "Hvis inntekten din fra pensjonsytelser utenom Nav blir endret, må du gi beskjed til oss når endringen er gjort. " +
                         "Vi gjør da et nytt etteroppgjør. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}." },
 
-                nynorsk { +  "Dersom inntekta di frå pensjonsytingar utanom Nav blir endra, må du gi beskjed til oss når endringa er gjort. " +
+                nynorsk { + "Dersom inntekta di frå pensjonsytingar utanom Nav blir endra, må du gi beskjed til oss når endringa er gjort. " +
                         "Vi utfører då eit nytt etteroppgjer. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringje til oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}." },
 
-                english { +  "If your income pensions outside of Nav changes, you must notify us once the changes have been made. " +
+                english { + "If your income pensions outside of Nav changes, you must notify us once the changes have been made. " +
                         "We will then conduct a new settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
                         "or by calling us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}." },
             )
@@ -954,23 +954,23 @@ data class FratrekkTabell(
             header = {
                 column(columnSpan = 3) {
                     text(
-                        bokmal { +  "Type inntekt" },
-                        nynorsk { +  "Type inntekt" },
-                        english { +  "Type of income" },
+                        bokmal { + "Type inntekt" },
+                        nynorsk { + "Type inntekt" },
+                        english { + "Type of income" },
                     )
                 }
                 column(columnSpan = 3) {
                     text(
-                        bokmal { +  "Årsak til trekk" },
-                        nynorsk { +  "Årsak til trekk" },
-                        english { +  "Reason for deduction" },
+                        bokmal { + "Årsak til trekk" },
+                        nynorsk { + "Årsak til trekk" },
+                        english { + "Reason for deduction" },
                     )
                 }
                 column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                     text(
-                        bokmal { +  "Beløp" },
-                        nynorsk { +  "Beløp" },
-                        english { +  "Amount" },
+                        bokmal { + "Beløp" },
+                        nynorsk { + "Beløp" },
+                        english { + "Amount" },
                     )
                 }
             }
@@ -1112,23 +1112,23 @@ data class InntektTabell(
             header = {
                 column(columnSpan = 3) {
                     text(
-                        bokmal { +  "Type inntekt" },
-                        nynorsk { +  "Type inntekt" },
-                        english { +  "Type of income" },
+                        bokmal { + "Type inntekt" },
+                        nynorsk { + "Type inntekt" },
+                        english { + "Type of income" },
                     )
                 }
                 column(columnSpan = 3) {
                     text(
-                        bokmal { +  "Kilde" },
-                        nynorsk { +  "Kjelde" },
-                        english { +  "Source" },
+                        bokmal { + "Kilde" },
+                        nynorsk { + "Kjelde" },
+                        english { + "Source" },
                     )
                 }
                 column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                     text(
-                        bokmal { +  "Registrert inntekt" },
-                        nynorsk { +  "Registrert inntekt" },
-                        english { +  "Registered income" },
+                        bokmal { + "Registrert inntekt" },
+                        nynorsk { + "Registrert inntekt" },
+                        english { + "Registered income" },
                     )
                 }
             }

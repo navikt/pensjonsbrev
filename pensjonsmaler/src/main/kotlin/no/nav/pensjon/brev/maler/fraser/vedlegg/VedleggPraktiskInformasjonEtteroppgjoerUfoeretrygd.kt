@@ -247,7 +247,7 @@ object EttersendeDokumentasjon :
             text(
                 bokmal { + "Du kan lese mer om etteroppgjør på ${Constants.ETTEROPPGJOR_URL}." },
                 nynorsk { + "Du kan lese meir om etteroppgjer på ${Constants.ETTEROPPGJOR_URL}." },
-                english { +  "For further information on post-settlement, please visit ${Constants.ETTEROPPGJOR_URL}." }
+                english { + "For further information on post-settlement, please visit ${Constants.ETTEROPPGJOR_URL}." }
             )
         }
     }

@@ -243,7 +243,7 @@ data class OpplysningerBruktIBeregningenSivilstand(
             text(
                 bokmal { + "Dette har betydning for størrelsen på alderspensjonen din." },
                 nynorsk { + "Dette har betydning for storleiken på alderspensjonen din." },
-                english { +  "This will affect the size of your retirement pension." },
+                english { + "This will affect the size of your retirement pension." },
             )
         }
     }

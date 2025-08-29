@@ -185,21 +185,21 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
 
             paragraph {
                 text(
-                    bokmal { +  "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med 31. desember 2026.  " },
-                    english { +  "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until 31 December 2026. " }
+                    bokmal { + "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med 31. desember 2026.  " },
+                    english { + "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until 31 December 2026. " }
                 )
             }
 
             title1 {
                 text(
-                    bokmal { +  "Mulighet for å søke utvidet stønadsperiode " },
-                    english { +  "Option to apply for extended benefit period " }
+                    bokmal { + "Mulighet for å søke utvidet stønadsperiode " },
+                    english { + "Option to apply for extended benefit period " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du er under nødvendig og hensiktsmessig utdanning eller har behov for tiltak for å komme i arbeid, kan du søke om å få pensjonen forlenget i inntil to år fra 1. januar 2027. " },
-                    english { +  "If you are currently receiving a necessary and relevant education, or if you need further assistance to find work, you can apply to have the pension extended for a period of up to two years from 01 January 2027. " }
+                    bokmal { + "Hvis du er under nødvendig og hensiktsmessig utdanning eller har behov for tiltak for å komme i arbeid, kan du søke om å få pensjonen forlenget i inntil to år fra 1. januar 2027. " },
+                    english { + "If you are currently receiving a necessary and relevant education, or if you need further assistance to find work, you can apply to have the pension extended for a period of up to two years from 01 January 2027. " }
                 )
             }
 
@@ -208,14 +208,14 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
 
             title1 {
                 text(
-                    bokmal { +  "Meld fra om endringer  " },
-                    english { +  "Report changes  " }
+                    bokmal { + "Meld fra om endringer  " },
+                    english { + "Report changes  " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +  "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav.  " },
-                    english { +  "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur.  " }
+                    bokmal { + "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav.  " },
+                    english { + "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur.  " }
                 )
             }
 
