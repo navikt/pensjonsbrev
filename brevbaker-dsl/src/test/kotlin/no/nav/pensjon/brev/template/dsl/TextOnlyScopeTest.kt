@@ -34,7 +34,7 @@ class TextOnlyScopeTest {
     }
 
     object TestPlainTextOnlyPhrase : PlainTextOnlyPhrase<LangBokmal>() {
-        override fun PlainTextOnlyScope<LangBokmal, Unit>.template() = text(Bokmal to "hei")
+        override fun PlainTextOnlyScope<LangBokmal, Unit>.template() = text(bokmal { + "hei" })
     }
 
     @Test

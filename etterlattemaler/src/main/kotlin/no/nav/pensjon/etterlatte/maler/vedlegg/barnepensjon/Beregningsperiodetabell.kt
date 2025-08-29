@@ -23,23 +23,23 @@ data class Beregningsperiodetabell(
                 header = {
                     column(2) {
                         text(
-                            Language.Bokmal to "Periode",
-                            Language.Nynorsk to "Periode",
-                            Language.English to "Period",
+                            bokmal { +"Periode" },
+                            nynorsk { +"Periode" },
+                            english { +"Period" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Grunnbeløp",
-                            Language.Nynorsk to "Grunnbeløp",
-                            Language.English to "Basic amount",
+                            bokmal { +"Grunnbeløp" },
+                            nynorsk { +"Grunnbeløp" },
+                            english { +"Basic amount" },
                         )
                     }
                     column(2) {
                         text(
-                            Language.Bokmal to "Utbetaling per måned før skatt",
-                            Language.Nynorsk to "Utbetaling per månad før skatt",
-                            Language.English to "Payout per month before taxes",
+                            bokmal { +"Utbetaling per måned før skatt" },
+                            nynorsk { +"Utbetaling per månad før skatt" },
+                            english { +"Payout per month before taxes" },
                         )
                     }
                 }

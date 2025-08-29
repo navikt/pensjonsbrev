@@ -31,9 +31,9 @@ object OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTem
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {

@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.text
 
 data class TrygdetidsListeEOSTabell(
     val trygdetidsgrunnlagListeEOS: Expression<List<TrygdetidsgrunnlagEOS>>

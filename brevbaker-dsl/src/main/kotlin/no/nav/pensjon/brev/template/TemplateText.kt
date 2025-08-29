@@ -136,6 +136,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 //
 //
 @JvmName("oldText")
+@Deprecated("Nytt syntax for tekster! Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
 ) {
@@ -143,6 +144,7 @@ fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Singl
 }
 
 @JvmName("oldText")
+@Deprecated("Nytt syntax for tekster! Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
@@ -151,6 +153,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<Lan
 }
 
 @JvmName("oldText")
+@Deprecated("Nytt syntax for tekster! Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
@@ -162,12 +165,14 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 // PlainTextScope.textExpr()
 //
 //
+@Deprecated("Nytt syntax for tekster! Det er nå ikke lengre forskjell på text og textExpr. Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
 ) {
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1).also { addTextContent(Content(it)) }
 }
 
+@Deprecated("Nytt syntax for tekster! Det er nå ikke lengre forskjell på text og textExpr. Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
@@ -175,6 +180,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<Lan
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2).also { addTextContent(Content(it)) }
 }
 
+@Deprecated("Nytt syntax for tekster! Det er nå ikke lengre forskjell på text og textExpr. Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,

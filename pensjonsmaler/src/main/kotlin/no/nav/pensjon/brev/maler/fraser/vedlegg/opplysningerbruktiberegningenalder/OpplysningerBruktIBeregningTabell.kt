@@ -68,7 +68,6 @@ import no.nav.pensjon.brev.template.dsl.TableHeaderScope
 import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningTabellKap19(

@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEnglish>() {

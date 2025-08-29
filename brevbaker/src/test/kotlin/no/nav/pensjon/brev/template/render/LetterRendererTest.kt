@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.Fixtures.felles
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
@@ -24,10 +24,9 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -119,7 +118,7 @@ class LetterRendererTest {
         val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             forEach(itemsExpr.expr()) {
                 textExpr(Bokmal to it + " person")
-                text(Bokmal to "jadda")
+                text(bokmal { + "jadda" })
                 nextExpression = it
             }
         }

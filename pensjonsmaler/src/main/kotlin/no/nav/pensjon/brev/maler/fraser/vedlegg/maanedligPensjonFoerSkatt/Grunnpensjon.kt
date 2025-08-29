@@ -34,7 +34,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.text
 
 private object GrunnpensjonBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

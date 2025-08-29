@@ -20,8 +20,8 @@ class ElementIntegrationTest {
     fun `tom title1 burde ikke feile`() {
         outlineTestTemplate<EmptyBrevdata> {
             title1 { }
-            paragraph { text(Bokmal to "Test") }
-            title1 { text(Bokmal to "med tekst") }
+            paragraph { text(bokmal { +"Test" }) }
+            title1 { text(bokmal { +"med tekst" }) }
         }.renderTestPDF("elementTest tom title1", pdfByggerService = laTeXCompilerService)
     }
 
@@ -29,15 +29,15 @@ class ElementIntegrationTest {
     fun `tom title2 burde ikke feile`() {
         outlineTestTemplate<EmptyBrevdata> {
             title2 { }
-            paragraph { text(Bokmal to "Test") }
-            title2 { text(Bokmal to "med tekst") }
+            paragraph { text(bokmal { +"Test" }) }
+            title2 { text(bokmal { +"med tekst" }) }
         }.renderTestPDF("elementTest tom title2", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
     fun `tom paragraph burde ikke feile`() {
         outlineTestTemplate<EmptyBrevdata> {
-            title2 { text(Bokmal to "Test") }
+            title2 { text(bokmal { +"Test" }) }
             paragraph { }
         }.renderTestPDF("elementTest tom paragraph", pdfByggerService = laTeXCompilerService)
     }

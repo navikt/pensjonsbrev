@@ -48,10 +48,10 @@ class PensjonLatexITest {
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
         ) {
-            title { text(Bokmal to "En fin tittel") }
+            title { text(bokmal { +"En fin tittel" }) }
             outline {
                 paragraph {
-                    text(Bokmal to "Argumentet etNavn er: ")
+                    text(bokmal { +"Argumentet etNavn er: " })
                     eval(etNavn)
                 }
             }
@@ -118,10 +118,10 @@ class PensjonLatexITest {
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 )
             ) {
-                title { text(Bokmal to "En fin tittel") }
+                title { text(bokmal { +"En fin tittel" }) }
                 outline {
                     paragraph {
-                        text(Bokmal to addChars(startChar, endChar) + "test")
+                        text(bokmal { +addChars(startChar, endChar) + "test" })
                         eval(etNavn)
                     }
                 }

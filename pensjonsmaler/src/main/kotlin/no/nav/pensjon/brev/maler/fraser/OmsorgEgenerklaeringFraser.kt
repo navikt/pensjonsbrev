@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.text
 
 object OmsorgEgenerklaeringTittel : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
