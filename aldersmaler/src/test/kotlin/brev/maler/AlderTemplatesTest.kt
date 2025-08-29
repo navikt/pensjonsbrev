@@ -1,12 +1,15 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.AlderTemplates
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.collections.filterNot
@@ -38,5 +41,18 @@ class AlderTemplatesTest {
                     "Alle maler annoteres med @TemplateModelHelpers, for å få generert selectors. Det har ikke ${it.javaClass.simpleName}"
                 )
             }
+    }
+
+    // Dette er ei hypotese vi på brevteamet har. Oppdater eller fjern testen hvis dere skulle finne et scenario hvor hypotesa ikke holder
+    @Test
+    fun `brev som er deklarert med brevtype vedtaksbrev skal ha brevkontekst vedtak`() {
+        assertEquals(
+            emptyList<String>(),
+            AlderTemplates.hentRedigerbareMaler()
+                .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
+                .map { it.javaClass.simpleName }
+            ,
+        )
     }
 }

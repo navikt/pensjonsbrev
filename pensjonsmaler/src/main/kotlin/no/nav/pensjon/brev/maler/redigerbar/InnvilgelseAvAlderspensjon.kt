@@ -122,7 +122,7 @@ hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
     override val kategori: TemplateDescription.Brevkategori = FOERSTEGANGSBEHANDLING
-    override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE
     override val template = createTemplate(
