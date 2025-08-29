@@ -158,9 +158,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
             paragraph {
                 text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon. ",
-                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget. Dette gjeld også dersom den eine forelderen får alderspensjon.",
-                    English to "If both parents receive disability benefits, child supplement is paid to the parent who has the right to the highest supplement. This also applies if one of the parents receives a retirement pension.",
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. ",
+                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget.",
+                    English to "If both parents receive disability benefits, child supplement is paid to the parent who has the right to the highest supplement.",
                 )
             }
         }
@@ -209,9 +209,9 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
 
             paragraph {
                 text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Dette gjelder også dersom den ene forelderen mottar alderspensjon. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrerte adresse som barnet. ",
-                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Dette gjeld også dersom den eine forelderen får alderspensjon. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
-                    English to "If both parents receive disability benefits, child supplement is paid to the parent who has the daily care of the child. This also applies if one of the parents receives a retirement pension. If the parents have joint daily care of the child, the child supplement will be paid to the parent who lives at the same address, registered in the population register, as the child.",
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrerte adresse som barnet. ",
+                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
+                    English to "If both parents receive disability benefits, child supplement is paid to the parent who has the daily care of the child. If the parents have joint daily care of the child, the child supplement will be paid to the parent who lives at the same address, registered in the population register, as the child.",
                 )
             }
         }
