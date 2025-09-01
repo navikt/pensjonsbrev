@@ -61,14 +61,6 @@ sealed interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : Temp
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
     }
 
-    fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
-        Language.Bokmal to LiteralOrExpressionBuilder().block()
-
-    fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
-        Language.Nynorsk to LiteralOrExpressionBuilder().block()
-
-    fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
-        Language.English to LiteralOrExpressionBuilder().block()
 }
 
 // TextScope.text()
