@@ -77,6 +77,7 @@ sealed interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : Temp
 //
 //
 @JvmName("oldText")
+@Deprecated("Nytt syntax for tekster! Det er nå ikke lengre forskjell på text og textExpr. Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     fontType: FontType = FontType.PLAIN,
@@ -85,6 +86,7 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
 }
 
 @JvmName("oldText")
+@Deprecated("Nytt syntax for tekster! Det er nå ikke lengre forskjell på text og textExpr. Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
@@ -94,6 +96,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<Language
 }
 
 @JvmName("oldText")
+@Deprecated("Nytt syntax for tekster! Det er nå ikke lengre forskjell på text og textExpr. Istedenfor Bokmal to ..., bruk bokmal { + ... }")
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
