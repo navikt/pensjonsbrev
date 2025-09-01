@@ -34,6 +34,9 @@ tasks {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
         }
     }
+    build {
+        dependsOn(installDist)
+    }
 }
 
 sourceSets {
