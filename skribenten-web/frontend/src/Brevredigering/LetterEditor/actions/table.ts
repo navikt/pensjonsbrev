@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { Table } from "~/types/brevbakerTypes";
+import type { Row, Table } from "~/types/brevbakerTypes";
 import { PARAGRAPH } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -228,9 +228,10 @@ export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, c
     if (!isTable(table)) return;
     if (isEmptyTableHeader(table.header)) return;
 
-    // Move header cells into a new first body row.
     const movedCells = table.header.colSpec.map((h) => h.headerContent);
-    addElements([{ id: null, parentId: table.id, cells: movedCells }], 0, table.rows, table.deletedRows);
+    const row = newRow(table.header.colSpec.length);
+    row.cells.splice(0, row.cells.length, ...movedCells);
+    addElements([row], 0, table.rows, table.deletedRows);
 
     // Reset header cells with fresh empty cells.
     for (let c = 0; c < table.header.colSpec.length; c++) {
