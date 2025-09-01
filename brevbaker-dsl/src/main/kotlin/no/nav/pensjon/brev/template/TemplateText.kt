@@ -207,7 +207,6 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
 
         is LiteralWrapper ->
             Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
-                .also { addTextContent(Content(it)) }
     }.also { addTextContent(Content(it)) }
 }
 
@@ -321,6 +320,8 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 }
 
 class LiteralOrExpressionBuilder {
+    // brukes for å bruke unary plus som plus. Kan skje om plus er på ny linje.
+    private var previous: LiteralOrExpression? = null
     sealed class LiteralOrExpression() {
         abstract val expr: StringExpression
     }
@@ -331,14 +332,17 @@ class LiteralOrExpressionBuilder {
 
     class ExpressionWrapper(override val expr: StringExpression) : LiteralOrExpression()
 
-    operator fun StringExpression.unaryPlus() = ExpressionWrapper(this)
-    operator fun String.unaryPlus() = LiteralWrapper(this)
+    operator fun StringExpression.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this).also { previous = it }
+
+    operator fun String.unaryPlus() = previous?.let { it + this } ?: LiteralWrapper(this).also { previous = it }
+
     operator fun LiteralOrExpression.plus(other: StringExpression) = when(this) {
         is ExpressionWrapper -> ExpressionWrapper(expr + other)
         is LiteralWrapper -> ExpressionWrapper(str.expr() + other)
-    }
+    }.also { previous = it }
+
     operator fun LiteralOrExpression.plus(other: String) = when(this) {
         is ExpressionWrapper -> ExpressionWrapper(expr + other)
         is LiteralWrapper -> LiteralWrapper(str + other)
-    }
+    }.also { previous = it }
 }
