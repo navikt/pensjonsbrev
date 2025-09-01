@@ -45,7 +45,7 @@ jobs:
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
           ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
           ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal 
-          ./gradlew :skribenten-backend:build :skribenten-backend:installDist
+          ./gradlew :skribenten-backend:build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Build and publish container image to GAR"
