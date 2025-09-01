@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
@@ -118,6 +119,7 @@ import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.fixtures.redigerbar.createBrukerTestBrevDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createEndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createEndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInformasjonOmGjenlevenderettigheterDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnhentingInformasjonFraBrukerDto
@@ -181,6 +183,7 @@ object Fixtures {
             EndringPgaOpptjeningAutoDto::class -> createEndringPgaOpptjeningAutoDto() as T
             EndringAvAlderspensjonSivilstandDto::class -> createEndringAvAlderspensjonSivilstandDto() as T
             EndringAvAlderspensjonSivilstandAutoDto::class -> createEndringAvAlderspensjonSivilstandAutoDto() as T
+            EndringAvAlderspensjonGarantitilleggDto::class -> createEndringAvAlderspensjonGarantitilleggDto() as T
             EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
             FeilBelopInntekstendringsbrev::class -> EmptyBrevdata as T
             ForespoerselOmDokumentasjonAvBotidINorgeDto::class -> createForespoerselOmDokumentasjonAvBotidINorgeDto() as T
