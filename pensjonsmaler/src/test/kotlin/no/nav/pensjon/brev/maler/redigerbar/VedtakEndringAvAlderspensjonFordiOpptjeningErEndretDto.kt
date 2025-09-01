@@ -24,9 +24,7 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
                 erForstegangsbehandling = true
             ),
             alderspensjonVedVirk = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.AlderspensjonVedVirk(
-                skjermingstilleggInnvilget = true,
                 totalPensjon = Kroner(1000),
-                skjermingstillegg = Kroner(500),
                 uforeKombinertMedAlder = true,
                 regelverkType = AlderspensjonRegelverkType.AP2025,
                 fullUttaksgrad = true

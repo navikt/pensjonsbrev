@@ -36,9 +36,7 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
     )
 
     data class AlderspensjonVedVirk(
-        val skjermingstilleggInnvilget: Boolean,
         val totalPensjon: Kroner,
-        val skjermingstillegg: Kroner?,
         val uforeKombinertMedAlder: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
         val fullUttaksgrad: Boolean,

@@ -214,14 +214,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
                 val minst20AarTrygdetid = pesysData.inngangOgEksportVurdering.minst20AarTrygdetid
                 val minst20AarTrygdetidAvdoed =
-                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe.ifNull(false)
+                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe
                 val minst20AarBotidAvdoed =
-                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.ifNull(false)
+                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe
                 showIf(
                     eksportForbudKode.isNull() and
                             not(minst20AarTrygdetid) and
-                            minst20AarTrygdetidAvdoed
-                            and minst20AarBotidAvdoed
+                            minst20AarTrygdetidAvdoed.ifNull(true)
+                            and minst20AarBotidAvdoed.ifNull(true)
                 ) {
                     // eksportAPunder20aar_001
                     paragraph {
@@ -242,7 +242,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }.orShowIf(
                     eksportForbudKodeAvdoed.isNull() and
                             minst20AarTrygdetid and
-                            (not(minst20AarTrygdetidAvdoed) or not(minst20AarBotidAvdoed))
+                            (not(minst20AarTrygdetidAvdoed.ifNull(true)) or not(minst20AarBotidAvdoed.ifNull(true)))
                 ) {
                     // eksportAPUnder20aarAvdod_001
                     paragraph {
