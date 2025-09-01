@@ -249,7 +249,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
             lang3.first to lang3Value.str,
             fontType
         ).also { addTextContent(Content(it)) }
-            .also { addTextContent(Content(it)) }
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1Value.expr,
@@ -313,7 +312,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
             lang2.first to lang2Value.str,
             lang3.first to lang3Value.str,
         ).also { addTextContent(Content(it)) }
-            .also { addTextContent(Content(it)) }
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1Value.expr,
