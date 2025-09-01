@@ -204,7 +204,7 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
                 .also { addTextContent(Content(it)) }
 
         is LiteralWrapper ->
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str)
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
                 .also { addTextContent(Content(it)) }
     }
 }
