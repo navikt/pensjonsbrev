@@ -70,7 +70,7 @@ object BrevredigeringTable : LongIdTable() {
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrevKryptert: Column<ByteArray?> = binary(name = "redigertBrevKryptert").nullable()
+    val redigertBrevKryptert: Column<EncryptedByteArray?> = binary(name = "redigertBrevKryptert").transform(encrypted()).nullable()
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
@@ -109,11 +109,11 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     fun lesRedigertBrev(krypteringService: KrypteringService): Edit.Letter =
-        redigertBrevKryptert?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
+        redigertBrevKryptert?.bytes?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
             ?: redigertBrev
 
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
-        redigertBrevKryptert = krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
+        redigertBrevKryptert = EncryptedByteArray(krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter)))
         redigertBrev = letter
     }
 
@@ -225,3 +225,9 @@ private fun createJdbcUrl(config: Config): String =
         val dbName = getString("name")
         return "jdbc:postgresql://$url:$port/$dbName"
     }
+
+private fun encrypted() = columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray)
+
+
+@JvmInline
+value class EncryptedByteArray(val bytes: ByteArray)
