@@ -56,10 +56,10 @@ const TableView: React.FC<{
   const menuTargetRef = useRef<{ rowIndex: number; colIndex: number } | null>(null);
 
   const headerHasContent = !isEmptyTableHeader(node.header);
-  const hasHeader = node.header?.colSpec?.length > 0;
   const canPromoteHeader = !headerHasContent;
 
-  const onlyOneCol = (node.header.colSpec?.length ?? 0) <= 1;
+  const headerColCount = node.header.colSpec.length;
+  const onlyOneCol = headerColCount <= 1;
 
   const clickedRow = menuTargetRef.current?.rowIndex;
   const isHeaderCtx = clickedRow === -1;
@@ -76,8 +76,8 @@ const TableView: React.FC<{
           if (!cell) return;
           const rowEl = cell.parentElement as HTMLTableRowElement;
 
-          const isHeaderCell = cell.tagName === "TH" || (hasHeader && rowEl.parentElement?.tagName === "THEAD");
-          const rowIndex = isHeaderCell ? -1 : rowEl.rowIndex - (hasHeader ? 1 : 0);
+          const isHeaderCell = cell.tagName === "TH" || rowEl.parentElement?.tagName === "THEAD";
+          const rowIndex = isHeaderCell ? -1 : rowEl.rowIndex - 1;
           const colIndex = cell.cellIndex;
 
           setEditorState((prev) => ({
