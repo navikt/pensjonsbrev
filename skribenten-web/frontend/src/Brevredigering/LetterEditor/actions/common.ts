@@ -393,11 +393,7 @@ export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
-    cells: Array.from({ length: colCount }, () => ({
-      id: null,
-      parentId: null,
-      text: [newLiteral({ editedText: "" })],
-    })),
+    cells: Array.from({ length: colCount }, () => newCell()),
   };
 }
 

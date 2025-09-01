@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { Table, TextContent } from "~/types/brevbakerTypes";
+import type { Table } from "~/types/brevbakerTypes";
 import { PARAGRAPH } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
@@ -12,6 +12,7 @@ import {
   addElements,
   cleanseText,
   isTable,
+  newCell,
   newColSpec,
   newLiteral,
   newRow,
@@ -183,10 +184,6 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   draft.isDirty = true;
 });
 
-function extractTextContent(source: Draft<TextContent[]>): TextContent[] {
-  return source.splice(0, source.length);
-}
-
 /**
  * Promote a body row to header:
  * - Moves the entire body cells into header.
@@ -225,34 +222,19 @@ export const promoteRowToHeader: Action<
   draft.isDirty = true;
 });
 
-/**
- * Demote header to a regular first row:
- * - Copies header colSpec text into a new first body row.
- * - Clears header cell text so <thead> stops rendering.
- */
 export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, contentIndex: number]> = produce(
   (draft, blockIndex, contentIndex) => {
     const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
     if (!isTable(table)) return;
-
     if (isEmptyTableHeader(table.header)) return;
 
-    const colCount = table.header.colSpec.length;
+    // Move header cells into a new first body row.
+    const movedCells = table.header.colSpec.map((h) => h.headerContent);
+    addElements([{ id: null, parentId: table.id, cells: movedCells }], 0, table.rows, table.deletedRows);
 
-    // Build a new Row from header cells
-    const newBodyRow = newRow(colCount);
-    for (let c = 0; c < colCount; c++) {
-      const headerTexts = table.header.colSpec[c].headerContent.text as Draft<TextContent[]>;
-      const cloned = extractTextContent(headerTexts);
-      newBodyRow.cells[c].text.splice(0, newBodyRow.cells[c].text.length, ...cloned);
-    }
-
-    // Insert as first body row
-    addElements([newBodyRow], 0, table.rows, table.deletedRows);
-
-    // Clear header cell text to hide <thead>
-    for (let c = 0; c < colCount; c++) {
-      table.header.colSpec[c].headerContent.text = [newLiteral({ editedText: "" })];
+    // Reset header cells with fresh empty cells.
+    for (let c = 0; c < table.header.colSpec.length; c++) {
+      table.header.colSpec[c].headerContent = newCell();
     }
 
     draft.focus = { blockIndex, contentIndex, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
