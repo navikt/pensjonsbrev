@@ -18,6 +18,8 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
+      - "/alder-brevbaker-api-model"
+      - "/aldersmaler"
       - "/brevbaker-api-model-common"
       - "/brevbaker"
       - "/brevbaker-dsl"
@@ -29,12 +31,16 @@ updates:
       - "/skribenten-backend"
       - "/template-model-generator"
       - "/tjenestebuss-integrasjon"
+      - "/ufoere-brevbaker-api-model"
+      - "/ufoeremaler"
     schedule:
       interval: "monthly"
       day: "sunday"
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
+    ignore:
+      - dependency-name: "no.nav.pensjon.brevbaker:brevbaker-api-model-common"
     groups:
       tjenestebuss:
         patterns:
@@ -56,7 +62,6 @@ updates:
           - "io.getunleash*"
           - "io.ktor*"
           - "io.micrometer*"
-          - "io.mockk*"
           - "net.logstash.logback:logstash-logback-encoder"
           - "no.nav*"
           - "org.assertj:assertj-core"

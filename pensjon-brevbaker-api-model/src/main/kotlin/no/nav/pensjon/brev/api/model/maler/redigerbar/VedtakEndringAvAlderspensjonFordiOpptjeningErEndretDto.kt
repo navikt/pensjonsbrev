@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -13,15 +14,9 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: EmptyBrevdata,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData> {
-    data class SaksbehandlerValg(
-        val visUendretOpptjening: Boolean,
-        val visOektOpptjening: Boolean,
-        val visRedusertOpptjening: Boolean,
-    ) : BrevbakerBrevdata
-
+) : RedigerbarBrevdata<EmptyBrevdata, VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData> {
     data class PesysData(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
@@ -41,9 +36,7 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
     )
 
     data class AlderspensjonVedVirk(
-        val skjermingstilleggInnvilget: Boolean,
         val totalPensjon: Kroner,
-        val skjermingstillegg: Kroner?,
         val uforeKombinertMedAlder: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
         val fullUttaksgrad: Boolean,

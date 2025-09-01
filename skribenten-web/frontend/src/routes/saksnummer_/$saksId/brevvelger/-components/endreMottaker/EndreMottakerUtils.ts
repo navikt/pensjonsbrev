@@ -106,14 +106,14 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
       if (data.land === "NO") {
         if (data.postnr.length !== 4) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Postnummer må være 4 tegn",
             path: ["postnr"],
           });
         }
         if (data.poststed === "") {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Poststed må fylles ut",
             path: ["poststed"],
           });
@@ -121,7 +121,7 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
       } else {
         if (data.linje1 === "") {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Adresselinje 1 må fylles ut",
             path: ["linje1"],
           });
@@ -144,35 +144,35 @@ const leggTilManuellAdresseTabNotSelectedSchema = z.object({
 export const finnSamhandlerFormDataSchema = z
   .object({
     søketype: z
-      .nativeEnum(Søketype)
+      .enum(Søketype)
       .nullable()
       .superRefine((data, refinementContext) => {
         if (data === null) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
           });
         }
       }),
     samhandlerType: z
-      .nativeEnum(SamhandlerTypeCode)
+      .enum(SamhandlerTypeCode)
       .nullable()
       .superRefine((data, refinementContext) => {
         if (data === null) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
           });
         }
       }),
     //valideres i superRefine under siden vi må sjekke søketype
     direkteOppslag: z.object({
-      identtype: z.nativeEnum(Identtype).nullable(),
+      identtype: z.enum(Identtype).nullable(),
       id: z.string().nullable(),
     }),
     //valideres i superRefine under siden vi må sjekke søketype
     organisasjonsnavn: z.object({
-      innOgUtland: z.nativeEnum(InnOgUtland).nullable(),
+      innOgUtland: z.enum(InnOgUtland).nullable(),
       navn: z.string().nullable(),
     }),
     //valideres i superRefine under siden vi må sjekke søketype
@@ -186,14 +186,14 @@ export const finnSamhandlerFormDataSchema = z
       case Søketype.DIREKTE_OPPSLAG: {
         if (data.direkteOppslag.identtype === null) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
             path: ["direkteOppslag.identtype"],
           });
         }
         if (!data.direkteOppslag.id) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
             path: ["direkteOppslag.id"],
           });
@@ -204,7 +204,7 @@ export const finnSamhandlerFormDataSchema = z
       case Søketype.ORGANISASJONSNAVN: {
         if (!data.organisasjonsnavn.navn) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
             path: ["organisasjonsnavn.navn"],
           });
@@ -215,14 +215,14 @@ export const finnSamhandlerFormDataSchema = z
       case Søketype.PERSONNAVN: {
         if (!data.personnavn.fornavn) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
             path: ["personnavn.fornavn"],
           });
         }
         if (!data.personnavn.etternavn) {
           refinementContext.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: "Feltet må fylles ut",
             path: ["personnavn.etternavn"],
           });
@@ -234,19 +234,17 @@ export const finnSamhandlerFormDataSchema = z
         throw new Error("Teknisk feil - Forventet at verdien til søketype er satt, men var null");
       }
     }
-
-    return refinementContext;
   });
 
 const finnSamhandlerTabNotSelectedSchema = z.object({
-  søketype: z.nullable(z.nativeEnum(Søketype)),
-  samhandlerType: z.nullable(z.nativeEnum(SamhandlerTypeCode)),
+  søketype: z.nullable(z.enum(Søketype)),
+  samhandlerType: z.nullable(z.enum(SamhandlerTypeCode)),
   direkteOppslag: z.object({
-    identtype: z.nullable(z.nativeEnum(Identtype)),
+    identtype: z.nullable(z.enum(Identtype)),
     id: z.string(),
   }),
   organisasjonsnavn: z.object({
-    innOgUtland: z.nativeEnum(InnOgUtland),
+    innOgUtland: z.enum(InnOgUtland),
     navn: z.string(),
   }),
   personnavn: z.object({

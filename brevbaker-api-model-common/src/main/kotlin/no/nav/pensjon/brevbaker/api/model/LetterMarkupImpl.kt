@@ -15,8 +15,19 @@ import java.time.LocalDate
 
 @Suppress("unused")
 @InterneDataklasser
+data class LetterMarkupWithDataUsageImpl(
+    override val markup: LetterMarkup,
+    override val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
+) : LetterMarkupWithDataUsage {
+
+    @InterneDataklasser
+    data class PropertyImpl(override val typeName: String, override val propertyName: String) : LetterMarkupWithDataUsage.Property
+}
+
+@Suppress("unused")
+@InterneDataklasser
 data class LetterMarkupImpl(
-    override val title: String,
+    override val title: List<ParagraphContent.Text>,
     override val sakspart: LetterMarkup.Sakspart,
     override val blocks: List<Block>,
     override val signatur: LetterMarkup.Signatur
@@ -32,7 +43,7 @@ data class LetterMarkupImpl(
     @InterneDataklasser
     data class SakspartImpl(
         override val gjelderNavn: String,
-        override val gjelderFoedselsnummer: String,
+        override val gjelderFoedselsnummer: Foedselsnummer,
         override val vergeNavn: String?,
         override val saksnummer: String,
         override val dokumentDato: LocalDate,

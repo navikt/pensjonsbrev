@@ -16,15 +16,10 @@ import java.time.Month
 fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
-            gjenlevendetilleggTittel = true,
-            visGjenlevendetilleggPensjonsrettigheter = true,
-            visTilleggspensjonavsnittAP1967 = true,
             omregnetTilEnsligISammeVedtak = true,
-            pensjonenOeker = true,
             brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar = true,
             avdoedeHarRedusertTrygdetidEllerPoengaar = true,
             endringIPensjonsutbetaling = true,
-            etterbetaling = true
         ),
         pesysData = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData(
             avdod = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Avdod(
@@ -35,7 +30,8 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             ),
             krav = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Krav(
                 virkDatoFom = LocalDate.of(2024, Month.FEBRUARY, 2),
-                kravInitiertAv = KravInitiertAv.NAV
+                kravInitiertAv = KravInitiertAv.NAV,
+                etterbetaling = true
             ),
             alderspensjonVedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.AlderspensjonVedVirk(
                 totalPensjon = Kroner(1000),

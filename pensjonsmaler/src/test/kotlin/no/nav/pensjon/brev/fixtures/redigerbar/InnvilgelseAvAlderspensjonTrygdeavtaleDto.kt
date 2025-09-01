@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -16,10 +17,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
-            oekningIPensjonen = false,
-            reduksjonIPensjonen = false,
-            supplerendeStoenad = true,
-            etterbetaling = false,
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
@@ -43,6 +40,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             erEOSLand = false,
             erMellombehandling = true,
             erSluttbehandlingNorgeUtland = false,
+            beloepEndring = BeloepEndring.ENDR_OKT,
             fullTrygdtid = false,
             harFlereBeregningsperioder = false,
             inngangOgEksportVurdering = InnvilgelseAvAlderspensjonTrygdeavtaleDto.InngangOgEksportVurdering(
@@ -55,12 +53,8 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             sakstype = Sakstype.ALDER,
             vedtakEtterbetaling = true,
             vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
-                antallLandVilkarsprovd = 0,
-                landNavn = "Sverige",
-            ),
-            dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
-                sakstype = Sakstype.ALDER,
-                brukerUnder18Aar = false
+                antallLandVilkarsprovd = 2,
+                landNavn = listOf("Sverige", "Finland"),
             ),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
             maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
@@ -77,6 +71,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             ),
             opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
             opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
-            opplysningerOmAvdodBruktIBeregning = null
+            opplysningerOmAvdodBruktIBeregning = null,
+            orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto()
         )
     )

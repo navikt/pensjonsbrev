@@ -17,8 +17,8 @@ data class TBU3325_Generated(
 
 		paragraph {
 			textExpr (
-				Bokmal to "Skatteetaten har opplyst at du hadde en pensjonsgivende inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " kroner i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". ",
-				Nynorsk to "Skatteetaten har opplyst at du hadde ei pensjonsgivande inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " kroner i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". ",
+				Bokmal to "Skatteetaten har opplyst at du hadde en pensjonsgivende inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". ",
+				Nynorsk to "Skatteetaten har opplyst at du hadde ei pensjonsgivande inntekt på ".expr() + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". ",
 			)
 
 			//IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumFratrekkUT > 0 AND PE_UT_PeriodeFomStorre0101PeriodeTomLik3112() = true) THEN      INCLUDE ENDIF
@@ -69,8 +69,8 @@ data class TBU3325_Generated(
 				)
 			}
 			textExpr (
-				Bokmal to "Vi har derfor brukt ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut().format() + " kroner i vurderingen av om du har fått for mye eller for lite i uføretrygd.",
-				Nynorsk to "Vi har derfor brukt ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut().format() + " kroner når vi har vurdert om du har fått for mykje eller for lite i uføretrygd.",
+				Bokmal to "Vi har derfor brukt ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut().format() + " i vurderingen av om du har fått for mye eller for lite i uføretrygd.",
+				Nynorsk to "Vi har derfor brukt ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut().format() + " når vi har vurdert om du har fått for mykje eller for lite i uføretrygd.",
 			)
 		}
     }

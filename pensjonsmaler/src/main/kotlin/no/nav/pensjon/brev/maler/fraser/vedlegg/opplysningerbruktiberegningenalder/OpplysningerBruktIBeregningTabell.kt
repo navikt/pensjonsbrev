@@ -489,9 +489,9 @@ data class OpplysningerBruktIBeregningTabellKap20(
                     row {
                         cell {
                             text(
-                                Bokmal to "Trygdetid etter kapittel 20",
-                                Nynorsk to "Trygdetid etter kapittel 20",
-                                English to "National insurance coverage pursuant to Chapter 20",
+                                Bokmal to "Trygdetid",
+                                Nynorsk to "Trygdetid",
+                                English to "National insurance coverage",
                             )
                         }
                         cell { includePhrase(AntallAarText(trygdetidsdetaljer.anvendtTT)) }

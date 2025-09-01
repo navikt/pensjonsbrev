@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 
 class ExternalAPIService(
     config: Config,
-    private val brevredigeringService: BrevredigeringService,
+    private val hentBrevService: HentBrevService,
     private val brevbakerService: BrevbakerService
 ) {
     private val skribentenWebUrl = config.getString("skribentenWebUrl")
@@ -19,7 +19,7 @@ class ExternalAPIService(
     }
 
     suspend fun hentAlleBrevForSaker(saksIder: Set<Long>): List<ExternalAPI.BrevInfo> {
-        val alleBrev = brevredigeringService.hentBrevForAlleSaker(saksIder)
+        val alleBrev = hentBrevService.hentBrevForAlleSaker(saksIder)
         val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevbakerService.getRedigerbarTemplate(it) }
 
         return alleBrev.mapNotNull { it.toExternal(maler[it.brevkode]) }

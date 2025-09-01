@@ -2,9 +2,18 @@ package no.nav.pensjon.brevbaker.api.model
 
 import java.time.LocalDate
 
+interface LetterMarkupWithDataUsage {
+    val markup: LetterMarkup
+    val letterDataUsage: Set<Property>
+
+    interface Property {
+        val typeName: String
+        val propertyName: String
+    }
+}
+
 interface LetterMarkup {
-    // TODO: Må endres til List<Text> slik at den kan redigeres.
-    val title: String
+    val title: List<ParagraphContent.Text>
     val sakspart: Sakspart
     val blocks: List<Block>
     val signatur: Signatur
@@ -17,8 +26,7 @@ interface LetterMarkup {
 
     interface Sakspart {
         val gjelderNavn: String
-        // TODO: Når Foedselsnummer er konvertert til value class så burde den brukes her.
-        val gjelderFoedselsnummer: String
+        val gjelderFoedselsnummer: Foedselsnummer
         val vergeNavn: String?
         val saksnummer: String
         val dokumentDato: LocalDate

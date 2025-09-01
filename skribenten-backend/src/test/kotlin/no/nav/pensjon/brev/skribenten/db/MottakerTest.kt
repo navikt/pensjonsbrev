@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.jetbrains.exposed.exceptions.ExposedSQLException
@@ -98,10 +99,10 @@ class MottakerTest {
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             skrivRedigertBrev(Edit.Letter(
-                "a",
+                Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
-                    gjelderFoedselsnummer = "c",
+                    gjelderFoedselsnummer = Foedselsnummer("c"),
                     vergeNavn = null,
                     saksnummer = "d",
                     dokumentDato = LocalDate.now(),

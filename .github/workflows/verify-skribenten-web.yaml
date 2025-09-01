@@ -3,7 +3,7 @@ name: "verify: skribenten-web"
 on:
   pull_request:
     branches:
-      - 'main'
+      - "main"
     paths:
       - .github/workflows/verify-skribenten-web.yaml
       - skribenten-web/**
@@ -15,14 +15,14 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
+          scope: "@navikt"
       - name: Install bff dependencies
         working-directory: skribenten-web/bff
         run: npm ci
@@ -47,13 +47,13 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
           cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies
         working-directory: skribenten-web/frontend
@@ -75,7 +75,6 @@ jobs:
           install: false
           browser: chrome
           component: true
-          start: npm run cypress
 
       - name: Run tests
         working-directory: skribenten-web/frontend
@@ -99,4 +98,3 @@ jobs:
         with:
           name: cypress-screenshots
           path: skribenten-web/frontend/cypress/screenshots
-

@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -59,12 +60,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val epsTarUtUfoeretrygd: Boolean,
 
         // Betydning for pensjons utbetaling?
-        @DisplayText("Betydning får omregulering for pensjon? Ingen")
-        val ingenBetydning: Boolean,
-        @DisplayText("Betydning får omregulering for pensjon? Pensjonen øker")
-        val pensjonenOeker: Boolean,
-        @DisplayText("Betydning får omregulering for pensjon? Pensjonen blir redusert")
-        val pensjonenRedusert: Boolean,
+        @DisplayText("Er beløpet endret?")
+        val beloepEndring: BeloepEndring,
 
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
@@ -88,7 +85,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
     ) : BrevbakerBrevdata
 
     data class EpsVedVirk(

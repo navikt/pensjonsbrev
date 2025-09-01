@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
@@ -15,8 +13,8 @@ import org.junit.jupiter.api.Test
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
 
-private const val journalpostId = "1234"
-private const val dokumentId = "5678"
+private const val forventaJournalpostId = "1234"
+private const val forventaDokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
@@ -63,55 +61,59 @@ class LegacyBrevServiceTest {
         brevgruppe = null,
     )
 
-    private val brevmetadataService = mockk<BrevmetadataService> {
-        coEvery {
-            getMal("exstream")
-        } returns exstreamBrevMetadata
+    private val brevmetadataService = FakeBrevmetadataService(
+        maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
+    )
 
-        coEvery {
-            getMal("doksys")
-        } returns doksysBrevmetadata
-    }
-    private val safService = mockk<SafService> {
-        coEvery {
-            waitForJournalpostStatusUnderArbeid(any())
-        } returns JournalpostLoadingResult.READY
-
-        coEvery {
-            getFirstDocumentInJournal(any())
-        } returns ServiceResult.Ok(
-            SafService.HentDokumenterResponse(
-                SafService.HentDokumenterResponse.Journalposter(
-                    SafService.HentDokumenterResponse.Journalpost(
-                        journalpostId, listOf(
-                            SafService.HentDokumenterResponse.Dokument(dokumentId)
+    private val safService = object : SafServiceStub() {
+        override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
+        override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<SafService.HentDokumenterResponse> {
+            return ServiceResult.Ok(
+                SafService.HentDokumenterResponse(
+                    SafService.HentDokumenterResponse.Journalposter(
+                        SafService.HentDokumenterResponse.Journalpost(
+                            journalpostId, listOf(
+                                SafService.HentDokumenterResponse.Dokument(forventaDokumentId)
+                            )
                         )
-                    )
-                ), null
+                    ), null
+                )
             )
-        )
+        }
     }
-    private val penService = mockk<PenService> {
-        coEvery {
-            bestillDoksysBrev(any(), any(), any())
-        } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(journalpostId, null))
-        coEvery {
-            bestillExstreamBrev(any())
-        } returns ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId))
-        coEvery {
-            redigerDoksysBrev(eq(journalpostId), eq(dokumentId))
-        } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL))
-        coEvery {
-            redigerExstreamBrev(eq(journalpostId))
-        } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
+
+    private val penService = object : PenServiceStub() {
+        override suspend fun bestillDoksysBrev(
+            request: Api.BestillDoksysBrevRequest,
+            enhetsId: String,
+            saksId: Long,
+        ): ServiceResult<Pen.BestillDoksysBrevResponse> = ServiceResult.Ok(Pen.BestillDoksysBrevResponse(forventaJournalpostId))
+
+        override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
+            ServiceResult.Ok(Pen.BestillExstreamBrevResponse(forventaJournalpostId))
+
+        override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String) =
+            if(journalpostId == forventaJournalpostId && dokumentId == forventaDokumentId) {
+                ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL))
+            } else {
+                notYetStubbed("Mangler stub for redigerDoksysBrev med journalpostId: $journalpostId og dokumentId: $dokumentId")
+            }
+
+        override suspend fun redigerExstreamBrev(journalpostId: String) =
+            if (journalpostId == forventaJournalpostId) {
+                ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
+            } else {
+                notYetStubbed("Mangler stub for redigerExstreamBrev med journalpostId: $journalpostId")
+            }
     }
-    private val navansattService = mockk<NavansattService> {
-        coEvery {
-            hentNavansatt(eq(principalIdent.id))
-        } returns Navansatt(emptyList(), "verdens", "beste", "saksbehandler")
-        coEvery { harTilgangTilEnhet(eq(principalIdent.id), any()) } returns ServiceResult.Ok(false)
-        coEvery { harTilgangTilEnhet(eq(principalIdent.id), eq(principalSinNAVEnhet.id)) } returns ServiceResult.Ok(true)
-    }
+
+    private val navansattService = FakeNavansattService(
+        harTilgangTilEnhet = mapOf(
+            Pair(principalIdent.id, principalSinNAVEnhet.id) to true
+        ),
+        navansatte = mapOf(principalIdent.id to "verdens beste saksbehandler")
+    )
+
 
     private val legacyBrevService = LegacyBrevService(
         brevmetadataService = brevmetadataService,

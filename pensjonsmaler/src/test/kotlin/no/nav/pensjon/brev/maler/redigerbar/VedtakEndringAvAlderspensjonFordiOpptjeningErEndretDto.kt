@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -15,11 +16,7 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
     VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-        saksbehandlerValg = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.SaksbehandlerValg(
-            visUendretOpptjening = true,
-            visOektOpptjening = false,
-            visRedusertOpptjening = false
-        ),
+        saksbehandlerValg = EmptyBrevdata,
         pesysData = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData(
             krav = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.Krav(
                 virkDatoFom = LocalDate.of(2024, Month.MAY, 1),
@@ -27,9 +24,7 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
                 erForstegangsbehandling = true
             ),
             alderspensjonVedVirk = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.AlderspensjonVedVirk(
-                skjermingstilleggInnvilget = true,
                 totalPensjon = Kroner(1000),
-                skjermingstillegg = Kroner(500),
                 uforeKombinertMedAlder = true,
                 regelverkType = AlderspensjonRegelverkType.AP2025,
                 fullUttaksgrad = true
