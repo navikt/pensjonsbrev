@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { Row, Table } from "~/types/brevbakerTypes";
+import type { Table } from "~/types/brevbakerTypes";
 import { PARAGRAPH } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
