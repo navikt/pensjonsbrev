@@ -273,12 +273,21 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 )
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Den årlige inntekten vi vil bruke for deg er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
-                            " kroner. Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner. ",
-                    Nynorsk to "Den årlege inntekta vi vil bruke for deg er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
-                            " kroner. Det gjev deg rett til ei årleg utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner. "
-                )
+                showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
+                    textExpr(
+                        Bokmal to "Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                " kroner. Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner i uføretrygd og barnetillegg. ",
+                        Nynorsk to "Den årlege inntekta vi vil bruke for deg i utrekninga av uføretrygd er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                " kroner. Det gjev deg rett til ei årleg utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner i uføretrygd og barnetillegg. "
+                    )
+                }.orShow {
+                    textExpr(
+                        Bokmal to "Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                " kroner. Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner i uføretrygd. ",
+                        Nynorsk to "Den årlege inntekta vi vil bruke for deg i utrekninga av uføretrygd er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                " kroner. Det gjev deg rett til ei årleg utbetaling på " + totalNettoAr.format(CurrencyFormat) + " kroner i uføretrygd. "
+                    )
+                }
             }
             paragraph {
                 textExpr(
