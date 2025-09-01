@@ -118,10 +118,9 @@ class BrevredigeringService(
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS).takeIf { reserverForRedigering }
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        redigertBrev = letter.markup.toEdit()
                         sistRedigertAvNavIdent = principal.navIdent
                     }.also {
-                        it.skrivRedigertBrev(letter.toEdit(), krypteringService)
+                        it.skrivRedigertBrev(letter.markup.toEdit(), krypteringService)
                         if (mottaker != null) {
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
                         }
@@ -203,7 +202,7 @@ class BrevredigeringService(
                 transaction {
                     brevDb.apply {
                         skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup), krypteringService)
-                    }.toDto(krypteringService.letterDataUsage)
+                    }.toDto(krypteringService, rendretBrev.letterDataUsage)
                 }
             }
         }
@@ -233,8 +232,8 @@ class BrevredigeringService(
                 rendreBrev(brev = brevDto).map { rendretBrev ->
                     transaction {
                         brevDb.apply {
-                            skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup), krypteringService
-                        }.toDto(krypteringService.rendretBrev.letterDataUsage)
+                            skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup), krypteringService)
+                        }.toDto(krypteringService, rendretBrev.letterDataUsage)
                     }
                 }
             }
