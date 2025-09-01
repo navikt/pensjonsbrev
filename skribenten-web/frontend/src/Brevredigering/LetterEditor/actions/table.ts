@@ -189,7 +189,7 @@ function extractTextContent(source: Draft<TextContent[]>): TextContent[] {
 
 /**
  * Promote a body row to header:
- * - Copies cell text into existing header colSpec (keeps alignment/span/ids).
+ * - Moves the entire body cells into header.
  * - Clears any remaining header cells (no default “Kolonne N” left behind).
  * - Removes the body row via `removeElements`
  */
@@ -209,12 +209,11 @@ export const promoteRowToHeader: Action<
   const colCount = table.header.colSpec.length;
   if (row.cells.length !== colCount) return;
 
-  // Copy body row text into header cells
+  // Move body cells into header (transfer ownership)
   for (let c = 0; c < colCount; c++) {
-    const sourceTexts = row.cells[c].text;
-    table.header.colSpec[c].headerContent.text =
-      sourceTexts.length > 0 ? extractTextContent(sourceTexts) : [newLiteral({ editedText: "" })];
+    table.header.colSpec[c].headerContent = row.cells[c];
   }
+
   // If header is still empty (e.g., promoted an empty body row to header), set default labels so header renders
   if (isEmptyTableHeader(table.header)) {
     updateDefaultHeaderLabels(table);
