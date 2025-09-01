@@ -59,10 +59,16 @@ export function BrevvelgerPage() {
   return (
     <div
       css={css`
+        align-self: center;
+        @media (max-width: 1023px) {
+          align-self: start;
+        }
         display: flex;
         flex-direction: column;
-        align-self: center;
         background-color: white;
+        width: 100%;
+        min-width: 944px;
+        max-width: 1104px;
       `}
     >
       <BrevvelgerMainContent
@@ -102,18 +108,18 @@ const BrevvelgerMainContent = (props: {
   return (
     <div
       css={css`
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(640px, 720px) minmax(304px, 384px);
         background-color: white;
         height: var(--main-page-content-height);
       `}
     >
       <VStack
         css={css`
-          width: 720px;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
           padding: var(--a-spacing-5) var(--a-spacing-6);
-          overflow-y: scroll;
+          overflow-y: auto;
         `}
         gap="6"
       >
