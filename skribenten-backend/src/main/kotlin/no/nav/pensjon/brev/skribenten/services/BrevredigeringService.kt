@@ -119,8 +119,8 @@ class BrevredigeringService(
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistRedigertAvNavIdent = principal.navIdent
+                        skrivRedigertBrev(letter.markup.toEdit(), krypteringService)
                     }.also {
-                        it.skrivRedigertBrev(letter.markup.toEdit(), krypteringService)
                         if (mottaker != null) {
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
                         }
