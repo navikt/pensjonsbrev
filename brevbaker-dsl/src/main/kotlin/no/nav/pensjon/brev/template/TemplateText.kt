@@ -107,6 +107,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 //
 //
 
+@Deprecated("Nytt syntax for tekster! bruk text istedenfor textExpr, og istedenfor Bokmal to ..., bruk bokmal { + ... }.")
 fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lang1>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     fontType: FontType = FontType.PLAIN,
@@ -114,6 +115,7 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, fontType).also { addTextContent(Content(it)) }
 }
 
+@Deprecated("Nytt syntax for tekster! bruk text istedenfor textExpr, og istedenfor Bokmal to ..., bruk bokmal { + ... }.")
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
@@ -122,6 +124,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<Language
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
 }
 
+@Deprecated("Nytt syntax for tekster! bruk text istedenfor textExpr, og istedenfor Bokmal to ..., bruk bokmal { + ... }.")
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
@@ -201,12 +204,11 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
     when (val value = lang1.second) {
         is ExpressionWrapper ->
             Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr, fontType)
-                .also { addTextContent(Content(it)) }
 
         is LiteralWrapper ->
             Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
                 .also { addTextContent(Content(it)) }
-    }
+    }.also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
@@ -222,14 +224,14 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<Language
             lang1.first to lang1Value.str,
             lang2.first to lang2Value.str,
             fontType
-        ).also { addTextContent(Content(it)) }
+        )
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1.second.expr,
             lang2.first to lang2.second.expr,
             fontType
-        ).also { addTextContent(Content(it)) }
-    }
+        )
+    }.also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
@@ -248,15 +250,15 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
             lang2.first to lang2Value.str,
             lang3.first to lang3Value.str,
             fontType
-        ).also { addTextContent(Content(it)) }
+        )
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1Value.expr,
             lang2.first to lang2Value.expr,
             lang3.first to lang3Value.expr,
             fontType
-        ).also { addTextContent(Content(it)) }
-    }
+        )
+    }.also { addTextContent(Content(it)) }
 }
 
 // PlainTextScope.text()
@@ -269,12 +271,9 @@ fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Singl
     when (val value = lang1.second) {
         is ExpressionWrapper ->
             Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr)
-                .also { addTextContent(Content(it)) }
-
         is LiteralWrapper ->
             Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str)
-                .also { addTextContent(Content(it)) }
-    }
+    }.also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
@@ -288,13 +287,13 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<Lan
         Element.OutlineContent.ParagraphContent.Text.Literal.create(
             lang1.first to lang1Value.str,
             lang2.first to lang2Value.str
-        ).also { addTextContent(Content(it)) }
+        )
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1.second.expr,
             lang2.first to lang2.second.expr,
-        ).also { addTextContent(Content(it)) }
-    }
+        )
+    }.also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
@@ -311,14 +310,14 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
             lang1.first to lang1Value.str,
             lang2.first to lang2Value.str,
             lang3.first to lang3Value.str,
-        ).also { addTextContent(Content(it)) }
+        )
     } else {
         Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
             lang1.first to lang1Value.expr,
             lang2.first to lang2Value.expr,
             lang3.first to lang3Value.expr,
-        ).also { addTextContent(Content(it)) }
-    }
+        )
+    }.also { addTextContent(Content(it)) }
 }
 
 class LiteralOrExpressionBuilder {
