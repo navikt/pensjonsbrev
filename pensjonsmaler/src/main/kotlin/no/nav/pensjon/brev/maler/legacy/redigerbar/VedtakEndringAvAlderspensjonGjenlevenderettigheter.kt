@@ -254,7 +254,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and pesysData.alderspensjonVedVirk.uttaksgrad.lessThan(100)
                     ) {
                         paragraph {
-                            textExpr(
+                            text(
                                 bokmal { +"Du får utbetalt " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med gjenlevendetillegg." },
                                 nynorsk { +"Du får utbetalt " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med attlevandetillegg." },
                                 english { +"You receive " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension with survivor’s supplement." },
