@@ -1029,7 +1029,7 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder {
-	public fun <init> (Lno/nav/pensjon/brev/template/dsl/Quotation;)V
+	public fun <init> (Lno/nav/pensjon/brev/template/dsl/QuotationMarks;)V
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 	public final fun quoted (Ljava/lang/String;)Ljava/lang/String;
@@ -1183,34 +1183,27 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextScope$DefaultImpls 
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 }
 
-public abstract interface class no/nav/pensjon/brev/template/dsl/Quotation {
+public abstract interface class no/nav/pensjon/brev/template/dsl/QuotationMarks {
+	public static final field Companion Lno/nav/pensjon/brev/template/dsl/QuotationMarks$Companion;
 	public abstract fun getEnd ()Ljava/lang/String;
 	public abstract fun getStart ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/dsl/Quotation$BokmalNynorsk : no/nav/pensjon/brev/template/dsl/Quotation {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/Quotation$BokmalNynorsk;
+public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$BokmalNynorsk : no/nav/pensjon/brev/template/dsl/QuotationMarks {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks$BokmalNynorsk;
 	public fun getEnd ()Ljava/lang/String;
 	public fun getStart ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/dsl/Quotation$English : no/nav/pensjon/brev/template/dsl/Quotation {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/Quotation$English;
-	public fun getEnd ()Ljava/lang/String;
-	public fun getStart ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/dsl/QuotationMarks {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks;
+public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$Companion {
 	public final fun getEnd ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public final fun getStart ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 }
 
-public final class no/nav/pensjon/brev/template/dsl/QuoteKt {
-	public static final fun quoted (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun quoted (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun quotedExpr (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun quotedStr (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$English : no/nav/pensjon/brev/template/dsl/QuotationMarks {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks$English;
+	public fun getEnd ()Ljava/lang/String;
+	public fun getStart ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
