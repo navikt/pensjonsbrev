@@ -15,9 +15,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -90,25 +88,27 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 }
             }
 
-            showIf(saksbehandlerValg.denBesteKaken.isOneOf(GULROTKAKE ,RULLEKAKE ,OSTEKAKE)) {
-                title1 {
-                    text(
-                        bokmal { + "Min favorittkake" },
-                    )
-                }
-                paragraph {
-                    showIf(saksbehandlerValg.denBesteKaken.equalTo(GULROTKAKE)) {
+            ifNotNull(saksbehandlerValg.denBesteKaken) { denBesteKaken ->
+                showIf(denBesteKaken.isOneOf(GULROTKAKE, RULLEKAKE, OSTEKAKE)) {
+                    title1 {
                         text(
-                            bokmal { + "Gulrotkake er den beste kaken av alle kaker. Krydret, ærlig, og nesten sunn med 1 av 5 for dagen." },
+                            bokmal { +"Min favorittkake" },
                         )
-                    }.orShowIf(saksbehandlerValg.denBesteKaken.equalTo(RULLEKAKE)) {
-                        text(
-                            bokmal { + "Rullekake er den beste kaken av alle kaker. Praktisk form, upåklagelig konsistens, lavt konfliktnivå." },
-                        )
-                    }.orShowIf(saksbehandlerValg.denBesteKaken.equalTo(OSTEKAKE)) {
-                        text(
-                            bokmal { + "Ostekake er den beste kaken av alle kaker. En kake som ikke prøver å imponere – den er bare perfekt." },
-                        )
+                    }
+                    paragraph {
+                        showIf(denBesteKaken.equalTo(GULROTKAKE)) {
+                            text(
+                                bokmal { +"Gulrotkake er den beste kaken av alle kaker. Krydret, ærlig, og nesten sunn med 1 av 5 for dagen." },
+                            )
+                        }.orShowIf(denBesteKaken.equalTo(RULLEKAKE)) {
+                            text(
+                                bokmal { +"Rullekake er den beste kaken av alle kaker. Praktisk form, upåklagelig konsistens, lavt konfliktnivå." },
+                            )
+                        }.orShowIf(denBesteKaken.equalTo(OSTEKAKE)) {
+                            text(
+                                bokmal { +"Ostekake er den beste kaken av alle kaker. En kake som ikke prøver å imponere – den er bare perfekt." },
+                            )
+                        }
                     }
                 }
             }
