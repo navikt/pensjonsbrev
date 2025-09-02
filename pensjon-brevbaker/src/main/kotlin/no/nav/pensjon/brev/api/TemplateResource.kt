@@ -6,6 +6,7 @@ import io.micrometer.core.instrument.Tag
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
+import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -25,12 +26,13 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
     val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
+    pdfVedleggAppender: PDFVedleggAppender,
 ) {
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
     abstract fun renderHTML(brevbestilling: Request): LetterResponse
 
-    protected val brevbaker = Brevbaker(pdfByggerService)
+    protected val brevbaker = Brevbaker(pdfByggerService, pdfVedleggAppender)
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
     fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
