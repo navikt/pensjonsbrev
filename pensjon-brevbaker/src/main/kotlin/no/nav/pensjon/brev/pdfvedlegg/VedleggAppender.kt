@@ -15,24 +15,17 @@ internal object VedleggAppender {
         val sider = vedlegg.sider
 
         sider.forEach {
-            merger.leggTilSide(target, settOppSide(vedlegg.filnavn, it, sider.size, spraak))
+            merger.leggTilSide(target, settOppSide( it, sider.size, spraak))
         }
 
         return target
     }
 
-    private fun settOppSide(
-        name: String,
-        side: Side,
-        antallSider: Int,
-        spraak: LanguageCode,
-    ): PDDocument =
-        lesInnPDF(name, "${side.filnavn}.pdf", spraak).also { pdf ->
-            pdf.setValues(side.felt + ("page" to "${side.sidenummer}/$antallSider"))
-        }
+    private fun settOppSide(side: Side, antallSider: Int, spraak: LanguageCode): PDDocument =
+        lesInnPDF(side.filnavn, spraak).also { it.setValues(side.felt + ("page" to "${side.sidenummer}/$antallSider")) }
 
-    private fun lesInnPDF(name: String, filnavn: String, spraak: LanguageCode): PDDocument =
-        javaClass.getResource("/vedlegg/$name/${spraak.name}/$filnavn")?.let {
+    private fun lesInnPDF(filnavn: String, spraak: LanguageCode): PDDocument =
+        javaClass.getResource("/vedlegg/${spraak.name}/${filnavn}-${spraak.name}.pdf")?.let {
             Loader.loadPDF(it.readBytes())
-        } ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn for type $name")
+        } ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
 }

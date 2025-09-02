@@ -8,6 +8,6 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 fun PDFVedleggData.tilPDFVedlegg() = when (this) {
     is P1Dto -> somVedlegg()
-    is InformasjonOmP1Dto -> PDFVedlegg(filnavn = this.filnavn, tittel = tittel, sider = listOf(Side(1, "InformasjonOmP1", mapOf())))
+    is InformasjonOmP1Dto -> PDFVedlegg(tittel = tittel, sider = listOf(Side(1, "InformasjonOmP1", mapOf())))
     else -> throw NotImplementedError("Ikke implementert støtte for ${javaClass.simpleName}")
 }
