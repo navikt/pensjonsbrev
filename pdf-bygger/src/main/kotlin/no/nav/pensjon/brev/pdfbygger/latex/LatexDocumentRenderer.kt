@@ -9,11 +9,12 @@ import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.AttachmentTitle
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -32,18 +33,15 @@ internal object LatexDocumentRenderer {
     )
 
     @OptIn(InterneDataklasser::class)
-    private fun List<PDFVedlegg>.asAttachment(language: Language): List<LetterMarkup.Attachment> = this.map {
-        LetterMarkupImpl.AttachmentImpl(
+    private fun List<PDFVedlegg>.asAttachment(language: Language): List<AttachmentTitle> = this.map {
+        PDFTittel(
             title = listOf(
                 // TODO: Dette kjens litt hacky. Burde kunne finne på noko lurt med expression for å unngå dette
                 LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                     id = it.hashCode(),
                     text = it.type.tittel.get(language.toCode())!!,
                 )
-            ),
-            blocks = listOf(),
-            includeSakspart = false
-        )
+        ))
     }
 
     private fun render(
@@ -66,7 +64,7 @@ internal object LatexDocumentRenderer {
 
     private fun LatexAppendable.appendMasterTemplateParameters(
         letter: LetterMarkup,
-        attachments: List<LetterMarkup.Attachment>,
+        attachments: List<AttachmentTitle>,
         brevtype: LetterMetadata.Brevtype,
         language: Language,
     ) {
@@ -172,7 +170,7 @@ internal object LatexDocumentRenderer {
         return "D:${formattedTime.replace(":", "'")}'"
     }
 
-    private fun LatexAppendable.vedleggCommand(attachments: List<LetterMarkup.Attachment>) {
+    private fun LatexAppendable.vedleggCommand(attachments: List<AttachmentTitle>) {
         appendNewCmd("feltclosingvedlegg") {
             if (attachments.isNotEmpty()) {
                 appendCmd("begin", "attachmentList")

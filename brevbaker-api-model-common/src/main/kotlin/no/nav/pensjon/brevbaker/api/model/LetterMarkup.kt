@@ -18,8 +18,8 @@ interface LetterMarkup {
     val blocks: List<Block>
     val signatur: Signatur
 
-    interface Attachment {
-        val title: List<ParagraphContent.Text>
+    interface Attachment : AttachmentTitle {
+        override val title: List<ParagraphContent.Text>
         val blocks: List<Block>
         val includeSakspart: Boolean
     }

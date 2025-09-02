@@ -251,6 +251,10 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
+public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
+	public abstract fun getTitle ()Ljava/util/List;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Broek {
 	public fun <init> (II)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -365,7 +369,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getTitle ()Ljava/util/List;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment : no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
 	public abstract fun getBlocks ()Ljava/util/List;
 	public abstract fun getIncludeSakspart ()Z
 	public abstract fun getTitle ()Ljava/util/List;
@@ -648,6 +652,14 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public final fun getNavn ()Ljava/lang/String;
 	public final fun getNettside ()Ljava/lang/String;
 	public final fun getTelefonnummer-ACoMRe8 ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
+	public fun <init> (Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
