@@ -35,11 +35,9 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -73,12 +71,12 @@ object EndringAvAlderspensjonPgaGarantitillegg :
             val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
 
             title {
-                textExpr(
-                    Language.Bokmal to "Du har fått innvilget garantitillegg fra ".expr() + kravVirkDatoFom,
-                    Language.Nynorsk to "Du har fått innvilga garantitillegg frå ".expr() + kravVirkDatoFom,
-                    Language.English to
-                        "You have been granted a guarantee supplement for accumulated pension capital rights from ".expr() +
-                        kravVirkDatoFom,
+                text(
+                    bokmal { +"Du har fått innvilget garantitillegg fra " + kravVirkDatoFom },
+                    nynorsk { +"Du har fått innvilga garantitillegg frå " + kravVirkDatoFom },
+                    english {
+                        +"You have been granted a guarantee supplement for accumulated pension capital rights from " + kravVirkDatoFom
+                    },
                 )
             }
             outline {
@@ -86,44 +84,56 @@ object EndringAvAlderspensjonPgaGarantitillegg :
 
                 paragraph {
                     text(
-                        Language.Bokmal to
-                            "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den" +
-                            " pensjonen du hadde tjent opp før pensjonsreformen i 2010.",
-                        Language.Nynorsk to
-                            "Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer" +
-                            " til den pensjonen du hadde tent opp før pensjonsreforma i 2010.",
-                        Language.English to
-                            "The guarantee supplement for accumulated pension capital rights is to ensure" +
-                            " that you receive a retirement pension at age 67 that corresponds to the" +
-                            " pension you had earned before the pension reform in 2010.",
+                        bokmal {
+                            +"Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den" +
+                                " pensjonen du hadde tjent opp før pensjonsreformen i 2010."
+                        },
+                        nynorsk {
+                            +"Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer" +
+                                " til den pensjonen du hadde tent opp før pensjonsreforma i 2010."
+                        },
+                        english {
+                            +"The guarantee supplement for accumulated pension capital rights is to ensure" +
+                                " that you receive a retirement pension at age 67 that corresponds to the" +
+                                " pension you had earned before the pension reform in 2010."
+                        },
                     )
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to
-                            "Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales" +
-                            " fra måneden etter du fyller 67 år.",
-                        Language.Nynorsk to
-                            "Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast" +
-                            " betalast ut frå månaden etter du fyller 67 år.",
-                        Language.English to
-                            "The supplement will be paid in addition to your retirement pension and" +
-                            " can at the earliest be paid from the month after you turn 67 years of age.",
+                        bokmal {
+                            +"Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales" +
+                                " fra måneden etter du fyller 67 år."
+                        },
+                        nynorsk {
+                            +"Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast" +
+                                " betalast ut frå månaden etter du fyller 67 år."
+                        },
+                        english {
+                            +"The supplement will be paid in addition to your retirement pension and" +
+                                " can at the earliest be paid from the month after you turn 67 years of age."
+                        },
                     )
                 }
                 paragraph {
-                    textExpr(
-                        Language.Bokmal to
-                            "Garantitillegget utgjør ".expr() + garantitillegg.format() + " per måned før skatt fra ".expr() +
-                            kravVirkDatoFom +
-                            ".",
-                        Language.Nynorsk to
-                            "Garantitillegget utgjer ".expr() + garantitillegg.format() + " per månad før skatt frå ".expr() +
-                            kravVirkDatoFom +
-                            ".",
-                        Language.English to
-                            "Your monthly guarantee supplement for accumulated pension capital rights will be ".expr() +
-                            garantitillegg.format() + " before tax from ".expr() + kravVirkDatoFom + ".",
+                    text(
+                        bokmal {
+                            +"Garantitillegget utgjør ".expr() + garantitillegg.format() + " per måned før skatt fra ".expr() +
+                                kravVirkDatoFom +
+                                "."
+                        },
+                        nynorsk {
+                            +"Garantitillegget utgjer ".expr() + garantitillegg.format() + " per månad før skatt frå ".expr() +
+                                kravVirkDatoFom +
+                                "."
+                        },
+                        english {
+                            +"Your monthly guarantee supplement for accumulated pension capital rights will be ".expr() +
+                                garantitillegg.format() +
+                                " before tax from ".expr() +
+                                kravVirkDatoFom +
+                                "."
+                        },
                     )
                 }
 
@@ -141,30 +151,48 @@ object EndringAvAlderspensjonPgaGarantitillegg :
 
                 paragraph {
                     text(
-                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-20.",
-                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-20.",
-                        Language.English to
-                            "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act.",
+                        bokmal {
+                            +"Vedtaket er gjort etter folketrygdloven § 20-20."
+                        },
+                        nynorsk {
+                            +"Vedtaket er gjort etter folketrygdlova § 20-20."
+                        },
+                        english {
+                            +"This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act."
+                        },
                     )
                 }
 
                 // vedleggBeregnPensjonsOpptjeningOverskrift
                 title1 {
                     text(
-                        Language.Bokmal to "Pensjonsopptjeningen din",
-                        Language.Nynorsk to "Pensjonsoppteninga di",
-                        Language.English to "Your accumulated pension capital",
+                        bokmal {
+                            +"Pensjonsopptjeningen din"
+                        },
+                        nynorsk {
+                            +"Pensjonsoppteninga di"
+                        },
+                        english { +"Your accumulated pension capital" },
                     )
                 }
                 // vedleggBeregnPensjonsOpptjening
                 paragraph {
                     text(
-                        Language.Bokmal to
-                            "I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
-                        Language.Nynorsk to
-                            "I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
-                        Language.English to
-                            "Our online service 'Din pensjon' at ${Constants.DIN_PENSJON_URL} provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered.",
+                        bokmal {
+                            +"I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få" +
+                                " oversikt over pensjonsopptjeningen din for hvert enkelt år." +
+                                " Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg."
+                        },
+                        nynorsk {
+                            +"I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få" +
+                                " oversikt over pensjonsoppteninga di for kvart enkelt år." +
+                                " Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg."
+                        },
+                        english {
+                            +"Our online service 'Din pensjon' at ${Constants.DIN_PENSJON_URL} provides" +
+                                " details on your accumulated rights for each year. Here you will be" +
+                                " able to see your other types of pension rights we have registered."
+                        },
                     )
                 }
 
