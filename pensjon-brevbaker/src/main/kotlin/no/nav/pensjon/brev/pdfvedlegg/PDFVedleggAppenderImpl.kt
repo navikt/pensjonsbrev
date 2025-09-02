@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.apache.pdfbox.Loader
@@ -9,9 +10,9 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
 
-internal object PDFVedleggAppender {
+internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
-    internal fun leggPaaVedlegg(
+    override fun leggPaaVedlegg(
         pdfCompilationOutput: PDFCompilationOutput,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
