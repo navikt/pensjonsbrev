@@ -32,10 +32,10 @@ object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeye
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for ".expr() + aarInnvilgetOmsorgspoeng.format(),
-                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for ".expr() + aarInnvilgetOmsorgspoeng.format(),
-                English to "Earned pension savings for unpaid care work for ".expr() + aarInnvilgetOmsorgspoeng.format(),
+            text(
+                bokmal { + "Du får pensjonsopptjening for omsorgsarbeid for " + aarInnvilgetOmsorgspoeng.format() },
+                nynorsk { + "Du får pensjonsopptening for omsorgsarbeid for " + aarInnvilgetOmsorgspoeng.format() },
+                english { + "Earned pension savings for unpaid care work for " + aarInnvilgetOmsorgspoeng.format() },
             )
         }
 

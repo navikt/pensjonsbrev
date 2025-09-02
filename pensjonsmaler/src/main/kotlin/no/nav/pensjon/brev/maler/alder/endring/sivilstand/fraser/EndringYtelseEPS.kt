@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class EndringYtelseEPS(
     val sivilstand: Expression<MetaforceSivilstand>,
@@ -19,12 +19,12 @@ data class EndringYtelseEPS(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // endringYtelseEPS
         paragraph {
-            textExpr(
-                Language.Bokmal to
-                    "Pensjonen eller uføretrygden til ".expr() + sivilstandBestemtLitenBokstav + " din er endret.",
-                Language.Nynorsk to "Pensjonen eller uføretrygda til ".expr() + sivilstandBestemtLitenBokstav + " din er endra.",
-                Language.English to
-                    "Your ".expr() + sivilstandBestemtLitenBokstav + "'s pension or disability benefit has been changed.",
+            text(
+                bokmal { + 
+                    "Pensjonen eller uføretrygden til " + sivilstandBestemtLitenBokstav + " din er endret." },
+                nynorsk { + "Pensjonen eller uføretrygda til " + sivilstandBestemtLitenBokstav + " din er endra." },
+                english { + 
+                    "Your " + sivilstandBestemtLitenBokstav + "'s pension or disability benefit has been changed." },
             )
         }
     }

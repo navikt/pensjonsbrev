@@ -291,13 +291,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                             English to "The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
                         )
                     }
-                    paragraph {
-                        text(
-                            Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
-                            Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
-                            English to "The survivor's supplement will not be adjusted when the pension increases from 1 May every year."
-                        )
-                    }
                 }
 
                 showIf(regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025) and not(gjenlevenderettAnvendt) and not(gjenlevendetilleggKap19Innvilget) and not(gjenlevendetilleggInnvilget)) {
@@ -446,7 +439,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             includePhrase(Utbetalingsinformasjon)
             includePhrase(ReguleringAvAlderspensjon)
 
-            showIf(gjenlevendetilleggKap19Innvilget) { includePhrase(ReguleringAvGjenlevendetillegg) }
+            showIf(gjenlevendetilleggKap19Innvilget and gjenlevendetilleggKap19.greaterThan(0)) { includePhrase(ReguleringAvGjenlevendetillegg) }
 
             showIf(uttaksgrad.equalTo(100) and borINorge and not(fullTrygdetid) and not(innvilgetFor67)) {
                 includePhrase(SupplerendeStoenadAP)

@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -48,27 +47,27 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
     ) {
         title {
             text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {
 
             ifNotNull(data.mottattSvarDato){ mottattSvarDato ->
                 paragraph {
-                    textExpr(
-                        Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + "og din tilbakemelding som vi mottok ".expr() + mottattSvarDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr(),
+                    text(
+                        bokmal { +"Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av " + data.forhaandsvarselSendtDato.format() + "og din tilbakemelding som vi mottok " + mottattSvarDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() },
+                        nynorsk { +"" },
+                        english { +"" },
                     )
                 }
             }.orShow {
                 paragraph {
-                    textExpr(
-                        Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr(),
+                    text(
+                        bokmal { +"Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av " + data.forhaandsvarselSendtDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() },
+                        nynorsk { +"" },
+                        english { +"" },
                     )
                 }
             }

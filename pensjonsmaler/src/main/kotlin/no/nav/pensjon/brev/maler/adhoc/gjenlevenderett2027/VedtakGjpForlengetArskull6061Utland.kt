@@ -50,59 +50,59 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
     ) {
         title {
             text(
-                Bokmal to "Vedtak – Gjenlevendepensjonen din forlenges ",
-                English to "Decision – Your survivor’s pension is extended "
+                bokmal { + "Vedtak – Gjenlevendepensjonen din forlenges " },
+                english { + "Decision – Your survivor’s pension is extended " }
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. ",
-                    English to "We refer to previously provided information that the Norwegian Parliament (the Storting) has adopted amendments to the National Insurance Act’s provisions on survivor’s benefits. These amendments were implemented on 01 January 2024. "
+                    bokmal { + "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. " },
+                    english { + "We refer to previously provided information that the Norwegian Parliament (the Storting) has adopted amendments to the National Insurance Act’s provisions on survivor’s benefits. These amendments were implemented on 01 January 2024. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du fyller vilkårene for rett til gjenlevendepensjon frem til du fyller 67 år. ",
-                    English to "You fulfil the requirements for survivor’s pension until you turn 67 years old. "
+                    bokmal { + "Du fyller vilkårene for rett til gjenlevendepensjon frem til du fyller 67 år. " },
+                    english { + "You fulfil the requirements for survivor’s pension until you turn 67 years old. " }
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Begrunnelse for vedtaket ",
-                    English to "Grounds for the decision "
+                    bokmal { + "Begrunnelse for vedtaket " },
+                    english { + "Grounds for the decision " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A-3. ",
-                    English to "Your income information for the period 2019–2023 shows that you fulfil the requirements established by Section 17 A-3 of the National Insurance Act."
+                    bokmal { + "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A-3. " },
+                    english { + "Your income information for the period 2019–2023 shows that you fulfil the requirements established by Section 17 A-3 of the National Insurance Act." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du beholder derfor retten til gjenlevendepensjon frem til du fyller 67 år, under forutsetning av at de øvrige vilkårene er oppfylt. ",
-                    English to "You will therefore retain the right to survivor’s pension until you turn 67 years old, provided the other conditions have been met. "
+                    bokmal { + "Du beholder derfor retten til gjenlevendepensjon frem til du fyller 67 år, under forutsetning av at de øvrige vilkårene er oppfylt. " },
+                    english { + "You will therefore retain the right to survivor’s pension until you turn 67 years old, provided the other conditions have been met. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. ",
-                    English to "This decision has been made in accordance with Section 17 A-3 of the National Insurance Act. "
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 17 A-3. " },
+                    english { + "This decision has been made in accordance with Section 17 A-3 of the National Insurance Act. " }
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Hva er inntektsgrensene? ",
-                    English to "What are the income caps? "
+                    bokmal { + "Hva er inntektsgrensene? " },
+                    english { + "What are the income caps? " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Inntektene må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: ",
-                    English to "Your income must not have exceeded three times the average National Insurance basic amount (G) in 2022 or 2023: "
+                    bokmal { + "Inntektene må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: " },
+                    english { + "Your income must not have exceeded three times the average National Insurance basic amount (G) in 2022 or 2023: " }
                 )
             }
 
@@ -110,11 +110,11 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
-                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. ",
+                    bokmal { + "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
+                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. " },
 
-                    English to "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average during this five-year period. " +
-                            "This means your income could have exceeded two times the National Insurance basic amount in individual years, provided your average for the five-year period is lower. "
+                    english { + "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average during this five-year period. " +
+                            "This means your income could have exceeded two times the National Insurance basic amount in individual years, provided your average for the five-year period is lower. " }
                 )
             }
 
@@ -122,20 +122,20 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             title1 {
                 text(
-                    Bokmal to "Hvilke opplysninger har vi om deg? ",
-                    English to "What information do we have about you? "
+                    bokmal { + "Hvilke opplysninger har vi om deg? " },
+                    english { + "What information do we have about you? " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Det er dine reelle inntekter i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjon.  ",
-                    English to "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. "
+                    bokmal { + "Det er dine reelle inntekter i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjon.  " },
+                    english { + "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter: ",
-                    English to "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income: "
+                    bokmal { + "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter: " },
+                    english { + "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income: " }
                 )
             }
 
@@ -145,14 +145,14 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene i årene 2019–2023. ",
-                    English to "According to our information, your income has been lower than the income cap in the period 2019–2023. "
+                    bokmal { + "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene i årene 2019–2023. " },
+                    english { + "According to our information, your income has been lower than the income cap in the period 2019–2023. " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med måneden du fyller 67 år. ",
-                    English to "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until you turn 67 years old. "
+                    bokmal { + "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med måneden du fyller 67 år. " },
+                    english { + "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until you turn 67 years old. " }
                 )
             }
 
@@ -161,14 +161,14 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             title1 {
                 text(
-                    Bokmal to "Meld fra om endringer ",
-                    English to "Report changes "
+                    bokmal { + "Meld fra om endringer " },
+                    english { + "Report changes " }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. ",
-                    English to "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur.  "
+                    bokmal { + "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. " },
+                    english { + "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur.  " }
                 )
             }
 

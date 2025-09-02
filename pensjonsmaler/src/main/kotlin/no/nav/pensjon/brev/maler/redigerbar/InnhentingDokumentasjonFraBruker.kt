@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -41,27 +40,27 @@ object InnhentingDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
     ) {
         title {
             text(
-                Bokmal to "Du må sende oss flere opplysninger",
-                English to "Collection of documentation",
+                bokmal { + "Du må sende oss flere opplysninger" },
+                english { + "Collection of documentation" },
             )
         }
         outline {
 
             paragraph {
-                textExpr(
-                    Bokmal to "Vi har mottatt en ".expr() + fritekst("blankett/brev/henvendelse") + " fra deg " + fritekst("dato") + ". Du har opplyst at " +
-                            fritekst("opplysning") + ".",
-                    English to "We have received a ".expr() + fritekst("blankett/brev/henvendelse") + " from you dated " + fritekst("dato") + ". You have told us that " +
-                            fritekst("opplysning") + ".",
+                text(
+                    bokmal { + "Vi har mottatt en " + fritekst("blankett/brev/henvendelse") + " fra deg " + fritekst("dato") + ". Du har opplyst at " +
+                            fritekst("opplysning") + "." },
+                    english { + "We have received a " + fritekst("blankett/brev/henvendelse") + " from you dated " + fritekst("dato") + ". You have told us that " +
+                            fritekst("opplysning") + "." },
                 )
             }
 
             paragraph {
-                textExpr(
-                    Bokmal to "For at opplysningene skal bli tatt i betraktning, må opplysningene dokumenteres. Vi ber deg derfor om å sende oss dokumentasjon innen ".expr() +
-                            fritekst("dato") + " til følgende adresse:",
-                    English to "In order for these details to be taken into consideration, we need documentary support for this information. We would therefore ask you to send us that documentary evidence by ".expr() +
-                            fritekst("dato") + " at the following address:",
+                text(
+                    bokmal { + "For at opplysningene skal bli tatt i betraktning, må opplysningene dokumenteres. Vi ber deg derfor om å sende oss dokumentasjon innen " +
+                            fritekst("dato") + " til følgende adresse:" },
+                    english { + "In order for these details to be taken into consideration, we need documentary support for this information. We would therefore ask you to send us that documentary evidence by " +
+                            fritekst("dato") + " at the following address:" },
                 )
             }
 
@@ -69,15 +68,15 @@ object InnhentingDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
 
             paragraph {
                 text(
-                    Bokmal to "Som dokumentasjon for inntekten, både person- og kapitalinntekten, kan du for eksempel sende kopi av ligningen, kopier av lønnsslipper fra de tre siste månedene, bekreftelse fra arbeidsgiveren, kopier av lønns- og trekkoppgaver, bekreftelse fra regnskapsfører eller årsoppgaver fra banken.",
-                    English to "Valid documentation of income can be copy of tax assessment, copies of payslips, or the last three months copies of pay and tax deduction statements, confirmation from your employer, confirmation by your accountant or annual statements from your bank. Both personal and investment income should be documented.",
+                    bokmal { + "Som dokumentasjon for inntekten, både person- og kapitalinntekten, kan du for eksempel sende kopi av ligningen, kopier av lønnsslipper fra de tre siste månedene, bekreftelse fra arbeidsgiveren, kopier av lønns- og trekkoppgaver, bekreftelse fra regnskapsfører eller årsoppgaver fra banken." },
+                    english { + "Valid documentation of income can be copy of tax assessment, copies of payslips, or the last three months copies of pay and tax deduction statements, confirmation from your employer, confirmation by your accountant or annual statements from your bank. Both personal and investment income should be documented." },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Dersom vi ikke har mottatt ny dokumentasjon innen den angitte fristen i dette brevet, kan vi ikke legge disse opplysningene til grunn for videre saksbehandling.",
-                    English to "Undocumented statements from yourself will not be taken into account. Please provide the required documentation by the deadline given in this letter.",
+                    bokmal { + "Dersom vi ikke har mottatt ny dokumentasjon innen den angitte fristen i dette brevet, kan vi ikke legge disse opplysningene til grunn for videre saksbehandling." },
+                    english { + "Undocumented statements from yourself will not be taken into account. Please provide the required documentation by the deadline given in this letter." },
                 )
             }
 

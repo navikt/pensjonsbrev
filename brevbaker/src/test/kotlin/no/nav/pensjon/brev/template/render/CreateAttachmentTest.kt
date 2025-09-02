@@ -22,18 +22,18 @@ class CreateAttachmentTest {
     val vedlegg = createAttachment<LangNynorsk, LittInnhold>(
         title = {
             text(
-                Nynorsk to "Test vedlegg"
+                nynorsk { +"Test vedlegg" }
             )
             ifNotNull(test1) { eval(it) }
             eval(test2.format())
             showIf(test2.greaterThan(5)) {
-                text(Nynorsk to "parameteret er større enn 5")
+                text(nynorsk { +"parameteret er større enn 5" })
             }
         },
         includeSakspart = true
     ) {
         paragraph {
-            text(Nynorsk to "test")
+            text(nynorsk { +"test" })
         }
     }
     @Test
@@ -46,7 +46,7 @@ class CreateAttachmentTest {
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title { text(Nynorsk to "tittel") }
+            title { text(nynorsk { +"tittel" }) }
             outline {}
             includeAttachment(testVedlegg, argument)
         }

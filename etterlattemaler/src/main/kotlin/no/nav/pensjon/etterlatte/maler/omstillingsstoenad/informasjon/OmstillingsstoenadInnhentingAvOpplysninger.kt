@@ -38,18 +38,18 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
         ) {
             title {
                 text(
-                    Bokmal to "Du må sende oss flere opplysninger",
-                    Nynorsk to "Du må sende oss fleire opplysningar",
-                    English to "You must submit additional information",
+                    bokmal { +"Du må sende oss flere opplysninger" },
+                    nynorsk { +"Du må sende oss fleire opplysningar" },
+                    english { +"You must submit additional information" },
                 )
             }
 
             outline {
                 paragraph {
                     text(
-                        Bokmal to "UTFALL",
-                        Nynorsk to "UTFALL",
-                        English to "UTFALL",
+                        bokmal { +"UTFALL" },
+                        nynorsk { +"UTFALL" },
+                        english { +"UTFALL" },
                     )
                 }
                 includePhrase(Felles.HvordanSendeOpplysninger(borIUtlandet))

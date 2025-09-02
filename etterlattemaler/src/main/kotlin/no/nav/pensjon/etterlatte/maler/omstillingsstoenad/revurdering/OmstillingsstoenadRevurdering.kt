@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -64,44 +63,44 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
         ) {
             title {
                 text(
-                    Bokmal to "Vi har ",
-                    Nynorsk to "Vi har ",
-                    English to "We have ",
+                    bokmal { +"Vi har " },
+                    nynorsk { +"Vi har " },
+                    english { +"We have " },
                 )
                 showIf(erOmgjoering) {
                     ifNotNull(datoVedtakOmgjoering) {
-                        textExpr(
-                            Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                            Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                            English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                        text(
+                            bokmal { +"omgjort vedtaket om omstillingsstønad av " + it.format() },
+                            nynorsk { +"gjort om vedtaket om omstillingsstønad av " + it.format() },
+                            english { +"reversed our decision regarding the adjustment allowance on " + it.format() },
                         )
                     }
                 }.orShow {
                     showIf(beregning.sisteBeregningsperiode.sanksjon) {
                         text(
-                            Bokmal to "stanset",
-                            Nynorsk to "stansa",
-                            English to "stopped",
+                            bokmal { +"stanset" },
+                            nynorsk { +"stansa" },
+                            english { +"stopped" },
                         )
                     } orShow {
                         showIf(erEndret) {
                             text(
-                                Bokmal to "endret",
-                                Nynorsk to "endra",
-                                English to "changed",
+                                bokmal { +"endret" },
+                                nynorsk { +"endra" },
+                                english { +"changed" },
                             )
                         } orShow {
                             text(
-                                Bokmal to "vurdert",
-                                Nynorsk to "vurdert",
-                                English to "evaluated",
+                                bokmal { +"vurdert" },
+                                nynorsk { +"vurdert" },
+                                english { +"evaluated" },
                             )
                         }
                     }
                     text(
-                        Bokmal to " omstillingsstønaden din",
-                        Nynorsk to " omstillingsstønaden din",
-                        English to " your adjustment allowance",
+                        bokmal { +" omstillingsstønaden din" },
+                        nynorsk { +" omstillingsstønaden din" },
+                        english { +" your adjustment allowance" },
                     )
                 }
             }

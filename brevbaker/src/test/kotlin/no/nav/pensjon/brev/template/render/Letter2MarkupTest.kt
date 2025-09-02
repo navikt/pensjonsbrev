@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -30,9 +29,9 @@ class Letter2MarkupTest {
     @Test
     fun `outline root elements are rendered in same order`() {
         val result = renderTemplate(EmptyBrevdata) {
-            title1 { text(Bokmal to "hei tittel") }
-            paragraph { text(Bokmal to "hei paragraph") }
-            paragraph { text(Bokmal to "hei paragraph2") }
+            title1 { text(bokmal { +"hei tittel" }) }
+            paragraph { text(bokmal { +"hei paragraph" }) }
+            paragraph { text(bokmal { +"hei paragraph2" }) }
         }
 
         assertThat(
@@ -63,8 +62,8 @@ class Letter2MarkupTest {
     fun `paragraph content is rendered in order`() {
         val result = renderTemplate(EmptyBrevdata) {
             paragraph {
-                text(Bokmal to "first")
-                text(Bokmal to "second")
+                text(bokmal { +"first" })
+                text(bokmal { +"second" })
             }
         }
 
@@ -83,8 +82,8 @@ class Letter2MarkupTest {
     fun `title1 content is rendered in order`() {
         val result = renderTemplate(EmptyBrevdata) {
             title1 {
-                text(Bokmal to "first")
-                text(Bokmal to "second")
+                text(bokmal { +"first" })
+                text(bokmal { +"second" })
             }
         }
 
@@ -103,7 +102,7 @@ class Letter2MarkupTest {
     fun `title1 with expression renders as declared`() {
         val result = renderTemplate(EmptyBrevdata) {
             title1 {
-                textExpr(Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
+                text(bokmal { +"noe tekst " + Year(2024).expr().format() })
             }
         }
 
@@ -127,7 +126,7 @@ class Letter2MarkupTest {
             letterMetadata = testLetterMetadata,
         ) {
             title {
-                textExpr(Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
+                text(bokmal { +"noe tekst " + Year(2024).expr().format() })
             }
             outline {
                 paragraph { }
@@ -145,9 +144,9 @@ class Letter2MarkupTest {
     fun `template newLine renders as declared`() {
         val result = renderTemplate(EmptyBrevdata) {
             paragraph {
-                text(Bokmal to "hei")
+                text(bokmal { +"hei" })
                 newline()
-                text(Bokmal to "ha det bra")
+                text(bokmal { +"ha det bra" })
             }
         }
 

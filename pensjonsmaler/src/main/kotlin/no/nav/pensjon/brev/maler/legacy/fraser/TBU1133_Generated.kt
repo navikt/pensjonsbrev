@@ -14,12 +14,12 @@ object TBU1133_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				Bokmal to "Du kan lese mer om dette i vedlegget ",
-				Nynorsk to "Du kan lese meir om dette i vedlegget ",
-				English to "You can read more about this in attachment ",
+				bokmal { + "Du kan lese mer om dette i vedlegget " },
+				nynorsk { + "Du kan lese meir om dette i vedlegget " },
+				english { + "You can read more about this in attachment " },
 			)
 			namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-			text(Bokmal to ".", Nynorsk to ".", English to ".")
+			text(bokmal { + "." }, nynorsk { + "." }, english { + "." })
 		}
     }
 }

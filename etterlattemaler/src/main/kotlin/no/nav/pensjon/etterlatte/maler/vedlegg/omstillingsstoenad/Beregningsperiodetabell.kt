@@ -26,30 +26,30 @@ data class Beregningsperiodetabell(
                 header = {
                     column(1) {
                         text(
-                            Language.Bokmal to "Periode",
-                            Language.Nynorsk to "Periode",
-                            Language.English to "Period",
+                            bokmal { +"Periode" },
+                            nynorsk { +"Periode" },
+                            english { +"Period" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Stønad før reduksjon for inntekt",
-                            Language.Nynorsk to "Stønad før reduksjon for inntekt",
-                            Language.English to "Allowance paid before income reduction",
+                            bokmal { +"Stønad før reduksjon for inntekt" },
+                            nynorsk { +"Stønad før reduksjon for inntekt" },
+                            english { +"Allowance paid before income reduction" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Inntekten din",
-                            Language.Nynorsk to "Inntekta di",
-                            Language.English to "Your income",
+                            bokmal { +"Inntekten din" },
+                            nynorsk { +"Inntekta di" },
+                            english { +"Your income" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Utbetaling per måned",
-                            Language.Nynorsk to "Utbetaling per månad",
-                            Language.English to "Payout per month",
+                            bokmal { +"Utbetaling per måned" },
+                            nynorsk { +"Utbetaling per månad" },
+                            english { +"Payout per month" },
                         )
                     }
                 }
@@ -63,16 +63,16 @@ data class Beregningsperiodetabell(
                             includePhrase(KronerText(periode.utbetaltBeloep))
                             showIf(periode.sanksjon) {
                                 text(
-                                    Language.Bokmal to " - sanksjon",
-                                    Language.Nynorsk to " - sanksjon",
-                                    Language.English to " - sanction",
+                                    bokmal { +" - sanksjon" },
+                                    nynorsk { +" - sanksjon" },
+                                    english { +" - sanction" },
                                 )
                             }
                             showIf(periode.institusjon) {
                                 text(
-                                    Language.Bokmal to " - institusjon",
-                                    Language.Nynorsk to " - institusjon",
-                                    Language.English to " - institution",
+                                    bokmal { +" - institusjon" },
+                                    nynorsk { +" - institusjon" },
+                                    english { +" - institution" },
                                 )
                             }
                         }

@@ -30,18 +30,18 @@ data class TBUxx2V(
 
             title1 {
                 text (
-                    Bokmal to "Slik beregner vi uføretrygden din",
-                    Nynorsk to "Slik bereknar vi uføretrygda di",
-                    English to "This is how your disability benefit is calculated",
+                    bokmal { + "Slik beregner vi uføretrygden din" },
+                    nynorsk { + "Slik bereknar vi uføretrygda di" },
+                    english { + "This is how your disability benefit is calculated" },
                 )
             }
             //[TBUxx2V]
 
             paragraph {
                 text (
-                    Bokmal to "Uførepensjonen din har tidligere blitt regnet om til uføretrygd og er justert ut fra trygdetid og uføregrad.",
-                    Nynorsk to "Uførepensjonen din har tidligare blitt rekna om til uføretrygd og er justert ut frå trygdetid og uføregrad.",
-                    English to "We have at an earlier time converted your disability pension to a disability benefit. It was then adjusted on the basis of your national insurance coverage and your degree of disability.",
+                    bokmal { + "Uførepensjonen din har tidligere blitt regnet om til uføretrygd og er justert ut fra trygdetid og uføregrad." },
+                    nynorsk { + "Uførepensjonen din har tidligare blitt rekna om til uføretrygd og er justert ut frå trygdetid og uføregrad." },
+                    english { + "We have at an earlier time converted your disability pension to a disability benefit. It was then adjusted on the basis of your national insurance coverage and your degree of disability." },
                 )
             }
 
@@ -51,17 +51,17 @@ data class TBUxx2V(
 
                 paragraph {
                     text (
-                        Bokmal to "Når uføretrygden din endres, kan dette medføre at beregningsgrunnlaget har blitt endret.",
-                        Nynorsk to "Når uføretrygda di blir endra, kan dette føre til at berekningsgrunnlaget har blitt endra.",
-                        English to "Your basis for calculation may be changed when your disability benefit is changed."
+                        bokmal { + "Når uføretrygden din endres, kan dette medføre at beregningsgrunnlaget har blitt endret." },
+                        nynorsk { + "Når uføretrygda di blir endra, kan dette føre til at berekningsgrunnlaget har blitt endra." },
+                        english { + "Your basis for calculation may be changed when your disability benefit is changed." }
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
                     showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())){
                         text (
-                            Bokmal to " Dette gjelder også for gjenlevendetillegget du mottar i uføretrygden.",
-                            Nynorsk to " Dette gjeld også for attlevandetillegget du får i uføretrygda di.",
-                            English to " This also applies to the survivor's supplement you receive in your disability benefit.",
+                            bokmal { + " Dette gjelder også for gjenlevendetillegget du mottar i uføretrygden." },
+                            nynorsk { + " Dette gjeld også for attlevandetillegget du får i uføretrygda di." },
+                            english { + " This also applies to the survivor's supplement you receive in your disability benefit." },
 
                         )
                     }
@@ -74,17 +74,17 @@ data class TBUxx2V(
 
                 paragraph {
                     text (
-                        Bokmal to "Når uføregraden din øker, sammenligner vi det tidligere beregningsgrunnlaget på uførepensjonen med beregningsgrunnlaget på uføretrygd. Du får alternativet som gir deg høyest uføretrygd.",
-                        Nynorsk to "Når uføregraden din aukar, samanliknar vi det tidligare berekningsgrunnlaget på uførepensjonen med berekningsgrunnlaget på uføretrygd. Du får det alternativet som gjer deg høgast uføretrygd.",
-                        English to "On increasing your disability degree, your former basis of calculation of disability pension will be compared with your disability benefit calculation. You will be granted the alternative that gives you the best calculation.",
+                        bokmal { + "Når uføregraden din øker, sammenligner vi det tidligere beregningsgrunnlaget på uførepensjonen med beregningsgrunnlaget på uføretrygd. Du får alternativet som gir deg høyest uføretrygd." },
+                        nynorsk { + "Når uføregraden din aukar, samanliknar vi det tidligare berekningsgrunnlaget på uførepensjonen med berekningsgrunnlaget på uføretrygd. Du får det alternativet som gjer deg høgast uføretrygd." },
+                        english { + "On increasing your disability degree, your former basis of calculation of disability pension will be compared with your disability benefit calculation. You will be granted the alternative that gives you the best calculation." },
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())){
                         text (
-                            Bokmal to " Gjenlevendetillegget ditt vil øke med samme grad som uføregraden din.",
-                            Nynorsk to " Attlevandetillegget ditt vil auke med same grad som uføregraden din.",
-                            English to " Your survivor's supplement will increase with the same degree as your degree of disability.",
+                            bokmal { + " Gjenlevendetillegget ditt vil øke med samme grad som uføregraden din." },
+                            nynorsk { + " Attlevandetillegget ditt vil auke med same grad som uføregraden din." },
+                            english { + " Your survivor's supplement will increase with the same degree as your degree of disability." },
                         )
                     }
                 }

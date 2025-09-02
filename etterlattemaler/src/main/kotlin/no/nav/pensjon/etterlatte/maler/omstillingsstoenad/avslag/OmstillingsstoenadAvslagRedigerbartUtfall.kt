@@ -46,9 +46,9 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
         ) {
             title {
                 text(
-                    Bokmal to "",
-                    Nynorsk to "",
-                    English to "",
+                    bokmal { +"" },
+                    nynorsk { +"" },
+                    english { +"" },
                 )
             }
 

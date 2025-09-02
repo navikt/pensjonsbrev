@@ -32,9 +32,9 @@ data class TBU1187(
 
                 paragraph {
                     text (
-                        Bokmal to "Den faktiske norske trygdetiden til avdøde er fastsatt ut fra følgende perioder:",
-                        Nynorsk to "Den faktiske norske trygdetida til den avdøde er fastsett ut frå følgjande periodar:",
-                        English to "The actual Norwegian period of national insurance coverage for the decedent has been established on the basis of the following periods:",
+                        bokmal { + "Den faktiske norske trygdetiden til avdøde er fastsatt ut fra følgende perioder:" },
+                        nynorsk { + "Den faktiske norske trygdetida til den avdøde er fastsett ut frå følgjande periodar:" },
+                        english { + "The actual Norwegian period of national insurance coverage for the decedent has been established on the basis of the following periods:" },
                     )
                 }
                 includePhrase(TrygdetidListeNorTabell(pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag()))
