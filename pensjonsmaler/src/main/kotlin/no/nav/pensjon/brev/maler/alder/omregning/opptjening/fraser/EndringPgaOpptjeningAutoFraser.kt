@@ -418,24 +418,6 @@ data class AvsnittBegrunnelseForVedtaket(
                     }
                 }
             }
-
-            text(
-                Language.Bokmal to "Du kan finne mer informasjon i vedlegget ",
-                Language.Nynorsk to "Du kan finne meir informasjon i vedlegget ",
-                Language.English to "You will find more information in the appendix "
-            )
-            showIf(
-                regelverkType.isOneOf(AlderspensjonRegelverkType.AP2011, AlderspensjonRegelverkType.AP2016)) {
-                namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-            }
-            showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
-                namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
-            }
-            text(
-                Language.Bokmal to ".",
-                Language.Nynorsk to ".",
-                Language.English to ".",
-            )
         }
         showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING) and antallAarEndretOpptjening.greaterThan(0)) {
             paragraph {
