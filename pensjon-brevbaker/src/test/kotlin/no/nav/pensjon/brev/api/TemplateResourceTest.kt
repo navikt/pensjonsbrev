@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,8 +35,15 @@ class TemplateResourceTest {
     private val fakePDFByggerAsync = object : PDFByggerAsync {
         override fun renderAsync(asyncPdfRequest: PDFRequestAsync) {}
     }
+    private val fakePDFAppender = object : PDFVedleggAppender {
+        override fun leggPaaVedlegg(
+            pdfCompilationOutput: PDFCompilationOutput,
+            attachments: List<PDFVedlegg>,
+            spraak: LanguageCode,
+        ) = pdfCompilationOutput
+    }
 
-    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger, fakePDFByggerAsync)
+    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger, fakePDFAppender, fakePDFByggerAsync)
 
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,

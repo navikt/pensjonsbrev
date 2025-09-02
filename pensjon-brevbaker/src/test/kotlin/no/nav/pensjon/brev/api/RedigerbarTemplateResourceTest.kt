@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
@@ -17,6 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -26,8 +28,15 @@ class RedigerbarTemplateResourceTest {
     private val fakePDFBygger = object : PDFByggerService {
         override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
     }
+    private val fakePDFAppender = object : PDFVedleggAppender {
+        override fun leggPaaVedlegg(
+            pdfCompilationOutput: PDFCompilationOutput,
+            attachments: List<PDFVedlegg>,
+            spraak: LanguageCode,
+        ) = pdfCompilationOutput
+    }
 
-    private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger)
+    private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger, fakePDFAppender)
 
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
