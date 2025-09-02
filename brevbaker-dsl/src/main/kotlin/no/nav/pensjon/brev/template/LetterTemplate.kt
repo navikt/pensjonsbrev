@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata

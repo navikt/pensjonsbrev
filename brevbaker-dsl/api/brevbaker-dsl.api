@@ -807,16 +807,6 @@ public abstract class no/nav/pensjon/brev/template/OutlinePhrase {
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 }
 
-public final class no/nav/pensjon/brev/template/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/template/Expression;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
-	public fun hashCode ()I
-	public fun stableHashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract class no/nav/pensjon/brev/template/ParagraphPhrase {
 	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
@@ -1614,5 +1604,15 @@ public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {
 
 public final class no/nav/pensjon/brev/template/render/UtilsKt {
 	public static final fun fulltNavn (Lno/nav/pensjon/brevbaker/api/model/Bruker;)Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/template/Expression;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
