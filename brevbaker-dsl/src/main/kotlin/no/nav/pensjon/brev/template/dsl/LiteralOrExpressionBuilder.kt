@@ -7,29 +7,15 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 
 fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
-    Language.Bokmal to LiteralOrExpressionBuilder(Quotation.BokmalNynorsk).block()
+    Language.Bokmal to LiteralOrExpressionBuilder(QuotationMarks.BokmalNynorsk).block()
 
 fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
-    Language.Nynorsk to LiteralOrExpressionBuilder(Quotation.BokmalNynorsk).block()
+    Language.Nynorsk to LiteralOrExpressionBuilder(QuotationMarks.BokmalNynorsk).block()
 
 fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
-    Language.English to LiteralOrExpressionBuilder(Quotation.English).block()
+    Language.English to LiteralOrExpressionBuilder(QuotationMarks.English).block()
 
-interface Quotation {
-    val start: String
-    val end: String
-
-    object BokmalNynorsk : Quotation {
-        override val start = "«"
-        override val end = "»"
-    }
-    object English : Quotation {
-        override val start = "'"
-        override val end = "'"
-    }
-}
-
-class LiteralOrExpressionBuilder(private val quotation: Quotation) {
+class LiteralOrExpressionBuilder(private val quotation: QuotationMarks) {
     // brukes for å bruke unary plus som plus. Kan skje om plus er på ny linje.
     private var previous: LiteralOrExpression? = null
     sealed class LiteralOrExpression() {
