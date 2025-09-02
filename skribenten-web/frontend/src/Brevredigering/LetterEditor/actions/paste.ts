@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import type { Draft } from "immer";
 import { produce } from "immer";
 
@@ -11,6 +12,8 @@ import {
   isBlockContentIndex,
   isItemContentIndex,
   isNew,
+  isTable,
+  newColSpec,
   newItem,
   newItemList,
   newLiteral,
@@ -28,11 +31,21 @@ import type {
   ItemContentIndex,
   LetterEditorState,
   LiteralIndex,
+  TableCellIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
-import type { AnyBlock, Content, LiteralValue, TextContent } from "~/types/brevbakerTypes";
-import { FontType } from "~/types/brevbakerTypes";
+import type {
+  AnyBlock,
+  Cell,
+  ColumnSpec,
+  Content,
+  LiteralValue,
+  Row,
+  Table as BrevbakerTable,
+  TextContent,
+} from "~/types/brevbakerTypes";
+import { FontType, TABLE } from "~/types/brevbakerTypes";
 
-import { isEmptyBlock, isItemList, isLiteral, isTextContent } from "../model/utils";
+import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
@@ -123,33 +136,69 @@ type InsertTextContext = {
   setContentIndex(focus: Draft<Focus>, value: number): void;
 };
 
-function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
-  const literalIndex = draft.focus;
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const blockContent = block?.content[literalIndex.contentIndex];
+// Ensures there's a Literal at `index` inside a TextContent[]; creates one if needed.
+function ensureLiteralAtIndex(arr: Draft<TextContent[]>, index: number): Draft<LiteralValue> {
+  while (arr.length <= index) {
+    arr.push(newLiteral({ editedText: "" }));
+  }
+  const elementAtIndex = arr.at(index);
+  if (isLiteral(elementAtIndex)) return elementAtIndex;
+  const lit = newLiteral({ editedText: "" });
+  arr.splice(index, 0, lit);
+  return lit;
+}
 
-  if (isItemList(blockContent) && isItemContentIndex(literalIndex)) {
-    const item = blockContent.items[literalIndex.itemIndex];
+function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
+  const focus = draft.focus;
+  const currentBlock = draft.redigertBrev.blocks[focus.blockIndex];
+
+  const blockContent = currentBlock.content[focus.contentIndex];
+
+  if (isTable(blockContent) && isTableCellIndex(focus)) {
+    const row = blockContent.rows[focus.rowIndex];
+    const cell = row?.cells[focus.cellIndex];
+    if (!cell) return undefined;
+
+    // Make sure we have a literal to edit at the target slot
+    const literal = ensureLiteralAtIndex(cell.text, focus.cellContentIndex ?? 0);
+
     return {
-      content: item?.content[literalIndex.itemContentIndex],
-      parent: item,
-      getContentIndex: (focus) => (focus as ItemContentIndex).itemContentIndex,
-      setContentIndex: (focus: Draft<Focus>, value: number) => {
-        (focus as Draft<ItemContentIndex>).itemContentIndex = value;
+      content: literal,
+      parent: {
+        content: cell.text,
+        deletedContent: [],
+      },
+      getContentIndex: () => focus.cellContentIndex ?? 0,
+      setContentIndex: (f, value) => {
+        (f as Draft<TableCellIndex>).cellContentIndex = value;
       },
     };
-  } else if (isTextContent(blockContent) && isBlockContentIndex(literalIndex)) {
+  }
+
+  if (isItemList(blockContent) && isItemContentIndex(focus)) {
+    const currentItem = blockContent.items[focus.itemIndex];
+    return {
+      content: currentItem.content[focus.itemContentIndex],
+      parent: currentItem,
+      getContentIndex: (currentFocus) => (currentFocus as ItemContentIndex).itemContentIndex,
+      setContentIndex: (focusToUpdate: Draft<Focus>, newItemContentIndex: number) => {
+        (focusToUpdate as Draft<ItemContentIndex>).itemContentIndex = newItemContentIndex;
+      },
+    };
+  }
+
+  if (isTextContent(blockContent) && isBlockContentIndex(focus)) {
     return {
       content: blockContent,
-      parent: block,
-      getContentIndex: (focus) => focus.contentIndex,
-      setContentIndex: (focus: Draft<Focus>, value: number) => {
-        focus.contentIndex = value;
+      parent: currentBlock,
+      getContentIndex: (currentFocus) => currentFocus.contentIndex,
+      setContentIndex: (focusToUpdate: Draft<Focus>, newContentIndex: number) => {
+        focusToUpdate.contentIndex = newContentIndex;
       },
     };
-  } else {
-    return undefined;
   }
+
+  return undefined;
 }
 
 // We want to modify existing literal only if fontTypes matches, and it is either:
@@ -187,6 +236,105 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
   draft.isDirty = true;
 }
 
+// Ensure that every table row has exactly the same number of cells (colCount)
+function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): TableCell[] {
+  return Array.from({ length: Math.max(0, colCount) }, (_, i) => ({
+    content: cells[i]?.content ?? [],
+  }));
+}
+
+function createCell(cell: TableCell): Cell {
+  return {
+    id: null,
+    parentId: null,
+    text:
+      cell.content.length > 0
+        ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
+        : [newLiteral({ editedText: "" })],
+  };
+}
+
+function createRow(source: TableRow, colCount: number): Row {
+  return {
+    id: null,
+    parentId: null,
+    cells: normalizeCells(source.cells, colCount).map(createCell),
+  };
+}
+
+function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
+  return {
+    type: TABLE,
+    id: null,
+    parentId: null,
+    header: { id: null, parentId: null, colSpec },
+    deletedRows: [],
+    rows,
+  };
+}
+
+// Insert a parsed table element at current focus.
+function insertTable(draft: Draft<LetterEditorState>, el: Table) {
+  if (isTableCellIndex(draft.focus)) {
+    return;
+  }
+  if ((el.headerCells?.length ?? 0) === 0 && el.rows.length === 0) {
+    return;
+  }
+
+  const headerCells = el.headerCells ?? [];
+  // Determine the column count if there’s no header.
+  const bodyColMax = Math.max(1, ...el.rows.map((row) => row.cells.length));
+  //if there’s a header, use its length; otherwise, use the widest body row.
+  const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
+  // If there are no header cells, we promote the first row to header.
+  // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
+  const hasHeader = headerCells.length > 0;
+  const shouldPromoteFirstRowToHeader = !hasHeader && el.rows.length > 0;
+
+  const getHeaderSpec = (cells: TableCell[]) =>
+    cells.map((cell) => {
+      const mergedTexts = mergeNeighbouringText(cell.content);
+      return {
+        text: cleansePastedText(mergedTexts.map((txt) => txt.text).join(" ")),
+        font: mergedTexts[0]?.font ?? FontType.PLAIN,
+      };
+    });
+
+  const headerSpecSource = hasHeader
+    ? getHeaderSpec(headerCells)
+    : getHeaderSpec(normalizeCells(el.rows[0]?.cells ?? [], colCount));
+
+  const colSpec = newColSpec(colCount, headerSpecSource);
+  const bodyRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
+
+  const rows: Row[] = bodyRows.map((row) => createRow(row, colCount));
+
+  const table = createTable(colSpec, rows);
+
+  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
+    // Split current literal at cursor so trailing text stays after table.
+    splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+
+    const tableIndex = draft.focus.contentIndex + 1;
+    addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
+
+    const focusRowIndex = rows.length > 0 ? 0 : -1;
+
+    draft.focus = {
+      blockIndex: draft.focus.blockIndex,
+      contentIndex: tableIndex,
+      rowIndex: focusRowIndex,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
+
+    draft.isDirty = true;
+  }
+}
+
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
   elements.forEach((el) => {
     switch (el.type) {
@@ -208,6 +356,10 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
       }
       case "ITEM": {
         insertItem(draft, el);
+        break;
+      }
+      case "TABLE": {
+        insertTable(draft, el);
         break;
       }
     }
@@ -349,7 +501,6 @@ interface ParagraphElement {
   type: "P";
   content: Text[];
 }
-
 interface Title1Element {
   type: "H1";
   content: Text[];
@@ -359,12 +510,54 @@ interface Title2Element {
   type: "H2";
   content: Text[];
 }
-type TextContainer = ParagraphElement | Title1Element | Title2Element | ItemElement;
-type TraversedElement = TextContainer | Text;
+interface TableCell {
+  content: Text[];
+}
+
+interface TableRow {
+  cells: TableCell[];
+}
+
+interface Table {
+  type: "TABLE";
+  rows: TableRow[];
+  headerCells?: TableCell[];
+}
+
+type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Table;
+
+/** Return clipboard HTML or plain text, sanitised through DOMPurify. */
+function getCleanClipboardMarkup(dt: DataTransfer): string {
+  const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
+
+  return DOMPurify.sanitize(raw, {
+    ALLOWED_TAGS: [
+      "p",
+      "br",
+      "strong",
+      "b",
+      "em",
+      "i",
+      "ul",
+      "ol",
+      "li",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "td",
+      "th",
+      "span",
+      "h1",
+      "h2",
+    ],
+    ALLOWED_ATTR: ["rowspan", "colspan"],
+  });
+}
 
 function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
-  const parser = new DOMParser();
-  const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
+  const cleanHtml = getCleanClipboardMarkup(clipboard);
+  const document = new DOMParser().parseFromString(cleanHtml, "text/html");
 
   const elements = traverseChildren(document.body, FontType.PLAIN);
   return moveOuterTextIntoNeighbouringParagraphs(elements);
@@ -379,7 +572,7 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
     switch (node.nodeType) {
       case Node.TEXT_NODE: {
         if (!isOnlyWhitespace(node)) {
-          const text = cleansePastedText(element.textContent ?? "");
+          const text = cleansePastedText(node.textContent ?? "");
           return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
         } else {
           return [];
@@ -394,6 +587,97 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
     }
   });
   return mergeNeighbouringText(traversedChildNodes);
+}
+
+function traverseTable(element: Element, font: FontType): Table {
+  const flattenCellContent = (cellElement: Element) => {
+    const cellContentElements = traverseChildren(cellElement, font).flatMap((child) => {
+      switch (child.type) {
+        case "TEXT":
+          return [child];
+        case "P":
+        case "ITEM":
+          return child.content;
+        case "H1":
+        case "H2":
+        case "TABLE":
+          return [];
+        default:
+          return [];
+      }
+    });
+    // Drop whitespace-only TEXT nodes so the cell content contains only meaningful text.
+    const filteredCellTextContent = cellContentElements.filter(
+      (txt) => txt.type !== "TEXT" || txt.text.trim().length > 0,
+    );
+    return filteredCellTextContent;
+  };
+
+  let rowElements = Array.from(element.querySelectorAll("tr"));
+  let headerCells: TableCell[] | undefined;
+
+  const theadRow = element.querySelector("thead tr");
+  if (theadRow) {
+    const headerCellElements = Array.from(theadRow.querySelectorAll("th"));
+    if (headerCellElements.length > 0) {
+      headerCells = headerCellElements.map((cellElement) => ({
+        content: flattenCellContent(cellElement),
+      }));
+      // Remove the header row from body rows to avoid duplicating it as a regular row.
+      rowElements = rowElements.filter((row) => row !== theadRow);
+    }
+  }
+
+  if (!headerCells && rowElements.length > 0) {
+    const firstRow = rowElements[0];
+    const headerCellElements = Array.from(firstRow.querySelectorAll("th"));
+    if (headerCellElements.length > 0) {
+      headerCells = headerCellElements.map((cellElement) => ({
+        content: flattenCellContent(cellElement),
+      }));
+      rowElements = rowElements.slice(1);
+    }
+  }
+
+  const tableRows: TableRow[] = rowElements
+    .map((rowEl) => ({
+      cells: Array.from(rowEl.querySelectorAll("td,th")).map((cellEl) => ({
+        content: flattenCellContent(cellEl),
+      })),
+    }))
+    .filter((row) => row.cells.length > 0);
+
+  return {
+    type: "TABLE",
+    rows: tableRows,
+    headerCells,
+  };
+}
+
+function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
+  if (element.children.length === 0) {
+    const sanitizedText = cleansePastedText(element.textContent ?? "");
+    // allowed with empty list items
+    return sanitizedText.length >= 0 ? [{ type, content: [{ type: "TEXT", font, text: sanitizedText }] }] : [];
+  } else {
+    const childElements = traverseChildren(element, font).flatMap((child) => {
+      switch (child.type) {
+        case "TEXT": {
+          return [child];
+        }
+        case "P":
+        case "H2":
+        case "H1":
+        case "ITEM": {
+          return child.content;
+        }
+        case "TABLE": {
+          return [];
+        }
+      }
+    });
+    return [{ type, content: childElements }];
+  }
 }
 
 function traverse(element: Element, font: FontType): TraversedElement[] {
@@ -428,7 +712,13 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     }
 
     case "LI": {
-      return traverseTextContainer(element, "ITEM", font);
+      if (element.children.length === 0) {
+        const text = cleansePastedText(element.textContent ?? "");
+
+        return text.length >= 0 ? [{ type: "ITEM", content: [{ type: "TEXT", font: font, text }] }] : [];
+      } else {
+        return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
+      }
     }
 
     case "H1": {
@@ -440,14 +730,9 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     }
 
     case "TABLE": {
-      // TODO: ignore until support for table is implemented
-      return [];
+      return [traverseTable(element, font)];
     }
 
-    case "DIV": {
-      // skip and traverse children
-      return traverseChildren(element, font);
-    }
     default: {
       return traverseChildren(element, font);
     }
@@ -476,56 +761,64 @@ function traverseContainer(element: Element, font: FontType): TraversedElement[]
   }
 }
 
-function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
-  if (element.children.length === 0) {
-    const text = cleansePastedText(element.textContent ?? "");
-    // allowed with empty list items
-    return text.length >= 0 ? [{ type, content: [{ type: "TEXT", font, text }] }] : [];
-  } else {
-    const content = traverseChildren(element, font).flatMap((e) => {
-      switch (e.type) {
-        case "TEXT": {
-          return e;
-        }
-        case "P":
-        case "H2":
-        case "H1":
-        case "ITEM": {
-          return e.content;
-        }
-      }
-    });
-    return [{ type, content }];
-  }
-}
-
-// Will package any Text-elements into a Paragraph, and make sure we don't have nested paragraphs and items.
-function traverseParagraphChildren(paragraph: Element, font: FontType): TextContainer[] {
-  return traverseChildren(paragraph, font).reduce<TextContainer[]>((acc, current) => {
-    const previous = acc.at(-1);
-
-    switch (current.type) {
-      case "H1":
-      case "H2":
-      case "P": {
-        // should probably not be possible, since it would mean nested p-elements, but html-structures can be weird.
-        // append paragraph
-        return [...acc, current];
-      }
+function traverseItemChildren(item: Element, font: FontType): Text[] {
+  return traverseChildren(item, font).flatMap((traversedElement) => {
+    switch (traversedElement.type) {
       case "TEXT": {
-        if (previous?.type === "P") {
-          // insert into existing paragraph
-          return [...acc.slice(0, -1), { ...previous, content: mergeNeighbouringText([...previous.content, current]) }];
-        } else {
-          // create a paragraph to contain the text
-          return [...acc, { type: "P", content: [current] }];
-        }
+        return [traversedElement];
       }
-      case "ITEM": {
-        return [...acc, current];
+      case "ITEM":
+      case "P":
+      case "H1":
+      case "H2": {
+        return traversedElement.content;
+      }
+      case "TABLE": {
+        // Should not happen, but if it does, we just ignore it.
+        return [];
       }
     }
-  }, []);
+  });
+}
+
+type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element;
+
+function traverseParagraphChildren(paragraph: Element, font: FontType): ParagraphChild[] {
+  const result: ParagraphChild[] = [];
+  let buffer: Text[] = [];
+
+  const flushBuffer = () => {
+    if (buffer.length > 0) {
+      result.push({ type: "P", content: buffer });
+      buffer = [];
+    }
+  };
+
+  for (const node of traverseChildren(paragraph, font)) {
+    switch (node.type) {
+      case "TEXT": {
+        buffer.push(node);
+        break;
+      }
+
+      case "ITEM":
+      case "H1":
+      case "H2":
+      case "P":
+        flushBuffer();
+        result.push(node);
+        break;
+
+      case "TABLE": {
+        // Tables should not be nested inside <p>. Ignore.
+        flushBuffer();
+        break;
+      }
+    }
+  }
+
+  flushBuffer();
+  return result;
 }
 
 function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
