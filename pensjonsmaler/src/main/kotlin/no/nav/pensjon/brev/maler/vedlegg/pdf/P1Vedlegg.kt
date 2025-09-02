@@ -17,7 +17,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
     var gjeldendeSide = 0
 
     val side1 = Side(
-        ++gjeldendeSide, 1, "P1-1", felt = mapOf(
+        ++gjeldendeSide, "P1-1", felt = mapOf(
             // innehaver
             "holder-fornavn" to innehaver.fornavn,
             "holder-etternavn" to innehaver.etternavn,
@@ -48,7 +48,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
                 ?.let { innvilgetPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1), it) }
                 ?: emptyMap()
         }.reduce { acc, map -> acc + map }
-        Side(sidenummer = (index + 1) + gjeldendeSide, originalSide = 2, "P1-2", felt)
+        Side(sidenummer = (index + 1) + gjeldendeSide, "P1-2", felt)
     }
     gjeldendeSide += innvilgedePensjoner.size
 
@@ -58,12 +58,12 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
                 ?.let { avslaattPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1),it) }
                 ?: emptyMap()
         }.reduce { acc, map -> acc + map }
-        Side(sidenummer = (index + 1) + gjeldendeSide, originalSide = 3, "P1-3", felt)
+        Side(sidenummer = (index + 1) + gjeldendeSide, "P1-3", felt)
     }
     gjeldendeSide += avslaattePensjoner.size
 
     val side4 = Side(
-        ++gjeldendeSide, 4, "P1-4", felt = mapOf(
+        ++gjeldendeSide, "P1-4", felt = mapOf(
             // utfyllende institusjon
             "institution-navn" to utfyllendeInstitusjon.navn,
             "institution-adresselinje" to utfyllendeInstitusjon.adresselinje,

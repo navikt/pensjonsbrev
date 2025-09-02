@@ -72,10 +72,10 @@ public abstract interface class no/nav/brev/brevbaker/PDFVedleggAppender {
 }
 
 public final class no/nav/brev/brevbaker/Side {
-	public fun <init> (IILjava/util/Map;)V
+	public fun <init> (ILjava/lang/String;Ljava/util/Map;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelt ()Ljava/util/Map;
-	public final fun getOriginalSide ()I
+	public final fun getFilnavn ()Ljava/lang/String;
 	public final fun getSidenummer ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

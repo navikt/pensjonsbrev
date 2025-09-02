@@ -18,11 +18,11 @@ class PDFVedlegg(val filnavn: String, val tittel: Map<LanguageCode, String>, val
     override fun toString() = "PDFVedlegg(name=$filnavn, tittel=$tittel, sider=$sider)"
 }
 
-class Side(val sidenummer: Int, val originalSide: Int, val filnavn: String, val felt: Map<String, String?>) {
+class Side(val sidenummer: Int, val filnavn: String, val felt: Map<String, String?>) {
     override fun equals(other: Any?): Boolean {
         if (other !is Side) { return false}
-        return sidenummer == other.sidenummer && originalSide == other.originalSide && filnavn == other.filnavn && felt == other.felt
+        return sidenummer == other.sidenummer && filnavn == other.filnavn && felt == other.felt
     }
-    override fun hashCode() = Objects.hash(sidenummer, originalSide, filnavn, felt)
-    override fun toString() = "Side(sidenummer=$sidenummer, originalSide=$originalSide, filnavn=$filnavn, felt=$felt)"
+    override fun hashCode() = Objects.hash(sidenummer, filnavn, felt)
+    override fun toString() = "Side(sidenummer=$sidenummer, filnavn=$filnavn, felt=$felt)"
 }
