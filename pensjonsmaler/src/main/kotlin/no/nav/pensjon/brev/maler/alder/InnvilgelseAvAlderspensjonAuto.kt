@@ -85,7 +85,6 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -126,9 +125,9 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
             paragraph {
                 textExpr(
-                    Bokmal to "Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom.format(),
-                    Nynorsk to "Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom.format(),
-                    English to "You will receive NOK ".expr() + alderspensjonVedVirk.totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format()
+                    Bokmal to "Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom.format(),
+                    Nynorsk to "Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom.format(),
+                    English to "You will receive ".expr() + alderspensjonVedVirk.totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format()
                 )
                 showIf(alderspensjonVedVirk.uforeKombinertMedAlder and alderspensjonVedVirk.innvilgetFor67) {
                     // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
