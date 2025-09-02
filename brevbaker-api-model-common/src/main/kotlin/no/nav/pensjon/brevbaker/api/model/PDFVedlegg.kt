@@ -1,6 +1,6 @@
 package no.nav.pensjon.brevbaker.api.model
 
 interface PDFVedleggData {
-    val name: String
+    val filnavn: String
     val tittel: Map<LanguageCode, String>
 }
