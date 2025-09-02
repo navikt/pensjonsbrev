@@ -311,8 +311,8 @@ function RedigerBrev({
           @media (max-width: 1023px) {
             align-self: start;
           }
-          min-width: 944px;
-          max-width: 1104px;
+          min-width: 946px;
+          max-width: 1106px;
           background: var(--a-white);
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);

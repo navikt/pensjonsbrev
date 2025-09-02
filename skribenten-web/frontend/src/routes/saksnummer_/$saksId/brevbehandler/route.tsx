@@ -51,7 +51,7 @@ function Brevbehandler() {
         display: grid;
         grid-template:
           "meny pdf" 1fr
-          "footer footer" auto / 33% 66%;
+          "footer footer" auto / minmax(304px, 384px) minmax(640px, 720px);
         align-self: center;
         align-items: start;
         @media (max-width: 1023px) {
