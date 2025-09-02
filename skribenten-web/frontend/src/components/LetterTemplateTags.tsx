@@ -10,7 +10,7 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
           case BrevSystem.Brevbaker: {
             return (
               <Tag size="small" variant="alt2">
-                Brevbaker
+                Skribenten
               </Tag>
             );
           }
