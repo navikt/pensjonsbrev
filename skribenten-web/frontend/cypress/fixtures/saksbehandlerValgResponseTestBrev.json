@@ -1,0 +1,300 @@
+{
+  "info": {
+    "id": 10,
+    "saksId": 23022751,
+    "opprettetAv": { "id": "Z990216", "navn": "F_Z990216 E_Z990216" },
+    "opprettet": "2025-08-26T10:23:24.107Z",
+    "sistredigertAv": { "id": "Z990216", "navn": "F_Z990216 E_Z990216" },
+    "sistredigert": "2025-08-26T10:31:57.959Z",
+    "brevkode": "BRUKERTEST_BREV_PENSJON_2025",
+    "brevtittel": "TEST brev skribenten 2025",
+    "brevtype": "INFORMASJONSBREV",
+    "status": { "type": "UnderRedigering", "redigeresAv": { "id": "Z990216", "navn": "F_Z990216 E_Z990216" } },
+    "distribusjonstype": "SENTRALPRINT",
+    "mottaker": null,
+    "avsenderEnhet": null,
+    "spraak": "NB",
+    "journalpostId": null,
+    "vedtaksId": null
+  },
+  "redigertBrev": {
+    "title": {
+      "text": [
+        {
+          "id": 1284774520,
+          "text": "Alt i dette brevet er tull",
+          "fontType": "PLAIN",
+          "editedText": null,
+          "editedFontType": null,
+          "tags": [],
+          "parentId": null,
+          "type": "LITERAL"
+        }
+      ],
+      "deletedContent": []
+    },
+    "sakspart": {
+      "gjelderNavn": "Opprett Agent",
+      "gjelderFoedselsnummer": "23426147394",
+      "vergeNavn": null,
+      "saksnummer": "23022751",
+      "dokumentDato": "2025-08-26"
+    },
+    "blocks": [
+      {
+        "id": -481575534,
+        "editable": true,
+        "content": [
+          {
+            "id": -481575565,
+            "text": "Vedtak",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": -481575534,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "TITLE1"
+      },
+      {
+        "id": 1971603137,
+        "editable": true,
+        "content": [
+          {
+            "id": 2054713812,
+            "text": "Vi har ",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 1971603137,
+            "type": "LITERAL"
+          },
+          {
+            "id": 3076024,
+            "text": "dato",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": ["FRITEKST"],
+            "parentId": 1971603137,
+            "type": "LITERAL"
+          },
+          {
+            "id": -1820992704,
+            "text": " mottatt søknaden din om ",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 1971603137,
+            "type": "LITERAL"
+          },
+          {
+            "id": -720595244,
+            "text": "ytelse",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": ["FRITEKST"],
+            "parentId": 1971603137,
+            "type": "LITERAL"
+          },
+          {
+            "id": -1145041696,
+            "text": ". Eller kanskje ikke. Dette er nemlig bare et testbrev.",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 1971603137,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": 261593256,
+        "editable": true,
+        "content": [
+          {
+            "id": 261593225,
+            "text": "Jevnlig inspeksjon kreves",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 261593256,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "TITLE1"
+      },
+      {
+        "id": 1923610647,
+        "editable": true,
+        "content": [
+          {
+            "id": 1923610616,
+            "text": "Sokkelesten på kontorbyggets tak krever jevnlig inspeksjon for å unngå opphopning av løv og smuss som kan tette avløpene. Men det er ikke din jobb å verken tenke på eller utføre, så det er ikke relevant informasjon for deg.",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 1923610647,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": 320348187,
+        "editable": true,
+        "content": [
+          {
+            "id": 320348156,
+            "text": "Grønt er skjønt",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 320348187,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "TITLE1"
+      },
+      {
+        "id": -541001107,
+        "editable": true,
+        "content": [
+          {
+            "id": -541001138,
+            "text": "Fin balanse mellom distraksjon og dagslys.",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": -541001107,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": 2059721275,
+        "editable": true,
+        "content": [
+          {
+            "id": 2059721244,
+            "text": "Knirkende stoler i rom 4A",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 2059721275,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "TITLE1"
+      },
+      {
+        "id": -1083672363,
+        "editable": true,
+        "content": [
+          {
+            "id": -1083672394,
+            "text": "Noen stoler i 4A har begynt å kommunisere via knirk. Dette er en kjent, men ikke prioritert feil.",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": -1083672363,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "PARAGRAPH"
+      },
+      {
+        "id": 379182026,
+        "editable": true,
+        "content": [
+          {
+            "id": 379181995,
+            "text": "Lurer du på noe?",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 379182026,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "TITLE1"
+      },
+      {
+        "id": 154630278,
+        "editable": true,
+        "content": [
+          {
+            "id": 154630247,
+            "text": "Du kan nå oss på 815 493 00 på tirsdager mellom kl 11:03-11:15 hvis det var fullmåne søndag forrige uke.",
+            "fontType": "PLAIN",
+            "editedText": null,
+            "editedFontType": null,
+            "tags": [],
+            "parentId": 154630278,
+            "type": "LITERAL"
+          }
+        ],
+        "deletedContent": [],
+        "originalType": null,
+        "parentId": null,
+        "type": "PARAGRAPH"
+      }
+    ],
+    "signatur": {
+      "hilsenTekst": "Med vennlig hilsen",
+      "saksbehandlerRolleTekst": "Saksbehandler",
+      "saksbehandlerNavn": "F_Z990216 E_Z990216",
+      "attesterendeSaksbehandlerNavn": null,
+      "navAvsenderEnhet": "Nav familie- og pensjonsytelser Utland"
+    },
+    "deletedBlocks": []
+  },
+  "redigertBrevHash": "b3a869a231b6fecd39d18828379b2e7c703dc6d97784f389ec7fff1e2d780c65",
+  "saksbehandlerValg": {
+    "kaffemaskinensTilgjengelighet": false,
+    "kontorplantenTorlill": false,
+    "utsiktenFraKontoret": "MOT_TRAER_OG_NATUR"
+  }
+}

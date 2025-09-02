@@ -27,8 +27,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
-        @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -41,6 +39,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val erEOSLand: Boolean,  // v1.Land
         val erMellombehandling: Boolean,  // v3.Krav
         val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav
+        val beloepEndring: BeloepEndring?,
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
         val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
         val inngangOgEksportVurdering: InngangOgEksportVurdering?,

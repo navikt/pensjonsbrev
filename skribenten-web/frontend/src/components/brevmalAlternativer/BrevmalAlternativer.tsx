@@ -34,9 +34,9 @@ const BrevmalAlternativer = (props: {
       return null;
     }
     case "success": {
-      const { optionalFields, requiredfields } = specificationFormElements;
+      const { optionalFields, requiredFields } = specificationFormElements;
       const hasOptional = optionalFields.length > 0;
-      const hasRequired = requiredfields.length > 0;
+      const hasRequired = requiredFields.length > 0;
 
       if (!hasOptional && !hasRequired) {
         return null;

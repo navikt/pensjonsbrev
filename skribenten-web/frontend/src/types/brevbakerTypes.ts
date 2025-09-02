@@ -179,3 +179,8 @@ export interface EditedLetter {
   readonly signatur: Signatur;
   readonly deletedBlocks: number[];
 }
+
+export interface PropertyUsage {
+  readonly typeName: string;
+  readonly propertyName: string;
+}
