@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 
 @LetterTemplateMarker
 class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
@@ -63,14 +61,6 @@ sealed interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : Temp
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
     }
 
-    fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
-        Language.Bokmal to LiteralOrExpressionBuilder().block()
-
-    fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
-        Language.Nynorsk to LiteralOrExpressionBuilder().block()
-
-    fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
-        Language.English to LiteralOrExpressionBuilder().block()
 }
 
 // TextScope.text()
@@ -204,36 +194,16 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
     lang1: Pair<Lang1, LiteralOrExpression>,
     fontType: FontType = FontType.PLAIN,
     ) {
-    when (val value = lang1.second) {
-        is ExpressionWrapper ->
-            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr, fontType)
-
-        is LiteralWrapper ->
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
-    }.also { addTextContent(Content(it)) }
+    addTextContent(Content(createTextContent(lang1, fontType)))
 }
+
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, LiteralOrExpression>,
     lang2: Pair<Lang2, LiteralOrExpression>,
     fontType: FontType = FontType.PLAIN,
     ) {
-    val lang1Value = lang1.second
-    val lang2Value = lang2.second
-
-    if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper) {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to lang1Value.str,
-            lang2.first to lang2Value.str,
-            fontType
-        )
-    } else {
-        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-            lang1.first to lang1.second.expr,
-            lang2.first to lang2.second.expr,
-            fontType
-        )
-    }.also { addTextContent(Content(it)) }
+    addTextContent(Content(createTextContent(lang1, lang2, fontType)))
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
@@ -242,25 +212,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang3: Pair<Lang3, LiteralOrExpression>,
     fontType: FontType = FontType.PLAIN,
     ) {
-    val lang1Value = lang1.second
-    val lang2Value = lang2.second
-    val lang3Value = lang3.second
-
-    if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper && lang3Value is LiteralWrapper) {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to lang1Value.str,
-            lang2.first to lang2Value.str,
-            lang3.first to lang3Value.str,
-            fontType
-        )
-    } else {
-        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-            lang1.first to lang1Value.expr,
-            lang2.first to lang2Value.expr,
-            lang3.first to lang3Value.expr,
-            fontType
-        )
-    }.also { addTextContent(Content(it)) }
+    addTextContent(Content(createTextContent(lang1, lang2, lang3, fontType)))
 }
 
 // PlainTextScope.text()
@@ -270,32 +222,14 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
     lang1: Pair<Lang1, LiteralOrExpression>,
 ) {
-    when (val value = lang1.second) {
-        is ExpressionWrapper ->
-            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr)
-        is LiteralWrapper ->
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str)
-    }.also { addTextContent(Content(it)) }
+    addTextContent(Content(createTextContent(lang1, FontType.PLAIN)))
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, LiteralOrExpression>,
     lang2: Pair<Lang2, LiteralOrExpression>,
 ) {
-    val lang1Value = lang1.second
-    val lang2Value = lang2.second
-
-    if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper) {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to lang1Value.str,
-            lang2.first to lang2Value.str
-        )
-    } else {
-        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-            lang1.first to lang1.second.expr,
-            lang2.first to lang2.second.expr,
-        )
-    }.also { addTextContent(Content(it)) }
+    addTextContent(Content(createTextContent(lang1, lang2, FontType.PLAIN)))
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
@@ -303,49 +237,70 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang2: Pair<Lang2, LiteralOrExpression>,
     lang3: Pair<Lang3, LiteralOrExpression>,
 ) {
+    addTextContent(Content(createTextContent(lang1, lang2, lang3, FontType.PLAIN)))}
+
+
+
+private fun <Lang1 : Language> createTextContent(
+    lang1: Pair<Lang1, LiteralOrExpression>,
+    fontType: FontType
+): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Single<Lang1>> = when (val value = lang1.second) {
+    is ExpressionWrapper ->
+        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr, fontType)
+
+    is LiteralWrapper ->
+        Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
+}
+
+private fun <Lang1 : Language, Lang2 : Language> createTextContent(
+    lang1: Pair<Lang1, LiteralOrExpression>,
+    lang2: Pair<Lang2, LiteralOrExpression>,
+    fontType: FontType
+): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Double<Lang1, Lang2>> {
+    val lang1Value = lang1.second
+    val lang2Value = lang2.second
+
+    val textContent = if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper) {
+        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+            lang1.first to lang1Value.str,
+            lang2.first to lang2Value.str,
+            fontType
+        )
+    } else {
+        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+            lang1.first to lang1.second.expr,
+            lang2.first to lang2.second.expr,
+            fontType
+        )
+    }
+    return textContent
+}
+
+private fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> createTextContent(
+    lang1: Pair<Lang1, LiteralOrExpression>,
+    lang2: Pair<Lang2, LiteralOrExpression>,
+    lang3: Pair<Lang3, LiteralOrExpression>,
+    fontType: FontType
+): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Triple<Lang1, Lang2, Lang3>> {
     val lang1Value = lang1.second
     val lang2Value = lang2.second
     val lang3Value = lang3.second
 
-    if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper && lang3Value is LiteralWrapper) {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to lang1Value.str,
-            lang2.first to lang2Value.str,
-            lang3.first to lang3Value.str,
-        )
-    } else {
-        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-            lang1.first to lang1Value.expr,
-            lang2.first to lang2Value.expr,
-            lang3.first to lang3Value.expr,
-        )
-    }.also { addTextContent(Content(it)) }
-}
-
-class LiteralOrExpressionBuilder {
-    // brukes for å bruke unary plus som plus. Kan skje om plus er på ny linje.
-    private var previous: LiteralOrExpression? = null
-    sealed class LiteralOrExpression() {
-        abstract val expr: StringExpression
-    }
-    class LiteralWrapper(val str: String) : LiteralOrExpression() {
-        override val expr: StringExpression
-            get() = str.expr()
-    }
-
-    class ExpressionWrapper(override val expr: StringExpression) : LiteralOrExpression()
-
-    operator fun StringExpression.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this).also { previous = it }
-
-    operator fun String.unaryPlus() = previous?.let { it + this } ?: LiteralWrapper(this).also { previous = it }
-
-    operator fun LiteralOrExpression.plus(other: StringExpression) = when(this) {
-        is ExpressionWrapper -> ExpressionWrapper(expr + other)
-        is LiteralWrapper -> ExpressionWrapper(str.expr() + other)
-    }.also { previous = it }
-
-    operator fun LiteralOrExpression.plus(other: String) = when(this) {
-        is ExpressionWrapper -> ExpressionWrapper(expr + other)
-        is LiteralWrapper -> LiteralWrapper(str + other)
-    }.also { previous = it }
+    val textContent =
+        if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper && lang3Value is LiteralWrapper) {
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                lang1.first to lang1Value.str,
+                lang2.first to lang2Value.str,
+                lang3.first to lang3Value.str,
+                fontType
+            )
+        } else {
+            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+                lang1.first to lang1Value.expr,
+                lang2.first to lang2Value.expr,
+                lang3.first to lang3Value.expr,
+                fontType
+            )
+        }
+    return textContent
 }

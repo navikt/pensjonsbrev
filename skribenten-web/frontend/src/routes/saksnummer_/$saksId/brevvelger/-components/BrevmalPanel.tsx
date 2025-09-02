@@ -25,6 +25,7 @@ const BrevmalPanel = (props: {
             border-right: 1px solid var(--a-gray-200);
             padding: var(--a-spacing-6);
             height: 100%;
+            overflow-y: auto;
           `}
         >
           {props.templateId ? (
