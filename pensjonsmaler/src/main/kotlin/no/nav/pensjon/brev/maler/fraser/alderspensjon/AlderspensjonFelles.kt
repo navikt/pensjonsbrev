@@ -471,9 +471,9 @@ object SkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon." +
                     " Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister." +
                     " Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
-                Nynorsk to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. " +
-                    " Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister." +
-                    " Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
+                Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. " +
+                    " Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for pensjonistar." +
+                    " Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss.",
                 English to "When you start draw retirement pension, you should change your tax deduction card." +
                     " You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners." +
                     " We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us.",

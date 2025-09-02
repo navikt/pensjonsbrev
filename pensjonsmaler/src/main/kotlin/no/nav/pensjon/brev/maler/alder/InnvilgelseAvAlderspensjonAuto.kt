@@ -269,6 +269,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
             )
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
 
             showIf(borIAvtaleland) { includePhrase(RettTilKlageUtland) }
 
