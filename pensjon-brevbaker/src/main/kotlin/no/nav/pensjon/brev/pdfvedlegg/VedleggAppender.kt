@@ -15,7 +15,7 @@ internal object VedleggAppender {
         val sider = vedlegg.sider
 
         sider.forEach {
-            merger.leggTilSide(target, settOppSide(vedlegg.name, it, sider.size, spraak))
+            merger.leggTilSide(target, settOppSide(vedlegg.filnavn, it, sider.size, spraak))
         }
 
         return target
