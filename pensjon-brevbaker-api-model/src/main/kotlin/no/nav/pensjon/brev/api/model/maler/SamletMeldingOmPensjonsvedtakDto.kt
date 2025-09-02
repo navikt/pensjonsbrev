@@ -156,3 +156,8 @@ value class Valuta(val valuta: String) {
         require(valuta.length == 3)
     }
 }
+
+object InformasjonOmP1Dto : PDFVedleggData {
+    override val name = "InformasjonOmP1"
+    override val tittel = Vedleggtyper.InformasjonOmP1
+}

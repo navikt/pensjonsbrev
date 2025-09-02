@@ -55,10 +55,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         pdfAttachments.add(PDFTemplate(name, type, attachmentData))
     }
 
-    fun includeAttachment(name: String, type: Map<LanguageCode, String>) {
-        pdfAttachments.add(PDFTemplate(name, type, EmptyPDFVedleggData(name, type).expr()))
-    }
-
     fun includeAttachment(
         template: AttachmentTemplate<Lang, Unit>,
         predicate: Expression<Boolean> = true.expr(),
