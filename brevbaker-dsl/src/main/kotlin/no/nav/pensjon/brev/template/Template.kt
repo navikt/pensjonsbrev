@@ -24,7 +24,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
-    val pdfAttachments: MutableList<PDFTemplate<*>> = mutableListOf(),
+    val pdfAttachments: MutableList<PDFTemplate<Lang,*>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
@@ -51,11 +51,11 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         type: VedleggType,
         attachmentData: Expression<AttachmentData>
     ) {
-        pdfAttachments.add(PDFTemplate(type, attachmentData))
+        pdfAttachments.add(PDFTemplate<Lang, AttachmentData>(type, attachmentData))
     }
 
     fun includeAttachment(type: VedleggType) {
-        pdfAttachments.add(PDFTemplate(type, EmptyPDFVedleggData(type).expr()))
+        pdfAttachments.add(PDFTemplate<Lang, EmptyPDFVedleggData>(type, EmptyPDFVedleggData(type).expr()))
     }
 
     fun includeAttachment(
