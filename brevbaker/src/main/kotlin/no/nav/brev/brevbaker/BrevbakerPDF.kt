@@ -66,9 +66,3 @@ private fun PDFVedleggData.tittel(language: Language) = this.let {
             )
         ))
 }
-
-interface PDFVedleggData {
-    val tittel: VedleggType
-}
-
-class EmptyPDFVedleggData(override val tittel: VedleggType) : PDFVedleggData
