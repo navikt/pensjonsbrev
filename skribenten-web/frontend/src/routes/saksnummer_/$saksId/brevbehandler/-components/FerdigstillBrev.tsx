@@ -50,7 +50,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
     return (
       <FerdigstillValgtBrev
         antallBrevKlarTilSending={antallBrevSomErKlarTilSending}
-        brev={valgtBrev}
+        brevInfo={properties.brevInfo}
         sakId={properties.sakId}
         åpneFerdigstillModal={properties.åpneFerdigstillModal}
       />
@@ -79,32 +79,72 @@ export const FerdigstillOgSendBrevButton = (properties: {
 
 const FerdigstillValgtBrev = (properties: {
   sakId: string;
-  brev: BrevInfo;
   åpneFerdigstillModal: () => void;
   antallBrevKlarTilSending: number;
+  brevInfo: BrevInfo[];
 }) => {
-  const erLåst = useMemo(() => erBrevKlar(properties.brev) || erBrevArkivert(properties.brev), [properties.brev]);
+  const harLaasteBrev = properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b));
+  const harKlarTilAttesteringBrev = properties.brevInfo.some((b) => erBrevKlarTilAttestering(b));
 
-  if (erLåst) {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
+  const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
+
+  if (harLaasteBrev && harKlarTilAttesteringBrev) {
     return (
       <Button
         onClick={() => {
-          if (erLåst) {
-            properties.åpneFerdigstillModal();
-          }
+          properties.åpneFerdigstillModal();
         }}
         size="small"
         type="button"
       >
         <HStack gap="2">
-          <Label>Ferdigstill {properties.antallBrevKlarTilSending} brev</Label>
+          <Label>Fortsett / Send {properties.antallBrevKlarTilSending} brev</Label>
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
       </Button>
     );
+  } else if (harLaasteBrev) {
+    return (
+      <Button
+        onClick={() => {
+          properties.åpneFerdigstillModal();
+        }}
+        size="small"
+        type="button"
+      >
+        <HStack gap="2">
+          <Label>Send {properties.antallBrevKlarTilSending} brev</Label>
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
+      </Button>
+    );
+  } else if (harKlarTilAttesteringBrev) {
+    return (
+      <Button
+        onClick={() => {
+          const brevListeKlarTilAttestering = properties.brevInfo.filter((brev) => erBrevKlarTilAttestering(brev));
+          setBrevListKlarTilAttestering(brevListeKlarTilAttestering);
+          navigate({
+            to: "/saksnummer/$saksId/kvittering",
+            params: { saksId: properties.sakId },
+            search: { enhetsId, vedtaksId },
+          });
+        }}
+        size="small"
+        type="button"
+      >
+        <HStack gap="2">
+          <Label>Fortsett</Label>
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
+      </Button>
+    );
+  } else {
+    // no button
+    return null;
   }
-
-  return null;
 };
 
 const validationSchema = z.object({

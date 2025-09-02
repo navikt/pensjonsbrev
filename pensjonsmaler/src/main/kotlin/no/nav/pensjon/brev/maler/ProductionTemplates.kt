@@ -48,6 +48,7 @@ import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoe
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstand
+import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstandAuto
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
@@ -167,6 +168,7 @@ object ProductionTemplates : AllTemplates {
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
         BrukerTestBrev,
+        EndringAvAlderspensjonPgaGarantitillegg,
         EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
