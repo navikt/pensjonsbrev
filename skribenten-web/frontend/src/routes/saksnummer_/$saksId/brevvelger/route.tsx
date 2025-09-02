@@ -59,16 +59,16 @@ export function BrevvelgerPage() {
   return (
     <div
       css={css`
+        display: flex;
+        flex-direction: column;
         align-self: center;
         @media (max-width: 1023px) {
           align-self: start;
         }
-        display: flex;
-        flex-direction: column;
-        background-color: white;
         width: 100%;
         min-width: 944px;
         max-width: 1104px;
+        background-color: white;
       `}
     >
       <BrevvelgerMainContent
