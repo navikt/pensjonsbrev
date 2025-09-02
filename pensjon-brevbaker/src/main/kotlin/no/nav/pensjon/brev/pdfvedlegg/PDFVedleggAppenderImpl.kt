@@ -2,19 +2,21 @@ package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
+import no.nav.pensjon.brev.maler.vedlegg.pdf.tilPDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
+import kotlin.collections.map
 
 internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
     override fun leggPaaVedlegg(
         pdfCompilationOutput: PDFCompilationOutput,
-        attachments: List<PDFVedlegg>,
+        attachments: List<PDFVedleggData>,
         spraak: LanguageCode,
     ): PDFCompilationOutput {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
@@ -29,7 +31,8 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
         val originaltDokument = pdfCompilationOutput.bytes.let { Loader.loadPDF(it) }
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
-        attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) }.forEach {
+
+        attachments.map { VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak) }.forEach {
             leggPaaBlankPartallsside(it, merger, target)
             merger.leggTilSide(target, it)
         }

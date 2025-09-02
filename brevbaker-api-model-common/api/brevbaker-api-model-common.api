@@ -303,7 +303,6 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
 	public fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
-	public fun tilPDFVedlegg ()Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
@@ -675,7 +674,6 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 	public abstract fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
-	public abstract fun tilPDFVedlegg ()Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {

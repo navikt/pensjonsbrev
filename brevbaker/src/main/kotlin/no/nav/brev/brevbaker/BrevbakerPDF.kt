@@ -14,6 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
+import no.nav.pensjon.brevbaker.api.model.VedleggType
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, private val pdfVedleggAppender: PDFVedleggAppender) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
@@ -28,7 +29,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                 )
             )
         }
-            .let { pdfVedleggAppender.leggPaaVedlegg(it, mapPDFAttachments(letter), letter.language.toCode()) }
+            .let { pdfVedleggAppender.leggPaaVedlegg(it, letter.template.pdfAttachments.map { it.data.eval(letter.toScope()) }, letter.language.toCode()) }
             .let { pdf ->
                 LetterResponse(
                     file = pdf.bytes,
@@ -48,13 +49,6 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
     }
 }
 
-internal fun mapPDFAttachments(letter: Letter<*>) =
-    letter.template.pdfAttachments
-        .map { it.data.eval(letter.toScope()) }
-        .map { it.tilPDFVedlegg() }
-
-
-
 internal fun mapPDFTitler(letter: Letter<*>) =
     letter.template.pdfAttachments
         .map { it.data.eval(letter.toScope()) }
@@ -72,3 +66,9 @@ private fun PDFVedleggData.tittel(language: Language) = this.let {
             )
         ))
 }
+
+interface PDFVedleggData {
+    val tittel: VedleggType
+}
+
+class EmptyPDFVedleggData(override val tittel: VedleggType) : PDFVedleggData

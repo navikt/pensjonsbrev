@@ -20,6 +20,11 @@ public final class no/nav/brev/brevbaker/ContentTypes {
 	public static final field TEXT_HTML_UTF8 Ljava/lang/String;
 }
 
+public final class no/nav/brev/brevbaker/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+}
+
 public final class no/nav/brev/brevbaker/HttpStatusCodes : java/lang/Enum {
 	public static final field BadRequest Lno/nav/brev/brevbaker/HttpStatusCodes;
 	public static final field InternalServerError Lno/nav/brev/brevbaker/HttpStatusCodes;
@@ -59,6 +64,10 @@ public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
 
 public abstract interface class no/nav/brev/brevbaker/PDFVedleggAppender {
 	public abstract fun leggPaaVedlegg (Lno/nav/brev/brevbaker/PDFCompilationOutput;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Lno/nav/brev/brevbaker/PDFCompilationOutput;
+}
+
+public abstract interface class no/nav/brev/brevbaker/PDFVedleggData {
+	public abstract fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 }
 
 public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup {
