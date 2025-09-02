@@ -396,7 +396,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }
 
-                showIf(barnetilleggFellesbarn.periodisert_safe.ifNull(false) or barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)) {
+                showIf((barnetilleggFellesbarn.periodisert_safe.ifNull(false) and btfbEndret) or (barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false) and btsbEndret)) {
                     paragraph {
                         text(
                             Bokmal to "Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløp for neste år justert slik at det kun gjelder for perioden du mottar barnetillegg.",
