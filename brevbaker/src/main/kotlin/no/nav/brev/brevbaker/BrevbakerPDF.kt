@@ -14,7 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
-import no.nav.pensjon.brevbaker.api.model.VedleggType
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, private val pdfVedleggAppender: PDFVedleggAppender) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
