@@ -40,8 +40,9 @@ class Side(val sidenummer: Int, val originalSide: Int, val felt: Map<String, Str
 
 interface PDFVedleggData {
     fun tilPDFVedlegg(): PDFVedlegg
+    val tittel: VedleggType
 }
 
-class EmptyPDFVedleggData(val type: VedleggType) : PDFVedleggData {
-    override fun tilPDFVedlegg() = PDFVedlegg(type = type, listOf())
+class EmptyPDFVedleggData(override val tittel: VedleggType) : PDFVedleggData {
+    override fun tilPDFVedlegg() = PDFVedlegg(type = tittel, listOf())
 }

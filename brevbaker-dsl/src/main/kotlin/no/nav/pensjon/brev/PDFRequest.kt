@@ -3,8 +3,8 @@ package no.nav.pensjon.brev
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.util.Objects
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 @Suppress("unused")
 class PDFRequest(
@@ -12,7 +12,7 @@ class PDFRequest(
     val attachments: List<LetterMarkup.Attachment>,
     val language: LanguageCode,
     val brevtype: LetterMetadata.Brevtype,
-    val pdfVedlegg: List<PDFVedlegg> = emptyList()
+    val pdfVedlegg: List<PDFTittel> = emptyList()
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFRequest) return false

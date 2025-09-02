@@ -137,7 +137,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.attachments,
                         language.toCode(),
                         template.letterMetadata.brevtype,
-                        mapPDFAttachments(this@renderTestPDF)
+                        mapPDFTitler(this@renderTestPDF)
                     )
                 )
             }.bytes

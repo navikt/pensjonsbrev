@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -133,6 +134,8 @@ fun Application.brevbakerModule(
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
+    val pdfVedleggAppender = PDFVedleggAppenderImpl
+
     val kafkaConfig = brevbakerConfig.config("kafka")
     val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
     val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
@@ -146,7 +149,7 @@ fun Application.brevbakerModule(
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, pdfVedleggAppender, templates, latexAsyncCompilerService)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {

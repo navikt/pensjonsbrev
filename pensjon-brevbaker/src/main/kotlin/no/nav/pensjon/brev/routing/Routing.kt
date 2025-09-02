@@ -18,6 +18,7 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.brev.brevbaker.PDFByggerService
+import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -29,12 +30,13 @@ import no.nav.pensjon.etterlatte.EtterlatteMaler
 fun Application.brevRouting(
     authenticationNames: Array<String>?,
     pdfByggerService: PDFByggerService,
+    pdfVedleggAppender: PDFVedleggAppender,
     brevProvider: AllTemplates,
     pDFByggerAsync: PDFByggerAsync?,
 ) =
     routing {
-        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, pDFByggerAsync)
-        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService)
+        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, pdfVedleggAppender, pDFByggerAsync)
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService, pdfVedleggAppender)
 
         route("/templates") {
             templateRoutes(autobrev)
@@ -61,6 +63,7 @@ fun Application.brevRouting(
                     "",
                     EtterlatteMaler.hentAutobrevmaler(),
                     pdfByggerService,
+                    pdfVedleggAppender,
                     pDFByggerAsync
                 )
                 autobrevRoutes(etterlatteResource)

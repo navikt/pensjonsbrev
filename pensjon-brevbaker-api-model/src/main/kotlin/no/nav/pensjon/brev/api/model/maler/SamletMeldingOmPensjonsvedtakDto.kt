@@ -34,6 +34,7 @@ data class P1Dto(
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
 ) : BrevbakerBrevdata, PDFVedleggData {
     override fun tilPDFVedlegg() = somVedlegg()
+    override val tittel = Vedleggtyper.P1
 
     data class P1Person(
         val fornavn: String,
@@ -226,7 +227,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-underskrift" to "",
     ))
 
-    return PDFVedlegg(type = Vedleggtyper.P1, (innvilgedePensjoner + avslaattePensjoner + side1 + side4).sortedBy { it.sidenummer },)
+    return PDFVedlegg(type = tittel, (innvilgedePensjoner + avslaattePensjoner + side1 + side4).sortedBy { it.sidenummer },)
 }
 
 private fun List<*>.tilAntallSider() = Math.ceilDiv(this.size, RADER_PER_SIDE)
