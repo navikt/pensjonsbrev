@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger.vedlegg
+package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
@@ -7,7 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.VedleggType
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
-import java.nio.file.Paths
 
 internal object VedleggAppender {
 

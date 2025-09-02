@@ -112,6 +112,8 @@ dependencies {
     implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
 
+    implementation(libs.pdfbox)
+
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }

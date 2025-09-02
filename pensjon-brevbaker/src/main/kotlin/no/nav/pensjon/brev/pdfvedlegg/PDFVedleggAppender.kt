@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.pdfbygger.vedlegg
+package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.apache.pdfbox.Loader
@@ -13,20 +12,20 @@ import java.io.ByteArrayOutputStream
 internal object PDFVedleggAppender {
 
     internal fun leggPaaVedlegg(
-        pdfCompilationResponse: PDFCompilationResponse.Success,
+        pdfCompilationOutput: PDFCompilationOutput,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
-    ): PDFCompilationResponse.Success {
+    ): PDFCompilationOutput {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
         De aller, aller fleste brevene har ikke PDF-vedlegg, så de trenger ikke gå gjennom denne løypa
          */
         if (attachments.isEmpty()) {
-            return pdfCompilationResponse
+            return pdfCompilationOutput
         }
 
         val merger = PDFMergerUtility()
         val target = PDDocument()
-        val originaltDokument = pdfCompilationResponse.pdfCompilationOutput.bytes.let { Loader.loadPDF(it) }
+        val originaltDokument = pdfCompilationOutput.bytes.let { Loader.loadPDF(it) }
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
         attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) }.forEach {
@@ -46,10 +45,10 @@ internal object PDFVedleggAppender {
         }
     }
 
-    private fun tilByteArray(target: PDDocument): PDFCompilationResponse.Success {
+    private fun tilByteArray(target: PDDocument): PDFCompilationOutput {
         val outputStream = ByteArrayOutputStream()
         target.save(outputStream)
-        return PDFCompilationResponse.Success(PDFCompilationOutput(outputStream.toByteArray()))
+        return PDFCompilationOutput(outputStream.toByteArray())
     }
 }
 
