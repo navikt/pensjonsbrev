@@ -33,8 +33,8 @@ import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
-import java.util.concurrent.TimeUnit
 import kotlin.apply
+import kotlin.time.Duration.Companion.seconds
 
 
 fun main() {
@@ -52,8 +52,8 @@ fun main() {
                 host = "0.0.0.0"
                 port = skribentenConfig.getInt("port")
             })
-            shutdownGracePeriod = TimeUnit.SECONDS.toMillis(5)
-            shutdownTimeout = TimeUnit.SECONDS.toMillis(10)
+            shutdownGracePeriod = 5.seconds.inWholeMilliseconds
+            shutdownTimeout = 10.seconds.inWholeMilliseconds
         },
     ) {
         skribentenApp(skribentenConfig)
