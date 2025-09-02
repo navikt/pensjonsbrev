@@ -301,7 +301,8 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public fun getName ()Ljava/lang/String;
 	public fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 }
 
@@ -664,6 +665,7 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
+	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 }
 
@@ -800,9 +802,8 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/VedleggType {
-	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
+	public fun <init> (Ljava/util/Map;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getName ()Ljava/lang/String;
 	public final fun getTittel ()Ljava/util/Map;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

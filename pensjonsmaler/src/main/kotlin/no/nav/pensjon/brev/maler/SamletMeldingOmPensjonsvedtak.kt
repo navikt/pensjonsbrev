@@ -92,8 +92,8 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             }
         }
 
-        includeAttachment(Vedleggtyper.P1, pesysData.vedlegg)
-        includeAttachment(Vedleggtyper.InformasjonOmP1)
+        includeAttachment("P1", Vedleggtyper.P1, pesysData.vedlegg)
+        includeAttachment("InformasjonOmP1", Vedleggtyper.InformasjonOmP1)
     }
 
 }

@@ -58,8 +58,9 @@ public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
 }
 
 public final class no/nav/brev/brevbaker/PDFVedlegg {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/List;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
 	public final fun getSider ()Ljava/util/List;
 	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 	public fun hashCode ()I

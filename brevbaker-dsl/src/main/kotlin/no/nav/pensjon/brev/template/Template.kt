@@ -48,14 +48,15 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun <AttachmentData : PDFVedleggData> includeAttachment(
+        name: String,
         type: VedleggType,
         attachmentData: Expression<AttachmentData>
     ) {
-        pdfAttachments.add(PDFTemplate<Lang, AttachmentData>(type, attachmentData))
+        pdfAttachments.add(PDFTemplate(name, type, attachmentData))
     }
 
-    fun includeAttachment(type: VedleggType) {
-        pdfAttachments.add(PDFTemplate<Lang, EmptyPDFVedleggData>(type, EmptyPDFVedleggData(type).expr()))
+    fun includeAttachment(name: String, type: VedleggType) {
+        pdfAttachments.add(PDFTemplate(name, type, EmptyPDFVedleggData(name, type).expr()))
     }
 
     fun includeAttachment(

@@ -8,9 +8,10 @@ import no.nav.pensjon.brevbaker.api.model.VedleggType
 import java.util.Objects
 
 class PDFTemplate<out Lang: LanguageSupport, AttachmentData : PDFVedleggData>(
+    val name: String,
     val type: VedleggType,
     val data: Expression<AttachmentData>
-) : StableHash by StableHash.of(StableHash.of(type.name), StableHash.of(type.tittel.entries.joinToString()),data) {
+) : StableHash by StableHash.of(StableHash.of(name), StableHash.of(type.tittel.entries.joinToString()),data) {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFTemplate<*,*>) return false
         return type == other.type && data == other.data
