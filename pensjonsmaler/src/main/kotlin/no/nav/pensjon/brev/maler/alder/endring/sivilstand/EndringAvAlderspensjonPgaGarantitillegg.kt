@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspens
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -148,6 +149,8 @@ object EndringAvAlderspensjonPgaGarantitillegg :
                 }.orShow {
                     includePhrase(DuFaarAP(kravVirkDatoFom, totalPensjon))
                 }
+
+                includePhrase(Utbetalingsinformasjon)
 
                 paragraph {
                     text(
