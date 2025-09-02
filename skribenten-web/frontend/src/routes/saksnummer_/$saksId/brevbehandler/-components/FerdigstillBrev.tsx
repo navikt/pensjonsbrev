@@ -51,6 +51,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
       <FerdigstillValgtBrev
         antallBrevKlarTilSending={antallBrevSomErKlarTilSending}
         brev={valgtBrev}
+        brevInfo={properties.brevInfo}
         sakId={properties.sakId}
         åpneFerdigstillModal={properties.åpneFerdigstillModal}
       />
@@ -82,8 +83,36 @@ const FerdigstillValgtBrev = (properties: {
   brev: BrevInfo;
   åpneFerdigstillModal: () => void;
   antallBrevKlarTilSending: number;
+  brevInfo: BrevInfo[];
 }) => {
   const erLåst = useMemo(() => erBrevKlar(properties.brev) || erBrevArkivert(properties.brev), [properties.brev]);
+  const erKlarTilAttestering = useMemo(() => erBrevKlarTilAttestering(properties.brev), [properties.brev]);
+
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
+  const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
+  if (erKlarTilAttestering) {
+    return (
+      <Button
+        onClick={() => {
+          const brevKlarTilAttestering = properties.brevInfo.filter((brev) => erBrevKlarTilAttestering(brev));
+          setBrevListKlarTilAttestering(brevKlarTilAttestering);
+          navigate({
+            to: "/saksnummer/$saksId/kvittering",
+            params: { saksId: properties.sakId },
+            search: { enhetsId, vedtaksId },
+          });
+        }}
+        size="small"
+        type="button"
+      >
+        <HStack gap="2">
+          <Label>Fortsett</Label>
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
+      </Button>
+    );
+  }
 
   if (erLåst) {
     return (
