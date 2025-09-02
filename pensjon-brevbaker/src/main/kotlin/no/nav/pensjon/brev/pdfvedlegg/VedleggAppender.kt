@@ -27,7 +27,7 @@ internal object VedleggAppender {
         antallSider: Int,
         spraak: LanguageCode,
     ): PDDocument =
-        lesInnPDF(name, "$name-side${side.originalSide}.pdf", spraak).also { pdf ->
+        lesInnPDF(name, "${side.filnavn}.pdf", spraak).also { pdf ->
             pdf.setValues(side.felt + ("page" to "${side.sidenummer}/$antallSider"))
         }
 
