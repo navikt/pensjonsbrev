@@ -67,7 +67,7 @@ class LatexVisualITest {
     }
 
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.ipsumText() = text(Bokmal to lipsums[1])
+    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.ipsumText() = text(bokmal { +lipsums[1] })
 
     @Test
     fun `two paragraphs in a row`() {
@@ -81,9 +81,9 @@ class LatexVisualITest {
     fun fonts() {
         render {
             paragraph {
-                text(Bokmal to "The quick brown fox jumps over the lazy dog. ", FontType.PLAIN)
-                text(Bokmal to "The quick brown fox jumps over the lazy dog. ", FontType.ITALIC)
-                text(Bokmal to "The quick brown fox jumps over the lazy dog. ", FontType.BOLD)
+                text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.PLAIN)
+                text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.ITALIC)
+                text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.BOLD)
             }
         }
     }
@@ -103,7 +103,7 @@ class LatexVisualITest {
     @Test
     fun `form choice med vspace`() {
         render {
-            title1 { text(Bokmal to "Form choice") }
+            title1 { text(bokmal { +"Form choice" }) }
             paragraph {
                 formChoice(prompt = newText(Bokmal to "Hvor lenge har du jobba?"), true) {
                     choice(Bokmal to "0 år")
@@ -119,17 +119,17 @@ class LatexVisualITest {
     fun `title should not be put on a separate page`() {
         render {
             repeat(14) {
-                paragraph { text(Bokmal to "Padding") }
+                paragraph { text(bokmal { +"Padding" }) }
             }
-            title1 { text(Bokmal to "Title 1") }
-            title2 { text(Bokmal to "Title 2") }
+            title1 { text(bokmal { +"Title 1" }) }
+            title2 { text(bokmal { +"Title 2" }) }
         }
     }
 
     @Test
     fun `form choice uten vspace`() {
         render {
-            title1 { text(Bokmal to "Form choice uten vspace") }
+            title1 { text(bokmal { +"Form choice uten vspace" }) }
             paragraph {
                 formChoice(prompt = newText(Bokmal to "Hvor lenge vil du jobbe?"), false) {
                     choice(Bokmal to "0 år")
@@ -144,7 +144,7 @@ class LatexVisualITest {
     @Test
     fun `short form text med vspace`() {
         render {
-            title1 { text(Bokmal to "Form text short med vspace") }
+            title1 { text(bokmal { +"Form text short med vspace" }) }
             paragraph { formText(Size.SHORT, newText(Bokmal to "test"), true) }
         }
     }
@@ -152,7 +152,7 @@ class LatexVisualITest {
     @Test
     fun `long form text med vspace`() {
         render {
-            title1 { text(Bokmal to "Form text long med vspace") }
+            title1 { text(bokmal { +"Form text long med vspace" }) }
             paragraph { formText(Size.LONG, newText(Bokmal to "test"), true) }
         }
     }
@@ -160,7 +160,7 @@ class LatexVisualITest {
     @Test
     fun `short form text uten vspace`() {
         render {
-            title1 { text(Bokmal to "Form text short uten vspace") }
+            title1 { text(bokmal { +"Form text short uten vspace" }) }
             paragraph { formText(Size.SHORT, newText(Bokmal to "test"), false) }
         }
     }
@@ -168,7 +168,7 @@ class LatexVisualITest {
     @Test
     fun `long form text uten vspace`() {
         render {
-            title1 { text(Bokmal to "Form text long uten vspace") }
+            title1 { text(bokmal { +"Form text long uten vspace" }) }
             paragraph { formText(Size.LONG, newText(Bokmal to "test"), false) }
         }
     }
@@ -265,12 +265,12 @@ class LatexVisualITest {
     fun `should not add extra line change when nearing end of line before shipping content to new line`() {
 
         render {
-            paragraph { text(Bokmal to "Denne testen skal vise at det ikke fremstår en bug hvor det kommer ekstra linjeskift under innhold som tar opp hele bredden av linjen.") }
+            paragraph { text(bokmal { +"Denne testen skal vise at det ikke fremstår en bug hvor det kommer ekstra linjeskift under innhold som tar opp hele bredden av linjen." }) }
             repeat(30) {
                 paragraph {
                     text(
-                        Bokmal to "Denne linjen skal ikke ha større mellomrom til neste setning enn de andre. Dette er littegranne filler ˌˌˌˌˌˌ"
-                                + "ˌ".repeat(it)
+                        bokmal { +"Denne linjen skal ikke ha større mellomrom til neste setning enn de andre. Dette er littegranne filler ˌˌˌˌˌˌ"
+                                + "ˌ".repeat(it) }
                     )
                 }
             }
@@ -282,13 +282,13 @@ class LatexVisualITest {
         render {
             paragraph {
                 table(header = {
-                    column(columnSpan = 2) { text(Bokmal to "Tekst") }
-                    column(alignment = RIGHT) { text(Bokmal to "Kroner") }
+                    column(columnSpan = 2) { text(bokmal { +"Tekst" }) }
+                    column(alignment = RIGHT) { text(bokmal { +"Kroner" }) }
                 }) {
                     for (i in 1..100) {
                         row {
-                            cell { text(Bokmal to "Rad $i") }
-                            cell { text(Bokmal to "$i Kroner") }
+                            cell { text(bokmal { +"Rad $i" }) }
+                            cell { text(bokmal { +"$i Kroner" }) }
                         }
                     }
                 }
@@ -302,15 +302,15 @@ class LatexVisualITest {
             repeat(5) {
                 paragraph {
                     text(
-                        Bokmal to "Padding text bla bla. ".repeat(18),
+                        bokmal { +"Padding text bla bla. ".repeat(18) },
                     )
                 }
             }
             paragraph {
-                text(Bokmal to "Padding text bla bla. ".repeat(14))
+                text(bokmal { +"Padding text bla bla. ".repeat(14) })
             }
             title1 {
-                text(Bokmal to "Test-tittel")
+                text(bokmal { +"Test-tittel" })
             }
             paragraph { testTable(5) }        }
     }
@@ -318,8 +318,8 @@ class LatexVisualITest {
     @Test
     fun `table title and other content`() {
         render {
-            paragraph { text(Bokmal to "asdf") }
-            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { text(bokmal { +"asdf" }) }
+            title1 { text(bokmal { +"Test-tittel" }) }
             paragraph { testTable(5) }
         }
     }
@@ -328,8 +328,8 @@ class LatexVisualITest {
     @Test
     fun `table title and other title`() {
         render {
-            title1 { text(Bokmal to "Test-tittel") }
-            title1 { text(Bokmal to "Test-tittel") }
+            title1 { text(bokmal { +"Test-tittel" }) }
+            title1 { text(bokmal { +"Test-tittel" }) }
             paragraph { testTable(5) }
         }
     }
@@ -369,10 +369,10 @@ class LatexVisualITest {
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testList() {
         list {
             item {
-                text(Bokmal to "Text point 1")
+                text(bokmal { +"Text point 1" })
             }
             item {
-                text(Bokmal to "Text point 2")
+                text(bokmal { +"Text point 2" })
             }
         }
     }
@@ -380,25 +380,25 @@ class LatexVisualITest {
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable(numRows: Int = 1) {
         table(
             header = {
-                column { text(Bokmal to "Column A") }
-                column { text(Bokmal to "Column B") }
+                column { text(bokmal { +"Column A" }) }
+                column { text(bokmal { +"Column B" }) }
             }
         ) {
             for (i in 1..numRows) {
                 row {
-                    cell { text(Bokmal to "Cell A-$i") }
-                    cell { text(Bokmal to "Cell B-$i") }
+                    cell { text(bokmal { +"Cell A-$i" }) }
+                    cell { text(bokmal { +"Cell B-$i" }) }
                 }
             }
         }
     }
 
     private fun OutlineOnlyScope<LangBokmal, EmptyBrevdata>.testTitle2() {
-        title2 { text(Bokmal to "Second title") }
+        title2 { text(bokmal { +"Second title" }) }
     }
 
     private fun OutlineOnlyScope<LangBokmal, EmptyBrevdata>.testTitle1() {
-        title1 { text(Bokmal to "First title") }
+        title1 { text(bokmal { +"First title" }) }
     }
 
     enum class ElementType(val description: String) {

@@ -15,9 +15,9 @@ data class TBU4024_Generated(
 		//[TBU4024_NN, TBU4024]
 
 		paragraph {
-			textExpr (
-				Bokmal to "Uføretrygden din har vært riktig beregnet ut fra inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". ",
-				Nynorsk to "Uføretrygda di har vore rett berekna ut frå inntekta di i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". ",
+			text (
+				bokmal { + "Uføretrygden din har vært riktig beregnet ut fra inntekt i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". " },
+				nynorsk { + "Uføretrygda di har vore rett berekna ut frå inntekta di i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". " },
 			)
 		}
     }

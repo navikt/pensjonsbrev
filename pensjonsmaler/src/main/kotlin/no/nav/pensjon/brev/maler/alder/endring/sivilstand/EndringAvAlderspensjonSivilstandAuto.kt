@@ -58,7 +58,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -82,10 +82,10 @@ object EndringAvAlderspensjonSivilstandAuto :
             val harInntektOver2G = epsVedVirk.harInntektOver2G
 
             title {
-                textExpr(
-                    Language.Bokmal to "Vi har beregnet alderspensjon din på nytt fra ".expr() + kravVirkDatoFom.format(),
-                    Language.Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom.format(),
-                    Language.English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom.format(),
+                text(
+                    bokmal { + "Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom.format() },
+                    nynorsk { + "Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom.format() },
+                    english { + "We have recalculated your retirement pension from " + kravVirkDatoFom.format() },
                 )
             }
             outline {

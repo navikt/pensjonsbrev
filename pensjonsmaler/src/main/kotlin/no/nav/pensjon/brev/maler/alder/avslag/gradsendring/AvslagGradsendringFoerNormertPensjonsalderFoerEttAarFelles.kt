@@ -20,9 +20,9 @@ data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarFelles(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
             text(
-                Bokmal to "Vedtak",
-                Nynorsk to "Vedtak",
-                English to "Decision"
+                bokmal { + "Vedtak" },
+                nynorsk { + "Vedtak" },
+                english { + "Decision" }
             )
         }
 

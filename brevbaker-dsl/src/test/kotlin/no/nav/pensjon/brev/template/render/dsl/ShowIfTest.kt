@@ -51,9 +51,9 @@ class ShowIfTest {
             outline {
                 paragraph {
                     showIf(pensjonInnvilget) {
-                        text(Language.Nynorsk to "jadda")
+                        text(nynorsk { +"jadda" })
                     } orShow {
-                        text(Language.Nynorsk to "neida")
+                        text(nynorsk { +"neida" })
                     }
                 }
             }
@@ -102,9 +102,9 @@ class ShowIfTest {
             outline {
                 paragraph {
                     showIf(pensjonInnvilget) {
-                        text(Language.Nynorsk to "jadda")
+                        text(nynorsk { +"jadda" })
                     }.orShowIf(name equalTo "Test") {
-                        text(Language.Nynorsk to "neidaJoda")
+                        text(nynorsk { +"neidaJoda" })
                     }
                 }
             }
@@ -153,11 +153,11 @@ class ShowIfTest {
             outline {
                 paragraph {
                     showIf(pensjonInnvilget) {
-                        text(Language.Nynorsk to "jadda")
+                        text(nynorsk { +"jadda" })
                     }.orShowIf(name equalTo "Test") {
-                        text(Language.Nynorsk to "neidaJoda")
+                        text(nynorsk { +"neidaJoda" })
                     } orShow {
-                        text(Language.Nynorsk to "neida")
+                        text(nynorsk { +"neida" })
                     }
                 }
             }

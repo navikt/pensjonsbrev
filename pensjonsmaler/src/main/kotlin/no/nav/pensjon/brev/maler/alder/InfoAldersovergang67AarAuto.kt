@@ -48,9 +48,9 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
         ) {
             title {
                 text(
-                    Bokmal to "Informasjon om alderspensjon til deg som snart fyller 67 år",
-                    Nynorsk to "Informasjon om alderspensjon til deg som snart fyller 67 år",
-                    English to "Information about retirement pension for people who are about to turn 67",
+                    bokmal { + "Informasjon om alderspensjon til deg som snart fyller 67 år" },
+                    nynorsk { + "Informasjon om alderspensjon til deg som snart fyller 67 år" },
+                    english { + "Information about retirement pension for people who are about to turn 67" },
                 )
             }
             outline {

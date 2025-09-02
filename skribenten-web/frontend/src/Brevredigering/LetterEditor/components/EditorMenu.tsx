@@ -66,15 +66,16 @@ export const EditorMenu = () => {
       css={css`
         border-bottom: 1px solid var(--a-gray-200);
         background: var(--a-white);
-        padding: var(--a-spacing-2) var(--a-spacing-4);
+        padding-inline: var(--a-spacing-4);
+        min-height: 48px;
         display: flex;
-        gap: var(--a-spacing-2);
+        gap: var(--a-spacing-1);
         align-self: stretch;
         align-items: center;
         justify-content: space-between;
       `}
     >
-      <HStack gap="5">
+      <HStack align="center" gap="5" margin-block="2">
         <EditorFonts editorState={editorState} setEditorState={setEditorState} />
         <VerticalDivider />
         <EditorBulletList editorState={editorState} setEditorState={setEditorState} />

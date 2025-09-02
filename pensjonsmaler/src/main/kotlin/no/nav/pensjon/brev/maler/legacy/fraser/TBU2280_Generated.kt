@@ -21,44 +21,44 @@ data class TBU2280_Generated(
 
 		paragraph {
 			text (
-				Bokmal to "Vi vil foreta et etteroppgjør hvis du har fått utbetalt for mye eller for lite uføretrygd ",
-				Nynorsk to "Vi gjer eit etteroppgjer dersom du har fått utbetalt for mykje eller for lite uføretrygd ",
+				bokmal { + "Vi vil foreta et etteroppgjør hvis du har fått utbetalt for mye eller for lite uføretrygd " },
+				nynorsk { + "Vi gjer eit etteroppgjer dersom du har fått utbetalt for mykje eller for lite uføretrygd " },
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
 			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
-					Bokmal to "og barnetillegg ",
-					Nynorsk to "og barnetillegg ",
+					bokmal { + "og barnetillegg " },
+					nynorsk { + "og barnetillegg " },
 				)
 			}
 			text (
-				Bokmal to "i løpet av året. Dette gjør vi når likningen fra Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd",
-				Nynorsk to "i løpet av året. Dette gjer vi når likninga frå Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd",
+				bokmal { + "i løpet av året. Dette gjør vi når likningen fra Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd" },
+				nynorsk { + "i løpet av året. Dette gjer vi når likninga frå Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd" },
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
 			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
-					Bokmal to " og barnetillegg",
-					Nynorsk to " og barnetillegg",
+					bokmal { + " og barnetillegg" },
+					nynorsk { + " og barnetillegg" },
 				)
 			}
 			text (
-				Bokmal to ", vil vi utbetale dette beløpet til deg. Hvis du har fått utbetalt for mye i uføretrygd",
-				Nynorsk to ", vil vi betale deg dette beløpet. Dersom du har fått utbetalt for mykje i uføretrygd",
+				bokmal { + ", vil vi utbetale dette beløpet til deg. Hvis du har fått utbetalt for mye i uføretrygd" },
+				nynorsk { + ", vil vi betale deg dette beløpet. Dersom du har fått utbetalt for mykje i uføretrygd" },
 			)
 
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
 			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
-					Bokmal to " og barnetillegg",
-					Nynorsk to " og barnetillegg",
+					bokmal { + " og barnetillegg" },
+					nynorsk { + " og barnetillegg" },
 				)
 			}
 			text (
-				Bokmal to ", må du betale dette tilbake.",
-				Nynorsk to ", må du betale dette tilbake.",
+				bokmal { + ", må du betale dette tilbake." },
+				nynorsk { + ", må du betale dette tilbake." },
 			)
 		}
     }

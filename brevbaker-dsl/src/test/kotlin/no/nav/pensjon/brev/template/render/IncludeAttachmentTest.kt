@@ -30,7 +30,7 @@ class IncludeAttachmentTest {
             includeSakspart = true
         ) {
             paragraph {
-                text(Nynorsk to "test")
+                text(nynorsk { +"test" })
             }
         }
 
@@ -52,7 +52,7 @@ class IncludeAttachmentTest {
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title { text(Nynorsk to "tittel") }
+            title { text(nynorsk { +"tittel" }) }
             outline {}
             includeAttachment(testVedlegg, Unit.expr(), false.expr())
         }
@@ -71,7 +71,7 @@ class IncludeAttachmentTest {
             includeSakspart = true
         ) {
             paragraph {
-                text(Nynorsk to "test")
+                text(nynorsk { +"test" })
             }
         }
 
@@ -81,7 +81,7 @@ class IncludeAttachmentTest {
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title { text(Nynorsk to "tittel") }
+            title { text(nynorsk { +"tittel" }) }
             outline {}
             includeAttachmentIfNotNull(testVedlegg, test)
         }

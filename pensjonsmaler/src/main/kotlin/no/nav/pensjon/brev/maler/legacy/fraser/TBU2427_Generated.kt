@@ -12,9 +12,9 @@ object TBU2427_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				Bokmal to "<FRITEKST: konkret begrunnelse der det er nødvendig>",
-				Nynorsk to "<Fritekst: konkret begrunnelse der det er nødvendig>",
-				English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>",
+				bokmal { + "<FRITEKST: konkret begrunnelse der det er nødvendig>" },
+				nynorsk { + "<Fritekst: konkret begrunnelse der det er nødvendig>" },
+				english { + "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>" },
 			)
 		}
     }
