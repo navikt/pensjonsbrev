@@ -10,7 +10,7 @@ object TBU1216_Generated : OutlinePhrase<LangBokmal>() {
 
 		paragraph {
 			text (
-				Bokmal to "Gjenlevendetillegget ditt er ikke redusert.",
+				bokmal { + "Gjenlevendetillegget ditt er ikke redusert." },
 			)
 		}
     }

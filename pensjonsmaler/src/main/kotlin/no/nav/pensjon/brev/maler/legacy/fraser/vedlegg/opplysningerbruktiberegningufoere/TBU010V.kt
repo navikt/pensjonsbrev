@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -23,9 +22,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                 header = {
                     column(4) {
                         text(
-                            Bokmal to "Opplysning",
-                            Nynorsk to "Opplysning",
-                            English to "Information",
+                            bokmal { + "Opplysning" },
+                            nynorsk { + "Opplysning" },
+                            english { + "Information" },
                         )
                     }
                     column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
@@ -38,16 +37,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Uføretidspunkt",
-                                Nynorsk to "Uføretidspunkt",
-                                English to "Date of disability",
+                                bokmal { + "Uføretidspunkt" },
+                                nynorsk { + "Uføretidspunkt" },
+                                english { + "Date of disability" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to uforetidspunkt.format(),
-                                Nynorsk to uforetidspunkt.format(),
-                                English to uforetidspunkt.format(),
+                            text(
+                                bokmal { + uforetidspunkt.format() },
+                                nynorsk { + uforetidspunkt.format() },
+                                english { + uforetidspunkt.format() },
                             )
                         }
 
@@ -61,19 +60,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Beregningsgrunnlag",
-                                Nynorsk to "Berekningsgrunnlag",
-                                English to "Basis for calculation",
+                                bokmal { + "Beregningsgrunnlag" },
+                                nynorsk { + "Berekningsgrunnlag" },
+                                english { + "Basis for calculation" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop()
+                                    .format(false) + " NOK" },
                             )
                         }
 
@@ -87,19 +86,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Beregningsgrunnlag yrkesskade",
-                                Nynorsk to "Berekningsgrunnlag yrkesskade",
-                                English to "Basis for calculation due to occupational injury ",
+                                bokmal { + "Beregningsgrunnlag yrkesskade" },
+                                nynorsk { + "Berekningsgrunnlag yrkesskade" },
+                                english { + "Basis for calculation due to occupational injury " },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop()
+                                    .format(false) + " NOK" },
                             )
                         }
 
@@ -113,16 +112,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Inntekt før uførhet",
-                                Nynorsk to "Inntekt før uførleik",
-                                English to "Income prior to disability",
+                                bokmal { + "Inntekt før uførhet" },
+                                nynorsk { + "Inntekt før uførleik" },
+                                english { + "Income prior to disability" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format(false) + " kr",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format(false) + " kr" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format(false) + " NOK" },
                             )
                         }
 
@@ -136,16 +135,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Inntekt etter uførhet",
-                                Nynorsk to "Inntekt etter uførleik",
-                                English to "Income after disability",
+                                bokmal { + "Inntekt etter uførhet" },
+                                nynorsk { + "Inntekt etter uførleik" },
+                                english { + "Income after disability" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format(false) + " kr",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format(false) + " kr" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().format(false) + " NOK" },
                             )
                         }
 
@@ -156,16 +155,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                 row {
                     cell {
                         text(
-                            Bokmal to "Uføregrad",
-                            Nynorsk to "Uføregrad",
-                            English to "Degree of disability",
+                            bokmal { + "Uføregrad" },
+                            nynorsk { + "Uføregrad" },
+                            english { + "Degree of disability" },
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %",
-                            Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %",
-                            English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %",
+                        text(
+                            bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %" },
+                            nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %" },
+                            english { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " %" },
                         )
                     }
 
@@ -178,16 +177,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Inntektsgrense",
-                                Nynorsk to "Inntektsgrense",
-                                English to "Income cap",
+                                bokmal { + "Inntektsgrense" },
+                                nynorsk { + "Inntektsgrense" },
+                                english { + "Income cap" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.ut_inntektsgrense_faktisk().format(false) + " kr",
-                                Nynorsk to pe.ut_inntektsgrense_faktisk().format(false) + " kr",
-                                English to pe.ut_inntektsgrense_faktisk().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.ut_inntektsgrense_faktisk().format(false) + " kr" },
+                                nynorsk { + pe.ut_inntektsgrense_faktisk().format(false) + " kr" },
+                                english { + pe.ut_inntektsgrense_faktisk().format(false) + " NOK" },
                             )
                         }
 
@@ -201,19 +200,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Forventet inntekt",
-                                Nynorsk to "Forventa inntekt",
-                                English to "Expected income",
+                                bokmal { + "Forventet inntekt" },
+                                nynorsk { + "Forventa inntekt" },
+                                english { + "Expected income" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+                                    .format(false) + " NOK" },
                             )
                         }
 
@@ -227,19 +226,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Kompensasjonsgrad",
-                                Nynorsk to "Kompensasjonsgrad",
-                                English to "Percentage of compensation",
+                                bokmal { + "Kompensasjonsgrad" },
+                                nynorsk { + "Kompensasjonsgrad" },
+                                english { + "Percentage of compensation" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .format() + " %",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .format() + " %",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .format() + " %",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format() + " %" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format() + " %" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format() + " %" },
                             )
                         }
 
@@ -250,9 +249,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                 row {
                     cell {
                         text(
-                            Bokmal to "Inntekt som medfører at uføretrygden ikke blir utbetalt",
-                            Nynorsk to "Inntekt som fører til at uføretrygda ikkje blir utbetalt",
-                            English to "Income that will lead to no payment of your disability benefit",
+                            bokmal { + "Inntekt som medfører at uføretrygden ikke blir utbetalt" },
+                            nynorsk { + "Inntekt som fører til at uføretrygda ikkje blir utbetalt" },
+                            english { + "Income that will lead to no payment of your disability benefit" },
                         )
                     }
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
@@ -261,10 +260,10 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                                 .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))
                         ) {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format(false) + " NOK" },
                             )
                         }
 
@@ -273,10 +272,10 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                                 .greaterThanOrEqual(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))
                         ) {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format(false) + " NOK" },
                             )
                         }
                     }
@@ -290,9 +289,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Sivilstatus lagt til grunn ved beregningen",
-                                Nynorsk to "Sivilstatus lagd til grunn ved berekninga",
-                                English to "Marital status applied to calculation",
+                                bokmal { + "Sivilstatus lagt til grunn ved beregningen" },
+                                nynorsk { + "Sivilstatus lagd til grunn ved berekninga" },
+                                english { + "Marital status applied to calculation" },
                             )
                         }
 
@@ -301,9 +300,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                                 ((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("gift")) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bor med ektefelle"))
                             ) {
                                 text(
-                                    Bokmal to "Gift",
-                                    Nynorsk to "Gift",
-                                    English to "Married",
+                                    bokmal { + "Gift" },
+                                    nynorsk { + "Gift" },
+                                    english { + "Married" },
                                 )
                             }
 
@@ -312,9 +311,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                                 (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner men lever adskilt") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bormed partner"))
                             ) {
                                 text(
-                                    Bokmal to "Partner",
-                                    Nynorsk to "Partnar",
-                                    English to "Partnership",
+                                    bokmal { + "Partner" },
+                                    nynorsk { + "Partnar" },
+                                    english { + "Partnership" },
                                 )
                             }
 
@@ -323,27 +322,27 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                                 (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift ektefelle bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert partner bormed 3-2"))
                             ) {
                                 text(
-                                    Bokmal to "Samboer (jf. folketrygdloven § 12-13)",
-                                    Nynorsk to "Sambuar (jf. folketrygdlova § 12-13)",
-                                    English to "Cohabitation (cf. Section 12-13 of the National Insurance Act)",
+                                    bokmal { + "Samboer (jf. folketrygdloven § 12-13)" },
+                                    nynorsk { + "Sambuar (jf. folketrygdlova § 12-13)" },
+                                    english { + "Cohabitation (cf. Section 12-13 of the National Insurance Act)" },
                                 )
                             }
 
                             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 1-5")) {
                                 text(
-                                    Bokmal to "Samboer (jf. folketrygdloven § 1-5)",
-                                    Nynorsk to "Sambuar (jf. folketrygdlova § 1-5)",
-                                    English to "Cohabitation (cf. Section 1-5 of the National Insurance Act)",
+                                    bokmal { + "Samboer (jf. folketrygdloven § 1-5)" },
+                                    nynorsk { + "Sambuar (jf. folketrygdlova § 1-5)" },
+                                    english { + "Cohabitation (cf. Section 1-5 of the National Insurance Act)" },
                                 )
                             }
 
                             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "enke"
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("enke")) {
                                 text(
-                                    Bokmal to "Enke/Enkemann ",
-                                    Nynorsk to "Enkje/Enkjemann ",
-                                    English to "Widow/widower ",
+                                    bokmal { + "Enke/Enkemann " },
+                                    nynorsk { + "Enkje/Enkjemann " },
+                                    english { + "Widow/widower " },
                                 )
                             }
 
@@ -352,9 +351,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                                 (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig separert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig separert partner") or (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("sepr")))
                             ) {
                                 text(
-                                    Bokmal to "Enslig",
-                                    Nynorsk to "Einsleg",
-                                    English to "Single",
+                                    bokmal { + "Enslig" },
+                                    nynorsk { + "Einsleg" },
+                                    english { + "Single" },
                                 )
                             }
                         }
@@ -368,9 +367,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Du eller partneren er registrert med annet bosted, eller er på institusjon",
-                                Nynorsk to "Du eller partnaren er registrert med annan bustad, eller er på institusjon",
-                                English to "You have, or your partner has, been registered as having a different address, or as living in an institution",
+                                bokmal { + "Du eller partneren er registrert med annet bosted, eller er på institusjon" },
+                                nynorsk { + "Du eller partnaren er registrert med annan bustad, eller er på institusjon" },
+                                english { + "You have, or your partner has, been registered as having a different address, or as living in an institution" },
                             )
                         }
                         cell {
@@ -386,9 +385,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Du eller ektefellen er registrert med annet bosted, eller er på institusjon",
-                                Nynorsk to "Du eller ektefellen er registrert med annan bustad, eller er på institusjon",
-                                English to "You have, or your spouse has, been registered as having a different address, or as living in an institution",
+                                bokmal { + "Du eller ektefellen er registrert med annet bosted, eller er på institusjon" },
+                                nynorsk { + "Du eller ektefellen er registrert med annan bustad, eller er på institusjon" },
+                                english { + "You have, or your spouse has, been registered as having a different address, or as living in an institution" },
                             )
                         }
                         cell {
@@ -404,9 +403,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Ung ufør",
-                                Nynorsk to "Ung ufør",
-                                English to "Young disabled",
+                                bokmal { + "Ung ufør" },
+                                nynorsk { + "Ung ufør" },
+                                english { + "Young disabled" },
                             )
                         }
                         cell {
@@ -422,16 +421,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Yrkesskadegrad",
-                                Nynorsk to "Yrkesskadegrad",
-                                English to "Degree of disability due to occupational injury",
+                                bokmal { + "Yrkesskadegrad" },
+                                nynorsk { + "Yrkesskadegrad" },
+                                english { + "Degree of disability due to occupational injury" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " %" },
                             )
                         }
                     }
@@ -445,16 +444,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Skadetidspunktet for yrkesskaden",
-                                    Nynorsk to "Skadetidspunktet for yrkesskaden",
-                                    English to "Date of injury",
+                                    bokmal { + "Skadetidspunktet for yrkesskaden" },
+                                    nynorsk { + "Skadetidspunktet for yrkesskaden" },
+                                    english { + "Date of injury" },
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to skadetidspunkt.format(),
-                                    Nynorsk to skadetidspunkt.format(),
-                                    English to skadetidspunkt.format(),
+                                text(
+                                    bokmal { + skadetidspunkt.format() },
+                                    nynorsk { + skadetidspunkt.format() },
+                                    english { + skadetidspunkt.format() },
                                 )
                             }
                         }
@@ -468,16 +467,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
-                                Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
-                                English to "Annual income at the date of injury",
+                                bokmal { + "Årlig arbeidsinntekt på skadetidspunktet" },
+                                nynorsk { + "Årleg arbeidsinntekt på skadetidspunktet" },
+                                english { + "Annual income at the date of injury" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " NOK" },
                             )
                         }
                     }
@@ -490,9 +489,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Du er innvilget flyktningstatus fra UDI",
-                                Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)",
+                                bokmal { + "Du er innvilget flyktningstatus fra UDI" },
+                                nynorsk { + "Du er innvilga flyktningstatus frå UDI" },
+                                english { + "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)" },
                             )
                         }
                         cell {
@@ -508,16 +507,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Trygdetid (maksimalt 40 år)",
-                                Nynorsk to "Trygdetid (maksimalt 40 år)",
-                                English to "Insurance period (maximum 40 years)",
+                                bokmal { + "Trygdetid (maksimalt 40 år)" },
+                                nynorsk { + "Trygdetid (maksimalt 40 år)" },
+                                english { + "Insurance period (maximum 40 years)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years" },
                             )
                         }
                     }
@@ -530,16 +529,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)",
-                                Nynorsk to "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i berekninga (maksimalt 40 år)",
-                                English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)",
+                                bokmal { + "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)" },
+                                nynorsk { + "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i berekninga (maksimalt 40 år)" },
+                                english { + "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years" },
                             )
                         }
                     }
@@ -552,16 +551,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)",
-                                Nynorsk to "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i berekninga (maksimalt 40 år)",
-                                English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)",
+                                bokmal { + "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)" },
+                                nynorsk { + "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i berekninga (maksimalt 40 år)" },
+                                english { + "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years" },
                             )
                         }
                     }
@@ -574,16 +573,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Faktisk trygdetid i Norge",
-                                Nynorsk to "Faktisk trygdetid i Noreg",
-                                English to "Actual insurance period in Norway",
+                                bokmal { + "Faktisk trygdetid i Norge" },
+                                nynorsk { + "Faktisk trygdetid i Noreg" },
+                                english { + "Actual insurance period in Norway" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " måneder",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " månader",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " months",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " måneder" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " månader" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fattnorge().format() + " months" },
                             )
                         }
                     }
@@ -596,16 +595,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Faktisk trygdetid i andre EØS-land",
-                                Nynorsk to "Faktisk trygdetid i andre EØS-land",
-                                English to "Actual insurance period(s) in other EEA countries",
+                                bokmal { + "Faktisk trygdetid i andre EØS-land" },
+                                nynorsk { + "Faktisk trygdetid i andre EØS-land" },
+                                english { + "Actual insurance period(s) in other EEA countries" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " måneder",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " månader",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " months",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " måneder" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " månader" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().format() + " months" },
                             )
                         }
                     }
@@ -618,16 +617,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
-                                Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
-                                English to "Actual insurance period in Norway and partner countries (maximum 40 years)",
+                                bokmal { + "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)" },
+                                nynorsk { + "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)" },
+                                english { + "Actual insurance period in Norway and partner countries (maximum 40 years)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.ut_sum_fattnorge_fatteos().format() + " måneder",
-                                Nynorsk to pe.ut_sum_fattnorge_fatteos().format() + " månader",
-                                English to pe.ut_sum_fattnorge_fatteos().format() + " months",
+                            text(
+                                bokmal { + pe.ut_sum_fattnorge_fatteos().format() + " måneder" },
+                                nynorsk { + pe.ut_sum_fattnorge_fatteos().format() + " månader" },
+                                english { + pe.ut_sum_fattnorge_fatteos().format() + " months" },
                             )
                         }
                     }
@@ -640,9 +639,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Forholdstallet brukt i beregning av trygdetid",
-                                Nynorsk to "Forholdstalet brukt ved berekning av trygdetid",
-                                English to "Ratio applied in calculation of insurance period",
+                                bokmal { + "Forholdstallet brukt i beregning av trygdetid" },
+                                nynorsk { + "Forholdstalet brukt ved berekning av trygdetid" },
+                                english { + "Ratio applied in calculation of insurance period" },
                             )
                         }
                         cell {
@@ -663,16 +662,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
-                                Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt ved berekning av framtidig trygdetid",
-                                English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)",
+                                bokmal { + "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid" },
+                                nynorsk { + "Faktisk trygdetid i anna nordisk land som blir brukt ved berekning av framtidig trygdetid" },
+                                english { + "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " måneder",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " månader",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " months",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " måneder" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " månader" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnordisk().format() + " months" },
                             )
                         }
                     }
@@ -686,16 +685,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Norsk framtidig trygdetid",
-                                Nynorsk to "Norsk framtidig trygdetid",
-                                English to "Future insurance period in Norway",
+                                bokmal { + "Norsk framtidig trygdetid" },
+                                nynorsk { + "Norsk framtidig trygdetid" },
+                                english { + "Future insurance period in Norway" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " måneder",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " månader",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " months",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " måneder" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " månader" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().format() + " months" },
                             )
                         }
                     }
@@ -708,9 +707,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
-                                Nynorsk to "Forholdstalet brukt ved reduksjon av norsk framtidig trygdetid",
-                                English to "Ratio applied in reduction of future Norwegian insurance period",
+                                bokmal { + "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid" },
+                                nynorsk { + "Forholdstalet brukt ved reduksjon av norsk framtidig trygdetid" },
+                                english { + "Ratio applied in reduction of future Norwegian insurance period" },
                             )
                         }
                         cell {
@@ -731,16 +730,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                Nynorsk to "Samla trygdetid brukt ved berekning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s)",
+                                bokmal { + "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid" },
+                                nynorsk { + "Samla trygdetid brukt ved berekning av uføretrygd etter reduksjon av framtidig trygdetid" },
+                                english { + "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.ut_sum_fattnorge_fatt_a10_netto().format() + " måneder",
-                                Nynorsk to pe.ut_sum_fattnorge_fatt_a10_netto().format() + " månader",
-                                English to pe.ut_sum_fattnorge_fatt_a10_netto().format() + " months",
+                            text(
+                                bokmal { + pe.ut_sum_fattnorge_fatt_a10_netto().format() + " måneder" },
+                                nynorsk { + pe.ut_sum_fattnorge_fatt_a10_netto().format() + " månader" },
+                                english { + pe.ut_sum_fattnorge_fatt_a10_netto().format() + " months" },
                             )
                         }
                     }
@@ -753,16 +752,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Faktisk trygdetid i annet avtaleland ",
-                                Nynorsk to "Faktisk trygdetid i anna avtaleland",
-                                English to "Actual insurance period(s) in another partner country",
+                                bokmal { + "Faktisk trygdetid i annet avtaleland " },
+                                nynorsk { + "Faktisk trygdetid i anna avtaleland" },
+                                english { + "Actual insurance period(s) in another partner country" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " måneder",
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " månader",
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " months",
+                            text(
+                                bokmal { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " måneder" },
+                                nynorsk { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " månader" },
+                                english { + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ttutlandtrygdeavtaleliste_ttutlandtrygdeavtale_fattbilateral().format() + " months" },
                             )
                         }
                     }
@@ -775,16 +774,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
-                                Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
-                                English to "Actual insurance period in Norway and partner countries (maximum 40 years)",
+                                bokmal { + "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
+                                nynorsk { + "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)" },
+                                english { + "Actual insurance period in Norway and partner countries (maximum 40 years)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.ut_sum_fattnorge_fattbilateral().format() + " måneder",
-                                Nynorsk to pe.ut_sum_fattnorge_fattbilateral().format() + " månader",
-                                English to pe.ut_sum_fattnorge_fattbilateral().format() + " months",
+                            text(
+                                bokmal { + pe.ut_sum_fattnorge_fattbilateral().format() + " måneder" },
+                                nynorsk { + pe.ut_sum_fattnorge_fattbilateral().format() + " månader" },
+                                english { + pe.ut_sum_fattnorge_fattbilateral().format() + " months" },
                             )
                         }
                     }
@@ -797,9 +796,9 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
-                                Nynorsk to "Forholdstalet brukt i berekning av uføretrygd",
-                                English to "Ratio applied in calculation of insurance",
+                                bokmal { + "Forholdstallet brukt i beregning av uføretrygd" },
+                                nynorsk { + "Forholdstalet brukt i berekning av uføretrygd" },
+                                english { + "Ratio applied in calculation of insurance" },
                             )
                         }
                         cell {
@@ -820,19 +819,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "År med inntekt over folketrygdens grunnbeløp før uføretidspunktet",
-                                Nynorsk to "År med inntekt over grunnbeløpet i folketrygda før uføretidspunktet",
-                                English to "Years of income exceeding the National Insurance basic amount at date of disability",
+                                bokmal { + "År med inntekt over folketrygdens grunnbeløp før uføretidspunktet" },
+                                nynorsk { + "År med inntekt over grunnbeløpet i folketrygda før uføretidspunktet" },
+                                english { + "Years of income exceeding the National Insurance basic amount at date of disability" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
-                                    .format() + " år",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
-                                    .format() + " år",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
-                                    .format() + " years",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
+                                    .format() + " år" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
+                                    .format() + " år" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarover1g()
+                                    .format() + " years" },
                             )
                         }
                     }
@@ -845,19 +844,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "År med inntekt i utlandet brukt i beregningen",
-                                Nynorsk to "År med inntekt i utlandet",
-                                English to "Years with income abroad",
+                                bokmal { + "År med inntekt i utlandet brukt i beregningen" },
+                                nynorsk { + "År med inntekt i utlandet" },
+                                english { + "Years with income abroad" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
-                                    .format() + " år",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
-                                    .format() + " år",
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
-                                    .format() + " years",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
+                                    .format() + " år" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
+                                    .format() + " år" },
+                                english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland()
+                                    .format() + " years" },
                             )
                         }
                     }
@@ -870,16 +869,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Totalt antall barn du har barnetillegg for",
-                                Nynorsk to "Totalt tal barn du har barnetillegg for",
-                                English to "Total number of children for whom you receive child supplement",
+                                bokmal { + "Totalt antall barn du har barnetillegg for" },
+                                nynorsk { + "Totalt tal barn du har barnetillegg for" },
+                                english { + "Total number of children for whom you receive child supplement" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.ut_antallbarnserkullogfelles().format(),
-                                Nynorsk to pe.ut_antallbarnserkullogfelles().format(),
-                                English to pe.ut_antallbarnserkullogfelles().format(),
+                            text(
+                                bokmal { + pe.ut_antallbarnserkullogfelles().format() },
+                                nynorsk { + pe.ut_antallbarnserkullogfelles().format() },
+                                english { + pe.ut_antallbarnserkullogfelles().format() },
                             )
                         }
                     }
@@ -891,17 +890,17 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
 
                     row {
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
-                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % of income before disability, adjusted for changes in the basic amount",
+                            text(
+                                bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)" },
+                                nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)" },
+                                english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_prosentsatsoifufortak().format() + " % of income before disability, adjusted for changes in the basic amount" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(false) + " kr",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(false) + " kr",
-                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(false) + " kr" },
+                                english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format(false) + " NOK" },
                             )
                         }
                     }
@@ -914,19 +913,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Fribeløp for særkullsbarn",
-                                Nynorsk to "Fribeløp for særkullsbarn",
-                                English to "Exemption amount for children from a previous relationship",
+                                bokmal { + "Fribeløp for særkullsbarn" },
+                                nynorsk { + "Fribeløp for særkullsbarn" },
+                                english { + "Exemption amount for children from a previous relationship" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+                                    .format(false) + " NOK" },
                             )
                         }
                     }
@@ -939,19 +938,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Fribeløp for fellesbarn",
-                                Nynorsk to "Fribeløp for fellesbarn",
-                                English to "Exemption amount for joint children",
+                                bokmal { + "Fribeløp for fellesbarn" },
+                                nynorsk { + "Fribeløp for fellesbarn" },
+                                english { + "Exemption amount for joint children" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                    .format(false) + " NOK" },
                             )
                         }
                     }
@@ -964,34 +963,34 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                Nynorsk to "Inntekt for deg som er brukt i berekning av barnetillegg",
-                                English to "Your income, which is used to calculate child supplement",
+                                bokmal { + "Samlet inntekt som er brukt i fastsettelse av barnetillegg" },
+                                nynorsk { + "Inntekt for deg som er brukt i berekning av barnetillegg" },
+                                english { + "Your income, which is used to calculate child supplement" },
                             )
                         }
 
                         //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false
                         cell {
                             showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) {
-                                textExpr(
-                                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(false),
-                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(false),
-                                    English to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(false),
+                                text(
+                                    bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(false) },
+                                    nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(false) },
+                                    english { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format(false) },
                                 )
                             }
 
                             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
-                                textExpr(
-                                    Bokmal to pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().format(false),
-                                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format(false),
-                                    English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format(false),
+                                text(
+                                    bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().format(false) },
+                                    nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format(false) },
+                                    english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format(false) },
                                 )
                             }
                             text(
-                                Bokmal to " kr",
-                                Nynorsk to " kr",
-                                English to " NOK",
+                                bokmal { + " kr" },
+                                nynorsk { + " kr" },
+                                english { + " NOK" },
                             )
                         }
                     }
@@ -1004,16 +1003,16 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
-                                Nynorsk to "Inntekt til annan forelder som er brukt i berekning av barnetillegg",
-                                English to "Income of the other parent, which is used to calculate child supplement",
+                                bokmal { + "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg" },
+                                nynorsk { + "Inntekt til annan forelder som er brukt i berekning av barnetillegg" },
+                                english { + "Income of the other parent, which is used to calculate child supplement" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format(false) + " kr",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format(false) + " kr",
-                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format(false) + " kr" },
+                                nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format(false) + " kr" },
+                                english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format(false) + " NOK" },
                             )
                         }
                     }
@@ -1026,19 +1025,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Beløp som er trukket fra annen forelders inntekt (inntil 1G)",
-                                Nynorsk to "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)",
-                                English to "Amount deducted from the other parent's income (up to 1G)",
+                                bokmal { + "Beløp som er trukket fra annen forelders inntekt (inntil 1G)" },
+                                nynorsk { + "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)" },
+                                english { + "Amount deducted from the other parent's income (up to 1G)" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                                    .format(false) + " NOK" },
                             )
                         }
                     }
@@ -1051,19 +1050,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                Nynorsk to "Samla inntekt som gjer at barnetillegget ikkje blir utbetalt",
-                                English to "Your income which means that no child supplement is received",
+                                bokmal { + "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt" },
+                                nynorsk { + "Samla inntekt som gjer at barnetillegget ikkje blir utbetalt" },
+                                english { + "Your income which means that no child supplement is received" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak()
+                                    .format(false) + " NOK" },
                             )
                         }
                     }
@@ -1076,19 +1075,19 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                     row {
                         cell {
                             text(
-                                Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
-                                Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
-                                English to "Total income which means that no child supplement is received",
+                                bokmal { + "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt" },
+                                nynorsk { + "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt" },
+                                english { + "Total income which means that no child supplement is received" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
-                                    .format(false) + " kr",
-                                Nynorsk to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
-                                    .format(false) + " kr",
-                                English to pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
-                                    .format(false) + " NOK",
+                            text(
+                                bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                                    .format(false) + " kr" },
+                                english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak()
+                                    .format(false) + " NOK" },
                             )
                         }
                     }

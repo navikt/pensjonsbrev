@@ -53,18 +53,18 @@ val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynor
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: Expression<String>) {
     paragraph {
         val dokDato = felles.dokumentDato.format()
-        textExpr(
-            Bokmal to "Jeg viser til brev av ".expr() + dokDato + ".",
-            Nynorsk to "Eg viser til brev datert ".expr() + dokDato + ".",
-            English to "I refer to your letter dated ".expr() + dokDato + ".",
+        text(
+            bokmal { + "Jeg viser til brev av " + dokDato + "." },
+            nynorsk { + "Eg viser til brev datert " + dokDato + "." },
+            english { + "I refer to your letter dated " + dokDato + "." },
         )
     }
 
     paragraph {
-        textExpr(
-            Bokmal to "I ".expr() + aarEgenerklaering + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
-            Nynorsk to "I ".expr() + aarEgenerklaering + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
-            English to "In ".expr() + aarEgenerklaering + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
+        text(
+            bokmal { + "I " + aarEgenerklaering + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)" },
+            nynorsk { + "I " + aarEgenerklaering + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)" },
+            english { + "In " + aarEgenerklaering + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)" },
         )
     }
 
@@ -99,9 +99,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
 
     title2 {
         text(
-            Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:",
-            Nynorsk to "Om omsorgsforholdet er blitt avslutta under året:",
-            English to "If care work has ceased during the year:",
+            bokmal { + "Hvis omsorgsforholdet har opphørt i løpet av året:" },
+            nynorsk { + "Om omsorgsforholdet er blitt avslutta under året:" },
+            english { + "If care work has ceased during the year:" },
         )
     }
     paragraph {
@@ -134,9 +134,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
 
     paragraph {
         text(
-            Bokmal to "Du må sende denne egenerklæringen til:",
-            Nynorsk to "Du må sende denne eigenmeldinga til:",
-            English to "Please return the form to:"
+            bokmal { + "Du må sende denne egenerklæringen til:" },
+            nynorsk { + "Du må sende denne eigenmeldinga til:" },
+            english { + "Please return the form to:" }
         )
         newline()
 

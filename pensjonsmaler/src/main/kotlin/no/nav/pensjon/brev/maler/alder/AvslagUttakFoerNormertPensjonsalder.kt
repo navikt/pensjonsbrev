@@ -29,7 +29,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -49,10 +49,10 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Nav har avslått søknaden din om alderspensjon fra ".expr() + pesysData.virkFom.format(),
-                Nynorsk to "Nav har avslått søknaden din om alderspensjon frå ".expr() + pesysData.virkFom.format(),
-                English to "Nav has declined your application for retirement pension from ".expr() + pesysData.virkFom.format(),
+            text(
+                bokmal { + "Nav har avslått søknaden din om alderspensjon fra " + pesysData.virkFom.format() },
+                nynorsk { + "Nav har avslått søknaden din om alderspensjon frå " + pesysData.virkFom.format() },
+                english { + "Nav has declined your application for retirement pension from " + pesysData.virkFom.format() },
             )
         }
 

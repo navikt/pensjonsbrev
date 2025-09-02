@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -106,18 +105,18 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, 
     ) {
         title {
             text(
-                Language.Bokmal to "Klage oversendelsesblankett",
-                Language.Nynorsk to "Klage oversendelsesblankett",
-                Language.English to "Klage oversendelsesblankett"
+                bokmal { +"Klage oversendelsesblankett" },
+                nynorsk { +"Klage oversendelsesblankett" },
+                english { +"Klage oversendelsesblankett" }
             )
         }
 
         outline {
             title2 {
                 text(
-                    Language.Bokmal to "Informasjon om saken",
-                    Language.Nynorsk to "Informasjon om saken",
-                    Language.English to "Informasjon om saken"
+                    bokmal { +"Informasjon om saken" },
+                    nynorsk { +"Informasjon om saken" },
+                    english { +"Informasjon om saken" }
                 )
             }
             formaterPunktMedSvar("Saktype", sakTypeTekst)
@@ -126,9 +125,9 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, 
 
             title2 {
                 text(
-                    Language.Bokmal to "Formkrav og klagefrist",
-                    Language.Nynorsk to "Formkrav og klagefrist",
-                    Language.English to "Formkrav og klagefrist"
+                    bokmal { +"Formkrav og klagefrist" },
+                    nynorsk { +"Formkrav og klagefrist" },
+                    english { +"Formkrav og klagefrist" }
                 )
             }
 
@@ -150,7 +149,7 @@ object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, 
 
 
             title2 {
-                text(Language.Bokmal to "Vurdering", Language.Nynorsk to "Vurdering", Language.English to "Vurdering")
+                text(bokmal { +"Vurdering" }, nynorsk { +"Vurdering" }, english { +"Vurdering" })
             }
             formaterPunktMedSvar("Utfall", "Oppretthold vedtak".expr())
             formaterPunktMedSvar("Hjemmel", hjemmel)
@@ -169,9 +168,9 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
     svar: Expression<String>
 ) {
     paragraph {
-        text(Language.Bokmal to punkt, Language.Nynorsk to punkt, Language.English to punkt, FontType.BOLD)
+        text(bokmal { +punkt }, nynorsk { +punkt }, english { +punkt }, FontType.BOLD)
         newline()
-        textExpr(Language.Bokmal to svar, Language.Nynorsk to svar, Language.English to svar)
+        text(bokmal { +svar }, nynorsk { +svar }, english { +svar })
     }
 }
 
@@ -180,15 +179,15 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
     oppfylt: Expression<Boolean>
 ) {
     paragraph {
-        text(Language.Bokmal to tittel, Language.Nynorsk to tittel, Language.English to tittel, FontType.BOLD)
+        text(bokmal { +tittel }, nynorsk { +tittel }, english { +tittel }, FontType.BOLD)
         newline()
         showIf(oppfylt) {
-            text(Language.Bokmal to "Oppfylt", Language.Nynorsk to "Oppfylt", Language.English to "Oppfylt")
+            text(bokmal { +"Oppfylt" }, nynorsk { +"Oppfylt" }, english { +"Oppfylt" })
         } orShow {
             text(
-                Language.Bokmal to "Ikke oppfylt",
-                Language.Nynorsk to "Ikke oppfylt",
-                Language.English to "Ikke oppfylt"
+                bokmal { +"Ikke oppfylt" },
+                nynorsk { +"Ikke oppfylt" },
+                english { +"Ikke oppfylt" }
             )
         }
     }
@@ -200,14 +199,14 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
 ) {
     paragraph {
         text(
-            Language.Bokmal to overskrift,
-            Language.Nynorsk to overskrift,
-            Language.English to overskrift,
+            bokmal { +overskrift },
+            nynorsk { +overskrift },
+            english { +overskrift },
             FontType.BOLD
         )
         newline()
         forEach(linjer) { linje ->
-            textExpr(Language.Bokmal to linje, Language.Nynorsk to linje, Language.English to linje)
+            text(bokmal { +linje }, nynorsk { +linje }, english { +linje })
             newline()
         }
     }

@@ -71,9 +71,9 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
     ) {
         title {
             text(
-                Bokmal to "Vi har regnet om uføretrygden din til alderspensjon",
-                Nynorsk to "Vi har rekna om uføretrygda di til alderspensjon",
-                English to "We have converted your disability pension into retirement pension",
+                bokmal { + "Vi har regnet om uføretrygden din til alderspensjon" },
+                nynorsk { + "Vi har rekna om uføretrygda di til alderspensjon" },
+                english { + "We have converted your disability pension into retirement pension" },
             )
         }
         outline {

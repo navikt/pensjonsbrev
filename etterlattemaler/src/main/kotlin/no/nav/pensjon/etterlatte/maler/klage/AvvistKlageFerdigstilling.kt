@@ -47,9 +47,9 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har avvist klagen din",
-                Language.Nynorsk to "Vi har avvist klaga di",
-                Language.English to "We have rejected your appeal"
+                bokmal { +"Vi har avvist klagen din" },
+                nynorsk { +"Vi har avvist klaga di" },
+                english { +"We have rejected your appeal" }
             )
         }
 

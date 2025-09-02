@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
@@ -37,71 +36,71 @@ object BarnepensjonRevurderingFraser {
 
             showIf(erEndret) {
                 paragraph {
-                    textExpr(
-                        Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ".",
-                        Language.Nynorsk to "Barnepensjonen din er endra frå ".expr() + formatertVirkningsdato + ".",
-                        Language.English to "Your children’s pension will change on ".expr() + formatertVirkningsdato + ".",
+                    text(
+                        bokmal { +"Barnepensjonen din er endret fra " + formatertVirkningsdato + "." },
+                        nynorsk { +"Barnepensjonen din er endra frå " + formatertVirkningsdato + "." },
+                        english { +"Your children’s pension will change on " + formatertVirkningsdato + "." },
                     )
                 }
                 showIf(harUtbetaling) {
                     showIf(harFlereUtbetalingsperioder) {
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned før " +
+                            text(
+                                bokmal { +"Du får " + formatertBeloep + " hver måned før " +
                                         "skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se beløp for " +
                                         "tidligere perioder og hvordan vi har beregnet barnepensjonen din i vedlegg " +
-                                        "«Beregning av barnepensjon».",
-                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " per månad før " +
+                                        "«Beregning av barnepensjon»." },
+                                nynorsk { +"Du får " + formatertBeloep + " per månad før " +
                                         "skatt frå " + formatertNyesteUtbetalingsperiodeDatoFom + ". I " +
                                         "vedlegget «Utrekning av barnepensjon» kan du sjå beløp for tidlegare " +
-                                        "periodar og korleis vi har rekna ut barnepensjonen din.",
-                                Language.English to "You will receive ".expr() + formatertBeloep + " each " +
+                                        "periodar og korleis vi har rekna ut barnepensjonen din." },
+                                english { +"You will receive " + formatertBeloep + " each " +
                                         "month before tax, starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                         ". You can see amounts for previous periods and how we calculated your " +
-                                        "children's pension in the attachment, Calculation of Children’s Pension."
+                                        "children's pension in the attachment, Calculation of Children’s Pension." }
                             )
                         }
 
                     }.orShow {
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to "Du får ".expr() + formatertBeloep + " hver måned før " +
-                                        "skatt.",
-                                Language.Nynorsk to "Du får ".expr() + formatertBeloep + " per månad før " +
-                                        "skatt.",
-                                Language.English to "You will receive ".expr() + formatertBeloep + " each " +
-                                        "month before tax. "
+                            text(
+                                bokmal { +"Du får " + formatertBeloep + " hver måned før " +
+                                        "skatt." },
+                                nynorsk { +"Du får " + formatertBeloep + " per månad før " +
+                                        "skatt." },
+                                english { +"You will receive " + formatertBeloep + " each " +
+                                        "month before tax. " }
                             )
                         }
                         paragraph {
                             text(
-                                Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
-                                        "«Beregning av barnepensjon».",
-                                Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
-                                        "vi har rekna ut barnepensjonen din.",
-                                Language.English to "You can find more information about how we have calculated " +
+                                bokmal { +"Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
+                                        "«Beregning av barnepensjon»." },
+                                nynorsk { +"I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
+                                        "vi har rekna ut barnepensjonen din." },
+                                english { +"You can find more information about how we have calculated " +
                                         "your children's pension in the attachment, Calculation of Children's " +
-                                        "Pension."
+                                        "Pension." }
                             )
                         }
                     }
                 }.orShow {
                     paragraph {
                         text(
-                            Language.Bokmal to "Du får ikke utbetalt pensjon.",
-                            Language.Nynorsk to "Du får ikkje utbetalt pensjon.",
-                            Language.English to "You will not receive the pension."
+                            bokmal { +"Du får ikke utbetalt pensjon." },
+                            nynorsk { +"Du får ikkje utbetalt pensjon." },
+                            english { +"You will not receive the pension." }
                         )
                     }
                     paragraph {
                         text(
-                            Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
-                                    "«Beregning av barnepensjon».",
-                            Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
-                                    "vi har rekna ut barnepensjonen din.",
-                            Language.English to "You can find more information about how we have calculated " +
+                            bokmal { +"Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
+                                    "«Beregning av barnepensjon»." },
+                            nynorsk { +"I vedlegget «Utrekning av barnepensjon» kan du sjå korleis " +
+                                    "vi har rekna ut barnepensjonen din." },
+                            english { +"You can find more information about how we have calculated " +
                                     "your children's pension in the attachment, Calculation of Children's " +
-                                    "Pension."
+                                    "Pension." }
                         )
                     }
                 }
@@ -109,36 +108,36 @@ object BarnepensjonRevurderingFraser {
             }.orShow {
                 paragraph {
                     text(
-                        Language.Bokmal to "Barnepensjonen din er vurdert på nytt. ",
-                        Language.Nynorsk to "Barnepensjonen din er vurdert på nytt. ",
-                        Language.English to "We have re-evaluated your children’s pension. "
+                        bokmal { +"Barnepensjonen din er vurdert på nytt. " },
+                        nynorsk { +"Barnepensjonen din er vurdert på nytt. " },
+                        english { +"We have re-evaluated your children’s pension. " }
                     )
                     showIf(harUtbetaling) {
-                        textExpr(
-                            Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " per måned " +
-                                    "før skatt.",
-                            Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " per månad " +
-                                    "før skatt.",
-                            Language.English to "You will continue to receive ".expr() + formatertBeloep +
-                                    " per month before tax. "
+                        text(
+                            bokmal { +"Du får fortsatt " + formatertBeloep + " per måned " +
+                                    "før skatt." },
+                            nynorsk { +"Du får framleis " + formatertBeloep + " per månad " +
+                                    "før skatt." },
+                            english { +"You will continue to receive " + formatertBeloep +
+                                    " per month before tax. " }
                         )
                     }.orShow {
                         text(
-                            Language.Bokmal to "Du får fortsatt ikke utbetalt pensjon.",
-                            Language.Nynorsk to "Du får framleis ikkje utbetalt pensjon.",
-                            Language.English to "You will still not receive the pension."
+                            bokmal { +"Du får fortsatt ikke utbetalt pensjon." },
+                            nynorsk { +"Du får framleis ikkje utbetalt pensjon." },
+                            english { +"You will still not receive the pension." }
                         )
                     }
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
-                                "«Beregning av barnepensjon».",
-                        Language.Nynorsk to "I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi " +
-                                "har rekna ut barnepensjonen din.",
-                        Language.English to "You can find more information about how we have calculated " +
+                        bokmal { +"Se hvordan vi har beregnet barnepensjonen din i vedlegget " +
+                                "«Beregning av barnepensjon»." },
+                        nynorsk { +"I vedlegget «Utrekning av barnepensjon» kan du sjå korleis vi " +
+                                "har rekna ut barnepensjonen din." },
+                        english { +"You can find more information about how we have calculated " +
                                 "your children's pension in the attachment, Calculation of Children's " +
-                                "Pension."
+                                "Pension." }
                     )
                 }
             }
@@ -151,16 +150,16 @@ object BarnepensjonRevurderingFraser {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph { text(
-                Language.Bokmal to "(utfall jamfør tekstbibliotek)",
-                Language.Nynorsk to "(utfall jamfør tekstbibliotek)",
-                Language.English to "(utfall jamfør tekstbibliotek)",
+                bokmal { +"(utfall jamfør tekstbibliotek)" },
+                nynorsk { +"(utfall jamfør tekstbibliotek)" },
+                english { +"(utfall jamfør tekstbibliotek)" },
             ) }
 
             paragraph {
-                textExpr(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ <riktig paragrafhenvisning>".expr() + ifElse(erEtterbetaling, ", 22-12 og § 22-13.", " og 22-12."),
-                    Language.Nynorsk to "Vedtaket er gjort etter føresegnene om barnepensjon i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(erEtterbetaling, ", 22-12 og § 22-13.", " og 22-12."),
-                    Language.English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(erEtterbetaling, ", 22-12 and 22-13.", " and 22-12."),
+                text(
+                    bokmal { +"Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ <riktig paragrafhenvisning>" + ifElse(erEtterbetaling, ", 22-12 og § 22-13.", " og 22-12.") },
+                    nynorsk { +"Vedtaket er gjort etter føresegnene om barnepensjon i folketrygdlova §§ <riktig paragrafhenvisning>" + ifElse(erEtterbetaling, ", 22-12 og § 22-13.", " og 22-12.") },
+                    english { +"This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections <riktig paragrafhenvisning>" + ifElse(erEtterbetaling, ", 22-12 and 22-13.", " and 22-12.") },
                 )
             }
 
@@ -174,15 +173,15 @@ object BarnepensjonRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
+                    bokmal { +"Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
                             "utbetalt. Du skal ikke betale noe tilbake, fordi vilkårene for tilbakekreving i " +
-                            "folketrygdloven § 22-15 ikke er oppfylt. ",
-                    Language.Nynorsk to "Fordi pensjonen din blei avvikla tilbake i tid, har du fått for " +
+                            "folketrygdloven § 22-15 ikke er oppfylt. " },
+                    nynorsk { +"Fordi pensjonen din blei avvikla tilbake i tid, har du fått for " +
                             "mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing i " +
-                            "folketrygdlova § 22-15 ikkje er oppfylt.",
-                    Language.English to "You have been overpaid because your pension has been terminated " +
+                            "folketrygdlova § 22-15 ikkje er oppfylt." },
+                    english { +"You have been overpaid because your pension has been terminated " +
                             "retroactively. No repayment will be demanded of you because the conditions for recovery " +
-                            "under the National Insurance Act, section 22-15, are not met.",
+                            "under the National Insurance Act, section 22-15, are not met." },
                 )
             }
         }
@@ -192,26 +191,26 @@ object BarnepensjonRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Feilutbetaling",
-                    Language.Nynorsk to "Feilutbetaling",
-                    Language.English to "Incorrectly paid pension",
+                    bokmal { +"Feilutbetaling" },
+                    nynorsk { +"Feilutbetaling" },
+                    english { +"Incorrectly paid pension" },
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, har du fått for mye " +
+                    bokmal { +"Siden pensjonen din er opphørt tilbake i tid, har du fått for mye " +
                             "utbetalt. Det feilutbetalte beløpet vil bli trukket i etterbetaling av annen ytelse " +
                             "du mottar fra Nav. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et " +
-                            "eget brev om mulig tilbakekreving av for mye utbetalt barnepensjon. ",
-                    Language.Nynorsk to "Ettersom pensjonen din blei avvikla tilbake i tid, har du fått for " +
+                            "eget brev om mulig tilbakekreving av for mye utbetalt barnepensjon. " },
+                    nynorsk { +"Ettersom pensjonen din blei avvikla tilbake i tid, har du fått for " +
                             "mykje utbetalt. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av ei " +
                             "anna yting du får frå Nav. Er beløpet du har fått for mykje meir enn etterbetalinga, " +
-                            "får du eiget brev om mogleg tilbakekrevjing av for mykje utbetalt barnepensjon. ",
-                    Language.English to "You have been overpaid because your pension has been terminated " +
+                            "får du eiget brev om mogleg tilbakekrevjing av for mykje utbetalt barnepensjon. " },
+                    english { +"You have been overpaid because your pension has been terminated " +
                             "retroactively. The incorrect paid amount will be deducted from the back payment of " +
                             "another benefit you receive from Nav. If the incorrect payment is greater than the " +
                             "back payment, you will receive a separate letter about the possible repayment of " +
-                            "overpaid child pension. ",
+                            "overpaid child pension. " },
                 )
             }
         }
@@ -221,21 +220,21 @@ object BarnepensjonRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Feilutbetaling",
-                    Language.Nynorsk to "Feilutbetaling",
-                    Language.English to "Incorrectly paid pension",
+                    bokmal { +"Feilutbetaling" },
+                    nynorsk { +"Feilutbetaling" },
+                    english { +"Incorrectly paid pension" },
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
-                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake pensjon».",
-                    Language.Nynorsk to "Ettersom pensjonen din blei avvikla tilbake i tid, har du fått " +
+                    bokmal { +"Fordi pensjonen din er opphørt tilbake i tid, har du fått for mye " +
+                            "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake pensjon»." },
+                    nynorsk { +"Ettersom pensjonen din blei avvikla tilbake i tid, har du fått " +
                             "for mykje utbetalt. Sjå vedlegget «Førehandsvarsel - vi vurderer om du må betale " +
-                            "tilbake pensjon».",
-                    Language.English to "Because you stopped receiving a pension at some time in the past, " +
+                            "tilbake pensjon»." },
+                    english { +"Because you stopped receiving a pension at some time in the past, " +
                             "you received more than you were owed. See the attachment Advance notice – we are " +
-                            "assessing whether you must repay children’s pension.",
+                            "assessing whether you must repay children’s pension." },
                 )
             }
         }
@@ -245,15 +244,15 @@ object BarnepensjonRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Fordi pensjonen din er redusert tilbake i tid, har du fått for " +
+                    bokmal { +"Fordi pensjonen din er redusert tilbake i tid, har du fått for " +
                             "mye utbetalt. Du skal ikke betale noe tilbake, fordi vilkårene for tilbakekreving i " +
-                            "folketrygdloven § 22-15 ikke er oppfylt.",
-                    Language.Nynorsk to "Ettersom pensjonen din blei redusert tilbake i tid, har du fått " +
+                            "folketrygdloven § 22-15 ikke er oppfylt." },
+                    nynorsk { +"Ettersom pensjonen din blei redusert tilbake i tid, har du fått " +
                             "for mykje utbetalt. Du skal ikkje betala noko tilbake, fordi vilkåra for tilbakekrevjing " +
-                            "i folketrygdlova § 22-15 ikkje er oppfylt.",
-                    Language.English to "Because your pension has been reduced retroactively, you " +
+                            "i folketrygdlova § 22-15 ikkje er oppfylt." },
+                    english { +"Because your pension has been reduced retroactively, you " +
                             "received more than you were owed. No repayment will be demanded of you because the " +
-                            "conditions for recovery under the National Insurance Act, section 22-15, are not met.",
+                            "conditions for recovery under the National Insurance Act, section 22-15, are not met." },
                 )
             }
         }
@@ -263,26 +262,26 @@ object BarnepensjonRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Feilutbetaling",
-                    Language.Nynorsk to "Feilutbetaling",
-                    Language.English to "Incorrectly paid pension",
+                    bokmal { +"Feilutbetaling" },
+                    nynorsk { +"Feilutbetaling" },
+                    english { +"Incorrectly paid pension" },
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
+                    bokmal { +"Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
                             "utbetalt. Det feilutbetalte beløpet vil bli trukket i etterbetaling av annen ytelse " +
                             "du mottar fra Nav. Hvis feilutbetalingen er større enn etterbetalingen, vil du få et " +
-                            "eget brev om mulig tilbakekreving av for mye utbetalt barnepensjon. ",
-                    Language.Nynorsk to "Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
+                            "eget brev om mulig tilbakekreving av for mye utbetalt barnepensjon. " },
+                    nynorsk { +"Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
                             "for mykje. Det du har fått for mykje utbetalt vil trekkast i etterbetalinga av ei anna " +
                             "yting du får frå Nav. Er beløpet du har fått for mykje meir enn etterbetalinga, får du " +
-                            "eiget brev om mogleg tilbakekrevjing av for mykje utbetalt barnepensjon. ",
-                    Language.English to "Because your pension has been reduced retroactively, you received " +
+                            "eiget brev om mogleg tilbakekrevjing av for mykje utbetalt barnepensjon. " },
+                    english { +"Because your pension has been reduced retroactively, you received " +
                             "more than you were owed. The incorrect paid amount will be deducted from the back " +
                             "payment of another benefit you receive from Nav. If the incorrect payment is greater " +
                             "than the back payment, you will receive a separate letter about the possible repayment " +
-                            "of overpaid child pension.",
+                            "of overpaid child pension." },
                 )
             }
         }
@@ -292,22 +291,22 @@ object BarnepensjonRevurderingFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Feilutbetaling",
-                    Language.Nynorsk to "Feilutbetaling",
-                    Language.English to "Incorrectly paid pension",
+                    bokmal { +"Feilutbetaling" },
+                    nynorsk { +"Feilutbetaling" },
+                    english { +"Incorrectly paid pension" },
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
+                    bokmal { +"Siden pensjonen din er redusert tilbake i tid, har du fått for mye " +
                             "utbetalt. Se vedlegg «Forhåndsvarsel - vi vurderer om du må betale tilbake " +
-                            "barnepensjon».",
-                    Language.Nynorsk to "Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
+                            "barnepensjon»." },
+                    nynorsk { +"Fordi pensjonen din er redusert tilbake i tid, har du fått utbetalt " +
                             "for mykje. Sjå vedlegget «Førehandsvarsel – vi vurderer om du må betale tilbake " +
-                            "barnepensjon».",
-                    Language.English to "Because your pension has been reduced retroactively, you received " +
+                            "barnepensjon»." },
+                    english { +"Because your pension has been reduced retroactively, you received " +
                             "more than you were owed. See the attachment Advance notice – we are assessing whether " +
-                            "you must repay children’s pension.",
+                            "you must repay children’s pension." },
                 )
             }
         }

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 data class DuFaarAP(
     val kravVirkDatoFom: Expression<String>,
@@ -15,16 +15,16 @@ data class DuFaarAP(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            textExpr(
-                Language.Bokmal to
-                    "Du får ".expr() + totalPensjon + " hver måned før skatt fra ".expr() +
-                    kravVirkDatoFom + " i alderspensjon fra folketrygden.",
-                Language.Nynorsk to
-                    "Du får ".expr() + totalPensjon + " kvar månad før skatt frå ".expr() +
-                    kravVirkDatoFom + " i alderspensjon frå folketrygda.",
-                Language.English to
-                    "You will receive ".expr() + totalPensjon + " every month before tax from ".expr() +
-                    kravVirkDatoFom + " as retirement pension from the National Insurance Scheme.",
+            text(
+                bokmal { + 
+                    "Du får " + totalPensjon + " hver måned før skatt fra " +
+                    kravVirkDatoFom + " i alderspensjon fra folketrygden." },
+                nynorsk { + 
+                    "Du får " + totalPensjon + " kvar månad før skatt frå " +
+                    kravVirkDatoFom + " i alderspensjon frå folketrygda." },
+                english { + 
+                    "You will receive " + totalPensjon + " every month before tax from " +
+                    kravVirkDatoFom + " as retirement pension from the National Insurance Scheme." },
             )
         }
     }

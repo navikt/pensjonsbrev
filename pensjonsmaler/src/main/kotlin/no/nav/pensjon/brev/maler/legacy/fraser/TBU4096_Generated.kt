@@ -16,12 +16,12 @@ data class TBU4096_Generated(
 
 		title1 {
 			text (
-				Bokmal to "For deg som har fått flere vedtak om etteroppgjør for samme år",
-				Nynorsk to "For deg som har fått fleire vedtak om etteroppgjer for same år",
+				bokmal { + "For deg som har fått flere vedtak om etteroppgjør for samme år" },
+				nynorsk { + "For deg som har fått fleire vedtak om etteroppgjer for same år" },
 			)
-			textExpr (
-				Bokmal to "Vi har mottatt nye inntektsopplysninger fra Skatteetaten for året ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + " og vi har derfor gjort et nytt etteroppgjør. Ditt nye etteroppgjør erstatter ikke tidligere etteroppgjør for samme år. Det betyr at alle vedtak om etteroppgjør er gjeldende. ",
-				Nynorsk to "Vi har fått nye inntektsopplysningar frå Skatteetaten for året ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + " og vi har derfor gjort eit nytt etteroppgjer. Det nye etteroppgjeret ditt erstattar ikkje tidlegare etteroppgjer for same år. Det betyr at alle vedtak om etteroppgjer gjeld. ",
+			text (
+				bokmal { + "Vi har mottatt nye inntektsopplysninger fra Skatteetaten for året " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + " og vi har derfor gjort et nytt etteroppgjør. Ditt nye etteroppgjør erstatter ikke tidligere etteroppgjør for samme år. Det betyr at alle vedtak om etteroppgjør er gjeldende. " },
+				nynorsk { + "Vi har fått nye inntektsopplysningar frå Skatteetaten for året " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + " og vi har derfor gjort eit nytt etteroppgjer. Det nye etteroppgjeret ditt erstattar ikkje tidlegare etteroppgjer for same år. Det betyr at alle vedtak om etteroppgjer gjeld. " },
 			)
 		}
     }

@@ -98,7 +98,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -158,19 +157,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             title {
                 showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG)) {
                     // nyBeregningAPTittel
-                    textExpr(
-                        Language.Bokmal to "Vi har beregnet alderspensjon din på nytt fra ".expr() + kravVirkDatoFom,
-                        Language.Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
-                        Language.English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom,
+                    text(
+                        bokmal { + "Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
+                        nynorsk { + "Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
+                        english { + "We have recalculated your retirement pension from " + kravVirkDatoFom },
                     )
                 }.orShow {
                     // innvilgetGarantitilleggTittel
-                    textExpr(
-                        Language.Bokmal to "Du har fått innvilget garantitillegg fra ".expr() + kravVirkDatoFom,
-                        Language.Nynorsk to "Du har fått innvilga garantitillegg frå ".expr() + kravVirkDatoFom,
-                        Language.English to
-                            "You have been granted a guarantee supplement for accumulated pension capital rights from ".expr() +
-                            kravVirkDatoFom,
+                    text(
+                        bokmal { + "Du har fått innvilget garantitillegg fra " + kravVirkDatoFom },
+                        nynorsk { + "Du har fått innvilga garantitillegg frå " + kravVirkDatoFom },
+                        english { + 
+                            "You have been granted a guarantee supplement for accumulated pension capital rights from " +
+                            kravVirkDatoFom },
                     )
                 }
             }
@@ -181,39 +180,39 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(sivilstand.isOneOf(MetaforceSivilstand.GIFT) and borSammenMedBruker) {
                         // endringSivilstandGiftUnder2G, endringSisvilstandGiftOver2G, endringSisvilstandGiftYtelse
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to "Du har giftet deg med ".expr() + epsNavn + ",",
-                                Language.Nynorsk to "Du har gifta deg med ".expr() + epsNavn + ",",
-                                Language.English to "You have married ".expr() + epsNavn + ",",
+                            text(
+                                bokmal { + "Du har giftet deg med " + epsNavn + "," },
+                                nynorsk { + "Du har gifta deg med " + epsNavn + "," },
+                                english { + "You have married " + epsNavn + "," },
                             )
                             showIf(mottarPensjon) {
                                 text(
-                                    Language.Bokmal to " som mottar pensjon, uføretrygd eller avtalefestet pensjon.",
-                                    Language.Nynorsk to " som får eigen pensjon, uføretrygd eller avtalefesta pensjon.",
-                                    Language.English to
-                                        " who receives a pension, disability benefit or contractual early retirement pension (AFP).",
+                                    bokmal { + " som mottar pensjon, uføretrygd eller avtalefestet pensjon." },
+                                    nynorsk { + " som får eigen pensjon, uføretrygd eller avtalefesta pensjon." },
+                                    english { + 
+                                        " who receives a pension, disability benefit or contractual early retirement pension (AFP)." },
                                 )
                             }.orShowIf(harInntektOver2G) {
                                 text(
-                                    Language.Bokmal to " som har en inntekt større enn to ganger grunnbeløpet.",
-                                    Language.Nynorsk to " som har ei inntekt større enn to gonger grunnbeløpet.",
-                                    Language.English to " who has an income that is more than twice the national insurance basic amount.",
+                                    bokmal { + " som har en inntekt større enn to ganger grunnbeløpet." },
+                                    nynorsk { + " som har ei inntekt større enn to gonger grunnbeløpet." },
+                                    english { + " who has an income that is more than twice the national insurance basic amount." },
                                 )
                             }.orShow {
                                 text(
-                                    Language.Bokmal to " som har en inntekt mindre enn to ganger grunnbeløpet.",
-                                    Language.Nynorsk to " som har ei inntekt mindre enn to gonger grunnbeløpet.",
-                                    Language.English to " who has an income that is less than twice the national insurance basic amount.",
+                                    bokmal { + " som har en inntekt mindre enn to ganger grunnbeløpet." },
+                                    nynorsk { + " som har ei inntekt mindre enn to gonger grunnbeløpet." },
+                                    english { + " who has an income that is less than twice the national insurance basic amount." },
                                 )
                             }
                         }
                     }.orShowIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_3_2)) {
                         // endringSisvilstand3-2samboer
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to "Du har bodd sammen med ".expr() + epsNavn + " i 12 av de siste 18 månedene.",
-                                Language.Nynorsk to "Du har budd saman med ".expr() + epsNavn + " i 12 av dei siste 18 månadene.",
-                                Language.English to "You have been living with ".expr() + epsNavn + " for 12 out of the past 18 months.",
+                            text(
+                                bokmal { + "Du har bodd sammen med " + epsNavn + " i 12 av de siste 18 månedene." },
+                                nynorsk { + "Du har budd saman med " + epsNavn + " i 12 av dei siste 18 månadene." },
+                                english { + "You have been living with " + epsNavn + " for 12 out of the past 18 months." },
                             )
                         }
                     }.orShowIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
@@ -223,10 +222,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         showIf(saksbehandlerValg.samboereMedFellesBarn) {
                             paragraph {
                                 // endringSivilstand1-5samboerBarn
-                                textExpr(
-                                    Language.Bokmal to "Du har flyttet sammen med ".expr() + epsNavn + ", og dere har barn sammen.",
-                                    Language.Nynorsk to "Du har flytta saman med ".expr() + epsNavn + ", og dere har barn saman.",
-                                    Language.English to "You have moved together with ".expr() + epsNavn + ", with whom you have children.",
+                                text(
+                                    bokmal { + "Du har flyttet sammen med " + epsNavn + ", og dere har barn sammen." },
+                                    nynorsk { + "Du har flytta saman med " + epsNavn + ", og dere har barn saman." },
+                                    english { + "You have moved together with " + epsNavn + ", with whom you have children." },
                                 )
                             }
                         }
@@ -234,11 +233,11 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         showIf(saksbehandlerValg.samboereTidligereGift) {
                             // endringSivilstand1-5samboerTidlGift
                             paragraph {
-                                textExpr(
-                                    Language.Bokmal to "Du har flyttet sammen med ".expr() + epsNavn + ", og dere har vært gift tidligere.",
-                                    Language.Nynorsk to "Du har flytta saman med ".expr() + epsNavn + ", og dere har vore gift tidlegare.",
-                                    Language.English to
-                                        "You have moved together with ".expr() + epsNavn + ", with whom you were previously married.",
+                                text(
+                                    bokmal { + "Du har flyttet sammen med " + epsNavn + ", og dere har vært gift tidligere." },
+                                    nynorsk { + "Du har flytta saman med " + epsNavn + ", og dere har vore gift tidlegare." },
+                                    english { + 
+                                        "You have moved together with " + epsNavn + ", with whom you were previously married." },
                                 )
                             }
                         }
@@ -254,42 +253,42 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         showIf(mottarPensjon) {
                             paragraph {
                                 text(
-                                    Language.Bokmal to "Samboeren din mottar pensjon, uføretrygd eller avtalefestet pensjon.",
-                                    Language.Nynorsk to "Sambuaren din får pensjon, uføretrygd eller avtalefesta pensjon.",
-                                    Language.English to
-                                        "Your cohabitant receives a pension, disability benefit or contractual early retirement pension (AFP).",
+                                    bokmal { + "Samboeren din mottar pensjon, uføretrygd eller avtalefestet pensjon." },
+                                    nynorsk { + "Sambuaren din får pensjon, uføretrygd eller avtalefesta pensjon." },
+                                    english { + 
+                                        "Your cohabitant receives a pension, disability benefit or contractual early retirement pension (AFP)." },
                                 )
                             }
                         }.orShow {
                             paragraph {
-                                textExpr(
-                                    Language.Bokmal to "Samboeren din har en inntekt ".expr() +
+                                text(
+                                    bokmal { + "Samboeren din har en inntekt " +
                                         ifElse(
                                             harInntektOver2G,
                                             ifTrue = "større",
                                             ifFalse = "mindre",
-                                        ) + " enn to ganger grunnbeløpet.",
-                                    Language.Nynorsk to "Sambuaren din har ei inntekt ".expr() +
+                                        ) + " enn to ganger grunnbeløpet." },
+                                    nynorsk { + "Sambuaren din har ei inntekt " +
                                         ifElse(
                                             harInntektOver2G,
                                             ifTrue = "større",
                                             ifFalse = "mindre",
-                                        ) + " enn to gonger grunnbeløpet.",
-                                    Language.English to "Your cohabitant has an income that ".expr() +
+                                        ) + " enn to gonger grunnbeløpet." },
+                                    english { + "Your cohabitant has an income that " +
                                         ifElse(
                                             harInntektOver2G,
                                             ifTrue = "exceeds",
                                             ifFalse = "is less than",
-                                        ) + " twice the national insurance basic amount.",
+                                        ) + " twice the national insurance basic amount." },
                                 )
                             }
                         }
                     }.orShowIf(mottarOmstillingsstonad) {
                         paragraph {
                             text(
-                                Language.Bokmal to "Samboeren din mottar omstillingsstønad.",
-                                Language.Nynorsk to "Sambuaren din mottek omstillingsstønad.",
-                                Language.English to "Your cohabitant receives adjustment allowance.",
+                                bokmal { + "Samboeren din mottar omstillingsstønad." },
+                                nynorsk { + "Sambuaren din mottek omstillingsstønad." },
+                                english { + "Your cohabitant receives adjustment allowance." },
                             )
                         }
                     }
@@ -303,13 +302,13 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         val epsInntektsendringNB = fritekst("økt/redusert")
                         val epsInntektsendringNN = fritekst("auka/redusert")
                         val epsInntektsendringEN = fritekst("increased/been reduced")
-                        textExpr(
-                            Language.Bokmal to "Inntekten til ".expr() +
-                                sivilstandBestemtLitenBokstav + " din er ".expr() + epsInntektsendringNB + ".",
-                            Language.Nynorsk to
-                                "Inntekta til ".expr() + sivilstandBestemtLitenBokstav + " din er ".expr() + epsInntektsendringNN + ".",
-                            Language.English to
-                                "Your ".expr() + sivilstandBestemtLitenBokstav + "'s income has ".expr() + epsInntektsendringEN + ".",
+                        text(
+                            bokmal { + "Inntekten til " +
+                                sivilstandBestemtLitenBokstav + " din er " + epsInntektsendringNB + "." },
+                            nynorsk { + 
+                                "Inntekta til " + sivilstandBestemtLitenBokstav + " din er " + epsInntektsendringNN + "." },
+                            english { + 
+                                "Your " + sivilstandBestemtLitenBokstav + "'s income has " + epsInntektsendringEN + "." },
                         )
                     }
                 }
@@ -341,9 +340,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // opphorOmstillingSambo
                     paragraph {
                         text(
-                            Language.Bokmal to "Samboeren din mottar ikke lenger omstillingsstønad.",
-                            Language.Nynorsk to "Sambuaren din mottek ikkje lenger omstillingsstønad.",
-                            Language.English to "Your cohabitant does not receive adjustment allowance.",
+                            bokmal { + "Samboeren din mottar ikke lenger omstillingsstønad." },
+                            nynorsk { + "Sambuaren din mottek ikkje lenger omstillingsstønad." },
+                            english { + "Your cohabitant does not receive adjustment allowance." },
                         )
                     }
                 }.orShowIf(
@@ -365,10 +364,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 ) {
                     // flyttetEPS
                     paragraph {
-                        textExpr(
-                            Language.Bokmal to "Du og ".expr() + epsNavn + " bor ikke lenger sammen.",
-                            Language.Nynorsk to "Du og ".expr() + epsNavn + "bur ikkje lenger saman.",
-                            Language.English to "You and ".expr() + epsNavn + "no longer live together.",
+                        text(
+                            bokmal { + "Du og " + epsNavn + " bor ikke lenger sammen." },
+                            nynorsk { + "Du og " + epsNavn + "bur ikkje lenger saman." },
+                            english { + "You and " + epsNavn + "no longer live together." },
                         )
                     }
 
@@ -382,12 +381,12 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         // endirngSivilstandGiftBorIkkeSammen
                         paragraph {
                             text(
-                                Language.Bokmal to
-                                    "Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din registrert bosatt på ulike adresser.",
-                                Language.Nynorsk to
-                                    "Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din registrert busette på ulike adresser.",
-                                Language.English to
-                                    "You have gotten married. According to the national registry you and your spouse are listed at different residential addresses.",
+                                bokmal { + 
+                                    "Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din registrert bosatt på ulike adresser." },
+                                nynorsk { + 
+                                    "Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din registrert busette på ulike adresser." },
+                                english { + 
+                                    "You have gotten married. According to the national registry you and your spouse are listed at different residential addresses." },
                             )
                         }
                     }
@@ -396,21 +395,21 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     showIf(kravArsakType.isOneOf(KravArsakType.INSTOPPHOLD) and saksbehandlerValg.institusjonsopphold) {
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    fritekst("Du/Ektefellen/Partneren/Samboeren/Begge") + " din har flyttet på ".expr() +
+                            text(
+                                bokmal { + 
+                                    fritekst("Du/Ektefellen/Partneren/Samboeren/Begge") + " din har flyttet på " +
                                     fritekst(
                                         "sykehjem/institusjon",
-                                    ) + ".",
-                                Language.Nynorsk to
-                                    fritekst("Du/Ektefellen/Partnaren/Sambuaren/Begge") + " din har flytta på ".expr() +
+                                    ) + "." },
+                                nynorsk { + 
+                                    fritekst("Du/Ektefellen/Partnaren/Sambuaren/Begge") + " din har flytta på " +
                                     fritekst(
                                         "sjukeheim/institusjon ",
-                                    ) + ".",
-                                Language.English to fritekst("You/Your spouse/partner/cohabitant have/has") + " moved into ".expr() +
+                                    ) + "." },
+                                english { + fritekst("You/Your spouse/partner/cohabitant have/has") + " moved into " +
                                     fritekst(
                                         "a nursing home/an institution",
-                                    ) + ".",
+                                    ) + "." },
                             )
                         }
                     }
@@ -431,19 +430,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGP_GarantiPen_MNT
                                 paragraph {
                                     text(
-                                        Language.Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt.",
-                                        Language.Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt.",
-                                        Language.English to "We have therefore recalculated your basic pension and guaranteed pension.",
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt." },
+                                        english { + "We have therefore recalculated your basic pension and guaranteed pension." },
                                     )
                                 }
                             }.orShow {
                                 // omregningGP_MNT
                                 paragraph {
                                     text(
-                                        Language.Bokmal to "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt.",
-                                        Language.Nynorsk to "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt.",
-                                        Language.English to
-                                            "We have therefore recalculated your basic pension and minimum pension supplement.",
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt." },
+                                        english { + 
+                                            "We have therefore recalculated your basic pension and minimum pension supplement." },
                                     )
                                 }
                             }
@@ -456,23 +455,23 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGP_PenT_Garanti_MNT
                                 paragraph {
                                     text(
-                                        Language.Bokmal to
-                                            "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                                        Language.Nynorsk to
-                                            "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                                        Language.English to
-                                            "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement.",
+                                        bokmal { + 
+                                            "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt." },
+                                        nynorsk { + 
+                                            "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt." },
+                                        english { + 
+                                            "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement." },
                                     )
                                 }
                             }.orShow {
                                 paragraph {
                                     text(
-                                        Language.Bokmal to
-                                            "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
-                                        Language.Nynorsk to
-                                            "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
-                                        Language.English to
-                                            "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement.",
+                                        bokmal { + 
+                                            "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt." },
+                                        nynorsk { + 
+                                            "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt." },
+                                        english { + 
+                                            "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement." },
                                     )
                                 }
                             }
@@ -487,18 +486,18 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGP_GarantiPen
                                 paragraph {
                                     text(
-                                        Language.Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt.",
-                                        Language.Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt.",
-                                        Language.English to "We have therefore recalculated your basic pension and guaranteed pension.",
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt." },
+                                        english { + "We have therefore recalculated your basic pension and guaranteed pension." },
                                     )
                                 }
                             }.orShow {
                                 // omregningGP
                                 paragraph {
                                     text(
-                                        Language.Bokmal to "Derfor har vi beregnet grunnpensjonen din på nytt.",
-                                        Language.Nynorsk to "Derfor har vi berekna grunnpensjonen din på nytt.",
-                                        Language.English to "We have therefore recalculated your basic pension.",
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen din på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen din på nytt." },
+                                        english { + "We have therefore recalculated your basic pension." },
                                     )
                                 }
                             }
@@ -514,21 +513,21 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGP_PenT_GarantiPen_MNT
                                 paragraph {
                                     text(
-                                        Language.Bokmal to
-                                            "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
-                                        Language.Nynorsk to
-                                            "Derfor har vi berekna grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
-                                        Language.English to
-                                            "We have therefore recalculated your basic pension, supplementary pension and guaranteed pension.",
+                                        bokmal { + 
+                                            "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt." },
+                                        nynorsk { + 
+                                            "Derfor har vi berekna grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt." },
+                                        english { + 
+                                            "We have therefore recalculated your basic pension, supplementary pension and guaranteed pension." },
                                     )
                                 }
                             }.orShow {
                                 // omregningGP_PenT
                                 paragraph {
                                     text(
-                                        Language.Bokmal to "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt.",
-                                        Language.Nynorsk to "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt.",
-                                        Language.English to "We have therefore recalculated your basic pension and pension supplement.",
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt." },
+                                        english { + "We have therefore recalculated your basic pension and pension supplement." },
                                     )
                                 }
                             }
@@ -545,21 +544,21 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 // omregningGPST
                                 paragraph {
                                     text(
-                                        Language.Bokmal to "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt.",
-                                        Language.Nynorsk to "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt.",
-                                        Language.English to "We have therefore recalculated your basic pension and the special supplement.",
+                                        bokmal { + "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt." },
+                                        nynorsk { + "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt." },
+                                        english { + "We have therefore recalculated your basic pension and the special supplement." },
                                     )
                                 }
                             }.orShowIf((minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget)) {
                                 // omregningGPSTMNT
                                 paragraph {
                                     text(
-                                        Language.Bokmal to
-                                            "Derfor har vi beregnet grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt.",
-                                        Language.Nynorsk to
-                                            "Derfor har vi berekna grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt.",
-                                        Language.English to
-                                            "We have therefore recalculated your basic pension, the special supplement and the minimum level supplement.",
+                                        bokmal { + 
+                                            "Derfor har vi beregnet grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt." },
+                                        nynorsk { + 
+                                            "Derfor har vi berekna grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt." },
+                                        english { + 
+                                            "We have therefore recalculated your basic pension, the special supplement and the minimum level supplement." },
                                     )
                                 }
                             }
@@ -573,37 +572,37 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // innvilgetGarantitilleggKap20
                     paragraph {
                         text(
-                            Language.Bokmal to
-                                "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010.",
-                            Language.Nynorsk to
-                                "Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer til den pensjonen du hadde tent opp før pensjonsreforma i 2010.",
-                            Language.English to
-                                "The guarantee supplement for accumulated pension capital rights is to ensure that you receive a retirement pension at age 67 that corresponds to the pension you had earned before the pension reform in 2010.",
+                            bokmal { + 
+                                "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010." },
+                            nynorsk { + 
+                                "Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer til den pensjonen du hadde tent opp før pensjonsreforma i 2010." },
+                            english { + 
+                                "The guarantee supplement for accumulated pension capital rights is to ensure that you receive a retirement pension at age 67 that corresponds to the pension you had earned before the pension reform in 2010." },
                         )
                     }
                     paragraph {
                         text(
-                            Language.Bokmal to
-                                "Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales fra måneden etter du fyller 67 år.",
-                            Language.Nynorsk to
-                                "Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast betalast ut frå månaden etter du fyller 67 år.",
-                            Language.English to
-                                "The supplement will be paid in addition to your retirement pension and can at the earliest be paid from the month after you turn 67 years of age.",
+                            bokmal { + 
+                                "Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales fra måneden etter du fyller 67 år." },
+                            nynorsk { + 
+                                "Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast betalast ut frå månaden etter du fyller 67 år." },
+                            english { + 
+                                "The supplement will be paid in addition to your retirement pension and can at the earliest be paid from the month after you turn 67 years of age." },
                         )
                     }
                     paragraph {
-                        textExpr(
-                            Language.Bokmal to
-                                "Garantitillegget utgjør ".expr() + garantitillegg.format() + " per måned før skatt fra ".expr() +
+                        text(
+                            bokmal { + 
+                                "Garantitillegget utgjør " + garantitillegg.format() + " per måned før skatt fra " +
                                 kravVirkDatoFom +
-                                ".",
-                            Language.Nynorsk to
-                                "Garantitillegget utgjer ".expr() + garantitillegg.format() + " per månad før skatt frå ".expr() +
+                                "." },
+                            nynorsk { + 
+                                "Garantitillegget utgjer " + garantitillegg.format() + " per månad før skatt frå " +
                                 kravVirkDatoFom +
-                                ".",
-                            Language.English to
-                                "Your monthly guarantee supplement for accumulated pension capital rights will be ".expr() +
-                                garantitillegg.format() + " before tax from ".expr() + kravVirkDatoFom + ".",
+                                "." },
+                            english { + 
+                                "Your monthly guarantee supplement for accumulated pension capital rights will be " +
+                                garantitillegg.format() + " before tax from " + kravVirkDatoFom + "." },
                         )
                     }
                 }
@@ -614,20 +613,20 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsIkkeFylt62Aar) {
                         // SaerSatsBruktEpsUnder62
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    sivilstandBestemtStorBokstav + " din du forsørger har en inntekt lavere enn grunnbeløpet ".expr() +
+                            text(
+                                bokmal { + 
+                                    sivilstandBestemtStorBokstav + " din du forsørger har en inntekt lavere enn grunnbeløpet " +
                                     grunnbelop.format() +
-                                    ".",
-                                Language.Nynorsk to
-                                    sivilstandBestemtStorBokstav + " din du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() +
+                                    "." },
+                                nynorsk { + 
+                                    sivilstandBestemtStorBokstav + " din du forsørgjer har ei inntekt lågare enn grunnbeløpet " +
                                     grunnbelop.format() +
-                                    ".",
-                                Language.English to
-                                    "Your ".expr() + sivilstandBestemtLitenBokstav +
-                                    " you support has an income lower than the basic amount which is ".expr() +
+                                    "." },
+                                english { + 
+                                    "Your " + sivilstandBestemtLitenBokstav +
+                                    " you support has an income lower than the basic amount which is " +
                                     grunnbelop.format() +
-                                    ".",
+                                    "." },
                             )
                         }
                     }
@@ -635,22 +634,22 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsIkkeRettTilFullAlderspensjon) {
                         // SaerSatsBruktEpsIkkeRettTilAP
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
+                            text(
+                                bokmal { + 
                                     sivilstandBestemtStorBokstav +
-                                    " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet ".expr() +
+                                    " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet " +
                                     grunnbelop.format() +
-                                    ".",
-                                Language.Nynorsk to
+                                    "." },
+                                nynorsk { + 
                                     sivilstandBestemtStorBokstav +
-                                    " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet ".expr() +
+                                    " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet " +
                                     grunnbelop.format() +
-                                    ".",
-                                Language.English to
-                                    "Your ".expr() + sivilstandBestemtLitenBokstav +
-                                    " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is ".expr() +
+                                    "." },
+                                english { + 
+                                    "Your " + sivilstandBestemtLitenBokstav +
+                                    " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is " +
                                     grunnbelop.format() +
-                                    ".",
+                                    "." },
                             )
                         }
                     }
@@ -658,14 +657,14 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                         // SaerSatsBruktEpsGittAvkallAP
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    sivilstandBestemtStorBokstav + " din har gitt avkall på sin alderspensjon fra folketrygden.",
-                                Language.Nynorsk to
-                                    sivilstandBestemtStorBokstav + " din har gitt avkall på alderspensjon sin frå folketrygda.",
-                                Language.English to
-                                    "Your ".expr() + sivilstandBestemtLitenBokstav +
-                                    " has renounced their retirement pension through the National Insurance Act.",
+                            text(
+                                bokmal { + 
+                                    sivilstandBestemtStorBokstav + " din har gitt avkall på sin alderspensjon fra folketrygden." },
+                                nynorsk { + 
+                                    sivilstandBestemtStorBokstav + " din har gitt avkall på alderspensjon sin frå folketrygda." },
+                                english { + 
+                                    "Your " + sivilstandBestemtLitenBokstav +
+                                    " has renounced their retirement pension through the National Insurance Act." },
                             )
                         }
                     }
@@ -673,12 +672,12 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsAvkallPaaEgenUfoeretrygd) {
                         // SaerSatsBruktEpsGittAvkallUT
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to sivilstandBestemtStorBokstav + " din har gitt avkall på sin uføretrygd fra folketrygden.",
-                                Language.Nynorsk to sivilstandBestemtStorBokstav + " din har gitt avkall på uføretrygda si frå folketrygda.",
-                                Language.English to
-                                    "Your ".expr() + sivilstandBestemtLitenBokstav +
-                                    " has renounced their disability benefits through the National Insurance Act.",
+                            text(
+                                bokmal { + sivilstandBestemtStorBokstav + " din har gitt avkall på sin uføretrygd fra folketrygden." },
+                                nynorsk { + sivilstandBestemtStorBokstav + " din har gitt avkall på uføretrygda si frå folketrygda." },
+                                english { + 
+                                    "Your " + sivilstandBestemtLitenBokstav +
+                                    " has renounced their disability benefits through the National Insurance Act." },
                             )
                         }
                     }
@@ -686,25 +685,25 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsHarInntektOver1G) {
                         // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() +
+                            text(
+                                bokmal { + 
+                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din har inntekt høyere enn grunnbeløpet (".expr() +
+                                    " din har inntekt høyere enn grunnbeløpet (" +
                                     grunnpensjon.format() +
-                                    ").",
-                                Language.Nynorsk to
-                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() +
+                                    ")." },
+                                nynorsk { + 
+                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din har inntekt høgare enn grunnbeløpet (".expr() +
+                                    " din har inntekt høgare enn grunnbeløpet (" +
                                     grunnpensjon.format() +
-                                    ").",
-                                Language.English to
-                                    "Your retirement pension is not recalculated according to a special rate because your ".expr() +
+                                    ")." },
+                                english { + 
+                                    "Your retirement pension is not recalculated according to a special rate because your " +
                                     sivilstandBestemtLitenBokstav +
-                                    " has a higher income than the basic amount which is ".expr() +
+                                    " has a higher income than the basic amount which is " +
                                     grunnpensjon.format() +
-                                    ".",
+                                    "." },
                             )
                         }
                     }
@@ -712,19 +711,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsHarRettTilFullAlderspensjon) {
                         // SaerSatsIkkeBruktEpsRettTilFullAP
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() +
+                            text(
+                                bokmal { + 
+                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din har rett til full alderspensjon fra folketrygden.",
-                                Language.Nynorsk to
-                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() +
+                                    " din har rett til full alderspensjon fra folketrygden." },
+                                nynorsk { + 
+                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din har rett til full alderspensjon frå folketrygda.",
-                                Language.English to
-                                    "Your retirement pension is not recalculated according to a special rate because your ".expr() +
+                                    " din har rett til full alderspensjon frå folketrygda." },
+                                english { + 
+                                    "Your retirement pension is not recalculated according to a special rate because your " +
                                     sivilstandBestemtLitenBokstav +
-                                    " has rights to full retirement pension through the National Insurance Act.",
+                                    " has rights to full retirement pension through the National Insurance Act." },
                             )
                         }
                     }
@@ -732,19 +731,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsTarUtAlderspensjon) {
                         // SaerSatsIkkeBruktEpsMottarAP
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() +
+                            text(
+                                bokmal { + 
+                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din mottar alderspensjon fra folketrygden.",
-                                Language.Nynorsk to
-                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() +
+                                    " din mottar alderspensjon fra folketrygden." },
+                                nynorsk { + 
+                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din mottar alderspensjon frå folketrygda.",
-                                Language.English to
-                                    "Your retirement pension is not recalculated according to a special rate because your ".expr() +
+                                    " din mottar alderspensjon frå folketrygda." },
+                                english { + 
+                                    "Your retirement pension is not recalculated according to a special rate because your " +
                                     sivilstandBestemtLitenBokstav +
-                                    " recieves retirement pension through the National Insurance Act.",
+                                    " recieves retirement pension through the National Insurance Act." },
                             )
                         }
                     }
@@ -752,19 +751,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsTarUtAlderspensjonIStatligSektor) {
                         // SaerSatsIkkeBruktEpsMottarAfp
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() +
+                            text(
+                                bokmal { + 
+                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din mottar AFP i statlig sektor.",
-                                Language.Nynorsk to
-                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() +
+                                    " din mottar AFP i statlig sektor." },
+                                nynorsk { + 
+                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din mottar AFP i statleg sektor.",
-                                Language.English to
-                                    "Your retirement pension is not recalculated according to a special rate because your ".expr() +
+                                    " din mottar AFP i statleg sektor." },
+                                english { + 
+                                    "Your retirement pension is not recalculated according to a special rate because your " +
                                     sivilstandBestemtLitenBokstav +
-                                    " receives contractual retirement pension from the public sector.",
+                                    " receives contractual retirement pension from the public sector." },
                             )
                         }
                     }
@@ -772,19 +771,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.epsTarUtUfoeretrygd) {
                         // SaerSatsIkkeBruktEpsMottarUT
                         paragraph {
-                            textExpr(
-                                Language.Bokmal to
-                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() +
+                            text(
+                                bokmal { + 
+                                    "Du får ikke beregnet alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din mottar uføretrygd fra folketrygden.",
-                                Language.Nynorsk to
-                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() +
+                                    " din mottar uføretrygd fra folketrygden." },
+                                nynorsk { + 
+                                    "Du får ikkje berekna alderspensjonen din med særskilt sats fordi " +
                                     sivilstandBestemtLitenBokstav +
-                                    " din mottar uføretrygd frå folketrygda.",
-                                Language.English to
-                                    "Your retirement pension is not recalculated according to a special rate because your ".expr() +
+                                    " din mottar uføretrygd frå folketrygda." },
+                                english { + 
+                                    "Your retirement pension is not recalculated according to a special rate because your " +
                                     sivilstandBestemtLitenBokstav +
-                                    " receives disability benefits through the National Insurance Act.",
+                                    " receives disability benefits through the National Insurance Act." },
                             )
                         }
                     }
@@ -793,15 +792,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 showIf(saerskiltSatsErBrukt and kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
                     paragraph {
                         text(
-                            Language.Bokmal to "Derfor har vi beregnet ",
-                            Language.Nynorsk to "Derfor har vi berekna ",
-                            Language.English to "We have therefore recalculated your ",
+                            bokmal { + "Derfor har vi beregnet " },
+                            nynorsk { + "Derfor har vi berekna " },
+                            english { + "We have therefore recalculated your " },
                         )
                         showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
                             text(
-                                Language.Bokmal to "særtillegget",
-                                Language.Nynorsk to "særtillegget",
-                                Language.English to "special supplement",
+                                bokmal { + "særtillegget" },
+                                nynorsk { + "særtillegget" },
+                                english { + "special supplement" },
                             )
                         }.orShowIf(
                             regelverkType.isOneOf(
@@ -810,22 +809,22 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             ),
                         ) {
                             text(
-                                Language.Bokmal to "pensjonstillegget",
-                                Language.Nynorsk to "pensjonstillegget",
-                                Language.English to "basic pension",
+                                bokmal { + "pensjonstillegget" },
+                                nynorsk { + "pensjonstillegget" },
+                                english { + "basic pension" },
                             )
                         }
                         showIf(minstenivaaIndividuellInnvilget) {
                             text(
-                                Language.Bokmal to " og minstenivåtillegget",
-                                Language.Nynorsk to " og minstenivåtillegget",
-                                Language.English to " and minimum pension supplement",
+                                bokmal { + " og minstenivåtillegget" },
+                                nynorsk { + " og minstenivåtillegget" },
+                                english { + " and minimum pension supplement" },
                             )
                         }
                         text(
-                            Language.Bokmal to " ditt på nytt med særskilt sats.",
-                            Language.Nynorsk to " ditt på nytt med særskilt sats.",
-                            Language.English to " according to a special rate.",
+                            bokmal { + " ditt på nytt med særskilt sats." },
+                            nynorsk { + " ditt på nytt med særskilt sats." },
+                            english { + " according to a special rate." },
                         )
                     }
                 }
@@ -843,21 +842,21 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saksbehandlerValg.aarligKontrollEPS) {
                     // SaerSatsInfoAarligKontrollEps
                     paragraph {
-                        textExpr(
-                            Language.Bokmal to
-                                "Fram til ".expr() + sivilstandBestemtLitenBokstav +
-                                " din fyller 67 år, har vi en årlig kontroll om ".expr() +
+                        text(
+                            bokmal { + 
+                                "Fram til " + sivilstandBestemtLitenBokstav +
+                                " din fyller 67 år, har vi en årlig kontroll om " +
                                 sivilstandBestemtLitenBokstav +
-                                " din har rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet.",
-                            Language.Nynorsk to
-                                "Fram til ".expr() + sivilstandBestemtLitenBokstav +
-                                " din fyller 67 år, har vi ein årleg kontroll av ".expr() +
+                                " din har rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet." },
+                            nynorsk { + 
+                                "Fram til " + sivilstandBestemtLitenBokstav +
+                                " din fyller 67 år, har vi ein årleg kontroll av " +
                                 sivilstandBestemtLitenBokstav +
-                                " si rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna.",
-                            Language.English to
-                                "Until your ".expr() + sivilstandBestemtLitenBokstav +
+                                " si rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna." },
+                            english { + 
+                                "Until your " + sivilstandBestemtLitenBokstav +
                                 " turns 67 years of age, we have an annual control of their rights to a full retirement pension. " +
-                                "You will receive a new decision if this results in your retirement pension being recalculated.",
+                                "You will receive a new decision if this results in your retirement pension being recalculated." },
                         )
                     }
                 }
@@ -894,20 +893,20 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // vedleggBeregnPensjonsOpptjeningOverskrift
                     title1 {
                         text(
-                            Language.Bokmal to "Pensjonsopptjeningen din",
-                            Language.Nynorsk to "Pensjonsoppteninga di",
-                            Language.English to "Your accumulated pension capital",
+                            bokmal { + "Pensjonsopptjeningen din" },
+                            nynorsk { + "Pensjonsoppteninga di" },
+                            english { + "Your accumulated pension capital" },
                         )
                     }
                     // vedleggBeregnPensjonsOpptjening
                     paragraph {
                         text(
-                            Language.Bokmal to
-                                "I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
-                            Language.Nynorsk to
-                                "I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
-                            Language.English to
-                                "Our online service 'Din pensjon' at ${Constants.DIN_PENSJON_URL} provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered.",
+                            bokmal { + 
+                                "I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg." },
+                            nynorsk { + 
+                                "I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg." },
+                            english { + 
+                                "Our online service 'Din pensjon' at ${Constants.DIN_PENSJON_URL} provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered." },
                         )
                     }
                 }
