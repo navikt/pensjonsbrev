@@ -85,18 +85,53 @@ const FerdigstillValgtBrev = (properties: {
   antallBrevKlarTilSending: number;
   brevInfo: BrevInfo[];
 }) => {
-  const erLåst = useMemo(() => erBrevKlar(properties.brev) || erBrevArkivert(properties.brev), [properties.brev]);
-  const erKlarTilAttestering = useMemo(() => erBrevKlarTilAttestering(properties.brev), [properties.brev]);
+  const harLaasteBrev = properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b));
+  const harKlarTilAttesteringBrev = properties.brevInfo.some((b) => erBrevKlarTilAttestering(b));
 
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
   const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
-  if (erKlarTilAttestering) {
+
+  if (harLaasteBrev && harKlarTilAttesteringBrev) {
     return (
       <Button
         onClick={() => {
-          const brevKlarTilAttestering = properties.brevInfo.filter((brev) => erBrevKlarTilAttestering(brev));
-          setBrevListKlarTilAttestering(brevKlarTilAttestering);
+          if (harLaasteBrev) {
+            properties.åpneFerdigstillModal();
+          }
+        }}
+        size="small"
+        type="button"
+      >
+        <HStack gap="2">
+          <Label>Fortsett / Send {properties.antallBrevKlarTilSending} brev</Label>
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
+      </Button>
+    );
+  } else if (harLaasteBrev) {
+    return (
+      <Button
+        onClick={() => {
+          if (harLaasteBrev) {
+            properties.åpneFerdigstillModal();
+          }
+        }}
+        size="small"
+        type="button"
+      >
+        <HStack gap="2">
+          <Label>Send {properties.antallBrevKlarTilSending} brev</Label>
+          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
+        </HStack>
+      </Button>
+    );
+  } else if (harKlarTilAttesteringBrev) {
+    return (
+      <Button
+        onClick={() => {
+          const brevListeKlarTilAttestering = properties.brevInfo.filter((brev) => erBrevKlarTilAttestering(brev));
+          setBrevListKlarTilAttestering(brevListeKlarTilAttestering);
           navigate({
             to: "/saksnummer/$saksId/kvittering",
             params: { saksId: properties.sakId },
@@ -112,28 +147,10 @@ const FerdigstillValgtBrev = (properties: {
         </HStack>
       </Button>
     );
+  } else {
+    // no button
+    return null;
   }
-
-  if (erLåst) {
-    return (
-      <Button
-        onClick={() => {
-          if (erLåst) {
-            properties.åpneFerdigstillModal();
-          }
-        }}
-        size="small"
-        type="button"
-      >
-        <HStack gap="2">
-          <Label>Ferdigstill {properties.antallBrevKlarTilSending} brev</Label>
-          <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
-        </HStack>
-      </Button>
-    );
-  }
-
-  return null;
 };
 
 const validationSchema = z.object({
