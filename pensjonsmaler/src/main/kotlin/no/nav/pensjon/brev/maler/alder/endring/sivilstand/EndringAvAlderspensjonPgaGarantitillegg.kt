@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.PensjonsopptjeningInformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants
@@ -166,41 +167,9 @@ object EndringAvAlderspensjonPgaGarantitillegg :
                     )
                 }
 
-                // vedleggBeregnPensjonsOpptjeningOverskrift
-                title1 {
-                    text(
-                        bokmal {
-                            +"Pensjonsopptjeningen din"
-                        },
-                        nynorsk {
-                            +"Pensjonsoppteninga di"
-                        },
-                        english { +"Your accumulated pension capital" },
-                    )
-                }
-                // vedleggBeregnPensjonsOpptjening
-                paragraph {
-                    text(
-                        bokmal {
-                            +"I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få" +
-                                " oversikt over pensjonsopptjeningen din for hvert enkelt år." +
-                                " Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg."
-                        },
-                        nynorsk {
-                            +"I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få" +
-                                " oversikt over pensjonsoppteninga di for kvart enkelt år." +
-                                " Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg."
-                        },
-                        english {
-                            +"Our online service 'Din pensjon' at ${Constants.DIN_PENSJON_URL} provides" +
-                                " details on your accumulated rights for each year. Here you will be" +
-                                " able to see your other types of pension rights we have registered."
-                        },
-                    )
-                }
+                includePhrase(PensjonsopptjeningInformasjon)
 
                 // Arbeidsinntekt og pensjon
-
                 includePhrase(
                     ArbeidsinntektOgAlderspensjon(
                         innvilgetFor67 = innvilgetFor67,
