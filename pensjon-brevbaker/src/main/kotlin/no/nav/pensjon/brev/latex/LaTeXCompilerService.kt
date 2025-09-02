@@ -28,6 +28,7 @@ import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
@@ -98,8 +99,9 @@ class LaTeXCompilerService(
                 // setBody(pdfRequest)
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
-            }.body()
-        } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
+            }.body<PDFCompilationOutput>()
+        }?.let { PDFVedleggAppender.leggPaaVedlegg(it, pdfRequest.pdfVedlegg, pdfRequest.language) }
+            ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }
