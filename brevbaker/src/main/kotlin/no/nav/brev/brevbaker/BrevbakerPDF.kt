@@ -61,7 +61,7 @@ private fun PDFVedleggData.tittel(language: Language) = this.let {
             // TODO: Dette kjens litt hacky. Burde kunne finne på noko lurt med expression for å unngå dette
             LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                 id = it.hashCode(),
-                text = it.tittel.tittel[language.toCode()]!!,
+                text = it.tittel[language.toCode()]!!,
             )
         ))
 }

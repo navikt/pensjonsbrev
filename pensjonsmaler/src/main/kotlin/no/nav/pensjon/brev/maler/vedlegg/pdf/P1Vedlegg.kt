@@ -81,7 +81,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
 
     return PDFVedlegg(
         name = name,
-        type = tittel,
+        tittel = tittel,
         (innvilgedePensjoner + avslaattePensjoner + side1 + side4).sortedBy { it.sidenummer },
     )
 }

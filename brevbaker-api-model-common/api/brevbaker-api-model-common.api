@@ -301,9 +301,9 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
-	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
 	public fun getName ()Ljava/lang/String;
-	public fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public fun getTittel ()Ljava/util/Map;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
@@ -666,7 +666,7 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public abstract fun getTittel ()Ljava/util/Map;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
@@ -799,14 +799,6 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/VedleggType {
-	public fun <init> (Ljava/util/Map;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getTittel ()Ljava/util/Map;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brevbaker/api/model/IntValue {

@@ -1289,8 +1289,8 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
-	public final fun includeAttachment (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
-	public final fun includeAttachment (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachment (Ljava/lang/String;Ljava/util/Map;)V
+	public final fun includeAttachment (Ljava/lang/String;Ljava/util/Map;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
@@ -1607,11 +1607,11 @@ public final class no/nav/pensjon/brev/template/render/UtilsKt {
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
-	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/template/Expression;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;Lno/nav/pensjon/brev/template/Expression;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getName ()Ljava/lang/String;
-	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public final fun getTittel ()Ljava/util/Map;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
