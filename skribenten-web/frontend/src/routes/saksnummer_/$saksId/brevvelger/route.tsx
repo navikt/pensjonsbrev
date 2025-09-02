@@ -62,7 +62,8 @@ export function BrevvelgerPage() {
         display: flex;
         flex-direction: column;
         align-self: center;
-        @media (max-width: 1023px) {
+
+        @media (width <= 1023px) {
           align-self: start;
         }
         width: 100%;

@@ -308,7 +308,8 @@ function RedigerBrev({
           flex-direction: column;
           flex: 1;
           align-self: center;
-          @media (max-width: 1023px) {
+
+          @media (width <= 1023px) {
             align-self: start;
           }
           min-width: 946px;

@@ -54,7 +54,8 @@ function Brevbehandler() {
           "footer footer" auto / minmax(304px, 384px) minmax(640px, 720px);
         align-self: center;
         align-items: start;
-        @media (max-width: 1023px) {
+
+        @media (width <= 1023px) {
           align-self: start;
         }
 
