@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.garantitillegg_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnbelop
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
@@ -71,6 +72,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -120,6 +122,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 ),
         ) {
             val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
+            val garantitillegg =
+                pesysData.beregnetPensjonPerManedVedVirk.garantitillegg_safe.ifNull(then = Kroner(0))
             val regelverkType = pesysData.regelverkType
             val kravArsakType = pesysData.kravAarsak
             val sivilstand = pesysData.sivilstand
@@ -149,11 +153,24 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             val epsNavn = fritekst("navn")
 
             title {
-                text(
-                    bokmal { +"Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
-                    nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
-                    english { +"We have recalculated your retirement pension from " + kravVirkDatoFom },
-                )
+                showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG)) {
+                    // nyBeregningAPTittel
+                    text(
+                        bokmal { +"Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
+                        nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
+                        english { +"We have recalculated your retirement pension from " + kravVirkDatoFom },
+                    )
+                }.orShow {
+                    // innvilgetGarantitilleggTittel
+                    text(
+                        bokmal { +"Du har fått innvilget garantitillegg fra " + kravVirkDatoFom },
+                        nynorsk { +"Du har fått innvilga garantitillegg frå " + kravVirkDatoFom },
+                        english {
+                            +"You have been granted a guarantee supplement for accumulated pension capital rights from " +
+                                kravVirkDatoFom
+                        },
+                    )
+                }
             }
             outline {
                 includePhrase(Vedtak.Overskrift)
@@ -240,8 +257,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                     bokmal { +"Samboeren din mottar pensjon, uføretrygd eller avtalefestet pensjon." },
                                     nynorsk { +"Sambuaren din får pensjon, uføretrygd eller avtalefesta pensjon." },
                                     english {
-                                        +"Your cohabitant receives a pension, disability benefit or contractual" +
-                                            " early retirement pension (AFP)."
+                                        +"Your cohabitant receives a pension, disability benefit or contractual early retirement pension (AFP)."
                                     },
                                 )
                             }
@@ -378,16 +394,13 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         paragraph {
                             text(
                                 bokmal {
-                                    +"Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din" +
-                                        " registrert bosatt på ulike adresser."
+                                    +"Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din registrert bosatt på ulike adresser."
                                 },
                                 nynorsk {
-                                    +"Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din" +
-                                        " registrert busette på ulike adresser."
+                                    +"Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din registrert busette på ulike adresser."
                                 },
                                 english {
-                                    +"You have gotten married. According to the national registry you" +
-                                        " and your spouse are listed at different residential addresses."
+                                    +"You have gotten married. According to the national registry you and your spouse are listed at different residential addresses."
                                 },
                             )
                         }
@@ -463,16 +476,13 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 paragraph {
                                     text(
                                         bokmal {
-                                            +"Derfor har vi beregnet grunnpensjonen, pensjonstillegget," +
-                                                " garantipensjonen og minstenivåtillegget ditt på nytt."
+                                            +"Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
                                         },
                                         nynorsk {
-                                            +"Derfor har vi berekna grunnpensjonen, pensjonstillegget," +
-                                                " garantipensjonen og minstenivåtillegget ditt på nytt."
+                                            +"Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
                                         },
                                         english {
-                                            +"We have therefore recalculated your basic pension," +
-                                                " supplementary pension, guaranteed pension and minimum pension supplement."
+                                            +"We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
                                         },
                                     )
                                 }
@@ -480,16 +490,13 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 paragraph {
                                     text(
                                         bokmal {
-                                            +"Derfor har vi beregnet grunnpensjonen, pensjonstillegget" +
-                                                " og minstenivåtillegget ditt på nytt."
+                                            +"Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt."
                                         },
                                         nynorsk {
-                                            +"Derfor har vi berekna grunnpensjonen, pensjonstillegget" +
-                                                " og minstenivåtillegget ditt på nytt."
+                                            +"Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt."
                                         },
                                         english {
-                                            +"We have therefore recalculated your basic pension," +
-                                                " supplementary pension and minimum pension supplement."
+                                            +"We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement."
                                         },
                                     )
                                 }
@@ -539,8 +546,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                             +"Derfor har vi berekna grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt."
                                         },
                                         english {
-                                            +"We have therefore recalculated your basic pension," +
-                                                " supplementary pension and guaranteed pension."
+                                            +"We have therefore recalculated your basic pension, supplementary pension and guaranteed pension."
                                         },
                                     )
                                 }
@@ -583,8 +589,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                             +"Derfor har vi berekna grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt."
                                         },
                                         english {
-                                            +"We have therefore recalculated your basic pension, the" +
-                                                " special supplement and the minimum level supplement."
+                                            +"We have therefore recalculated your basic pension, the special supplement and the minimum level supplement."
                                         },
                                     )
                                 }
@@ -594,6 +599,54 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 includePhrase(OmregningGarantiPen(regelverkType))
+
+                showIf(kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG)) {
+                    // innvilgetGarantitilleggKap20
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010."
+                            },
+                            nynorsk {
+                                +"Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer til den pensjonen du hadde tent opp før pensjonsreforma i 2010."
+                            },
+                            english {
+                                +"The guarantee supplement for accumulated pension capital rights is to ensure that you receive a retirement pension at age 67 that corresponds to the pension you had earned before the pension reform in 2010."
+                            },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales fra måneden etter du fyller 67 år."
+                            },
+                            nynorsk {
+                                +"Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast betalast ut frå månaden etter du fyller 67 år."
+                            },
+                            english {
+                                +"The supplement will be paid in addition to your retirement pension and can at the earliest be paid from the month after you turn 67 years of age."
+                            },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Garantitillegget utgjør " + garantitillegg.format() + " per måned før skatt fra " +
+                                    kravVirkDatoFom +
+                                    "."
+                            },
+                            nynorsk {
+                                +"Garantitillegget utgjer " + garantitillegg.format() + " per månad før skatt frå " +
+                                    kravVirkDatoFom +
+                                    "."
+                            },
+                            english {
+                                +"Your monthly guarantee supplement for accumulated pension capital rights will be " +
+                                    garantitillegg.format() + " before tax from " + kravVirkDatoFom + "."
+                            },
+                        )
+                    }
+                }
 
                 // Radioknapper: Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå
                 showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
@@ -628,29 +681,19 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             text(
                                 bokmal {
                                     +sivilstandBestemtStorBokstav +
-                                        (
-                                            " din som du forsørger har ikke rett til full alderspensjon fra" +
-                                                " folketrygden og har inntekt lavere enn grunnbeløpet "
-                                        ) +
+                                        " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet " +
                                         grunnbelop.format() +
                                         "."
                                 },
                                 nynorsk {
                                     +sivilstandBestemtStorBokstav +
-                                        (
-                                            " din som du forsørgjer har ikkje rett til full alderspensjon frå" +
-                                                " folketrygda og har inntekt lågare enn grunnbeløpet "
-                                        ) +
+                                        " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet " +
                                         grunnbelop.format() +
                                         "."
                                 },
                                 english {
                                     +"Your " + sivilstandBestemtLitenBokstav +
-                                        (
-                                            " you support does not have rights to full retirement pension through" +
-                                                " the National Insurance Act and has income lower than the basic" +
-                                                " amount which is "
-                                        ) +
+                                        " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is " +
                                         grunnbelop.format() +
                                         "."
                                 },
@@ -680,14 +723,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         // SaerSatsBruktEpsGittAvkallUT
                         paragraph {
                             text(
-                                bokmal {
-                                    +sivilstandBestemtStorBokstav +
-                                        " din har gitt avkall på sin uføretrygd fra folketrygden."
-                                },
-                                nynorsk {
-                                    +sivilstandBestemtStorBokstav +
-                                        " din har gitt avkall på uføretrygda si frå folketrygda."
-                                },
+                                bokmal { +sivilstandBestemtStorBokstav + " din har gitt avkall på sin uføretrygd fra folketrygden." },
+                                nynorsk { +sivilstandBestemtStorBokstav + " din har gitt avkall på uføretrygda si frå folketrygda." },
                                 english {
                                     +"Your " + sivilstandBestemtLitenBokstav +
                                         " has renounced their disability benefits through the National Insurance Act."
@@ -920,6 +957,31 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         saerskiltSatsErBrukt = saerskiltSatsErBrukt,
                     ),
                 )
+
+                showIf(kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG)) {
+                    // vedleggBeregnPensjonsOpptjeningOverskrift
+                    title1 {
+                        text(
+                            bokmal { +"Pensjonsopptjeningen din" },
+                            nynorsk { +"Pensjonsoppteninga di" },
+                            english { +"Your accumulated pension capital" },
+                        )
+                    }
+                    // vedleggBeregnPensjonsOpptjening
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg."
+                            },
+                            nynorsk {
+                                +"I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg."
+                            },
+                            english {
+                                +"Our online service 'Din pensjon' at ${Constants.DIN_PENSJON_URL} provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
+                            },
+                        )
+                    }
+                }
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
                 showIf(saksbehandlerValg.feilutbetaling) {
