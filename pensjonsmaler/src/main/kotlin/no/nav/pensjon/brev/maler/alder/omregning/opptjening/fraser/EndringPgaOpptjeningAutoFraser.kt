@@ -119,18 +119,18 @@ data class AvsnittUtbetalingPerMaaned(
         showIf(uforeKombinertMedAlder.not()) {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " kroner før skatt fra " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + " i alderspensjon fra folketrygden.",
-                    Language.Nynorsk to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " kroner før skatt frå " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + " i alderspensjon frå folketrygda.",
-                    Language.English to "You will receive NOK ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " before tax from " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + " as retirement pension through the National Insurance Scheme.",
+                    Language.Bokmal to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " før skatt fra " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + " i alderspensjon fra folketrygden.",
+                    Language.Nynorsk to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " før skatt frå " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + " i alderspensjon frå folketrygda.",
+                    Language.English to "You will receive ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " before tax from " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + " as retirement pension through the National Insurance Scheme.",
                 )
             }
         }
         showIf(uforeKombinertMedAlder) {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " kroner før skatt fra " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + ". Du får alderspensjon i tillegg til uføretrygden din.",
-                    Language.Nynorsk to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " kroner før skatt frå " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + ". Du får alderspensjon ved sida av uføretrygda di.",
-                    Language.English to "You will receive NOK ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " before tax from " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + ". You will receive retirement pension in addition to you disability benefit.",
+                    Language.Bokmal to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " før skatt fra " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + ". Du får alderspensjon i tillegg til uføretrygden din.",
+                    Language.Nynorsk to "Du får ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " før skatt frå " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + ". Du får alderspensjon ved sida av uføretrygda di.",
+                    Language.English to "You will receive ".expr() + beregnetPensjonPerMaanedGjeldende.totalPensjon.format() + " before tax from " + beregnetPensjonPerMaanedGjeldende.virkFom.format() + ". You will receive retirement pension in addition to you disability benefit.",
                 )
             }
         }
