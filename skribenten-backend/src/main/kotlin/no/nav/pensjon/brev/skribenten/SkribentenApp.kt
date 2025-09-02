@@ -33,6 +33,8 @@ import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import java.util.concurrent.TimeUnit
+import kotlin.apply
 
 
 fun main() {
@@ -44,7 +46,16 @@ fun main() {
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
 
-    embeddedServer(Netty, port = skribentenConfig.getInt("port"), host = "0.0.0.0") {
+    embeddedServer(Netty,
+        configure = {
+            connectors.add(EngineConnectorBuilder().apply {
+                host = "0.0.0.0"
+                port = skribentenConfig.getInt("port")
+            })
+            shutdownGracePeriod = TimeUnit.SECONDS.toMillis(5)
+            shutdownTimeout = TimeUnit.SECONDS.toMillis(10)
+        },
+    ) {
         skribentenApp(skribentenConfig)
     }.start(wait = true)
 }
