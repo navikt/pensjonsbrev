@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
@@ -25,23 +24,23 @@ data class Trygdetidstabell(
                 header = {
                     column(2) {
                         text(
-                            Language.Bokmal to "Periode",
-                            Language.Nynorsk to "Periode",
-                            Language.English to "Period",
+                            bokmal { +"Periode" },
+                            nynorsk { +"Periode" },
+                            english { +"Period" },
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Land",
-                            Language.Nynorsk to "Land",
-                            Language.English to "Country",
+                            bokmal { +"Land" },
+                            nynorsk { +"Land" },
+                            english { +"Country" },
                         )
                     }
                     column(2) {
                         text(
-                            Language.Bokmal to "Grunnlag trygdetid",
-                            Language.Nynorsk to "Grunnlag trygdetid",
-                            Language.English to "Basis for contribution time",
+                            bokmal { +"Grunnlag trygdetid" },
+                            nynorsk { +"Grunnlag trygdetid" },
+                            english { +"Basis for contribution time" },
                         )
                     }
                 }
@@ -51,25 +50,25 @@ data class Trygdetidstabell(
                         cell { includePhrase(PeriodeITabell(periode.datoFOM, periode.datoTOM)) }
                         cell {
                             ifNotNull(periode.land) { land ->
-                                textExpr(
-                                    Language.Bokmal to land + " (" + periode.landkode + ")",
-                                    Language.Nynorsk to land + " (" + periode.landkode + ")",
-                                    Language.English to land + " (" + periode.landkode + ")",
+                                text(
+                                    bokmal { +land + " (" + periode.landkode + ")" },
+                                    nynorsk { +land + " (" + periode.landkode + ")" },
+                                    english { +land + " (" + periode.landkode + ")" },
                                 )
                             }.orShow {
-                                textExpr(
-                                    Language.Bokmal to periode.landkode,
-                                    Language.Nynorsk to periode.landkode,
-                                    Language.English to periode.landkode,
+                                text(
+                                    bokmal { +periode.landkode },
+                                    nynorsk { +periode.landkode },
+                                    english { +periode.landkode },
                                 )
                             }
                         }
                         cell {
                             ifNotNull(periode.opptjeningsperiode) {
-                                textExpr(
-                                    Language.Bokmal to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (fremtidig trygdetid)", ""),
-                                    Language.Nynorsk to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (framtidig trygdetid)", ""),
-                                    Language.English to  it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (future contribution time)", ""),
+                                text(
+                                    bokmal { +it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (fremtidig trygdetid)", "") },
+                                    nynorsk { +it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (framtidig trygdetid)", "") },
+                                    english { + it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (future contribution time)", "") },
                                 )
                             }
                         }

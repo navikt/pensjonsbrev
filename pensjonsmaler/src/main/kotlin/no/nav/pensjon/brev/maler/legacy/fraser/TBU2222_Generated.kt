@@ -10,9 +10,9 @@ object TBU2222_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				Bokmal to "Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før.",
-				Nynorsk to "Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før.",
-				English to "This will not affect your disability benefit, and you will be paid the same amount.",
+				bokmal { + "Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
+				nynorsk { + "Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
+				english { + "This will not affect your disability benefit, and you will be paid the same amount." },
 			)
 		}
     }

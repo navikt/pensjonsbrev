@@ -32,9 +32,9 @@ data class TBU034V_036V(
 
             paragraph {
                 text(
-                    Bokmal to "Folketrygdens grunnbeløp endres hvert år, og uføretrygden din blir justert ut fra dette.",
-                    Nynorsk to "Grunnbeløpet i folketrygda blir endra kvart år, og uføretrygda di blir justert ut frå dette.",
-                    English to "The National Insurance basic amount changes every year, and your disability benefit will be adjusted in accordance with this."
+                    bokmal { + "Folketrygdens grunnbeløp endres hvert år, og uføretrygden din blir justert ut fra dette." },
+                    nynorsk { + "Grunnbeløpet i folketrygda blir endra kvart år, og uføretrygda di blir justert ut frå dette." },
+                    english { + "The National Insurance basic amount changes every year, and your disability benefit will be adjusted in accordance with this." }
                 )
             }
         }
@@ -45,17 +45,17 @@ data class TBU034V_036V(
 
             title1 {
                 text(
-                    Bokmal to "Beregning av uføretrygd som skyldes yrkesskade eller yrkessykdom",
-                    Nynorsk to "Berekning av uføretrygd som kjem av yrkesskade eller yrkessjukdom",
-                    English to "Calculation of disability benefit due to occupational injury or occupational illness",
+                    bokmal { + "Beregning av uføretrygd som skyldes yrkesskade eller yrkessykdom" },
+                    nynorsk { + "Berekning av uføretrygd som kjem av yrkesskade eller yrkessjukdom" },
+                    english { + "Calculation of disability benefit due to occupational injury or occupational illness" },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "For den delen av uførheten din som skyldes en godkjent yrkesskade eller yrkessykdom, fastsetter vi en yrkesskadegrad. Det er yrkesskadegraden som bestemmer hvor mye av uføretrygden din som skal beregnes etter særbestemmelser. Vi tar utgangspunkt i inntekten på skadetidspunktet ditt, når vi gjør beregningen. Skadetidspunktet blir alltid satt til den første i måneden på det tidspunktet du får en yrkesskade eller yrkessykdom.",
-                    Nynorsk to "For den delen av uførleiken din som kjem av ein godkjend yrkesskade eller yrkessjukdom, fastset vi ein yrkesskadegrad. Det er yrkesskadegraden som bestemmer kor mykje av uføretrygda di som skal bereknast etter særreglar. Når vi bereknar, tek vi utgangspunkt i inntekta på skadetidspunktet ditt. Skadetidspunktet blir alltid satt til den første i månaden på det tidspunktet du får ein yrkesskade eller yrkessjukdom.",
-                    English to "We will determine a degree of occupational injury for the part of your disability caused by a certified occupational injury or occupational illness. This degree of occupational injury will determine how much of your disability benefit will be calculated on the basis of special rules. We will base our calculations on your income at the time of injury. The time of injury is determined to the first of the month of your occupational injury or occupational illness.",
+                    bokmal { + "For den delen av uførheten din som skyldes en godkjent yrkesskade eller yrkessykdom, fastsetter vi en yrkesskadegrad. Det er yrkesskadegraden som bestemmer hvor mye av uføretrygden din som skal beregnes etter særbestemmelser. Vi tar utgangspunkt i inntekten på skadetidspunktet ditt, når vi gjør beregningen. Skadetidspunktet blir alltid satt til den første i måneden på det tidspunktet du får en yrkesskade eller yrkessykdom." },
+                    nynorsk { + "For den delen av uførleiken din som kjem av ein godkjend yrkesskade eller yrkessjukdom, fastset vi ein yrkesskadegrad. Det er yrkesskadegraden som bestemmer kor mykje av uføretrygda di som skal bereknast etter særreglar. Når vi bereknar, tek vi utgangspunkt i inntekta på skadetidspunktet ditt. Skadetidspunktet blir alltid satt til den første i månaden på det tidspunktet du får ein yrkesskade eller yrkessjukdom." },
+                    english { + "We will determine a degree of occupational injury for the part of your disability caused by a certified occupational injury or occupational illness. This degree of occupational injury will determine how much of your disability benefit will be calculated on the basis of special rules. We will base our calculations on your income at the time of injury. The time of injury is determined to the first of the month of your occupational injury or occupational illness." },
                 )
             }
         }
@@ -76,9 +76,9 @@ data class TBU034V_036V(
 
             title1 {
                 text(
-                    Bokmal to "Dette er inntektene vi har brukt i beregningen din",
-                    Nynorsk to "Dette er inntektene vi har brukt i berekninga di",
-                    English to "This is the income on which we have based your calculations",
+                    bokmal { + "Dette er inntektene vi har brukt i beregningen din" },
+                    nynorsk { + "Dette er inntektene vi har brukt i berekninga di" },
+                    english { + "This is the income on which we have based your calculations" },
                 )
             }
         }

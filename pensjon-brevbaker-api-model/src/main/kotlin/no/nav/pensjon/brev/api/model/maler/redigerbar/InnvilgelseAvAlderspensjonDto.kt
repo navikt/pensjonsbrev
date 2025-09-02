@@ -25,10 +25,6 @@ data class InnvilgelseAvAlderspensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
-        @DisplayText("Hvis egen opptjening er best")
-        val egenOpptjening: Boolean,
-        @DisplayText("Hvis kildeskatt")
-        val kildeskatt: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(

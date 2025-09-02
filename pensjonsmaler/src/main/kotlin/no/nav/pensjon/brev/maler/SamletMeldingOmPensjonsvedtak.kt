@@ -41,8 +41,8 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
     ) {
         title {
             text(
-                Bokmal to "Samlet melding om pensjonsvedtak",
-                English to "Summary of Pension Decisions"
+                bokmal { + "Samlet melding om pensjonsvedtak" },
+                english { + "Summary of Pension Decisions" }
             )
         }
         outline {
@@ -50,44 +50,44 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
 
             title1 {
                 text(
-                    Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                    English to "P1 – Summary of Pension Decisions"
+                    bokmal { + "P1 – Samlet melding om pensjonsvedtak" },
+                    english { + "P1 – Summary of Pension Decisions" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "I forbindelse med din søknad om ",
-                    English to "Your application for "
+                    bokmal { + "I forbindelse med din søknad om " },
+                    english { + "Your application for " }
                 )
                 eval(sakstype)
                 text(
-                    Bokmal to " fra EUs og EØS medlemsland legger vi ved",
-                    English to " from EU/EEA member countries, we enclose:"
+                    bokmal { + " fra EUs og EØS medlemsland legger vi ved" },
+                    english { + " from EU/EEA member countries, we enclose:" }
                 )
                 list {
                     item {
                         text(
-                            Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                            English to "P1 – Summary of Pension Decisions"
+                            bokmal { + "P1 – Samlet melding om pensjonsvedtak" },
+                            english { + "P1 – Summary of Pension Decisions" }
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Informasjon om skjemaet P1 og hvordan det brukes",
-                            English to "Information about the P1 form and its use"
+                            bokmal { + "Informasjon om skjemaet P1 og hvordan det brukes" },
+                            english { + "Information about the P1 form and its use" }
                         )
                     }
                 }
             }
             paragraph {
                 text(
-                    Bokmal to "P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om ",
-                    English to "The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries."
+                    bokmal { + "P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om " },
+                    english { + "The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries." }
                 )
                 eval(sakstype)
                 text(
-                    Bokmal to ".",
-                    English to ""
+                    bokmal { + "." },
+                    english { + "" }
                 )
             }
         }

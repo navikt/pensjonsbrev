@@ -48,7 +48,7 @@ const EditorFonts = (props: {
   const activeFontType = getCurrentActiveFontTypeAtCursor(props.editorState);
 
   return (
-    <div>
+    <>
       <FontButton
         active={activeFontType === FontType.BOLD}
         dataCy="fonttype-bold"
@@ -81,7 +81,7 @@ const EditorFonts = (props: {
           </Label>
         }
       />
-    </div>
+    </>
   );
 };
 

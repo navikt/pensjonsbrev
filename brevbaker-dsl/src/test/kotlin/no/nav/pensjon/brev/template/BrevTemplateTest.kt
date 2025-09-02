@@ -44,7 +44,7 @@ private class BrevTemplateTest {
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
                 )
             ) {
-                title { text(Language.Bokmal to "Test tittel") }
+                title { text(bokmal { +"Test tittel" }) }
 
             }
 

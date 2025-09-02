@@ -42,9 +42,9 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
     ) {
         title {
             text(
-                Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
-                Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
-                English to "We have rejected your application for adjustment allowance",
+                bokmal { +"Vi har avslått søknaden din om omstillingsstønad" },
+                nynorsk { +"Vi har avslått søknaden din om omstillingsstønad" },
+                english { +"We have rejected your application for adjustment allowance" },
             )
         }
 

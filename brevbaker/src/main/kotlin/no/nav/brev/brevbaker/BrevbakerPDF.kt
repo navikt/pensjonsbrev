@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brev.template.toScope
+import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {

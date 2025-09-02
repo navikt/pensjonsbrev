@@ -7,11 +7,9 @@ import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -29,7 +27,7 @@ class TemplateTest {
             title.add(bokmalTittel)
             outline {
                 title1 {
-                    text(Language.Bokmal to "Heisann. ")
+                    text(bokmal { +"Heisann. " })
                 }
             }
         }
@@ -69,9 +67,9 @@ class TemplateTest {
         ) {
             paragraph {
                 text(
-                    Language.Bokmal to "hei",
-                    Language.Nynorsk to "hei",
-                    Language.English to "Hello",
+                    bokmal { +"hei" },
+                    nynorsk { +"hei" },
+                    english { +"Hello" },
                 )
             }
         }
@@ -130,7 +128,7 @@ class TemplateTest {
         ) {
             title.add(bokmalTittel)
             outline {
-                title1 { text(Language.Bokmal to "jadda") }
+                title1 { text(bokmal { +"jadda" }) }
             }
         }
 
@@ -166,9 +164,9 @@ class TemplateTest {
         ) {
             title.add(bokmalTittel)
             outline {
-                title1 { text(Language.Bokmal to "Tittel") }
+                title1 { text(bokmal { +"Tittel" }) }
                 paragraph {
-                    text(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")
+                    text(bokmal { +"Dette er tekst som kun brukes i dette brevet." })
                 }
             }
         }
@@ -232,10 +230,10 @@ class TemplateTest {
 data class TestFrase(val test: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
-            textExpr(
-                Language.Bokmal to "Hei på deg fra TestFrase: ".expr() + test,
-                Language.Nynorsk to "Hei på deg frå TestFrase: ".expr() + test,
-                Language.English to "Hey you, from TestFrase: ".expr() + test,
+            text(
+                bokmal { +"Hei på deg fra TestFrase: " + test },
+                nynorsk { +"Hei på deg frå TestFrase: " + test },
+                english { +"Hey you, from TestFrase: " + test },
             )
         }
 }

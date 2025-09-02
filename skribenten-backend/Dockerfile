@@ -1,4 +1,4 @@
 FROM gcr.io/distroless/java21-debian12
-COPY build/libs/app.jar /app.jar
+COPY build/install/*/lib /app/lib
 EXPOSE 8080
-CMD ["/app.jar"]
+ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.skribenten.SkribentenAppKt"]

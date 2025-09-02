@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -56,18 +55,18 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
     ) {
         title {
             text(
-                Bokmal to "Vi har opphørt omstillingsstønaden din",
-                Nynorsk to "Vi har avvikla omstillingsstønaden din",
-                English to "We have terminated your adjustment allowance",
+                bokmal { +"Vi har opphørt omstillingsstønaden din" },
+                nynorsk { +"Vi har avvikla omstillingsstønaden din" },
+                english { +"We have terminated your adjustment allowance" },
             )
         }
 
         outline {
             paragraph {
-                textExpr(
-                    Bokmal to "Omstillingsstønaden din opphører fra ".expr() + virkningsdato.format() + ".",
-                    Nynorsk to "Omstillingsstønaden din fell bort frå og med ".expr() + virkningsdato.format() + ".",
-                    English to "Your adjustment allowance will terminate on: ".expr() + virkningsdato.format() + ".",
+                text(
+                    bokmal { +"Omstillingsstønaden din opphører fra " + virkningsdato.format() + "." },
+                    nynorsk { +"Omstillingsstønaden din fell bort frå og med " + virkningsdato.format() + "." },
+                    english { +"Your adjustment allowance will terminate on: " + virkningsdato.format() + "." },
                 )
             }
             konverterElementerTilBrevbakerformat(innhold)

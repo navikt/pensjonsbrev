@@ -5,6 +5,7 @@ import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateC
 import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
+  Cell,
   ColumnSpec,
   Content,
   ElementTags,
@@ -380,19 +381,23 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
   };
 }
 
+export function newCell(text?: TextContent[]): Cell {
+  return {
+    id: null,
+    parentId: null,
+    text: text ?? [newLiteral({ editedText: "" })],
+  };
+}
+
 export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
-    cells: Array.from({ length: colCount }, () => ({
-      id: null,
-      parentId: null,
-      text: [newLiteral({ editedText: "" })],
-    })),
+    cells: Array.from({ length: colCount }, () => newCell()),
   };
 }
 
-export function newColSpec(colCount: number): ColumnSpec[] {
+export function newColSpec(colCount: number, headers?: { text: string; font?: FontType }[]): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
     parentId: null,
@@ -403,8 +408,8 @@ export function newColSpec(colCount: number): ColumnSpec[] {
       parentId: null,
       text: [
         newLiteral({
-          editedText: `Kolonne ${i + 1}`,
-          fontType: FontType.PLAIN,
+          editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
+          fontType: headers?.[i]?.font ?? FontType.PLAIN,
         }),
       ],
     },

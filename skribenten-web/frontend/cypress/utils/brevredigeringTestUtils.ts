@@ -46,6 +46,7 @@ export const nyBrevResponse = ({
     redigertBrev: redigertBrev,
     redigertBrevHash: redigertBrevHash,
     saksbehandlerValg: saksbehandlerValg,
+    propertyUsage: null,
   };
 };
 
