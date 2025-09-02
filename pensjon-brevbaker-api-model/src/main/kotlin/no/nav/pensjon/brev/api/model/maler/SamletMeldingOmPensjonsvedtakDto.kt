@@ -221,9 +221,9 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-institusjonsID" to utfyllendeInstitusjon.institusjonsID,
         "institution-faksnummer" to utfyllendeInstitusjon.faksnummer,
         "institution-telefonnummer" to utfyllendeInstitusjon.telefonnummer?.value,
-        "institution-epost" to utfyllendeInstitusjon.epost.value,
+        "institution-epost" to utfyllendeInstitusjon.epost?.value,
         "institution-dato" to utfyllendeInstitusjon.dato.formater(),
-        "institution-underskrift" to utfyllendeInstitusjon.underskrift,
+        "institution-underskrift" to "",
     ))
 
     return PDFVedlegg(type = Vedleggtyper.P1, (innvilgedePensjoner + avslaattePensjoner + side1 + side4).sortedBy { it.sidenummer },)
