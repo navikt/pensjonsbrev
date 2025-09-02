@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,7 +38,7 @@ class TemplateResourceTest {
     private val fakePDFAppender = object : PDFVedleggAppender {
         override fun leggPaaVedlegg(
             pdfCompilationOutput: PDFCompilationOutput,
-            attachments: List<PDFVedlegg>,
+            attachments: List<PDFVedleggData>,
             spraak: LanguageCode,
         ) = pdfCompilationOutput
     }

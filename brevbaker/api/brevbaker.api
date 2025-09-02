@@ -62,6 +62,15 @@ public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
 	public static fun validateResponse (Lno/nav/brev/brevbaker/PDFByggerService;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class no/nav/brev/brevbaker/PDFVedlegg {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSider ()Ljava/util/List;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class no/nav/brev/brevbaker/PDFVedleggAppender {
 	public abstract fun leggPaaVedlegg (Lno/nav/brev/brevbaker/PDFCompilationOutput;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Lno/nav/brev/brevbaker/PDFCompilationOutput;
 }

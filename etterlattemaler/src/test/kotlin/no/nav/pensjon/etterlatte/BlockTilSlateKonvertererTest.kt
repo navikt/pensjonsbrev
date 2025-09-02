@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -34,7 +34,7 @@ class BlockTilSlateKonvertererTest {
             object: PDFVedleggAppender {
                 override fun leggPaaVedlegg(
                     pdfCompilationOutput: PDFCompilationOutput,
-                    attachments: List<PDFVedlegg>,
+                    attachments: List<PDFVedleggData>,
                     spraak: LanguageCode
                 ) = pdfCompilationOutput
             }

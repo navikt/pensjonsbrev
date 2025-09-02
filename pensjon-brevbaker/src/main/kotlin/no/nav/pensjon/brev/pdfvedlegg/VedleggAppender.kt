@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.pdfvedlegg
 
+import no.nav.brev.brevbaker.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.Side
 import no.nav.pensjon.brevbaker.api.model.VedleggType
 import org.apache.pdfbox.Loader

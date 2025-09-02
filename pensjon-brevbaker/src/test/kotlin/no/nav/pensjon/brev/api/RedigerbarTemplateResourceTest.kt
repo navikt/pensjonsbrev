@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -31,7 +31,7 @@ class RedigerbarTemplateResourceTest {
     private val fakePDFAppender = object : PDFVedleggAppender {
         override fun leggPaaVedlegg(
             pdfCompilationOutput: PDFCompilationOutput,
-            attachments: List<PDFVedlegg>,
+            attachments: List<PDFVedleggData>,
             spraak: LanguageCode,
         ) = pdfCompilationOutput
     }

@@ -663,15 +663,6 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/List;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getSider ()Ljava/util/List;
-	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 	public abstract fun getTittel ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 }
