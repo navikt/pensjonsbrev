@@ -50,7 +50,6 @@ export const FerdigstillOgSendBrevButton = (properties: {
     return (
       <FerdigstillValgtBrev
         antallBrevKlarTilSending={antallBrevSomErKlarTilSending}
-        brev={valgtBrev}
         brevInfo={properties.brevInfo}
         sakId={properties.sakId}
         åpneFerdigstillModal={properties.åpneFerdigstillModal}
@@ -80,7 +79,6 @@ export const FerdigstillOgSendBrevButton = (properties: {
 
 const FerdigstillValgtBrev = (properties: {
   sakId: string;
-  brev: BrevInfo;
   åpneFerdigstillModal: () => void;
   antallBrevKlarTilSending: number;
   brevInfo: BrevInfo[];
@@ -96,9 +94,7 @@ const FerdigstillValgtBrev = (properties: {
     return (
       <Button
         onClick={() => {
-          if (harLaasteBrev) {
-            properties.åpneFerdigstillModal();
-          }
+          properties.åpneFerdigstillModal();
         }}
         size="small"
         type="button"
@@ -113,9 +109,7 @@ const FerdigstillValgtBrev = (properties: {
     return (
       <Button
         onClick={() => {
-          if (harLaasteBrev) {
-            properties.åpneFerdigstillModal();
-          }
+          properties.åpneFerdigstillModal();
         }}
         size="small"
         type="button"
