@@ -1,8 +1,19 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.StringExpression
+import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
+
+fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
+    Language.Bokmal to LiteralOrExpressionBuilder().block()
+
+fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
+    Language.Nynorsk to LiteralOrExpressionBuilder().block()
+
+fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
+    Language.English to LiteralOrExpressionBuilder().block()
 
 class LiteralOrExpressionBuilder {
     // brukes for å bruke unary plus som plus. Kan skje om plus er på ny linje.

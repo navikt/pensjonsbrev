@@ -13,11 +13,11 @@ interface TemplateGlobalScope<LetterData : Any> {
         get() = Expression.FromScope.Felles
 
     fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
-        Language.Bokmal to LiteralOrExpressionBuilder().block()
+        no.nav.pensjon.brev.template.dsl.bokmal(block)
 
     fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
-        Language.Nynorsk to LiteralOrExpressionBuilder().block()
+        no.nav.pensjon.brev.template.dsl.nynorsk(block)
 
     fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
-        Language.English to LiteralOrExpressionBuilder().block()
+        no.nav.pensjon.brev.template.dsl.english(block)
 }
