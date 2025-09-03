@@ -6,9 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.LocalDate
 import java.time.Period
-import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
 
 
 private const val RADER_PER_SIDE = 5
@@ -116,19 +114,9 @@ private fun LocalDate.formater(): String? =
 
 private fun Period.formater() = this.toString() // TODO: Formater periode ordentleg
 
-fun dateFormatter(languageCode: LanguageCode, formatStyle: FormatStyle): DateTimeFormatter =
-    DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(languageCode.locale())
-
 private fun P1Dto.Adresse.formater() =
     listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
             System.lineSeparator() + "${postnummer.value} ${poststed.value}" + System.lineSeparator() + landkode.landkode
-
-fun LanguageCode.locale(): Locale =
-    when (this) {
-        LanguageCode.BOKMAL -> Locale.forLanguageTag("no")
-        LanguageCode.NYNORSK -> Locale.forLanguageTag("no")
-        LanguageCode.ENGLISH -> Locale.UK
-    }
 
 
 @JvmInline
