@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.template.vedlegg
 
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 
+typealias VedleggTittel = Map<Language, String>
+
 @PDFVedleggMarker
-class PDFVedlegg<Lang: LanguageSupport>(private val title: String) {
+class PDFVedlegg<Lang: LanguageSupport>(private val title: VedleggTittel) {
     private val muterbarSider: MutableList<Side<Lang>> = mutableListOf()
     val sider: List<Side<Lang>>
         get() = muterbarSider
@@ -13,7 +16,7 @@ class PDFVedlegg<Lang: LanguageSupport>(private val title: String) {
     }
 
     companion object {
-        fun <Lang: LanguageSupport> create(title: String, init: PDFVedlegg<Lang>.() -> Unit): PDFVedlegg<Lang> = PDFVedlegg<Lang>(title).apply(init)
+        fun <Lang: LanguageSupport> create(title: VedleggTittel, init: PDFVedlegg<Lang>.() -> Unit): PDFVedlegg<Lang> = PDFVedlegg<Lang>(title).apply(init)
     }
 }
 

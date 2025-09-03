@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.template.LangBokmalEnglish
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.LocalDate
@@ -9,11 +10,15 @@ import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
-import kotlin.to
 
 private const val RADER_PER_SIDE = 5
 
-fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>("P1") {
+fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
+    mapOf(
+        Language.Bokmal to "P1",
+        Language.English to "P1"
+    )
+) {
     side("P1-1.pdf") {
         felt {
             // innehaver
@@ -75,14 +80,16 @@ fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>("P1") {
 
 }
 
-private fun LocalDate.formater(): String? = dateFormatter(LanguageCode.ENGLISH, FormatStyle.LONG).format(this) // TODO: Denne bør vel liggje ein annan plass
+private fun LocalDate.formater(): String? =
+    dateFormatter(LanguageCode.ENGLISH, FormatStyle.LONG).format(this) // TODO: Denne bør vel liggje ein annan plass
 
 fun dateFormatter(languageCode: LanguageCode, formatStyle: FormatStyle): DateTimeFormatter =
     DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(languageCode.locale())
 
 private fun Period.formater() = this.toString() // TODO: Formater periode ordentleg
 
-private fun P1Dto.Adresse.formater() = listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
+private fun P1Dto.Adresse.formater() =
+    listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
             System.lineSeparator() + "${postnummer.value} ${poststed.value}" + System.lineSeparator() + landkode.landkode
 
 private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
@@ -99,12 +106,12 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
 
 
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
-        "${radnummer}-institusjon" to pensjon.institusjon,
-        "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-        "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
-        "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
-        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
-    )
+    "${radnummer}-institusjon" to pensjon.institusjon,
+    "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
+    "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
+    "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
+    "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
+)
 
 fun LanguageCode.locale(): Locale =
     when (this) {
