@@ -28,14 +28,16 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
         val merger = PDFMergerUtility()
         val target = PDDocument()
-        val originaltDokument = pdfCompilationOutput.bytes.let { Loader.loadPDF(it) }
+        val originaltDokument = Loader.loadPDF(pdfCompilationOutput.bytes)
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
 
-        attachments.map { VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak) }.forEach {
-            leggPaaBlankPartallsside(it, merger, target)
-            merger.leggTilSide(target, it)
-        }
+        attachments
+            .map { VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak) }
+            .forEach {
+                leggPaaBlankPartallsside(it, merger, target)
+                merger.leggTilSide(target, it)
+            }
         return tilByteArray(target).also { target.close() }
     }
 
