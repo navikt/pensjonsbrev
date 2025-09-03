@@ -2,8 +2,9 @@ package no.nav.pensjon.brev.template.vedlegg
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-typealias VedleggTittel = Map<Language, String>
+typealias VedleggTittel = Map<LanguageCode, String>
 
 @PDFVedleggMarker
 class PDFVedlegg<Lang: LanguageSupport>(private val title: VedleggTittel) {

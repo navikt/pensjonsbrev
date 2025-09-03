@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 
 import no.nav.pensjon.brev.api.model.maler.InformasjonOmP1Dto
 import no.nav.pensjon.brev.api.model.maler.P1Dto
+import no.nav.pensjon.brev.api.model.vedlegg.Vedleggtyper
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
@@ -15,11 +15,7 @@ fun PDFVedleggData.tilPDFVedlegg(): PDFVedlegg<out LanguageSupport> = when (this
 }
 
 fun informasjonOmP1DtoSomDSL() = PDFVedlegg.create<LangBokmalNynorskEnglish>(
-    title = mapOf(
-        Language.Bokmal to "Informasjon om P1",
-        Language.Nynorsk to "Informasjon om P1",
-        Language.English to "Information about P1",
-    )
+    title = Vedleggtyper.InformasjonOmP1
 ) {
     side("InformasjonOmP1.pdf") {
 

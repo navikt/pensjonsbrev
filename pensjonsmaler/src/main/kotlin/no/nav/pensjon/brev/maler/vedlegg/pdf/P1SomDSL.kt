@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
 import no.nav.pensjon.brev.api.model.maler.P1Dto
+import no.nav.pensjon.brev.api.model.vedlegg.Vedleggtyper
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
@@ -14,10 +15,7 @@ import java.util.Locale
 private const val RADER_PER_SIDE = 5
 
 fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
-    mapOf(
-        Language.Bokmal to "P1",
-        Language.English to "P1"
-    )
+    title = Vedleggtyper.P1
 ) {
     side("P1-1.pdf") {
         felt {
