@@ -72,14 +72,12 @@ class BrevmalService(
     }
 
     private suspend fun hentBrevakerMaler(): List<TemplateDescription.Redigerbar> =
-        if (Features.brevbakerbrev.isEnabled()) {
-            brevbakerService.getTemplates()
-                .map { maler ->
-                    if (Features.attestant.isEnabled()) maler else maler.filter { it.metadata.brevtype != Brevtype.VEDTAKSBREV }
-                }
-                .catch { message, statusCode ->
-                    logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
-                    emptyList()
-                }
-        } else emptyList()
+        brevbakerService.getTemplates()
+            .map { maler ->
+                if (Features.attestant.isEnabled()) maler else maler.filter { it.metadata.brevtype != Brevtype.VEDTAKSBREV }
+            }
+            .catch { message, statusCode ->
+                logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
+                emptyList()
+            }
 }
