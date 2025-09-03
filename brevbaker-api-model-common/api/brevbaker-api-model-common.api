@@ -659,7 +659,6 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
-	public abstract fun getFilnavn ()Ljava/lang/String;
 	public abstract fun getTittel ()Ljava/util/Map;
 }
 
