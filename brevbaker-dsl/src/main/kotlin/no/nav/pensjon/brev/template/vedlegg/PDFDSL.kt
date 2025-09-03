@@ -1,33 +1,35 @@
 package no.nav.pensjon.brev.template.vedlegg
 
+import no.nav.pensjon.brev.template.LanguageSupport
+
 @PDFVedleggMarker
-class PDFVedlegg(private val title: String) {
-    private val muterbarSider: MutableList<Side> = mutableListOf()
-    val sider: List<Side>
+class PDFVedlegg<Lang: LanguageSupport>(private val title: String) {
+    private val muterbarSider: MutableList<Side<Lang>> = mutableListOf()
+    val sider: List<Side<Lang>>
         get() = muterbarSider
 
-    fun side(filnavn: String, init: Side.() -> Unit) {
-        muterbarSider.add(Side(filnavn).apply(init))
+    fun side(filnavn: String, init: Side<Lang>.() -> Unit) {
+        muterbarSider.add(Side<Lang>(filnavn).apply(init))
     }
 
     companion object {
-        fun create(title: String, init: PDFVedlegg.() -> Unit): PDFVedlegg = PDFVedlegg(title).apply(init)
+        fun <Lang: LanguageSupport> create(title: String, init: PDFVedlegg<Lang>.() -> Unit): PDFVedlegg<Lang> = PDFVedlegg<Lang>(title).apply(init)
     }
 }
 
 @PDFVedleggMarker
-class Side(val filnavn: String) {
-    private val muterbarFelt: MutableList<Felt> = mutableListOf()
-    val felt: List<Felt>
+class Side<Lang>(val filnavn: String) {
+    private val muterbarFelt: MutableList<Felt<Lang>> = mutableListOf()
+    val felt: List<Felt<Lang>>
         get() = muterbarFelt
 
-    fun felt(init: Felt.() -> Unit) {
-        muterbarFelt.add(Felt().apply(init))
+    fun felt(init: Felt<Lang>.() -> Unit) {
+        muterbarFelt.add(Felt<Lang>().apply(init))
     }
 }
 
 @PDFVedleggMarker
-class Felt() {
+class Felt<Lang>() {
     private val muterbareFelt: MutableMap<String, Any?> = mutableMapOf()
     val felt: Map<String, Any?>
         get() = muterbareFelt
