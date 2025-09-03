@@ -1184,7 +1184,6 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextScope$DefaultImpls 
 }
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/QuotationMarks {
-	public static final field Companion Lno/nav/pensjon/brev/template/dsl/QuotationMarks$Companion;
 	public abstract fun getEnd ()Ljava/lang/String;
 	public abstract fun getStart ()Ljava/lang/String;
 }
@@ -1195,15 +1194,16 @@ public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$BokmalNynorsk
 	public fun getStart ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$Companion {
-	public final fun getEnd ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
-	public final fun getStart ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
-}
-
 public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$English : no/nav/pensjon/brev/template/dsl/QuotationMarks {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks$English;
 	public fun getEnd ()Ljava/lang/String;
 	public fun getStart ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$Expr {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks$Expr;
+	public final fun getEnd ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun getStart ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
