@@ -15,7 +15,7 @@ fun PDFVedleggData.tilPDFVedlegg(): PDFVedlegg<out LanguageSupport> = when (this
 }
 
 fun informasjonOmP1DtoSomDSL() = PDFVedlegg.create<LangBokmalNynorskEnglish>(
-    title = Vedleggtyper.InformasjonOmP1
+    title = Vedleggtyper.InformasjonOmP1.tittel
 ) {
     side("InformasjonOmP1.pdf") {
 

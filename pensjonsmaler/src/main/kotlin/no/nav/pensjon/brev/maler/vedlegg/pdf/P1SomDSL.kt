@@ -15,7 +15,7 @@ import java.util.Locale
 private const val RADER_PER_SIDE = 5
 
 fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
-    title = Vedleggtyper.P1
+    title = Vedleggtyper.P1.tittel
 ) {
     side("P1-1.pdf") {
         felt {

@@ -27,7 +27,7 @@ data class P1Dto(
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
 ) : BrevbakerBrevdata, PDFVedleggData {
-    override val tittel = Vedleggtyper.P1
+    override val tittel = Vedleggtyper.P1.tittel
 
     data class P1Person(
         val fornavn: String,
@@ -157,5 +157,5 @@ value class Valuta(val valuta: String) {
 }
 
 object InformasjonOmP1Dto : PDFVedleggData {
-    override val tittel = Vedleggtyper.InformasjonOmP1
+    override val tittel = Vedleggtyper.InformasjonOmP1.tittel
 }
