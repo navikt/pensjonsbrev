@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 import no.nav.brev.brevbaker.PDFVedlegg
 import no.nav.brev.brevbaker.Side
 import no.nav.pensjon.brev.api.model.maler.P1Dto
+import no.nav.pensjon.brev.maler.vedlegg.pdf.formater
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.LocalDate
 import java.time.Period

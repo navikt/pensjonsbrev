@@ -25,7 +25,7 @@ fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
             "holder-fornavn" to innehaver.fornavn
             "holder-etternavn" to innehaver.etternavn
             "holder-etternavnVedFoedsel" to innehaver.etternavnVedFoedsel
-            "holder-foedselsdato" to innehaver.foedselsdato?.formater()
+            "holder-foedselsdato" to formaterDato(innehaver.foedselsdato)
             "holder-adresselinje" to innehaver.adresselinje
             "holder-poststed" to innehaver.poststed.value
             "holder-postnummer" to innehaver.postnummer.value
@@ -34,14 +34,17 @@ fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
             "insured-fornavn" to forsikrede.fornavn
             "insured-etternavn" to forsikrede.etternavn
             "insured-etternavnVedFoedsel" to forsikrede.etternavnVedFoedsel
-            "insured-foedselsdato" to forsikrede.foedselsdato?.formater()
+            "insured-foedselsdato" to formaterDato(forsikrede.foedselsdato)
             "insured-adresselinje" to forsikrede.adresselinje
             "insured-poststed" to forsikrede.poststed.value
             "insured-postnummer" to forsikrede.postnummer.value
             "insured-landkode" to forsikrede.landkode.landkode
 
-            "kravMottattDato" to kravMottattDato.formater()
-            "sakstype" to sakstype.name // TODO denne er vel for enkel
+            "kravMottattDato" to formaterDato(kravMottattDato)
+            "sakstype" to mapOf(
+                Language.Bokmal to sakstype.name,
+                Language.English to sakstype.name,
+            ) // TODO denne er vel for enkel
         }
     }
 
@@ -73,15 +76,24 @@ fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
             "institution-faksnummer" to utfyllendeInstitusjon.faksnummer
             "institution-telefonnummer" to utfyllendeInstitusjon.telefonnummer?.value
             "institution-epost" to utfyllendeInstitusjon.epost?.value
-            "institution-dato" to utfyllendeInstitusjon.dato.formater()
+            "institution-dato" to formaterDato(utfyllendeInstitusjon.dato)
             "institution-underskrift" to ""
         }
     }
 
 }
 
-private fun LocalDate.formater(): String? =
-    dateFormatter(LanguageCode.ENGLISH, FormatStyle.LONG).format(this) // TODO: Denne bør vel liggje ein annan plass
+private fun formaterDato(dato: LocalDate?): Map<Language, String?> = mapOf(
+    Language.Bokmal to dato?.formater(Language.Bokmal),
+    Language.English to dato?.formater(Language.English)
+)
+
+private fun LocalDate.formater(language: Language): String? =
+    when (language) {
+        Language.Bokmal -> dateFormatter(LanguageCode.BOKMAL, FormatStyle.LONG).format(this)
+        Language.English -> dateFormatter(LanguageCode.ENGLISH, FormatStyle.LONG).format(this)
+        else -> null
+    } // TODO: Denne bør vel liggje ein annan plass
 
 fun dateFormatter(languageCode: LanguageCode, formatStyle: FormatStyle): DateTimeFormatter =
     DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(languageCode.locale())
@@ -96,7 +108,7 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
         "${radnummer}-institusjon" to pensjon.institusjon,
         "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-        "${radnummer}-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling.formater(),
+        "${radnummer}-datoFoersteUtbetaling" to formaterDato(pensjon.datoFoersteUtbetaling),
         "${radnummer}-bruttobeloep" to pensjon.bruttobeloep.let { it.verdi.toString() + " " + it.valuta.valuta },
         "${radnummer}-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer.toString(),
         "${radnummer}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer.toString(),

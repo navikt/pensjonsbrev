@@ -1610,6 +1610,8 @@ public final class no/nav/pensjon/brev/template/vedlegg/Felt {
 	public final fun add (Ljava/util/Map;)V
 	public final fun getFelt ()Ljava/util/Map;
 	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun to (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun to (Ljava/lang/String;Ljava/util/Map;)V
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
@@ -1623,13 +1625,13 @@ public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate : no/nav/pen
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {
 	public static final field Companion Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg$Companion;
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/util/Map;)V
 	public final fun getSider ()Ljava/util/List;
 	public final fun side (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg$Companion {
-	public final fun create (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public final fun create (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/Side {

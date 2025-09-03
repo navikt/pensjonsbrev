@@ -21,7 +21,7 @@ class PDFVedlegg<Lang: LanguageSupport>(private val title: VedleggTittel) {
 }
 
 @PDFVedleggMarker
-class Side<Lang>(val filnavn: String) {
+class Side<Lang : LanguageSupport>(val filnavn: String) {
     private val muterbarFelt: MutableList<Felt<Lang>> = mutableListOf()
     val felt: List<Felt<Lang>>
         get() = muterbarFelt
@@ -32,17 +32,38 @@ class Side<Lang>(val filnavn: String) {
 }
 
 @PDFVedleggMarker
-class Felt<Lang>() {
-    private val muterbareFelt: MutableMap<String, Any?> = mutableMapOf()
-    val felt: Map<String, Any?>
+class Felt<Lang : LanguageSupport>() {
+    private val muterbareFelt: MutableMap<String, Map<Language, String?>?> = mutableMapOf()
+    val felt: Map<String, Map<Language, String?>?>
         get() = muterbareFelt
 
-    infix fun String.to(verdi: Any?) {
+    infix fun String.to(str: String) {
+        muterbareFelt[this] = leggTilPaaAlleSpraak(str)
+    }
+
+    infix fun String.to(verdi: Map<Language, String?>?) {
         muterbareFelt[this] = verdi
     }
 
+    infix fun String.to(verdi: Any?) {
+        muterbareFelt[this] = verdi?.let { leggTilPaaAlleSpraak(it.toString()) }
+    }
+
+    private fun leggTilPaaAlleSpraak(str: String?): Map<Language, String?> = mapOf(
+        Language.Bokmal to str,
+        Language.Nynorsk to str,
+        Language.English to str
+    )
+
     fun add(map: Map<String, Any?>) {
-        muterbareFelt.putAll(map)
+        map.entries
+            .filter { it.value is String }
+            .forEach {
+            muterbareFelt[it.key] = leggTilPaaAlleSpraak(it.value as String)
+        }
+            map.entries
+                .filter { it.value is Map<*, *> }
+                .forEach { muterbareFelt[it.key] = it.value as Map<Language, String?> }
     }
 }
 

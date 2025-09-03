@@ -30,6 +30,6 @@ class PDFDSLTest {
         }
         assertEquals(3, vedlegg.sider.size)
         val felt = vedlegg.sider[0].felt.map { it.felt }.reduce { a, b -> a.plus(b) }
-        assertEquals(1, felt["felt1"])
+        assertEquals("1", felt["felt1"]?.get(Language.Bokmal))
     }
 }
