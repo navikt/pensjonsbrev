@@ -16,8 +16,8 @@ interface QuotationMarks {
         override val end = "'"
     }
 
-    companion object {
-        val start = Expression.UnaryInvoke(Expression.FromScope.Language, UnaryOperation.QuotationStart)
-        val end = Expression.UnaryInvoke(Expression.FromScope.Language, UnaryOperation.QuotationEnd)
+    object Expr {
+        val start = UnaryOperation.QuotationStart(Expression.FromScope.Language)
+        val end = UnaryOperation.QuotationEnd(Expression.FromScope.Language)
     }
 }
