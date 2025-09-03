@@ -8,11 +8,11 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.etterlatte.maler.ElementType
@@ -35,7 +35,7 @@ class BlockTilSlateKonvertererTest {
                 override fun leggPaaVedlegg(
                     pdfCompilationOutput: PDFCompilationOutput,
                     attachments: List<PDFVedleggData>,
-                    spraak: LanguageCode
+                    spraak: Language
                 ) = pdfCompilationOutput
             }
             ).renderLetterMarkup(letter)

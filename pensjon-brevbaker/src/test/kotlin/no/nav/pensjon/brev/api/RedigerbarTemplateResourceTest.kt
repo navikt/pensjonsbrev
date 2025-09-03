@@ -32,7 +32,7 @@ class RedigerbarTemplateResourceTest {
         override fun leggPaaVedlegg(
             pdfCompilationOutput: PDFCompilationOutput,
             attachments: List<PDFVedleggData>,
-            spraak: LanguageCode,
+            spraak: Language,
         ) = pdfCompilationOutput
     }
 
