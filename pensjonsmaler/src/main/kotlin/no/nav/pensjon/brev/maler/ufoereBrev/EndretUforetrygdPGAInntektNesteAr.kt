@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.btsbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.datoForNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.gjtEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.pe
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.sokerMottarApIlaAret
@@ -368,7 +369,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }
             }
-            ifNotNull(gjenlevendetillegg) {
+            showIf(gjtEndret) {
                 title1 {
                     text(
                         Bokmal to "Ditt gjenlevendetillegg",
@@ -405,8 +406,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     }
                 }
 
-                ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
-                    showIf(btfbEndret and btsbEndret) {
+                showIf(btfbEndret and btsbEndret) {
+                    ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
                         title2 {
                             text(
                                 Bokmal to "Dine barnetillegg",
@@ -431,8 +432,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         }
                     }
                 }.orShow {
-                    ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
-                        showIf(btfbEndret) {
+                    showIf(btfbEndret) {
+                        ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                             title2 {
                                 text(
                                     Bokmal to "Barnetillegg for fellesbarn",
@@ -459,8 +460,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             }
                         }
                     }
-                    ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
-                        showIf(btsbEndret) {
+                    showIf(btsbEndret) {
+                        ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
                             title2 {
                                 text(
                                     Bokmal to "Barnetillegg for særkullsbarn",
@@ -499,7 +500,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 showIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
                             and (btfbEndret or btsbEndret)
-                            and gjenlevendetillegg.notNull() //UT, BT og GJT
+                            and gjtEndret //UT, BT og GJT
                 ) {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12.",
@@ -515,7 +516,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }.orShowIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
-                            and gjenlevendetillegg.notNull() //UT og GJT
+                            and gjtEndret //UT og GJT
                 ) {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12.",

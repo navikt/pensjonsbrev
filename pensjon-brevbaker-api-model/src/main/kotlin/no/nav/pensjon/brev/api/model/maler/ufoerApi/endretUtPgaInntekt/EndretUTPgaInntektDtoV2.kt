@@ -9,6 +9,7 @@ data class EndretUTPgaInntektDtoV2 (
     val uforetrygd: Uforetrygd,
     val btfbEndret: Boolean,
     val btsbEndret: Boolean,
+    val gjtEndret: Boolean,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val gjenlevendetillegg: Gjenlevendetillegg?,

@@ -13,9 +13,9 @@ data class BrukerTestBrevDto(
 ) : RedigerbarBrevdata<BrukerTestBrevDto.SaksbehandlerValg, EmptyBrevdata> {
     data class SaksbehandlerValg(
         @DisplayText("Utsikten fra kontoret")
-        val utsiktenFraKontoret: UtsiktenFraKontoret,
+        val utsiktenFraKontoret: UtsiktenFraKontoret?,
         @DisplayText("Den beste kaken er")
-        val denBesteKaken: DenBesteKaken,
+        val denBesteKaken: DenBesteKaken?,
         @DisplayText("Kaffemaskinens tilgjengelighet")
         val kaffemaskinensTilgjengelighet: Boolean,
         @DisplayText("Kontorplanten TorLill")
