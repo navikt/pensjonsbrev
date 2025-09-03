@@ -345,6 +345,8 @@ function RedigerBrev({
             > :first-of-type {
               padding: var(--a-spacing-6);
               border-right: 1px solid var(--a-gray-200);
+              height: var(--main-page-content-height);
+              overflow-y: auto;
             }
 
             @media (width <= 1024px) {
