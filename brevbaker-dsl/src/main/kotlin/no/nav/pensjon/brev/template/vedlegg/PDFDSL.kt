@@ -28,12 +28,16 @@ class Side(val filnavn: String) {
 
 @PDFVedleggMarker
 class Felt() {
-    private val muterbareFelt: MutableMap<String, Any> = mutableMapOf()
-    val felt: Map<String, Any>
+    private val muterbareFelt: MutableMap<String, Any?> = mutableMapOf()
+    val felt: Map<String, Any?>
         get() = muterbareFelt
 
-    infix fun String.to(verdi: Any) {
+    infix fun String.to(verdi: Any?) {
         muterbareFelt[this] = verdi
+    }
+
+    fun add(map: Map<String, Any?>) {
+        muterbareFelt.putAll(map)
     }
 }
 
