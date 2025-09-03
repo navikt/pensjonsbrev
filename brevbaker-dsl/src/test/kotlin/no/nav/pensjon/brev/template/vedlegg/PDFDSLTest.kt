@@ -7,7 +7,7 @@ class PDFDSLTest {
 
     @Test
     fun `tolk dsl`() {
-        val vedlegg = PDFVedlegg.create {
+        val vedlegg = PDFVedlegg.create("Vedlegg1") {
             side("Side1.pdf") {
                 felt {
                     "felt1" to 1

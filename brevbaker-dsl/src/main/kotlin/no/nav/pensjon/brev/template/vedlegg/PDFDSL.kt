@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.vedlegg
 
 @PDFVedleggMarker
-class PDFVedlegg {
+class PDFVedlegg(private val title: String) {
     private val muterbarSider: MutableList<Side> = mutableListOf()
     val sider: List<Side>
         get() = muterbarSider
@@ -11,7 +11,7 @@ class PDFVedlegg {
     }
 
     companion object {
-        fun create(init: PDFVedlegg.() -> Unit): PDFVedlegg = PDFVedlegg().apply(init)
+        fun create(title: String, init: PDFVedlegg.() -> Unit): PDFVedlegg = PDFVedlegg(title).apply(init)
     }
 }
 

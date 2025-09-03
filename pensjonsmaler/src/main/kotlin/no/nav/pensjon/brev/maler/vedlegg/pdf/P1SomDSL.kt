@@ -12,7 +12,7 @@ import kotlin.to
 
 private const val RADER_PER_SIDE = 5
 
-fun P1Dto.somDSL() = PDFVedlegg.create {
+fun P1Dto.somDSL() = PDFVedlegg.create("P1") {
     side("P1-1.pdf") {
         felt {
             // innehaver
