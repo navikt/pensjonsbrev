@@ -53,7 +53,7 @@ fun main() {
                 port = skribentenConfig.getInt("port")
             })
             shutdownGracePeriod = 25.seconds.inWholeMilliseconds
-            shutdownTimeout = 30.seconds.inWholeMilliseconds
+            shutdownTimeout = 29.seconds.inWholeMilliseconds
         },
     ) {
         skribentenApp(skribentenConfig)
