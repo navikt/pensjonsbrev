@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -39,7 +40,7 @@ class TemplateResourceTest {
         override fun leggPaaVedlegg(
             pdfCompilationOutput: PDFCompilationOutput,
             attachments: List<PDFVedleggData>,
-            spraak: LanguageCode,
+            spraak: Language,
         ) = pdfCompilationOutput
     }
 

@@ -28,7 +28,11 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                 )
             )
         }
-            .let { pdfVedleggAppender.leggPaaVedlegg(it, letter.template.pdfAttachments.map { it.data.eval(letter.toScope()) }, letter.language.toCode()) }
+            .let { pdfVedleggAppender.leggPaaVedlegg(
+                it,
+                letter.template.pdfAttachments.map { a -> a.data.eval(letter.toScope()) },
+                letter.language)
+            }
             .let { pdf ->
                 LetterResponse(
                     file = pdf.bytes,

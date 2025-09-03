@@ -1,29 +1,34 @@
 package no.nav.pensjon.brev.pdfvedlegg
 
-import no.nav.brev.brevbaker.PDFVedlegg
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 
 internal object VedleggAppender {
 
-    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode): PDDocument {
+    internal fun <Lang: LanguageSupport> lesInnVedlegg(vedlegg: PDFVedlegg<Lang>, spraak: Language): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val sider = vedlegg.sider
 
-        sider.forEach {
-            val side = lesInnPDF(it.filnavn, spraak).also { side ->
-                side.setValues(it.felt + ("page" to "${it.sidenummer}/${sider.size}"))
+        sider.forEachIndexed { index, side ->
+            val pdf = lesInnPDF(side.filnavn, spraak).also { pdfSide ->
+                val map: Map<String, String?> = side.felt
+                    .flatMap { it.felt.entries }
+                    .associate { it.key to it.value?.get(spraak) }
+
+                pdfSide.setValues(map + ("page" to "${index+1}/${sider.size}"))
             }
-            merger.leggTilSide(target, side)
+            merger.leggTilSide(target, pdf)
         }
 
         return target
     }
 
-    private fun lesInnPDF(filnavn: String, spraak: LanguageCode) =
+    private fun lesInnPDF(filnavn: String, spraak: Language) =
         javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
             ?.let { Loader.loadPDF(it.readBytes()) }
             ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
