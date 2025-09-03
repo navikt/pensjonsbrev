@@ -406,8 +406,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     }
                 }
 
-                ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
-                    showIf(btfbEndret and btsbEndret) {
+                showIf(btfbEndret and btsbEndret) {
+                    ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
                         title2 {
                             text(
                                 Bokmal to "Dine barnetillegg",
@@ -432,8 +432,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         }
                     }
                 }.orShow {
-                    ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
-                        showIf(btfbEndret) {
+                    showIf(btfbEndret) {
+                        ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                             title2 {
                                 text(
                                     Bokmal to "Barnetillegg for fellesbarn",
@@ -460,8 +460,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             }
                         }
                     }
-                    ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
-                        showIf(btsbEndret) {
+                    showIf(btsbEndret) {
+                        ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
                             title2 {
                                 text(
                                     Bokmal to "Barnetillegg for særkullsbarn",
