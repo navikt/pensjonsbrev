@@ -55,7 +55,6 @@ import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 
@@ -76,24 +75,24 @@ val vedleggOpplysningerOmAvdoedBruktIBeregning =
                     or bruker.foedselsdato.lessThan(LocalDate.of(1944, 1, 1))
         ) {
             paragraph {
-                textExpr(
-                    Bokmal to "Som gjenlevende ektefelle har du fått en gunstigere beregning av alderspensjon. I tabellen nedenfor ser du hvilke opplysninger om ".expr() +
-                            avdoed.navn + " som vi har lagt til grunn for beregningen.",
-                    Nynorsk to "Som attlevande ektefelle har du fått ei gunstigare berekning av alderspensjonen. I tabellen nedanfor ser du kva opplysningar om ".expr() +
-                            avdoed.navn + " som vi har lagt til grunn for berekninga.",
-                    English to "As a surviving spouse, a more generous formula is used to calculate your retirement pension. The table below shows the information on ".expr() +
-                            avdoed.navn + ", which we have used in this calculation.",
+                text(
+                    bokmal { + "Som gjenlevende ektefelle har du fått en gunstigere beregning av alderspensjon. I tabellen nedenfor ser du hvilke opplysninger om " +
+                            avdoed.navn + " som vi har lagt til grunn for beregningen." },
+                    nynorsk { + "Som attlevande ektefelle har du fått ei gunstigare berekning av alderspensjonen. I tabellen nedanfor ser du kva opplysningar om " +
+                            avdoed.navn + " som vi har lagt til grunn for berekninga." },
+                    english { + "As a surviving spouse, a more generous formula is used to calculate your retirement pension. The table below shows the information on " +
+                            avdoed.navn + ", which we have used in this calculation." },
                 )
             }
         }.orShow {
             paragraph {
-                textExpr(
-                    Bokmal to "Som gjenlevende ektefelle har du fått beregnet et gjenlevendetillegg i alderspensjonen din. I tabellen nedenfor ser du hvilke opplysninger om ".expr() +
-                            avdoed.navn + " som vi har lagt til grunn for beregningen.",
-                    Nynorsk to "Som attlevande ektefelle har du fått berekna attlevandetillegg i alderspensjonen. I tabellen nedanfor ser du kva opplysningar om den avdøde ektefellen din ".expr() +
-                            avdoed.navn + " som vi har lagt til grunn for berekninga.",
-                    English to "As a surviving spouse, a survivor's supplement in retirement pension has been calculated. The table below shows the information on your deceased spouse ".expr() +
-                            avdoed.navn + ", which we have used in this calculation.",
+                text(
+                    bokmal { + "Som gjenlevende ektefelle har du fått beregnet et gjenlevendetillegg i alderspensjonen din. I tabellen nedenfor ser du hvilke opplysninger om " +
+                            avdoed.navn + " som vi har lagt til grunn for beregningen." },
+                    nynorsk { + "Som attlevande ektefelle har du fått berekna attlevandetillegg i alderspensjonen. I tabellen nedanfor ser du kva opplysningar om den avdøde ektefellen din " +
+                            avdoed.navn + " som vi har lagt til grunn for berekninga." },
+                    english { + "As a surviving spouse, a survivor's supplement in retirement pension has been calculated. The table below shows the information on your deceased spouse " +
+                            avdoed.navn + ", which we have used in this calculation." },
                 )
             }
         }
@@ -150,9 +149,9 @@ val vedleggOpplysningerOmAvdoedBruktIBeregning =
         ) {
             paragraph {
                 text(
-                    Bokmal to "Avdødes trygdetid i øvrige EØS-land er fastsatt på grunnlag av følgende perioder:",
-                    Nynorsk to "Trygdetida til avdøde i andre EØS-land er fastsett på grunnlag av følgjande periodar:",
-                    English to "The deceased's period of national insurance coverage in other EEA countries is based on the following periods:",
+                    bokmal { + "Avdødes trygdetid i øvrige EØS-land er fastsatt på grunnlag av følgende perioder:" },
+                    nynorsk { + "Trygdetida til avdøde i andre EØS-land er fastsett på grunnlag av følgjande periodar:" },
+                    english { + "The deceased's period of national insurance coverage in other EEA countries is based on the following periods:" },
                 )
             }
             includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(avdoedTrygdetidEOS))
@@ -163,53 +162,53 @@ val vedleggOpplysningerOmAvdoedBruktIBeregning =
         showIf(avdoedTrygdetidAvtaleland.size().greaterThan(0)) {
             paragraph {
                 text(
-                    Bokmal to "Avdødes trygdetid i avtaleland er fastsatt på grunnlag av følgende perioder:",
-                    Nynorsk to "Trygdetida til avdøde i avtaleland er fastsett på grunnlag av følgjande periodar:",
-                    English to "The deceased's period of national insurance coverage in a signatory country is based on the following periods:",
+                    bokmal { + "Avdødes trygdetid i avtaleland er fastsatt på grunnlag av følgende perioder:" },
+                    nynorsk { + "Trygdetida til avdøde i avtaleland er fastsett på grunnlag av følgjande periodar:" },
+                    english { + "The deceased's period of national insurance coverage in a signatory country is based on the following periods:" },
                 )
             }
             includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(avdoedTrygdetidAvtaleland))
         }
         title1 {
             text(
-                Bokmal to "Pensjonsopptjening",
-                Nynorsk to "Pensjonsopptening",
+                bokmal { + "Pensjonsopptjening" },
+                nynorsk { + "Pensjonsopptening" },
                 // TODO ser denne teksten også er brukt for Pensjonsbeholdning. Er det det samme?
                 //  det er lite konsekvent ordbruk for pensjonsopptjening og beholdning på engelsk.
-                English to "Accumulated pension capital",
+                english { + "Accumulated pension capital" },
             )
         }
         paragraph {
             text(
-                Bokmal to "Tabellen under viser den avdødes pensjonsgivende inntekten og pensjonspoeng. Det er bare inntekt for ferdiglignede år som vises i tabellen.",
-                Nynorsk to "Tabellen under viser den pensjonsgivande inntekta og pensjonspoenga til den avdøde. Det er berre inntekt for ferdiglikna år som viser i tabellen.",
-                English to "The table below shows the pensionable income and pension points to the deceased. Only income from assessed years are shown in the table.",
+                bokmal { + "Tabellen under viser den avdødes pensjonsgivende inntekten og pensjonspoeng. Det er bare inntekt for ferdiglignede år som vises i tabellen." },
+                nynorsk { + "Tabellen under viser den pensjonsgivande inntekta og pensjonspoenga til den avdøde. Det er berre inntekt for ferdiglikna år som viser i tabellen." },
+                english { + "The table below shows the pensionable income and pension points to the deceased. Only income from assessed years are shown in the table." },
             )
         }
 
         showIf(avdoedPoengrekkeVedVirk.inneholderFramtidigPoeng) {
             paragraph {
                 text(
-                    Bokmal to "Framtidige pensjonspoeng blir lagt til grunn for beregningen av pensjon fra og med uføreåret eller året for dødsfallet fram til året vedkommende fyller eller skulle ha fylt 66 år.",
-                    Nynorsk to "Framtidige pensjonspoeng blir lagde til grunn for berekninga av pensjonen frå og med uføreåret eller året før dødsfallet og fram til året vedkommande fyller eller skulle ha fylt 66 år.",
-                    English to "Future pension points will be credited to the basis for calculation of pension starting from the year of disablement or year of death until the year in which the person concerned turns or would have turned 66 years.",
+                    bokmal { + "Framtidige pensjonspoeng blir lagt til grunn for beregningen av pensjon fra og med uføreåret eller året for dødsfallet fram til året vedkommende fyller eller skulle ha fylt 66 år." },
+                    nynorsk { + "Framtidige pensjonspoeng blir lagde til grunn for berekninga av pensjonen frå og med uføreåret eller året før dødsfallet og fram til året vedkommande fyller eller skulle ha fylt 66 år." },
+                    english { + "Future pension points will be credited to the basis for calculation of pension starting from the year of disablement or year of death until the year in which the person concerned turns or would have turned 66 years." },
                 )
             }
         }
         showIf(avdoedPoengrekkeVedVirk.inneholderOmsorgspoeng) {
             paragraph {
                 text(
-                    Bokmal to "Omsorgspoeng vises bare hvis annen inntekt gir et lavere pensjonspoeng enn omsorgspoenget.",
-                    Nynorsk to "Omsorgspoeng blir berre vist dersom anna inntekt gir lågare pensjonspoeng enn omsorgspoenga.",
-                    English to "Points for care work are only shown if other income results in lower pension points than the points for care work.",
+                    bokmal { + "Omsorgspoeng vises bare hvis annen inntekt gir et lavere pensjonspoeng enn omsorgspoenget." },
+                    nynorsk { + "Omsorgspoeng blir berre vist dersom anna inntekt gir lågare pensjonspoeng enn omsorgspoenga." },
+                    english { + "Points for care work are only shown if other income results in lower pension points than the points for care work." },
                 )
             }
         }
         title1 {
             text(
-                Bokmal to "Avdødes pensjonspoeng",
-                Nynorsk to "Avdødes pensjonspoeng",
-                English to "The deceased's pension points",
+                bokmal { + "Avdødes pensjonspoeng" },
+                nynorsk { + "Avdødes pensjonspoeng" },
+                english { + "The deceased's pension points" },
             )
         }
         includePhrase(TabellPoengrekke(avdoedPoengrekkeVedVirk.pensjonspoeng))
@@ -219,24 +218,24 @@ private object TrygdetidNorgeAvdodTabellInnledning : OutlinePhrase<LangBokmalNyn
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Trygdetid",
-                Nynorsk to "Trygdetid",
-                English to "Period of national insurance coverage",
+                bokmal { + "Trygdetid" },
+                nynorsk { + "Trygdetid" },
+                english { + "Period of national insurance coverage" },
             )
         }
 
         paragraph {
             text(
-                Bokmal to "Trygdetid er perioder med medlemskap i folketrygden. Som hovedregel er dette bo- eller arbeidsperioderi Norge. Trygdetid har betydning for beregning av pensjonen. Full trygdetid er 40 år.",
-                Nynorsk to "Trygdetid er periodar med medlemskap i folketrygda. Som hovudregel er dette bu- eller arbeidsperiodar i Noreg. Trygdetid har betydning for berekninga av pensjonen. Full trygdetid er 40 år.",
-                English to "The period of national insurance coverage is periods as a member of the National Insurance Scheme. As a general rule, these are periods registered as living or working in Norway. The period of national insurance coverage affects the calculation of the pension. The full insurance period is 40 years.",
+                bokmal { + "Trygdetid er perioder med medlemskap i folketrygden. Som hovedregel er dette bo- eller arbeidsperioderi Norge. Trygdetid har betydning for beregning av pensjonen. Full trygdetid er 40 år." },
+                nynorsk { + "Trygdetid er periodar med medlemskap i folketrygda. Som hovudregel er dette bu- eller arbeidsperiodar i Noreg. Trygdetid har betydning for berekninga av pensjonen. Full trygdetid er 40 år." },
+                english { + "The period of national insurance coverage is periods as a member of the National Insurance Scheme. As a general rule, these are periods registered as living or working in Norway. The period of national insurance coverage affects the calculation of the pension. The full insurance period is 40 years." },
             )
         }
         paragraph {
             text(
-                Bokmal to "Tabellen nedenfor viser perioder vi har registrert at avdøde har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette avdødes norske trygdetid:",
-                Nynorsk to "Tabellen nedanfor viser periodar vi har registrert at avdøde har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida til avdøde:",
-                English to "The table below shows the periods when the deceased have been registered as living and/or working in Norway. This information has been used to establish the deceased Norwegian national insurance coverage:",
+                bokmal { + "Tabellen nedenfor viser perioder vi har registrert at avdøde har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette avdødes norske trygdetid:" },
+                nynorsk { + "Tabellen nedanfor viser periodar vi har registrert at avdøde har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida til avdøde:" },
+                english { + "The table below shows the periods when the deceased have been registered as living and/or working in Norway. This information has been used to establish the deceased Norwegian national insurance coverage:" },
             )
         }
     }

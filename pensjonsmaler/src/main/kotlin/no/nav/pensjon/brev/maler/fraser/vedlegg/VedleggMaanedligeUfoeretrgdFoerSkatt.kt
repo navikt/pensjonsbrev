@@ -37,9 +37,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    Bokmal to "Nedenfor ser du den månedlige uføretrygden din.",
-                    Nynorsk to "Nedanfor ser du den månadlege uføretrygda di.",
-                    English to "Below is a presentation of your monthly disability benefit.",
+                    bokmal { + "Nedenfor ser du den månedlige uføretrygden din." },
+                    nynorsk { + "Nedanfor ser du den månadlege uføretrygda di." },
+                    english { + "Below is a presentation of your monthly disability benefit." },
                 )
             }
     }
@@ -100,18 +100,18 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 val virkningsDatoFraOgMed = virkningsDatoFraOgMed.format(short = true)
-                textExpr(
-                    Bokmal to "Den månedlige uføretrygden fra ".expr() + virkningsDatoFraOgMed,
-                    Nynorsk to "Den månadlege uføretrygda frå ".expr() + virkningsDatoFraOgMed,
-                    English to "Your monthly disability benefit from ".expr() + virkningsDatoFraOgMed,
+                text(
+                    bokmal { + "Den månedlige uføretrygden fra " + virkningsDatoFraOgMed },
+                    nynorsk { + "Den månadlege uføretrygda frå " + virkningsDatoFraOgMed },
+                    english { + "Your monthly disability benefit from " + virkningsDatoFraOgMed },
                 )
 
                 ifNotNull(virkningsDatoTilOgMed) {
                     val virkningsDatoTilOgMed = it.format(short = true)
-                    textExpr(
-                        Bokmal to " til ".expr() + virkningsDatoTilOgMed,
-                        Nynorsk to " til ".expr() + virkningsDatoTilOgMed,
-                        English to " to ".expr() + virkningsDatoTilOgMed,
+                    text(
+                        bokmal { + " til " + virkningsDatoTilOgMed },
+                        nynorsk { + " til " + virkningsDatoTilOgMed },
+                        english { + " to " + virkningsDatoTilOgMed },
                     )
                 }
             }
@@ -122,10 +122,10 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
         val grunnbeloep: Expression<Kroner>,
     ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            textExpr(
-                Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + ".",
-                Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + ".",
-                English to "The National Insurance basic amount (G) applied in the calculation is ".expr() + grunnbeloep.format() + ".",
+            text(
+                bokmal { + "Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "." },
+                nynorsk { + "Grunnbeløpet i folketrygda (G) nytta i utrekninga er " + grunnbeloep.format() + "." },
+                english { + "The National Insurance basic amount (G) applied in the calculation is " + grunnbeloep.format() + "." },
             )
     }
 
@@ -146,9 +146,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                     column(1) {}
                     column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
-                            Bokmal to "Bruttobeløp per måned",
-                            Nynorsk to "Bruttobeløp per månad",
-                            English to "Gross monthly amount",
+                            bokmal { + "Bruttobeløp per måned" },
+                            nynorsk { + "Bruttobeløp per månad" },
+                            english { + "Gross monthly amount" },
                         )
                     }
                 }
@@ -222,9 +222,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Fratrukket faste og nødvendige utgifter",
-                                    Nynorsk to "Fråtrekt faste og nødvendige utgifter",
-                                    English to "Deducted amount for fixed and necessary housing expenses",
+                                    bokmal { + "Fratrukket faste og nødvendige utgifter" },
+                                    nynorsk { + "Fråtrekt faste og nødvendige utgifter" },
+                                    english { + "Deducted amount for fixed and necessary housing expenses" },
                                 )
                             }
                             cell {
@@ -235,9 +235,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Fratrukket beløp",
-                                    Nynorsk to "Fråtrekt beløp",
-                                    English to "Deducted amount",
+                                    bokmal { + "Fratrukket beløp" },
+                                    nynorsk { + "Fråtrekt beløp" },
+                                    english { + "Deducted amount" },
                                 )
                             }
                             cell {
@@ -281,16 +281,16 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                     column {}
                     column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
-                            Bokmal to "Før fradrag for inntekt",
-                            Nynorsk to "Før frådrag for inntekt",
-                            English to "Before deductions for income",
+                            bokmal { + "Før fradrag for inntekt" },
+                            nynorsk { + "Før frådrag for inntekt" },
+                            english { + "Before deductions for income" },
                         )
                     }
                     column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
-                            Bokmal to "Etter fradrag for inntekt",
-                            Nynorsk to "Etter frådrag for inntekt",
-                            English to "After deductions for income",
+                            bokmal { + "Etter fradrag for inntekt" },
+                            nynorsk { + "Etter frådrag for inntekt" },
+                            english { + "After deductions for income" },
                         )
                     }
                 }
@@ -407,9 +407,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstUfoeretrygd : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Uføretrygd",
-                Nynorsk to "Uføretrygd",
-                English to "Disability benefit",
+                bokmal { + "Uføretrygd" },
+                nynorsk { + "Uføretrygd" },
+                english { + "Disability benefit" },
             )
         }
     }
@@ -417,9 +417,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstEktefelletillegg : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Ektefelletillegg",
-                Nynorsk to "Ektefelletillegg",
-                English to "Spouse supplement",
+                bokmal { + "Ektefelletillegg" },
+                nynorsk { + "Ektefelletillegg" },
+                english { + "Spouse supplement" },
             )
         }
     }
@@ -427,9 +427,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstBarnetilleggFellesbarn : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Barnetillegg for fellesbarn",
-                Nynorsk to "Barnetillegg for fellesbarn",
-                English to "Child supplement for joint child(ren)",
+                bokmal { + "Barnetillegg for fellesbarn" },
+                nynorsk { + "Barnetillegg for fellesbarn" },
+                english { + "Child supplement for joint child(ren)" },
             )
         }
     }
@@ -437,9 +437,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstBarnetilleggSaerkullsbarn : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Barnetillegg for særkullsbarn",
-                Nynorsk to "Barnetillegg for særkullsbarn",
-                English to "Child supplement for child(ren) by a previous marriage/relationship",
+                bokmal { + "Barnetillegg for særkullsbarn" },
+                nynorsk { + "Barnetillegg for særkullsbarn" },
+                english { + "Child supplement for child(ren) by a previous marriage/relationship" },
             )
         }
     }
@@ -447,9 +447,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstGjenlevendetillegg : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Gjenlevendetillegg",
-                Nynorsk to "Attlevandetillegg",
-                English to "Survivor's supplement",
+                bokmal { + "Gjenlevendetillegg" },
+                nynorsk { + "Attlevandetillegg" },
+                english { + "Survivor's supplement" },
             )
         }
     }
@@ -457,9 +457,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstNordiskGarantitillegg : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Nordisk garantitillegg",
-                Nynorsk to "Nordisk garantitillegg",
-                English to "Nordic guarantee supplement",
+                bokmal { + "Nordisk garantitillegg" },
+                nynorsk { + "Nordisk garantitillegg" },
+                english { + "Nordic guarantee supplement" },
             )
         }
     }
@@ -467,9 +467,9 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     class TabellTekstSumFoerSkatt : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Sum før skatt",
-                Nynorsk to "Sum før skatt",
-                English to "Total before tax",
+                bokmal { + "Sum før skatt" },
+                nynorsk { + "Sum før skatt" },
+                english { + "Total before tax" },
                 FontType.BOLD
             )
         }

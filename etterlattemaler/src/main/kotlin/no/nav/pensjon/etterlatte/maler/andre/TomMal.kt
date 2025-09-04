@@ -30,17 +30,17 @@ object TomMal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Dette er en tom mal som du må benytte for å fylle inn brevet",
-                    Nynorsk to "",
-                    English to ""
+                    bokmal { +"Dette er en tom mal som du må benytte for å fylle inn brevet" },
+                    nynorsk { +"" },
+                    english { +"" }
                 )
             }
 

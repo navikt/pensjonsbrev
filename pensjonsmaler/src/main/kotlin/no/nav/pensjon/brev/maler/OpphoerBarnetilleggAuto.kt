@@ -86,15 +86,15 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         title {
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 text(
-                    Language.Bokmal to "Nav har endret barnetillegget ditt",
-                    Language.Nynorsk to "Nav har endra barnetillegget ditt",
-                    Language.English to "Nav has changed the child supplement in your disability benefit"
+                    bokmal { + "Nav har endret barnetillegget ditt" },
+                    nynorsk { + "Nav har endra barnetillegget ditt" },
+                    english { + "Nav has changed the child supplement in your disability benefit" }
                 )
             }.orShow {
                 text(
-                    Language.Bokmal to "Nav har vedtatt at barnetillegget ditt opphører",
-                    Language.Nynorsk to "Nav har stansa barnetillegget ditt",
-                    Language.English to "Nav has discontinued the child supplement in your disability benefit"
+                    bokmal { + "Nav har vedtatt at barnetillegget ditt opphører" },
+                    nynorsk { + "Nav har stansa barnetillegget ditt" },
+                    english { + "Nav has discontinued the child supplement in your disability benefit" }
                 )
             }
         }
@@ -147,9 +147,9 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             showIf(harBarnetillegg) {
                 title1 {
                     text(
-                        Language.Bokmal to "Slik påvirker inntekt barnetillegget ditt",
-                        Language.Nynorsk to "Slik verkar inntekt inn på barnetillegget ditt",
-                        Language.English to "Income will affect your child supplement"
+                        bokmal { + "Slik påvirker inntekt barnetillegget ditt" },
+                        nynorsk { + "Slik verkar inntekt inn på barnetillegget ditt" },
+                        english { + "Income will affect your child supplement" }
                     )
                 }
 

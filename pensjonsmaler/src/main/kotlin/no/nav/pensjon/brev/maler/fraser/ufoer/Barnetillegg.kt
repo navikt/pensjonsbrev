@@ -24,13 +24,13 @@ object Barnetillegg {
                 val virkningsDato = oensketVirkningsDato.format()
                 val barnFlertall = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
 
-                textExpr(
-                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato +
-                            " for " + ifElse(barnFlertall, "barna", "barn") + " født",
-                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato +
-                            " for " + ifElse(barnFlertall, "barna", "barn") + " fødd",
-                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato +
-                            ", for " + ifElse(barnFlertall, "children", "the child") + " born",
+                text(
+                    bokmal { + "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra " + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barn") + " født" },
+                    nynorsk { + "Vi har stansa barnetillegget i uføretrygda di frå " + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barn") + " fødd" },
+                    english { + "The child supplement in your disability benefit has been discontinued, effective as of " + virkningsDato +
+                            ", for " + ifElse(barnFlertall, "children", "the child") + " born" },
                 )
                 includePhrase(Felles.TextOrList(foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(LocalizedFormatter.DateFormat)))
             }
@@ -44,13 +44,13 @@ object Barnetillegg {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val barnFlertall = opphoertBarnetilleggFlereBarn
-                textExpr(
-                    Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi ".expr() +
-                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år.",
-                    Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi ".expr() +
-                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år.",
-                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your ".expr() +
-                            ifElse(barnFlertall, "children have", "child has") + " turned 18 years of age."
+                text(
+                    bokmal { + "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi " +
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år." },
+                    nynorsk { + "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi " +
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år." },
+                    english { + "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your " +
+                            ifElse(barnFlertall, "children have", "child has") + " turned 18 years of age." }
                 )
             }
         }
@@ -68,22 +68,22 @@ object Barnetillegg {
             showIf(harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)) {
                 paragraph {
                     text(
-                        Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
-                        Nynorsk to "Inntekta di har noko å seie for kva du får i barnetillegg. Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
-                        English to "Your income affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced."
+                        bokmal { + "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert." },
+                        nynorsk { + "Inntekta di har noko å seie for kva du får i barnetillegg. Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert." },
+                        english { + "Your income affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced." }
                     )
                     showIf(faarUtbetaltBarnetilleggSaerkullsbarn) {
                         text(
-                            Bokmal to " Denne grensen kaller vi for fribeløp.",
-                            Nynorsk to " Denne grensa kallar vi for fribeløp.",
-                            English to " We call this limit the exemption amount."
+                            bokmal { + " Denne grensen kaller vi for fribeløp." },
+                            nynorsk { + " Denne grensa kallar vi for fribeløp." },
+                            english { + " We call this limit the exemption amount." }
                         )
                     }
                     ifNotNull(borMedSivilstand) { borMedSivilstand ->
-                        textExpr(
-                            Bokmal to " Inntekten til ".expr() + borMedSivilstand.bestemtForm() + " din har ikke betydning for størrelsen på barnetillegget.",
-                            Nynorsk to " Inntekta til ".expr() + borMedSivilstand.bestemtForm() + " din har ikkje noko å seie for storleiken på barnetillegget.",
-                            English to " The income of your ".expr() + borMedSivilstand.bestemtForm() + " does not affect the size of your child supplement.",
+                        text(
+                            bokmal { + " Inntekten til " + borMedSivilstand.bestemtForm() + " din har ikke betydning for størrelsen på barnetillegget." },
+                            nynorsk { + " Inntekta til " + borMedSivilstand.bestemtForm() + " din har ikkje noko å seie for storleiken på barnetillegget." },
+                            english { + " The income of your " + borMedSivilstand.bestemtForm() + " does not affect the size of your child supplement." },
                         )
                     }
                 }
@@ -104,29 +104,29 @@ object Barnetillegg {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(harBarnetilleggFellesbarn) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Inntekten til deg og ".expr() + borMedSivilstand.bestemtForm() + " din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
-                        Nynorsk to "Inntekta til deg og ".expr() + borMedSivilstand.bestemtForm() + " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert.",
-                        English to "The incomes of you and your ".expr() + borMedSivilstand.bestemtForm() + " affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced.",
+                    text(
+                        bokmal { + "Inntekten til deg og " + borMedSivilstand.bestemtForm() + " din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert." },
+                        nynorsk { + "Inntekta til deg og " + borMedSivilstand.bestemtForm() + " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert." },
+                        english { + "The incomes of you and your " + borMedSivilstand.bestemtForm() + " affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced." },
                     )
                     showIf(faarUtbetaltBarnetilleggFellesbarn) {
                         text(
-                            Bokmal to " Denne grensen kaller vi for fribeløp.",
-                            Nynorsk to " Denne grensa kallar vi for fribeløp.",
-                            English to " We call this limit the exemption amount."
+                            bokmal { + " Denne grensen kaller vi for fribeløp." },
+                            nynorsk { + " Denne grensa kallar vi for fribeløp." },
+                            english { + " We call this limit the exemption amount." }
                         )
                     }
                     showIf(harBarnetilleggSaerkullsbarn) {
-                        textExpr(
-                            Bokmal to " Inntekten til ".expr() + borMedSivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til "
+                        text(
+                            bokmal { + " Inntekten til " + borMedSivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til "
                                     + ifElse(barnetilleggSaerkullsbarnGjelderFlereBarn, "barna", "barnet")
-                                    + " som bor sammen med begge sine foreldre.",
+                                    + " som bor sammen med begge sine foreldre." },
 
-                            Nynorsk to " Inntekta til ".expr() + borMedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til "
+                            nynorsk { + " Inntekta til " + borMedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til "
                                     + ifElse(barnetilleggSaerkullsbarnGjelderFlereBarn, "barna", "barnet")
-                                    + " som bur saman med begge foreldra sine.",
+                                    + " som bur saman med begge foreldra sine." },
 
-                            English to " The income of your ".expr() + borMedSivilstand.bestemtForm() + " only affects the size of the child supplement for the children who live together with both parents.",
+                            english { + " The income of your " + borMedSivilstand.bestemtForm() + " only affects the size of the child supplement for the children who live together with both parents." },
                         )
                     }
                 }
@@ -145,22 +145,22 @@ object Barnetillegg {
                 paragraph {
                     ifNotNull(barnetilleggFellesbarn) { fellesTillegg ->
                         val sivilstand = fellesTillegg.brukerBorMed
-                        textExpr(
-                            Bokmal to "Endringer i inntektene til deg og ".expr() + sivilstand.bestemtForm() + " din kan ha betydning for barnetillegget ditt. ",
-                            Nynorsk to "Endringar i inntektene til deg og ".expr() + sivilstand.bestemtForm() + " di kan ha betydning for barnetillegget ditt. ",
-                            English to "Changes in your and your ".expr() + sivilstand.bestemtForm() + " income may affect your child supplement. ",
+                        text(
+                            bokmal { + "Endringer i inntektene til deg og " + sivilstand.bestemtForm() + " din kan ha betydning for barnetillegget ditt. " },
+                            nynorsk { + "Endringar i inntektene til deg og " + sivilstand.bestemtForm() + " di kan ha betydning for barnetillegget ditt. " },
+                            english { + "Changes in your and your " + sivilstand.bestemtForm() + " income may affect your child supplement. " },
                         )
                     }.orShowIf(harBarnetilleggSaerkullsbarn) {
                         text(
-                            Bokmal to "Endringer i inntekten din kan ha betydning for barnetillegget ditt. ",
-                            Nynorsk to "Endringar i inntekta di kan ha betydning for barnetillegget ditt. ",
-                            English to "Changes in income may affect your child supplement. "
+                            bokmal { + "Endringer i inntekten din kan ha betydning for barnetillegget ditt. " },
+                            nynorsk { + "Endringar i inntekta di kan ha betydning for barnetillegget ditt. " },
+                            english { + "Changes in income may affect your child supplement. " }
                         )
                     }
-                    textExpr(
-                        Bokmal to "Du kan enkelt melde fra om inntektsendringer under menyvalget ".expr() + quoted("uføretrygd") +" på ${Constants.NAV_URL}.",
-                        Nynorsk to "Du kan enkelt melde frå om inntektsendringar under menyvalet ".expr() + quoted("uføretrygd") +" på ${Constants.NAV_URL}.",
-                        English to "You can easily report income changes under the menu option ".expr() + quoted("disability benefit") + " at ${Constants.NAV_URL}."
+                    text(
+                        bokmal { + "Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
+                        nynorsk { + "Du kan enkelt melde frå om inntektsendringar under menyvalet " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
+                        english { + "You can easily report income changes under the menu option " + quoted("disability benefit") + " at ${Constants.NAV_URL}." }
                     )
                 }
             }
@@ -186,57 +186,57 @@ object Barnetillegg {
             val grunnbeloep = grunnbeloep.format()
 
             paragraph {
-                textExpr(
-                    Bokmal to "Inntekten din er ".expr() + brukersInntektBruktiAvkortningFellesbarn.format() + " og inntekten til " + borMedSivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + ".",
-                    Nynorsk to "Inntekta di er ".expr() + brukersInntektBruktiAvkortningFellesbarn.format() + ", og inntekta til " + borMedSivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + ".",
-                    English to "Your income is ".expr() + brukersInntektBruktiAvkortningFellesbarn.format() + " and your " + borMedSivilstand.bestemtForm() + "'s income is " + inntektAnnenForelderFellesbarn.format() + ".",
+                text(
+                    bokmal { + "Inntekten din er " + brukersInntektBruktiAvkortningFellesbarn.format() + " og inntekten til " + borMedSivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + "." },
+                    nynorsk { + "Inntekta di er " + brukersInntektBruktiAvkortningFellesbarn.format() + ", og inntekta til " + borMedSivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + "." },
+                    english { + "Your income is " + brukersInntektBruktiAvkortningFellesbarn.format() + " and your " + borMedSivilstand.bestemtForm() + "'s income is " + inntektAnnenForelderFellesbarn.format() + "." },
                 )
 
                 showIf(harBeloepFratrukketAnnenForelder) {
-                    textExpr(
-                        Bokmal to " Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " er holdt utenfor inntekten til "
-                                + borMedSivilstand.bestemtForm() + " din.",
-                        Nynorsk to " Grunnbeløpet i folketrygda på inntil ".expr() + grunnbeloep + " er halde utanfor inntekta til "
-                                + borMedSivilstand.bestemtForm() + " din.",
-                        English to " The national insurance basic amount of up to ".expr() + grunnbeloep + " has not been included in your "
-                                + borMedSivilstand.bestemtForm() + "'s income.",
+                    text(
+                        bokmal { + " Folketrygdens grunnbeløp på inntil " + grunnbeloep + " er holdt utenfor inntekten til "
+                                + borMedSivilstand.bestemtForm() + " din." },
+                        nynorsk { + " Grunnbeløpet i folketrygda på inntil " + grunnbeloep + " er halde utanfor inntekta til "
+                                + borMedSivilstand.bestemtForm() + " din." },
+                        english { + " The national insurance basic amount of up to " + grunnbeloep + " has not been included in your "
+                                + borMedSivilstand.bestemtForm() + "'s income." },
                     )
                 }
 
                 showIf(not(harBarnetilleggSaerkullsbarn) and not(harJusteringsbeloepFellesbarn) and faarUtbetaltBarnetilleggFellesBarn) {
-                    textExpr(
-                        Bokmal to " Til sammen er inntektene ".expr() +
+                    text(
+                        bokmal { + " Til sammen er inntektene " +
                                 ifElse(harFradragFellesbarn, "høyere", "lavere") +
                                 " enn fribeløpet ditt på " + fribeloepFellesbarn.format() + ". Barnetillegget ditt er derfor" +
-                                ifElse(harFradragFellesbarn, "", " ikke") + " redusert ut fra inntekt.",
+                                ifElse(harFradragFellesbarn, "", " ikke") + " redusert ut fra inntekt." },
 
-                        Nynorsk to " Til saman er inntektene ".expr() +
+                        nynorsk { + " Til saman er inntektene " +
                                 ifElse(harFradragFellesbarn, "høgare", "lågare") +
                                 " enn fribeløpet ditt på " + fribeloepFellesbarn.format() + ". Barnetillegget ditt er derfor" +
                                 ifElse(harFradragFellesbarn, "", " ikkje") +
-                                " redusert ut frå inntekt.",
+                                " redusert ut frå inntekt." },
 
-                        English to " Together, the incomes are ".expr() +
+                        english { + " Together, the incomes are " +
                                 ifElse(harFradragFellesbarn, "higher", "lower") +
                                 " than your exemption amount of " + fribeloepFellesbarn.format() +
                                 ". Therefore, your child supplement has" +
                                 ifElse(harFradragFellesbarn, "", " not") +
-                                " been reduced on the basis of your income."
+                                " been reduced on the basis of your income." }
                     )
                 }
 
                 showIf(harJusteringsbeloepFellesbarn and not(harBarnetilleggSaerkullsbarn)) {
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
                     text(
-                        Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget.",
-                        Nynorsk to " Dette har vi teke omsyn til når vi endra barnetillegget.",
-                        English to " This we took into account when we changed your child supplement."
+                        bokmal { + " Dette ble tatt hensyn til da vi endret barnetillegget." },
+                        nynorsk { + " Dette har vi teke omsyn til når vi endra barnetillegget." },
+                        english { + " This we took into account when we changed your child supplement." }
                     )
                     showIf(not(faarUtbetaltBarnetilleggFellesBarn)) {
                         text(
-                            Bokmal to " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
-                            Nynorsk to " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
-                            English to " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
+                            bokmal { + " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
+                            nynorsk { + " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                            english { + " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year." }
                         )
                     }
                 }
@@ -248,9 +248,9 @@ object Barnetillegg {
     object DuHarFaattUtbetaltBarnetilleggTidligereIAar : ParagraphPhrase<LangBokmalNynorskEnglish>() {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover.",
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover.",
-                English to "What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future.",
+                bokmal { + "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover." },
+                nynorsk { + "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover." },
+                english { + "What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future." },
             )
         }
     }
@@ -275,44 +275,44 @@ object Barnetillegg {
             showIf(harJusteringsbeloepSaerkullsbarn) {
                 paragraph {
 
-                    textExpr(
-                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortning + ".",
-                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortning + ".",
-                        English to "Your income is  ".expr() + inntektBruktiAvkortning + "."
+                    text(
+                        bokmal { + "Inntekten din er " + inntektBruktiAvkortning + "." },
+                        nynorsk { + "Inntekta di er " + inntektBruktiAvkortning + "." },
+                        english { + "Your income is  " + inntektBruktiAvkortning + "." }
                     )
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
                     text(
-                        Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget.",
-                        Nynorsk to " Dette har vi teke omsyn til når vi endra barnetillegget.",
-                        English to " We took this in to account when we changed your child supplement.",
+                        bokmal { + " Dette ble tatt hensyn til da vi endret barnetillegget." },
+                        nynorsk { + " Dette har vi teke omsyn til når vi endra barnetillegget." },
+                        english { + " We took this in to account when we changed your child supplement." },
                     )
                     showIf(not(faarUtbetaltBarnetilleggSaerkullsbarn)) {
                         text(
-                            Bokmal to " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
-                            Nynorsk to " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
-                            English to " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
+                            bokmal { + " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
+                            nynorsk { + " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                            english { + " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year." }
                         )
                     }
                 }
             }.orShowIf(faarUtbetaltBarnetilleggSaerkullsbarn) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Inntekten din på ".expr() + inntektBruktiAvkortning + " er " +
+                    text(
+                        bokmal { + "Inntekten din på " + inntektBruktiAvkortning + " er " +
                                 ifElse(hoeyereLavere, "lavere", "høyere") +
                                 " enn fribeløpet ditt på " + fribeloep + ". Barnetillegget ditt er derfor " +
-                                ifElse(inntektLavereEnnFribeloep, "ikke ", "") + "redusert ut fra inntekt.",
+                                ifElse(inntektLavereEnnFribeloep, "ikke ", "") + "redusert ut fra inntekt." },
 
-                        Nynorsk to "Inntekta di på ".expr() + inntektBruktiAvkortning + " er " +
+                        nynorsk { + "Inntekta di på " + inntektBruktiAvkortning + " er " +
                                 ifElse(hoeyereLavere, "lågare", "høgare") +
                                 " enn fribeløpet ditt på " + fribeloep + ". Barnetillegget ditt er derfor " +
-                                ifElse(inntektLavereEnnFribeloep, "ikkje ", "") + "redusert ut frå inntekt.",
+                                ifElse(inntektLavereEnnFribeloep, "ikkje ", "") + "redusert ut frå inntekt." },
 
-                        English to "Your income of ".expr() + inntektBruktiAvkortning + " is " +
+                        english { + "Your income of " + inntektBruktiAvkortning + " is " +
                                 ifElse(hoeyereLavere, "lower", "higher") +
                                 " than your exemption amount of " +
                                 fribeloep + ". Therefore your child supplement has " +
                                 ifElse(inntektLavereEnnFribeloep, "not ", "") +
-                                "been reduced on the basis of your income."
+                                "been reduced on the basis of your income." }
                     )
                 }
             }
@@ -355,100 +355,100 @@ object Barnetillegg {
 
             paragraph {
                 showIf(faarUtbetaltBarnetilleggSaerkullsbarn and not(harJusteringsbeloepSaerkullsbarn)) {
-                    textExpr(
-                        Bokmal to "Inntekten din er ".expr() +
+                    text(
+                        bokmal { + "Inntekten din er " +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "høyere", "lavere") +
                                 " enn " + fribeloepSaerkullsbarn.format() + ", som er fribeløpet for barnetillegget til " +
                                 ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
-                                " som ikke bor sammen med begge foreldrene.",
+                                " som ikke bor sammen med begge foreldrene." },
 
-                        Nynorsk to "Inntekta di er ".expr() +
+                        nynorsk { + "Inntekta di er " +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "høgare", "lågare") +
                                 " enn " + fribeloepSaerkullsbarn.format() + ", som er fribeløpet for barnetillegget til " +
                                 ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
-                                " som ikkje bur saman med begge foreldra.",
+                                " som ikkje bur saman med begge foreldra." },
 
-                        English to "Your income is ".expr() +
+                        english { + "Your income is " +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "higher", "lower") +
                                 " higher than " + fribeloepSaerkullsbarn.format() +
                                 ", which is the exemption amount for the child supplement for the " +
                                 ifElse(harTilleggForFlereSaerkullsbarn, "children who do", "child who does") +
-                                " not live together with both parents."
+                                " not live together with both parents." }
                     )
 
                     showIf(harFradragForEnBarnetilleggYtelse) {
-                        textExpr(
-                            Bokmal to " Dette barnetillegget er derfor".expr() +
+                        text(
+                            bokmal { + " Dette barnetillegget er derfor" +
                                     ifElse(barnetilleggSaerkullsbarnIkkeRedusert, " ikke ", " ") +
-                                    "redusert ut fra inntekt.",
+                                    "redusert ut fra inntekt." },
 
-                            Nynorsk to " Dette barnetillegget er derfor".expr() +
+                            nynorsk { + " Dette barnetillegget er derfor" +
                                     ifElse(barnetilleggSaerkullsbarnIkkeRedusert, " ikkje ", " ") +
-                                    "redusert ut frå inntekt.",
+                                    "redusert ut frå inntekt." },
 
-                            English to " Therefore, your child supplement has".expr() +
+                            english { + " Therefore, your child supplement has" +
                                     ifElse(barnetilleggSaerkullsbarnIkkeRedusert, " not ", " ") +
-                                    "been reduced on the basis of your income."
+                                    "been reduced on the basis of your income." }
                         )
                     }
                     showIf(faarUtbetaltBarnetilleggFellesbarn and not(harJusteringsbeloepFellesbarn)) {
 
                         val ogsaa = not(harFradragForEnBarnetilleggYtelse)
                         val inntektErHoyereEnnFribeloepFellesBarn = samletInntektBruktiAvkortningFellesbarn.greaterThan(fribeloepFellesbarn)
-                        textExpr(
-                            Bokmal to " Til sammen er ".expr() +
+                        text(
+                            bokmal { + " Til sammen er " +
                                     ifElse(ogsaa, "også inntektene", "inntektene") +
                                     " til deg og " + borMed.bestemtForm() + " din " +
                                     ifElse(inntektErHoyereEnnFribeloepFellesBarn, "høyere", "lavere") +
                                     " enn " + fribeloepFellesbarn.format() + ", som er fribeløpet for barnetillegget til " +
                                     ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
-                                    " som bor med begge sine foreldre.",
+                                    " som bor med begge sine foreldre." },
 
-                            Nynorsk to " Til saman er ".expr() +
+                            nynorsk { + " Til saman er " +
                                     ifElse(ogsaa, "også inntektene", "inntektene") +
                                     " til deg og " + borMed.bestemtForm() + " din " +
                                     ifElse(inntektErHoyereEnnFribeloepFellesBarn, "høgare", "lagare") +
                                     " enn " + fribeloepFellesbarn.format() + ", som er fribeløpet for barnetillegget til " +
                                     ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
-                                    " som bur saman med begge foreldra sine.",
+                                    " som bur saman med begge foreldra sine." },
 
-                            English to " Together, your income and your ".expr() + borMed.bestemtForm() + "'s income is " +
+                            english { + " Together, your income and your " + borMed.bestemtForm() + "'s income is " +
                                     ifElse(inntektErHoyereEnnFribeloepFellesBarn, "higher", "lower") +
                                     " than " + fribeloepFellesbarn.format() + ", which is the exemption amount for the child supplement for the " +
                                     ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives") +
-                                    " together with both parents.",
+                                    " together with both parents." },
                         )
 
                         showIf(harFradragForEnBarnetilleggYtelse) {
-                            textExpr(
-                                Bokmal to
-                                        " Dette barnetillegget er derfor".expr() +
+                            text(
+                                bokmal { + 
+                                        " Dette barnetillegget er derfor" +
                                         ifElse(barnetilleggFellesbarnIkkeRedusert, " ikke ", " ") +
-                                        "redusert ut fra inntekt.",
+                                        "redusert ut fra inntekt." },
 
-                                Nynorsk to " Dette barnetillegget er derfor".expr() +
+                                nynorsk { + " Dette barnetillegget er derfor" +
                                         ifElse(barnetilleggFellesbarnIkkeRedusert, " ikkje ", " ") +
-                                        "redusert ut frå inntekt.",
+                                        "redusert ut frå inntekt." },
 
-                                English to " Therefore, your child supplement has".expr() +
+                                english { + " Therefore, your child supplement has" +
                                         ifElse(barnetilleggFellesbarnIkkeRedusert, " not ", " ") +
-                                        "been reduced on the basis of your income."
+                                        "been reduced on the basis of your income." }
                             )
                         }.orShow {
                             val ikkeRedusert =
                                 barnetilleggFellesbarnIkkeRedusert and barnetilleggSaerkullsbarnIkkeRedusert
-                            textExpr(
-                                Bokmal to " Barnetilleggene er derfor".expr() +
+                            text(
+                                bokmal { + " Barnetilleggene er derfor" +
                                         ifElse(ikkeRedusert, " ikke ", " ") +
-                                        "redusert ut fra inntekt.",
+                                        "redusert ut fra inntekt." },
 
-                                Nynorsk to " Desse barnetillegga er derfor".expr() +
+                                nynorsk { + " Desse barnetillegga er derfor" +
                                         ifElse(ikkeRedusert, " ikkje ", " ") +
-                                        "redusert ut frå inntekt.",
+                                        "redusert ut frå inntekt." },
 
-                                English to " Therefore your child supplements have".expr() +
+                                english { + " Therefore your child supplements have" +
                                         ifElse(ikkeRedusert, " not ", " ") +
-                                        "been reduced on the basis of your income."
+                                        "been reduced on the basis of your income." }
                             )
                         }
                     }
@@ -458,24 +458,24 @@ object Barnetillegg {
             showIf(harJusteringsbeloepFellesbarn) {
                 paragraph {
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
-                    textExpr(
-                        Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget for ".expr() +
+                    text(
+                        bokmal { + " Dette ble tatt hensyn til da vi endret barnetillegget for " +
                                 ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
-                                " som bor med begge sine foreldre.",
+                                " som bor med begge sine foreldre." },
 
-                        Nynorsk to " Dette har vi teke omsyn til når vi endra barnetillegget for ".expr() +
+                        nynorsk { + " Dette har vi teke omsyn til når vi endra barnetillegget for " +
                                 ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
-                                " som bur saman med begge foreldra sine.",
+                                " som bur saman med begge foreldra sine." },
 
-                        English to " We took this in to account when we changed your child supplement for the ".expr() +
+                        english { + " We took this in to account when we changed your child supplement for the " +
                                 ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives") +
-                                " together with both parents."
+                                " together with both parents." }
                     )
                     showIf(not(faarUtbetaltBarnetilleggFellesbarn)) {
                         text(
-                            Bokmal to " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året",
-                            Nynorsk to " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
-                            English to " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
+                            bokmal { + " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året" },
+                            nynorsk { + " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                            english { + " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year." }
                         )
                     }
                 }
@@ -484,24 +484,24 @@ object Barnetillegg {
             showIf(harJusteringsbeloepSaerkullsbarn) {
                 paragraph {
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
-                    textExpr(
-                        Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget for ".expr() +
+                    text(
+                        bokmal { + " Dette ble tatt hensyn til da vi endret barnetillegget for " +
                                 ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
-                                " som ikke bor sammen med begge foreldrene.",
+                                " som ikke bor sammen med begge foreldrene." },
 
-                        Nynorsk to " Dette har vi teke omsyn til når vi endra barnetillegget for ".expr() +
+                        nynorsk { + " Dette har vi teke omsyn til når vi endra barnetillegget for " +
                                 ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
-                                " som ikkje bur saman med begge foreldra.",
+                                " som ikkje bur saman med begge foreldra." },
 
-                        English to " We took this in to account when we changed your child supplement for the ".expr() +
+                        english { + " We took this in to account when we changed your child supplement for the " +
                                 ifElse(harTilleggForFlereSaerkullsbarn, "children who live", "child who lives") +
-                                " together with both parents."
+                                " together with both parents." }
                     )
                     showIf(not(faarUtbetaltBarnetilleggSaerkullsbarn)) {
                         text(
-                            Bokmal to " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
-                            Nynorsk to " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
-                            English to " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
+                            bokmal { + " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
+                            nynorsk { + " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                            english { + " You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year." }
                         )
                     }
                 }
@@ -524,98 +524,98 @@ object Barnetillegg {
             showIf((saerkullInnvilget or fellesInnvilget) and (not(saerkullUtbetalt) or not(fellesUtbetalt))) {
                 paragraph {
                     showIf(not(saerkullUtbetalt) and not(fellesUtbetalt) and fellesInnvilget and saerkullInnvilget) {
-                        textExpr( // TBU2490
-                            Bokmal to "Barnetillegget for ".expr() +
+                        text( // TBU2490
+                            bokmal { + "Barnetillegget for " +
                                     ifElse(harFlereFellesBarn, "barna", "barnet") +
                                     " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " +
                                     inntektstakFellesbarn.format() + ". Barnetillegget for " +
                                     ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                     " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " +
-                                    inntektstakSaerkullsbarn.format() + ". Inntektene er over grensen for å få utbetalt barnetillegg.",
+                                    inntektstakSaerkullsbarn.format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
 
-                            Nynorsk to "Barnetillegget for ".expr() +
+                            nynorsk { + "Barnetillegget for " +
                                     ifElse(harFlereFellesBarn, "barna", "barnet") +
                                     " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn " +
                                     inntektstakFellesbarn.format() + ". Barnetillegget for " +
                                     ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                     " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn " +
-                                    inntektstakSaerkullsbarn.format() + ". Inntektene er over grensa for å få utbetalt barnetillegg.",
+                                    inntektstakSaerkullsbarn.format() + ". Inntektene er over grensa for å få utbetalt barnetillegg." },
 
-                            English to "You will not receive child supplement for the ".expr() +
+                            english { + "You will not receive child supplement for the " +
                                     ifElse(harFlereFellesBarn, "children", "child") +
                                     " who lives together with both parents because your total income is higher than " +
                                     inntektstakFellesbarn.format() + ". You will not receive child supplement for the " +
                                     ifElse(harFlereSaerkullsbarn, "children", "child") +
                                     " who do not live together with both parents because your income alone is higher than " +
-                                    inntektstakSaerkullsbarn.format() + ". You will not receive child supplement because your income exceeds the income limit."
+                                    inntektstakSaerkullsbarn.format() + ". You will not receive child supplement because your income exceeds the income limit." }
                         )
                     }.orShowIf(not(saerkullUtbetalt) and saerkullInnvilget and not(fellesInnvilget)) {
-                        textExpr( // TBU1286.1
-                            Bokmal to "Barnetillegget for ".expr() +
+                        text( // TBU1286.1
+                            bokmal { + "Barnetillegget for " +
                                     ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                     " blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn " +
-                                    inntektstakFellesbarn.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg." },
 
-                            Nynorsk to "Barnetillegget for ".expr() +
+                            nynorsk { + "Barnetillegget for " +
                                     ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                     " blir ikkje utbetalt fordi du har ei samla inntekt som er høgare enn " +
-                                    inntektstakFellesbarn.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg." },
 
-                            English to "You will not receive child supplement for the ".expr() +
+                            english { + "You will not receive child supplement for the " +
                                     ifElse(harFlereSaerkullsbarn, "children", "child") +
                                     " because your total income on its own is higher than " +
-                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit."
+                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit." }
                         )
                     }.orShowIf(not(saerkullUtbetalt) and saerkullInnvilget and fellesInnvilget) {
-                        textExpr( // TBU1286.1
-                            Bokmal to "Barnetillegget for ".expr() +
+                        text( // TBU1286.1
+                            bokmal { + "Barnetillegget for " +
                                     ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                     " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
-                                    inntektstakFellesbarn.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg." },
 
-                            Nynorsk to "Barnetillegget for ".expr() +
+                            nynorsk { + "Barnetillegget for " +
                                     ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                     " som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
-                                    inntektstakFellesbarn.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg." },
 
-                            English to "You will not receive child supplement for the ".expr() +
+                            english { + "You will not receive child supplement for the " +
                                     ifElse(harFlereSaerkullsbarn, "children who do", "child who does") +
                                     " not live together with both parents because your total income on its own is higher than " +
-                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit."
+                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit." }
                         )
                     }.orShowIf(not(fellesUtbetalt) and not(saerkullInnvilget) and fellesInnvilget) {
-                        textExpr(// TBU1286.2
-                            Bokmal to "Barnetillegget for ".expr() +
+                        text(// TBU1286.2
+                            bokmal { + "Barnetillegget for " +
                                     ifElse(harFlereFellesBarn, "barna", "barnet") +
                                     " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                    inntektstakFellesbarn.format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg." },
 
-                            Nynorsk to "Barnetillegget for ".expr() +
+                            nynorsk { + "Barnetillegget for " +
                                     ifElse(harFlereFellesBarn, "barna", "barnet") +
                                     " blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                    inntektstakFellesbarn.format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg." },
 
-                            English to "You will not receive child supplement for the ".expr() +
+                            english { + "You will not receive child supplement for the " +
                                     ifElse(harFlereFellesBarn, "children", "child") +
                                     " because your total income on its own is higher than " +
-                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit."
+                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit." }
                         )
                     }.orShowIf(not(fellesUtbetalt) and saerkullInnvilget and fellesInnvilget) {
-                        textExpr(// TBU1286.2
-                            Bokmal to "Barnetillegget for ".expr() +
+                        text(// TBU1286.2
+                            bokmal { + "Barnetillegget for " +
                                     ifElse(harFlereFellesBarn, "barna", "barnet") +
                                     " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                    inntektstakFellesbarn.format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg." },
 
-                            Nynorsk to "Barnetillegget for ".expr() +
+                            nynorsk { + "Barnetillegget for " +
                                     ifElse(harFlereFellesBarn, "barna", "barnet") +
                                     " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                    inntektstakFellesbarn.format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
+                                    inntektstakFellesbarn.format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg." },
 
-                            English to "You will not receive child supplement for the ".expr() +
+                            english { + "You will not receive child supplement for the " +
                                     ifElse(harFlereFellesBarn, "children who live", "child who lives") +
                                     " together with both parents because your total income on its own is higher than " +
-                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit."
+                                    inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit." }
                         )
                     }
                 }
@@ -633,14 +633,14 @@ object Barnetillegg {
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 paragraph {
                     text(
-                        Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget ",
-                        Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget ",
-                        English to "Read more about how child supplements are calculated in the attachment called "
+                        bokmal { + "Du kan lese mer om beregningen av barnetillegg i vedlegget " },
+                        nynorsk { + "Du kan lese meir om berekninga av barnetillegg i vedlegget " },
+                        english { + "Read more about how child supplements are calculated in the attachment called " }
                     )
-                    textExpr(
-                        Bokmal to quoted("Opplysninger om beregningen") +".",
-                        Nynorsk to quoted("Opplysningar om berekninga") +".",
-                        English to quoted("Information about calculations") +"."
+                    text(
+                        bokmal { + quoted("Opplysninger om beregningen") +"." },
+                        nynorsk { + quoted("Opplysningar om berekninga") +"." },
+                        english { + quoted("Information about calculations") +"." }
                     )
                 }
             }

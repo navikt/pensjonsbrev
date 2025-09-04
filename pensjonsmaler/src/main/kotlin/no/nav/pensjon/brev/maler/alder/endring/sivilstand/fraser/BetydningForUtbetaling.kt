@@ -25,27 +25,27 @@ data class BetydningForUtbetaling(
             showIf(beloepEndring.equalTo(BeloepEndring.UENDRET)) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Dette får ingen betydning for utbetalingen din.",
-                        Language.Nynorsk to "Dette får ingen følgjer for utbetalinga di.",
-                        Language.English to "This does not affect the amount you will receive.",
+                        bokmal { + "Dette får ingen betydning for utbetalingen din." },
+                        nynorsk { + "Dette får ingen følgjer for utbetalinga di." },
+                        english { + "This does not affect the amount you will receive." },
                     )
                 }
             }
             showIf(beloepEndring.equalTo(BeloepEndring.ENDR_OKT)) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Dette fører til at pensjonen din øker.",
-                        Language.Nynorsk to "Dette fører til at pensjonen din aukar.",
-                        Language.English to "This leads to an increase in your retirement pension.",
+                        bokmal { + "Dette fører til at pensjonen din øker." },
+                        nynorsk { + "Dette fører til at pensjonen din aukar." },
+                        english { + "This leads to an increase in your retirement pension." },
                     )
                 }
             }
             showIf(beloepEndring.equalTo(BeloepEndring.ENDR_RED)) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Dette fører til at pensjonen din blir redusert.",
-                        Language.Nynorsk to "Dette fører til at pensjonen din blir redusert.",
-                        Language.English to "This leads to a reduction in your retirement pension.",
+                        bokmal { + "Dette fører til at pensjonen din blir redusert." },
+                        nynorsk { + "Dette fører til at pensjonen din blir redusert." },
+                        english { + "This leads to a reduction in your retirement pension." },
                     )
                 }
             }

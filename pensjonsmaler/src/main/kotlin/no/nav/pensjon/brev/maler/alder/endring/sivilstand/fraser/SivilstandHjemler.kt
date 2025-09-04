@@ -37,43 +37,43 @@ data class SivilstandHjemler(
         ) {
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                    Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                    Language.English to "This decision was made pursuant to the provisions of §§ ",
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
+                    english { + "This decision was made pursuant to the provisions of §§ " },
                 )
                 includePhrase(SivilstandIntro(sivilstand))
                 showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
                     text(
-                        Language.Bokmal to ", 3-3",
-                        Language.Nynorsk to ", 3-3",
-                        Language.English to ", 3-3",
+                        bokmal { + ", 3-3" },
+                        nynorsk { + ", 3-3" },
+                        english { + ", 3-3" },
                     )
                 }
                 showIf(pensjonstilleggInnvilget or minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget) {
                     text(
-                        Language.Bokmal to ", 19-8",
-                        Language.Nynorsk to ", 19-8",
-                        Language.English to ", 19-8",
+                        bokmal { + ", 19-8" },
+                        nynorsk { + ", 19-8" },
+                        english { + ", 19-8" },
                     )
                 }
                 showIf(pensjonstilleggInnvilget) {
                     text(
-                        Language.Bokmal to ", 19-9",
-                        Language.Nynorsk to ", 19-9",
-                        Language.English to ", 19-9",
+                        bokmal { + ", 19-9" },
+                        nynorsk { + ", 19-9" },
+                        english { + ", 19-9" },
                     )
                 }
                 showIf(garantipensjonInnvilget) {
                     text(
-                        Language.Bokmal to ", 20-9",
-                        Language.Nynorsk to ", 20-9",
-                        Language.English to ", 20-9",
+                        bokmal { + ", 20-9" },
+                        nynorsk { + ", 20-9" },
+                        english { + ", 20-9" },
                     )
                 }
                 text(
-                    Language.Bokmal to " og 22-12.",
-                    Language.Nynorsk to " og 22-12.",
-                    Language.English to " and 22-12.",
+                    bokmal { + " og 22-12." },
+                    nynorsk { + " og 22-12." },
+                    english { + " and 22-12." },
                 )
             }
 
@@ -85,10 +85,10 @@ data class SivilstandHjemler(
             ) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-20.",
-                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-20.",
-                        Language.English to
-                            "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act.",
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven § 20-20." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova § 20-20." },
+                        english { + 
+                            "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act." },
                     )
                 }
             }
@@ -99,23 +99,23 @@ data class SivilstandHjemler(
         ) {
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                    Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                    Language.English to "This decision was made pursuant to the provisions of §§ ",
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
+                    english { + "This decision was made pursuant to the provisions of §§ " },
                 )
                 showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
                     includePhrase(SivilstandIntro(sivilstand))
                     showIf(saertilleggInnvilget) {
                         text(
-                            Language.Bokmal to ", 3-3",
-                            Language.Nynorsk to ", 3-3",
-                            Language.English to ", 3-3",
+                            bokmal { + ", 3-3" },
+                            nynorsk { + ", 3-3" },
+                            english { + ", 3-3" },
                         )
                     }
                     text(
-                        Language.Bokmal to ", 19-8 og 22-12.",
-                        Language.Nynorsk to ", 19-8 og 22-12.",
-                        Language.English to ", 19-8 and 22-12 of the National Insurance Act.",
+                        bokmal { + ", 19-8 og 22-12." },
+                        nynorsk { + ", 19-8 og 22-12." },
+                        english { + ", 19-8 and 22-12 of the National Insurance Act." },
                     )
                 }.orShowIf(
                     regelverkType.isOneOf(
@@ -125,15 +125,15 @@ data class SivilstandHjemler(
                 ) {
                     showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
                         text(
-                            Language.Bokmal to "1-5, ",
-                            Language.Nynorsk to "1-5, ",
-                            Language.English to "1-5, ",
+                            bokmal { + "1-5, " },
+                            nynorsk { + "1-5, " },
+                            english { + "1-5, " },
                         )
                     }
                     text(
-                        Language.Bokmal to "19-8, 19-9 og 22-12.",
-                        Language.Nynorsk to "19-8, 19-9 og 22-12.",
-                        Language.English to "19-8, 19-9 and 22-12 of the National Insurance Act.",
+                        bokmal { + "19-8, 19-9 og 22-12." },
+                        nynorsk { + "19-8, 19-9 og 22-12." },
+                        english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
                     )
                 }
             }
@@ -143,10 +143,10 @@ data class SivilstandHjemler(
             // hjemmelSivilstandAP2025
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                    Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                    Language.English to
-                        "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act.",
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                    english { + 
+                        "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act." },
                 )
             }
         }
@@ -159,15 +159,15 @@ private data class SivilstandIntro(
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
             text(
-                Language.Bokmal to "1-5, ",
-                Language.Nynorsk to "1-5, ",
-                Language.English to "1-5, ",
+                bokmal { + "1-5, " },
+                nynorsk { + "1-5, " },
+                english { + "1-5, " },
             )
         }
         text(
-            Language.Bokmal to "3-2",
-            Language.Nynorsk to "3-2",
-            Language.English to "3-2",
+            bokmal { + "3-2" },
+            nynorsk { + "3-2" },
+            english { + "3-2" },
         )
     }
 }

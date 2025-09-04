@@ -22,9 +22,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
@@ -49,63 +47,63 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
     ) {
         val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
         title {
-            textExpr(
-                Bokmal to "Vi vurderer om du må betale tilbake ".expr() + sakstype,
-                Nynorsk to "Vi vurderer om du må betale tilbake ".expr() + sakstype,
-                English to "We are considering demanding repayment of incorrectly paid ".expr() + sakstype,
+            text(
+                bokmal { + "Vi vurderer om du må betale tilbake " + sakstype },
+                nynorsk { + "Vi vurderer om du må betale tilbake " + sakstype },
+                english { + "We are considering demanding repayment of incorrectly paid " + sakstype },
             )
         }
         outline {
             paragraph {
                 val dato = fritekst("dato")
-                textExpr(
-                    Bokmal to "Vi viser til vedtaket vårt ".expr()
+                text(
+                    bokmal { + "Vi viser til vedtaket vårt "
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mye utbetalt i " + sakstype + " fra og med ".expr()
-                            + dato + " til og med " + dato + ".",
+                            " kroner for mye utbetalt i " + sakstype + " fra og med "
+                            + dato + " til og med " + dato + "." },
 
-                    Nynorsk to "Vi viser til vedtaket vårt ".expr()
+                    nynorsk { + "Vi viser til vedtaket vårt "
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mykje utbetalt i " + sakstype + " frå og med ".expr()
-                            + dato + " til og med " + dato + ".",
+                            " kroner for mykje utbetalt i " + sakstype + " frå og med "
+                            + dato + " til og med " + dato + "." },
 
-                    English to "We refer to our decision dated ".expr()
+                    english { + "We refer to our decision dated "
                             + felles.dokumentDato.format() + ". You have received NOK " + fritekst("beløp") +
-                            " too much in " + sakstype + " starting from ".expr() + dato +
-                            " up to and including " + dato + ".",
+                            " too much in " + sakstype + " starting from " + dato +
+                            " up to and including " + dato + "." },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Før vi avgjør om du skal betale tilbake, har du rett til å uttale deg. Dette må du gjøre innen 14 dager etter at du har fått dette varselet.",
-                    Nynorsk to "Før vi avgjer om du skal betale tilbake, har du rett til å uttale deg. Dette må du gjere innan 14 dagar etter at du har fått dette varselet.",
-                    English to "Before we decide whether you have to pay back the overpaid amount, you are entitled to make a statement. You must do this within 14 days of receiving this letter.",
+                    bokmal { + "Før vi avgjør om du skal betale tilbake, har du rett til å uttale deg. Dette må du gjøre innen 14 dager etter at du har fått dette varselet." },
+                    nynorsk { + "Før vi avgjer om du skal betale tilbake, har du rett til å uttale deg. Dette må du gjere innan 14 dagar etter at du har fått dette varselet." },
+                    english { + "Before we decide whether you have to pay back the overpaid amount, you are entitled to make a statement. You must do this within 14 days of receiving this letter." },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Dette er kun et varsel om at vi vurderer å kreve tilbake det feilutbetalte beløpet. Det er ikke et vedtak om tilbakekreving.",
-                    Nynorsk to "Dette er berre eit varsel om at vi vurderer å krevje tilbake det feilutbetalte beløpet. Det er ikkje eit vedtak om tilbakekrevjing.",
-                    English to "This letter is a prior notification that we are considering claiming repayment of the incorrectly paid amount, and not a final decision on repayment.",
+                    bokmal { + "Dette er kun et varsel om at vi vurderer å kreve tilbake det feilutbetalte beløpet. Det er ikke et vedtak om tilbakekreving." },
+                    nynorsk { + "Dette er berre eit varsel om at vi vurderer å krevje tilbake det feilutbetalte beløpet. Det er ikkje eit vedtak om tilbakekrevjing." },
+                    english { + "This letter is a prior notification that we are considering claiming repayment of the incorrectly paid amount, and not a final decision on repayment." },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Dersom vi vedtar at du må betale tilbake hele eller deler av det feilutbetalte beløpet, trekker vi fra skatten på beløpet vi krever tilbake.",
-                    Nynorsk to "Dersom vi vedtar at du må betale tilbake heile eller delar av det feilutbetalte beløpet, trekker vi frå skatten på beløpet vi krev tilbake.",
-                    English to "If we decide you have to repay all or part of the overpaid amount, we will make a deduction for tax from the amount we are reclaiming payment of.",
+                    bokmal { + "Dersom vi vedtar at du må betale tilbake hele eller deler av det feilutbetalte beløpet, trekker vi fra skatten på beløpet vi krever tilbake." },
+                    nynorsk { + "Dersom vi vedtar at du må betale tilbake heile eller delar av det feilutbetalte beløpet, trekker vi frå skatten på beløpet vi krev tilbake." },
+                    english { + "If we decide you have to repay all or part of the overpaid amount, we will make a deduction for tax from the amount we are reclaiming payment of." },
                 )
             }
             title1 {
                 text(
-                    Bokmal to "Dette har skjedd",
-                    Nynorsk to "Dette har skjedd",
-                    English to "What has happened",
+                    bokmal { + "Dette har skjedd" },
+                    nynorsk { + "Dette har skjedd" },
+                    english { + "What has happened" },
                 )
             }
             paragraph {
@@ -125,64 +123,64 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
 
             title1 {
                 text(
-                    Bokmal to "Dette legger vi vekt på i vurderingen vår",
-                    Nynorsk to "Dette legg vi vekt på i vurderinga vår",
-                    English to "We emphasizes the following in our assessment",
+                    bokmal { + "Dette legger vi vekt på i vurderingen vår" },
+                    nynorsk { + "Dette legg vi vekt på i vurderinga vår" },
+                    english { + "We emphasizes the following in our assessment" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "For å avgjøre om vi kan kreve tilbake, tar vi først stilling til:",
-                    Nynorsk to "For å avgjere om vi kan krevje tilbake, tek vi først stilling til:",
-                    English to "In order to determine whether we can demand repayment, we must first find out:",
+                    bokmal { + "For å avgjøre om vi kan kreve tilbake, tar vi først stilling til:" },
+                    nynorsk { + "For å avgjere om vi kan krevje tilbake, tek vi først stilling til:" },
+                    english { + "In order to determine whether we can demand repayment, we must first find out:" },
                 )
             }
             paragraph {
                 list {
                     item {
                         text(
-                            Bokmal to "om du forstod eller burde forstått at beløpet du fikk utbetalt var feil",
-                            Nynorsk to "om du forstod eller burde forstått at beløpet du fekk utbetalt var feil",
-                            English to "whether you understood or ought to have understood that the amount you received was incorrect",
+                            bokmal { + "om du forstod eller burde forstått at beløpet du fikk utbetalt var feil" },
+                            nynorsk { + "om du forstod eller burde forstått at beløpet du fekk utbetalt var feil" },
+                            english { + "whether you understood or ought to have understood that the amount you received was incorrect" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "om du har gitt riktig informasjon til Nav",
-                            Nynorsk to "om du har gitt rett informasjon til Nav",
-                            English to "whether you have provided Nav with correct information",
+                            bokmal { + "om du har gitt riktig informasjon til Nav" },
+                            nynorsk { + "om du har gitt rett informasjon til Nav" },
+                            english { + "whether you have provided Nav with correct information" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "om du har gitt all nødvendig informasjon til Nav i rett tid",
-                            Nynorsk to "om du har gitt all nødvendig informasjon til Nav i rett tid",
-                            English to "whether you have provided Nav with all the necessary information within the prescribed deadlines",
+                            bokmal { + "om du har gitt all nødvendig informasjon til Nav i rett tid" },
+                            nynorsk { + "om du har gitt all nødvendig informasjon til Nav i rett tid" },
+                            english { + "whether you have provided Nav with all the necessary information within the prescribed deadlines" },
                         )
                     }
                 }
                 text(
-                    Bokmal to "Selv om det er Nav som er skyld i feilutbetalingen, kan vi kreve at du betaler tilbake pengene. Dette går fram av folketrygdloven § 22-15.",
-                    Nynorsk to "Sjølv om det er Nav som er skyld i feilutbetalinga, kan vi krevje at du betaler tilbake pengane. Dette går fram av folketrygdlova § 22-15.",
-                    English to "We can also demand that you pay back the overpaid amount if Nav has made a mistake in paying out the wrong amount. This follows from section 22-15 of the National Insurance Act.",
+                    bokmal { + "Selv om det er Nav som er skyld i feilutbetalingen, kan vi kreve at du betaler tilbake pengene. Dette går fram av folketrygdloven § 22-15." },
+                    nynorsk { + "Sjølv om det er Nav som er skyld i feilutbetalinga, kan vi krevje at du betaler tilbake pengane. Dette går fram av folketrygdlova § 22-15." },
+                    english { + "We can also demand that you pay back the overpaid amount if Nav has made a mistake in paying out the wrong amount. This follows from section 22-15 of the National Insurance Act." },
                 )
             }
 
             showIf(saksbehandlerValg.hvisAktueltAaIleggeRentetillegg) {
                 paragraph {
                     text(
-                        Bokmal to "Hvis du bevisst har gitt oss feil eller mangelfull informasjon eller opptrådt grovt uaktsomt, kan vi beregne et rentetillegg på ti prosent av beløpet vi krever tilbakebetalt. Dette går fram av folketrygdloven § 22-17a.",
-                        Nynorsk to "Dersom du bevisst har gitt oss feil eller mangelfull informasjon eller har handla grovt aktlaust, kan vi berekne eit rentetillegg på ti prosent av beløpet som vi krev tilbakebetalt. Dette går fram av folketrygdlova § 22-17a.",
-                        English to "If you have intentionally given us incorrect or insufficient information or have acted with gross negligence, we are entitled to add 10 per cent of the recoverable amount to the claim.  This follows from section 22-17a of the National Insurance Act.",
+                        bokmal { + "Hvis du bevisst har gitt oss feil eller mangelfull informasjon eller opptrådt grovt uaktsomt, kan vi beregne et rentetillegg på ti prosent av beløpet vi krever tilbakebetalt. Dette går fram av folketrygdloven § 22-17a." },
+                        nynorsk { + "Dersom du bevisst har gitt oss feil eller mangelfull informasjon eller har handla grovt aktlaust, kan vi berekne eit rentetillegg på ti prosent av beløpet som vi krev tilbakebetalt. Dette går fram av folketrygdlova § 22-17a." },
+                        english { + "If you have intentionally given us incorrect or insufficient information or have acted with gross negligence, we are entitled to add 10 per cent of the recoverable amount to the claim.  This follows from section 22-17a of the National Insurance Act." },
                     )
                 }
             }
 
             title1 {
                 text(
-                    Bokmal to "Foreløpig vurdering",
-                    Nynorsk to "Foreløpig vurdering",
-                    English to "Preliminary assessment",
+                    bokmal { + "Foreløpig vurdering" },
+                    nynorsk { + "Foreløpig vurdering" },
+                    english { + "Preliminary assessment" },
                 )
             }
             paragraph {
@@ -199,42 +197,42 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             }
             title1 {
                 text(
-                    Bokmal to "Slik uttaler du deg",
-                    Nynorsk to "Slik uttaler du deg",
-                    English to "How to make a statement",
+                    bokmal { + "Slik uttaler du deg" },
+                    nynorsk { + "Slik uttaler du deg" },
+                    english { + "How to make a statement" },
                 )
             }
             showIf(pesysData.sakstype.equalTo(ALDER)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge ".expr() + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velge "+ quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på Din Pensjon og velje ".expr() + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " + quoted("Send beskjed til Nav") +". Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to your personal ".expr() + quoted("Din Pensjon") +" pension page and selecting " + quoted("Kontakt Nav") +", or by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
+                    text(
+                        bokmal { + "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge " + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velge "+ quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL." },
+                        nynorsk { + "Du kan sende uttalen din ved å logge deg inn på Din Pensjon og velje " + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " + quoted("Send beskjed til Nav") +". Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL." },
+                        english { + "You can submit your statement by logging in to your personal " + quoted("Din Pensjon") +" pension page and selecting " + quoted("Kontakt Nav") +", or by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL." },
                     )
                 }
             }.orShow {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge ".expr() + quoted("Send beskjed til Nav") + ". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje ".expr() + quoted("Send beskjed til Nav") +". Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting ".expr() + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
+                    text(
+                        bokmal { + "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge " + quoted("Send beskjed til Nav") + ". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL." },
+                        nynorsk { + "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje " + quoted("Send beskjed til Nav") +". Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL." },
+                        english { + "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL." },
                     )
                 }
             }
 
             title1 {
                 text(
-                    Bokmal to "Hva skjer videre i din sak",
-                    Nynorsk to "Kva skjer vidare i saka di",
-                    English to "What happens next in your case",
+                    bokmal { + "Hva skjer videre i din sak" },
+                    nynorsk { + "Kva skjer vidare i saka di" },
+                    english { + "What happens next in your case" },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Vi vil vurdere saken og sende deg et vedtak. Dersom du må betale hele eller deler av beløpet, vil du få beskjed om hvordan du betaler tilbake i vedtaket.",
-                    Nynorsk to "Vi vil vurdere saka og sende deg eit vedtak. Dersom du må betale heile eller delar av beløpet, vil du få melding om korleis du betaler tilbake, i vedtaket.",
-                    English to "We will consider your case and send you a decision. If you have to repay all or part of the overpaid amount, you will be notified about how to make the repayment in the decision.",
+                    bokmal { + "Vi vil vurdere saken og sende deg et vedtak. Dersom du må betale hele eller deler av beløpet, vil du få beskjed om hvordan du betaler tilbake i vedtaket." },
+                    nynorsk { + "Vi vil vurdere saka og sende deg eit vedtak. Dersom du må betale heile eller delar av beløpet, vil du få melding om korleis du betaler tilbake, i vedtaket." },
+                    english { + "We will consider your case and send you a decision. If you have to repay all or part of the overpaid amount, you will be notified about how to make the repayment in the decision." },
                 )
             }
 

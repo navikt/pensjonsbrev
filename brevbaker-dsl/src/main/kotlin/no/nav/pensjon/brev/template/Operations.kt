@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.util.Objects
@@ -97,18 +98,18 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     object QuotationStart : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationStart") {
         override fun apply(input: Language): String =
             when (input) {
-                Language.Bokmal -> "«"
-                Language.Nynorsk -> "«"
-                Language.English -> "'"
+                Language.Bokmal -> QuotationMarks.BokmalNynorsk.start
+                Language.Nynorsk -> QuotationMarks.BokmalNynorsk.start
+                Language.English -> QuotationMarks.English.start
             }
     }
 
     object QuotationEnd : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationEnd") {
         override fun apply(input: Language): String =
             when (input) {
-                Language.Bokmal -> "»"
-                Language.Nynorsk -> "»"
-                Language.English -> "'"
+                Language.Bokmal -> QuotationMarks.BokmalNynorsk.end
+                Language.Nynorsk -> QuotationMarks.BokmalNynorsk.end
+                Language.English -> QuotationMarks.English.end
             }
     }
 }

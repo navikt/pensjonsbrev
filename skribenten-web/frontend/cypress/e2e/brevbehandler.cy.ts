@@ -71,7 +71,7 @@ describe("Brevbehandler", () => {
 
     //---- ferdigstiller brevet
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
-    cy.contains("Ferdigstill 1 brev").click("left");
+    cy.contains("Send 1 brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
     cy.contains("Ja, send valgte brev").click();
@@ -126,7 +126,7 @@ describe("Brevbehandler", () => {
 
     //---- ferdigstiller brevet
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
-    cy.contains("Ferdigstill 1 brev").click("left");
+    cy.contains("Send 1 brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
 
@@ -186,7 +186,7 @@ describe("Brevbehandler", () => {
 
     //---- ferdigstiller brevet
     //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
-    cy.contains("Ferdigstill 1 brev").click("left");
+    cy.contains("Send 1 brev").click("left");
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).should("be.checked");
 
@@ -380,7 +380,7 @@ describe("Brevbehandler", () => {
 
     cy.contains("Brevet er journalført med id 123456. Brevet kan ikke endres").should("be.visible");
     cy.contains("Brevet har ikke blitt sendt. Du kan prøve å sende brevet på nytt.").should("be.visible");
-    cy.contains("Ferdigstill 1 brev").click("left");
+    cy.contains("Send 1 brev").click("left");
     cy.contains("Ja, send valgte brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
   });

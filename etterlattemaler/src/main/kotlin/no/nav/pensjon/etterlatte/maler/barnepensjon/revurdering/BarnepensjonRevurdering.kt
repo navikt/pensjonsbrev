@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -84,37 +83,37 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
     ) {
         title {
             text(
-                Bokmal to "Vi har ",
-                Nynorsk to "Vi har ",
-                English to "We have ",
+                bokmal { +"Vi har " },
+                nynorsk { +"Vi har " },
+                english { +"We have " },
             )
 
             showIf(erOmgjoering) {
                 ifNotNull(datoVedtakOmgjoering) {
-                    textExpr(
-                        Bokmal to "omgjort vedtaket om barnepensjon av ".expr() + it.format(),
-                        Nynorsk to "gjort om vedtaket om barnepensjon av ".expr() + it.format(),
-                        English to "reversed our decision regarding the  children's pension on ".expr() + it.format(),
+                    text(
+                        bokmal { +"omgjort vedtaket om barnepensjon av " + it.format() },
+                        nynorsk { +"gjort om vedtaket om barnepensjon av " + it.format() },
+                        english { +"reversed our decision regarding the  children's pension on " + it.format() },
                     )
                 }
             }.orShow {
                 showIf(erEndret) {
                     text(
-                        Bokmal to "endret",
-                        Nynorsk to "endra",
-                        English to "changed",
+                        bokmal { +"endret" },
+                        nynorsk { +"endra" },
+                        english { +"changed" },
                     )
                 } orShow {
                     text(
-                        Bokmal to "vurdert",
-                        Nynorsk to "vurdert",
-                        English to "evaluated",
+                        bokmal { +"vurdert" },
+                        nynorsk { +"vurdert" },
+                        english { +"evaluated" },
                     )
                 }
                 text(
-                    Bokmal to " barnepensjonen din",
-                    Nynorsk to " barnepensjonen din",
-                    English to " your children's pension",
+                    bokmal { +" barnepensjonen din" },
+                    nynorsk { +" barnepensjonen din" },
+                    english { +" your children's pension" },
                 )
             }
         }

@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -43,8 +42,8 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
     ) {
         title {
             text(
-                Bokmal to "Du må sende oss flere opplysninger",
-                English to "Collection of detailed information",
+                bokmal { + "Du må sende oss flere opplysninger" },
+                english { + "Collection of detailed information" },
             )
         }
 
@@ -55,15 +54,15 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
                 val dato = fritekst("dato")
                 val opplysninger = fritekst("opplysning 1")
 
-                textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en " + henvendelse + " fra deg " + dato + ". For å kunne behandle henvendelsen mangler vi følgende opplysninger: ",
-                    English to felles.avsenderEnhet.navn + " received a " + henvendelse + " from you on " + dato + ". In order to process your request, we need the following information from you: ",
+                text(
+                    bokmal { + felles.avsenderEnhet.navn + " har mottatt en " + henvendelse + " fra deg " + dato + ". For å kunne behandle henvendelsen mangler vi følgende opplysninger: " },
+                    english { + felles.avsenderEnhet.navn + " received a " + henvendelse + " from you on " + dato + ". In order to process your request, we need the following information from you: " },
                 )
                 list {
                     item {
-                        textExpr(
-                            Bokmal to opplysninger,
-                            English to opplysninger,
+                        text(
+                            bokmal { + opplysninger },
+                            english { + opplysninger },
                         )
                     }
                 }
@@ -72,9 +71,9 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
 
             paragraph {
                 val dato = fritekst("dato")
-                textExpr(
-                    Bokmal to "Vi ber deg derfor om å sende oss overnevnte opplysninger innen ".expr() + dato + " til adresse:",
-                    English to "Please send us the above information by ".expr() + dato + ", to the following address:",
+                text(
+                    bokmal { + "Vi ber deg derfor om å sende oss overnevnte opplysninger innen " + dato + " til adresse:" },
+                    english { + "Please send us the above information by " + dato + ", to the following address:" },
                 )
             }
             includePhrase(Alderspensjon.Returadresse)

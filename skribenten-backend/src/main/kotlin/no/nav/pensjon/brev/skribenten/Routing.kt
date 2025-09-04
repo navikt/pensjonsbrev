@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
     val servicesConfig = skribentenConfig.getConfig("services")
-    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
+    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopPreparing) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)

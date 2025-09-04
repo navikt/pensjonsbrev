@@ -153,20 +153,10 @@ class BrevmalServiceTest {
     }
 
     @Test
-    fun `inkluderer brevbakerbrev om feature er aktivert`() = runBlocking {
-        Features.override(Features.brevbakerbrev, true)
+    fun `inkluderer brevbakerbrev`() = runBlocking {
         val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
         for (brev in brevbakerbrev) {
             brevmalerAssert.anyMatch { it.id == brev.name }
-        }
-    }
-
-    @Test
-    fun `inkluderer ikke brevbakerbrev om feature er deaktivert`() = runBlocking {
-        Features.override(Features.brevbakerbrev, false)
-        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
-        for (brev in brevbakerbrev) {
-            brevmalerAssert.noneMatch { it.id == brev.name }
         }
     }
 

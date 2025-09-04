@@ -3,11 +3,13 @@ import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosi
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
 import {
+  demoteHeaderToRow,
   insertTable,
   insertTableColumnLeft,
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  promoteRowToHeader,
   removeTable,
   removeTableColumn,
   removeTableRow,
@@ -42,5 +44,7 @@ const Actions = {
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  promoteRowToHeader,
+  demoteHeaderToRow,
 };
 export default Actions;

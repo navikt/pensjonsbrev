@@ -28,17 +28,17 @@ object LegacyFunksjonsfraser {
                 pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag().greaterThan(0)
             ) {
                 text(
-                    Bokmal to "høyere",
-                    Nynorsk to "høgare",
-                    English to "higher"
+                    bokmal { + "høyere" },
+                    nynorsk { + "høgare" },
+                    english { + "higher" }
                 )
             }.orShowIf(
                 pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag().equalTo(0)
             ) {
                 text(
-                    Bokmal to "lavere",
-                    Nynorsk to "lågare",
-                    English to "lower"
+                    bokmal { + "lavere" },
+                    nynorsk { + "lågare" },
+                    english { + "lower" }
                 )
             }
         }
@@ -50,17 +50,17 @@ object LegacyFunksjonsfraser {
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().greaterThan(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
             ) {
                 text(
-                    Bokmal to "høyere",
-                    Nynorsk to "høgare",
-                    English to "higher"
+                    bokmal { + "høyere" },
+                    nynorsk { + "høgare" },
+                    english { + "higher" }
                 )
             }.orShowIf(
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())
             ) {
                 text(
-                    Bokmal to "lavere",
-                    Nynorsk to "lågare",
-                    English to "lower"
+                    bokmal { + "lavere" },
+                    nynorsk { + "lågare" },
+                    english { + "lower" }
                 )
             }
         }
@@ -70,9 +70,9 @@ object LegacyFunksjonsfraser {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
                 text(
-                    Bokmal to "ikke ",
-                    Nynorsk to "ikkje ",
-                    English to "not "
+                    bokmal { + "ikke " },
+                    nynorsk { + "ikkje " },
+                    english { + "not " }
                 )
             }
         }
@@ -84,17 +84,17 @@ object LegacyFunksjonsfraser {
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().greaterThan(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop())
             ) {
                 text(
-                    Bokmal to "høyere",
-                    Nynorsk to "høgare",
-                    English to "higher"
+                    bokmal { + "høyere" },
+                    nynorsk { + "høgare" },
+                    english { + "higher" }
                 )
             }.orShowIf(
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop())
             ) {
                 text(
-                    Bokmal to "lavere",
-                    Nynorsk to "lågare",
-                    English to "lower"
+                    bokmal { + "lavere" },
+                    nynorsk { + "lågare" },
+                    english { + "lower" }
                 )
             }
         }
