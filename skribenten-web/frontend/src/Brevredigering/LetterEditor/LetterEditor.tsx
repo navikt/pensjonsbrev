@@ -10,8 +10,8 @@ import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel"
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 
-import type { TableAction } from "./actions/tableRecipe";
-import { patchGeneratingTableReducer } from "./actions/tableReducer";
+import type { EditorAction } from "./actions/editorRecipe";
+import { patchGeneratingEditorReducer } from "./actions/editorReducer";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -19,6 +19,8 @@ import { SignaturView } from "./components/SignaturView";
 import { createHistory } from "./history";
 import type { LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
+
+enablePatches();
 
 export const LetterEditor = ({
   freeze,
@@ -38,13 +40,12 @@ export const LetterEditor = ({
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
-  enablePatches();
 
   const historyRef = useRef(createHistory<LetterEditorState>());
 
-  function dispatch(action: TableAction) {
+  function dispatch(action: EditorAction) {
     setEditorState((currentEditorState) => {
-      const [next, patches, inversePatches] = patchGeneratingTableReducer(currentEditorState, action);
+      const [next, patches, inversePatches] = patchGeneratingEditorReducer(currentEditorState, action);
       if (patches.length > 0) {
         historyRef.current.push({ patches, inversePatches, label: action.type });
       }
@@ -53,11 +54,11 @@ export const LetterEditor = ({
   }
 
   function undo() {
-    setEditorState((curr) => historyRef.current.undo(curr));
+    setEditorState((currentEditorState) => historyRef.current.undo(currentEditorState));
   }
 
   function redo() {
-    setEditorState((curr) => historyRef.current.redo(curr));
+    setEditorState((currentEditorState) => historyRef.current.redo(currentEditorState));
   }
 
   const canUndo = historyRef.current.canUndo();
@@ -134,7 +135,7 @@ export const EditorStateContext = createContext<{
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
-  dispatch: (a: TableAction) => void;
+  dispatch: (action: EditorAction) => void;
 }>({
   freeze: false,
   error: false,

@@ -15,7 +15,7 @@ import {
   removeTableRow,
 } from "./table";
 
-export type TableAction =
+export type EditorAction =
   | { type: "TABLE_INSERT"; focus: Focus; rows: number; cols: number }
   | { type: "TABLE_REMOVE_ROW" }
   | { type: "TABLE_REMOVE_COLUMN" }
@@ -28,7 +28,7 @@ export type TableAction =
   | { type: "TABLE_DEMOTE_HEADER_TO_ROW"; blockIndex: number; contentIndex: number }
   | { type: "APPLY_TABLE_PATCHES"; patches: Patch[] };
 
-export const tableRecipe = (draft: LetterEditorState, action: TableAction) => {
+export const editorRecipeReducer = (draft: LetterEditorState, action: EditorAction) => {
   switch (action.type) {
     case "TABLE_INSERT":
       insertTable(draft, action.focus, action.rows, action.cols);

@@ -1,10 +1,8 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import type { Table } from "~/types/brevbakerTypes";
 import { PARAGRAPH } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
