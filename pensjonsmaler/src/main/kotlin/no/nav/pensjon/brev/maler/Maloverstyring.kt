@@ -43,7 +43,7 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakEndringVedFlyttingMellomLand
     Pesysbrevkoder.Redigerbar.BRUKERTEST_BREV_PENSJON_2025.kode() -> FeatureToggles.brukertestbrev2025
     Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID.kode() -> FeatureToggles.orienteringOmForlengetSaksbehandlingstid
-    Pesysbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016 -> FeatureToggles.omregningAlderUfore2016
+    Pesysbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016.kode() -> FeatureToggles.omregningAlderUfore2016
 
 
     else -> null
