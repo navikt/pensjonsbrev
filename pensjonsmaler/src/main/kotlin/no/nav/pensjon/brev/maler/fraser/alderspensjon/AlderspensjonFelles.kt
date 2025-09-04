@@ -54,13 +54,13 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. " +
                     "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
-                nynorsk { + 
+                nynorsk { +
                     "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. " +
                     "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." },
-                english { + 
+                english { +
                     "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. " +
                     "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL." },
             )
@@ -100,11 +100,11 @@ object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         // infoAP_001
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON." },
-                nynorsk { + 
+                nynorsk { +
                     "Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON." },
-                english { + 
+                english { +
                     "There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $ALDERSPENSJON." },
             )
         }
@@ -112,7 +112,7 @@ object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 bokmal { + "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
                 nynorsk { + "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
-                english { + 
+                english { +
                     "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number." },
             )
         }
@@ -147,7 +147,7 @@ object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 bokmal { + "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene." +
                     " Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
-                nynorsk { + 
+                nynorsk { +
                     "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane." +
                     " Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
                 english { + "If your payments have been too high as a result of you failing to notify us of a change," +
@@ -173,17 +173,17 @@ object MeldFraOmEndringer2 : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 bokmal { + "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om." },
                 nynorsk { + "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om." },
-                english { + 
+                english { +
                     "If your circumstances change, you must inform Nav immediately. The appendix specifies which changes you are obligated to notify us of." },
             )
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
-                nynorsk { + 
+                nynorsk { +
                     "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
-                english { + 
+                english { +
                     "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav." },
             )
         }
@@ -223,11 +223,11 @@ data class ArbeidsinntektOgAlderspensjon(
         showIf(uttaksgrad.equalTo(100)) {
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig." },
-                    english { + 
+                    english { +
                         "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." },
                 )
             }
@@ -235,11 +235,11 @@ data class ArbeidsinntektOgAlderspensjon(
             // nyOpptjeningGradertAP
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no." },
-                    english { + 
+                    english { +
                         "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated." },
                 )
             }
@@ -266,7 +266,7 @@ object ReguleringAvAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                     "Du får informasjon om dette på utbetalingsmeldingen din. På $NAV_URL kan du lese mer om hvordan pensjonene reguleres." },
                 nynorsk { + "Reguleringa skjer med verknad frå 1. mai, og sjølve auken blir vanlegvis etterbetalt i juni. " +
                     "Du får informasjon om dette på utbetalingsmeldinga di. På $NAV_URL kan du lese meir om korleis pensjonane blir regulerte." },
-                english { + 
+                english { +
                     "The pension amount will be adjusted with effect from 1 May, and the actual increase is usually paid retroactively in June. " +
                     "You will be informed about this on your payout notice. You can read more about how pensions are adjusted at $NAV_URL." },
             )
@@ -305,7 +305,7 @@ object SupplerendeStoenadAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 nynorsk { + "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
                     "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. Inntekta til eventuell ektefelle, " +
                     "sambuar eller registrert partnar skal også reknast med. Du kan lese meir om supplerande stønad på nettsida vår $SUPPLERENDE_STOENAD_URL." },
-                english { + 
+                english { +
                     "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. " +
                     "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
                     "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
@@ -322,13 +322,13 @@ data class AfpPrivatErBrukt(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Du får " + uttaksgrad.format() +
                     " prosent alderspensjon fordi summen av alderspensjonen og den avtalefestede pensjonen din (AFP) gjør at du har rett til alderspensjon før du fyller 67 år." },
-                nynorsk { + 
+                nynorsk { +
                     "Du får " + uttaksgrad.format() +
                     " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år." },
-                english { + 
+                english { +
                     "You have been granted " + uttaksgrad.format() +
                     " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67." },
             )
@@ -342,7 +342,7 @@ object SoktAFPPrivatInfo : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 bokmal { + "Du har også søkt om avtalefestet pensjon (AFP), og du vil få et eget vedtak om dette." },
                 nynorsk { + "Du har også søkt om avtalefesta pensjon (AFP), og du vil få eit eige vedtak om dette." },
-                english { + 
+                english { +
                     "You have also applied for contractual early retirement pension (AFP) and will receive a separate decision on this." },
             )
         }
@@ -357,7 +357,7 @@ object Skatteplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
                     " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der." },
                 nynorsk { + "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til Skatteetaten. " +
                     " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der." },
-                english { + 
+                english { +
                     "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration." +
                     " You must clarify questions about tax liability to your country of residence with the local tax authorities." },
             )
@@ -376,13 +376,13 @@ object InnvilgelseAPForeloepigBeregning : OutlinePhrase<LangBokmalNynorskEnglish
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Fordi du har arbeidet eller bodd i et land Norge har trygdeavtale med, er dette en foreløpig beregning basert på trygdetiden din i Norge. " +
                     "Når vi har mottatt nødvendig informasjon fra andre land som du har bodd eller arbeidet i, vil vi beregne pensjonen din på nytt og sende deg et endelig vedtak." },
-                nynorsk { + 
+                nynorsk { +
                     "Fordi du har arbeidd eller budd i eit land Noreg har trygdeavtale med, er dette ei førebels berekning basert på trygdetida di i Noreg. " +
                     "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak." },
-                english { + 
+                english { +
                     "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. " +
                     "Once we have received the necessary information from the other countries that you have lived or worked in, we will re-calculate your pension and send you a final decision." },
             )
@@ -427,7 +427,7 @@ data class InnvilgelseAPUttakEndr(
                 text(
                     bokmal { + "Summen av uføregraden og alderspensjonen din kan ikke overstige 100 prosent." },
                     nynorsk { + "Summen av uføregraden og alderspensjonen din kan ikkje gå over 100 prosent." },
-                    english { + 
+                    english { +
                         "The percentage of disability benefit and the percentage of retirement pension combined may not exceed 100 percent." },
                 )
             }
@@ -439,11 +439,11 @@ object RettTilKlageUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Hvis du ønsker å klage på vedtak fra utenlandske trygdemyndigheter, må du kontakte trygdemyndighetene i det enkelte landet." },
-                nynorsk { + 
+                nynorsk { +
                     "Dersom du ynskjer å klage på vedtak frå utanlandske trygdeorgan, må du kontakte trygdeorganet i det enkelte landet." },
-                english { + 
+                english { +
                     "If you want to appeal a decision made by a foreign national insurance authority, you must get in contact with the national insurance authority in the relevant country." },
             )
         }
@@ -464,9 +464,9 @@ object SkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 bokmal { + "Du bør endre skattekortet når du begynner å ta ut alderspensjon." +
                     " Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister." +
                     " Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss." },
-                nynorsk { + "Du bør endre skattekortet når du begynner å ta ut alderspensjon. " +
-                    " Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister." +
-                    " Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss." },
+                nynorsk { + "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. " +
+                    " Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for pensjonistar." +
+                    " Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss." },
                 english { + "When you start draw retirement pension, you should change your tax deduction card." +
                     " You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners." +
                     " We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us." },
@@ -474,10 +474,10 @@ object SkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "På $DIN_PENSJON_URL kan du se hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det." +
                     " Dersom du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed." },
-                nynorsk { + 
+                nynorsk { +
                     "På $DIN_PENSJON_URL kan du sjå kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det." +
                     " Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed." },
                 english { + "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want." +
@@ -500,11 +500,11 @@ object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
         // vedleggBeregnPensjonsOpptjening
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg." },
-                nynorsk { + 
+                nynorsk { +
                     "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg." },
-                english { + 
+                english { +
                     "Our online service " + quoted("Din pensjon") +
                     " at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered." },
             )
@@ -520,11 +520,11 @@ object UfoereAlder {
             showIf(ufoereKombinertMedAlder) {
                 paragraph {
                     text(
-                        bokmal { + 
+                        bokmal { +
                             "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd." },
-                        nynorsk { + 
+                        nynorsk { +
                             "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd." },
-                        english { + 
+                        english { +
                             "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit." },
                     )
                 }
@@ -539,13 +539,13 @@ object UfoereAlder {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Du får " + totalPensjon.format() + " hver måned før skatt fra " + virkDatoFom.format() +
                         ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Du får " + totalPensjon.format() + " kvar månad før skatt frå " + virkDatoFom.format() +
                         ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di." },
-                    english { + 
+                    english { +
                         "You will receive " + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() +
                         ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit." },
                 )
@@ -566,11 +566,11 @@ object FeilutbetalingAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mye utbetalt. Vi vil sende deg et eget varselbrev om en eventuell tilbakebetaling." },
-                nynorsk { + 
+                nynorsk { +
                     "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mykje utbetalt. Vi vil sende deg eit eige varselbrev om ei eventuell tilbakebetaling." },
-                english { + 
+                english { +
                     "We have reduced your retirement pension for a previous period. You have therefore been paid too much. We will send you a separate notice letter concerning possible repayment." },
             )
         }
@@ -587,7 +587,7 @@ class DuFaarHverMaaned(
                 text(
                     bokmal { + "Du får " + totalPensjon.format(false) + " i alderspensjon fra folketrygden hver måned før skatt." },
                     nynorsk { + "Du får " + totalPensjon.format(false) + " i alderspensjon frå folketrygda kvar månad før skatt." },
-                    english { + 
+                    english { +
                         "You will receive " + totalPensjon.format(false) +
                         " every month before tax as retirement pension through the National Insurance Act." },
                 )

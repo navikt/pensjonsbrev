@@ -12,6 +12,7 @@ fun hentMuligOverstyrtMal(kode: String) = when (kode) {
     Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() if FeatureToggleSingleton.isEnabled(
         FeatureToggles.pl7231ForventetSvartid.toggle
     ) -> VarselSaksbehandlingstidAutoV2
+
     else -> null
 }
 
@@ -43,7 +44,6 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakEndringVedFlyttingMellomLand
     Pesysbrevkoder.Redigerbar.BRUKERTEST_BREV_PENSJON_2025.kode() -> FeatureToggles.brukertestbrev2025
     Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID.kode() -> FeatureToggles.orienteringOmForlengetSaksbehandlingstid
-
 
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it.toggle) } ?: true
