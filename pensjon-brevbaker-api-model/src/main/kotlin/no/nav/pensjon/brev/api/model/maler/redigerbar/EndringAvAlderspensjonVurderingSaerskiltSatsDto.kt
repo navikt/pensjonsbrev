@@ -14,10 +14,10 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
-data class EndringAvAlderspensjonSivilstandVurderingSaerskiltSatsDto(
+data class EndringAvAlderspensjonVurderingSaerskiltSatsDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlerValg,
-) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandVurderingSaerskiltSatsDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandVurderingSaerskiltSatsDto.PesysData> {
+) : RedigerbarBrevdata<EndringAvAlderspensjonVurderingSaerskiltSatsDto.SaksbehandlerValg, EndringAvAlderspensjonVurderingSaerskiltSatsDto.PesysData> {
 
     data class SaksbehandlerValg(
 

@@ -4,44 +4,44 @@ import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnbelop
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.saerskiltSatsErBrukt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenAlderspenspensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenUfoeretrygd
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsHarInntektOver1G
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsHarRettTilFullAlderspensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsIkkeFylt62Aar
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsIkkeRettTilFullAlderspensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjonIStatligSektor
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsTarUtUfoeretrygd
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnbelop
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.saerskiltSatsErBrukt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenAlderspenspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenUfoeretrygd
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsHarInntektOver1G
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsHarRettTilFullAlderspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsIkkeFylt62Aar
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsIkkeRettTilFullAlderspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjonIStatligSektor
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtUfoeretrygd
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonVurderingSaerskiltSatsDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.OmregningGarantiPen
@@ -71,15 +71,16 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // MF_000102 Vedtaksbrevet dekker alle regelverkstypene.
 
 @TemplateModelHelpers
-object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<EndringAvAlderspensjonSivilstandDto> {
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND
+object EndringAvAlderspensjonSivilstandSaerskiltSats :
+    RedigerbarTemplate<EndringAvAlderspensjonVurderingSaerskiltSatsDto> {
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_AP_VURDER_SAERSKILT_SATS
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EndringAvAlderspensjonSivilstandDto::class,
+        letterDataType = EndringAvAlderspensjonVurderingSaerskiltSatsDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Endring av alderspensjon (sivilstand)",
@@ -101,7 +102,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
         val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
-        val totalPensjon = pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.format()
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
         val grunnbelop = pesysData.beregnetPensjonPerManedVedVirk.grunnbelop
@@ -116,8 +116,10 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
         }
         outline {
             includePhrase(Vedtak.Overskrift)
+
             includePhrase(OmregningGarantiPen(regelverkType))
 
+            // TODO skal alle disse saksbehandlervalgene være radioknapper?
             showIf(saksbehandlerValg.epsIkkeFylt62Aar) {
                 // SaerSatsBruktEpsUnder62
                 paragraph {
@@ -128,27 +130,17 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                     )
                 }
             }
-
             showIf(saksbehandlerValg.epsIkkeRettTilFullAlderspensjon) {
                 // SaerSatsBruktEpsIkkeRettTilAP
                 paragraph {
                     text(
-                        bokmal {
-                            +sivilstandBestemtStorBokstav + " din som du forsørger har ikke rett til full" + " alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet " + grunnbelop.format() + "."
-                        },
-
-                        nynorsk {
-                            +sivilstandBestemtStorBokstav + " din som du forsørgjer har ikkje rett til full" + " alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet " + grunnbelop.format() + "."
-                        },
-
-                        english {
-                            +"Your " + sivilstandBestemtLitenBokstav + " you support does not have rights to full" + " retirement pension through the National Insurance Act and has income lower than the basic amount which is " + grunnbelop.format() + "."
-                        },
+                        bokmal { +sivilstandBestemtStorBokstav + " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet " + grunnbelop.format() + "." },
+                        nynorsk { +sivilstandBestemtStorBokstav + " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet " + grunnbelop.format() + "." },
+                        english { +"Your " + sivilstandBestemtLitenBokstav + " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is " + grunnbelop.format() + "." },
                     )
                 }
             }
             showIf(saksbehandlerValg.epsAvkallPaaEgenAlderspenspensjon) {
-
                 // SaerSatsBruktEpsGittAvkallAP
                 paragraph {
                     text(
@@ -158,7 +150,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                     )
                 }
             }
-
             showIf(saksbehandlerValg.epsAvkallPaaEgenUfoeretrygd) {
                 // SaerSatsBruktEpsGittAvkallUT
                 paragraph {
@@ -169,7 +160,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                     )
                 }
             }
-            // TODO kan ikke dette data-styres?
             showIf(saksbehandlerValg.epsHarInntektOver1G) {
                 // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
                 paragraph {
@@ -186,7 +176,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                     )
                 }
             }
-
             showIf(saksbehandlerValg.epsHarRettTilFullAlderspensjon) {
                 // SaerSatsIkkeBruktEpsRettTilFullAP
                 paragraph {
@@ -203,7 +192,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                     )
                 }
             }
-
             showIf(saksbehandlerValg.epsTarUtAlderspensjon) {
                 // SaerSatsIkkeBruktEpsMottarAP
                 paragraph {
@@ -220,7 +208,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                     )
                 }
             }
-
             showIf(saksbehandlerValg.epsTarUtAlderspensjonIStatligSektor) {
                 // SaerSatsIkkeBruktEpsMottarAfp
                 paragraph {
@@ -232,28 +219,18 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                             +"Du får ikkje berekna alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din mottar AFP i statleg sektor."
                         },
                         english {
-                            +"Your retirement pension is not recalculated according to a special rate because your " + sivilstandBestemtLitenBokstav + " receives contractual retirement pension from the public sector."
+                            +"Your retirement pension is not recalculated according to a special rate " + "because your " + sivilstandBestemtLitenBokstav + " receives contractual retirement pension from the public sector."
                         },
                     )
                 }
             }
-
             showIf(saksbehandlerValg.epsTarUtUfoeretrygd) {
                 // SaerSatsIkkeBruktEpsMottarUT
                 paragraph {
                     text(
-                        bokmal {
-                            +"Du får ikke beregnet alderspensjonen din med særskilt sats fordi " +
-                                    sivilstandBestemtLitenBokstav + " din mottar uføretrygd fra folketrygden."
-                        },
-                        nynorsk {
-                            +"Du får ikkje berekna alderspensjonen din med særskilt sats fordi " +
-                                    sivilstandBestemtLitenBokstav + " din mottar uføretrygd frå folketrygda."
-                        },
-                        english {
-                            +"Your retirement pension is not recalculated according to a special rate because your " +
-                                    sivilstandBestemtLitenBokstav + " receives disability benefits through the National Insurance Act."
-                        },
+                        bokmal { +"Du får ikke beregnet alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din mottar uføretrygd fra folketrygden." },
+                        nynorsk { +"Du får ikkje berekna alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din mottar uføretrygd frå folketrygda." },
+                        english { +"Your retirement pension is not recalculated according to a special rate because your " + sivilstandBestemtLitenBokstav + " receives disability benefits through the National Insurance Act." },
                     )
                 }
             }
@@ -290,26 +267,33 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                 paragraph {
                     text(
                         bokmal {
-                            +"Fram til " + sivilstandBestemtLitenBokstav + " din fyller 67 år, har vi en årlig kontroll om " + sivilstandBestemtLitenBokstav + " din har rett til full alderpensjon." + " Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet."
+                            +"Fram til " + sivilstandBestemtLitenBokstav + " din fyller 67 år, har vi en årlig kontroll om " + sivilstandBestemtLitenBokstav + " din har rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet."
                         },
                         nynorsk {
-                            +"Fram til " + sivilstandBestemtLitenBokstav + " din fyller 67 år, har vi ein årleg kontroll av " + sivilstandBestemtLitenBokstav + " si rett til full alderpensjon." + " Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna."
+                            +"Fram til " + sivilstandBestemtLitenBokstav + " din fyller 67 år, har vi ein årleg kontroll av " + sivilstandBestemtLitenBokstav + " si rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna."
                         },
                         english {
-                            +"Until your " + sivilstandBestemtLitenBokstav + " turns 67 years of age, we have an annual control of their rights to a full retirement pension." + " You will receive a new decision if this results in your retirement pension being recalculated."
+                            +"Until your " + sivilstandBestemtLitenBokstav + " turns 67 years of age, we have an annual control of their rights to a full retirement pension. " + "You will receive a new decision if this results in your retirement pension being recalculated."
                         },
                     )
                 }
             }
 
             showIf(uforeKombinertMedAlder) {
+                // innvilgelseAPogUTInnledn
                 includePhrase(
                     UfoereAlder.DuFaar(
-                        pesysData.beregnetPensjonPerManedVedVirk.totalPensjon, pesysData.kravVirkDatoFom
+                        pesysData.beregnetPensjonPerManedVedVirk.totalPensjon,
+                        pesysData.kravVirkDatoFom
                     )
                 )
             }.orShow {
-                includePhrase(DuFaarAP(kravVirkDatoFom, totalPensjon))
+                includePhrase(
+                    DuFaarAP(
+                        pesysData.kravVirkDatoFom,
+                        pesysData.beregnetPensjonPerManedVedVirk.totalPensjon
+                    )
+                )
             }
 
             includePhrase(Utbetalingsinformasjon)
@@ -352,12 +336,14 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats : RedigerbarTemplate<Endrin
                 ),
             )
 
+
             includePhrase(InformasjonOmAlderspensjon)
             includePhrase(MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+
         includeAttachment(
             vedleggOrienteringOmRettigheterOgPlikter,
             pesysData.orienteringOmRettigheterOgPlikterDto,
