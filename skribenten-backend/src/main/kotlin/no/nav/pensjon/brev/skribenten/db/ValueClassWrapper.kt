@@ -4,7 +4,7 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.sql.Column
 import kotlin.reflect.KProperty
 
-class ValueClassWrapper<Wrapped : Any, Unwrapped: Any>(private val column: Column<Unwrapped>, private val wrap: (Unwrapped) -> Wrapped, private val unwrap: (Wrapped) -> Unwrapped) {
+class ValueClassWrapper<Wrapped : Any?, Unwrapped: Any?>(private val column: Column<Unwrapped>, private val wrap: (Unwrapped) -> Wrapped, private val unwrap: (Wrapped) -> Unwrapped) {
     operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: Wrapped) {
         with(thisRef) {
             column.setValue(thisRef, property, unwrap(value))

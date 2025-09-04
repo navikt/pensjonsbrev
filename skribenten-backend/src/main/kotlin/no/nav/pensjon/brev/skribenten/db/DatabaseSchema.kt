@@ -72,6 +72,7 @@ object BrevredigeringTable : LongIdTable() {
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrevKryptert: Column<EncryptedByteArray?> = binary(name = "redigertBrevKryptert").transform(encrypted()).nullable()
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
+    val redigertBrevKryptertHash: Column<EncryptedByteArray?> = hashColumn("redigertBrevKryptertHash").transform(encrypted()).nullable()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -93,8 +94,9 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     private var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
-    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
+    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
     val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
+    val redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptert.editLetterHash()
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
