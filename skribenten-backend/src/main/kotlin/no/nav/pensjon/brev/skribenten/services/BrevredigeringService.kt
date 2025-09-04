@@ -622,7 +622,7 @@ private fun Brevredigering.toDto(krypteringService: KrypteringService, coverage:
     Dto.Brevredigering(
         info = toBrevInfo(),
         redigertBrev = lesRedigertBrev(krypteringService),
-        redigertBrevHash = redigertBrevHash,
+        redigertBrevHash = redigertBrevKryptertHash ?: redigertBrevHash,
         saksbehandlerValg = saksbehandlerValg,
         propertyUsage = coverage,
     )
