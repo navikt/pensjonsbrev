@@ -1,4 +1,4 @@
-import { format, formatISO } from "date-fns";
+import { formatISO } from "date-fns";
 
 import brev from "../../fixtures/brevResponse.json";
 
