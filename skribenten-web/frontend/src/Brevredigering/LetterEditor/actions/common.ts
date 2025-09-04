@@ -38,7 +38,13 @@ export function isEditableContent(content: Content | undefined | null): boolean 
 }
 
 export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
-  return !isItemContentIndex(f);
+  return (
+    f !== undefined &&
+    "blockIndex" in f &&
+    f.blockIndex !== undefined &&
+    "contentIndex" in f &&
+    f.contentIndex !== undefined
+  );
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
@@ -99,7 +105,7 @@ export function create(brev: BrevResponse): LetterEditorState {
     info: brev.info,
     redigertBrev: brev.redigertBrev,
     redigertBrevHash: brev.redigertBrevHash,
-    isDirty: false,
+    saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
   };
 }

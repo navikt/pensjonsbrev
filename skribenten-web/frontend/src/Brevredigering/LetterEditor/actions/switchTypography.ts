@@ -29,7 +29,7 @@ export const switchTypography: Action<
     block.originalType = block.type;
   }
 
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 
   switch (typography) {
     case PARAGRAPH: {

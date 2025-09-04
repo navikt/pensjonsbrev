@@ -41,7 +41,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
           headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
         }
         draft.focus = { ...draft.focus, cursorPosition: 0 };
-        draft.isDirty = true;
+        draft.saveStatus = "DIRTY";
         return;
       }
 
@@ -55,11 +55,11 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
       }
 
       draft.focus = { ...draft.focus, cursorPosition: 0 };
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
       return;
     }
 
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
 
     const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
     const theContentWeAreOn = block.content[literalIndex.contentIndex];
