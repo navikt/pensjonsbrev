@@ -15,7 +15,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
       <div
         css={css`
           display: grid;
-          grid-template-columns: 27% 73%;
+          grid-template-columns: minmax(min-content, 25%) auto;
           flex: 1;
 
           > :first-of-type {

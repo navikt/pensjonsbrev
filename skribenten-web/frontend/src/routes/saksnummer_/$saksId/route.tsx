@@ -43,7 +43,17 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { saksId } = Route.useParams();
-    return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
+    return (
+      <div
+        css={css`
+          display: flex;
+          margin: var(--a-spacing-4);
+          justify-content: space-around;
+        `}
+      >
+        <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />
+      </div>
+    );
   },
 });
 

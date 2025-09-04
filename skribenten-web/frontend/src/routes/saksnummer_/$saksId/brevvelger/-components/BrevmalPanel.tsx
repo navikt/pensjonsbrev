@@ -16,12 +16,11 @@ const BrevmalPanel = (props: {
   onAddFavorittSuccess?: (templateId: string) => void;
 }) => {
   return (
-    <div>
+    <>
       {(props.templateId || props.brevId) && (
         <div
           css={css`
             display: flex;
-            max-width: 389px;
             border-right: 1px solid var(--a-gray-200);
             padding: var(--a-spacing-6);
             height: 100%;
@@ -48,7 +47,7 @@ const BrevmalPanel = (props: {
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

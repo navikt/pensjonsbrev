@@ -475,9 +475,10 @@ describe("Switch font type ", () => {
       cy.mount(<EditorWithState initial={nyBrevResponse({}).redigertBrev} />);
 
       cy.contains("Our processing time for this type of application is usually 10 weeks.").should("exist").click();
+      cy.focused().type(Cypress._.repeat("{leftArrow}", 10));
       cy.getDataCy("editor-bullet-list").click();
       cy.getDataCy("fonttype-bold").click();
-      cy.contains("Our processing time for this type of application is usually 10 weeks.").should("exist").click();
+      cy.contains("Our processing time for this type of application is usually 10 weeks.").should("exist");
     });
   });
 });
