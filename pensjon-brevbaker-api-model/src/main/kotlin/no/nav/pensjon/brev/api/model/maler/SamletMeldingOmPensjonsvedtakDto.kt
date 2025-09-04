@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.vedlegg.Vedleggtyper
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 import java.time.Period
@@ -24,7 +26,8 @@ data class P1Dto(
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
-) : BrevbakerBrevdata {
+) : BrevbakerBrevdata, PDFVedleggData {
+    override val tittel = Vedleggtyper.P1.tittel
 
     data class P1Person(
         val fornavn: String,
@@ -151,4 +154,8 @@ value class Valuta(val valuta: String) {
     init {
         require(valuta.length == 3)
     }
+}
+
+object InformasjonOmP1Dto : PDFVedleggData {
+    override val tittel = Vedleggtyper.InformasjonOmP1.tittel
 }
