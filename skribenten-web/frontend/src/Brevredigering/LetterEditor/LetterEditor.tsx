@@ -66,6 +66,7 @@ export const LetterEditor = ({
         >
           <SakspartView
             sakspart={letter.sakspart}
+            spraak={editorState.info.spraak}
             wrapperStyles={css`
               margin-bottom: 1.88rem;
             `}

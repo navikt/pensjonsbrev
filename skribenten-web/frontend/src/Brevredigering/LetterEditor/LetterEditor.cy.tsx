@@ -1,5 +1,6 @@
 import "./editor.css";
 
+import { format } from "date-fns";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -181,6 +182,53 @@ describe("<LetterEditor />", () => {
       cy.mount(<EditorWithState focus={invalidFocus} initial={exampleLetter1} />);
 
       cy.contains("Informasjon om saksbehandlingstiden vår");
+    });
+  });
+
+  describe("Presentation", () => {
+    it("displays verge only when verge is present", () => {
+      // With 'verge'
+      cy.mount(
+        <EditorWithState
+          initial={{
+            ...exampleLetter1,
+            sakspart: {
+              gjelderNavn: "Opprett Agent",
+              gjelderFoedselsnummer: "23426147394",
+              vergeNavn: "Vergio Vergburg",
+              saksnummer: "23022751",
+              dokumentDato: format(new Date(), "yyyy-MM-dd"),
+            },
+          }}
+        />,
+      );
+
+      cy.contains("Verge:").should("exist");
+      cy.contains("Vergio Vergburg").should("exist");
+      cy.contains("Navn:").should("not.exist");
+      cy.contains("Saken gjelder:").should("exist");
+      cy.contains("Opprett Agent").should("exist");
+
+      // Without 'verge'
+      cy.mount(
+        <EditorWithState
+          initial={{
+            ...exampleLetter1,
+            sakspart: {
+              gjelderNavn: "Opprett Agent",
+              gjelderFoedselsnummer: "23426147394",
+              saksnummer: "23022751",
+              dokumentDato: format(new Date(), "yyyy-MM-dd"),
+            },
+          }}
+        />,
+      );
+
+      cy.contains("Verge:").should("not.exist");
+      cy.contains("Vergio Vergburg").should("not.exist");
+      cy.contains("Navn:").should("exist");
+      cy.contains("Saken gjelder:").should("not.exist");
+      cy.contains("Opprett Agent").should("exist");
     });
   });
 });
