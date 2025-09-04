@@ -22,6 +22,8 @@ enum class FeatureToggles(private val key: String) {
     vedtakEndringAvUttaksgrad("vedtakEndringAvUttaksgrad"),
     vedtakEndringAvUttaksgradStans("vedtakEndringAvUttaksgradStans"),
     endringAvAlderspensjonSivilstand("endringAvAlderspensjonSivilstand"),
+    endringAvAlderspensjonSivilstandVurderSaerskiltSats("endringAvAlderspensjonSivilstandVurderSaerskiltSats"),
+    endringAvAlderspensjonSivilstandGarantitillegg("endringAvAlderspensjonSivilstandGarantitillegg"),
     innvilgelseAvAlderspensjon("innvilgelseAvAlderspensjon"),
     innvilgelseAvAlderspensjonTrygdeavtale("innvilgelseAvAlderspensjonTrygdeavtale"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
@@ -31,7 +33,8 @@ enum class FeatureToggles(private val key: String) {
     vedtakEndringVedFlyttingMellomLand("vedtakEndringVedFlyttingMellomLand"),
     brukertestbrev2025("brukertestbrev2025"),
     vedtakStansFlyttingMellomLand("vedtakStansFlyttingMellomLand"),
-    avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP");
+    avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP"),
+    omregningAlderUfore2016("omregningAlderUfore2016");
 
     val toggle = FeatureToggle(key)
 }

@@ -939,7 +939,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         ),
                     )
                 }.orShow {
-                    includePhrase(DuFaarAP(kravVirkDatoFom, totalPensjon))
+                    includePhrase(DuFaarAP(pesysData.kravVirkDatoFom, pesysData.beregnetPensjonPerManedVedVirk.totalPensjon))
                 }
 
                 includePhrase(Utbetalingsinformasjon)
