@@ -2,9 +2,13 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
+import org.apache.commons.codec.binary.Hex
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -93,7 +97,7 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 }
 
 
-fun JobConfig.updateBrevredigeringJson() {
+fun JobConfig.updateBrevredigeringJson(krypteringService: KrypteringService) {
     transaction {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
@@ -109,7 +113,10 @@ fun JobConfig.updateBrevredigeringJson() {
             val brevId = it[BrevredigeringTable.id]
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.redigertBrev] = redigertBrev.copy()
+                val kryptert = krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(redigertBrev))
+                    .let { EncryptedByteArray(it) }
+                update[BrevredigeringTable.redigertBrevKryptert] = kryptert
+                update[BrevredigeringTable.redigertBrevKryptertHash] = kryptert.bytes.let { bytes -> Hex.encodeHexString(bytes) }?.let { EncryptedByteArray(it.toByteArray()) }
             }
         }
 
