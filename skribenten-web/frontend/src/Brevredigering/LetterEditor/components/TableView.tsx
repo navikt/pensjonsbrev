@@ -3,9 +3,7 @@ import { ArrowRightLeftIcon, PlusIcon, TrashIcon } from "@navikt/aksel-icons";
 import { ActionMenu } from "@navikt/ds-react";
 import React, { useRef, useState } from "react";
 
-import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
 
 import type { TableCellIndex } from "../model/state";
@@ -49,7 +47,7 @@ const TableView: React.FC<{
   blockIndex: number;
   contentIndex: number;
 }> = ({ node, blockIndex, contentIndex }) => {
-  const { setEditorState } = useEditor();
+  const { setEditorState, dispatch } = useEditor();
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
 
@@ -171,7 +169,12 @@ const TableView: React.FC<{
             onSelect={() => {
               const rowIdx = menuTargetRef.current?.rowIndex ?? -1;
               if (rowIdx >= 0) {
-                applyAction(Actions.promoteRowToHeader, setEditorState, blockIndex, contentIndex, rowIdx);
+                dispatch({
+                  type: "TABLE_PROMOTE_ROW_TO_HEADER",
+                  blockIndex,
+                  contentIndex,
+                  rowIndex: rowIdx,
+                });
                 menuTargetRef.current = null;
               }
             }}
@@ -191,7 +194,11 @@ const TableView: React.FC<{
               )
             }
             onSelect={() => {
-              applyAction(Actions.demoteHeaderToRow, setEditorState, blockIndex, contentIndex);
+              dispatch({
+                type: "TABLE_DEMOTE_HEADER_TO_ROW",
+                blockIndex,
+                contentIndex,
+              });
               menuTargetRef.current = null;
             }}
           >
@@ -202,25 +209,33 @@ const TableView: React.FC<{
         <ActionMenu.Item
           disabled={isHeaderCtx}
           icon={<PlusIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}
+          onSelect={() =>
+            dispatch({
+              type: "TABLE_INSERT_ROW_ABOVE",
+            })
+          }
         >
           Sett inn rad over
         </ActionMenu.Item>
         <ActionMenu.Item
           icon={<PlusIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.insertTableRowBelow, setEditorState)}
+          onSelect={() =>
+            dispatch({
+              type: "TABLE_INSERT_ROW_BELOW",
+            })
+          }
         >
           Sett inn rad under
         </ActionMenu.Item>
         <ActionMenu.Item
           icon={<PlusIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.insertTableColumnLeft, setEditorState)}
+          onSelect={() => dispatch({ type: "TABLE_INSERT_COL_LEFT" })}
         >
           Sett inn kolonne til venstre
         </ActionMenu.Item>
         <ActionMenu.Item
           icon={<PlusIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.insertTableColumnRight, setEditorState)}
+          onSelect={() => dispatch({ type: "TABLE_INSERT_COL_RIGHT" })}
         >
           Sett inn kolonne til høyre
         </ActionMenu.Item>
@@ -229,7 +244,7 @@ const TableView: React.FC<{
 
         <ActionMenu.Item
           icon={<TrashIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.removeTableRow, setEditorState)}
+          onSelect={() => dispatch({ type: "TABLE_REMOVE_ROW" })}
           variant="danger"
         >
           Slett rad
@@ -237,14 +252,14 @@ const TableView: React.FC<{
         <ActionMenu.Item
           disabled={onlyOneCol}
           icon={<TrashIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.removeTableColumn, setEditorState)}
+          onSelect={() => dispatch({ type: "TABLE_REMOVE_COLUMN" })}
           variant="danger"
         >
           Slett kolonne
         </ActionMenu.Item>
         <ActionMenu.Item
           icon={<TrashIcon fontSize="1.25rem" />}
-          onSelect={() => applyAction(Actions.removeTable, setEditorState)}
+          onSelect={() => dispatch({ type: "TABLE_REMOVE" })}
           variant="danger"
         >
           Slett tabellen

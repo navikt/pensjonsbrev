@@ -2,17 +2,21 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
+import { enablePatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useRef } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 
+import type { TableAction } from "./actions/tableRecipe";
+import { patchGeneratingTableReducer } from "./actions/tableReducer";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { createHistory } from "./history";
 import type { LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
 
@@ -34,6 +38,30 @@ export const LetterEditor = ({
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
+  enablePatches();
+
+  const historyRef = useRef(createHistory<LetterEditorState>());
+
+  function dispatch(action: TableAction) {
+    setEditorState((currentEditorState) => {
+      const [next, patches, inversePatches] = patchGeneratingTableReducer(currentEditorState, action);
+      if (patches.length > 0) {
+        historyRef.current.push({ patches, inversePatches, label: action.type });
+      }
+      return next;
+    });
+  }
+
+  function undo() {
+    setEditorState((curr) => historyRef.current.undo(curr));
+  }
+
+  function redo() {
+    setEditorState((curr) => historyRef.current.redo(curr));
+  }
+
+  const canUndo = historyRef.current.canUndo();
+  const canRedo = historyRef.current.canRedo();
 
   return (
     <div
@@ -45,7 +73,7 @@ export const LetterEditor = ({
         overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, dispatch }}>
         <div
           css={css`
             position: sticky;
@@ -54,7 +82,7 @@ export const LetterEditor = ({
             z-index: 1;
           `}
         >
-          <EditorMenu />
+          <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
         </div>
         <div
           className="editor"
@@ -106,11 +134,13 @@ export const EditorStateContext = createContext<{
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
+  dispatch: (a: TableAction) => void;
 }>({
   freeze: false,
   error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
+  dispatch: () => {},
 });
 export const useEditor = () => {
   return useContext(EditorStateContext);
