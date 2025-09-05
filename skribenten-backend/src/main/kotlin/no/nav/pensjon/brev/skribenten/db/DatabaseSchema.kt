@@ -93,7 +93,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     private var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
     private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
     val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
-    private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
+    private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash.editLetterHash()
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
@@ -111,10 +111,10 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
         redigertBrevKryptert?.bytes?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
             ?: redigertBrev
 
-    fun lesRedigertBrevHash() = redigertBrevKryptertHash?.let { EditLetterHash(Hex.encodeHexString(it)) } ?: redigertBrevHash
+    fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
 
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
-        redigertBrevKryptertHash = WithEditLetterHash.hashBrev(letter)
+        redigertBrevKryptertHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter)))
         redigertBrevKryptert = EncryptedByteArray(krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter)))
         redigertBrev = letter
     }

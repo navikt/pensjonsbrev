@@ -8,13 +8,8 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 import kotlin.reflect.KProperty
 
-@JvmName("writeHashTo")
 fun Column<Edit.Letter>.writeHashTo(hash: Column<ByteArray>) =
-    WithEditLetterHash(this, hash) { WithEditLetterHash.hashBrev(it) }
-
-@JvmName("writeHashToEncrypted")
-fun Column<EncryptedByteArray?>.writeHashTo(hash: Column<EncryptedByteArray?>) =
-    WithEditLetterHash(this, hash) { EncryptedByteArray(WithEditLetterHash.hashBrev(it)) }
+    WithEditLetterHash(this, hash)
 
 fun Table.hashColumn(name: String): Column<ByteArray> =
     binary(name)
@@ -22,27 +17,27 @@ fun Table.hashColumn(name: String): Column<ByteArray> =
 fun Column<ByteArray>.editLetterHash(): ValueClassWrapper<EditLetterHash, ByteArray> =
     wrap({ EditLetterHash(Hex.encodeHexString(it)) }, { Hex.decodeHex(it.hex) })
 
-@JvmName("editLetterHashEncrypted")
-fun Column<EncryptedByteArray?>.editLetterHash(): ValueClassWrapper<EditLetterHash?, EncryptedByteArray?> =
-    ValueClassWrapper(
-        column = this,
-        wrap = { it?.bytes?.let { bytes -> Hex.encodeHexString(bytes) }?.let { hex -> EditLetterHash(hex) } },
-        unwrap = { it?.hex?.let { hex -> Hex.decodeHex(hex) } ?.let { bytes -> EncryptedByteArray(bytes) } }
+@JvmName("editLetterHashNullable")
+fun Column<ByteArray?>.editLetterHash(): ValueClassWrapperNullable<EditLetterHash?, ByteArray?> =
+    wrap(
+        { it?.let { EditLetterHash(Hex.encodeHexString(it)) } },
+        { it?.hex?.let { hex -> Hex.decodeHex(hex) } }
     )
+
 
 @JvmInline
 value class EditLetterHash(val hex: String)
 
-class WithEditLetterHash<FROM, TO>(private val letter: Column<FROM>, private val hash: Column<TO>, private val hashFunction: (FROM) -> TO) {
+class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<ByteArray>) {
 
-    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: FROM) {
+    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: Edit.Letter) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
-            hash.setValue(thisRef, property, hashFunction(value))
+            hash.setValue(thisRef, property, hashBrev(value))
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): FROM {
+    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Edit.Letter {
         return with(thisRef) {
             letter.getValue(thisRef, property)
         }
