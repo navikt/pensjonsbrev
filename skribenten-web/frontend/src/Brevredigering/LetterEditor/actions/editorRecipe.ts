@@ -1,6 +1,3 @@
-import type { Patch } from "immer";
-import { applyPatches } from "immer";
-
 import type { Focus, LetterEditorState } from "../model/state";
 import {
   demoteHeaderToRow,
@@ -25,8 +22,7 @@ export type EditorAction =
   | { type: "TABLE_INSERT_ROW_ABOVE" }
   | { type: "TABLE_INSERT_ROW_BELOW" }
   | { type: "TABLE_PROMOTE_ROW_TO_HEADER"; blockIndex: number; contentIndex: number; rowIndex: number }
-  | { type: "TABLE_DEMOTE_HEADER_TO_ROW"; blockIndex: number; contentIndex: number }
-  | { type: "APPLY_TABLE_PATCHES"; patches: Patch[] };
+  | { type: "TABLE_DEMOTE_HEADER_TO_ROW"; blockIndex: number; contentIndex: number };
 
 export const editorRecipeReducer = (draft: LetterEditorState, action: EditorAction) => {
   switch (action.type) {
@@ -60,7 +56,5 @@ export const editorRecipeReducer = (draft: LetterEditorState, action: EditorActi
     case "TABLE_DEMOTE_HEADER_TO_ROW":
       demoteHeaderToRow(draft, action.blockIndex, action.contentIndex);
       break;
-    case "APPLY_TABLE_PATCHES":
-      return applyPatches(draft, action.patches);
   }
 };
