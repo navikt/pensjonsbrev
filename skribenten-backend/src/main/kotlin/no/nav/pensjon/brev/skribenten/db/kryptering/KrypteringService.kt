@@ -21,8 +21,14 @@ class KrypteringService(private val krypteringsnoekkel: String) {
 
         lateinit var instance: KrypteringService
 
-        fun krypter(klartekst: ByteArray) : EncryptedByteArray = instance.krypter(klartekst)
-        fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray = instance.dekrypter(kryptertMelding)
+        fun krypter(klartekst: ByteArray) : EncryptedByteArray {
+            require(KrypteringService::instance.isInitialized) { "Krypteringservice må være initialisert" }
+            return instance.krypter(klartekst)
+        }
+        fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
+            require(KrypteringService::instance.isInitialized) { "Krypteringservice må være initialisert" }
+            return instance.dekrypter(kryptertMelding)
+        }
     }
 
     init {
