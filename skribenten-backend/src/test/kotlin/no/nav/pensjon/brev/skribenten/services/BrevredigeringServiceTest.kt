@@ -63,7 +63,7 @@ class BrevredigeringServiceTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
     init {
-        KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         initADGroups()
     }
 

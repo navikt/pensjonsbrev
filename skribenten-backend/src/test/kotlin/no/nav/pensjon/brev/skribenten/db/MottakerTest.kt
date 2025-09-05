@@ -26,7 +26,7 @@ class MottakerTest {
 
     @BeforeAll
     fun startDb() {
-        KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         postgres.start()
         initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
     }

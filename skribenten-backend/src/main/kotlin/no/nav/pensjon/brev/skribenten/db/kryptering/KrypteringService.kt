@@ -10,45 +10,36 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
-class KrypteringService(private val krypteringsnoekkel: String) {
-    companion object {
-        private const val ALGORITHM = "AES/GCM/NoPadding"
-        private const val FACTORY_INSTANCE = "PBKDF2WithHmacSHA256"
-        private const val TAG_LENGTH_BIT = 128
-        private const val IV_LENGTH_BYTE = 12
-        private const val SALT_LENGTH_BYTE = 16
-        private const val ALGORITHM_TYPE = "AES"
+object KrypteringService {
+    private lateinit var krypteringsnoekkel: String
 
-        lateinit var instance: KrypteringService
+    private const val ALGORITHM = "AES/GCM/NoPadding"
+    private const val FACTORY_INSTANCE = "PBKDF2WithHmacSHA256"
+    private const val TAG_LENGTH_BIT = 128
+    private const val IV_LENGTH_BYTE = 12
+    private const val SALT_LENGTH_BYTE = 16
+    private const val ALGORITHM_TYPE = "AES"
 
-        fun krypter(klartekst: ByteArray) : EncryptedByteArray {
-            require(KrypteringService::instance.isInitialized) { "Krypteringservice må være initialisert" }
-            return instance.krypter(klartekst)
-        }
-        fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
-            require(KrypteringService::instance.isInitialized) { "Krypteringservice må være initialisert" }
-            return instance.dekrypter(kryptertMelding)
-        }
-    }
-
-    init {
-        instance = this
+    fun init(krypteringsnoekkel: String) {
+        this.krypteringsnoekkel = krypteringsnoekkel
     }
 
     fun krypter(klartekst: ByteArray): EncryptedByteArray {
+        require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
         val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst)
 
         return ByteBuffer.allocate(iv.size + salt.size + kryptertMelding.size)
-                .put(iv)
-                .put(salt)
-                .put(kryptertMelding)
-                .array()
+            .put(iv)
+            .put(salt)
+            .put(kryptertMelding)
+            .array()
             .let { EncryptedByteArray(it) }
     }
 
     fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
+        require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
         val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)
 
         val iv = ByteArray(IV_LENGTH_BYTE)

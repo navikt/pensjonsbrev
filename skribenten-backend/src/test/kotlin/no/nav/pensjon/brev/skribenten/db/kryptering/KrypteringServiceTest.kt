@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class KrypteringServiceTest {
 
-    private val service = KrypteringService("PZUgqsFjAc3GViO47HHMVQ==")
+    private val service = KrypteringService.also { it.init("PZUgqsFjAc3GViO47HHMVQ==") }
 
     @Test
     fun `krypter data og les tilbake`() {
