@@ -41,7 +41,11 @@ export const SakspartView = ({
     <span>Saksnummer:</span>
     <span>{sakspart.saksnummer}</span>
     <span css={css({ alignSelf: "end", textWrap: "nowrap" })}>
-      {intlFormat(new Date(), { year: "numeric", month: "long", day: "numeric" }, { locale: spraak })}
+      {intlFormat(
+        sakspart.dokumentDato,
+        { year: "numeric", month: "long", day: "numeric" },
+        { locale: spraak === "EN" ? "en-GB" : spraak },
+      )}
     </span>
   </div>
 );
