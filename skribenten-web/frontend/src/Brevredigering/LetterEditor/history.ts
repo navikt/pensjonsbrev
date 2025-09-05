@@ -7,19 +7,19 @@ export interface HistoryEntry {
   label?: string;
 }
 
-export interface History<TState extends object> {
+export interface History<T extends object> {
   push(e: HistoryEntry): void;
   canUndo(): boolean;
   canRedo(): boolean;
-  undo(state: TState): TState;
-  redo(state: TState): TState;
+  undo(state: T): T;
+  redo(state: T): T;
   clear(): void;
   pointer(): number;
   length(): number;
   entries(): ReadonlyArray<HistoryEntry>;
 }
 
-export function createHistory<TState extends object>(limit = 200): History<TState> {
+export function createHistory<T extends object>(limit = 200): History<T> {
   let entries: HistoryEntry[] = [];
   let pointer = -1;
 
@@ -38,14 +38,14 @@ export function createHistory<TState extends object>(limit = 200): History<TStat
   const canUndo = () => pointer >= 0;
   const canRedo = () => pointer < entries.length - 1;
 
-  function undo(state: TState): TState {
+  function undo(state: T): T {
     if (!canUndo()) return state;
     const { inversePatches } = entries[pointer];
     pointer--;
     return applyPatches(state, inversePatches);
   }
 
-  function redo(state: TState): TState {
+  function redo(state: T): T {
     if (!canRedo()) return state;
     pointer++;
     const { patches } = entries[pointer];
