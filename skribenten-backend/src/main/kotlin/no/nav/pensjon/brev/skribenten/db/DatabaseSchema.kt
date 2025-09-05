@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import org.apache.commons.codec.binary.Hex
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -114,7 +113,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
 
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
-        redigertBrevKryptertHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter)))
+        redigertBrevKryptertHash = EditLetterHash.read(letter)
         redigertBrevKryptert = EncryptedByteArray(krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter)))
         redigertBrev = letter
     }

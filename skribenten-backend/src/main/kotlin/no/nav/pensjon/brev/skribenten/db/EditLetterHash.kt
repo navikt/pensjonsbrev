@@ -26,7 +26,11 @@ fun Column<ByteArray?>.editLetterHash(): ValueClassWrapperNullable<EditLetterHas
 
 
 @JvmInline
-value class EditLetterHash(val hex: String)
+value class EditLetterHash(val hex: String) {
+    companion object {
+        fun <T> read(t: T): EditLetterHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(t)))
+    }
+}
 
 class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<ByteArray>) {
 

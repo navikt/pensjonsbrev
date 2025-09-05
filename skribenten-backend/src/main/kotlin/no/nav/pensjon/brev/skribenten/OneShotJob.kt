@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
+import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.services.LeaderService
@@ -116,7 +117,8 @@ fun JobConfig.updateBrevredigeringJson(krypteringService: KrypteringService) {
                 val redigertBrev = databaseObjectMapper.writeValueAsBytes(redigertBrev)
                 val kryptert = EncryptedByteArray(krypteringService.krypter(redigertBrev))
                 update[BrevredigeringTable.redigertBrevKryptert] = kryptert
-                update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev.let { bytes -> Hex.encodeHexString(bytes) }?.let { it.toByteArray() }
+                update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
+                    .let { bytes -> WithEditLetterHash.hashBrev(bytes) }
             }
         }
 
