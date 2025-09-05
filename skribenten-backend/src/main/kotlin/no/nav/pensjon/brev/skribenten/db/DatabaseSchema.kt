@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.apache.commons.codec.binary.Hex
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -30,11 +31,9 @@ import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
-import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.LocalDate
 import javax.sql.DataSource
-import kotlin.io.encoding.Base64
 
 @Suppress("unused")
 object Favourites : Table() {
@@ -50,8 +49,6 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(LetterMarkupModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
-
-private val logger = LoggerFactory.getLogger(BrevredigeringTable::class.java)
 
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
 
@@ -72,7 +69,7 @@ object BrevredigeringTable : LongIdTable() {
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrevKryptert: Column<EncryptedByteArray?> = binary(name = "redigertBrevKryptert").transform(encrypted()).nullable()
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
-    val redigertBrevKryptertHash: Column<EncryptedByteArray?> = hashColumn("redigertBrevKryptertHash").transform(encrypted()).nullable()
+    val redigertBrevKryptertHash: Column<ByteArray?> = hashColumn("redigertBrevKryptertHash").nullable()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -94,9 +91,9 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     private var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
-    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
+    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
     val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
-    val redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptert.editLetterHash()
+    private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
@@ -114,7 +111,10 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
         redigertBrevKryptert?.bytes?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
             ?: redigertBrev
 
+    fun lesRedigertBrevHash() = redigertBrevKryptertHash?.let { EditLetterHash(Hex.encodeHexString(it)) } ?: redigertBrevHash
+
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
+        redigertBrevKryptertHash = WithEditLetterHash.hashBrev(letter)
         redigertBrevKryptert = EncryptedByteArray(krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter)))
         redigertBrev = letter
     }
