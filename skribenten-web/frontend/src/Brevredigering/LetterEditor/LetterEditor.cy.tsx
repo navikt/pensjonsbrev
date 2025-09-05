@@ -1,6 +1,5 @@
 import "./editor.css";
 
-import { format } from "date-fns";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -193,11 +192,11 @@ describe("<LetterEditor />", () => {
           initial={{
             ...exampleLetter1,
             sakspart: {
-              gjelderNavn: "Opprett Agent",
-              gjelderFoedselsnummer: "23426147394",
+              gjelderNavn: "Test Testeson",
+              gjelderFoedselsnummer: "12345678910",
               vergeNavn: "Vergio Vergburg",
-              saksnummer: "23022751",
-              dokumentDato: format(new Date(), "yyyy-MM-dd"),
+              saksnummer: "1234",
+              dokumentDato: "2024-03-15",
             },
           }}
         />,
@@ -207,7 +206,7 @@ describe("<LetterEditor />", () => {
       cy.contains("Vergio Vergburg").should("exist");
       cy.contains("Navn:").should("not.exist");
       cy.contains("Saken gjelder:").should("exist");
-      cy.contains("Opprett Agent").should("exist");
+      cy.contains("Test Testeson").should("exist");
 
       // Without 'verge'
       cy.mount(
@@ -215,10 +214,10 @@ describe("<LetterEditor />", () => {
           initial={{
             ...exampleLetter1,
             sakspart: {
-              gjelderNavn: "Opprett Agent",
-              gjelderFoedselsnummer: "23426147394",
-              saksnummer: "23022751",
-              dokumentDato: format(new Date(), "yyyy-MM-dd"),
+              gjelderNavn: "Test Testeson",
+              gjelderFoedselsnummer: "12345678910",
+              saksnummer: "1234",
+              dokumentDato: "2024-03-15",
             },
           }}
         />,
@@ -228,7 +227,7 @@ describe("<LetterEditor />", () => {
       cy.contains("Vergio Vergburg").should("not.exist");
       cy.contains("Navn:").should("exist");
       cy.contains("Saken gjelder:").should("not.exist");
-      cy.contains("Opprett Agent").should("exist");
+      cy.contains("Test Testeson").should("exist");
     });
   });
 });
