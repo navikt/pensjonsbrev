@@ -7,10 +7,10 @@ export const updateSignatur: Action<LetterEditorState, [of: "Saksbehandler" | "A
   (draft, of, signatur) => {
     if (of === "Saksbehandler") {
       draft.redigertBrev.signatur.saksbehandlerNavn = signatur;
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (of === "Attestant") {
       draft.redigertBrev.signatur.attesterendeSaksbehandlerNavn = signatur;
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     }
   },
 );
