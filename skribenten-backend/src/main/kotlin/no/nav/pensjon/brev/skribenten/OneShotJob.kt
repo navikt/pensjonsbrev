@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
@@ -97,7 +96,7 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 }
 
 
-fun JobConfig.updateBrevredigeringJson(krypteringService: KrypteringService) {
+fun JobConfig.updateBrevredigeringJson() {
     transaction {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
@@ -114,7 +113,7 @@ fun JobConfig.updateBrevredigeringJson(krypteringService: KrypteringService) {
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 val redigertBrevBytes = databaseObjectMapper.writeValueAsBytes(redigertBrev)
-                val kryptert = krypteringService.krypter(redigertBrevBytes)
+                val kryptert = KrypteringService.krypter(redigertBrevBytes)
                 update[BrevredigeringTable.redigertBrevKryptert] = kryptert
                 update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
                     .let { bytes -> WithEditLetterHash.hashBrev(bytes) }

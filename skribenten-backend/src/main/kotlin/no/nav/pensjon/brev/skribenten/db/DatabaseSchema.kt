@@ -106,15 +106,15 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
-    fun lesRedigertBrev(krypteringService: KrypteringService): Edit.Letter =
-        redigertBrevKryptert?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
+    fun lesRedigertBrev(): Edit.Letter =
+        redigertBrevKryptert?.let { readJsonColumn(String(KrypteringService.dekrypter(it))) }
             ?: redigertBrev
 
     fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
 
-    fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
+    fun skrivRedigertBrev(letter: Edit.Letter) {
         redigertBrevKryptertHash = EditLetterHash.read(letter)
-        redigertBrevKryptert = krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
+        redigertBrevKryptert = KrypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
         redigertBrev = letter
     }
 
@@ -146,12 +146,12 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
 
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
 
-    fun skrivPdf(pdf: ExposedBlob, krypteringService: KrypteringService) {
-        this.pdfKryptert = krypteringService.krypter(pdf.bytes)
+    fun skrivPdf(pdf: ExposedBlob) {
+        this.pdfKryptert = KrypteringService.krypter(pdf.bytes)
         this.pdf = ExposedBlob(pdf.bytes)
     }
-    fun lesPdf(krypteringService: KrypteringService) =
-        pdfKryptert?.let { krypteringService.dekrypter(it) } ?.let { ExposedBlob(it) } ?: pdf
+    fun lesPdf() =
+        pdfKryptert?.let { KrypteringService.dekrypter(it) } ?.let { ExposedBlob(it) } ?: pdf
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }

@@ -63,6 +63,7 @@ class BrevredigeringServiceTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
     init {
+        KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         initADGroups()
     }
 
@@ -173,7 +174,6 @@ class BrevredigeringServiceTest {
     )
 
     private val penService = FakePenService()
-    private val krypteringService: KrypteringService = KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
 
     class FakePenService(
         var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
@@ -242,7 +242,6 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        krypteringService = krypteringService
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
@@ -575,7 +574,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().lesPdf(krypteringService).bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().lesPdf().bytes).isEqualTo(stagetPDF)
         }
     }
 
@@ -641,8 +640,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             Brevredigering[brev.info.id].skrivRedigertBrev(
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
-                krypteringService)
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
@@ -672,8 +670,7 @@ class BrevredigeringServiceTest {
 
             transaction {
                 Brevredigering[brev.info.id].skrivRedigertBrev(
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
-                    krypteringService)
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
@@ -979,7 +976,7 @@ class BrevredigeringServiceTest {
             }
         }
         transaction {
-            assertThat(Brevredigering[brev.info.id].lesRedigertBrev(krypteringService) == brev.redigertBrev)
+            assertThat(Brevredigering[brev.info.id].lesRedigertBrev() == brev.redigertBrev)
         }
     }
 
@@ -1182,8 +1179,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             Brevredigering[brev.info.id].skrivRedigertBrev(
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
-                krypteringService)
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
         }
 
         val hash2 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -1280,7 +1276,7 @@ class BrevredigeringServiceTest {
 
         assertEquals(
             "en ny signatur",
-            transaction { Brevredigering[brev.info.id].lesRedigertBrev(krypteringService).signatur.saksbehandlerNavn })
+            transaction { Brevredigering[brev.info.id].lesRedigertBrev().signatur.saksbehandlerNavn })
     }
 
     @Test

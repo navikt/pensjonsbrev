@@ -18,6 +18,15 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         private const val IV_LENGTH_BYTE = 12
         private const val SALT_LENGTH_BYTE = 16
         private const val ALGORITHM_TYPE = "AES"
+
+        lateinit var instance: KrypteringService
+
+        fun krypter(klartekst: ByteArray) : EncryptedByteArray = instance.krypter(klartekst)
+        fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray = instance.dekrypter(kryptertMelding)
+    }
+
+    init {
+        instance = this
     }
 
     fun krypter(klartekst: ByteArray): EncryptedByteArray {

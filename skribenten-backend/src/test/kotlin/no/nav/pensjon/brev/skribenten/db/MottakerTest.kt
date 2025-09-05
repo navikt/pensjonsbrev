@@ -23,10 +23,10 @@ import java.time.temporal.ChronoUnit
 
 class MottakerTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
-    private val krypteringService: KrypteringService = KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
 
     @BeforeAll
     fun startDb() {
+        KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         postgres.start()
         initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
     }
@@ -116,7 +116,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptySet(),
-            ), krypteringService)
+            ))
             sistRedigertAvNavIdent = principal
         }
     }
