@@ -43,23 +43,23 @@ export const LetterEditor = ({
 
   const historyRef = useRef(createHistory<LetterEditorState>());
 
-  function dispatch(action: EditorAction) {
+  const dispatch = (action: EditorAction) => {
     setEditorState((currentEditorState) => {
-      const [next, patches, inversePatches] = patchGeneratingEditorReducer(currentEditorState, action);
+      const [nextEditorState, patches, inversePatches] = patchGeneratingEditorReducer(currentEditorState, action);
       if (patches.length > 0) {
         historyRef.current.push({ patches, inversePatches, label: action.type });
       }
-      return next;
+      return nextEditorState;
     });
-  }
+  };
 
-  function undo() {
+  const undo = () => {
     setEditorState((currentEditorState) => historyRef.current.undo(currentEditorState));
-  }
+  };
 
-  function redo() {
+  const redo = () => {
     setEditorState((currentEditorState) => historyRef.current.redo(currentEditorState));
-  }
+  };
 
   const canUndo = historyRef.current.canUndo();
   const canRedo = historyRef.current.canRedo();
