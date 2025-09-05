@@ -9,7 +9,7 @@ import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
 
 const EditorTableTools = () => {
-  const { editorState, setEditorState } = useEditor();
+  const { editorState, freeze, setEditorState } = useEditor();
   const [isInsertTableDialogOpen, setIsInsertTableDialogOpen] = useState(false);
   const [focusAtOpen, setFocusAtOpen] = useState<Focus | null>(null);
 
@@ -18,6 +18,7 @@ const EditorTableTools = () => {
       <HStack gap="2">
         <Button
           data-cy="toolbar-table-btn"
+          disabled={freeze}
           icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
           onClick={() => {
             setFocusAtOpen(editorState.focus);

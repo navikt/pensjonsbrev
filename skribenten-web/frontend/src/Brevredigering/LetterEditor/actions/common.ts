@@ -2,7 +2,7 @@ import type { Draft } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
+import { isFritekst, isLiteral, isTableCellIndex } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Cell,
@@ -37,8 +37,16 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
-  return !isItemContentIndex(f);
+export function isBlockContentIndex(f: Focus | LiteralIndex | undefined): f is BlockContentIndex {
+  return (
+    f !== undefined &&
+    "blockIndex" in f &&
+    f.blockIndex !== undefined &&
+    "contentIndex" in f &&
+    f.contentIndex !== undefined &&
+    !isItemContentIndex(f) &&
+    !isTableCellIndex(f)
+  );
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
@@ -99,7 +107,7 @@ export function create(brev: BrevResponse): LetterEditorState {
     info: brev.info,
     redigertBrev: brev.redigertBrev,
     redigertBrevHash: brev.redigertBrevHash,
-    isDirty: false,
+    saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
   };
 }

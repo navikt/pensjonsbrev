@@ -1,5 +1,6 @@
 import type { Draft } from "immer";
 
+import { text } from "~/Brevredigering/LetterEditor/actions/common";
 import type {
   AnyBlock,
   Cell,
@@ -15,9 +16,8 @@ import type {
   TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
 
-import { text } from "../../../Brevredigering/LetterEditor/actions/common";
-import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "../../../types/brevbakerTypes";
 import type { ContentGroup, Focus, LiteralIndex, TableCellIndex } from "./state";
 
 export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
