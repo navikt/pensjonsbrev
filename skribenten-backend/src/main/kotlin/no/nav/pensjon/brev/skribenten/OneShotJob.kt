@@ -114,7 +114,7 @@ fun JobConfig.updateBrevredigeringJson(krypteringService: KrypteringService) {
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 val redigertBrevBytes = databaseObjectMapper.writeValueAsBytes(redigertBrev)
-                val kryptert = EncryptedByteArray(krypteringService.krypter(redigertBrevBytes))
+                val kryptert = krypteringService.krypter(redigertBrevBytes)
                 update[BrevredigeringTable.redigertBrevKryptert] = kryptert
                 update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
                     .let { bytes -> WithEditLetterHash.hashBrev(bytes) }

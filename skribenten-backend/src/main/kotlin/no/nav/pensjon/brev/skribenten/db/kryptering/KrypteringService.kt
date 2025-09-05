@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
+import no.nav.pensjon.brev.skribenten.db.EncryptedByteArray
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import javax.crypto.Cipher
@@ -19,7 +20,7 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         private const val ALGORITHM_TYPE = "AES"
     }
 
-    fun krypter(klartekst: ByteArray): ByteArray {
+    fun krypter(klartekst: ByteArray): EncryptedByteArray {
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
         val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst)
@@ -29,10 +30,11 @@ class KrypteringService(private val krypteringsnoekkel: String) {
                 .put(salt)
                 .put(kryptertMelding)
                 .array()
+            .let { EncryptedByteArray(it) }
     }
 
-    fun dekrypter(kryptertMelding: ByteArray): ByteArray {
-        val byteBuffer = ByteBuffer.wrap(kryptertMelding)
+    fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
+        val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)
 
         val iv = ByteArray(IV_LENGTH_BYTE)
         byteBuffer.get(iv)

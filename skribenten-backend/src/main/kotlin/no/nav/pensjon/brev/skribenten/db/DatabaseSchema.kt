@@ -107,14 +107,14 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     fun lesRedigertBrev(krypteringService: KrypteringService): Edit.Letter =
-        redigertBrevKryptert?.bytes?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
+        redigertBrevKryptert?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
             ?: redigertBrev
 
     fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
 
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
         redigertBrevKryptertHash = EditLetterHash.read(letter)
-        redigertBrevKryptert = EncryptedByteArray(krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter)))
+        redigertBrevKryptert = krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
         redigertBrev = letter
     }
 
@@ -134,7 +134,7 @@ object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
-    val pdfKryptert: Column<ByteArray?> = binary("pdfKryptert").nullable()
+    val pdfKryptert: Column<EncryptedByteArray?> = binary("pdfKryptert").transform(encrypted()).nullable()
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
 }
 
@@ -148,7 +148,7 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
 
     fun skrivPdf(pdf: ExposedBlob, krypteringService: KrypteringService) {
         this.pdfKryptert = krypteringService.krypter(pdf.bytes)
-        this.pdf = ExposedBlob(krypteringService.krypter(pdf.bytes))
+        this.pdf = ExposedBlob(pdf.bytes)
     }
     fun lesPdf(krypteringService: KrypteringService) =
         pdfKryptert?.let { krypteringService.dekrypter(it) } ?.let { ExposedBlob(it) } ?: pdf
