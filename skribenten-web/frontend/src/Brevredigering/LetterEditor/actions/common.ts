@@ -37,8 +37,16 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
-  return !isItemContentIndex(f) && !isTableCellIndex(f);
+export function isBlockContentIndex(f: Focus | LiteralIndex | undefined): f is BlockContentIndex {
+  return (
+    f !== undefined &&
+    "blockIndex" in f &&
+    f.blockIndex !== undefined &&
+    "contentIndex" in f &&
+    f.contentIndex !== undefined &&
+    !isItemContentIndex(f) &&
+    !isTableCellIndex(f)
+  );
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
