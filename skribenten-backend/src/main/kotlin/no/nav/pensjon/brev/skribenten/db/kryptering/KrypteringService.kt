@@ -25,7 +25,6 @@ object KrypteringService {
     }
 
     fun krypter(klartekst: ByteArray): EncryptedByteArray {
-        require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
         val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst)
@@ -39,7 +38,6 @@ object KrypteringService {
     }
 
     fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
-        require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
         val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)
 
         val iv = ByteArray(IV_LENGTH_BYTE)
@@ -63,9 +61,12 @@ object KrypteringService {
         return nonce
     }
 
-    private fun getSecretKey(salt: ByteArray) = SecretKeySpec(
-        SecretKeyFactory.getInstance(FACTORY_INSTANCE)
-            .generateSecret(PBEKeySpec(krypteringsnoekkel.toCharArray(), salt, 65536, 256)).encoded,
-        ALGORITHM_TYPE
-    )
+    private fun getSecretKey(salt: ByteArray): SecretKeySpec {
+        require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
+        return SecretKeySpec(
+            SecretKeyFactory.getInstance(FACTORY_INSTANCE)
+                .generateSecret(PBEKeySpec(krypteringsnoekkel.toCharArray(), salt, 65536, 256)).encoded,
+            ALGORITHM_TYPE
+        )
+    }
 }
