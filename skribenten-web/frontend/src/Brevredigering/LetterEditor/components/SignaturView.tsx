@@ -42,8 +42,8 @@ export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; 
         gap: var(--a-spacing-8);
       `}
     >
-      <Saksbehandler navn={signatur.saksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
+      <Saksbehandler navn={signatur.saksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
     </div>
     <div>{signatur.navAvsenderEnhet}</div>
   </div>
