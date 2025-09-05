@@ -17,8 +17,20 @@ fun Table.hashColumn(name: String): Column<ByteArray> =
 fun Column<ByteArray>.editLetterHash(): ValueClassWrapper<EditLetterHash, ByteArray> =
     wrap({ EditLetterHash(Hex.encodeHexString(it)) }, { Hex.decodeHex(it.hex) })
 
+@JvmName("editLetterHashNullable")
+fun Column<ByteArray?>.editLetterHash(): ValueClassWrapperNullable<EditLetterHash?, ByteArray?> =
+    wrap(
+        { it?.let { EditLetterHash(Hex.encodeHexString(it)) } },
+        { it?.hex?.let { hex -> Hex.decodeHex(hex) } }
+    )
+
+
 @JvmInline
-value class EditLetterHash(val hex: String)
+value class EditLetterHash(val hex: String) {
+    companion object {
+        fun <T> read(t: T): EditLetterHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(t)))
+    }
+}
 
 class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<ByteArray>) {
 
@@ -36,7 +48,7 @@ class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val ha
     }
 
     companion object {
-        fun hashBrev(brev: Edit.Letter): ByteArray =
+        fun <FROM> hashBrev(brev: FROM): ByteArray =
             DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(brev))
                 .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
 

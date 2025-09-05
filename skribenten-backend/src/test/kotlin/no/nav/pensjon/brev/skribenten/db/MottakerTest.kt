@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -25,6 +26,7 @@ class MottakerTest {
 
     @BeforeAll
     fun startDb() {
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         postgres.start()
         initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
     }
@@ -96,7 +98,7 @@ class MottakerTest {
             redigeresAvNavIdent = principal
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-            redigertBrev = Edit.Letter(
+            skrivRedigertBrev(Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
@@ -114,7 +116,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptySet(),
-            )
+            ))
             sistRedigertAvNavIdent = principal
         }
     }

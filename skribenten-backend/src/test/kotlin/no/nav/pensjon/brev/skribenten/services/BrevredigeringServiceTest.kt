@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -62,6 +63,7 @@ class BrevredigeringServiceTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
     init {
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         initADGroups()
     }
 
@@ -572,7 +574,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().lesPdf().bytes).isEqualTo(stagetPDF)
         }
     }
 
@@ -637,8 +639,8 @@ class BrevredigeringServiceTest {
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+            Brevredigering[brev.info.id].skrivRedigertBrev(
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
@@ -667,8 +669,8 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
-                Brevredigering[brev.info.id].redigertBrev =
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+                Brevredigering[brev.info.id].skrivRedigertBrev(
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
@@ -974,7 +976,7 @@ class BrevredigeringServiceTest {
             }
         }
         transaction {
-            assertThat(Brevredigering[brev.info.id].redigertBrev == brev.redigertBrev)
+            assertThat(Brevredigering[brev.info.id].lesRedigertBrev() == brev.redigertBrev)
         }
     }
 
@@ -1176,8 +1178,8 @@ class BrevredigeringServiceTest {
         assertThat(hash1.hex).isEqualTo(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter.toEdit())))
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+            Brevredigering[brev.info.id].skrivRedigertBrev(
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
         }
 
         val hash2 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -1274,7 +1276,7 @@ class BrevredigeringServiceTest {
 
         assertEquals(
             "en ny signatur",
-            transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
+            transaction { Brevredigering[brev.info.id].lesRedigertBrev().signatur.saksbehandlerNavn })
     }
 
     @Test
