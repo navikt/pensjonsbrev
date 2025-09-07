@@ -4,8 +4,6 @@ import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
-import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
-import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.sql.insert
@@ -112,9 +110,7 @@ fun JobConfig.updateBrevredigeringJson() {
             val brevId = it[BrevredigeringTable.id]
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                val redigertBrevBytes = databaseObjectMapper.writeValueAsBytes(redigertBrev)
-                val kryptert = KrypteringService.krypter(redigertBrevBytes)
-                update[BrevredigeringTable.redigertBrevKryptert] = kryptert
+                update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
                 update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
                     .let { bytes -> WithEditLetterHash.hashBrev(bytes) }
             }

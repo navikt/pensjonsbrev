@@ -58,6 +58,16 @@ private inline fun <reified T> readJsonColumn(json: String): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
+fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
+    binary(name).transform(encrypted())
+
+private inline fun <reified T> readJsonBinary(json: ByteArray?): T? =
+    try {
+        json?.let { databaseObjectMapper.readValue<T>(it) }
+    } catch (e: JacksonException) {
+        throw DatabaseJsonDeserializeException(e)
+    }
+
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
     val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
@@ -66,7 +76,15 @@ object BrevredigeringTable : LongIdTable() {
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrevKryptert: Column<EncryptedByteArray?> = binary(name = "redigertBrevKryptert").transform(encrypted()).nullable()
+    val redigertBrevKryptert: Column<Edit.Letter?> = encryptedBinary("redigertBrevKryptert")
+        .nullable()
+        .transform(
+            { enc -> enc?.let { KrypteringService.dekrypter(it) } },
+            { klar -> klar?.let { KrypteringService.krypter(it) } }
+        )
+        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+
+
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val redigertBrevKryptertHash: Column<ByteArray?> = hashColumn("redigertBrevKryptertHash").nullable()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
@@ -107,14 +125,13 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     fun lesRedigertBrev(): Edit.Letter =
-        redigertBrevKryptert?.let { readJsonColumn(String(KrypteringService.dekrypter(it))) }
-            ?: redigertBrev
+        redigertBrevKryptert ?: redigertBrev
 
     fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
 
     fun skrivRedigertBrev(letter: Edit.Letter) {
         redigertBrevKryptertHash = EditLetterHash.read(letter)
-        redigertBrevKryptert = KrypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
+        redigertBrevKryptert = letter
         redigertBrev = letter
     }
 
