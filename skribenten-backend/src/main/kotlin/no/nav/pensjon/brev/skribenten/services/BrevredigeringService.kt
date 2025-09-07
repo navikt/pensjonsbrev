@@ -37,7 +37,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
@@ -533,8 +532,8 @@ class BrevredigeringService(
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
-                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.lesPdf()?.bytes
-                        ?: Document.new(update).lesPdf().bytes
+                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.lesPdf()
+                        ?: Document.new(update).lesPdf()
                 }
             }
         }
@@ -686,7 +685,7 @@ private fun Document.toDto(): Dto.Document =
     Dto.Document(
         brevredigeringId = brevredigering.id.value,
         dokumentDato = dokumentDato,
-        pdf = lesPdf().bytes,
+        pdf = lesPdf(),
         redigertBrevHash = redigertBrevHash
     )
 

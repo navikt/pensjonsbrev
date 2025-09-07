@@ -574,7 +574,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().lesPdf().bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().lesPdf()).isEqualTo(stagetPDF)
         }
     }
 

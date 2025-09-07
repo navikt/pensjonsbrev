@@ -165,8 +165,7 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
         this.pdfKryptert = pdf
         this.pdf = ExposedBlob(pdf)
     }
-    fun lesPdf() =
-        pdfKryptert?.let { ExposedBlob(it) } ?: pdf
+    fun lesPdf() = pdfKryptert ?: pdf.bytes
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }
