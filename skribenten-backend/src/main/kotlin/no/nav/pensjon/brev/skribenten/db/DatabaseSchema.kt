@@ -78,10 +78,7 @@ object BrevredigeringTable : LongIdTable() {
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrevKryptert: Column<Edit.Letter?> = encryptedBinary("redigertBrevKryptert")
         .nullable()
-        .transform(
-            { enc -> enc?.let { KrypteringService.dekrypter(it) } },
-            { klar -> klar?.let { KrypteringService.krypter(it) } }
-        )
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
 
 
@@ -151,7 +148,8 @@ object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
-    val pdfKryptert: Column<EncryptedByteArray?> = binary("pdfKryptert").transform(encrypted()).nullable()
+    val pdfKryptert: Column<ByteArray?> = encryptedBinary("pdfKryptert").nullable()
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
 }
 
@@ -163,12 +161,12 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
 
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
 
-    fun skrivPdf(pdf: ExposedBlob) {
-        this.pdfKryptert = KrypteringService.krypter(pdf.bytes)
-        this.pdf = ExposedBlob(pdf.bytes)
+    fun skrivPdf(pdf: ByteArray) {
+        this.pdfKryptert = pdf
+        this.pdf = ExposedBlob(pdf)
     }
     fun lesPdf() =
-        pdfKryptert?.let { KrypteringService.dekrypter(it) } ?.let { ExposedBlob(it) } ?: pdf
+        pdfKryptert?.let { ExposedBlob(it) } ?: pdf
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }

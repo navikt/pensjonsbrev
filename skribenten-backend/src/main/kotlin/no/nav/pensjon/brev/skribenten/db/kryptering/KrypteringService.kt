@@ -24,6 +24,8 @@ object KrypteringService {
         this.krypteringsnoekkel = krypteringsnoekkel
     }
 
+    fun krypter(klartekst: ByteArray?): EncryptedByteArray? = klartekst?.let { krypter(it) }
+
     fun krypter(klartekst: ByteArray): EncryptedByteArray {
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
@@ -36,6 +38,8 @@ object KrypteringService {
             .array()
             .let { EncryptedByteArray(it) }
     }
+
+    fun dekrypter(kryptertMelding: EncryptedByteArray?): ByteArray? = kryptertMelding?.let { dekrypter(it) }
 
     fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
         val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)

@@ -529,7 +529,7 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        skrivPdf(ExposedBlob(it.file))
+                        skrivPdf(it.file)
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
