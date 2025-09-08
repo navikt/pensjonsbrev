@@ -14,6 +14,8 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.redigertBrev
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.redigertBrevKryptert
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -157,17 +159,16 @@ object DocumentTable : LongIdTable() {
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
-    private var pdf by DocumentTable.pdf
+    private var _pdf by DocumentTable.pdf
     private var pdfKryptert by DocumentTable.pdfKryptert
 
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
-
-    fun skrivPdf(pdf: ByteArray) {
-        this.pdfKryptert = pdf
-        this.pdf = ExposedBlob(pdf)
-    }
-    fun lesPdf() = pdfKryptert ?: pdf.bytes
-
+    var pdf: ByteArray
+        get() = pdfKryptert ?: _pdf.bytes
+        set(value) {
+            pdfKryptert = value
+            _pdf = ExposedBlob(value)
+        }
     companion object : LongEntityClass<Document>(DocumentTable)
 }
 
