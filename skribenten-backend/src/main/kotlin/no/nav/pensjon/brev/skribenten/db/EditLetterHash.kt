@@ -42,7 +42,7 @@ class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val ha
     }
 
     companion object {
-        fun hashBrev(brev: Edit.Letter?): ByteArray =
+        fun hashBrev(brev: Edit.Letter): ByteArray =
             DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(brev))
                 .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
 
