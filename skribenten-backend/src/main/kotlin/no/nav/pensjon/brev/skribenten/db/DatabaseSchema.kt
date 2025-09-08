@@ -105,7 +105,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    private var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
+    private var _redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
     private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
     val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
     private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash.editLetterHash()
@@ -122,16 +122,16 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
-    fun lesRedigertBrev(): Edit.Letter =
-        redigertBrevKryptert ?: redigertBrev
+    var redigertBrev: Edit.Letter
+        get() = redigertBrevKryptert ?: redigertBrev
+        set(letter) {
+            redigertBrevKryptertHash = EditLetterHash.read(letter)
+            redigertBrevKryptert = letter
+            _redigertBrev = letter
+        }
 
     fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
 
-    fun skrivRedigertBrev(letter: Edit.Letter) {
-        redigertBrevKryptertHash = EditLetterHash.read(letter)
-        redigertBrevKryptert = letter
-        redigertBrev = letter
-    }
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
