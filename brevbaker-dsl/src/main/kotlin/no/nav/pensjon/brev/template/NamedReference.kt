@@ -16,18 +16,18 @@ private val endQuote: TextElement<BaseLanguages> = newText(
 )
 
 fun <Lang : LanguageSupport> TextScope<in Lang, *>.namedReference(attachment: AttachmentTemplate<Lang, *>) {
-    addTextContent(startQuote)
+    addTextContentBaseLanguages(startQuote)
     attachment.title.forEach { addTextContent(it) }
-    addTextContent(endQuote)
+    addTextContentBaseLanguages(endQuote)
 }
 
 @JvmName("namedReferenceBokmalEnglish")
 fun TextScope<LangBokmalEnglish, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    addTextContent(startQuote)
+    addTextContentBaseLanguages(startQuote)
     attachment.title.forEach {
         // Safe because we know that a template that support BaseLanguages will support Bokmal and English
         @Suppress("UNCHECKED_CAST")
         addTextContent(it as TextElement<LangBokmalEnglish>)
     }
-    addTextContent(endQuote)
+    addTextContentBaseLanguages(endQuote)
 }

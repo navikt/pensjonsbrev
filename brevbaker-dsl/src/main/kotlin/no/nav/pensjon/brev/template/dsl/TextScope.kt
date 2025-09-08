@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.TextElement
 
 interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
 
-    fun addTextContent(e: TextElement<BaseLanguages>)
+    fun addTextContentBaseLanguages(e: TextElement<BaseLanguages>)
     fun addTextContent(e: TextElement<Lang>)
 
     fun eval(expression: StringExpression, fontType: FontType = FontType.PLAIN) {

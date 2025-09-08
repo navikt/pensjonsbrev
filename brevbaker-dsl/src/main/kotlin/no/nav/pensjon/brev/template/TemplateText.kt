@@ -17,7 +17,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal construct
         children.add(e)
     }
 
-    override fun addTextContent(e: TextElement<BaseLanguages>) {
+    override fun addTextContentBaseLanguages(e: TextElement<BaseLanguages>) {
         // Safe because we know that a template that support BaseLanguages will support Lang
         @Suppress("UNCHECKED_CAST")
         children.add(e as TextElement<Lang>)
