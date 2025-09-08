@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
@@ -102,6 +103,10 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.sistReservert,
             BrevredigeringTable.redigertBrev
         ).toList()
+        val allePdfer = DocumentTable.select(
+            DocumentTable.brevredigering,
+            DocumentTable.pdf
+        )
 
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
         val kanOppdateres =

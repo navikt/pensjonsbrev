@@ -121,7 +121,7 @@ class BrevredigeringService(
                         if (mottaker != null) {
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
                         }
-                    }.toDto( letter.letterDataUsage)
+                    }.toDto(letter.letterDataUsage)
                 }
             }
         }
@@ -235,7 +235,7 @@ class BrevredigeringService(
                 }
             }
         } else {
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto( null) }
+            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
                 ?.let { Ok(it) }
         }
 
@@ -253,7 +253,7 @@ class BrevredigeringService(
                 }
             }
         } else {
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto( null) }
+            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
                 ?.let { Ok(it) }
         }
 
