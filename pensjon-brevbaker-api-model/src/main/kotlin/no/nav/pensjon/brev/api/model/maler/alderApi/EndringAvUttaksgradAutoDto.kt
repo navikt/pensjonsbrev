@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -13,9 +14,10 @@ data class EndringAvUttaksgradAutoDto(
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val harFlereBeregningsperioder: Boolean,
     val regelverkType: AlderspensjonRegelverkType,
-    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
-    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+    val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?,
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
 ): BrevbakerBrevdata {
 
     data class AlderspensjonVedVirk(
