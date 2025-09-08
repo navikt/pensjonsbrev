@@ -17,11 +17,11 @@ fun Table.hashColumn(name: String): Column<EditLetterHash> =
 
 
 @JvmInline
-value class EditLetterHash(val hex: String) {
+value class EditLetterHash(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
     companion object {
-        fun read(t: Edit.Letter): EditLetterHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(t)))
+        fun read(letter: Edit.Letter): EditLetterHash = fromBytes(WithEditLetterHash.hashBrev(letter))
         fun fromBytes(bytes: ByteArray) = EditLetterHash(Hex.encodeHexString(bytes))
     }
 }
