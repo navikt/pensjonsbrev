@@ -78,7 +78,6 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
                 val actualCause = cause.unwrapCancellationException()
                 val doRetry = actualCause is HttpRequestTimeoutException
                         || actualCause is ConnectTimeoutException
-                        || actualCause is ServerResponseException
                         || actualCause is IOException
                 if (!doRetry) {
                     logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
