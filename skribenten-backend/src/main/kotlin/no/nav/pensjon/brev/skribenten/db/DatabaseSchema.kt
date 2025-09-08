@@ -125,7 +125,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     var redigertBrev: Edit.Letter
-        get() = redigertBrevKryptert ?: redigertBrev
+        get() = redigertBrevKryptert ?: _redigertBrev
         set(letter) {
             redigertBrevKryptertHash = EditLetterHash.read(letter)
             redigertBrevKryptert = letter

@@ -28,7 +28,7 @@ fun Column<ByteArray?>.editLetterHash(): ValueClassWrapperNullable<EditLetterHas
 @JvmInline
 value class EditLetterHash(val hex: String) {
     companion object {
-        fun <T> read(t: T): EditLetterHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(t)))
+        fun read(t: Edit.Letter): EditLetterHash = EditLetterHash(Hex.encodeHexString(WithEditLetterHash.hashBrev(t)))
     }
 }
 
@@ -48,7 +48,7 @@ class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val ha
     }
 
     companion object {
-        fun <FROM> hashBrev(brev: FROM): ByteArray =
+        fun hashBrev(brev: Edit.Letter?): ByteArray =
             DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(brev))
                 .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
 
