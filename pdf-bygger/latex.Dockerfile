@@ -10,7 +10,7 @@ ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 #Download and install tlmgr (texlive package manager)
 RUN apt -y --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update
 RUN apt -y install tzdata perl-tk wget
-RUN wget https://ftp.fagskolen.gjovik.no/pub/tex-archive/systems/texlive/tlnet/install-tl-unx.tar.gz
+RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 RUN tar -xf install-tl-unx.tar.gz
 RUN mv ./install-tl*/ install-tl
 RUN chown -R root install-tl
