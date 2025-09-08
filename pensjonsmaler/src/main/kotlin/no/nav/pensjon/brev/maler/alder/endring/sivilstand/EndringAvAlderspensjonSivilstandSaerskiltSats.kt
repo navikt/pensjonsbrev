@@ -73,7 +73,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndringAvAlderspensjonSivilstandSaerskiltSats :
     RedigerbarTemplate<EndringAvAlderspensjonSivilstandSaerskiltSatsDto> {
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ADERSPENSJON_SAERSKILT_SATS
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
