@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -59,7 +60,7 @@ private inline fun <reified T> readJsonColumn(json: String): T =
     }
 
 fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
-    binary(name).transform(encrypted())
+    binary(name).transform(columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray))
 
 private inline fun <reified T> readJsonBinary(json: ByteArray?): T? =
     try {
@@ -240,9 +241,3 @@ private fun createJdbcUrl(config: Config): String =
         val dbName = getString("name")
         return "jdbc:postgresql://$url:$port/$dbName"
     }
-
-private fun encrypted() = columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray)
-
-
-@JvmInline
-value class EncryptedByteArray(val bytes: ByteArray)

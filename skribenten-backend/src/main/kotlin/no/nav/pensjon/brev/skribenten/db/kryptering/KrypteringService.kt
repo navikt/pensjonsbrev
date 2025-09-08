@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
-import no.nav.pensjon.brev.skribenten.db.EncryptedByteArray
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import javax.crypto.Cipher
@@ -74,3 +73,6 @@ object KrypteringService {
         )
     }
 }
+
+@JvmInline
+value class EncryptedByteArray(val bytes: ByteArray)
