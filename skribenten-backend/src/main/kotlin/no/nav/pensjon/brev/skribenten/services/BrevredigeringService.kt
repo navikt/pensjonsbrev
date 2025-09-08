@@ -619,7 +619,7 @@ private fun Brevredigering.toDto(coverage: Set<LetterMarkupWithDataUsage.Propert
     Dto.Brevredigering(
         info = toBrevInfo(),
         redigertBrev = redigertBrev,
-        redigertBrevHash = lesRedigertBrevHash(),
+        redigertBrevHash = redigertBrevHash,
         saksbehandlerValg = saksbehandlerValg,
         propertyUsage = coverage,
     )

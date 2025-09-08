@@ -107,7 +107,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     private var _redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
     private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
-    val redigertBrevHash by BrevredigeringTable.redigertBrevHash
+    private val _redigertBrevHash by BrevredigeringTable.redigertBrevHash
     private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
@@ -130,7 +130,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             _redigertBrev = letter
         }
 
-    fun lesRedigertBrevHash() = redigertBrevKryptertHash ?: redigertBrevHash
+    val redigertBrevHash: EditLetterHash
+        get() = redigertBrevKryptertHash ?: _redigertBrevHash
 
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
