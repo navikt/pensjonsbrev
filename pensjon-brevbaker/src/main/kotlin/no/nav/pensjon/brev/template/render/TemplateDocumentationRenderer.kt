@@ -282,9 +282,6 @@ object TemplateDocumentationRenderer {
 
             is UnaryOperation.MapValue<*, *> -> Operation(operation.mapper.name, Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.QuotationEnd -> Operation(text = "\"", Documentation.Notation.POSTFIX)
-
-            is UnaryOperation.QuotationStart -> Operation(text = "\"", Documentation.Notation.PREFIX)
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
