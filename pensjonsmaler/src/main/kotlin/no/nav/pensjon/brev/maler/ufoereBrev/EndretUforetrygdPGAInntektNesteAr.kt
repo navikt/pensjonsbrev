@@ -492,8 +492,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet».",
-                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»."
+                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Opplysninger om beregningen».",
+                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Opplysningar om utrekninga»."
                 )
             }
             paragraph {
