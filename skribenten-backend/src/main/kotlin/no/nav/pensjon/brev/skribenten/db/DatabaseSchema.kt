@@ -14,8 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.redigertBrev
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.redigertBrevKryptert
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -85,8 +83,8 @@ object BrevredigeringTable : LongIdTable() {
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
 
 
-    val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
-    val redigertBrevKryptertHash: Column<ByteArray?> = hashColumn("redigertBrevKryptertHash").nullable()
+    val redigertBrevHash: Column<EditLetterHash> = hashColumn("redigertBrevHash")
+    val redigertBrevKryptertHash: Column<EditLetterHash?> = hashColumn("redigertBrevKryptertHash").nullable()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -109,8 +107,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     private var _redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
     private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
-    val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
-    private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash.editLetterHash()
+    val redigertBrevHash by BrevredigeringTable.redigertBrevHash
+    private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
@@ -153,7 +151,7 @@ object DocumentTable : LongIdTable() {
     val pdf: Column<ExposedBlob> = blob("brevpdf")
     val pdfKryptert: Column<ByteArray?> = encryptedBinary("pdfKryptert").nullable()
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-    val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
+    val redigertBrevHash: Column<EditLetterHash> = hashColumn("redigertBrevHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
@@ -162,7 +160,7 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     private var _pdf by DocumentTable.pdf
     private var pdfKryptert by DocumentTable.pdfKryptert
 
-    var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
+    var redigertBrevHash by DocumentTable.redigertBrevHash
     var pdf: ByteArray
         get() = pdfKryptert ?: _pdf.bytes
         set(value) {
