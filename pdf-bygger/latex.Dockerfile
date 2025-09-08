@@ -17,7 +17,7 @@ RUN chown -R root install-tl
 RUN ./install-tl/install-tl --no-interaction -s f -portable -texdir /app/tex -texuserdir /app/texlocal
 
 #Install xetex and required packages from uib using texlive package manager
-RUN tlmgr option repository https://ftp.fagskolen.gjovik.no/pub/tex-archive/systems/texlive/tlnet/
+RUN tlmgr option repository https://ctan.uib.no/pub/tex-archive/systems/texlive/tlnet/
 RUN tlmgr option docfiles 0
 RUN tlmgr option srcfiles 0
 RUN tlmgr install xetex
