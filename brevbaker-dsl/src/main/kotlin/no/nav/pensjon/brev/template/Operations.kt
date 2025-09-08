@@ -95,23 +95,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Any): String = input.toString()
     }
 
-    object QuotationStart : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationStart") {
-        override fun apply(input: Language): String =
-            when (input) {
-                Language.Bokmal -> QuotationMarks.BokmalNynorsk.start
-                Language.Nynorsk -> QuotationMarks.BokmalNynorsk.start
-                Language.English -> QuotationMarks.English.start
-            }
-    }
-
-    object QuotationEnd : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationEnd") {
-        override fun apply(input: Language): String =
-            when (input) {
-                Language.Bokmal -> QuotationMarks.BokmalNynorsk.end
-                Language.Nynorsk -> QuotationMarks.BokmalNynorsk.end
-                Language.English -> QuotationMarks.English.end
-            }
-    }
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {

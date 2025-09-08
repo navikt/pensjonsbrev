@@ -17,12 +17,18 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal construct
         children.add(e)
     }
 
+    override fun addTextContent(e: TextElement<BaseLanguages>) {
+        // Safe because we know that a template that support BaseLanguages will support Lang
+        @Suppress("UNCHECKED_CAST")
+        children.add(e as TextElement<Lang>)
+    }
+
     override fun addTextContent(e: TextElement<Lang>) {
         children.add(e)
     }
 
     override fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine(children.size)))
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine<Lang>(children.size)))
     }
 
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
