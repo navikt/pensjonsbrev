@@ -1,4 +1,4 @@
-import type { Focus, LetterEditorState } from "../model/state";
+import type { Focus, LetterEditorState, LiteralIndex } from "../model/state";
 import {
   demoteHeaderToRow,
   insertTable,
@@ -11,8 +11,10 @@ import {
   removeTableColumn,
   removeTableRow,
 } from "./table";
+import { updateContentText } from "./updateContentText";
 
 export type EditorAction =
+  | { type: "UPDATE_CONTENT_TEXT"; literalIndex: LiteralIndex; text: string }
   | { type: "TABLE_INSERT"; focus: Focus; rows: number; cols: number }
   | { type: "TABLE_REMOVE_ROW" }
   | { type: "TABLE_REMOVE_COLUMN" }
@@ -26,6 +28,9 @@ export type EditorAction =
 
 export const editorRecipeReducer = (draft: LetterEditorState, action: EditorAction) => {
   switch (action.type) {
+    case "UPDATE_CONTENT_TEXT":
+      updateContentText(draft, action.literalIndex, action.text);
+      break;
     case "TABLE_INSERT":
       insertTable(draft, action.focus, action.rows, action.cols);
       break;
