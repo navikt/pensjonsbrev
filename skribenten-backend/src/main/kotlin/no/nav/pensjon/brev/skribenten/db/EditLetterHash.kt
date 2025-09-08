@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.columnTransformer
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<ByteArray>) =
+fun Column<Edit.Letter>.writeHashTo(hash: Column<EditLetterHash>) =
     WithEditLetterHash(this, hash)
 
 fun Table.hashColumn(name: String): Column<EditLetterHash> =
@@ -26,12 +26,12 @@ value class EditLetterHash(val hex: String) {
     }
 }
 
-class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<ByteArray>) {
+class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<EditLetterHash>) {
 
     operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: Edit.Letter) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
-            hash.setValue(thisRef, property, hashBrev(value))
+            hash.setValue(thisRef, property, EditLetterHash.fromBytes(hashBrev(value)))
         }
     }
 

@@ -98,7 +98,7 @@ class MottakerTest {
             redigeresAvNavIdent = principal
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-            skrivRedigertBrev(Edit.Letter(
+            redigertBrev = Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
@@ -116,7 +116,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptySet(),
-            ))
+            )
             sistRedigertAvNavIdent = principal
         }
     }

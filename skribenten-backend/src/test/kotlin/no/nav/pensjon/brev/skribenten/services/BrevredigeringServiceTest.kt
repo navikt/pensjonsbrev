@@ -574,7 +574,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().lesPdf()).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
         }
     }
 
@@ -639,8 +639,8 @@ class BrevredigeringServiceTest {
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         transaction {
-            Brevredigering[brev.info.id].skrivRedigertBrev(
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
+            Brevredigering[brev.info.id].redigertBrev =
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
@@ -669,8 +669,8 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
-                Brevredigering[brev.info.id].skrivRedigertBrev(
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
+                Brevredigering[brev.info.id].redigertBrev =
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
@@ -976,7 +976,7 @@ class BrevredigeringServiceTest {
             }
         }
         transaction {
-            assertThat(Brevredigering[brev.info.id].lesRedigertBrev() == brev.redigertBrev)
+            assertThat(Brevredigering[brev.info.id].redigertBrev == brev.redigertBrev)
         }
     }
 
@@ -1178,8 +1178,8 @@ class BrevredigeringServiceTest {
         assertThat(hash1.hex).isEqualTo(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter.toEdit())))
 
         transaction {
-            Brevredigering[brev.info.id].skrivRedigertBrev(
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit())
+            Brevredigering[brev.info.id].redigertBrev =
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
 
         val hash2 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -1276,7 +1276,7 @@ class BrevredigeringServiceTest {
 
         assertEquals(
             "en ny signatur",
-            transaction { Brevredigering[brev.info.id].lesRedigertBrev().signatur.saksbehandlerNavn })
+            transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
     }
 
     @Test
