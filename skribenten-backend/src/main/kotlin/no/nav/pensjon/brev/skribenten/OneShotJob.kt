@@ -103,14 +103,14 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.sistReservert,
             BrevredigeringTable.redigertBrev
         ).toList()
-        val allePdfer = DocumentTable.select(
-            DocumentTable.brevredigering,
-            DocumentTable.pdf
-        )
-
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
         val kanOppdateres =
             alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+
+        val pdfer = DocumentTable.select(
+            DocumentTable.brevredigering,
+            DocumentTable.pdf
+        )
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
@@ -120,6 +120,14 @@ fun JobConfig.updateBrevredigeringJson() {
                 update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
                     .let { bytes -> EditLetterHash.fromBytes(WithEditLetterHash.hashBrev(bytes)) }
             }
+
+            pdfer.firstOrNull { p -> p[DocumentTable.brevredigering] == brevId }
+                ?.let { pdf ->
+                    DocumentTable.update({ DocumentTable.brevredigering eq brevId }) { update ->
+                        update[DocumentTable.pdfKryptert] = pdf[DocumentTable.pdf].bytes
+                    }
+                }
+
         }
 
         if (alleBrev.size != kanOppdateres.size) {
