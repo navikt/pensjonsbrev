@@ -264,7 +264,9 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             }
 
             //  skattAPendring_001
-            includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
+            showIf(pesysData.ytelseskomponentInformasjon.belopEndring.isOneOf(BeloepEndring.ENDR_OKT, BeloepEndring.ENDR_RED)) {
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
+            }
 
             showIf(pesysData.etterbetaling) {
                 // etterbetalingAP_002
