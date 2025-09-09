@@ -8,7 +8,6 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
-import java.net.URL
 import java.net.URI
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.Authorization")

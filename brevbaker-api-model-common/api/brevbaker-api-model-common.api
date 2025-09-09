@@ -32,15 +32,6 @@ public final class no/nav/brev/Landkoder {
 	public final fun getLandkoderMedNavn ()Ljava/util/List;
 }
 
-public final class no/nav/brev/brevbaker/AsyncPDFCompilationOutput {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getBase64PDF ()Ljava/lang/String;
-	public final fun getError ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 	public fun <init> ([B)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -56,19 +47,6 @@ public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pen
 	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
 	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/api/model/BestillBrevRequestAsync : no/nav/pensjon/brev/api/model/BrevRequest {
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
-	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
-	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public final fun getMessageId ()Ljava/lang/String;
-	public final fun getReplyTopic ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
