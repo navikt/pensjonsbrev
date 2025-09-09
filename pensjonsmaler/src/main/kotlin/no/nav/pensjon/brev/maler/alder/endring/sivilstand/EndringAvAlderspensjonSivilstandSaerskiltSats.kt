@@ -1,16 +1,12 @@
 package no.nav.pensjon.brev.maler.alder.endring.sivilstand
 
-import no.nav.pensjon.brev.api.model.KravArsakType
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnbelop
@@ -45,7 +41,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.OmregningGarantiPen
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.SivilstandHjemler
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -58,9 +53,9 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -95,11 +90,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
         val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = true)
         val sivilstandBestemtLitenBokstav = pesysData.sivilstand.bestemtForm(storBokstav = false)
         val grunnpensjon = pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
-        val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
-        val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
-        val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget
-        val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
@@ -258,8 +249,10 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                 }
             }
 
-            showIf(saerskiltSatsErBrukt) {
-                includePhrase(BetydningForUtbetaling(regelverkType, saksbehandlerValg.beloepEndring))
+            ifNotNull(saksbehandlerValg.beloepEndring) { beloepEndring ->
+                showIf(saerskiltSatsErBrukt) {
+                    includePhrase(BetydningForUtbetaling(regelverkType, beloepEndring))
+                }
             }
 
             showIf(saksbehandlerValg.aarligKontrollEPS) {
@@ -298,19 +291,27 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
 
             includePhrase(Utbetalingsinformasjon)
 
-            includePhrase(
-                SivilstandHjemler(
-                    regelverkType = regelverkType,
-                    kravArsakType = KravArsakType.VURDER_SERSKILT_SATS.expr(),
-                    sivilstand = sivilstand,
-                    saertilleggInnvilget = saertilleggInnvilget,
-                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
-                    minstenivaaIndividuellInnvilget = minstenivaaIndividuellInnvilget,
-                    minstenivaaPensjonistParInnvilget = minstenivaaPensjonistParInnvilget,
-                    garantipensjonInnvilget = garantipensjonInnvilget,
-                    saerskiltSatsErBrukt = saerskiltSatsErBrukt,
-                ),
-            )
+            showIf(saerskiltSatsErBrukt) {
+                paragraph {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
+                        english { + "This decision was made pursuant to the provisions of §§ " },
+                    )
+                    showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                        text(
+                            bokmal { + "1-5, " },
+                            nynorsk { + "1-5, " },
+                            english { + "1-5, " },
+                        )
+                    }
+                    text(
+                        bokmal { + "19-8, 19-9 og 22-12." },
+                        nynorsk { + "19-8, 19-9 og 22-12." },
+                        english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
+                    )
+                }
+            }
 
             // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
             showIf(saksbehandlerValg.feilutbetaling) {
