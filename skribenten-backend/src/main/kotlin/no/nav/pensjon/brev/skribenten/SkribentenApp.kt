@@ -24,6 +24,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
@@ -36,6 +37,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 import kotlin.apply
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -140,6 +142,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     monitor.subscribe(ServerReady) {
         async {
+            delay(1.minutes)
             oneShotJobs(skribentenConfig) {
                 job("redigertBrev-kryptert") {
                     updateBrevredigeringJson()
