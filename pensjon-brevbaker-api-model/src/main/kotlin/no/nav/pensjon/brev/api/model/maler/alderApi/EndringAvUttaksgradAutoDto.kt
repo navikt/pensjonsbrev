@@ -23,8 +23,8 @@ data class EndringAvUttaksgradAutoDto(
     data class AlderspensjonVedVirk(
         val privatAFPerBrukt: Boolean,
         val skjermingstilleggInnvilget: Boolean,
-        val totalpensjon: Kroner,
+        val totalpensjon: Kroner?,
         val uforeKombinertMedAlder: Boolean,
-        val uttaksgrad: Int
+        val uttaksgrad: Int?
     )
 }
