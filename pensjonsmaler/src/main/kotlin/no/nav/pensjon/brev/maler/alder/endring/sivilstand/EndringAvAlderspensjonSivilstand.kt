@@ -604,17 +604,6 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             english { + " and 22-12." },
                         )
                     }
-
-                    showIf(kravArsakType.isOneOf(ALDERSOVERGANG)) {
-                        paragraph {
-                            text(
-                                bokmal { + "Vedtaket er gjort etter folketrygdloven § 20-20." },
-                                nynorsk { + "Vedtaket er gjort etter folketrygdlova § 20-20." },
-                                english { +
-                                "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act." },
-                            )
-                        }
-                    }
                 }
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
