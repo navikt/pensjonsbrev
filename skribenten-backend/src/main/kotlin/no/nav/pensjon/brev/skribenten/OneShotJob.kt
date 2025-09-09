@@ -2,13 +2,11 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -120,8 +118,11 @@ fun JobConfig.updateBrevredigeringJson() {
             }
         }
 
-        if (alleBrev.size != kanOppdateres.size) {
-            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
+        val kryptertNull = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevKryptert).where({
+            BrevredigeringTable.redigertBrevKryptert.isNull()
+        }).map { it[BrevredigeringTable.id].value }
+        if (kryptertNull.isNotEmpty()) {
+            logger.info("Kunne ikke oppdatere brevene ${kryptertNull.joinToString(",")}")
             completed = false
         }
     }
