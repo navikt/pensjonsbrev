@@ -23,6 +23,7 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.async
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
@@ -62,7 +63,7 @@ fun main() {
     }.start(wait = true)
 }
 
-suspend fun Application.skribentenApp(skribentenConfig: Config) {
+fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -137,11 +138,14 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
 
-    oneShotJobs(skribentenConfig) {
-        job("redigertBrev-kryptert") {
-            updateBrevredigeringJson()
+    monitor.subscribe(ServerReady) {
+        async {
+            oneShotJobs(skribentenConfig) {
+                job("redigertBrev-kryptert") {
+                    updateBrevredigeringJson()
+                }
+            }
         }
-        // Blir utført når appen starter
     }
 
     monitor.subscribe(ApplicationStopPreparing) {
