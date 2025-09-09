@@ -7,24 +7,27 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.time.LocalDate
 
 
 @Suppress("unused")
 data class EndringAvUttaksgradAutoDto(
     val alderspensjonVedVirk: AlderspensjonVedVirk,
-    val harFlereBeregningsperioder: Boolean,
+    val harFlereBeregningsperioder: Boolean,  // v1.BeregnetPensjonPerManed
     val regelverkType: AlderspensjonRegelverkType,
+    val virkDatoFom: LocalDate,  // v3.Krav
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
 ): BrevbakerBrevdata {
 
+    // v5.Alderspensjon
     data class AlderspensjonVedVirk(
         val privatAFPerBrukt: Boolean,
         val skjermingstilleggInnvilget: Boolean,
-        val totalpensjon: Kroner?,
+        val totalPensjon: Kroner,
         val uforeKombinertMedAlder: Boolean,
-        val uttaksgrad: Int?
+        val uttaksgrad: Int
     )
 }
