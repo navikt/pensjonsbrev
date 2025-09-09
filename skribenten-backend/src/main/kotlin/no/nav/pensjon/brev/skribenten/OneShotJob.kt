@@ -30,12 +30,14 @@ class OneShotJobConfig {
      */
     fun job(uniqeName: String, block: JobConfig.() -> Unit) {
         try {
-            transaction {
-                val existing = OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
-                if (existing == null) {
-                    logger.info("One-shot job started: '$uniqeName'")
-                    val job = JobConfig(uniqeName).apply(block)
+            val existing = transaction {
+                OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
+            }
+            if (existing == null) {
+                logger.info("One-shot job started: '$uniqeName'")
+                val job = JobConfig(uniqeName).apply(block)
 
+                transaction {
                     if (job.completed) {
                         OneShotJobTable.insert {
                             it[id] = uniqeName
@@ -45,9 +47,9 @@ class OneShotJobConfig {
                     } else {
                         logger.warn("One-shot job '$uniqeName' did not complete successfully. It may need to be re-run.")
                     }
-                } else {
-                    logger.info("One-shot job '$uniqeName' has already been executed. Skipping.")
                 }
+            } else {
+                logger.info("One-shot job '$uniqeName' has already been executed. Skipping.")
             }
         } catch (e: Throwable) {
             logger.error("Error executing one-shot job '$uniqeName': ${e.message}", e)
@@ -104,7 +106,9 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.sistReservert,
             BrevredigeringTable.redigertBrev
         ).toList()
-        val kanOppdateres = finnBrevSomKanOppdateres(alleBrev)
+        val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+        val kanOppdateres =
+            alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
@@ -121,29 +125,4 @@ fun JobConfig.updateBrevredigeringJson() {
             completed = false
         }
     }
-}
-fun JobConfig.krypterPdfIDocumenttabellen() {
-    val alleBrev = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.sistReservert).toList()
-    val kanOppdateres = finnBrevSomKanOppdateres(alleBrev)
-
-    val pdfer = DocumentTable.select(DocumentTable.brevredigering, DocumentTable.pdf)
-
-    kanOppdateres.forEach {
-        val brevId = it[BrevredigeringTable.id]
-        pdfer.firstOrNull { pdf -> pdf[DocumentTable.brevredigering] == brevId }
-            ?.let { pdf -> DocumentTable.update({ DocumentTable.brevredigering eq brevId }) { update ->
-                    update[DocumentTable.pdfKryptert] = pdf[DocumentTable.pdf].bytes
-                }
-            }
-    }
-
-    if (alleBrev.size != kanOppdateres.size) {
-        logger.info("Oppdaterte for pdf-kryptering ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
-        completed = false
-    }
-}
-
-private fun finnBrevSomKanOppdateres(alleBrev: List<ResultRow>): List<ResultRow> {
-    val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-    return alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
 }

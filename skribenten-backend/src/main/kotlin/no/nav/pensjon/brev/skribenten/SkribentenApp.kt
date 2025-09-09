@@ -30,12 +30,16 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import kotlin.apply
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -44,14 +48,18 @@ import kotlin.time.Duration.Companion.seconds
 fun main() {
     val skribentenConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(ConfigFactory.load("azuread"), ConfigResolveOptions.defaults().setAllowUnresolved(true)) // loads azuread secrets for local
+            .resolveWith(
+                ConfigFactory.load("azuread"),
+                ConfigResolveOptions.defaults().setAllowUnresolved(true)
+            ) // loads azuread secrets for local
             .resolveWith(ConfigFactory.load("unleash"))
             .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
     KrypteringService.init(skribentenConfig.getString("krypteringsnoekkel"))
 
-    embeddedServer(Netty,
+    embeddedServer(
+        Netty,
         configure = {
             connectors.add(EngineConnectorBuilder().apply {
                 host = "0.0.0.0"
@@ -146,6 +154,25 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             oneShotJobs(skribentenConfig) {
                 job("redigertBrev-kryptert") {
                     updateBrevredigeringJson()
+                }
+                job("document-pdf-kryptert") {
+                    val rows: List<Long> = transaction {
+                        DocumentTable.select(DocumentTable.brevredigering)
+                            .map { it[DocumentTable.brevredigering].value }
+                    }
+                    rows.forEach { id ->
+                        transaction {
+                            val pdf: ExposedBlob? = DocumentTable.select(DocumentTable.pdf)
+                                .where { DocumentTable.brevredigering eq id }
+                                .where { DocumentTable.pdfKryptert.isNull() }
+                                .singleOrNull()?.get(DocumentTable.pdf)
+                            if (pdf != null) {
+                                DocumentTable.update({ DocumentTable.brevredigering eq id }) { row ->
+                                    row[DocumentTable.pdfKryptert] = pdf.bytes
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
