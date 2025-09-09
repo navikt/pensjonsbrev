@@ -142,7 +142,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     monitor.subscribe(ServerReady) {
         async {
-            delay(1.minutes)
+            delay(5.minutes)
             oneShotJobs(skribentenConfig) {
                 job("redigertBrev-kryptert") {
                     updateBrevredigeringJson()
