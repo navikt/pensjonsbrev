@@ -74,6 +74,10 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         )
     ) {
         val endretUt = uforetrygd.endringsbelop.notEqualTo(0)
+        val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggFellesbarn.notNull()
+        val fellesbarnPeriodisert = barnetilleggFellesbarn.periodisert_safe.ifNull(false)
+        val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)
+
         title {
             showIf(endretUt and not(btfbEndret or btsbEndret)) {
                 text(
@@ -397,7 +401,10 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }
 
-                showIf((barnetilleggFellesbarn.periodisert_safe.ifNull(false) and btfbEndret) or (barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false) and btsbEndret)) {
+                showIf((btfbEndret and fellesbarnPeriodisert)
+                        or (btsbEndret and sarkullsbarnPeriodisert)
+                        or (harBarnetillegg and sokerMottarApIlaAret)
+                ) {
                     paragraph {
                         text(
                             Bokmal to "Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløp for neste år justert slik at det kun gjelder for perioden du mottar barnetillegg.",
@@ -492,8 +499,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet».",
-                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»."
+                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Opplysninger om beregningen».",
+                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Opplysningar om utrekninga»."
                 )
             }
             paragraph {

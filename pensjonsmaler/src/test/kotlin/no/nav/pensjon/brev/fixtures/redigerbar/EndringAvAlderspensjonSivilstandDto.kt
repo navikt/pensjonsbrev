@@ -54,7 +54,6 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                 kravAarsak = KravArsakType.SIVILSTANDSENDRING,
                 kravVirkDatoFom = LocalDate.of(2025, 6, 1),
                 regelverkType = AlderspensjonRegelverkType.AP2011,
-                saerskiltSatsErBrukt = false,
                 sivilstand = MetaforceSivilstand.GIFT,
                 vedtakEtterbetaling = false,
                 maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
