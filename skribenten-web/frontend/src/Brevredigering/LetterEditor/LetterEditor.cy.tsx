@@ -183,6 +183,53 @@ describe("<LetterEditor />", () => {
       cy.contains("Informasjon om saksbehandlingstiden vår");
     });
   });
+
+  describe("Presentation", () => {
+    it("displays verge only when verge is present", () => {
+      // With 'verge'
+      cy.mount(
+        <EditorWithState
+          initial={{
+            ...exampleLetter1,
+            sakspart: {
+              gjelderNavn: "Test Testeson",
+              gjelderFoedselsnummer: "12345678910",
+              vergeNavn: "Vergio Vergburg",
+              saksnummer: "1234",
+              dokumentDato: "2024-03-15",
+            },
+          }}
+        />,
+      );
+
+      cy.contains("Verge:").should("exist");
+      cy.contains("Vergio Vergburg").should("exist");
+      cy.contains("Navn:").should("not.exist");
+      cy.contains("Saken gjelder:").should("exist");
+      cy.contains("Test Testeson").should("exist");
+
+      // Without 'verge'
+      cy.mount(
+        <EditorWithState
+          initial={{
+            ...exampleLetter1,
+            sakspart: {
+              gjelderNavn: "Test Testeson",
+              gjelderFoedselsnummer: "12345678910",
+              saksnummer: "1234",
+              dokumentDato: "2024-03-15",
+            },
+          }}
+        />,
+      );
+
+      cy.contains("Verge:").should("not.exist");
+      cy.contains("Vergio Vergburg").should("not.exist");
+      cy.contains("Navn:").should("exist");
+      cy.contains("Saken gjelder:").should("not.exist");
+      cy.contains("Test Testeson").should("exist");
+    });
+  });
 });
 
 function move(key: string, times: number) {

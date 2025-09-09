@@ -9,16 +9,16 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.serialization.jackson.jackson
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.utils.unwrapCancellationException
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import kotlinx.io.IOException
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -28,18 +28,13 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
+import kotlin.math.pow
+import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
@@ -66,9 +61,32 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
+    private val scope = config.getString("scope")
     private val client = HttpClient(CIO) {
         defaultRequest {
             url(brevbakerUrl)
+        }
+        install(HttpRequestRetry) {
+            this.maxRetries = 3
+            delayMillis {
+                minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
+            }
+            retryOnExceptionIf { req, cause ->
+                if (req.method == HttpMethod.Post && req.url.build().segments.last() == "pdf") {
+                    return@retryOnExceptionIf false
+                }
+                val actualCause = cause.unwrapCancellationException()
+                val doRetry = actualCause is HttpRequestTimeoutException
+                        || actualCause is ConnectTimeoutException
+                        || actualCause is IOException
+                if (!doRetry) {
+                    logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                }
+                doRetry
+            }
+        }
+        engine {
+            requestTimeout = 60.seconds.inWholeMilliseconds
         }
         install(ContentNegotiation) {
             jackson {
@@ -79,7 +97,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
         }
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
+        callIdAndOnBehalfOfClient(scope, authService)
     }
 
     /**

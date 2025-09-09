@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.PensjonsopptjeningInformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -65,10 +64,8 @@ object EndringAvAlderspensjonPgaGarantitillegg :
                 ),
         ) {
             val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
-            val garantitillegg =
-                pesysData.beregnetPensjonPerManedVedVirk.garantitillegg_safe.ifNull(then = Kroner(0))
+            val garantitillegg = pesysData.beregnetPensjonPerManedVedVirk.garantitillegg_safe.ifNull(then = Kroner(0))
             val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
-            val totalPensjon = pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.format()
             val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
             val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
 
@@ -148,7 +145,7 @@ object EndringAvAlderspensjonPgaGarantitillegg :
                         ),
                     )
                 }.orShow {
-                    includePhrase(DuFaarAP(kravVirkDatoFom, totalPensjon))
+                    includePhrase(DuFaarAP(pesysData.kravVirkDatoFom, pesysData.beregnetPensjonPerManedVedVirk.totalPensjon))
                 }
 
                 includePhrase(Utbetalingsinformasjon)

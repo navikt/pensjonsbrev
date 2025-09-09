@@ -198,7 +198,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           overrideOppsummering={(edit) => (
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
-              <HStack align="start" gap="8">
+              <HStack align="start" gap="8" wrap={false}>
                 <OppsummeringAvMottaker
                   mottaker={props.brev.mottaker ?? null}
                   saksId={props.saksId}

@@ -33,7 +33,7 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = produce((dr
             const newLiteral = splitLiteralAtOffset(content, offset);
             addElements([createNewLine(), newLiteral], focus.contentIndex + 1, block.content, block.deletedContent);
           }
-          draft.isDirty = true;
+          draft.saveStatus = "DIRTY";
           break;
         }
         case VARIABLE: {
@@ -41,7 +41,7 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = produce((dr
         }
         case NEW_LINE: {
           addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
-          draft.isDirty = true;
+          draft.saveStatus = "DIRTY";
           break;
         }
       }

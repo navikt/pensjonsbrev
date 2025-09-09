@@ -62,10 +62,12 @@ export const LetterEditor = ({
             align-self: start;
             max-width: 694px;
             min-width: 480px;
+            ${freeze && "cursor: wait;"}
           `}
         >
           <SakspartView
             sakspart={letter.sakspart}
+            spraak={editorState.info.spraak}
             wrapperStyles={css`
               margin-bottom: 1.88rem;
             `}

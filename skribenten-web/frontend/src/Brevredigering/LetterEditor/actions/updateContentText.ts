@@ -21,7 +21,7 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
         const literal = colSpec?.headerContent.text[focus.cellContentIndex];
         if (isLiteral(literal)) {
           updateLiteralText(literal, text);
-          draft.isDirty = true;
+          draft.saveStatus = "DIRTY";
         }
         return;
       }
@@ -31,18 +31,18 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
       const literal = cell?.text[focus.cellContentIndex];
       if (isLiteral(literal)) {
         updateLiteralText(literal, text);
-        draft.isDirty = true;
+        draft.saveStatus = "DIRTY";
       }
       return;
     } else if (isLiteral(paraContent)) {
       updateLiteralText(paraContent, text);
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (isItemList(paraContent)) {
       if ("itemIndex" in literalIndex) {
         const itemContent = paraContent.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
         if (isLiteral(itemContent)) {
           updateLiteralText(itemContent, text);
-          draft.isDirty = true;
+          draft.saveStatus = "DIRTY";
         } else {
           // eslint-disable-next-line no-console
           console.warn("Cannot update text of:", itemContent.type);
