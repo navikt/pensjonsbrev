@@ -74,7 +74,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         )
     ) {
         val endretUt = uforetrygd.endringsbelop.notEqualTo(0)
-        val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggFellesbarn.notNull()
+        val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()
         val fellesbarnPeriodisert = barnetilleggFellesbarn.periodisert_safe.ifNull(false)
         val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)
 
