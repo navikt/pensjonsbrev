@@ -35,6 +35,7 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             behandlingKontekst = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.BehandlingKontekst(
                 konteksttypeErKorrigeringopptjening = false
             ),
+            etterbetaling = true,
             orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkatt = Fixtures.create(MaanedligPensjonFoerSkattDto::class),
             maanedligPensjonFoerSkattAP2025 = Fixtures.create(MaanedligPensjonFoerSkattAP2025Dto::class),
