@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -41,7 +40,7 @@ data class SivilstandHjemler(
                     nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
                     english { + "This decision was made pursuant to the provisions of §§ " },
                 )
-                includePhrase(SivilstandIntro(sivilstand))
+                includePhrase(SivilstandSamboerHjemler(sivilstand))
                 showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
                     text(
                         bokmal { + ", 3-3" },
@@ -104,7 +103,7 @@ data class SivilstandHjemler(
                     english { + "This decision was made pursuant to the provisions of §§ " },
                 )
                 showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
-                    includePhrase(SivilstandIntro(sivilstand))
+                    includePhrase(SivilstandSamboerHjemler(sivilstand))
                     showIf(saertilleggInnvilget) {
                         text(
                             bokmal { + ", 3-3" },
@@ -153,7 +152,7 @@ data class SivilstandHjemler(
     }
 }
 
-private data class SivilstandIntro(
+private data class SivilstandSamboerHjemler(
     val sivilstand: Expression<MetaforceSivilstand>,
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
