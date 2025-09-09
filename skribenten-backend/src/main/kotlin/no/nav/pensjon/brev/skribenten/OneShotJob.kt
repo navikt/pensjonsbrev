@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -103,14 +104,7 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.sistReservert,
             BrevredigeringTable.redigertBrev
         ).toList()
-        val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres =
-            alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
-
-        val pdfer = DocumentTable.select(
-            DocumentTable.brevredigering,
-            DocumentTable.pdf
-        )
+        val kanOppdateres = finnBrevSomKanOppdateres(alleBrev)
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
@@ -120,14 +114,6 @@ fun JobConfig.updateBrevredigeringJson() {
                 update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
                     .let { bytes -> EditLetterHash.fromBytes(WithEditLetterHash.hashBrev(bytes)) }
             }
-
-            pdfer.firstOrNull { p -> p[DocumentTable.brevredigering] == brevId }
-                ?.let { pdf ->
-                    DocumentTable.update({ DocumentTable.brevredigering eq brevId }) { update ->
-                        update[DocumentTable.pdfKryptert] = pdf[DocumentTable.pdf].bytes
-                    }
-                }
-
         }
 
         if (alleBrev.size != kanOppdateres.size) {
@@ -135,4 +121,29 @@ fun JobConfig.updateBrevredigeringJson() {
             completed = false
         }
     }
+}
+fun JobConfig.krypterPdfIDocumenttabellen() {
+    val alleBrev = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.sistReservert).toList()
+    val kanOppdateres = finnBrevSomKanOppdateres(alleBrev)
+
+    val pdfer = DocumentTable.select(DocumentTable.brevredigering, DocumentTable.pdf)
+
+    kanOppdateres.forEach {
+        val brevId = it[BrevredigeringTable.id]
+        pdfer.firstOrNull { pdf -> pdf[DocumentTable.brevredigering] == brevId }
+            ?.let { pdf -> DocumentTable.update({ DocumentTable.brevredigering eq brevId }) { update ->
+                    update[DocumentTable.pdfKryptert] = pdf[DocumentTable.pdf].bytes
+                }
+            }
+    }
+
+    if (alleBrev.size != kanOppdateres.size) {
+        logger.info("Oppdaterte for pdf-kryptering ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
+        completed = false
+    }
+}
+
+private fun finnBrevSomKanOppdateres(alleBrev: List<ResultRow>): List<ResultRow> {
+    val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+    return alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
 }
