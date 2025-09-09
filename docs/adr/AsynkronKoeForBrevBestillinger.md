@@ -19,9 +19,13 @@ feil (5xx)
 * [Kostnader ved ubrukt reservert CPU kapasitet på NAIS]
 
 ## Decision Outcome
-Vi lager en kafka kø. Meldings-størrelsen kan økes, og ved test virker det som om meldingene 
+~~Vi lager en kafka kø. Meldings-størrelsen kan økes, og ved test virker det som om meldingene 
 er godt innenfor grensene. Kafka er godt støttet av NAIS og utviklere har bedre kjennskap til Kafka enn Redis.
-Redis er også ikke like utprøvd som en kø mellom ulike tjenester.
+Redis er også ikke like utprøvd som en kø mellom ulike tjenester.~~
+Under implementasjon ble det tydelig at kompleksiteten ble for høy i pesys.
+Endringen krever at bestillings-flyter også lytter på en kø på vei tilbake og får ansvaret for retry. 
+Vi løser heller problemet ved å innføre circuit-breakers hos konsumenter av tjenesten slik at de stopper seg selv
+fra å skape for mye trafikk.
 
 ### Positive Consequences <!-- optional -->
 
