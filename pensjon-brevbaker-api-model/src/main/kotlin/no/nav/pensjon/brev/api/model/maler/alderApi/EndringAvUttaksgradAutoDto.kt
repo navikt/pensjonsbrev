@@ -15,7 +15,7 @@ data class EndringAvUttaksgradAutoDto(
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val harFlereBeregningsperioder: Boolean,  // v1.BeregnetPensjonPerManed
     val regelverkType: AlderspensjonRegelverkType,
-    val virkDatoFom: LocalDate,  // v3.Krav
+    val kravVirkDatoFom: LocalDate,  // v3.Krav
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?,
