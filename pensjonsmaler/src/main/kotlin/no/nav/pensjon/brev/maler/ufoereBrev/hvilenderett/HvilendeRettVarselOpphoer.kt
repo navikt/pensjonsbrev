@@ -32,13 +32,13 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    bokmal { + "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1.2026 hvis du ikke har rett " +
-                            "til utbetaling av uføretrygd i 2024 og 2025." }
+                    bokmal { + "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1.2027 hvis du ikke har rett " +
+                            "til utbetaling av uføretrygd i 2025 og 2026." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har siden 2016 ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
+                    bokmal { + "Du har siden 2017 ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
                             "av oppjustert inntekt før uførhet. Du har derfor hatt innvilget en hvilende rett." }
                 )
             }
@@ -58,13 +58,13 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2016. Har du heller ikke rett til utbetaling " +
-                            "av uføretrygd i 2024 og 2025, vil retten til uføretrygd opphøre fra 1.1.2026. " +
+                            "av uføretrygd i 2025 og 2026, vil retten til uføretrygd opphøre fra 1.1.2026. " +
                             "Ved opphør av uføretrygden, vil du få eget vedtak om dette." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i 2024 eller 2025, " +
+                    bokmal { + "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i 2025 eller 2026, " +
                             "vil du igjen ha rett til utbetaling av uføretrygd. Du vil da opparbeide deg retten til en ny periode med hvilende rett." },
                 )
             }

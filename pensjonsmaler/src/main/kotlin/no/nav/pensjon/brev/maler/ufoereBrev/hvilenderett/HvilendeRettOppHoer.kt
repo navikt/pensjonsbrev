@@ -33,7 +33,7 @@ object HvilendeRettOppHoer : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    bokmal { + "Vi opphører uføretrygden din fra 1.1.2026 fordi du har hatt sammenhengende 10 år med hvilende rett. I tidligere brev har vi opplyst at uføretrygden din stanser fra 1.1.2026 hvis du ikke har fått utbetaling av uføretrygd i 2024 og 2025." },
+                    bokmal { + "Vi opphører uføretrygden din fra 1.1.2025 fordi du har hatt sammenhengende 10 år med hvilende rett. I tidligere brev har vi opplyst at uføretrygden din stanser fra 1.1.2025 hvis du ikke har fått utbetaling av uføretrygd i 2023 og 2024." },
                 )
             }
             title1 {
@@ -48,7 +48,7 @@ object HvilendeRettOppHoer : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2016 og du har hatt 10 år sammenhengende med hvilende rett. Derfor opphører uføretrygden din." },
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2015 og du har hatt 10 år sammenhengende med hvilende rett. Derfor opphører uføretrygden din." },
                 )
             }
             paragraph {
