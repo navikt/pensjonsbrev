@@ -59,7 +59,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        settOppRetry(logger)
+        settOppRetry(logger, maxRetries = 2)
     }
 
     private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
