@@ -11,14 +11,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.utils.unwrapCancellationException
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import kotlinx.io.IOException
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -32,8 +29,6 @@ import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
-import kotlin.math.pow
-import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
@@ -66,25 +61,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
         defaultRequest {
             url(brevbakerUrl)
         }
-        install(HttpRequestRetry) {
-            this.maxRetries = 3
-            delayMillis {
-                minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
-            }
-            retryOnExceptionIf { req, cause ->
-                if (req.method == HttpMethod.Post && req.url.build().segments.last() == "pdf") {
-                    return@retryOnExceptionIf false
-                }
-                val actualCause = cause.unwrapCancellationException()
-                val doRetry = actualCause is HttpRequestTimeoutException
-                        || actualCause is ConnectTimeoutException
-                        || actualCause is IOException
-                if (!doRetry) {
-                    logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
-                }
-                doRetry
-            }
-        }
+        settOppRetry(logger, { req -> req.method == HttpMethod.Post && req.url.build().segments.last() == "pdf" })
         engine {
             requestTimeout = 60.seconds.inWholeMilliseconds
         }
