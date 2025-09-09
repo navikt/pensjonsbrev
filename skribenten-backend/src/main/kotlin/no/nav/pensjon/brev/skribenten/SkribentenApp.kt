@@ -37,6 +37,7 @@ import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -163,8 +164,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                     rows.forEach { id ->
                         transaction {
                             val pdf: ExposedBlob? = DocumentTable.select(DocumentTable.pdf)
-                                .where { DocumentTable.brevredigering eq id }
-                                .where { DocumentTable.pdfKryptert.isNull() }
+                                .where { (DocumentTable.brevredigering eq id).and { DocumentTable.pdfKryptert.isNull() } }
                                 .singleOrNull()?.get(DocumentTable.pdf)
                             if (pdf != null) {
                                 DocumentTable.update({ DocumentTable.brevredigering eq id }) { row ->
