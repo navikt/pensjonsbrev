@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.alder
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.privatAFPerBrukt
@@ -9,16 +11,29 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.harFlereBeregningsperioder
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -30,6 +45,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 Malen har 2 deler:
 Endring i uttaksgrad -> når bruker endrer uttaksgrad til en uttaksgrad større enn null
 Stans av alderspensjon -> når bruker endrer uttaksgrad til null */
+
+// opphorETBegrunn, opphorBTBegrunn og opphorBTETBegrunn er fjernet fra malen
 
 @TemplateModelHelpers
 object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
@@ -86,8 +103,48 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
 
                 includePhrase(Utbetalingsinformasjon)
 
-                showIf(harFlereBeregningsperioder) {
-                                     includePhrase(FlereBeregningsperioder)
+                showIf(harFlereBeregningsperioder and alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
+                    includePhrase(Felles.FlereBeregningsperioder)
+                }
+
+                showIf(regelverkType.isOneOf(AP2011)) {
+                    // endrUtaksgradAP2011
+                    paragraph {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12." },
+                            english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
+                        )
+                    }
+                }.orShowIf(regelverkType.isOneOf(AP2016)) {
+                    // endrUtaksgradAP2016
+                    paragraph {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                            english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
+                        )
+                    }
+                }.orShowIf(regelverkType.isOneOf(AP2025)) {
+                    // endrUtaksgradAP2025Soknad
+                    paragraph {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-14, 20-16 og 22-13." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-14, 20-16 og 22-13." },
+                            english { +"This decision was made pursuant to the provisions of §§ 20-14, 20-16 and 22-13 of the National Insurance Act." }
+                        )
+                    }
+                }
+
+                showIf(alderspensjonVedVirk.uttaksgrad.lessThan(100)) {
+                    // gradsendrAPSoknadInfo_001
+                    paragraph {
+                        text(
+                            bokmal { + "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
+                            nynorsk { + "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden." },
+                            english { + "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
+                        )
+                    }
                 }
             }
         }
