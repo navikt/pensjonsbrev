@@ -3,11 +3,8 @@ package no.nav.pensjon.brev.maler.alder
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalpensjon_safe
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder_safe
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad_safe
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.virkDatoFom
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
@@ -45,9 +42,9 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
         ) {
             title {
                 text(
-                    bokmal { +"Vi har innvilget søknaden din om " + alderspensjonVedVirk.uttaksgrad + " prosent alderspensjon." },
-                    nynorsk { +"Vi har innvilga søknaden din om " + alderspensjonVedVirk.uttaksgrad + " prosent alderspensjon." },
-                    english { +"We have granted your application for " + alderspensjonVedVirk.uttaksgrad + " percent retirement pension." }
+                    bokmal { +"Vi har innvilget søknaden din om ".expr() + alderspensjonVedVirk.uttaksgrad + " prosent alderspensjon." },
+                    nynorsk { +"Vi har innvilga søknaden din om ".expr() + alderspensjonVedVirk.uttaksgrad + " prosent alderspensjon." },
+                    english { +"We have granted your application for ".expr() + alderspensjonVedVirk.uttaksgrad + " percent retirement pension." }
                 )
             }
             outline {
