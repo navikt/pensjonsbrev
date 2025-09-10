@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
+import java.time.Month
 
 data class AvsnittBeskrivelse(
     val opptjeningType: Expression<OpptjeningType>,
@@ -494,12 +495,14 @@ data class AvsnittEtterbetaling(
                 )
             }
 
-            paragraph {
-                text(
-                    Language.Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
-                    Language.Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
-                    Language.English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates."
-                )
+            showIf(virkFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
+                        Language.Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
+                        Language.English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates."
+                    )
+                }
             }
         }
     }
