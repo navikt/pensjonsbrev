@@ -219,7 +219,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     title1 {
                         text(
                             Bokmal to "Derfor oppjusterer vi din og annen forelders inntekt",
-                            Nynorsk to "Derfor oppjusterer vi inntekta di og annen forelder",
+                            Nynorsk to "Derfor oppjusterer vi di og annen forelders inntekt",
                         )
                     }
                     paragraph {
