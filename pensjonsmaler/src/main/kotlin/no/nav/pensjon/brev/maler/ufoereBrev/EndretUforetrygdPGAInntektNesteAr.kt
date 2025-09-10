@@ -707,18 +707,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     Nynorsk to "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL."
                 )
             }
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram."
-                )
-            }
 
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
 
