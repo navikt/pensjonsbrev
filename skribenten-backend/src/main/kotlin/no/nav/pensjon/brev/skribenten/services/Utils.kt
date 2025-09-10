@@ -22,7 +22,7 @@ fun HttpClientConfig<*>.callIdAndOnBehalfOfClient(scope: String, authService: Au
     }
 }
 
-fun HttpClientConfig<*>.settOppRetry(logger: Logger, maxRetries: Int = 10, unntak: ((req: HttpRequestBuilder) -> Boolean) = { false } ) {
+fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, unntak: ((req: HttpRequestBuilder) -> Boolean) = { false } ) {
     install(HttpRequestRetry) {
         this.maxRetries = maxRetries
         delayMillis {

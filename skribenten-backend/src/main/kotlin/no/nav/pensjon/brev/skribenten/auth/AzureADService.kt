@@ -17,7 +17,7 @@ import io.ktor.http.Parameters
 import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.services.settOppRetry
+import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
@@ -59,7 +59,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        settOppRetry(logger, maxRetries = 2)
+        installRetry(logger, maxRetries = 2)
     }
 
     private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
