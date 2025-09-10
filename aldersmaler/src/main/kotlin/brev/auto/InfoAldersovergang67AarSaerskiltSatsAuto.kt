@@ -108,8 +108,6 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                     text(bokmal { +"Husk å merke forsendelsen med både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
                 }
                 paragraph {
-                    text(bokmal { +"Ƽ" })
-                    newline()
                     text(bokmal { +"Nav Familie- og pensjonsytelser" })
                     newline()
                     text(bokmal { +"PB 6600 Etterstad" })
