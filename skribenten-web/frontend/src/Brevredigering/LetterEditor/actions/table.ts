@@ -3,6 +3,7 @@ import type { Draft } from "immer";
 import type { Table } from "~/types/brevbakerTypes";
 import { PARAGRAPH } from "~/types/brevbakerTypes";
 
+import { type Action, withPatches } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
@@ -44,21 +45,23 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   });
 };
 
-export const insertTable = (draft: Draft<LetterEditorState>, focus: Focus, rows: number, cols: number): void => {
-  const block = draft.redigertBrev.blocks[focus.blockIndex];
-  if (block.type !== PARAGRAPH) return;
+export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number, cols: number]> = withPatches(
+  (draft, focus, rows, cols) => {
+    const block = draft.redigertBrev.blocks[focus.blockIndex];
+    if (block.type !== PARAGRAPH) return;
 
-  const table = newTable(rows, cols);
+    const table = newTable(rows, cols);
 
-  const safeContentIndex = safeIndex(focus.contentIndex, block.content);
-  const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
-  addElements([table], insertAt, block.content, block.deletedContent);
+    const safeContentIndex = safeIndex(focus.contentIndex, block.content);
+    const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
+    addElements([table], insertAt, block.content, block.deletedContent);
 
-  draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
-  draft.isDirty = true;
-};
+    draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
+    draft.isDirty = true;
+  },
+);
 
-export const removeTableRow = (draft: Draft<LetterEditorState>): void => {
+export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
@@ -94,9 +97,9 @@ export const removeTableRow = (draft: Draft<LetterEditorState>): void => {
     cursorPosition: 0,
   };
   draft.isDirty = true;
-};
+});
 
-export const removeTableColumn = (draft: Draft<LetterEditorState>): void => {
+export const removeTableColumn: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: col } = draft.focus;
 
@@ -107,9 +110,9 @@ export const removeTableColumn = (draft: Draft<LetterEditorState>): void => {
   table.rows.forEach((row) => row.cells.splice(col, 1));
   updateDefaultHeaderLabels(table);
   draft.isDirty = true;
-};
+});
 
-export const removeTable = (draft: Draft<LetterEditorState>): void => {
+export const removeTable: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex } = draft.focus;
 
@@ -121,9 +124,9 @@ export const removeTable = (draft: Draft<LetterEditorState>): void => {
   draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
 
   draft.isDirty = true;
-};
+});
 
-export const insertTableColumnLeft = (draft: Draft<LetterEditorState>): void => {
+export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: at } = draft.focus;
 
@@ -136,9 +139,9 @@ export const insertTableColumnLeft = (draft: Draft<LetterEditorState>): void => 
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
   draft.isDirty = true;
-};
+});
 
-export const insertTableColumnRight = (draft: Draft<LetterEditorState>): void => {
+export const insertTableColumnRight: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex } = draft.focus;
 
@@ -152,9 +155,9 @@ export const insertTableColumnRight = (draft: Draft<LetterEditorState>): void =>
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
   draft.isDirty = true;
-};
+});
 
-export const insertTableRowAbove = (draft: Draft<LetterEditorState>): void => {
+export const insertTableRowAbove: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
@@ -163,9 +166,9 @@ export const insertTableRowAbove = (draft: Draft<LetterEditorState>): void => {
   if (!isTable(table)) return;
   addElements([newRow(table.header.colSpec.length)], rowIndex, table.rows, table.deletedRows);
   draft.isDirty = true;
-};
+});
 
-export const insertTableRowBelow = (draft: Draft<LetterEditorState>): void => {
+export const insertTableRowBelow: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
@@ -178,7 +181,7 @@ export const insertTableRowBelow = (draft: Draft<LetterEditorState>): void => {
 
   draft.focus = { blockIndex, contentIndex, rowIndex: at, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
   draft.isDirty = true;
-};
+});
 
 /**
  * Promote a body row to header:
@@ -186,12 +189,10 @@ export const insertTableRowBelow = (draft: Draft<LetterEditorState>): void => {
  * - Clears any remaining header cells (no default “Kolonne N” left behind).
  * - Removes the body row via `removeElements`
  */
-export const promoteRowToHeader = (
-  draft: Draft<LetterEditorState>,
-  blockIndex: number,
-  contentIndex: number,
-  rowIndex: number,
-): void => {
+export const promoteRowToHeader: Action<
+  LetterEditorState,
+  [blockIndex: number, contentIndex: number, rowIndex: number]
+> = withPatches((draft, blockIndex, contentIndex, rowIndex) => {
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
   if (rowIndex < 0 || rowIndex >= table.rows.length) return;
@@ -218,23 +219,25 @@ export const promoteRowToHeader = (
 
   draft.focus = { blockIndex, contentIndex, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
   draft.isDirty = true;
-};
+});
 
-export const demoteHeaderToRow = (draft: Draft<LetterEditorState>, blockIndex: number, contentIndex: number): void => {
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
-  if (!isTable(table)) return;
-  if (isEmptyTableHeader(table.header)) return;
+export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, contentIndex: number]> = withPatches(
+  (draft, blockIndex, contentIndex) => {
+    const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+    if (!isTable(table)) return;
+    if (isEmptyTableHeader(table.header)) return;
 
-  const movedCells = table.header.colSpec.map((h) => h.headerContent);
-  const row = newRow(table.header.colSpec.length);
-  row.cells.splice(0, row.cells.length, ...movedCells);
-  addElements([row], 0, table.rows, table.deletedRows);
+    const movedCells = table.header.colSpec.map((h) => h.headerContent);
+    const row = newRow(table.header.colSpec.length);
+    row.cells.splice(0, row.cells.length, ...movedCells);
+    addElements([row], 0, table.rows, table.deletedRows);
 
-  // Reset header cells with fresh empty cells.
-  for (let c = 0; c < table.header.colSpec.length; c++) {
-    table.header.colSpec[c].headerContent = newCell();
-  }
+    // Reset header cells with fresh empty cells.
+    for (let c = 0; c < table.header.colSpec.length; c++) {
+      table.header.colSpec[c].headerContent = newCell();
+    }
 
-  draft.focus = { blockIndex, contentIndex, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-  draft.isDirty = true;
-};
+    draft.focus = { blockIndex, contentIndex, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
+    draft.isDirty = true;
+  },
+);

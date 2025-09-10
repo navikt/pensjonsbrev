@@ -1,6 +1,8 @@
 import type { BrevInfo } from "~/types/brev";
 import type { Content, EditedLetter } from "~/types/brevbakerTypes";
 
+import type { HistoryEntry } from "../history";
+
 export type ContentGroup = { content: Content[] };
 
 export type BlockContentIndex = { blockIndex: number; contentIndex: number };
@@ -25,4 +27,6 @@ export type LetterEditorState = {
   redigertBrevHash: string;
   isDirty: boolean;
   focus: Focus;
+  history: HistoryEntry[];
+  historyPointer: number;
 };

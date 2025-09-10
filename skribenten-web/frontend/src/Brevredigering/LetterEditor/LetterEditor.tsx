@@ -2,25 +2,20 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
-import { enablePatches } from "immer";
+import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 
-import type { EditorAction } from "./actions/editorRecipe";
-import { patchGeneratingEditorReducer } from "./actions/editorReducer";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import { createHistory } from "./history";
 import type { LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
-
-enablePatches();
 
 export const LetterEditor = ({
   freeze,
@@ -41,28 +36,33 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
-  const historyRef = useRef(createHistory<LetterEditorState>());
+  const canUndo = editorState.historyPointer >= 0;
+  const canRedo = editorState.historyPointer < editorState.history.length - 1;
 
-  const dispatch = (action: EditorAction) => {
-    setEditorState((currentEditorState) => {
-      const [nextEditorState, patches, inversePatches] = patchGeneratingEditorReducer(currentEditorState, action);
-      if (patches.length > 0) {
-        historyRef.current.push({ patches, inversePatches, label: action.type });
-      }
-      return nextEditorState;
+  const undo = () => {
+    if (!canUndo) return;
+    setEditorState((current) => {
+      const { inversePatches } = current.history[current.historyPointer];
+      const previous = applyPatches(current, inversePatches);
+      return {
+        ...previous,
+        historyPointer: current.historyPointer - 1,
+      };
     });
   };
 
-  const undo = () => {
-    setEditorState((currentEditorState) => historyRef.current.undo(currentEditorState));
-  };
-
   const redo = () => {
-    setEditorState((currentEditorState) => historyRef.current.redo(currentEditorState));
+    if (!canRedo) return;
+    setEditorState((current) => {
+      const nextPointer = current.historyPointer + 1;
+      const { patches } = current.history[nextPointer];
+      const next = applyPatches(current, patches);
+      return {
+        ...next,
+        historyPointer: nextPointer,
+      };
+    });
   };
-
-  const canUndo = historyRef.current.canUndo();
-  const canRedo = historyRef.current.canRedo();
 
   return (
     <div
@@ -74,7 +74,7 @@ export const LetterEditor = ({
         overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, dispatch }}>
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
         <div
           css={css`
             position: sticky;
@@ -135,13 +135,11 @@ export const EditorStateContext = createContext<{
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
-  dispatch: (action: EditorAction) => void;
 }>({
   freeze: false,
   error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
-  dispatch: () => {},
 });
 export const useEditor = () => {
   return useContext(EditorStateContext);

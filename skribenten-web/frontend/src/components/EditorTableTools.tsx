@@ -2,12 +2,14 @@ import { TableIcon } from "@navikt/aksel-icons";
 import { Button, HStack } from "@navikt/ds-react";
 import { useState } from "react";
 
+import Actions from "~/Brevredigering/LetterEditor/actions";
 import InsertTableDialog from "~/Brevredigering/LetterEditor/components/InsertTableDialog";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
 
 const EditorTableTools = () => {
-  const { editorState, dispatch } = useEditor();
+  const { editorState, setEditorState } = useEditor();
   const [isInsertTableDialogOpen, setIsInsertTableDialogOpen] = useState(false);
   const [focusAtOpen, setFocusAtOpen] = useState<Focus | null>(null);
 
@@ -31,12 +33,7 @@ const EditorTableTools = () => {
         onCancel={() => setIsInsertTableDialogOpen(false)}
         onInsert={(columnCount, rowCount) => {
           const focus = focusAtOpen ?? editorState.focus;
-          dispatch({
-            type: "TABLE_INSERT",
-            focus,
-            rows: rowCount,
-            cols: columnCount,
-          });
+          applyAction(Actions.insertTable, setEditorState, focus, rowCount, columnCount);
           setIsInsertTableDialogOpen(false);
         }}
         open={isInsertTableDialogOpen}

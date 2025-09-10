@@ -101,6 +101,8 @@ export function create(brev: BrevResponse): LetterEditorState {
     redigertBrevHash: brev.redigertBrevHash,
     isDirty: false,
     focus: { blockIndex: 0, contentIndex: 0 },
+    history: [],
+    historyPointer: -1,
   };
 }
 

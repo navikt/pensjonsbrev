@@ -139,7 +139,7 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
-  const { freeze, editorState, setEditorState, dispatch } = useEditor();
+  const { freeze, editorState, setEditorState } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -414,11 +414,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {
-        dispatch({
-          type: "UPDATE_CONTENT_TEXT",
+        applyAction(
+          Actions.updateContentText,
+          setEditorState,
           literalIndex,
-          text: (event.target as HTMLSpanElement).textContent ?? "",
-        });
+          (event.target as HTMLSpanElement).textContent ?? "",
+        );
       }}
       onKeyDown={(event) => {
         if (event.key === "Backspace") {
