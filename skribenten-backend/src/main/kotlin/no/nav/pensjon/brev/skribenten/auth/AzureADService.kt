@@ -17,9 +17,11 @@ import io.ktor.http.Parameters
 import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
+import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.minutes
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes(JsonSubTypes.Type(TokenResponse.OnBehalfOfToken::class), JsonSubTypes.Type(TokenResponse.ErrorResponse::class))
@@ -52,6 +54,7 @@ interface AuthService {
 
 class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) : AuthService {
     private val logger = LoggerFactory.getLogger(javaClass)
+    private val adCache = Cache<Pair<UserAccessToken, String>, TokenResponse>(ttl = 1.minutes)
 
     private val client = HttpClient(engine) {
         install(ContentNegotiation) {
@@ -63,25 +66,27 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     }
 
     private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
-        val response = client.submitForm(
-            url = jwtConfig.tokenUri,
-            formParameters = Parameters.build {
-                append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                append("client_id", jwtConfig.clientId)
-                append("client_secret", jwtConfig.clientSecret)
-                append("assertion", accessToken.token)
-                append("scope", scope)
-                append("requested_token_use", "on_behalf_of")
+        return adCache.cached(Pair(accessToken, scope)) {
+            val response = client.submitForm(
+                url = jwtConfig.tokenUri,
+                formParameters = Parameters.build {
+                    append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                    append("client_id", jwtConfig.clientId)
+                    append("client_secret", jwtConfig.clientSecret)
+                    append("assertion", accessToken.token)
+                    append("scope", scope)
+                    append("requested_token_use", "on_behalf_of")
+                }
+            ) {
+                headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
             }
-        ) {
-            headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
-        }
 
-        return if (response.status.isSuccess()) {
-            response.body<TokenResponse.OnBehalfOfToken>()
-        } else {
-            response.body<TokenResponse.ErrorResponse>()
-        }
+            if (response.status.isSuccess()) {
+                response.body<TokenResponse.OnBehalfOfToken>()
+            } else {
+                response.body<TokenResponse.ErrorResponse>()
+            }
+        }!!
     }
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
