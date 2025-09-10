@@ -1570,12 +1570,12 @@ public final class no/nav/pensjon/brev/template/render/LanguageSetting$HTML {
 
 public final class no/nav/pensjon/brev/template/render/LanguageSetting$Sakspart {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/LanguageSetting$Sakspart;
+	public static final field annenMottaker Ljava/lang/String;
 	public static final field foedselsnummer Ljava/lang/String;
 	public static final field gjelderNavn Ljava/lang/String;
 	public static final field navn Ljava/lang/String;
 	public static final field saksnummer Ljava/lang/String;
 	public static final field vedleggGjelderNavn Ljava/lang/String;
-	public static final field vergenavn Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {

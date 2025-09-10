@@ -18,13 +18,15 @@ fun Felles.copy(
     saksnummer: String = this.saksnummer,
     avsenderEnhet: NavEnhet = this.avsenderEnhet,
     bruker: Bruker = this.bruker,
+    annenMottaker: String? = this.annenMottakerNavn,
     vergeNavn: String? = this.vergeNavn,
     signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
 ): Felles = FellesFactory.copy(
-    dokumentDato,
-    saksnummer,
-    avsenderEnhet,
-    bruker,
-    vergeNavn,
-    signerendeSaksbehandlere
+    dokumentDato = dokumentDato,
+    saksnummer = saksnummer,
+    avsenderEnhet = avsenderEnhet,
+    bruker = bruker,
+    annenMottaker = annenMottaker,
+    vergeNavn = vergeNavn,
+    signerendeSaksbehandlere = signerendeSaksbehandlere
 )
