@@ -607,10 +607,7 @@ function traverseTable(element: Element, font: FontType): Table {
       }
     });
     // Drop whitespace-only TEXT nodes so the cell content contains only meaningful text.
-    const filteredCellTextContent = cellContentElements.filter(
-      (txt) => txt.type !== "TEXT" || txt.text.trim().length > 0,
-    );
-    return filteredCellTextContent;
+    return cellContentElements.filter((txt) => txt.type !== "TEXT" || txt.text.trim().length > 0);
   };
 
   let rowElements = Array.from(element.querySelectorAll("tr"));
