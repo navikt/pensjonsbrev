@@ -333,7 +333,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         textExpr(
                             Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Dette påvirker bare utbetalingen av barnetillegget. Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt.",
-                            Nynorsk to "Den årlege inntekta vi vil bruke for den andre forelderen, er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                            Nynorsk to "Den årlege inntekta vi vil bruke for den andre forelderen er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Dette påverkar berre utbetalinga av barnetillegget. Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen."
                         )
                     }
