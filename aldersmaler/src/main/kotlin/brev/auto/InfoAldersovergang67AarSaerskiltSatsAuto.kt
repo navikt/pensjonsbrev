@@ -36,8 +36,7 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
             outline {
                 paragraph {
                     text(bokmal { +"Er inntekten til ektefellen/partneren/samboeren din lavere enn folketrygdens grunnbeløp (G)?" })
-                }
-                paragraph {
+                    newline()
                     text(bokmal { +"Da kan du ha rett til høyere alderspensjon." })
                 }
                 paragraph {
@@ -62,8 +61,7 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                 }
                 paragraph {
                     text(bokmal { +"Du må sende oss dokumentasjon på all inntekt. Med inntekt menes:" })
-                }
-                paragraph {
+                    newline()
                     list {
                         item {
                             text(bokmal { +"arbeidsinntekt i Norge, og eventuelt andre land" })
@@ -83,9 +81,6 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                         item {
                             text(bokmal { +"livrente" })
                         }
-                        item {
-                            text(bokmal { +"Dette må du gjøre:" })
-                        }
                     }
                 }
                 paragraph {
@@ -93,11 +88,10 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                 }
                 paragraph {
                     text(bokmal { +"Har ektefellen/partneren/samboeren din fylt 62 år og bodd og/eller arbeidet i utlandet? Da må du sende oss disse opplysningene:" })
-                }
-                paragraph {
+                    newline()
                     list {
                         item {
-                            text(bokmal { +"hvilke land ektefellen/partneren/samboeren din bodde og/eller arbeidet" })
+                            text(bokmal { +"hvilke land ektefellen/partneren/samboeren din bodde og/eller arbeidet i" })
                         }
                         item {
                             text(bokmal { +"hvilke perioder dette var" })
@@ -108,6 +102,8 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                     text(bokmal { +"Husk å merke forsendelsen med både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
                 }
                 paragraph {
+                    text(bokmal { +"Du bør sende inn dokumentasjonen innen 14 dager fra du mottar dette brevet, til:" })
+                    newline()
                     text(bokmal { +"Nav Familie- og pensjonsytelser" })
                     newline()
                     text(bokmal { +"PB 6600 Etterstad" })
