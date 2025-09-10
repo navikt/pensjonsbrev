@@ -61,7 +61,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
         defaultRequest {
             url(brevbakerUrl)
         }
-        installRetry(logger, unntak = { req -> req.method == HttpMethod.Post && req.url.build().segments.last() == "pdf" })
+        installRetry(logger, unntak = { req -> req.method == HttpMethod.Post && req.url.segments.last() == "pdf" })
         engine {
             requestTimeout = 60.seconds.inWholeMilliseconds
         }
