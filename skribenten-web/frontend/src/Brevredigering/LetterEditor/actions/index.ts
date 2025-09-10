@@ -1,5 +1,3 @@
-import { enablePatches } from "immer";
-
 import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
