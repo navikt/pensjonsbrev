@@ -1,5 +1,4 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import {
   addElements,
@@ -11,7 +10,7 @@ import {
 import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
 
@@ -20,7 +19,7 @@ export enum MergeTarget {
   NEXT = "NEXT",
 }
 
-export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = produce(
+export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = withPatches(
   (draft, literalIndex, target) => {
     const editedLetter = draft.redigertBrev;
     const blocks = editedLetter.blocks;

@@ -1,5 +1,4 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import type {
   Cell,
@@ -13,14 +12,14 @@ import type {
 } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isLiteral, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
 import { isItemContentIndex, isTable, newLiteral } from "./common";
 
 // TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
-export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
+export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = withPatches(
   (draft, literalIndex, fontType) => {
     const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
 

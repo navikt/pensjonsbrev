@@ -1,6 +1,5 @@
 import DOMPurify from "dompurify";
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import {
   addElements,
@@ -25,7 +24,7 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import type {
   Focus,
   ItemContentIndex,
@@ -48,7 +47,7 @@ import { FontType, TABLE } from "~/types/brevbakerTypes";
 import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
-  produce((draft, literalIndex, offset, clipboard) => {
+  withPatches((draft, literalIndex, offset, clipboard) => {
     // Since we always paste where the cursor is, then focus has to be at literalIndex and offset.
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
