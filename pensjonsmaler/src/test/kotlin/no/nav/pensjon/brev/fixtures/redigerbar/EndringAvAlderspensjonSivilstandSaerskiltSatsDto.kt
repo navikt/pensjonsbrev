@@ -40,6 +40,7 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                             minstenivaaIndividuellInnvilget = true,
                             ufoereKombinertMedAlder = false,
                             uttaksgrad = 100,
+                            saertilleggInnvilget = true,
                         ),
                     beregnetPensjonPerManedVedVirk =
                         EndringAvAlderspensjonSivilstandSaerskiltSatsDto.BeregnetPensjonPerManedVedVirk(

@@ -78,6 +78,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
     data class AlderspensjonVedVirk(
         val innvilgetFor67: Boolean,
         val minstenivaaIndividuellInnvilget: Boolean,
+        val saertilleggInnvilget: Boolean,
         val ufoereKombinertMedAlder: Boolean,
         val uttaksgrad: Int,
     )
