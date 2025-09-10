@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -39,7 +39,7 @@ export const LetterEditor = ({
   const canUndo = editorState.historyPointer >= 0;
   const canRedo = editorState.historyPointer < editorState.history.length - 1;
 
-  const undo = () => {
+  const undo = useCallback(() => {
     if (!canUndo) return;
     setEditorState((current) => {
       const { inversePatches } = current.history[current.historyPointer];
@@ -49,9 +49,9 @@ export const LetterEditor = ({
         historyPointer: current.historyPointer - 1,
       };
     });
-  };
+  }, [canUndo, setEditorState]);
 
-  const redo = () => {
+  const redo = useCallback(() => {
     if (!canRedo) return;
     setEditorState((current) => {
       const nextPointer = current.historyPointer + 1;
@@ -62,7 +62,7 @@ export const LetterEditor = ({
         historyPointer: nextPointer,
       };
     });
-  };
+  }, [canRedo, setEditorState]);
 
   return (
     <div
