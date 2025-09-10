@@ -11,12 +11,18 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
@@ -168,6 +174,13 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                         )
                     }
                 }
+
+                includePhrase(UfoereAlder.UfoereKombinertMedAlder(alderspensjonVedVirk.uforeKombinertMedAlder))
+
+                includePhrase(MeldFraOmEndringer2)
+                includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(Felles.HarDuSpoersmaal.alder)
 
             }
         }
