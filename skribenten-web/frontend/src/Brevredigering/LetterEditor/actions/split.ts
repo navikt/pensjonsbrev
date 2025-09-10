@@ -75,7 +75,7 @@ function splitBlockAtLiteral(
     }
 
     draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex + 1 };
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   }
 }
 
@@ -156,7 +156,7 @@ function splitItemList(
         itemContentIndex: 0,
       };
     }
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   } else {
     // eslint-disable-next-line no-console
     console.warn("Can't split an ItemList without itemIndex");

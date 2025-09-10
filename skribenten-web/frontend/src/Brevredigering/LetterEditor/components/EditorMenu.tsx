@@ -1,8 +1,7 @@
 import { css } from "@emotion/react";
-import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { BodyShort, HStack, Loader, Select } from "@navikt/ds-react";
+import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
+import { BodyShort, HStack, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
-import { memo, useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -11,9 +10,7 @@ import { VerticalDivider } from "~/components/Divider";
 import EditorTableTools from "~/components/EditorTableTools";
 import { formatTime } from "~/utils/dateUtils";
 
-import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
 import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
@@ -21,34 +18,26 @@ import EditorBulletList from "./EditorBulletList";
 import EditorFonts from "./EditorFonts";
 import { EditorUndoRedo } from "./EditorUndoRedo";
 
-const SelectTypography = (props: {
-  editorState: LetterEditorState;
-  setEditorState: CallbackReceiver<LetterEditorState>;
-}) => {
+const SelectTypography = () => {
+  const { editorState, freeze, setEditorState } = useEditor();
   const changeableContent = isTextContent(
-    props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex]?.content?.[
-      props.editorState.focus.contentIndex
-    ],
+    editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.content?.[editorState.focus.contentIndex],
   );
 
   return (
     <Select
       data-cy="typography-select"
+      disabled={freeze}
       hideLabel
       label="Tekst stil"
       onChange={(e) => {
-        applyAction(
-          Actions.switchTypography,
-          props.setEditorState,
-          props.editorState.focus,
-          e.target.value as Typography,
-        );
+        applyAction(Actions.switchTypography, setEditorState, editorState.focus, e.target.value as Typography);
         //setter fokuset tilbake til editor etter valgt tekststil
-        applyAction(Actions.cursorPosition, props.setEditorState, getCursorOffset());
+        applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
       }}
       readOnly={!changeableContent}
       size="small"
-      value={props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex]?.type}
+      value={editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type}
     >
       {Object.entries(TypographyToText).map(([key, value]) => (
         <option key={key} value={key}>
@@ -67,8 +56,6 @@ type EditorMenuProps = {
 };
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) => {
-  const { freeze, error, editorState, setEditorState } = useEditor();
-
   return (
     <div
       css={css`
@@ -86,87 +73,44 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) =>
       <HStack align="center" gap="4" margin-block="2">
         <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
         <VerticalDivider />
-        <EditorFonts editorState={editorState} setEditorState={setEditorState} />
+        <EditorFonts />
         <VerticalDivider />
-        <EditorBulletList editorState={editorState} setEditorState={setEditorState} />
+        <EditorBulletList />
         <VerticalDivider />
         <EditorTableTools />
         <VerticalDivider />
-        <SelectTypography editorState={editorState} setEditorState={setEditorState} />
+        <SelectTypography />
       </HStack>
 
-      <LagretTidspunkt datetime={editorState.info.sistredigert} error={error} freeze={freeze} />
+      <LagringStatus />
     </div>
   );
 };
 
-//delay = millisekunder
-const useTimeoutValue = (argz: { initialValue: React.ReactNode; newValue: React.ReactNode; delay: number }) => {
-  const [value, setValue] = useState(argz.initialValue);
-  const isMountingReference = useRef(true);
-
-  useEffect(() => {
-    isMountingReference.current = false;
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isMountingReference.current) {
-        setValue(null);
-        return;
-      }
-      setValue(argz.newValue);
-    }, argz.delay);
-
-    return () => {
-      return clearTimeout(timer);
-    };
-  }, [argz.delay, argz.newValue]);
-
-  return isMountingReference.current ? null : value;
-};
-
-const LagringSuccess = memo((properties: { dateTime: string }) => {
-  const ikon = useTimeoutValue({
-    initialValue: <CheckmarkCircleFillIcon color="#007C2E" fontSize="1.5rem" title="error-ikon" />,
-    newValue: null,
-    delay: 2500,
-  });
-
-  const tekst = isToday(properties.dateTime)
-    ? `Lagret kl ${formatTime(properties.dateTime)}`
-    : `Lagret ${format(properties.dateTime, "dd.MM.yyyy HH:mm")}`;
-
-  return (
-    <HStack gap="1">
-      {ikon}
-      <BodyShort size="small">{tekst}</BodyShort>
-    </HStack>
-  );
-});
-
-const LagretTidspunkt = memo(({ freeze, error, datetime }: { freeze: boolean; error: boolean; datetime: string }) => {
-  if (freeze) {
+const LagringStatus = () => {
+  const { error, editorState, freeze } = useEditor();
+  if (freeze || editorState.saveStatus === "SAVE_PENDING") {
     return (
       <HStack gap="1">
-        <Loader title="Lagrer..." />
-        Lagrer...
+        <BodyShort size="small">Lagrer...</BodyShort>
       </HStack>
     );
-  } else {
-    if (error) {
-      const tekst = isToday(datetime)
-        ? `Klarte ikke lagre kl ${formatTime(datetime)}`
-        : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+  } else if (error) {
+    const tekst = isToday(editorState.info.sistredigert)
+      ? `Klarte ikke lagre. Sist lagret ${formatTime(editorState.info.sistredigert)}`
+      : `Klarte ikke lagre. Sist lagret ${format(editorState.info.sistredigert, "dd.MM.yyyy HH:mm")}`;
 
-      return (
-        <HStack gap="1">
-          <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
-          {tekst}
-        </HStack>
-      );
-    }
-
-    return <LagringSuccess dateTime={datetime} />;
+    return (
+      <HStack gap="1">
+        <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
+        {tekst}
+      </HStack>
+    );
+  } else if (editorState.saveStatus === "SAVED") {
+    return (
+      <HStack gap="1">
+        <BodyShort size="small">Lagret</BodyShort>
+      </HStack>
+    );
   }
-});
+};

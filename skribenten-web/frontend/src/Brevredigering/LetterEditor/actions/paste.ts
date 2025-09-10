@@ -120,7 +120,7 @@ function insertTextInLetter(
       setContentIndex(draft.focus, insertAtIndex);
       draft.focus.cursorPosition = str.length;
     }
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   } else if (content !== undefined) {
     log(`cannot paste text into ${content.type}, must be literal.`);
   }
@@ -233,7 +233,7 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
   } else {
     insertTraversedElements(draft, parsedAndCombinedHtml);
   }
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 }
 
 // Ensure that every table row has exactly the same number of cells (colCount)
@@ -331,7 +331,7 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
       cursorPosition: 0,
     };
 
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   }
 }
 

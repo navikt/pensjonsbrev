@@ -25,7 +25,7 @@ export type LetterEditorState = {
   info: BrevInfo;
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
-  isDirty: boolean;
+  saveStatus: "DIRTY" | "SAVE_PENDING" | "SAVED";
   focus: Focus;
   history: HistoryEntry[];
   historyPointer: number;

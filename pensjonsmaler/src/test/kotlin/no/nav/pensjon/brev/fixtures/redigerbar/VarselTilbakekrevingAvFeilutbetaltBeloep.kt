@@ -7,7 +7,7 @@ fun createVarselTilbakekrevingAvFeilutbetaltBeloep() =
     VarselTilbakekrevingAvFeilutbetaltBeloepDto(
         saksbehandlerValg = VarselTilbakekrevingAvFeilutbetaltBeloepDto.SaksbehandlerValg(
             hvisAktueltAaIleggeRentetillegg = true,
-            hvisGjenlevendepensjonOgForsoergningstillegg = true
+            hvisAvregningEtterParagraf2216 = true
         ),
         pesysData = VarselTilbakekrevingAvFeilutbetaltBeloepDto.PesysData(
             Sakstype.ALDER

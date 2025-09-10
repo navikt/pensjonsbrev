@@ -17,7 +17,7 @@ fun hentMuligOverstyrtMal(kode: String) = when (kode) {
 
 fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK.kode() -> FeatureToggles.samletMeldingOmPensjonsvedtak
-    Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() -> FeatureToggles.brevMedFritekst
+    Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() -> FeatureToggles.oversettelseAvDokumenter
     Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() -> FeatureToggles.brevmalUtAvslag
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT.kode() -> FeatureToggles.apAvslagGjenlevenderett
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalder
@@ -32,6 +32,8 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_INSTITUSJONSOPPHOLD.kode() -> FeatureToggles.vedtakEndringAvAlderspensjonInstitusjonsopphold
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD.kode() -> FeatureToggles.vedtakEndringAvUttaksgrad
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND.kode() -> FeatureToggles.endringAvAlderspensjonSivilstand
+    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS.kode() -> FeatureToggles.endringAvAlderspensjonSivilstandVurderSaerskiltSats
+    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG.kode() -> FeatureToggles.endringAvAlderspensjonSivilstandGarantitillegg
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE.kode(),
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE.kode() -> FeatureToggles.vedtakEndringAvUttaksgradStans
     Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING.kode() -> FeatureToggles.vedtakOmFjerningAvOmsorgspoeng
@@ -43,6 +45,7 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakEndringVedFlyttingMellomLand
     Pesysbrevkoder.Redigerbar.BRUKERTEST_BREV_PENSJON_2025.kode() -> FeatureToggles.brukertestbrev2025
     Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID.kode() -> FeatureToggles.orienteringOmForlengetSaksbehandlingstid
+    Pesysbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016.kode() -> FeatureToggles.omregningAlderUfore2016
 
 
     else -> null

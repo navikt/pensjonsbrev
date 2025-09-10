@@ -72,7 +72,7 @@ export const nyRedigertBrev = ({
       gjelderNavn: "TRYGG ANBEFALING",
       gjelderFoedselsnummer: "21418744917",
       saksnummer: "22981081",
-      dokumentDato: "25/09/2024",
+      dokumentDato: "2024-09-25",
     },
     blocks: blocks ?? [
       {

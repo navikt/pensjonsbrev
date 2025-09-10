@@ -27,14 +27,20 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        saksbehandlerValg: response.saksbehandlerValg,
-        info: response.info,
-        isDirty: false,
-      }));
+      setEditorState((previousState) => {
+        if (previousState.saveStatus !== "DIRTY") {
+          return {
+            ...previousState,
+            redigertBrev: response.redigertBrev,
+            redigertBrevHash: response.redigertBrevHash,
+            saksbehandlerValg: response.saksbehandlerValg,
+            info: response.info,
+            saveStatus: "SAVED",
+          };
+        } else {
+          return previousState;
+        }
+      });
     },
     [queryClient, props.brev.info.id],
   );

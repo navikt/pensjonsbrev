@@ -22,6 +22,7 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val behandlingKontekst: BehandlingKontekst,
+        val etterbetaling: Boolean,
         val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,

@@ -6,7 +6,7 @@ assertJVersion = "3.27.4"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.181"
 commonsCodecVersion = "1.19.0"
-commonVersion = "2.1.0"
+commonVersion = "2.1.1"
 exposedVersion = "0.61.0"
 flywayVersion = "11.11.2"
 hamkrestVersion = "1.8.0.1"
@@ -22,7 +22,6 @@ pdfboxVersion = "3.0.5"
 postgresqlVersion = "42.7.7"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.1.0"
-kafkaVersion="3.9.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
@@ -73,10 +72,6 @@ ktor-server-request-validation = { module = "io.ktor:ktor-server-auth", version.
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
-
-# Kafka
-kafka-streams = { module = "org.apache.kafka:kafka-streams", version.ref = "kafkaVersion" }
-connect-runtime = { module = "org.apache.kafka:connect-runtime", version.ref = "kafkaVersion" }
 
 # Exposed
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }

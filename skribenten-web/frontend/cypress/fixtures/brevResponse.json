@@ -15,7 +15,14 @@
   "redigertBrev": {
     "title": {
       "text": [
-        { "id": 1, "parentId": null, "type": "LITERAL", "text": "Informasjon om saksbehandlingstiden vår", "editedText": null, "tags": [] }
+        {
+          "id": 1,
+          "parentId": null,
+          "type": "LITERAL",
+          "text": "Informasjon om saksbehandlingstiden vår",
+          "editedText": null,
+          "tags": []
+        }
       ],
       "deletedContent": []
     },
@@ -23,7 +30,7 @@
       "gjelderNavn": "Tydelig Bakke",
       "gjelderFoedselsnummer": "09417320595",
       "saksnummer": "22972355",
-      "dokumentDato": "30.07.2024"
+      "dokumentDato": "2024-07-30"
     },
     "blocks": [
       {

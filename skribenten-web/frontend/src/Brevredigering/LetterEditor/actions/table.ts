@@ -57,7 +57,7 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     addElements([table], insertAt, block.content, block.deletedContent);
 
     draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   },
 );
 
@@ -82,7 +82,7 @@ export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft)
       cellContentIndex: 0,
       cursorPosition: 0,
     };
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
     return;
   }
 
@@ -96,7 +96,7 @@ export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft)
     cellContentIndex: 0,
     cursorPosition: 0,
   };
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const removeTableColumn: Action<LetterEditorState, []> = withPatches((draft) => {
@@ -109,7 +109,7 @@ export const removeTableColumn: Action<LetterEditorState, []> = withPatches((dra
   table.header.colSpec.splice(col, 1);
   table.rows.forEach((row) => row.cells.splice(col, 1));
   updateDefaultHeaderLabels(table);
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const removeTable: Action<LetterEditorState, []> = withPatches((draft) => {
@@ -123,7 +123,7 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
   const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
   draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
 
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {
@@ -138,7 +138,7 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches(
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const insertTableColumnRight: Action<LetterEditorState, []> = withPatches((draft) => {
@@ -154,7 +154,7 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = withPatches
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const insertTableRowAbove: Action<LetterEditorState, []> = withPatches((draft) => {
@@ -165,7 +165,7 @@ export const insertTableRowAbove: Action<LetterEditorState, []> = withPatches((d
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
   addElements([newRow(table.header.colSpec.length)], rowIndex, table.rows, table.deletedRows);
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const insertTableRowBelow: Action<LetterEditorState, []> = withPatches((draft) => {
@@ -180,7 +180,7 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = withPatches((d
   addElements([newRow(table.header.colSpec.length)], at, table.rows, table.deletedRows);
 
   draft.focus = { blockIndex, contentIndex, rowIndex: at, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 /**
@@ -218,7 +218,7 @@ export const promoteRowToHeader: Action<
   removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
   draft.focus = { blockIndex, contentIndex, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 });
 
 export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, contentIndex: number]> = withPatches(
@@ -238,6 +238,6 @@ export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, c
     }
 
     draft.focus = { blockIndex, contentIndex, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   },
 );

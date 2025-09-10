@@ -29,30 +29,6 @@ class BestillBrevRequest<T : Brevkode<T>>(
 }
 
 @Suppress("unused")
-class BestillBrevRequestAsync<T : Brevkode<T>>(
-    val kode: T,
-    val letterData: BrevbakerBrevdata,
-    val felles: Felles,
-    val language: LanguageCode,
-    val messageId: String,
-    val replyTopic: String,
-) : BrevRequest<T> {
-    override fun equals(other: Any?): Boolean {
-        if (other !is BestillBrevRequestAsync<*>) return false
-        return kode == other.kode
-                && letterData == other.letterData
-                && felles == other.felles
-                && language == other.language
-                && messageId == other.messageId
-                && replyTopic == other.replyTopic
-    }
-
-    override fun hashCode() = Objects.hash(kode, letterData, felles, language, messageId, replyTopic)
-
-    override fun toString() = "BestillBrevRequestAsync(kode=$kode, letterData=$letterData, felles=$felles, language=$language, messageId='$messageId', replyTopic='$replyTopic')"
-}
-
-@Suppress("unused")
 class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: RedigerbarBrevdata<*, *>,
