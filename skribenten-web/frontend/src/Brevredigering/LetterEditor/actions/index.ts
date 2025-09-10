@@ -25,8 +25,6 @@ import { switchTypography } from "./switchTypography";
 import { toggleBulletList } from "./toggleBulletList";
 import { updateContentText } from "./updateContentText";
 
-enablePatches();
-
 const Actions = {
   create,
   cursorPosition,
