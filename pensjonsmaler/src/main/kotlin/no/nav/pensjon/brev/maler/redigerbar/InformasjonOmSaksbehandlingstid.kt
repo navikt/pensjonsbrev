@@ -10,8 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -81,12 +79,9 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                 }
                 paragraph {
                     text(
-                        bokmal { + "Vi vil behandle søknaden din når vi har mottatt informasjon fra Fellesordningen om dine AFP-rettigheter. Det tar normalt fire til seks uker før du får svar fra dem på søknaden din. " +
-                                "Dette forutsetter at du har sendt inn søknad om AFP i privat sektor til Fellesordningen." },
-                        nynorsk { + "Vi vil behandle søknaden din når vi har mottatt informasjon frå Fellesordningen om dine AFP-rettar. Det tek normalt fire til seks veker før du får svar frå dei på søknaden din. " +
-                                "Dette føresett at du har sendt inn søknad om AFP i privat sektor til Fellesordningen." },
-                        english { + "We will process your application once we have received the necessary information from Fellesordningen about your AFP rights. Normally it takes four to six weeks for you to get a reply from them on your application. " +
-                                "This requires that you have submitted an application for AFP to Fellesordningen." },
+                        bokmal { + "Vi vil behandle søknaden din når vi har mottatt informasjon fra Fellesordningen om dine AFP-rettigheter. Det tar normalt fire til seks uker før du får svar fra dem på søknaden din." },
+                        nynorsk { + "Vi vil behandle søknaden din når vi har mottatt informasjon frå Fellesordningen om dine AFP-rettar. Det tek normalt fire til seks veker før du får svar frå dei på søknaden din." },
+                        english { + "We will process your application once we have received the necessary information from Fellesordningen about your AFP rights. Normally it takes four to six weeks for you to get a reply from them on your application." },
                     )
                 }
             }
