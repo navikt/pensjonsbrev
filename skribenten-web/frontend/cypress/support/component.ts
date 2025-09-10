@@ -18,6 +18,9 @@ import "@navikt/ds-css";
 import "../../src/appStyles.css";
 
 import { mount } from "cypress/react";
+import { enablePatches } from "immer";
+
+enablePatches();
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
