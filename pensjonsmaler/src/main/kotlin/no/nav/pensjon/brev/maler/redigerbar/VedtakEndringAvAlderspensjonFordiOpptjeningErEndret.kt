@@ -50,18 +50,19 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
+import java.time.Month
 
 // 119 i doksys
 @TemplateModelHelpers
@@ -284,12 +285,14 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         english { +"You will receive retroactive pension payments from " + pesysData.krav.virkDatoFom.format() + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV." }
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
-                        nynorsk { +"Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten." },
-                        english { +"If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates." }
-                    )
+                showIf(pesysData.krav.virkDatoFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+                    paragraph {
+                        text(
+                            bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
+                            nynorsk { +"Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten." },
+                            english { +"If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates." }
+                        )
+                    }
                 }
             }
 
