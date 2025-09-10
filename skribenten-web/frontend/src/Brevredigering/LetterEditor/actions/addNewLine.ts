@@ -24,13 +24,28 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
           // split literal and add new line
           if (offset === 0) {
             addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
+            draft.focus = {
+              contentIndex: 1,
+              cursorPosition: 0,
+              blockIndex: focus.blockIndex,
+            };
           } else if (offset >= text(content).length) {
             const isAtEndOfBlock = focus.contentIndex + 1 === block.content.length;
             const toAdd = isAtEndOfBlock ? [createNewLine(), newLiteral()] : [createNewLine()];
             addElements(toAdd, focus.contentIndex + 1, block.content, block.deletedContent);
+            draft.focus = {
+              contentIndex: focus.contentIndex + 2,
+              cursorPosition: 0,
+              blockIndex: focus.blockIndex,
+            };
           } else {
             const newLiteral = splitLiteralAtOffset(content, offset);
             addElements([createNewLine(), newLiteral], focus.contentIndex + 1, block.content, block.deletedContent);
+            draft.focus = {
+              contentIndex: focus.cursorPosition === 0 ? focus.contentIndex + 1 : focus.contentIndex + 2,
+              cursorPosition: 0,
+              blockIndex: focus.blockIndex,
+            };
           }
           draft.saveStatus = "DIRTY";
           break;
