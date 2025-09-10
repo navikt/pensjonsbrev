@@ -285,11 +285,12 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
+                val annenMottakerNavn = felles.annenMottakerNavn ?: felles.vergeNavn
                 val navnPrefix =
-                    if (felles.annenMottakerNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+                    if (annenMottakerNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
 
                 listOfNotNull(
-                    felles.annenMottakerNavn?.let { LanguageSetting.Sakspart.annenMottaker to it },
+                    annenMottakerNavn?.let { LanguageSetting.Sakspart.annenMottaker to it },
                     navnPrefix to fulltNavn(),
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
                     LanguageSetting.Sakspart.saksnummer to felles.saksnummer,

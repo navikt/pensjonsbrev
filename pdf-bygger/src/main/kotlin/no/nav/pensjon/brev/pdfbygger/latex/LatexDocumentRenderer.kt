@@ -121,12 +121,12 @@ internal object LatexDocumentRenderer {
         appendNewCmd("feltfoedselsnummerbruker", sakspart.gjelderFoedselsnummer.format())
         appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
         // TODO slett når all bruk er borte
-        val verge = (sakspart.annenMottakerNavn ?: sakspart.vergeNavn)?.also { appendNewCmd("feltannenmottakernavn", it) }
+        val annenMottaker = (sakspart.annenMottakerNavn ?: sakspart.vergeNavn)?.also { appendNewCmd("feltannenmottakernavn", it) }
 
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")
 
-            if (verge != null) {
+            if (annenMottaker != null) {
                 appendln("""\felt${LanguageSetting.Sakspart.annenMottaker} & \feltannenmottakernavn \\""", escape = false)
                 appendln("""\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""", escape = false)
             } else {
