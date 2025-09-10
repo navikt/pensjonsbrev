@@ -57,8 +57,8 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2016. Har du heller ikke rett til utbetaling " +
-                            "av uføretrygd i 2025 og 2026, vil retten til uføretrygd opphøre fra 1.1.2026. " +
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2017. Har du heller ikke rett til utbetaling " +
+                            "av uføretrygd i 2025 og 2026, vil retten til uføretrygd opphøre fra 1.1.2027. " +
                             "Ved opphør av uføretrygden, vil du få eget vedtak om dette." }
                 )
             }
