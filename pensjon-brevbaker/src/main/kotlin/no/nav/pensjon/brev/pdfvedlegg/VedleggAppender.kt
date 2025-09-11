@@ -2,13 +2,14 @@ package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 
 internal object VedleggAppender {
 
-    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: Language): PDDocument {
+    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val sider = vedlegg.sider
@@ -27,7 +28,7 @@ internal object VedleggAppender {
         return target
     }
 
-    private fun lesInnPDF(filnavn: String, spraak: Language) =
+    private fun lesInnPDF(filnavn: String, spraak: LanguageCode) =
         javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
             ?.let { Loader.loadPDF(it.readBytes()) }
             ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")

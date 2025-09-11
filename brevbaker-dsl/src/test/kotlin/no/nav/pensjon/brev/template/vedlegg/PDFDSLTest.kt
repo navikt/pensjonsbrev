@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.vedlegg
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -29,6 +29,6 @@ class PDFDSLTest {
         }
         assertEquals(3, vedlegg.sider.size)
         val felt = vedlegg.sider[0].felt.map { it.felt }.reduce { a, b -> a.plus(b) }
-        assertEquals("1", felt["felt1"]?.get(Language.Bokmal))
+        assertEquals("1", felt["felt1"]?.get(LanguageCode.BOKMAL))
     }
 }

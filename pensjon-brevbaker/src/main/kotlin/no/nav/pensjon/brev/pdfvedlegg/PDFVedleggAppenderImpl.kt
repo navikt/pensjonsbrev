@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.maler.vedlegg.pdf.tilPDFVedlegg
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -16,7 +17,7 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
     override fun leggPaaVedlegg(
         pdfCompilationOutput: PDFCompilationOutput,
         attachments: List<PDFVedleggData>,
-        spraak: Language,
+        spraak: LanguageCode,
     ): PDFCompilationOutput {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
         De aller, aller fleste brevene har ikke PDF-vedlegg, så de trenger ikke gå gjennom denne løypa

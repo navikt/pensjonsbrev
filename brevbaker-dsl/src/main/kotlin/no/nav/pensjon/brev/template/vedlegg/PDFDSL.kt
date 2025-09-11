@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.vedlegg
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 @PDFVedleggMarker
 class PDFVedlegg() {
@@ -30,15 +30,15 @@ class Side(val filnavn: String) {
 
 @PDFVedleggMarker
 class Felt() {
-    private val muterbareFelt: MutableMap<String, Map<Language, String?>?> = mutableMapOf()
-    val felt: Map<String, Map<Language, String?>?>
+    private val muterbareFelt: MutableMap<String, Map<LanguageCode, String?>?> = mutableMapOf()
+    val felt: Map<String, Map<LanguageCode, String?>?>
         get() = muterbareFelt
 
     infix fun String.to(str: String) {
         muterbareFelt[this] = leggTilPaaAlleSpraak(str)
     }
 
-    infix fun String.to(verdi: Map<Language, String?>?) {
+    infix fun String.to(verdi: Map<LanguageCode, String?>?) {
         muterbareFelt[this] = verdi
     }
 
@@ -46,10 +46,10 @@ class Felt() {
         muterbareFelt[this] = verdi?.let { leggTilPaaAlleSpraak(it.toString()) }
     }
 
-    private fun leggTilPaaAlleSpraak(str: String?): Map<Language, String?> = mapOf(
-        Language.Bokmal to str,
-        Language.Nynorsk to str,
-        Language.English to str
+    private fun leggTilPaaAlleSpraak(str: String?): Map<LanguageCode, String?> = mapOf(
+        LanguageCode.BOKMAL to str,
+        LanguageCode.NYNORSK to str,
+        LanguageCode.ENGLISH to str
     )
 
     fun add(map: Map<String, Any?>) {
@@ -60,7 +60,7 @@ class Felt() {
         }
             map.entries
                 .filter { it.value is Map<*, *> }
-                .forEach { muterbareFelt[it.key] = it.value as Map<Language, String?> }
+                .forEach { muterbareFelt[it.key] = it.value as Map<LanguageCode, String?> }
     }
 }
 
