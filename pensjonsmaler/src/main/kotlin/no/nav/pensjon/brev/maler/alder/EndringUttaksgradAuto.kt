@@ -176,65 +176,76 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                 }
 
                 showIf(alderspensjonVedVirk.uttaksgrad.lessThan(100)) {
-                    // nySoknadAPInfo, gradsendrAPSoknadInfo
+                    // gradsendrAPSoknadInfo, nySoknadAPInfo
                     paragraph {
                         text(
-                            bokmal { +"Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
-                            nynorsk { +"Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden." },
-                            english { +"You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
+                            bokmal {
+                                +"Du må sende oss en ny søknad når du ønsker å ta ut "
+                                +ifElse(
+                                    alderspensjonVedVirk.uttaksgrad.greaterThan(0),
+                                    ifTrue = "mer alderspensjon",
+                                    ifFalse = "alderspensjon"
+                                ) + ". En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden."
+                            },
+                            nynorsk {
+                                +"Du må sende oss ein ny søknad når du ønskjer å ta ut "
+                                +ifElse(
+                                    alderspensjonVedVirk.uttaksgrad.greaterThan(0),
+                                    ifTrue = "meir alderspensjon",
+                                    ifFalse = "alderspensjon"
+                                ) + ". Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden."
+                            },
+                            english {
+                                +"You have to submit an application when you want to "
+                                +ifElse(
+                                    alderspensjonVedVirk.uttaksgrad.greaterThan(0),
+                                    ifTrue = "increase",
+                                    ifFalse = "start drawing"
+                                ) + " your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
+                            }
                         )
                     }
                 }
 
-                // skattAPendring
-                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
+                showIf(alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
+                    // skattAPendring
+                    includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
 
-                // arbinntektAP
-                includePhrase(ArbeidsinntektOgAlderspensjonKort)
+                    // arbinntektAP
+                    includePhrase(ArbeidsinntektOgAlderspensjonKort)
 
-                showIf(alderspensjonVedVirk.uttaksgrad.equalTo(100)) {
-                    // nyOpptjeningHelAP_001
-                    paragraph {
-                        text(
-                            bokmal { +"Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig." },
-                            nynorsk { +"Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig." },
-                            english { +"If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." }
-                        )
+                    showIf(alderspensjonVedVirk.uttaksgrad.equalTo(100)) {
+                        // nyOpptjeningHelAP_001
+                        paragraph {
+                            text(
+                                bokmal { +"Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig." },
+                                nynorsk { +"Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig." },
+                                english { +"If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." }
+                            )
+                        }
+                    }.orShow {
+                        // nyOpptjeningGradertAP_001
+                        paragraph {
+                            text(
+                                bokmal { +"Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå." },
+                                nynorsk { +"Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no." },
+                                english { +"If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated." }
+                            )
+                        }
                     }
-                }.orShow {
-                    // nyOpptjeningGradertAP_001
-                    paragraph {
-                        text(
-                            bokmal { +"Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå." },
-                            nynorsk { +"Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no." },
-                            english { +"If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated." }
-                        )
-                    }
+
+                    includePhrase(UfoereAlder.UfoereKombinertMedAlder(alderspensjonVedVirk.ufoereKombinertMedAlder))
+
+                    includePhrase(MeldFraOmEndringer2)
                 }
-
-                includePhrase(UfoereAlder.UfoereKombinertMedAlder(alderspensjonVedVirk.ufoereKombinertMedAlder))
-
-                includePhrase(MeldFraOmEndringer2)
                 includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)  // V00003
-            includeAttachmentIfNotNull(
-                vedleggMaanedligPensjonFoerSkattAp2025,
-                maanedligPensjonFoerSkattAP2025Dto
-            )  // V00010
-            includeAttachmentIfNotNull(
-                vedleggOpplysningerBruktIBeregningenEndretUttaksgrad,
-                opplysningerBruktIBeregningenEndretUttaksgradDto
-            )  // V00005
-            includeAttachmentIfNotNull(
-                vedleggDineRettigheterOgMulighetTilAaKlage,
-                dineRettigheterOgMulighetTilAaKlageDto
-            )  // V00001
-            includeAttachmentIfNotNull(
-                vedleggOrienteringOmRettigheterOgPlikter,
-                orienteringOmRettigheterOgPlikterDto
-            )  // V00002
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025Dto)  // V00010
+            includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, opplysningerBruktIBeregningenEndretUttaksgradDto)  // V00005
+            includeAttachmentIfNotNull(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)  // V00001
+            includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)  // V00002
         }
 }
