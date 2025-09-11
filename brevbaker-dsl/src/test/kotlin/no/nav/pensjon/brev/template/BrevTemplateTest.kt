@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 
 private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
@@ -69,7 +70,17 @@ private class BrevTemplateTest {
     fun `kan ikke ha fritekst uten tekst`() {
         with(EksempelBrev.template) {
             with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
-                    assertThrows<IllegalArgumentException> { null.expr<String?>().ifNull(fritekst("       ")) }
+                    assertThrows<IllegalArgumentException> { fritekst("       ") }
+            }
+        }
+    }
+
+
+    @Test
+    fun `kan ha fritekst med mellomrom foerst og sist`() {
+        with(EksempelBrev.template) {
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                assertDoesNotThrow{ fritekst(" hei ") }
             }
         }
     }
