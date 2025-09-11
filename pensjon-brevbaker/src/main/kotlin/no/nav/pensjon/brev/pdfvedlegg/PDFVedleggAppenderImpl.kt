@@ -29,14 +29,14 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
         val target = PDDocument()
 
         Loader.loadPDF(pdfCompilationOutput.bytes).use { originaltDokument ->
+            leggPaaBlankPartallsside(originaltDokument, target)
             merger.leggTilSide(target, originaltDokument)
-            leggPaaBlankPartallsside(originaltDokument, merger, target)
         }
 
         attachments
             .forEach {
                 val vedlegg = VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak)
-                leggPaaBlankPartallsside(vedlegg, merger, target)
+                leggPaaBlankPartallsside(vedlegg, target)
                 merger.leggTilSide(target, vedlegg)
             }
         return tilByteArray(target).also { target.close() }
@@ -44,13 +44,10 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
     private fun leggPaaBlankPartallsside(
         originaltDokument: PDDocument,
-        merger: PDFMergerUtility,
         target: PDDocument,
     ) {
         if (originaltDokument.pages.count % 2 == 1) {
-            PDDocument().apply { addPage(PDPage()) }.use { blankSide ->
-                merger.leggTilSide(target, blankSide)
-            }
+            target.addPage(PDPage())
         }
     }
 

@@ -9,7 +9,7 @@ import org.apache.pdfbox.pdmodel.PDDocument
 
 internal object VedleggAppender {
 
-    internal fun <Lang: LanguageSupport> lesInnVedlegg(vedlegg: PDFVedlegg<Lang>, spraak: Language): PDDocument {
+    internal fun <Lang : LanguageSupport> lesInnVedlegg(vedlegg: PDFVedlegg<Lang>, spraak: Language): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val sider = vedlegg.sider
@@ -20,7 +20,7 @@ internal object VedleggAppender {
                     .flatMap { it.felt.entries }
                     .associate { it.key to it.value?.get(spraak) }
 
-                pdfSide.setValues(map + ("page" to "${index+1}/${sider.size}"))
+                pdfSide.setValues(map + ("page" to "${index + 1}/${sider.size}"))
                 merger.leggTilSide(target, pdfSide)
             }
         }
