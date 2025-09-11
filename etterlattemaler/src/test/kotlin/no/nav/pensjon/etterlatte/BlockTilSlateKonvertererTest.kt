@@ -81,6 +81,7 @@ class BlockTilSlateKonvertererTest {
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
             vergeNavn = null,
+            annenMottakerNavn = null,
         ),
         signatur = LetterMarkupImpl.SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
@@ -131,6 +132,7 @@ class BlockTilSlateKonvertererTest {
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
             vergeNavn = null,
+            annenMottakerNavn = null,
         ),
         blocks = listOf(
             LetterMarkupImpl.BlockImpl.ParagraphImpl(

@@ -55,6 +55,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             sakspart = SakspartImpl(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer,
+                annenMottakerNavn = scope.felles.annenMottakerNavn,
                 vergeNavn = scope.felles.vergeNavn,
                 saksnummer = scope.felles.saksnummer,
                 dokumentDato = scope.felles.dokumentDato,
