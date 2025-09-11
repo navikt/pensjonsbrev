@@ -15,18 +15,8 @@ fun createEndringAvAlderspensjonSivilstandDto() =
     EndringAvAlderspensjonSivilstandDto(
         saksbehandlerValg =
             EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg(
-                aarligKontrollEPS = false,
                 endringPensjon = false,
-                epsAvkallPaaEgenAlderspenspensjon = false,
-                epsAvkallPaaEgenUfoeretrygd = false,
-                epsHarInntektOver1G = true,
-                epsHarRettTilFullAlderspensjon = false,
-                epsIkkeFylt62Aar = false,
-                epsIkkeRettTilFullAlderspensjon = false,
                 epsInntektOekningReduksjon = false,
-                epsTarUtAlderspensjon = false,
-                epsTarUtAlderspensjonIStatligSektor = false,
-                epsTarUtUfoeretrygd = false,
                 etterbetaling = false,
                 feilutbetaling = false,
                 fraFlyttet = false,
@@ -51,8 +41,6 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                     ),
                 beregnetPensjonPerManedVedVirk =
                     EndringAvAlderspensjonSivilstandDto.BeregnetPensjonPerManedVedVirk(
-                        garantitillegg = null,
-                        grunnbelop = Kroner(124028),
                         grunnpensjon = Kroner(320000),
                         totalPensjon = Kroner(340000),
                     ),
@@ -66,7 +54,6 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                 kravAarsak = KravArsakType.SIVILSTANDSENDRING,
                 kravVirkDatoFom = LocalDate.of(2025, 6, 1),
                 regelverkType = AlderspensjonRegelverkType.AP2011,
-                saerskiltSatsErBrukt = false,
                 sivilstand = MetaforceSivilstand.GIFT,
                 vedtakEtterbetaling = false,
                 maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),

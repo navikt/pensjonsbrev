@@ -127,8 +127,8 @@ object EndringAvAlderspensjonSivilstandAuto :
                 }.orShow {
                     includePhrase(
                         DuFaarAP(
-                            kravVirkDatoFom = kravVirkDatoFom.format(),
-                            totalPensjon = beregnetPensjonPerManedVedVirk.totalPensjon.format(),
+                            kravVirkDatoFom = kravVirkDatoFom,
+                            totalPensjon = beregnetPensjonPerManedVedVirk.totalPensjon,
                         ),
                     )
                 }

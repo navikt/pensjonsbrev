@@ -1,6 +1,5 @@
 import DOMPurify from "dompurify";
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import {
   addElements,
@@ -25,7 +24,7 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import type {
   Focus,
   ItemContentIndex,
@@ -48,7 +47,7 @@ import { FontType, TABLE } from "~/types/brevbakerTypes";
 import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
-  produce((draft, literalIndex, offset, clipboard) => {
+  withPatches((draft, literalIndex, offset, clipboard) => {
     // Since we always paste where the cursor is, then focus has to be at literalIndex and offset.
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
@@ -120,7 +119,7 @@ function insertTextInLetter(
       setContentIndex(draft.focus, insertAtIndex);
       draft.focus.cursorPosition = str.length;
     }
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   } else if (content !== undefined) {
     log(`cannot paste text into ${content.type}, must be literal.`);
   }
@@ -233,7 +232,7 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
   } else {
     insertTraversedElements(draft, parsedAndCombinedHtml);
   }
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 }
 
 // Ensure that every table row has exactly the same number of cells (colCount)
@@ -312,12 +311,12 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
 
   const table = createTable(colSpec, rows);
 
-  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
-  if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
+  if (isBlockContentIndex(draft.focus) && isParagraph(draft.redigertBrev.blocks[draft.focus.blockIndex])) {
     // Split current literal at cursor so trailing text stays after table.
     splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+    const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
 
-    const tableIndex = draft.focus.contentIndex + 1;
+    const tableIndex = draft.focus.contentIndex;
     addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
 
     const focusRowIndex = rows.length > 0 ? 0 : -1;
@@ -331,7 +330,7 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
       cursorPosition: 0,
     };
 
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   }
 }
 
@@ -607,10 +606,7 @@ function traverseTable(element: Element, font: FontType): Table {
       }
     });
     // Drop whitespace-only TEXT nodes so the cell content contains only meaningful text.
-    const filteredCellTextContent = cellContentElements.filter(
-      (txt) => txt.type !== "TEXT" || txt.text.trim().length > 0,
-    );
-    return filteredCellTextContent;
+    return cellContentElements.filter((txt) => txt.type !== "TEXT" || txt.text.trim().length > 0);
   };
 
   let rowElements = Array.from(element.querySelectorAll("tr"));

@@ -27,7 +27,4 @@ class Brevbaker(pdfByggerService: PDFByggerService, pdfVedleggAppender: PDFVedle
 
     fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         BrevbakerLetterMarkup.renderLetterMarkupWithDataUsage(letter)
-
-    fun renderLetterWithAttachmentsMarkup(letter: Letter<BrevbakerBrevdata>): LetterWithAttachmentsMarkup =
-        BrevbakerLetterMarkup.renderLetterWithAttachmentsMarkup(letter)
 }

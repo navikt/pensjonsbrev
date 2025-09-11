@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -62,6 +63,7 @@ class BrevredigeringServiceTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
     init {
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         initADGroups()
     }
 
@@ -572,7 +574,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
         }
     }
 
@@ -1173,7 +1175,7 @@ class BrevredigeringServiceTest {
     fun `oppdatering av redigertBrev endrer ogsaa redigertBrevHash`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
         val hash1 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
-        assertThat(hash1.hex).isEqualTo(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter.toEdit())))
+        assertThat(hash1.hexBytes).isEqualTo(WithEditLetterHash.hashBrev(letter.toEdit()))
 
         transaction {
             Brevredigering[brev.info.id].redigertBrev =

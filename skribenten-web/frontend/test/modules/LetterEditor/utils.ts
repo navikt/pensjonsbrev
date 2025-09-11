@@ -27,7 +27,7 @@ import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
-    isDirty: false,
+    saveStatus: "SAVED",
     info: {
       id: 1,
       opprettetAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
@@ -66,6 +66,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
     },
     redigertBrevHash: "hash1",
     focus: { blockIndex: 0, contentIndex: 0 },
+    history: { entries: [], entryPointer: -1 },
   };
 }
 

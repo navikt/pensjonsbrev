@@ -13,6 +13,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import org.slf4j.LoggerFactory
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KontaktAdresseResponseDto(
@@ -36,13 +37,14 @@ data class KontaktAdresseResponseDto(
 }
 
 class PensjonPersonDataService(config: Config, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
-
+    private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
     private val client = HttpClient(clientEngine) {
         defaultRequest {
             url(pensjonPersondataURL)
         }
+        installRetry(logger)
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())

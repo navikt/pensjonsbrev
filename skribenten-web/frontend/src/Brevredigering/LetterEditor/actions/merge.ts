@@ -1,5 +1,4 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import {
   addElements,
@@ -11,7 +10,7 @@ import {
 import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
 
@@ -20,7 +19,7 @@ export enum MergeTarget {
   NEXT = "NEXT",
 }
 
-export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = produce(
+export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = withPatches(
   (draft, literalIndex, target) => {
     const editedLetter = draft.redigertBrev;
     const blocks = editedLetter.blocks;
@@ -30,10 +29,10 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
 
     if ("itemIndex" in literalIndex) {
       mergeFromItemList(draft, literalIndex, target);
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
       mergeIntoItemList(draft, previousContentSameBlock, literalIndex);
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === LITERAL) {
       // TODO: må se på denne her.
       const content = block?.content[literalIndex.contentIndex];
@@ -55,13 +54,13 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           cursorPosition: text(previousContentSameBlock).length,
         };
       }
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (
       (target === MergeTarget.PREVIOUS && literalIndex.contentIndex === 0) ||
       (target === MergeTarget.NEXT && isLastIndex(literalIndex.contentIndex, block.content))
     ) {
       mergeBlocks(draft, literalIndex, target);
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === NEW_LINE) {
       removeElements(literalIndex.contentIndex - 1, 1, {
         content: block.content,
@@ -73,7 +72,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         contentIndex: literalIndex.contentIndex - 1,
         cursorPosition: 0,
       };
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     } else if (target === MergeTarget.NEXT && nextContentSameBlock?.type === NEW_LINE) {
       const content = block?.content[literalIndex.contentIndex];
 
@@ -87,7 +86,7 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         contentIndex: literalIndex.contentIndex,
         cursorPosition: isTextContent(content) ? text(content).length : 0,
       };
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     }
   },
 );

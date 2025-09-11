@@ -8,7 +8,6 @@ import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -16,7 +15,6 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
-import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.template.Language
@@ -29,12 +27,9 @@ import org.junit.jupiter.api.assertThrows
 
 class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
-    private val pdf = pdfInnhold.toByteArray()
+    private val pdf = pdfInnhold.encodeToByteArray()
     private val fakePDFBygger = object : PDFByggerService {
         override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
-    }
-    private val fakePDFByggerAsync = object : PDFByggerAsync {
-        override fun renderAsync(asyncPdfRequest: PDFRequestAsync) {}
     }
     private val fakePDFAppender = object : PDFVedleggAppender {
         override fun leggPaaVedlegg(
@@ -44,7 +39,7 @@ class TemplateResourceTest {
         ) = pdfCompilationOutput
     }
 
-    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger, fakePDFAppender, fakePDFByggerAsync)
+    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFAppender, fakePDFByggerAsync)
 
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,
@@ -67,7 +62,7 @@ class TemplateResourceTest {
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
         val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
-            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
+            LetterResponse(pdfInnhold.encodeToByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
             result
         )
     }

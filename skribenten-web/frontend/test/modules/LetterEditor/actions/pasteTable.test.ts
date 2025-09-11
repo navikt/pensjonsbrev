@@ -4,8 +4,9 @@ import { describe, expect, it } from "vitest";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import type { LetterEditorState, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
+import type { Table } from "~/types/brevbakerTypes";
 
-import type { table } from "../utils";
+import { select } from "../utils";
 import { letter, literal, paragraph } from "../utils";
 
 function createClipboardWithHtml(htmlContent: string): DataTransfer {
@@ -108,9 +109,12 @@ describe("paste handler inserts TABLE", () => {
     const paragraphBlock = updatedState.redigertBrev.blocks[0];
     expect(paragraphBlock.type).toBe("PARAGRAPH");
 
-    expect(paragraphBlock.content[1].type).toBe("TABLE");
+    expect(paragraphBlock.content[updatedState.focus.contentIndex].type).toBe("TABLE");
 
-    const tableContent = paragraphBlock.content[1] as ReturnType<typeof table>;
+    const tableContent = select<Table>(updatedState, {
+      blockIndex: updatedState.focus.blockIndex,
+      contentIndex: updatedState.focus.contentIndex,
+    });
 
     expect(tableContent.header.colSpec.length).toBe(1);
     expect(tableContent.rows.length).toBe(1);
@@ -133,7 +137,10 @@ describe("paste handler inserts TABLE", () => {
       0,
       createClipboardWithHtml(HTML_EXPLICIT_THEAD_TBODY),
     );
-    const tableNode = updatedState.redigertBrev.blocks[0].content[1] as ReturnType<typeof table>;
+    const tableNode = select<Table>(updatedState, {
+      blockIndex: updatedState.focus.blockIndex,
+      contentIndex: updatedState.focus.contentIndex,
+    });
     expect(tableNode.header.colSpec.length).toBe(1);
     expect(tableNode.rows.length).toBe(1);
     const headerLiteral = tableNode.header.colSpec[0].headerContent.text[0];
@@ -150,7 +157,10 @@ describe("paste handler inserts TABLE", () => {
       0,
       createClipboardWithHtml(HTML_NO_TH_PROMOTE_FIRST_ROW),
     );
-    const tbl = updatedState.redigertBrev.blocks[0].content[1] as ReturnType<typeof table>;
+    const tbl = select<Table>(updatedState, {
+      blockIndex: updatedState.focus.blockIndex,
+      contentIndex: updatedState.focus.contentIndex,
+    });
     expect(tbl.header.colSpec.length).toBe(2);
     expect(tbl.rows.length).toBe(1);
     expect(tbl.rows[0].cells.length).toBe(2);
@@ -165,7 +175,10 @@ describe("paste handler inserts TABLE", () => {
       0,
       createClipboardWithHtml(HTML_BODY_ROW_WITH_EXTRA_CELLS),
     );
-    const tbl = updatedState.redigertBrev.blocks[0].content[1] as ReturnType<typeof table>;
+    const tbl = select<Table>(updatedState, {
+      blockIndex: updatedState.focus.blockIndex,
+      contentIndex: updatedState.focus.contentIndex,
+    });
     expect(tbl.header.colSpec.length).toBe(4);
     expect(tbl.rows[0].cells.length).toBe(4);
 

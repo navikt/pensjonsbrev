@@ -96,8 +96,6 @@ internal object LetterMarkupModule : SimpleModule() {
         }
 }
 
-fun pdfByggerObjectMapper() = jacksonObjectMapper().apply { pdfByggerConfig() }
-
 fun ObjectMapper.pdfByggerConfig() {
     registerModule(JavaTimeModule())
     registerModule(LetterMarkupModule)

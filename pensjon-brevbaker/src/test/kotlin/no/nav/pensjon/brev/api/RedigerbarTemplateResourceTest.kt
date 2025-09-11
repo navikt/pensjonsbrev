@@ -24,7 +24,7 @@ import java.time.LocalDate
 
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
-    private val pdf = pdfInnhold.toByteArray()
+    private val pdf = pdfInnhold.encodeToByteArray()
     private val fakePDFBygger = object : PDFByggerService {
         override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
     }
@@ -49,6 +49,7 @@ class RedigerbarTemplateResourceTest {
                 gjelderNavn = "gjelder bruker",
                 gjelderFoedselsnummer = Foedselsnummer("123abc"),
                 vergeNavn = null,
+                annenMottakerNavn = null,
                 saksnummer = "001",
                 dokumentDato = LocalDate.now()
             ),

@@ -1,4 +1,4 @@
-import { format, formatISO } from "date-fns";
+import { formatISO } from "date-fns";
 
 import brev from "../../fixtures/brevResponse.json";
 
@@ -27,13 +27,13 @@ describe("autolagring", () => {
 
     cy.visit("/saksnummer/123456/brev/1");
     cy.wait("@brev");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Overstyring").click();
     cy.getDataCy("datepicker-editor").should("have.value", "24.07.2024");
     cy.getDataCy("datepicker-editor").click().clear().type("10.09.2024");
 
     cy.wait("@autoLagring");
-    cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("Lagret").should("exist");
   });
 
   it("lagrer endring av tekst-felt automatisk", () => {
@@ -50,11 +50,11 @@ describe("autolagring", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.wait("@brev");
     cy.wait("@modelSpecification");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Overstyring").click();
     cy.contains("Ytelse").click().type("{selectall}{backspace}Supplerende stønad", { delay: 20 });
     cy.wait("@autoLagring");
-    cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("Lagret").should("exist");
   });
 
   it("autolagrer når nullable tekst felter tømmes", () => {
@@ -90,7 +90,7 @@ describe("autolagring", () => {
     }).as("autoLagringSaksbehandlerValg");
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Saksbehandlingstiden vår er vanligvis 10 uker.").should("exist");
     cy.contains("Inkluder venter svar AFP").click();
     cy.getDataCy("datepicker-editor").eq(0).should("have.value", "");
@@ -108,7 +108,7 @@ describe("autolagring", () => {
     }).as("autoLagring");
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Sak S. Behandler");
     cy.contains("Underskrift").click().type("{selectall}{backspace}").type("Min nye underskrift");
     cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Min nye underskrift");

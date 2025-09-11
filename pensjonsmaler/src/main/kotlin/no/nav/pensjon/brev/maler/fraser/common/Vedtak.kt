@@ -3,16 +3,15 @@ package no.nav.pensjon.brev.maler.fraser.common
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
+import java.time.Month
 
 
 object Vedtak {
@@ -61,12 +60,15 @@ object Vedtak {
                     english { + "You will receive retroactive pension payments from " + virkDatoFom.format() +". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV." }
                 )
             }
-            paragraph {
-                text(
-                    bokmal { + "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
-                    nynorsk { + "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten." },
-                    english { + "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates." }
-                )
+
+            showIf(virkDatoFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+                paragraph {
+                    text(
+                        bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
+                        nynorsk { +"Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten." },
+                        english { +"If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates." }
+                    )
+                }
             }
         }
     }

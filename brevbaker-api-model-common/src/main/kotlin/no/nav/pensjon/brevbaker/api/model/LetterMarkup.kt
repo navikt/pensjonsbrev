@@ -27,7 +27,8 @@ interface LetterMarkup {
     interface Sakspart {
         val gjelderNavn: String
         val gjelderFoedselsnummer: Foedselsnummer
-        val vergeNavn: String?
+        val vergeNavn: String? // TODO slett etter all bruk er fjernet.
+        val annenMottakerNavn: String?
         val saksnummer: String
         val dokumentDato: LocalDate
     }

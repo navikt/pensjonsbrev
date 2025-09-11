@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.routing
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
-import io.ktor.server.application.log
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -22,9 +21,7 @@ import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
-import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(
@@ -32,10 +29,9 @@ fun Application.brevRouting(
     pdfByggerService: PDFByggerService,
     pdfVedleggAppender: PDFVedleggAppender,
     brevProvider: AllTemplates,
-    pDFByggerAsync: PDFByggerAsync?,
 ) =
     routing {
-        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, pdfVedleggAppender, pDFByggerAsync)
+        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, pdfVedleggAppender)
         val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService, pdfVedleggAppender)
 
         route("/templates") {
@@ -47,15 +43,6 @@ fun Application.brevRouting(
             route("/letter") {
                 autobrevRoutes(autobrev)
                 redigerbarRoutes(redigerbareBrev)
-                if (pDFByggerAsync != null) {
-                    log.info("registrert endepunkt for async kompilering av brev")
-                    post<BestillBrevRequestAsync<Brevkode.Automatisk>>("/${autobrev.name}/pdfAsync") { brevbestillingAsync ->
-                        installBrevkodeInCallContext(brevbestillingAsync.kode)
-                        autobrev.renderPdfAsync(brevbestillingAsync)
-                        autobrev.countLetter(brevbestillingAsync.kode)
-                        call.respond(HttpStatusCode.OK)
-                    }
-                }
             }
 
             route("etterlatte") {
@@ -64,8 +51,7 @@ fun Application.brevRouting(
                     EtterlatteMaler.hentAutobrevmaler(),
                     pdfByggerService,
                     pdfVedleggAppender,
-                    pDFByggerAsync
-                )
+                    )
                 autobrevRoutes(etterlatteResource)
 
                 post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") { request ->
