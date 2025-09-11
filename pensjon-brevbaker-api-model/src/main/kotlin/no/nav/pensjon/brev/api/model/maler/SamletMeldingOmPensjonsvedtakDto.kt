@@ -20,7 +20,7 @@ data class P1Dto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
-    val kravMottattDato: LocalDate,
+    val kravMottattDato: LocalDate?,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
@@ -31,10 +31,10 @@ data class P1Dto(
         val etternavn: String,
         val etternavnVedFoedsel: String,
         val foedselsdato: LocalDate?,
-        val adresselinje: String,
-        val poststed: Poststed,
-        val postnummer: Postnummer,
-        val landkode: Landkode,
+        val adresselinje: String?,
+        val poststed: Poststed?,
+        val postnummer: Postnummer?,
+        val landkode: Landkode?,
     )
 
     data class InnvilgetPensjon(
@@ -42,10 +42,10 @@ data class P1Dto(
         val pensjonstype: Pensjonstype,
         val datoFoersteUtbetaling: LocalDate,
         val bruttobeloep: Int,
-        val grunnlagInnvilget: GrunnlagInnvilget,
+        val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
-        val vurderingsperiode: Period,
-        val adresseNyVurdering: Adresse,
+        val vurderingsperiode: String,
+        val adresseNyVurdering: Adresse?,
     )
 
     data class AvslaattPensjon(
@@ -53,7 +53,7 @@ data class P1Dto(
         val pensjonstype: Pensjonstype,
         val avslagsbegrunnelse: Avslagsbegrunnelse,
         val vurderingsperiode: Period,
-        val adresseNyVurdering: Adresse,
+        val adresseNyVurdering: Adresse?,
     )
 
     enum class Pensjonstype(val nummer: Int, val fullTekst: String) {
