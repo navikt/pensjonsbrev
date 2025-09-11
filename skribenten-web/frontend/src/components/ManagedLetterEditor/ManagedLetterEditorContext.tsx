@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import _ from "lodash";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createContext, useCallback, useContext, useState } from "react";
 
@@ -29,6 +30,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus !== "DIRTY") {
+          const keepHistory = _.isEqual(previousState.redigertBrev, response.redigertBrev);
           return {
             ...previousState,
             redigertBrev: response.redigertBrev,
@@ -36,6 +38,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
             saksbehandlerValg: response.saksbehandlerValg,
             info: response.info,
             saveStatus: "SAVED",
+            history: keepHistory ? previousState.history : { entries: [], entryPointer: -1 },
           };
         } else {
           return previousState;
