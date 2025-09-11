@@ -48,7 +48,7 @@ export const LetterEditor = ({
         ...previous,
         history: {
           ...previous.history,
-          entryPointer: previous.history.entryPointer - 1,
+          entryPointer: current.history.entryPointer - 1,
         },
       };
     });
