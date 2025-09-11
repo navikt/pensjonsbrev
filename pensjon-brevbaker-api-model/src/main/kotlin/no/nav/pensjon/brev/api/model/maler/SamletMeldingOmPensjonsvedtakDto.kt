@@ -20,7 +20,7 @@ data class P1Dto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
-    val kravMottattDato: LocalDate,
+    val kravMottattDato: LocalDate?,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
@@ -31,21 +31,21 @@ data class P1Dto(
         val etternavn: String,
         val etternavnVedFoedsel: String,
         val foedselsdato: LocalDate?,
-        val adresselinje: String,
-        val poststed: Poststed,
-        val postnummer: Postnummer,
-        val landkode: Landkode,
+        val adresselinje: String?,
+        val poststed: Poststed?,
+        val postnummer: Postnummer?,
+        val landkode: Landkode?,
     )
 
     data class InnvilgetPensjon(
         val institusjon: String,
         val pensjonstype: Pensjonstype,
         val datoFoersteUtbetaling: LocalDate,
-        val bruttobeloep: Penger,
-        val grunnlagInnvilget: GrunnlagInnvilget,
+        val bruttobeloep: Int,
+        val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
-        val vurderingsperiode: Period,
-        val adresseNyVurdering: Adresse,
+        val vurderingsperiode: String,
+        val adresseNyVurdering: Adresse?,
     )
 
     data class AvslaattPensjon(
@@ -53,7 +53,7 @@ data class P1Dto(
         val pensjonstype: Pensjonstype,
         val avslagsbegrunnelse: Avslagsbegrunnelse,
         val vurderingsperiode: Period,
-        val adresseNyVurdering: Adresse,
+        val adresseNyVurdering: Adresse?,
     )
 
     enum class Pensjonstype(val nummer: Int, val fullTekst: String) {
@@ -141,14 +141,5 @@ data class P1Dto(
             require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ." }
             require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ." }
         }
-    }
-}
-
-data class Penger(val verdi: Int, val valuta: Valuta)
-
-@JvmInline
-value class Valuta(val valuta: String) {
-    init {
-        require(valuta.length == 3)
     }
 }
