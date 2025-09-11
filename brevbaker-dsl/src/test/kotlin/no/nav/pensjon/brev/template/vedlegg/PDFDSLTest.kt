@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.template.vedlegg
 
-import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -10,7 +8,7 @@ class PDFDSLTest {
 
     @Test
     fun `tolk dsl`() {
-        val vedlegg = PDFVedlegg.create<LangNynorsk> {
+        val vedlegg = PDFVedlegg.create {
             side("Side1.pdf") {
                 felt {
                     "felt1" to 1

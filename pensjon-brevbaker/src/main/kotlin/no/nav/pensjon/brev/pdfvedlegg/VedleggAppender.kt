@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -9,7 +8,7 @@ import org.apache.pdfbox.pdmodel.PDDocument
 
 internal object VedleggAppender {
 
-    internal fun <Lang : LanguageSupport> lesInnVedlegg(vedlegg: PDFVedlegg<Lang>, spraak: Language): PDDocument {
+    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: Language): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val sider = vedlegg.sider

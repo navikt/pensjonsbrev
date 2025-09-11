@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
 import no.nav.pensjon.brev.api.model.maler.P1Dto
-import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -12,7 +11,7 @@ import java.util.Locale
 
 private const val RADER_PER_SIDE = 5
 
-fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish> {
+fun P1Dto.somDSL() = PDFVedlegg.create {
     side("P1-1.pdf") {
         felt {
             // innehaver
