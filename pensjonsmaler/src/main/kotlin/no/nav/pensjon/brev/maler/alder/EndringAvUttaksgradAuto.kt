@@ -74,9 +74,9 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
             title {
                 showIf(alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon." },
-                        nynorsk { +"Vi har innvilga søknaden din om ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon." },
-                        english { +"We have granted your application for ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension." }
+                        bokmal { +"Vi har innvilget søknaden din om ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon" },
+                        nynorsk { +"Vi har innvilga søknaden din om ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon" },
+                        english { +"We have granted your application for ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension" }
                     )
                 }.orShow {
                     text(
@@ -92,9 +92,9 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                 showIf(alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
                     paragraph {
                         text(
-                            bokmal { +"Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom.format() + "." },
-                            nynorsk { +"Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() + "." },
-                            english { +"You will receive ".expr() + alderspensjonVedVirk.totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() + "." }
+                            bokmal { +"Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom.format() },
+                            nynorsk { +"Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() },
+                            english { +"You will receive ".expr() + alderspensjonVedVirk.totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() }
                         )
                         showIf(alderspensjonVedVirk.ufoereKombinertMedAlder) {
                             // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd

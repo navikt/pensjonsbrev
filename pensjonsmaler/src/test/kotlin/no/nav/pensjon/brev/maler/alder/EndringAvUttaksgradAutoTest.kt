@@ -26,7 +26,7 @@ class EndringAvUttaksgradAutoTest {
             LetterTestImpl(
                 EndringAvUttaksgradAuto.template,
                 Fixtures.create<EndringAvUttaksgradAutoDto>(),
-                Language.Nynorsk,
+                Language.Bokmal,
                 Fixtures.felles
             ).renderTestHtml(EndringAvUttaksgradAuto.kode.name)
         }
