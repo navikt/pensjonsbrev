@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -123,12 +122,10 @@ fun Application.brevbakerModule(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
-    val pdfVedleggAppender = PDFVedleggAppenderImpl
-
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, pdfVedleggAppender, templates)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {

@@ -1612,13 +1612,13 @@ public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate : no/nav/pen
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {
 	public static final field Companion Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg$Companion;
-	public fun <init> (Ljava/util/Map;)V
+	public fun <init> ()V
 	public final fun getSider ()Ljava/util/List;
 	public final fun side (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg$Companion {
-	public final fun create (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public final fun create (Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/Side {

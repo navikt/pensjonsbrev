@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -15,8 +14,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    pdfVedleggAppender: PDFVedleggAppender,
-) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, pdfByggerService, pdfVedleggAppender) {
+) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, pdfByggerService) {
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         with(brevbestilling) {

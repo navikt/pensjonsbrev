@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -13,9 +12,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    pdfVedleggAppender: PDFVedleggAppender,
-
-    ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, pdfByggerService, pdfVedleggAppender) {
+    ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, pdfByggerService) {
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
