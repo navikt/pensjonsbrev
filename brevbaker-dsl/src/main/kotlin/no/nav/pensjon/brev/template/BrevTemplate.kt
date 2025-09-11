@@ -33,8 +33,9 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
         )
 
     fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Expression<String> =
-        Literal(beskrivelse, setOf(ElementTags.FRITEKST))
-
+        beskrivelse.takeIf { it.trim().isNotEmpty() }
+            ?.let { Literal(it, setOf(ElementTags.FRITEKST)) }
+            ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
