@@ -66,6 +66,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
     },
     redigertBrevHash: "hash1",
     focus: { blockIndex: 0, contentIndex: 0 },
+    history: { entries: [], entryPointer: -1 },
   };
 }
 

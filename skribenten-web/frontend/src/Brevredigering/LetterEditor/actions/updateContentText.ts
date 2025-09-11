@@ -1,15 +1,14 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import type { LiteralValue } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isItemList, isLiteral, isTableCellIndex } from "../model/utils";
 import { cleanseText, isTable } from "./common";
 
-export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
-  (draft, literalIndex, text) => {
+export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = withPatches(
+  (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, text: string) => {
     const focus = literalIndex;
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     const paraContent = block.content[focus.contentIndex];
