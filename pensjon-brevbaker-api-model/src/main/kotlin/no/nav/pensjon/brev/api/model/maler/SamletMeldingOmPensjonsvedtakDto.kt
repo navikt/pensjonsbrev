@@ -41,7 +41,7 @@ data class P1Dto(
         val institusjon: String,
         val pensjonstype: Pensjonstype,
         val datoFoersteUtbetaling: LocalDate,
-        val bruttobeloep: Penger,
+        val bruttobeloep: Int,
         val grunnlagInnvilget: GrunnlagInnvilget,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
         val vurderingsperiode: Period,
@@ -141,14 +141,5 @@ data class P1Dto(
             require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ." }
             require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ." }
         }
-    }
-}
-
-data class Penger(val verdi: Int, val valuta: Valuta)
-
-@JvmInline
-value class Valuta(val valuta: String) {
-    init {
-        require(valuta.length == 3)
     }
 }
