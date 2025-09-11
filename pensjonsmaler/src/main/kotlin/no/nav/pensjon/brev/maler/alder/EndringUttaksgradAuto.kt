@@ -233,11 +233,10 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             )
                         }
                     }
-
                     includePhrase(UfoereAlder.UfoereKombinertMedAlder(alderspensjonVedVirk.ufoereKombinertMedAlder))
-
                     includePhrase(MeldFraOmEndringer2)
                 }
+
                 includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
