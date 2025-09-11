@@ -16,4 +16,5 @@ alderspensjonVedVirk = EndringAvUttaksgradAutoDto.AlderspensjonVedVirk(
     harFlereBeregningsperioder = false,
     kravVirkDatoFom = LocalDate.of(2025, 1, 1),
     regelverkType = AlderspensjonRegelverkType.AP2011,
+    dineRettigheterOgMulighetTilAaKlageDto =
 )
