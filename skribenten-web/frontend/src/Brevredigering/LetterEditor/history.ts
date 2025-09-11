@@ -3,4 +3,5 @@ export interface HistoryEntry {
   patches: Patch[];
   inversePatches: Patch[];
   label?: string;
+  timestamp?: number;
 }
