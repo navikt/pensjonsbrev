@@ -49,7 +49,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 /* MF_000099 / AP_ENDR_GRAD_AUTO: Brevet produseres ved innvilget søknad om endring av uttaksgrad i selvbetjeningsløsningen.
-Malen har 2 deler:
+Malen har 2 resultater:
 Endring i uttaksgrad -> når bruker endrer uttaksgrad til en uttaksgrad større enn null
 Stans av alderspensjon -> når bruker endrer uttaksgrad til null */
 
