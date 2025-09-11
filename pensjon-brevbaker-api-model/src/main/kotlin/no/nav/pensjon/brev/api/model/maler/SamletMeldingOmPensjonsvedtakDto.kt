@@ -52,7 +52,7 @@ data class P1Dto(
         val institusjon: String,
         val pensjonstype: Pensjonstype,
         val avslagsbegrunnelse: Avslagsbegrunnelse,
-        val vurderingsperiode: Period,
+        val vurderingsperiode: String,
         val adresseNyVurdering: Adresse?,
     )
 
