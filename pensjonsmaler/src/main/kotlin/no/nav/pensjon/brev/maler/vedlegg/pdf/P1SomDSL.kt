@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.LocalDate
-import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
@@ -25,18 +24,18 @@ fun P1Dto.somDSL() = PDFVedlegg.create<LangBokmalEnglish>(
             "holder-etternavnVedFoedsel" to innehaver.etternavnVedFoedsel
             "holder-foedselsdato" to formaterDato(innehaver.foedselsdato)
             "holder-adresselinje" to innehaver.adresselinje
-            "holder-poststed" to innehaver.poststed.value
-            "holder-postnummer" to innehaver.postnummer.value
-            "holder-landkode" to innehaver.landkode.landkode
+            "holder-poststed" to innehaver.poststed?.value
+            "holder-postnummer" to innehaver.postnummer?.value
+            "holder-landkode" to innehaver.landkode?.landkode
             // forsikrede
             "insured-fornavn" to forsikrede.fornavn
             "insured-etternavn" to forsikrede.etternavn
             "insured-etternavnVedFoedsel" to forsikrede.etternavnVedFoedsel
             "insured-foedselsdato" to formaterDato(forsikrede.foedselsdato)
             "insured-adresselinje" to forsikrede.adresselinje
-            "insured-poststed" to forsikrede.poststed.value
-            "insured-postnummer" to forsikrede.postnummer.value
-            "insured-landkode" to forsikrede.landkode.landkode
+            "insured-poststed" to forsikrede.poststed?.value
+            "insured-postnummer" to forsikrede.postnummer?.value
+            "insured-landkode" to forsikrede.landkode?.landkode
 
             "kravMottattDato" to formaterDato(kravMottattDato)
             "sakstype" to mapOf(
@@ -96,8 +95,6 @@ private fun LocalDate.formater(language: Language): String? =
 fun dateFormatter(languageCode: LanguageCode, formatStyle: FormatStyle): DateTimeFormatter =
     DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(languageCode.locale())
 
-private fun Period.formater() = this.toString() // TODO: Formater periode ordentleg
-
 private fun P1Dto.Adresse.formater() =
     listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
             System.lineSeparator() + "${postnummer.value} ${poststed.value}" + System.lineSeparator() + landkode.landkode
@@ -107,11 +104,11 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         "${radnummer}-institusjon" to pensjon.institusjon,
         "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
         "${radnummer}-datoFoersteUtbetaling" to formaterDato(pensjon.datoFoersteUtbetaling),
-        "${radnummer}-bruttobeloep" to pensjon.bruttobeloep.let { it.verdi.toString() + " " + it.valuta.valuta },
-        "${radnummer}-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer.toString(),
-        "${radnummer}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer.toString(),
-        "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
-        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
+        "${radnummer}-bruttobeloep" to pensjon.bruttobeloep,
+        "${radnummer}-grunnlagInnvilget" to pensjon.grunnlagInnvilget?.nummer?.toString(),
+        "${radnummer}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer?.toString(),
+        "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
+        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering?.formater(),
     )
 
 
@@ -119,8 +116,8 @@ private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = ma
     "${radnummer}-institusjon" to pensjon.institusjon,
     "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
     "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
-    "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
-    "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
+    "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
+    "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering?.formater(),
 )
 
 fun LanguageCode.locale(): Locale =
