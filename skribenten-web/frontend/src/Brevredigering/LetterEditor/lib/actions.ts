@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produceWithPatches } from "immer";
 
-import type { HistoryEntry } from "../history";
+import { type HistoryEntry, updateHistory } from "../history";
 import type { LetterEditorState } from "../model/state";
 import { compose } from "./functional";
 
@@ -156,8 +156,6 @@ export function applyAction<T, Arguments extends any[]>(
 ): void {
   to((target) => target && action(target, ...arguments_));
 }
-// Time threshold for merging text update actions in history (1 second)
-const MERGE_TIME_THRESHOLD_MS = 1000;
 
 export type LetterEditorStateRecipe<Arguments extends any[]> = (
   draft: Draft<LetterEditorState>,
@@ -174,24 +172,25 @@ export function withPatches<Arguments extends any[]>(
 
     if (patches.length > 0) {
       let history = next.history ?? { entries: [], entryPointer: -1 };
-      // If we have undone actions, any new action should clear the "redo" history.
+      // If we have undone one or more actions, any new action should clear the "redo" history.
       if (history.entryPointer < history.entries.length - 1) {
-        history = {
-          ...history,
-          entries: history.entries.slice(0, history.entryPointer + 1),
-        };
+        history = { ...history, entries: history.entries.slice(0, history.entryPointer + 1) };
       }
 
-      const newHistoryEntry: HistoryEntry = { patches, inversePatches };
-      const newEntries = [...history.entries, newHistoryEntry];
-      const newEntryPointer = newEntries.length - 1;
+      const isTextUpdate =
+        patches.some((p) => p.path[p.path.length - 1] === "editedText") &&
+        patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
+
+      const newHistoryEntry: HistoryEntry = {
+        patches,
+        inversePatches,
+        label: isTextUpdate ? "TEXT_UPDATE" : undefined,
+        timestamp: Date.now(),
+      };
 
       return {
         ...next,
-        history: {
-          entries: newEntries,
-          entryPointer: newEntryPointer,
-        },
+        history: updateHistory(history, newHistoryEntry),
       };
     }
 
