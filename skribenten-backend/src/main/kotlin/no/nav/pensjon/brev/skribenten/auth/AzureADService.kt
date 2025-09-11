@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
@@ -54,7 +55,7 @@ interface AuthService {
 
 class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) : AuthService {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val adCache = Cache<Pair<UserAccessToken, String>, TokenResponse>(ttl = 1.minutes)
+    private val adCache = Cache<Pair<UserAccessToken, String>, TokenResponse>(ttl = 1.hours)
 
     private val client = HttpClient(engine) {
         install(ContentNegotiation) {
