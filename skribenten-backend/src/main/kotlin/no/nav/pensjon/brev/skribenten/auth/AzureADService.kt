@@ -68,15 +68,15 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
         installRetry(logger, maxRetries = 2)
     }
 
-    private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
-        return adCache.cached(Pair(accessToken, scope)) {
+    override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
+        return adCache.cached(Pair(principal.accessToken, scope)) {
             val response = client.submitForm(
                 url = jwtConfig.tokenUri,
                 formParameters = Parameters.build {
                     append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
                     append("client_id", jwtConfig.clientId)
                     append("client_secret", jwtConfig.clientSecret)
-                    append("assertion", accessToken.token)
+                    append("assertion", principal.accessToken.token)
                     append("scope", scope)
                     append("requested_token_use", "on_behalf_of")
                 }
@@ -90,14 +90,5 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
                 response.body<TokenResponse.ErrorResponse>()
             }
         }!!
-    }
-
-    override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
-        return principal.getOnBehalfOfToken(scope)?.takeIf { it.isValid() }
-            ?: exchangeToken(principal.accessToken, scope).also {
-                    if (it is TokenResponse.OnBehalfOfToken) {
-                        principal.setOnBehalfOfToken(scope, it)
-                    }
-                }
     }
 }
