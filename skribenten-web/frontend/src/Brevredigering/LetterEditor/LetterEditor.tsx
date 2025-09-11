@@ -36,17 +36,20 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
-  const canUndo = editorState.historyPointer >= 0;
-  const canRedo = editorState.historyPointer < editorState.history.length - 1;
+  const canUndo = editorState.history.entryPointer >= 0;
+  const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
     if (!canUndo) return;
     setEditorState((current) => {
-      const { inversePatches } = current.history[current.historyPointer];
+      const { inversePatches } = current.history.entries[current.history.entryPointer];
       const previous = applyPatches(current, inversePatches);
       return {
         ...previous,
-        historyPointer: current.historyPointer - 1,
+        history: {
+          ...previous.history,
+          entryPointer: previous.history.entryPointer - 1,
+        },
       };
     });
   }, [canUndo, setEditorState]);
@@ -54,12 +57,15 @@ export const LetterEditor = ({
   const redo = useCallback(() => {
     if (!canRedo) return;
     setEditorState((current) => {
-      const nextPointer = current.historyPointer + 1;
-      const { patches } = current.history[nextPointer];
+      const nextPointer = current.history.entryPointer + 1;
+      const { patches } = current.history.entries[nextPointer];
       const next = applyPatches(current, patches);
       return {
         ...next,
-        historyPointer: nextPointer,
+        history: {
+          ...next.history,
+          entryPointer: nextPointer,
+        },
       };
     });
   }, [canRedo, setEditorState]);

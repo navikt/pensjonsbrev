@@ -4,3 +4,7 @@ export interface HistoryEntry {
   inversePatches: Patch[];
   label?: string;
 }
+export interface History {
+  entries: HistoryEntry[];
+  entryPointer: number;
+}

@@ -171,19 +171,25 @@ export function withPatches<Arguments extends any[]>(
     });
 
     if (patches.length > 0) {
-      let history = next.history ?? [];
+      let history = next.history ?? { entries: [], entryPointer: -1 };
       // If we have undone actions, any new action should clear the "redo" history.
-      if (next.historyPointer < history.length - 1) {
-        history = history.slice(0, next.historyPointer + 1);
+      if (history.entryPointer < history.entries.length - 1) {
+        history = {
+          ...history,
+          entries: history.entries.slice(0, history.entryPointer + 1),
+        };
       }
 
       const newHistoryEntry: HistoryEntry = { patches, inversePatches };
-      const newHistory = [...history, newHistoryEntry];
+      const newEntries = [...history.entries, newHistoryEntry];
+      const newEntryPointer = newEntries.length - 1;
 
       return {
         ...next,
-        history: newHistory,
-        historyPointer: newHistory.length - 1,
+        history: {
+          entries: newEntries,
+          entryPointer: newEntryPointer,
+        },
       };
     }
 
