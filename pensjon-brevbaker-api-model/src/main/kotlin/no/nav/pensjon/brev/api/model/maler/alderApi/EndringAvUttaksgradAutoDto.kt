@@ -14,8 +14,8 @@ import java.time.LocalDate
 data class EndringAvUttaksgradAutoDto(
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val harFlereBeregningsperioder: Boolean,  // v1.BeregnetPensjonPerManed
-    val regelverkType: AlderspensjonRegelverkType,
     val kravVirkDatoFom: LocalDate,  // v3.Krav
+    val regelverkType: AlderspensjonRegelverkType,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?,
@@ -27,7 +27,7 @@ data class EndringAvUttaksgradAutoDto(
         val privatAFPerBrukt: Boolean,
         val skjermingstilleggInnvilget: Boolean,
         val totalPensjon: Kroner,
-        val uforeKombinertMedAlder: Boolean,
+        val ufoereKombinertMedAlder: Boolean,
         val uttaksgrad: Int
     )
 }

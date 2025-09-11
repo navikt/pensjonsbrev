@@ -5,15 +5,12 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.privatAFPerBrukt
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
@@ -79,7 +76,7 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                         nynorsk { +"Du får ".expr() + alderspensjonVedVirk.totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() },
                         english { +"You will receive ".expr() + alderspensjonVedVirk.totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() }
                     )
-                    showIf(alderspensjonVedVirk.uforeKombinertMedAlder) {
+                    showIf(alderspensjonVedVirk.ufoereKombinertMedAlder) {
                         // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
                         text(
                             bokmal { +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
@@ -175,13 +172,12 @@ object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                     }
                 }
 
-                includePhrase(UfoereAlder.UfoereKombinertMedAlder(alderspensjonVedVirk.uforeKombinertMedAlder))
+                includePhrase(UfoereAlder.UfoereKombinertMedAlder(alderspensjonVedVirk.ufoereKombinertMedAlder))
 
                 includePhrase(MeldFraOmEndringer2)
                 includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
-
             }
         }
 }
