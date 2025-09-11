@@ -39,6 +39,7 @@ class UpdateRenderedLetterTest {
                 gjelderNavn = "ny gjelder",
                 gjelderFoedselsnummer = Foedselsnummer("nytt fødselsnummer"),
                 vergeNavn = null,
+                annenMottakerNavn = null,
                 saksnummer = "nytt saksnummer",
                 dokumentDato = LocalDate.now(),
             ),

@@ -311,12 +311,12 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
 
   const table = createTable(colSpec, rows);
 
-  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
-  if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
+  if (isBlockContentIndex(draft.focus) && isParagraph(draft.redigertBrev.blocks[draft.focus.blockIndex])) {
     // Split current literal at cursor so trailing text stays after table.
     splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+    const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
 
-    const tableIndex = draft.focus.contentIndex + 1;
+    const tableIndex = draft.focus.contentIndex;
     addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
 
     const focusRowIndex = rows.length > 0 ? 0 : -1;
@@ -606,10 +606,7 @@ function traverseTable(element: Element, font: FontType): Table {
       }
     });
     // Drop whitespace-only TEXT nodes so the cell content contains only meaningful text.
-    const filteredCellTextContent = cellContentElements.filter(
-      (txt) => txt.type !== "TEXT" || txt.text.trim().length > 0,
-    );
-    return filteredCellTextContent;
+    return cellContentElements.filter((txt) => txt.type !== "TEXT" || txt.text.trim().length > 0);
   };
 
   let rowElements = Array.from(element.querySelectorAll("tr"));

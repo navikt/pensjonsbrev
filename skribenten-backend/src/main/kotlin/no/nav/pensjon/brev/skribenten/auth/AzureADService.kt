@@ -17,6 +17,8 @@ import io.ktor.http.Parameters
 import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
+import no.nav.pensjon.brev.skribenten.services.installRetry
+import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
@@ -49,12 +51,15 @@ interface AuthService {
 }
 
 class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) : AuthService {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     private val client = HttpClient(engine) {
         install(ContentNegotiation) {
             jackson {
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        installRetry(logger, maxRetries = 2)
     }
 
     private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {

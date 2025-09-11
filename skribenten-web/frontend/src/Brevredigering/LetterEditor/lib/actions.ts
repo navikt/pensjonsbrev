@@ -173,59 +173,26 @@ export function withPatches<Arguments extends any[]>(
     });
 
     if (patches.length > 0) {
-      let history = next.history ?? [];
-      // If we have undone one or more actions, any new action should clear the "redo" history.
-      if (next.historyPointer < history.length - 1) {
-        history = history.slice(0, next.historyPointer + 1);
+      let history = next.history ?? { entries: [], entryPointer: -1 };
+      // If we have undone actions, any new action should clear the "redo" history.
+      if (history.entryPointer < history.entries.length - 1) {
+        history = {
+          ...history,
+          entries: history.entries.slice(0, history.entryPointer + 1),
+        };
       }
 
-      const isTextUpdate =
-        patches.length > 0 &&
-        patches.some((p) => p.path[p.path.length - 1] === "editedText") &&
-        patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
+      const newHistoryEntry: HistoryEntry = { patches, inversePatches };
+      const newEntries = [...history.entries, newHistoryEntry];
+      const newEntryPointer = newEntries.length - 1;
 
-      const newHistoryEntry: HistoryEntry = {
-        patches,
-        inversePatches,
-        label: isTextUpdate ? "TEXT_UPDATE" : undefined,
-        timestamp: Date.now(),
+      return {
+        ...next,
+        history: {
+          entries: newEntries,
+          entryPointer: newEntryPointer,
+        },
       };
-
-      const lastHistoryEntry = history[history.length - 1];
-
-      // Check if we should merge with the previous history entry
-      const shouldMerge =
-        lastHistoryEntry &&
-        newHistoryEntry.label === "TEXT_UPDATE" &&
-        lastHistoryEntry.label === "TEXT_UPDATE" &&
-        lastHistoryEntry.timestamp != null &&
-        newHistoryEntry.timestamp != null &&
-        newHistoryEntry.timestamp - lastHistoryEntry.timestamp < MERGE_TIME_THRESHOLD_MS &&
-        patches.length > 0 &&
-        lastHistoryEntry.patches.length > 0 &&
-        patches[0]?.path.toString() === lastHistoryEntry.patches[0]?.path.toString();
-
-      if (shouldMerge) {
-        // The new inverse patches revert from the final state to the intermediate state.
-        // The old inverse patches revert from the intermediate state to the original state.
-        // To get from final to original, we need to apply both.
-        const mergedInversePatches = [...newHistoryEntry.inversePatches, ...lastHistoryEntry.inversePatches];
-        const mergedEntry: HistoryEntry = { ...newHistoryEntry, inversePatches: mergedInversePatches };
-
-        const newHistory = [...history.slice(0, -1), mergedEntry];
-        return {
-          ...next,
-          history: newHistory,
-          historyPointer: newHistory.length - 1,
-        };
-      } else {
-        const newHistory = [...history, newHistoryEntry];
-        return {
-          ...next,
-          history: newHistory,
-          historyPointer: newHistory.length - 1,
-        };
-      }
     }
 
     return next;

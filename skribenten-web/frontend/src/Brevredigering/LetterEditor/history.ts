@@ -5,3 +5,7 @@ export interface HistoryEntry {
   label?: string;
   timestamp?: number;
 }
+export interface History {
+  entries: HistoryEntry[];
+  entryPointer: number;
+}

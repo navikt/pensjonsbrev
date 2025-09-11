@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.alder.endring.sivilstand
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -7,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnbelop
@@ -41,6 +43,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.OmregningGarantiPen
+import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.SivilstandSamboerHjemler
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -92,6 +95,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
         val grunnpensjon = pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
         val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
+        val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
@@ -229,11 +233,23 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             showIf(saerskiltSatsErBrukt) {
                 paragraph {
                     text(
-                        bokmal { +"Derfor har vi beregnet pensjonstillegget" },
-                        nynorsk { +"Derfor har vi berekna pensjonstillegget" },
-                        english { +"We have therefore recalculated your basic pension" },
+                        bokmal { +"Derfor har vi beregnet " },
+                        nynorsk { +"Derfor har vi berekna " },
+                        english { +"We have therefore recalculated your " },
                     )
-
+                    showIf(regelverkType.isOneOf(AP1967)) {
+                        text(
+                            bokmal { +"særtillegget" },
+                            nynorsk { +"særtillegget" },
+                            english { +"special supplement" },
+                        )
+                    }.orShowIf(regelverkType.isOneOf(AP2011, AP2016)) {
+                        text(
+                            bokmal { +"pensjonstillegget" },
+                            nynorsk { +"pensjonstillegget" },
+                            english { +"basic pension" },
+                        )
+                    }
                     showIf(minstenivaaIndividuellInnvilget) {
                         text(
                             bokmal { +" og minstenivåtillegget" },
@@ -298,18 +314,34 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
                         english { + "This decision was made pursuant to the provisions of §§ " },
                     )
-                    showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                    showIf(regelverkType.isOneOf(AP1967)) {
+                        includePhrase(SivilstandSamboerHjemler(sivilstand))
+                        showIf(saertilleggInnvilget) {
+                            text(
+                                bokmal { + ", 3-3" },
+                                nynorsk { + ", 3-3" },
+                                english { + ", 3-3" },
+                            )
+                        }
                         text(
-                            bokmal { + "1-5, " },
-                            nynorsk { + "1-5, " },
-                            english { + "1-5, " },
+                            bokmal { + ", 19-8 og 22-12." },
+                            nynorsk { + ", 19-8 og 22-12." },
+                            english { + ", 19-8 and 22-12 of the National Insurance Act." },
+                        )
+                    }.orShowIf(regelverkType.isOneOf(AP2011, AP2016)) {
+                        showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                            text(
+                                bokmal { + "1-5, " },
+                                nynorsk { + "1-5, " },
+                                english { + "1-5, " },
+                            )
+                        }
+                        text(
+                            bokmal { + "19-8, 19-9 og 22-12." },
+                            nynorsk { + "19-8, 19-9 og 22-12." },
+                            english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
                         )
                     }
-                    text(
-                        bokmal { + "19-8, 19-9 og 22-12." },
-                        nynorsk { + "19-8, 19-9 og 22-12." },
-                        english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
-                    )
                 }
             }
 

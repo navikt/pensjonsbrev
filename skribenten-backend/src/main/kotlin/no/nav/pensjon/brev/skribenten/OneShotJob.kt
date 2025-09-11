@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
+import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.sql.insert
@@ -26,12 +28,14 @@ class OneShotJobConfig {
      */
     fun job(uniqeName: String, block: JobConfig.() -> Unit) {
         try {
-            transaction {
-                val existing = OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
-                if (existing == null) {
-                    logger.info("One-shot job started: '$uniqeName'")
-                    val job = JobConfig(uniqeName).apply(block)
+            val existing = transaction {
+                OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
+            }
+            if (existing == null) {
+                logger.info("One-shot job started: '$uniqeName'")
+                val job = JobConfig(uniqeName).apply(block)
 
+                transaction {
                     if (job.completed) {
                         OneShotJobTable.insert {
                             it[id] = uniqeName
@@ -41,9 +45,9 @@ class OneShotJobConfig {
                     } else {
                         logger.warn("One-shot job '$uniqeName' did not complete successfully. It may need to be re-run.")
                     }
-                } else {
-                    logger.info("One-shot job '$uniqeName' has already been executed. Skipping.")
                 }
+            } else {
+                logger.info("One-shot job '$uniqeName' has already been executed. Skipping.")
             }
         } catch (e: Throwable) {
             logger.error("Error executing one-shot job '$uniqeName': ${e.message}", e)
@@ -100,7 +104,6 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.sistReservert,
             BrevredigeringTable.redigertBrev
         ).toList()
-
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
         val kanOppdateres =
             alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
@@ -109,12 +112,17 @@ fun JobConfig.updateBrevredigeringJson() {
             val brevId = it[BrevredigeringTable.id]
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.redigertBrev] = redigertBrev.copy()
+                update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
+                update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
+                    .let { bytes -> EditLetterHash.fromBytes(WithEditLetterHash.hashBrev(bytes)) }
             }
         }
 
-        if (alleBrev.size != kanOppdateres.size) {
-            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
+        val kryptertNull = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevKryptert).where({
+            BrevredigeringTable.redigertBrevKryptert.isNull()
+        }).map { it[BrevredigeringTable.id].value }
+        if (kryptertNull.isNotEmpty()) {
+            logger.info("Kunne ikke oppdatere brevene ${kryptertNull.joinToString(",")}")
             completed = false
         }
     }

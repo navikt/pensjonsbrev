@@ -152,7 +152,7 @@ data class SivilstandHjemler(
     }
 }
 
-private data class SivilstandSamboerHjemler(
+data class SivilstandSamboerHjemler(
     val sivilstand: Expression<MetaforceSivilstand>,
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
