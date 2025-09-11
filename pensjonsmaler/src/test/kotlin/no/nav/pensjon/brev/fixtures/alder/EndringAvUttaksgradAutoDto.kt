@@ -18,7 +18,7 @@ fun createEndringAvUttaksgradAutoDto() = EndringAvUttaksgradAutoDto(
         skjermingstilleggInnvilget = false,
         totalPensjon = Kroner(20000),
         ufoereKombinertMedAlder = false,
-        uttaksgrad = 50,
+        uttaksgrad = 0,
     ),
     harFlereBeregningsperioder = false,
     kravVirkDatoFom = LocalDate.of(2025, 1, 1),
