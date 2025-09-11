@@ -25,29 +25,19 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
             return pdfCompilationOutput
         }
 
-        val merger = PDFMergerUtility()
-        val target = PDDocument()
+        PDDocument().use { target ->
+            val merger = PDFMergerUtility()
 
-        Loader.loadPDF(pdfCompilationOutput.bytes).use { originaltDokument ->
-            leggPaaBlankPartallsside(originaltDokument, target)
-            merger.leggTilSide(target, originaltDokument)
-        }
-
-        attachments
-            .forEach {
-                val vedlegg = VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak)
-                leggPaaBlankPartallsside(vedlegg, target)
-                merger.leggTilSide(target, vedlegg)
+            Loader.loadPDF(pdfCompilationOutput.bytes).use {
+                leggTilBlankPartallsideOgSaaLeggTilSide(it, target, merger)
             }
-        return tilByteArray(target).also { target.close() }
-    }
 
-    private fun leggPaaBlankPartallsside(
-        originaltDokument: PDDocument,
-        target: PDDocument,
-    ) {
-        if (originaltDokument.pages.count % 2 == 1) {
-            target.addPage(PDPage())
+            attachments.forEach {
+                VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak).use { vedlegg ->
+                    leggTilBlankPartallsideOgSaaLeggTilSide(vedlegg, target, merger)
+                }
+            }
+            return tilByteArray(target)
         }
     }
 
@@ -60,6 +50,20 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
 internal fun PDDocument.setValues(values: Map<String, String?>) = values.forEach { entry ->
     documentCatalog?.acroForm?.fields?.firstOrNull { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
+}
+
+private fun leggTilBlankPartallsideOgSaaLeggTilSide(source: PDDocument, target: PDDocument, merger: PDFMergerUtility) {
+    leggPaaBlankPartallsside(source, target)
+    merger.leggTilSide(target, source)
+}
+
+private fun leggPaaBlankPartallsside(
+    originaltDokument: PDDocument,
+    target: PDDocument,
+) {
+    if (originaltDokument.pages.count % 2 == 1) {
+        target.addPage(PDPage())
+    }
 }
 
 internal fun PDFMergerUtility.leggTilSide(destionation: PDDocument, source: PDDocument) =
