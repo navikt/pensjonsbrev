@@ -10,7 +10,7 @@ class PDFDSLTest {
 
     @Test
     fun `tolk dsl`() {
-        val vedlegg = PDFVedlegg.create<LangNynorsk>(mapOf(LanguageCode.BOKMAL to "Vedlegg1", LanguageCode.ENGLISH to "Attachment1")) {
+        val vedlegg = PDFVedlegg.create<LangNynorsk> {
             side("Side1.pdf") {
                 felt {
                     "felt1" to 1
