@@ -10,7 +10,6 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
-import kotlin.collections.map
 
 internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
@@ -28,15 +27,17 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
         val merger = PDFMergerUtility()
         val target = PDDocument()
-        val originaltDokument = Loader.loadPDF(pdfCompilationOutput.bytes)
-        merger.leggTilSide(target, originaltDokument)
-        leggPaaBlankPartallsside(originaltDokument, merger, target)
+
+        Loader.loadPDF(pdfCompilationOutput.bytes).use { originaltDokument ->
+            merger.leggTilSide(target, originaltDokument)
+            leggPaaBlankPartallsside(originaltDokument, merger, target)
+        }
 
         attachments
-            .map { VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak) }
             .forEach {
-                leggPaaBlankPartallsside(it, merger, target)
-                merger.leggTilSide(target, it)
+                val vedlegg = VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak)
+                leggPaaBlankPartallsside(vedlegg, merger, target)
+                merger.leggTilSide(target, vedlegg)
             }
         return tilByteArray(target).also { target.close() }
     }
@@ -47,7 +48,9 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
         target: PDDocument,
     ) {
         if (originaltDokument.pages.count % 2 == 1) {
-            PDDocument().also { it.addPage(PDPage()) }.also { merger.leggTilSide(target, it) }.also { it.close() }
+            PDDocument().apply { addPage(PDPage()) }.use { blankSide ->
+                merger.leggTilSide(target, blankSide)
+            }
         }
     }
 

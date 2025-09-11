@@ -15,14 +15,14 @@ internal object VedleggAppender {
         val sider = vedlegg.sider
 
         sider.forEachIndexed { index, side ->
-            val pdf = lesInnPDF(side.filnavn, spraak).also { pdfSide ->
+            lesInnPDF(side.filnavn, spraak).use { pdfSide ->
                 val map: Map<String, String?> = side.felt
                     .flatMap { it.felt.entries }
                     .associate { it.key to it.value?.get(spraak) }
 
                 pdfSide.setValues(map + ("page" to "${index+1}/${sider.size}"))
+                merger.leggTilSide(target, pdfSide)
             }
-            merger.leggTilSide(target, pdf)
         }
 
         return target
