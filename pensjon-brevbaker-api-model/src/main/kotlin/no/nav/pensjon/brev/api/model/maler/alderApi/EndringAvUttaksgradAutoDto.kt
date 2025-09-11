@@ -13,7 +13,7 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringAvUttaksgradAutoDto(
-    val alderspensjonVedVirk: AlderspensjonVedVirk,
+    val alderspensjonVedVirk: AlderspensjonVedVirk,  // v5.Alderspensjon
     val harFlereBeregningsperioder: Boolean,  // v1.BeregnetPensjonPerManed
     val kravVirkDatoFom: LocalDate,  // v3.Krav
     val regelverkType: AlderspensjonRegelverkType,
@@ -24,7 +24,6 @@ data class EndringAvUttaksgradAutoDto(
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
 ): BrevbakerBrevdata {
 
-    // v5.Alderspensjon
     data class AlderspensjonVedVirk(
         val privatAFPerBrukt: Boolean,
         val skjermingstilleggInnvilget: Boolean,
