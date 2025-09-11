@@ -56,11 +56,11 @@ Stans av alderspensjon -> når bruker endrer uttaksgrad til null */
 // opphorETBegrunn, opphorBTBegrunn og opphorBTETBegrunn er fjernet fra malen
 
 @TemplateModelHelpers
-object EndringUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
+object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ENDRING_UTTAKSGRAD_AUTO
     override val template =
         createTemplate(
-            name = InfoAldersovergang67AarAuto.kode.name,
+            name = kode.name,
             letterDataType = EndringAvUttaksgradAutoDto::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
