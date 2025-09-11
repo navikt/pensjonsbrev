@@ -5,7 +5,6 @@ import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.request.HttpRequest
-import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.utils.unwrapCancellationException
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.isSuccess
@@ -25,7 +24,7 @@ fun HttpClientConfig<*>.callIdAndOnBehalfOfClient(scope: String, authService: Au
     }
 }
 
-fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, unntak: ((req: HttpRequest) -> Boolean) = { false } ) {
+fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((req: HttpRequest) -> Boolean) = { false } ) {
     install(HttpRequestRetry) {
         delayMillis {
             minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
@@ -33,7 +32,7 @@ fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, unnta
         retryIf(maxRetries) { req, res ->
             when {
                 res.status.isSuccess() -> false
-                unntak(req) -> false
+                shouldNotRetry(req) -> false
                 res.status in setOf(HttpStatusCode.GatewayTimeout, HttpStatusCode.RequestTimeout, HttpStatusCode.BadGateway) -> true
                 else -> false
             }
