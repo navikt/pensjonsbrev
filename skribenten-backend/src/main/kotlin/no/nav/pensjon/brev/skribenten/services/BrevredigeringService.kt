@@ -71,6 +71,7 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
+    private val samhandlerService: SamhandlerService,
 ) : HentBrevService {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -284,21 +285,24 @@ class BrevredigeringService(
         }
 
     suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
-        val (brevredigering, document, mottakerNavn) = transaction {
+        val (brevredigering, document, samhandler) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId).let { brevredigering ->
                 Triple(
                     brevredigering?.toDto(null),
                     brevredigering?.document?.firstOrNull()?.toDto(),
-                    brevredigering?.mottaker?.navn
+                    brevredigering?.mottaker?.takeIf { it.type == MottakerType.SAMHANDLER }
                 )
             }
         }
-        
+        val samhandlerNavn = samhandler?.let {
+            samhandler.navn
+                ?: samhandler.tssId?.let { samhandlerService.hentSamhandlerNavn(it)}
+        }
         return brevredigering?.let {
             if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
                 Ok(document.pdf)
             } else {
-                opprettPdf(brevredigering, mottakerNavn)
+                opprettPdf(brevredigering, samhandlerNavn)
             }
         }
     }
@@ -536,7 +540,7 @@ class BrevredigeringService(
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
                 felles = pesysData.felles
                     .medSignerendeSaksbehandlere(null)
-                    .medAnnenMottakerNavn(annenMottakerNavn),
+                    .addAnnenMottakerNavn(annenMottakerNavn),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -553,7 +557,7 @@ class BrevredigeringService(
         }
     }
 
-    private fun Felles.medAnnenMottakerNavn(
+    private fun Felles.addAnnenMottakerNavn(
         annenMottakerNavn: String?
     ): Felles = if (annenMottakerNavn != null) {
         Felles(
