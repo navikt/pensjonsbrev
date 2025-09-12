@@ -2,7 +2,8 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.vedlegg.Vedleggtyper
+import no.nav.pensjon.brevbaker.api.model.LanguageCode.BOKMAL
+import no.nav.pensjon.brevbaker.api.model.LanguageCode.ENGLISH
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
@@ -26,7 +27,10 @@ data class P1Dto(
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
 ) : BrevbakerBrevdata, PDFVedleggData {
-    override val tittel = Vedleggtyper.P1.tittel
+    override val tittel = mapOf(
+        BOKMAL to "P1 – Samlet melding om pensjonsvedtak",
+        ENGLISH to "P1 – Summary of Pension Decisions"
+    )
 
     data class P1Person(
         val fornavn: String,
@@ -147,7 +151,10 @@ data class P1Dto(
 }
 
 object InformasjonOmP1Dto : PDFVedleggData {
-    override val tittel = Vedleggtyper.InformasjonOmP1.tittel
+    override val tittel = mapOf(
+        BOKMAL to "Informasjon om skjemaet P1 og hvordan det brukes",
+        ENGLISH to "Information about the P1 form and its use"
+    )
 }
 
 
