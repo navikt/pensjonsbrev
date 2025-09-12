@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevLaast
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeReservereBrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
+import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -283,15 +284,21 @@ class BrevredigeringService(
         }
 
     suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
-        val (brevredigering, document) = transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
+        val (brevredigering, document, mottakerNavn) = transaction {
+            Brevredigering.findByIdAndSaksId(brevId, saksId).let { brevredigering ->
+                Triple(
+                    brevredigering?.toDto(null),
+                    brevredigering?.document?.firstOrNull()?.toDto(),
+                    brevredigering?.mottaker?.navn
+                )
+            }
         }
-
+        
         return brevredigering?.let {
             if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
                 Ok(document.pdf)
             } else {
-                opprettPdf(brevredigering)
+                opprettPdf(brevredigering, mottakerNavn)
             }
         }
     }
@@ -476,7 +483,12 @@ class BrevredigeringService(
         signaturSignerende: String,
         signaturAttestant: String? = null,
     ): ServiceResult<LetterMarkupWithDataUsage> =
-        penService.hentPesysBrevdata(saksId = saksId, vedtaksId = vedtaksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
+        penService.hentPesysBrevdata(
+            saksId = saksId,
+            vedtaksId = vedtaksId,
+            brevkode = brevkode,
+            avsenderEnhetsId = avsenderEnhetsId,
+        )
             .then { pesysData ->
                 brevbakerService.renderMarkup(
                     brevkode = brevkode,
@@ -507,7 +519,7 @@ class BrevredigeringService(
         }
     }
 
-    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<ByteArray> {
+    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering, annenMottakerNavn: String?): ServiceResult<ByteArray> {
         return penService.hentPesysBrevdata(
             saksId = brevredigering.info.saksId,
             vedtaksId = brevredigering.info.vedtaksId,
@@ -522,7 +534,9 @@ class BrevredigeringService(
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-                felles = pesysData.felles.medSignerendeSaksbehandlere(null),
+                felles = pesysData.felles
+                    .medSignerendeSaksbehandlere(null)
+                    .medAnnenMottakerNavn(annenMottakerNavn),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -538,6 +552,20 @@ class BrevredigeringService(
             }
         }
     }
+
+    private fun Felles.medAnnenMottakerNavn(
+        annenMottakerNavn: String?
+    ): Felles = if (annenMottakerNavn != null) {
+        Felles(
+            dokumentDato = dokumentDato,
+            saksnummer = saksnummer,
+            avsenderEnhet = avsenderEnhet,
+            bruker = bruker,
+            annenMottakerNavn = annenMottakerNavn,
+            signerendeSaksbehandlere = signerendeSaksbehandlere,
+            vergeNavn = vergeNavn,
+        )
+    } else this
 
     private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =
         if (mottaker != null) {
