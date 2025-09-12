@@ -78,6 +78,7 @@ public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
 
 public final class no/nav/brev/brevbaker/RedigerbarMal : no/nav/brev/brevbaker/Mal {
 	public fun <init> (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lno/nav/pensjon/brev/template/RedigerbarTemplate;
 	public final fun component2 ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
 	public final fun copy (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;)Lno/nav/brev/brevbaker/RedigerbarMal;

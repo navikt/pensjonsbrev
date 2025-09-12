@@ -19,14 +19,14 @@ class AlderTemplatesTest {
 
     @Test
     fun `alle autobrev fins i templates`() {
-        val brukteKoder = AlderTemplates.hentAutobrevmaler().map { it.kode }
+        val brukteKoder = AlderTemplates.hentAutobrevmaler().map { it.template.kode }
         val ubrukteKoder = Aldersbrevkoder.AutoBrev.entries.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
     @Test
     fun `alle redigerbare brev fins i templates`() {
-        val brukteKoder = AlderTemplates.hentRedigerbareMaler().map { it.kode }
+        val brukteKoder = AlderTemplates.hentRedigerbareMaler().map { it.template.kode }
         val ubrukteKoder = Aldersbrevkoder.Redigerbar.entries.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
@@ -34,6 +34,7 @@ class AlderTemplatesTest {
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (AlderTemplates.hentAutobrevmaler() + AlderTemplates.hentRedigerbareMaler())
+            .map { it.template }
             .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class)  }
             .forEach {
                 assertTrue(
@@ -49,8 +50,8 @@ class AlderTemplatesTest {
         assertEquals(
             emptyList<String>(),
             AlderTemplates.hentRedigerbareMaler()
-                .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
+                .filter { it.template.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                .filterNot { it.template.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
                 .map { it.javaClass.simpleName }
             ,
         )

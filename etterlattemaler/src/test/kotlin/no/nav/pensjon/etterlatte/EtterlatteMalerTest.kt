@@ -11,6 +11,7 @@ class EtterlatteMalerTest {
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (EtterlatteMaler.hentAutobrevmaler() + EtterlatteMaler.hentRedigerbareMaler())
+            .map { it.template }
             .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class) }
             .forEach {
                 assertTrue(
