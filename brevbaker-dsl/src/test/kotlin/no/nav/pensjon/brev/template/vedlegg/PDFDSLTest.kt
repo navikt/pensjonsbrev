@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.vedlegg
 
+import no.nav.brev.brevbaker.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -8,7 +8,7 @@ class P1SomDSLTest {
 
     @Test
     fun P1SomDSL() {
-        val somDSL = createP1Dto().somDSL()
+        val somDSL = createP1Dto().somPDFVedlegg()
         assertEquals(8, somDSL.sider.size)
         assertFalse { somDSL.sider.map { it.felt }.any { it.isEmpty()} }
     }

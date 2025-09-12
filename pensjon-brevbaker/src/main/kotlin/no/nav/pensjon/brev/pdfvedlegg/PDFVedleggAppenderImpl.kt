@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
-import no.nav.pensjon.brev.maler.vedlegg.pdf.tilPDFVedlegg
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.apache.pdfbox.Loader
@@ -34,7 +32,7 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
             }
 
             attachments.forEach {
-                VedleggAppender.lesInnVedlegg(it.tilPDFVedlegg(), spraak).use { vedlegg ->
+                VedleggAppender.lesInnVedlegg(it.somPDFVedlegg(), spraak).use { vedlegg ->
                     leggTilBlankPartallsideOgSaaLeggTilSide(vedlegg, target, merger)
                 }
             }
