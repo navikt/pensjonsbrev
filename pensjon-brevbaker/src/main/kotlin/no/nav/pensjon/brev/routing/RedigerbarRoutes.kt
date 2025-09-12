@@ -2,15 +2,15 @@ package no.nav.pensjon.brev.routing
 
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.brev.brevbaker.RedigerbarMal
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 
 fun Route.redigerbarRoutes(
-    redigerbareBrev: RedigerbarTemplateResource<Brevkode.Redigerbart, RedigerbarTemplate<*>>,
+    redigerbareBrev: RedigerbarTemplateResource<Brevkode.Redigerbart, RedigerbarMal<*>>,
 ) {
     route("/${redigerbareBrev.name}") {
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup") { brevbestilling ->

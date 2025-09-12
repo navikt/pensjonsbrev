@@ -26,7 +26,9 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun canRenderDocumentationForAllTemplates() {
-        (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler()).forEach {
+        (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler())
+            .map { it.template }
+            .forEach {
             TemplateDocumentationRenderer.render(
                 it.template,
                 it.template.language.all().first(),
