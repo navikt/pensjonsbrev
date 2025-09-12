@@ -413,6 +413,38 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `attestering fjernes om brevet laases opp igjen`(): Unit = runBlocking {
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1).resultOrNull()!!
+
+        withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.delvisOppdaterBrev(
+                saksId = brev.info.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true
+            )!!
+        }
+        withPrincipal(attestantPrincipal) {
+            brevredigeringService.attester(saksId = brev.info.saksId, brevId = brev.info.id, null, null, frigiReservasjon = true)
+                ?.resultOrNull()!!
+        }
+        withPrincipal(saksbehandler1Principal) {
+            val brevEtterOpplaasing = brevredigeringService.delvisOppdaterBrev(
+                saksId = brev.info.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = false
+            )!!
+            assertThat(brevEtterOpplaasing.info.status).isEqualTo(Dto.BrevStatus.KLADD)
+            val brevEtterLaasingIgjen = brevredigeringService.delvisOppdaterBrev(
+                saksId = brev.info.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true
+            )!!
+            assertThat(brevEtterLaasingIgjen.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
+        }
+        assertThat(transaction { Brevredigering[brev.info.id].attestertAvNavIdent }).isNull()
+    }
+
+    @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
         transaction { Brevredigering[brev.info.id].journalpostId = 123L }

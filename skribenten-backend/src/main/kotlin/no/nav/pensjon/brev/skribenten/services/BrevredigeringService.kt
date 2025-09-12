@@ -173,7 +173,12 @@ class BrevredigeringService(
             }
 
             transaction {
-                brevDb.laastForRedigering = laastForRedigering ?: brevDb.laastForRedigering
+                if (laastForRedigering == false) {
+                    brevDb.laastForRedigering = laastForRedigering
+                    brevDb.attestertAvNavIdent = null
+                } else if (laastForRedigering == true) {
+                    brevDb.laastForRedigering = laastForRedigering
+                }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
                 mottaker?.also { brevDb.mottaker?.oppdater(it) ?: Mottaker.new(brevId) { oppdater(it) } }
                 brevDb.redigeresAvNavIdent = null
