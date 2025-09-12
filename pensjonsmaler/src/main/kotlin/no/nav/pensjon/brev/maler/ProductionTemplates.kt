@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.brev.brevbaker.AutoMal
+import no.nav.brev.brevbaker.RedigerbarMal
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
@@ -31,11 +32,9 @@ import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
-import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates : AllTemplates {
-    private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
+    private val autobrev = setOf(
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
@@ -95,9 +94,9 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer
-    )
+    ).map { AutoMal(it) }.toSet()
 
-    private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+    private val redigerbare: Set<RedigerbarMal<RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
         AvslagGradsendringFoerNormertPensjonsalder,
         AvslagGradsendringFoerNormertPensjonsalderAP2016,
@@ -142,7 +141,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakStansAlderspensjonFlyttingMellomLand,
         AvslagUforetrygdDemo,
-    )
+    ).map { RedigerbarMal(it, null) }.toSet()
 
     override fun hentAutobrevmaler() = autobrev
 

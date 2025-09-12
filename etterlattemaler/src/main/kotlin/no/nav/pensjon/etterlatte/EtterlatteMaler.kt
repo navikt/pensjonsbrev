@@ -1,10 +1,8 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.brev.brevbaker.AutoMal
+import no.nav.brev.brevbaker.RedigerbarMal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
@@ -68,7 +66,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.Oms
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall
 
 object EtterlatteMaler : AllTemplates {
-    private val prodAutobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> =
+    private val prodAutobrevTemplates: Set<AutoMal<*>> =
         setOf(
             // Barnepensjon
             BarnepensjonAvslag,
@@ -143,11 +141,11 @@ object EtterlatteMaler : AllTemplates {
             ForhaandsvarselOmregningBP,
             EnkeltVedtakOmregningNyttRegelverk,
             EnkeltVedtakOmregningNyttRegelverkFerdig,
-        )
+        ).map { AutoMal(it) }.toSet()
 
     override fun hentAutobrevmaler() = prodAutobrevTemplates
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf()
+    override fun hentRedigerbareMaler(): Set<RedigerbarMal<*>> = setOf()
 
     fun somSlate(letterMarkup: LetterMarkup) = BlockTilSlateKonverterer.konverter(letterMarkup)
 }

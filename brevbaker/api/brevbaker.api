@@ -3,6 +3,21 @@ public abstract interface class no/nav/brev/brevbaker/AllTemplates {
 	public abstract fun hentRedigerbareMaler ()Ljava/util/Set;
 }
 
+public final class no/nav/brev/brevbaker/AutoMal : no/nav/brev/brevbaker/Mal {
+	public fun <init> (Lno/nav/pensjon/brev/template/AutobrevTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brev/template/AutobrevTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lno/nav/pensjon/brev/template/AutobrevTemplate;
+	public final fun component2 ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public final fun copy (Lno/nav/pensjon/brev/template/AutobrevTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;)Lno/nav/brev/brevbaker/AutoMal;
+	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/AutoMal;Lno/nav/pensjon/brev/template/AutobrevTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;ILjava/lang/Object;)Lno/nav/brev/brevbaker/AutoMal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFeatureToggle ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public fun getTemplate ()Lno/nav/pensjon/brev/template/AutobrevTemplate;
+	public synthetic fun getTemplate ()Lno/nav/pensjon/brev/template/BrevTemplate;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/brev/brevbaker/Brevbaker {
 	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
@@ -45,6 +60,11 @@ public final class no/nav/brev/brevbaker/LatexTimeoutException : java/lang/Excep
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public abstract class no/nav/brev/brevbaker/Mal {
+	public abstract fun getFeatureToggle ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/BrevTemplate;
+}
+
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
 	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -54,6 +74,20 @@ public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
 public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
 	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static fun validateResponse (Lno/nav/brev/brevbaker/PDFByggerService;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class no/nav/brev/brevbaker/RedigerbarMal : no/nav/brev/brevbaker/Mal {
+	public fun <init> (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;)V
+	public final fun component1 ()Lno/nav/pensjon/brev/template/RedigerbarTemplate;
+	public final fun component2 ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public final fun copy (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;)Lno/nav/brev/brevbaker/RedigerbarMal;
+	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/RedigerbarMal;Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/api/model/FeatureToggle;ILjava/lang/Object;)Lno/nav/brev/brevbaker/RedigerbarMal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFeatureToggle ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public synthetic fun getTemplate ()Lno/nav/pensjon/brev/template/BrevTemplate;
+	public fun getTemplate ()Lno/nav/pensjon/brev/template/RedigerbarTemplate;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup {
