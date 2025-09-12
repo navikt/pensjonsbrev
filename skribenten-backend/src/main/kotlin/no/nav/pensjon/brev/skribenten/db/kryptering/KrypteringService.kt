@@ -19,6 +19,8 @@ object KrypteringService {
     private const val SALT_LENGTH_BYTE = 16
     private const val ALGORITHM_TYPE = "AES"
 
+    private val secureRandom = SecureRandom()
+
     fun init(krypteringsnoekkel: String) {
         this.krypteringsnoekkel = krypteringsnoekkel
     }
@@ -60,7 +62,7 @@ object KrypteringService {
 
     private fun getRandomNonce(length: Int): ByteArray {
         val nonce = ByteArray(length)
-        SecureRandom().nextBytes(nonce)
+        secureRandom.nextBytes(nonce)
         return nonce
     }
 
