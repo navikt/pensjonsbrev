@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import org.junit.Assert.assertThrows
 import java.util.stream.Collectors
 import java.util.stream.IntStream
