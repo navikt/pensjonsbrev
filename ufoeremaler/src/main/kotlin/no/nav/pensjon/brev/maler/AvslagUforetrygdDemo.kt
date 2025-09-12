@@ -1,29 +1,22 @@
-package no.nav.pensjon.brev.maler.ufoereBrev
+package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDtoSelectors.SaksbehandlervalgSelectors.vurdertUngUfor
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.AvslagUforetrygdDemoDto
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
 object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD_DEMO
+    override val kode = Ufoerebrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD_DEMO
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
