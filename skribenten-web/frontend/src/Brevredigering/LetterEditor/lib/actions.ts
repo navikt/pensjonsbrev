@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { produceWithPatches } from "immer";
 
-import { type HistoryEntry, updateHistory } from "../history";
+import { addToHistory } from "../history";
 import type { LetterEditorState } from "../model/state";
 import { compose } from "./functional";
 
@@ -170,30 +170,15 @@ export function withPatches<Arguments extends any[]>(
       recipe(draft, ...args);
     });
 
-    if (patches.length > 0) {
-      let history = next.history ?? { entries: [], entryPointer: -1 };
-      // If we have undone one or more actions, any new action should clear the "redo" history.
-      if (history.entryPointer < history.entries.length - 1) {
-        history = { ...history, entries: history.entries.slice(0, history.entryPointer + 1) };
-      }
-
-      const isTextUpdate =
-        patches.some((p) => p.path[p.path.length - 1] === "editedText") &&
-        patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
-
-      const newHistoryEntry: HistoryEntry = {
-        patches,
-        inversePatches,
-        label: isTextUpdate ? "TEXT_UPDATE" : undefined,
-        timestamp: Date.now(),
-      };
-
-      return {
-        ...next,
-        history: updateHistory(history, newHistoryEntry),
-      };
+    if (patches.length === 0) {
+      return next;
     }
 
-    return next;
+    const history = next.history ?? { entries: [], entryPointer: -1 };
+
+    return {
+      ...next,
+      history: addToHistory(history, patches, inversePatches),
+    };
   };
 }
