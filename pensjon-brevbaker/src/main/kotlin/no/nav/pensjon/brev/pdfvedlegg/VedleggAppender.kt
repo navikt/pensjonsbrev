@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfvedlegg
 
-import no.nav.brev.brevbaker.vedlegg.PDFVedlegg
+import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility

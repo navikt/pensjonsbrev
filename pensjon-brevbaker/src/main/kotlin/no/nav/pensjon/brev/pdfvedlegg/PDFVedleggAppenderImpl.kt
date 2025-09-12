@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.pdfvedlegg
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
+import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -14,7 +14,7 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
 
     override fun leggPaaVedlegg(
         pdfCompilationOutput: PDFCompilationOutput,
-        attachments: List<PDFVedleggData>,
+        attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
     ): PDFCompilationOutput {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
@@ -32,7 +32,7 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
             }
 
             attachments.forEach {
-                VedleggAppender.lesInnVedlegg(it.somPDFVedlegg(), spraak).use { vedlegg ->
+                VedleggAppender.lesInnVedlegg(it, spraak).use { vedlegg ->
                     leggTilBlankPartallsideOgSaaLeggTilSide(vedlegg, target, merger)
                 }
             }

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -48,9 +49,10 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun <AttachmentData : PDFVedleggData> includeAttachment(
-        attachmentData: Expression<AttachmentData>
+        attachmentData: Expression<AttachmentData>,
+        transform: (AttachmentData) -> PDFVedlegg,
     ) {
-        pdfAttachments.add(PDFTemplate(attachmentData))
+        pdfAttachments.add(PDFTemplate(attachmentData, transform))
     }
 
     fun includeAttachment(

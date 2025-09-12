@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.vedlegg
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.vedlegg.pdf.somPDFVedlegg
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -93,8 +94,8 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             }
         }
 
-        includeAttachment(pesysData.vedlegg)
-        includeAttachment( InformasjonOmP1Dto.expr())
+        includeAttachment(pesysData.vedlegg, { it.somPDFVedlegg() })
+        includeAttachment( InformasjonOmP1Dto.expr(), { it.somPDFVedlegg() })
     }
 
 }

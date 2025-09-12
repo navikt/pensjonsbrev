@@ -40,33 +40,6 @@ public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/brev/brevbaker/vedlegg/Felt {
-	public fun <init> ()V
-	public final fun add (Ljava/util/Map;)V
-	public final fun getFelt ()Ljava/util/Map;
-	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
-	public final fun to (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun to (Ljava/lang/String;Ljava/util/Map;)V
-}
-
-public final class no/nav/brev/brevbaker/vedlegg/PDFVedlegg {
-	public static final field Companion Lno/nav/brev/brevbaker/vedlegg/PDFVedlegg$Companion;
-	public fun <init> ()V
-	public final fun getSider ()Ljava/util/List;
-	public final fun side (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-}
-
-public final class no/nav/brev/brevbaker/vedlegg/PDFVedlegg$Companion {
-	public final fun create (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/vedlegg/PDFVedlegg;
-}
-
-public final class no/nav/brev/brevbaker/vedlegg/Side {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun felt (Lkotlin/jvm/functions/Function1;)V
-	public final fun getFelt ()Ljava/util/List;
-	public final fun getFilnavn ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -667,7 +640,6 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 	public abstract fun getTittel ()Ljava/util/Map;
-	public abstract fun somPDFVedlegg ()Lno/nav/brev/brevbaker/vedlegg/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {

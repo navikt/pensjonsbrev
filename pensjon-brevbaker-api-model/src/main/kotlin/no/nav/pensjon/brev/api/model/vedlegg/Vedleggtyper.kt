@@ -4,6 +4,8 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.BOKMAL
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.ENGLISH
 
+
+// TODO: Flytt inn i dto
 enum class Vedleggtyper(val tittel: Map<LanguageCode, String>) {
     P1(
         tittel = mapOf(

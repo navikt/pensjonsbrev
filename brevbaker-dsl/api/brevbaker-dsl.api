@@ -1277,7 +1277,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
-	public final fun includeAttachment (Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachment (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
@@ -1592,12 +1592,40 @@ public final class no/nav/pensjon/brev/template/render/UtilsKt {
 	public static final fun fulltNavn (Lno/nav/pensjon/brevbaker/api/model/Bruker;)Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/template/vedlegg/Felt {
+	public fun <init> ()V
+	public final fun add (Ljava/util/Map;)V
+	public final fun getFelt ()Ljava/util/Map;
+	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun to (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun to (Ljava/lang/String;Ljava/util/Map;)V
+}
+
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
-	public fun <init> (Lno/nav/pensjon/brev/template/Expression;)V
+	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)V
+	public final fun doTransform (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {
+	public static final field Companion Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg$Companion;
+	public fun <init> ()V
+	public final fun getSider ()Ljava/util/List;
+	public final fun side (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg$Companion {
+	public final fun create (Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+}
+
+public final class no/nav/pensjon/brev/template/vedlegg/Side {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun felt (Lkotlin/jvm/functions/Function1;)V
+	public final fun getFelt ()Ljava/util/List;
+	public final fun getFilnavn ()Ljava/lang/String;
 }
 

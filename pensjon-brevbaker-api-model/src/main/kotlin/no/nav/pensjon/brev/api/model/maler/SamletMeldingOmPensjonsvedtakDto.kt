@@ -1,17 +1,11 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
-import no.nav.brev.brevbaker.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.Vedleggtyper
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
-import kotlin.to
 
 data class SamletMeldingOmPensjonsvedtakDto(
     override val saksbehandlerValg: EmptyBrevdata,
@@ -150,129 +144,10 @@ data class P1Dto(
             require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ." }
         }
     }
-
-    override fun somPDFVedlegg() = PDFVedlegg.create {
-        side("P1-1.pdf") {
-            felt {
-                // innehaver
-                "holder-fornavn" to innehaver.fornavn
-                "holder-etternavn" to innehaver.etternavn
-                "holder-etternavnVedFoedsel" to innehaver.etternavnVedFoedsel
-                "holder-foedselsdato" to formaterDato(innehaver.foedselsdato)
-                "holder-adresselinje" to innehaver.adresselinje
-                "holder-poststed" to innehaver.poststed?.value
-                "holder-postnummer" to innehaver.postnummer?.value
-                "holder-landkode" to innehaver.landkode?.landkode
-                // forsikrede
-                "insured-fornavn" to forsikrede.fornavn
-                "insured-etternavn" to forsikrede.etternavn
-                "insured-etternavnVedFoedsel" to forsikrede.etternavnVedFoedsel
-                "insured-foedselsdato" to formaterDato(forsikrede.foedselsdato)
-                "insured-adresselinje" to forsikrede.adresselinje
-                "insured-poststed" to forsikrede.poststed?.value
-                "insured-postnummer" to forsikrede.postnummer?.value
-                "insured-landkode" to forsikrede.landkode?.landkode
-
-                "kravMottattDato" to formaterDato(kravMottattDato)
-                "sakstype" to mapOf(
-                    LanguageCode.BOKMAL to sakstype.name,
-                    LanguageCode.ENGLISH to sakstype.name,
-                ) // TODO denne er vel for enkel
-            }
-        }
-
-        innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
-            side("P1-2.pdf") {
-                felt {
-                    add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index + 1, pensjon) }.reduce { a, b -> a + b })
-                }
-            }
-        }
-
-        avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
-            side("P1-3.pdf") {
-                felt {
-                    add(side.mapIndexed { index, pensjon -> avslaattPensjon(index + 1, pensjon) }.reduce { a, b -> a + b })
-                }
-            }
-        }
-
-        side("P1-4.pdf") {
-            felt {
-                // utfyllende institusjon
-                "institution-navn" to utfyllendeInstitusjon.navn
-                "institution-adresselinje" to utfyllendeInstitusjon.adresselinje
-                "institution-poststed" to utfyllendeInstitusjon.poststed.value
-                "institution-postnummer" to utfyllendeInstitusjon.postnummer.value
-                "institution-landkode" to utfyllendeInstitusjon.landkode.landkode
-                "institution-institusjonsID" to utfyllendeInstitusjon.institusjonsID
-                "institution-faksnummer" to utfyllendeInstitusjon.faksnummer
-                "institution-telefonnummer" to utfyllendeInstitusjon.telefonnummer?.value
-                "institution-epost" to utfyllendeInstitusjon.epost?.value
-                "institution-dato" to formaterDato(utfyllendeInstitusjon.dato)
-                "institution-underskrift" to ""
-            }
-        }
-
-    }
-
-    private fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
-        LanguageCode.BOKMAL to dato?.formater(LanguageCode.BOKMAL),
-        LanguageCode.ENGLISH to dato?.formater(LanguageCode.ENGLISH)
-    )
-
-    private fun LocalDate.formater(language: LanguageCode): String? =
-        when (language) {
-            LanguageCode.BOKMAL -> dateFormatter(LanguageCode.BOKMAL, FormatStyle.LONG).format(this)
-            LanguageCode.ENGLISH -> dateFormatter(LanguageCode.ENGLISH, FormatStyle.LONG).format(this)
-            else -> null
-        } // TODO: Denne bør vel liggje ein annan plass
-
-    fun dateFormatter(languageCode: LanguageCode, formatStyle: FormatStyle): DateTimeFormatter =
-        DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(languageCode.locale())
-
-    private fun Adresse.formater() =
-        listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
-                System.lineSeparator() + "${postnummer.value} ${poststed.value}" + System.lineSeparator() + landkode.landkode
-
-    private fun innvilgetPensjon(radnummer: Int, pensjon: InnvilgetPensjon) =
-        mapOf(
-            "${radnummer}-institusjon" to pensjon.institusjon,
-            "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-            "${radnummer}-datoFoersteUtbetaling" to formaterDato(pensjon.datoFoersteUtbetaling),
-            "${radnummer}-bruttobeloep" to pensjon.bruttobeloep,
-            "${radnummer}-grunnlagInnvilget" to pensjon.grunnlagInnvilget?.nummer?.toString(),
-            "${radnummer}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer?.toString(),
-            "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
-            "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering?.formater(),
-        )
-
-
-    private fun avslaattPensjon(radnummer: Int, pensjon: AvslaattPensjon) = mapOf(
-        "${radnummer}-institusjon" to pensjon.institusjon,
-        "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-        "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
-        "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
-        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering?.formater(),
-    )
-
-    fun LanguageCode.locale(): Locale =
-        when (this) {
-            LanguageCode.BOKMAL -> Locale.forLanguageTag("no")
-            LanguageCode.NYNORSK -> Locale.forLanguageTag("no")
-            LanguageCode.ENGLISH -> Locale.UK
-        }
-
 }
-
-private const val RADER_PER_SIDE = 5
 
 object InformasjonOmP1Dto : PDFVedleggData {
     override val tittel = Vedleggtyper.InformasjonOmP1.tittel
-    override fun somPDFVedlegg() = PDFVedlegg.create {
-        side("InformasjonOmP1.pdf") {
-        }
-    }
 }
 
 
