@@ -1,5 +1,3 @@
-import { produce } from "immer";
-
 import {
   addElements,
   createNewLine,
@@ -8,11 +6,12 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
+import { withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isParagraph, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
-export const addNewLine: Action<LetterEditorState, [focus: Focus]> = produce((draft, focus) => {
+export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches((draft, focus) => {
   const block = draft.redigertBrev.blocks[focus.blockIndex];
 
   if (isParagraph(block)) {

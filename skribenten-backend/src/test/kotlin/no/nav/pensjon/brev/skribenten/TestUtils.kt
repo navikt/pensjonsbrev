@@ -21,15 +21,6 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
         get() = throw NotImplementedError("Not implemented in mock class")
 
     override fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
-
-    override fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? {
-        throw NotImplementedError("Not implemented in mock class")
-    }
-
-    override fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
-        throw NotImplementedError("Not implemented in mock class")
-    }
-
 }
 
 fun initADGroups() = ADGroups.init(

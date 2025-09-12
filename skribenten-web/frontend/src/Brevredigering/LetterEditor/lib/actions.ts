@@ -1,3 +1,8 @@
+import type { Draft } from "immer";
+import { produceWithPatches } from "immer";
+
+import type { HistoryEntry } from "../history";
+import type { LetterEditorState } from "../model/state";
 import { compose } from "./functional";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -150,4 +155,44 @@ export function applyAction<T, Arguments extends any[]>(
   ...arguments_: Arguments
 ): void {
   to((target) => target && action(target, ...arguments_));
+}
+
+export type LetterEditorStateRecipe<Arguments extends any[]> = (
+  draft: Draft<LetterEditorState>,
+  ...args: Arguments
+) => void;
+
+export function withPatches<Arguments extends any[]>(
+  recipe: LetterEditorStateRecipe<Arguments>,
+): Action<LetterEditorState, Arguments> {
+  return (current, ...args) => {
+    const [next, patches, inversePatches] = produceWithPatches(current, (draft) => {
+      recipe(draft, ...args);
+    });
+
+    if (patches.length > 0) {
+      let history = next.history ?? { entries: [], entryPointer: -1 };
+      // If we have undone actions, any new action should clear the "redo" history.
+      if (history.entryPointer < history.entries.length - 1) {
+        history = {
+          ...history,
+          entries: history.entries.slice(0, history.entryPointer + 1),
+        };
+      }
+
+      const newHistoryEntry: HistoryEntry = { patches, inversePatches };
+      const newEntries = [...history.entries, newHistoryEntry];
+      const newEntryPointer = newEntries.length - 1;
+
+      return {
+        ...next,
+        history: {
+          entries: newEntries,
+          entryPointer: newEntryPointer,
+        },
+      };
+    }
+
+    return next;
+  };
 }
