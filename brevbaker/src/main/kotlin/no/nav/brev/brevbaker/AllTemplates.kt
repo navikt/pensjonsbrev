@@ -20,7 +20,7 @@ sealed class Mal<out LetterData: BrevbakerBrevdata, Kode: Brevkode<Kode>> {
 
 data class RedigerbarMal<out T : RedigerbarBrevdata<*, *>>(
     override val template: RedigerbarTemplate<out T>,
-    override val featureToggle: FeatureToggle?
+    override val featureToggle: FeatureToggle? = null
 ) : Mal<T, Brevkode.Redigerbart>()
 
 data class AutoMal<out T : BrevbakerBrevdata>(
