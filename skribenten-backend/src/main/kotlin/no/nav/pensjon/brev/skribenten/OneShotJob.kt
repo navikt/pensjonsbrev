@@ -115,6 +115,8 @@ fun JobConfig.updateBrevredigeringJson() {
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 update[BrevredigeringTable.redigertBrev] = redigertBrev
                 update[BrevredigeringTable.redigertBrevHash] = EditLetterHash.read(redigertBrev)
+                update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
+                update[BrevredigeringTable.redigertBrevKryptertHash] = EditLetterHash.read(redigertBrev)
             }
         }
 
