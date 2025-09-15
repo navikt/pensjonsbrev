@@ -48,7 +48,6 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 val opplysningerBruktIBeregningenAP2016Vedlegg =
@@ -62,29 +61,29 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
         ifNotNull(opplysningerKap19) { opplysningerKap19 ->
             showIf(opplysningerKap19.avslattKap19.not()) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du som er født i perioden 1954 - 1962 får en kombinasjon av alderspensjon etter gamle ".expr() +
+                    text(
+                        bokmal { + "Du som er født i perioden 1954 - 1962 får en kombinasjon av alderspensjon etter gamle " +
                                 "og nye regler i folketrygdloven (kapittel 19 og 20). Fordi du er født i " +
                                 opplysningerKap19.fodselsAar.format() + " får du " + "beregnet " +
                                 opplysningerKap19.andelGammeltRegelverk.format() + "/10 av pensjonen etter gamle regler, og " +
-                                opplysningerKap19.andelNyttRegelverk.format() + "/10 etter nye regler.",
-                        Nynorsk to "Du som er fødd i perioden 1954-1962 får ein kombinasjon av alderspensjon etter gamle ".expr() +
+                                opplysningerKap19.andelNyttRegelverk.format() + "/10 etter nye regler." },
+                        nynorsk { + "Du som er fødd i perioden 1954-1962 får ein kombinasjon av alderspensjon etter gamle " +
                                 "og nye reglar i folketrygdlova (kapittel 19 og 20). Fordi du er fødd i " +
                                 opplysningerKap19.fodselsAar.format() + ", får du berekna " +
                                 opplysningerKap19.andelGammeltRegelverk.format() + "/10 av pensjonen etter gamle reglar, og " +
-                                opplysningerKap19.andelNyttRegelverk.format() + "/10 etter nye reglar.",
-                        English to "Individuals born between 1954 and 1962 will receive a combination of retirement pension calculated on the basis of both old ".expr() +
+                                opplysningerKap19.andelNyttRegelverk.format() + "/10 etter nye reglar." },
+                        english { + "Individuals born between 1954 and 1962 will receive a combination of retirement pension calculated on the basis of both old " +
                                 "and new provisions in the National Insurance Act (Chapters 19 and 20). Because you are born in " + opplysningerKap19.fodselsAar.format() +
                                 ", " + opplysningerKap19.andelGammeltRegelverk.format() + "/10 of your pension is calculated on the basis of the old provisions, " +
-                                "and " + opplysningerKap19.andelNyttRegelverk.format() + "/10 is calculated on the basis of new provisions.",
+                                "and " + opplysningerKap19.andelNyttRegelverk.format() + "/10 is calculated on the basis of new provisions." },
                     )
                 }
 
                 title2 {
-                    textExpr(
-                        Bokmal to "Opplysninger til grunn for beregning etter gamle regler (kapittel 19) per ".expr() + virkFom.format(),
-                        Nynorsk to "Opplysningar til grunn for berekning etter gamle reglar (kapittel 19) per ".expr() + virkFom.format(),
-                        English to "Information used in the calculation on the basis of the old provisions (Chapter 19) as of ".expr() + virkFom.format()
+                    text(
+                        bokmal { + "Opplysninger til grunn for beregning etter gamle regler (kapittel 19) per " + virkFom.format() },
+                        nynorsk { + "Opplysningar til grunn for berekning etter gamle reglar (kapittel 19) per " + virkFom.format() },
+                        english { + "Information used in the calculation on the basis of the old provisions (Chapter 19) as of " + virkFom.format() }
                     )
                 }
 
@@ -92,9 +91,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     table(header = {
                         column {
                             text(
-                                Bokmal to "Opplysning",
-                                Nynorsk to "Opplysning",
-                                English to "Information",
+                                bokmal { + "Opplysning" },
+                                nynorsk { + "Opplysning" },
+                                english { + "Information" },
                             )
                         }
                         column(alignment = RIGHT) {}
@@ -102,10 +101,10 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         row {
                             cell { includePhrase(Vedtak.TrygdetidText) }
                             cell {
-                                textExpr(
-                                    Bokmal to opplysningerKap19.trygdetidKap19.format() + " år".expr(),
-                                    Nynorsk to opplysningerKap19.trygdetidKap19.format() + " år".expr(),
-                                    English to opplysningerKap19.trygdetidKap19.format() + " years".expr()
+                                text(
+                                    bokmal { + opplysningerKap19.trygdetidKap19.format() + " år" },
+                                    nynorsk { + opplysningerKap19.trygdetidKap19.format() + " år" },
+                                    english { + opplysningerKap19.trygdetidKap19.format() + " years" }
                                 )
                             }
                         }
@@ -115,16 +114,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                     row {
                                         cell {
                                             text(
-                                                Bokmal to "Sluttpoengtall",
-                                                Nynorsk to "Sluttpoengtal",
-                                                English to "Final pension point score"
+                                                bokmal { + "Sluttpoengtall" },
+                                                nynorsk { + "Sluttpoengtal" },
+                                                english { + "Final pension point score" }
                                             )
                                         }
                                         cell {
-                                            textExpr(
-                                                Bokmal to sluttpoeng.format(),
-                                                Nynorsk to sluttpoeng.format(),
-                                                English to sluttpoeng.format()
+                                            text(
+                                                bokmal { + sluttpoeng.format() },
+                                                nynorsk { + sluttpoeng.format() },
+                                                english { + sluttpoeng.format() }
                                             )
                                         }
                                     }
@@ -135,16 +134,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                     row {
                                         cell {
                                             text(
-                                                Bokmal to "Antall poengår",
-                                                Nynorsk to "Talet på poengår",
-                                                English to "Number of pension point earning years"
+                                                bokmal { + "Antall poengår" },
+                                                nynorsk { + "Talet på poengår" },
+                                                english { + "Number of pension point earning years" }
                                             )
                                         }
                                         cell {
-                                            textExpr(
-                                                Bokmal to antallPoengAar.format() + " år".expr(),
-                                                Nynorsk to antallPoengAar.format() + " år".expr(),
-                                                English to antallPoengAar.format() + " years".expr()
+                                            text(
+                                                bokmal { + antallPoengAar.format() + " år" },
+                                                nynorsk { + antallPoengAar.format() + " år" },
+                                                english { + antallPoengAar.format() + " years" }
                                             )
                                         }
                                     }
@@ -155,16 +154,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                     row {
                                         cell {
                                             text(
-                                                Bokmal to "Antall år med pensjonsprosent 45",
-                                                Nynorsk to "Talet på år med pensjonsprosent 45",
-                                                English to "Number of years calculated with pension percentage 45"
+                                                bokmal { + "Antall år med pensjonsprosent 45" },
+                                                nynorsk { + "Talet på år med pensjonsprosent 45" },
+                                                english { + "Number of years calculated with pension percentage 45" }
                                             )
                                         }
                                         cell {
-                                            textExpr(
-                                                Bokmal to antallPoengAar.format() + " år".expr(),
-                                                Nynorsk to antallPoengAar.format() + " år".expr(),
-                                                English to antallPoengAar.format() + " years".expr()
+                                            text(
+                                                bokmal { + antallPoengAar.format() + " år" },
+                                                nynorsk { + antallPoengAar.format() + " år" },
+                                                english { + antallPoengAar.format() + " years" }
                                             )
                                         }
                                     }
@@ -175,16 +174,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                     row {
                                         cell {
                                             text(
-                                                Bokmal to "Antall år med pensjonsprosent 42",
-                                                Nynorsk to "Talet på år med pensjonsprosent 42",
-                                                English to "Number of years calculated with pension percentage 42"
+                                                bokmal { + "Antall år med pensjonsprosent 42" },
+                                                nynorsk { + "Talet på år med pensjonsprosent 42" },
+                                                english { + "Number of years calculated with pension percentage 42" }
                                             )
                                         }
                                         cell {
-                                            textExpr(
-                                                Bokmal to antallPoengAar.format() + " år".expr(),
-                                                Nynorsk to antallPoengAar.format() + " år".expr(),
-                                                English to antallPoengAar.format() + " years".expr()
+                                            text(
+                                                bokmal { + antallPoengAar.format() + " år" },
+                                                nynorsk { + antallPoengAar.format() + " år" },
+                                                english { + antallPoengAar.format() + " years" }
                                             )
                                         }
                                     }
@@ -194,32 +193,32 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Ønsket uttaksgrad",
-                                    Nynorsk to "Ønska uttaksgrad",
-                                    English to "Pension level applied for"
+                                    bokmal { + "Ønsket uttaksgrad" },
+                                    nynorsk { + "Ønska uttaksgrad" },
+                                    english { + "Pension level applied for" }
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to uttaksgrad.format() + " %",
-                                    Nynorsk to uttaksgrad.format() + " %",
-                                    English to uttaksgrad.format() + " %"
+                                text(
+                                    bokmal { + uttaksgrad.format() + " %" },
+                                    nynorsk { + uttaksgrad.format() + " %" },
+                                    english { + uttaksgrad.format() + " %" }
                                 )
                             }
                         }
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Forholdstall ved uttak",
-                                    Nynorsk to "Forholdstal ved uttak",
-                                    English to "Ratio at withdrawal"
+                                    bokmal { + "Forholdstall ved uttak" },
+                                    nynorsk { + "Forholdstal ved uttak" },
+                                    english { + "Ratio at withdrawal" }
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to opplysningerKap19.forholdstall.format(ForholdstallFormat),
-                                    Nynorsk to opplysningerKap19.forholdstall.format(ForholdstallFormat),
-                                    English to opplysningerKap19.forholdstall.format(ForholdstallFormat),
+                                text(
+                                    bokmal { + opplysningerKap19.forholdstall.format(ForholdstallFormat) },
+                                    nynorsk { + opplysningerKap19.forholdstall.format(ForholdstallFormat) },
+                                    english { + opplysningerKap19.forholdstall.format(ForholdstallFormat) },
                                 )
                             }
                         }
@@ -227,16 +226,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                             row {
                                 cell {
                                     text(
-                                        Bokmal to "Forholdstall ved 67 år",
-                                        Nynorsk to "Forholdstal ved 67 år",
-                                        English to "Ratio adjustment at age 67"
+                                        bokmal { + "Forholdstall ved 67 år" },
+                                        nynorsk { + "Forholdstal ved 67 år" },
+                                        english { + "Ratio adjustment at age 67" }
                                     )
                                 }
                                 cell {
-                                    textExpr(
-                                        Bokmal to opplysningerKap19.forholdstallVed67.format(ForholdstallFormat),
-                                        Nynorsk to opplysningerKap19.forholdstallVed67.format(ForholdstallFormat),
-                                        English to opplysningerKap19.forholdstallVed67.format(ForholdstallFormat)
+                                    text(
+                                        bokmal { + opplysningerKap19.forholdstallVed67.format(ForholdstallFormat) },
+                                        nynorsk { + opplysningerKap19.forholdstallVed67.format(ForholdstallFormat) },
+                                        english { + opplysningerKap19.forholdstallVed67.format(ForholdstallFormat) }
                                     )
                                 }
                             }
@@ -248,10 +247,10 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
         }
 
         title2 {
-            textExpr(
-                Bokmal to "Opplysninger til grunn for beregning etter nye regler (kapittel 20) per ".expr() + virkFom.format(),
-                Nynorsk to "Opplysningar til grunn for berekning etter nye reglar (kapittel 20) per ".expr() + virkFom.format(),
-                English to "Information used in the calculation on the basis of the new provisions (Chapter 20) as of ".expr() + virkFom.format()
+            text(
+                bokmal { + "Opplysninger til grunn for beregning etter nye regler (kapittel 20) per " + virkFom.format() },
+                nynorsk { + "Opplysningar til grunn for berekning etter nye reglar (kapittel 20) per " + virkFom.format() },
+                english { + "Information used in the calculation on the basis of the new provisions (Chapter 20) as of " + virkFom.format() }
             )
         }
 
@@ -259,9 +258,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             table(header = {
                 column {
                     text(
-                        Bokmal to "Opplysning",
-                        Nynorsk to "Opplysning",
-                        English to "Information",
+                        bokmal { + "Opplysning" },
+                        nynorsk { + "Opplysning" },
+                        english { + "Information" },
                     )
                 }
                 column(alignment = RIGHT) {}
@@ -270,10 +269,10 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     row {
                         cell { includePhrase(Vedtak.TrygdetidText) }
                         cell {
-                            textExpr(
-                                Bokmal to trygdetid.format() + " år".expr(),
-                                Nynorsk to trygdetid.format() + " år".expr(),
-                                English to trygdetid.format() + " years".expr()
+                            text(
+                                bokmal { + trygdetid.format() + " år" },
+                                nynorsk { + trygdetid.format() + " år" },
+                                english { + trygdetid.format() + " years" }
                             )
                         }
                     }
@@ -281,48 +280,48 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                 row {
                     cell {
                         text(
-                            Bokmal to "Pensjonsbeholdning",
-                            Nynorsk to "Pensjonsbehaldning",
-                            English to "Accumulated pension capital"
+                            bokmal { + "Pensjonsbeholdning" },
+                            nynorsk { + "Pensjonsbehaldning" },
+                            english { + "Accumulated pension capital" }
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to pensjonsbeholdning.format() + " kr".expr(),
-                            Nynorsk to pensjonsbeholdning.format() + " kr".expr(),
-                            English to pensjonsbeholdning.format() + " NOK".expr()
+                        text(
+                            bokmal { + pensjonsbeholdning.format(false) + " kr" },
+                            nynorsk { + pensjonsbeholdning.format(false) + " kr" },
+                            english { + pensjonsbeholdning.format(false) + " NOK" }
                         )
                     }
                 }
                 row {
                     cell {
                         text(
-                            Bokmal to "Ønsket uttaksgrad",
-                            Nynorsk to "Ønska uttaksgrad",
-                            English to "Pension level applied for"
+                            bokmal { + "Ønsket uttaksgrad" },
+                            nynorsk { + "Ønska uttaksgrad" },
+                            english { + "Pension level applied for" }
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to uttaksgrad.format() + " %",
-                            Nynorsk to uttaksgrad.format() + " %",
-                            English to uttaksgrad.format() + " %"
+                        text(
+                            bokmal { + uttaksgrad.format() + " %" },
+                            nynorsk { + uttaksgrad.format() + " %" },
+                            english { + uttaksgrad.format() + " %" }
                         )
                     }
                 }
                 row {
                     cell {
                         text(
-                            Bokmal to "Delingstall ved uttak",
-                            Nynorsk to "Delingstal ved uttak",
-                            English to "Ratio for life expectancy adjustment"
+                            bokmal { + "Delingstall ved uttak" },
+                            nynorsk { + "Delingstal ved uttak" },
+                            english { + "Ratio for life expectancy adjustment" }
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to delingstallVedUttak.format(),
-                            Nynorsk to delingstallVedUttak.format(),
-                            English to delingstallVedUttak.format()
+                        text(
+                            bokmal { + delingstallVedUttak.format() },
+                            nynorsk { + delingstallVedUttak.format() },
+                            english { + delingstallVedUttak.format() }
                         )
                     }
                 }
@@ -331,10 +330,10 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         row {
                             cell { includePhrase(DelingstallVed67Aar) }
                             cell {
-                                textExpr(
-                                    Bokmal to delingstall.format(),
-                                    Nynorsk to delingstall.format(),
-                                    English to delingstall.format()
+                                text(
+                                    bokmal { + delingstall.format() },
+                                    nynorsk { + delingstall.format() },
+                                    english { + delingstall.format() }
                                 )
                             }
                         }
@@ -346,16 +345,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
         showIf(kravAarsak.notEqualTo("UTTAKSGRAD")) {
             ifNotNull(sisteOpptjeningsAar) { sisteAar ->
                 paragraph {
-                    textExpr(
-                        Bokmal to "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. ".expr() +
+                    text(
+                        bokmal { + "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. " +
                                 "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
-                                "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
-                        Nynorsk to "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. ".expr() +
+                                "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + "." },
+                        nynorsk { + "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. " +
                                 "Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. " +
-                                "I berekninga er det derfor brukt pensjonsopptening til og med " + sisteAar.format() + ".",
-                        English to "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. ".expr() +
+                                "I berekninga er det derfor brukt pensjonsopptening til og med " + sisteAar.format() + "." },
+                        english { + "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. " +
                                 "This applies even if your tax settlement is ready earlier. " +
-                                "Therefore, the calculation considers pension accrual up to and including " + sisteAar.format() + "."
+                                "Therefore, the calculation considers pension accrual up to and including " + sisteAar.format() + "." }
                     )
                 }
             }
@@ -365,9 +364,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             ifNotNull(sisteOpptjeningsAar) { sisteAar ->
                 paragraph {
                     text(
-                        Bokmal to "Pensjonsbeholdningen i tabellen er beregnet ut fra den pensjonen du har tatt ut og pensjonsbeholdningen din.",
-                        Nynorsk to "Pensjonsbehaldninga i tabellen er berekna ut frå den pensjonen du har tatt ut og pensjonsbehaldninga di.",
-                        English to "The accumulated pension capital is calculated from your current pension and your remaining pension capital."
+                        bokmal { + "Pensjonsbeholdningen i tabellen er beregnet ut fra den pensjonen du har tatt ut og pensjonsbeholdningen din." },
+                        nynorsk { + "Pensjonsbehaldninga i tabellen er berekna ut frå den pensjonen du har tatt ut og pensjonsbehaldninga di." },
+                        english { + "The accumulated pension capital is calculated from your current pension and your remaining pension capital." }
                     )
                 }
             }
@@ -375,32 +374,32 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
 
         paragraph {
             text(
-                Bokmal to "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. Logg inn på ${Constants.DIN_PENSJON_URL} for å se hvilke inntekter og opplysninger om opptjening vi har registrert.",
-                Nynorsk to "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. Logg inn på ${Constants.DIN_PENSJON_URL} for å sjå kva inntekter og opplysningar om opptening vi har registrert.",
-                English to "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Log in to ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital."
+                bokmal { + "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. Logg inn på ${Constants.DIN_PENSJON_URL} for å se hvilke inntekter og opplysninger om opptjening vi har registrert." },
+                nynorsk { + "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. Logg inn på ${Constants.DIN_PENSJON_URL} for å sjå kva inntekter og opplysningar om opptening vi har registrert." },
+                english { + "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Log in to ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital." }
             )
         }
 
         showIf((opplysningerKap19.redusertTrygdetidKap19_safe.equalTo(true) or opplysningerKap20.redusertTrygdetidKap20) and opplysningerKap19.avslattKap19_safe.equalTo(false)) {
             paragraph {
                 text(
-                    Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning av pensjonen din. Full trygdetid er 40 år." +
-                            " Unntaket kan være hvis du har pensjonsopptjening fra et land Norge har trygdeavtale med.",
-                    Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning av pensjonen din. Full trygdetid er 40 år." +
-                            " Unntaket kan vere om du har pensjonsopptening frå eit land Noreg har trygdeavtale med.",
-                    English to "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years." +
-                            " The exception may be if you have pension accrual from a country that Norway has a social security agreement with."
+                    bokmal { + "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning av pensjonen din. Full trygdetid er 40 år." +
+                            " Unntaket kan være hvis du har pensjonsopptjening fra et land Norge har trygdeavtale med." },
+                    nynorsk { + "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning av pensjonen din. Full trygdetid er 40 år." +
+                            " Unntaket kan vere om du har pensjonsopptening frå eit land Noreg har trygdeavtale med." },
+                    english { + "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years." +
+                            " The exception may be if you have pension accrual from a country that Norway has a social security agreement with." }
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Reglene for fastsetting av trygdetid er litt ulike i kapittel 19 og kapittel 20 i folketrygdloven. " +
-                            "Derfor kan trygdetid etter kapittel 19 i enkelte tilfeller være høyere enn trygdetid etter kapittel 20.",
-                    Nynorsk to "Reglane for fastsetjing av trygdetid er ulike i kapittel 19 og kapittel 20 i folketrygdlova. " +
-                            "Derfor kan trygdetid etter kapittel 19 i enkelte tilfelle vere høgare enn trygdetid etter kapittel 20.",
-                    English to "The provisions pertaining to accumulated pension rights differ in Chapters 19 and 20 in the National Insurance Act. " +
-                            "Consequently, national insurance coverage pursuant to Chapter 19 may, in some cases, be higher than years pursuant to Chapter 20.",
+                    bokmal { + "Reglene for fastsetting av trygdetid er litt ulike i kapittel 19 og kapittel 20 i folketrygdloven. " +
+                            "Derfor kan trygdetid etter kapittel 19 i enkelte tilfeller være høyere enn trygdetid etter kapittel 20." },
+                    nynorsk { + "Reglane for fastsetjing av trygdetid er ulike i kapittel 19 og kapittel 20 i folketrygdlova. " +
+                            "Derfor kan trygdetid etter kapittel 19 i enkelte tilfelle vere høgare enn trygdetid etter kapittel 20." },
+                    english { + "The provisions pertaining to accumulated pension rights differ in Chapters 19 and 20 in the National Insurance Act. " +
+                            "Consequently, national insurance coverage pursuant to Chapter 19 may, in some cases, be higher than years pursuant to Chapter 20." },
                 )
             }
 
@@ -410,33 +409,33 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                 table(header = {
                     column {
                         text(
-                            Bokmal to "Fra og med",
-                            Nynorsk to "Frå og med",
-                            English to "Start date",
+                            bokmal { + "Fra og med" },
+                            nynorsk { + "Frå og med" },
+                            english { + "Start date" },
                         )
                     }
                     column(alignment = RIGHT) {
                         text(
-                            Bokmal to "Til og med",
-                            Nynorsk to "Til og med",
-                            English to "End date"
+                            bokmal { + "Til og med" },
+                            nynorsk { + "Til og med" },
+                            english { + "End date" }
                         )
                     }
                 }) {
                     forEach(trygdeperioderNorge) { periode ->
                         row {
                             cell {
-                                textExpr(
-                                    Bokmal to periode.fom.format(short = true),
-                                    Nynorsk to periode.fom.format(short = true),
-                                    English to periode.fom.format(short = true)
+                                text(
+                                    bokmal { + periode.fom.format(short = true) },
+                                    nynorsk { + periode.fom.format(short = true) },
+                                    english { + periode.fom.format(short = true) }
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to periode.tom.format(short = true),
-                                    Nynorsk to periode.tom.format(short = true),
-                                    English to periode.tom.format(short = true)
+                                text(
+                                    bokmal { + periode.tom.format(short = true) },
+                                    nynorsk { + periode.tom.format(short = true) },
+                                    english { + periode.tom.format(short = true) }
                                 )
                             }
                         }
@@ -446,16 +445,16 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
 
             showIf(trygdeperioderUtland.isNotEmpty()) {
                 paragraph {
-                    textExpr(
-                        Bokmal to ("Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har" +
+                    text(
+                        bokmal { + ("Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har" +
                                 " trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før" +
-                                " du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
-                        Nynorsk to ("Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg" +
+                                " du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + "." },
+                        nynorsk { + ("Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg" +
                                 " har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon" +
-                                " før du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
-                        English to ("The table below shows your insurance coverage in countries with which Norway" +
+                                " før du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + "." },
+                        english { + ("The table below shows your insurance coverage in countries with which Norway" +
                                 " has a social security agreement. These periods have been used to assess whether" +
-                                " you are eligible for retirement pension before the age of ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                                " you are eligible for retirement pension before the age of ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + "." },
                     )
                 }
 
@@ -463,47 +462,47 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     table(header = {
                         column {
                             text(
-                                Bokmal to "Land",
-                                Nynorsk to "Land",
-                                English to "Country"
+                                bokmal { + "Land" },
+                                nynorsk { + "Land" },
+                                english { + "Country" }
                             )
                         }
                         column(alignment = RIGHT) {
                             text(
-                                Bokmal to "Fra og med",
-                                Nynorsk to "Frå og med",
-                                English to "Start date",
+                                bokmal { + "Fra og med" },
+                                nynorsk { + "Frå og med" },
+                                english { + "Start date" },
                             )
                         }
                         column(alignment = RIGHT) {
                             text(
-                                Bokmal to "Til og med",
-                                Nynorsk to "Til og med",
-                                English to "End date"
+                                bokmal { + "Til og med" },
+                                nynorsk { + "Til og med" },
+                                english { + "End date" }
                             )
                         }
                     }) {
                         forEach(trygdeperioderUtland) { utlandPeriode ->
                             row {
                                 cell {
-                                    textExpr(
-                                        Bokmal to utlandPeriode.land,
-                                        Nynorsk to utlandPeriode.land,
-                                        English to utlandPeriode.land
+                                    text(
+                                        bokmal { + utlandPeriode.land },
+                                        nynorsk { + utlandPeriode.land },
+                                        english { + utlandPeriode.land }
                                     )
                                 }
                                 cell {
-                                    textExpr(
-                                        Bokmal to utlandPeriode.fom.format(short = true),
-                                        Nynorsk to utlandPeriode.fom.format(short = true),
-                                        English to utlandPeriode.fom.format(short = true)
+                                    text(
+                                        bokmal { + utlandPeriode.fom.format(short = true) },
+                                        nynorsk { + utlandPeriode.fom.format(short = true) },
+                                        english { + utlandPeriode.fom.format(short = true) }
                                     )
                                 }
                                 cell {
-                                    textExpr(
-                                        Bokmal to utlandPeriode.tom.format(short = true),
-                                        Nynorsk to utlandPeriode.tom.format(short = true),
-                                        English to utlandPeriode.tom.format(short = true)
+                                    text(
+                                        bokmal { + utlandPeriode.tom.format(short = true) },
+                                        nynorsk { + utlandPeriode.tom.format(short = true) },
+                                        english { + utlandPeriode.tom.format(short = true) }
                                     )
                                 }
                             }

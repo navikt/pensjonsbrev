@@ -6,9 +6,7 @@ enum class FeatureToggles(private val key: String) {
     // Sett inn featuretoggles her
     // val minFeature = UnleashToggle("minFeature")
     pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
-    pl7822EndretInntekt("pl_7822.endringer_ut_endret_pga_inntekt"),
-    pl7914EndretInntektPilot("pl_7914.ut_endret_pga_inntekt_test_pilot"),
-    brevMedFritekst("brevMedFritekst"),
+    oversettelseAvDokumenter("oversettelseAvDokumenter"),
     brevmalUtAvslag("brevmalUtAvslag"),
     apAvslagGjenlevenderett("apAvslagGjenlevenderett"),
     apAvslagGradsendringNormertPensjonsalder("ap_avslag_gradsendring_norm_redigerbar"),
@@ -24,6 +22,8 @@ enum class FeatureToggles(private val key: String) {
     vedtakEndringAvUttaksgrad("vedtakEndringAvUttaksgrad"),
     vedtakEndringAvUttaksgradStans("vedtakEndringAvUttaksgradStans"),
     endringAvAlderspensjonSivilstand("endringAvAlderspensjonSivilstand"),
+    endringAvAlderspensjonSivilstandVurderSaerskiltSats("endringAvAlderspensjonSivilstandVurderSaerskiltSats"),
+    endringAvAlderspensjonSivilstandGarantitillegg("endringAvAlderspensjonSivilstandGarantitillegg"),
     innvilgelseAvAlderspensjon("innvilgelseAvAlderspensjon"),
     innvilgelseAvAlderspensjonTrygdeavtale("innvilgelseAvAlderspensjonTrygdeavtale"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
@@ -31,8 +31,11 @@ enum class FeatureToggles(private val key: String) {
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakEndringOpptjeningEndret("vedtakEndringOpptjeningEndret"),
     vedtakEndringVedFlyttingMellomLand("vedtakEndringVedFlyttingMellomLand"),
+    brukertestbrev2025("brukertestbrev2025"),
     vedtakStansFlyttingMellomLand("vedtakStansFlyttingMellomLand"),
-    avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP");
+    avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP"),
+    omregningAlderUfore2016("omregningAlderUfore2016"),
+    uforeAvslagDemo("avslaguforetrygd");
 
     val toggle = FeatureToggle(key)
 }

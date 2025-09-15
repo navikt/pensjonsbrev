@@ -22,6 +22,7 @@ import type {
   Sakspart,
   Signatur,
   TextContent,
+  Title,
   Title1Block,
   Title2Block,
   VariableValue,
@@ -45,6 +46,7 @@ export const nyBrevResponse = ({
     redigertBrev: redigertBrev,
     redigertBrevHash: redigertBrevHash,
     saksbehandlerValg: saksbehandlerValg,
+    propertyUsage: null,
   };
 };
 
@@ -55,19 +57,22 @@ export const nyRedigertBrev = ({
   signatur = nySignatur({}),
   deletedBlocks,
 }: {
-  title?: string;
+  title?: Title;
   sakspart?: Sakspart;
   blocks?: AnyBlock[];
   signatur?: Signatur;
   deletedBlocks?: number[];
 }): EditedLetter => {
   return {
-    title: title ?? "Information about application processing time",
+    title: title ?? {
+      text: [newLiteral({ text: "Information about application processing time" })],
+      deletedContent: [],
+    },
     sakspart: sakspart ?? {
       gjelderNavn: "TRYGG ANBEFALING",
       gjelderFoedselsnummer: "21418744917",
       saksnummer: "22981081",
-      dokumentDato: "25/09/2024",
+      dokumentDato: "2024-09-25",
     },
     blocks: blocks ?? [
       {

@@ -24,55 +24,72 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.PrimitiveModule
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration.Companion.seconds
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
-class BrevbakerService(config: Config, authService: AzureADService) : ServiceStatus {
+interface BrevbakerService {
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification>
+    suspend fun renderMarkup(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+    ): ServiceResult<LetterMarkupWithDataUsage>
+    suspend fun renderPdf(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+        redigertBrev: LetterMarkup,
+    ): ServiceResult<LetterResponse>
+    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>>
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
+}
+
+class BrevbakerServiceHttp(config: Config, authService: AuthService) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
+    private val scope = config.getString("scope")
     private val client = HttpClient(CIO) {
         defaultRequest {
             url(brevbakerUrl)
+        }
+        installRetry(logger, shouldNotRetry = { req -> req.method == HttpMethod.Post && req.url.segments.last() == "pdf" })
+        engine {
+            requestTimeout = 60.seconds.inWholeMilliseconds
         }
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
                 registerModule(TemplateModelSpecificationModule)
-                registerModule(PrimitiveModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
         }
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
+        callIdAndOnBehalfOfClient(scope, authService)
     }
 
     /**
      * Get model specification for a template.
      */
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
         client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification").toServiceResult()
 
-    suspend fun renderMarkup(
+    override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkup> =
-        client.post("/letter/redigerbar/markup") {
+    ): ServiceResult<LetterMarkupWithDataUsage> =
+        client.post("/letter/redigerbar/markup-usage") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -84,7 +101,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             )
         }.toServiceResult()
 
-    suspend fun renderPdf(
+    override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
@@ -104,7 +121,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             )
         }.toServiceResult()
 
-    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
+    override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
         client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
@@ -112,7 +129,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         }.toServiceResult()
 
     private val templateCache = Cache<Brevkode.Redigerbart, TemplateDescription.Redigerbar>()
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
+    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
             client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
@@ -128,7 +145,8 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
 }
 
 @OptIn(InterneDataklasser::class)
-object LetterMarkupModule : SimpleModule() {
+internal object LetterMarkupModule : SimpleModule() {
+    @Suppress("unused")
     private fun readResolve(): Any = LetterMarkupModule
 
     init {
@@ -136,23 +154,25 @@ object LetterMarkupModule : SimpleModule() {
         addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
 
-        addInterfaceDeserializer<LetterMarkup.Sakspart, SakspartImpl>()
-        addInterfaceDeserializer<LetterMarkup.Signatur, SignaturImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>()
-        addInterfaceDeserializer<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
-        addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        addInterfaceDeserializer<LetterMarkup, LetterMarkupImpl>()
+        addAbstractTypeMapping<LetterMarkup.Sakspart, SakspartImpl>()
+        addAbstractTypeMapping<LetterMarkup.Signatur, SignaturImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>()
+        addAbstractTypeMapping<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
+        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
+        addAbstractTypeMapping<LetterMarkupWithDataUsage, LetterMarkupWithDataUsageImpl>()
+        addAbstractTypeMapping<LetterMarkupWithDataUsage.Property, LetterMarkupWithDataUsageImpl.PropertyImpl>()
     }
 
     private fun blockDeserializer() =

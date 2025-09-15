@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
@@ -39,26 +38,26 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         title2 {
             text(
-                Bokmal to "Opplysninger vi har brukt i beregningen fra ",
-                Nynorsk to "Opplysningar vi har brukt i berekninga frå ",
-                English to "Data we have used in the calculations of ",
+                bokmal { + "Opplysninger vi har brukt i beregningen fra " },
+                nynorsk { + "Opplysningar vi har brukt i berekninga frå " },
+                english { + "Data we have used in the calculations of " },
             )
             ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { beregningVirkFom ->
-                textExpr(
-                    Bokmal to beregningVirkFom.format(),
-                    Nynorsk to beregningVirkFom.format(),
-                    English to beregningVirkFom.format(),
+                text(
+                    bokmal { + beregningVirkFom.format() },
+                    nynorsk { + beregningVirkFom.format() },
+                    english { + beregningVirkFom.format() },
                 )
             }
         }
         paragraph {
-            textExpr(
-                Bokmal to " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() +
-                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner.",
-                Nynorsk to " Folketrygdas grunnbeløp (G) nytta i berekninga er ".expr() +
-                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner.",
-                English to " The national insurance basic amount (G) used in the calculation is NOK ".expr()
-                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ".",
+            text(
+                bokmal { + " Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
+                nynorsk { + " Folketrygdas grunnbeløp (G) nytta i berekninga er " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
+                english { + " The national insurance basic amount (G) used in the calculation is "
+                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
             )
         }
 

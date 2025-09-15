@@ -88,5 +88,5 @@ private fun Pdl.Gradering?.toADGruppe(): ADGroup? =
     when (this) {
         Pdl.Gradering.FORTROLIG -> ADGroups.fortroligAdresse
         Pdl.Gradering.STRENGT_FORTROLIG, Pdl.Gradering.STRENGT_FORTROLIG_UTLAND -> ADGroups.strengtFortroligAdresse
-        Pdl.Gradering.INGEN, null -> null
+        Pdl.Gradering.UGRADERT, null -> null
     }

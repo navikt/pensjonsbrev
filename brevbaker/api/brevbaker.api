@@ -7,7 +7,7 @@ public final class no/nav/brev/brevbaker/Brevbaker {
 	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public final fun renderLetterWithAttachmentsMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup;
+	public final fun renderLetterMarkupWithDataUsage (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage;
 	public final fun renderPDF (Lno/nav/pensjon/brev/template/Letter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun renderRedigertBrevHTML (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderRedigertBrevPDF (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -99,6 +99,10 @@ public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
 
 public final class no/nav/pensjon/brevbaker/api/model/FellesSelectors {
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/FellesSelectors;
+	public final fun getAnnenMottakerNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAnnenMottakerNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAnnenMottakerNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getAnnenMottakerNavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAvsenderEnhet (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAvsenderEnhet (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAvsenderEnhetSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;

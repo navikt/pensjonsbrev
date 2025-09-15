@@ -22,15 +22,13 @@ import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun Application.brevbakerModule(
-    templates: AllTemplates,
-    brukAsyncProducer: Boolean = true
+    templates: AllTemplates
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
@@ -125,20 +123,10 @@ fun Application.brevbakerModule(
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
-    val kafkaConfig = brevbakerConfig.config("kafka")
-    val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
-    val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
-        log.info("Oppretter Latex async compiler service")
-        LatexAsyncCompilerService(kafkaConfig)
-    } else {
-        log.info("Starter uten Latex async compiler service")
-        null
-    }
-
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {

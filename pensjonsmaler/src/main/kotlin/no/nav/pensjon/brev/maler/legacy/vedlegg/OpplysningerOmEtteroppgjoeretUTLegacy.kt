@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresu
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -31,7 +30,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 
 @TemplateModelHelpers
@@ -47,8 +45,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
     paragraph {
         text(
-            Bokmal to "Vi bruker inntektsopplysninger fra Skatteetaten når vi vurderer om du har fått for mye eller for lite i uføretrygd",
-            Nynorsk to "Vi bruker inntektsopplysningar frå Skatteetaten når vi vurderer om du har fått for mykje eller for lite i uføretrygd ",
+            bokmal { + "Vi bruker inntektsopplysninger fra Skatteetaten når vi vurderer om du har fått for mye eller for lite i uføretrygd" },
+            nynorsk { + "Vi bruker inntektsopplysningar frå Skatteetaten når vi vurderer om du har fått for mykje eller for lite i uføretrygd " },
         )
 
         //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
@@ -57,13 +55,13 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                 .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
         ) {
             text(
-                Bokmal to " og barnetillegg",
-                Nynorsk to "og barnetillegg ",
+                bokmal { + " og barnetillegg" },
+                nynorsk { + "og barnetillegg " },
             )
         }
-        textExpr(
-            Bokmal to " i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ".",
-            Nynorsk to "i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ".",
+        text(
+            bokmal { + " i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + "." },
+            nynorsk { + "i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + "." },
         )
     }
 
@@ -77,8 +75,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "I tabellen(e) under kan du se hva som er din pensjonsgivende inntekt",
-                Nynorsk to "I tabellan(e) under kan du sjå kva som er den pensjonsgivande inntekta di",
+                bokmal { + "I tabellen(e) under kan du se hva som er din pensjonsgivende inntekt" },
+                nynorsk { + "I tabellan(e) under kan du sjå kva som er den pensjonsgivande inntekta di" },
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
@@ -87,13 +85,13 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                     .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
             ) {
                 text(
-                    Bokmal to ", din personinntekt",
-                    Nynorsk to ", personinntekta di",
+                    bokmal { + ", din personinntekt" },
+                    nynorsk { + ", personinntekta di" },
                 )
             }
             text(
-                Bokmal to " og hvilke inntekter som blir brukt til å vurdere om du har fått for mye eller for lite i uføretrygd",
-                Nynorsk to " og kva inntekter vi bruker til å vurdere om du har fått for mykje eller for lite i uføretrygd",
+                bokmal { + " og hvilke inntekter som blir brukt til å vurdere om du har fått for mye eller for lite i uføretrygd" },
+                nynorsk { + " og kva inntekter vi bruker til å vurdere om du har fått for mykje eller for lite i uføretrygd" },
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
@@ -102,13 +100,13 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                     .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
             ) {
                 text(
-                    Bokmal to " og barnetillegg",
-                    Nynorsk to " og barnetillegg",
+                    bokmal { + " og barnetillegg" },
+                    nynorsk { + " og barnetillegg" },
                 )
             }
             text(
-                Bokmal to ".",
-                Nynorsk to ".",
+                bokmal { + "." },
+                nynorsk { + "." },
             )
         }
     }
@@ -127,8 +125,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "Dersom du ikke har rett til barnetillegg hele året er inntektene kortet ned for kun å gjelde den perioden du mottar barnetillegg.",
-                Nynorsk to "Dersom du ikkje har rett til barnetillegg heile året, er inntektene korta ned for berre å gjelde den perioden du får barnetillegg.",
+                bokmal { + "Dersom du ikke har rett til barnetillegg hele året er inntektene kortet ned for kun å gjelde den perioden du mottar barnetillegg." },
+                nynorsk { + "Dersom du ikkje har rett til barnetillegg heile året, er inntektene korta ned for berre å gjelde den perioden du får barnetillegg." },
             )
         }
     }
@@ -138,8 +136,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra Nav regnes dette også med som personinntekt.",
-                Nynorsk to "Dersom den andre forelderen får uføretrygd eller alderspensjon frå Nav, blir også dette rekna med som personinntekt.",
+                bokmal { + "Mottar annen forelder uføretrygd eller alderspensjon fra Nav regnes dette også med som personinntekt." },
+                nynorsk { + "Dersom den andre forelderen får uføretrygd eller alderspensjon frå Nav, blir også dette rekna med som personinntekt." },
             )
         }
     }
@@ -153,11 +151,11 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
         //[Table 5, Table 6, Table 4]
 
         paragraph {
-            textExpr(
-                Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                    .format() + " kroner er holdt utenfor inntekten til annen forelder.",
-                Nynorsk to "Grunnbeløpet i folketrygda på inntil ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-                    .format() + " kroner er halde utanfor inntekta til den andre forelderen.",
+            text(
+                bokmal { + "Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
+                    .format() + " er holdt utenfor inntekten til annen forelder." },
+                nynorsk { + "Grunnbeløpet i folketrygda på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
+                    .format() + " er halde utanfor inntekta til den andre forelderen." },
             )
         }
     }
@@ -170,16 +168,16 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         title1 {
             text(
-                Bokmal to "Hvilke inntekter bruker vi i justeringen av uføretrygden?",
-                Nynorsk to "Kva inntekter bruker vi når vi justerer uføretrygda?",
+                bokmal { + "Hvilke inntekter bruker vi i justeringen av uføretrygden?" },
+                nynorsk { + "Kva inntekter bruker vi når vi justerer uføretrygda?" },
             )
         }
         //[Table 2, Table]
 
         paragraph {
             text(
-                Bokmal to "Uføretrygden blir justert ut fra pensjonsgivende inntekt. Pensjonsgivende inntekt er for eksempel arbeidsinntekt, næringsinntekt og utlandsinntekt. Ytelser fra Nav som erstatter arbeidsinntekt er også pensjonsgivende inntekt. Dette står i § 3-15 i folketrygdloven. ",
-                Nynorsk to "Uføretrygda blir justert ut frå pensjonsgivande inntekt. Pensjonsgivande inntekt er for eksempel arbeidsinntekt, næringsinntekt og utanlandsinntekt. Ytingar frå Nav som erstattar arbeidsinntekt, er også pensjonsgivande inntekt. Dette står i § 3-15 i folketrygdlova. ",
+                bokmal { + "Uføretrygden blir justert ut fra pensjonsgivende inntekt. Pensjonsgivende inntekt er for eksempel arbeidsinntekt, næringsinntekt og utlandsinntekt. Ytelser fra Nav som erstatter arbeidsinntekt er også pensjonsgivende inntekt. Dette står i § 3-15 i folketrygdloven. " },
+                nynorsk { + "Uføretrygda blir justert ut frå pensjonsgivande inntekt. Pensjonsgivande inntekt er for eksempel arbeidsinntekt, næringsinntekt og utanlandsinntekt. Ytingar frå Nav som erstattar arbeidsinntekt, er også pensjonsgivande inntekt. Dette står i § 3-15 i folketrygdlova. " },
             )
         }
     }
@@ -193,36 +191,36 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         title1 {
             text(
-                Bokmal to "Hvilke inntekter bruker vi i fastsettelsen av størrelsen på barnetillegget?",
-                Nynorsk to "Kva inntekter bruker vi når vi fastset kor stort barnetillegget er?",
+                bokmal { + "Hvilke inntekter bruker vi i fastsettelsen av størrelsen på barnetillegget?" },
+                nynorsk { + "Kva inntekter bruker vi når vi fastset kor stort barnetillegget er?" },
             )
         }
         //[Table 8, Table 9, Table 7]
 
         paragraph {
             text(
-                Bokmal to "Barnetillegg blir beregnet ut fra personinntekt. Dette står i §12-2 i skatteloven. Personinntekt er den skattepliktige inntekten din før skatt. ",
-                Nynorsk to "Barnetillegg blir berekna ut frå personinntekta. Dette står i §12-2 i skattelova. Personinntekt er den skattepliktige inntekta di før skatt. ",
+                bokmal { + "Barnetillegg blir beregnet ut fra personinntekt. Dette står i §12-2 i skatteloven. Personinntekt er den skattepliktige inntekten din før skatt. " },
+                nynorsk { + "Barnetillegg blir berekna ut frå personinntekta. Dette står i §12-2 i skattelova. Personinntekt er den skattepliktige inntekta di før skatt. " },
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))) {
                 text(
-                    Bokmal to "Bor barnet/barna sammen med begge sine foreldre så regner vi også med personinntekt til annen forelder. ",
-                    Nynorsk to "Bur barnet/barna saman med begge foreldra sine, reknar vi også med personinntekta til den andre forelderen. ",
+                    bokmal { + "Bor barnet/barna sammen med begge sine foreldre så regner vi også med personinntekt til annen forelder. " },
+                    nynorsk { + "Bur barnet/barna saman med begge foreldra sine, reknar vi også med personinntekta til den andre forelderen. " },
                 )
             }
             text(
-                Bokmal to "Personinntekt er for eksempel: lønn, inkludert bonus og overtid fra arbeidsgiver, næringsinntekt, utlandsinntekt, uføretrygd og andre ytelser fra Nav.",
-                Nynorsk to "Personinntekt er for eksempel: lønn, inkludert bonus og overtid frå arbeidsgivar, næringsinntekt, utanlandsinntekt, uføretrygd og andre ytingar frå Nav.",
+                bokmal { + "Personinntekt er for eksempel: lønn, inkludert bonus og overtid fra arbeidsgiver, næringsinntekt, utlandsinntekt, uføretrygd og andre ytelser fra Nav." },
+                nynorsk { + "Personinntekt er for eksempel: lønn, inkludert bonus og overtid frå arbeidsgivar, næringsinntekt, utanlandsinntekt, uføretrygd og andre ytingar frå Nav." },
             )
         }
         //[Table 8, Table 9, Table 7]
 
         paragraph {
             text(
-                Bokmal to "Du kan lese mer om personinntekt på $SKATTEETATEN_URL. ",
-                Nynorsk to "Du kan lese meir om personinntekt på $SKATTEETATEN_URL. ",
+                bokmal { + "Du kan lese mer om personinntekt på $SKATTEETATEN_URL. " },
+                nynorsk { + "Du kan lese meir om personinntekt på $SKATTEETATEN_URL. " },
             )
         }
     }
@@ -242,8 +240,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
             title1 {
                 text(
-                    Bokmal to "Vi kan i enkelte tilfeller se bort fra inntekt i etteroppgjøret",
-                    Nynorsk to "Vi kan i enkelte tilfelle sjå bort frå inntekt i etteroppgjeret",
+                    bokmal { + "Vi kan i enkelte tilfeller se bort fra inntekt i etteroppgjøret" },
+                    nynorsk { + "Vi kan i enkelte tilfelle sjå bort frå inntekt i etteroppgjeret" },
                 )
             }
         }
@@ -253,23 +251,23 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
             paragraph {
                 text(
-                    Bokmal to "Dette gjelder kun dersom du hadde en slik inntekt.",
-                    Nynorsk to "Dette gjeld berre dersom du hadde ei slik inntekt.",
+                    bokmal { + "Dette gjelder kun dersom du hadde en slik inntekt." },
+                    nynorsk { + "Dette gjeld berre dersom du hadde ei slik inntekt." },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))) {
                     text(
-                        Bokmal to " Det gjelder ikke for inntekten til annen forelder.",
-                        Nynorsk to " Det gjeld ikkje for inntekta til den andre forelderen.",
+                        bokmal { + " Det gjelder ikke for inntekten til annen forelder." },
+                        nynorsk { + " Det gjeld ikkje for inntekta til den andre forelderen." },
                     )
                 }
             }
 
             paragraph {
                 text(
-                    Bokmal to "Vi kan trekke fra:",
-                    Nynorsk to "Vi kan trekkje frå:",
+                    bokmal { + "Vi kan trekke fra:" },
+                    nynorsk { + "Vi kan trekkje frå:" },
                 )
 
                 list {
@@ -277,73 +275,73 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                         //IF(PE_UT_PeriodeFomStorre0101() = true) THEN      INCLUDE ENDIF
                         showIf((pe.ut_periodefomstorre0101())) {
                             text(
-                                Bokmal to "Inntekt før du ble innvilget uføretrygd",
-                                Nynorsk to "Inntekt før du fekk innvilga uføretrygd",
+                                bokmal { + "Inntekt før du ble innvilget uføretrygd" },
+                                nynorsk { + "Inntekt før du fekk innvilga uføretrygd" },
                             )
                         }
                     }
                     item {
                         text(
-                            Bokmal to "Erstatning for inntektstap ved erstatningsoppgjør etter",
-                            Nynorsk to "Erstatning for inntektstap ved erstatningsoppgjer etter",
+                            bokmal { + "Erstatning for inntektstap ved erstatningsoppgjør etter" },
+                            nynorsk { + "Erstatning for inntektstap ved erstatningsoppgjer etter" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "    Skadeerstatningsloven § 3-1",
-                            Nynorsk to "    Skadeerstatningslova § 3-1",
+                            bokmal { + "    Skadeerstatningsloven § 3-1" },
+                            nynorsk { + "    Skadeerstatningslova § 3-1" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "    Yrkesskadeforsikringsloven § 13",
-                            Nynorsk to "    Yrkesskadeforsikringslova § 13",
+                            bokmal { + "    Yrkesskadeforsikringsloven § 13" },
+                            nynorsk { + "    Yrkesskadeforsikringslova § 13" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "    Pasientskadeloven § 4 første ledd",
-                            Nynorsk to "    Pasientskadelova § 4 første ledd",
+                            bokmal { + "    Pasientskadeloven § 4 første ledd" },
+                            nynorsk { + "    Pasientskadelova § 4 første ledd" },
                         )
                     }
                     item {
                         showIf((pe.ut_periodetommindre3112())) {
                             text(
-                                Bokmal to "Inntekt etter at uføretrygden din opphørte",
-                                Nynorsk to "Inntekt etter at uføretrygda di tok slutt",
+                                bokmal { + "Inntekt etter at uføretrygden din opphørte" },
+                                nynorsk { + "Inntekt etter at uføretrygda di tok slutt" },
                             )
                         }
                     }
                     item {
                         text(
-                            Bokmal to " Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel:",
-                            Nynorsk to " Inntekt frå arbeid eller verksemd som blei heilt avslutta før du fekk innvilga uføretrygd, for eksempel:",
+                            bokmal { + " Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel:" },
+                            nynorsk { + " Inntekt frå arbeid eller verksemd som blei heilt avslutta før du fekk innvilga uføretrygd, for eksempel:" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "    Utbetalte feriepenger for et arbeidsforhold som er avsluttet",
-                            Nynorsk to "    Utbetalte feriepengar for et arbeidsforhold som er avslutta",
+                            bokmal { + "    Utbetalte feriepenger for et arbeidsforhold som er avsluttet" },
+                            nynorsk { + "    Utbetalte feriepengar for et arbeidsforhold som er avslutta" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "    Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten",
-                            Nynorsk to "    Inntekter frå sal av produksjonsmiddel i samband med at verksemda blei avslutta",
+                            bokmal { + "    Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten" },
+                            nynorsk { + "    Inntekter frå sal av produksjonsmiddel i samband med at verksemda blei avslutta" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "    Produksjonstillegg og andre overføringer til gårdbrukere",
-                            Nynorsk to "    Produksjonstillegg og andre overføringar til gardbrukarar",
+                            bokmal { + "    Produksjonstillegg og andre overføringer til gårdbrukere" },
+                            nynorsk { + "    Produksjonstillegg og andre overføringar til gardbrukarar" },
                         )
                     }
                 }
-                textExpr(
-                    Bokmal to "Hadde du en slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                        .format() + ", må du dokumentere dette innen 3 uker fra " + felles.dokumentDato.format() + ". Du trenger ikke sende inn ny dokumentasjon om vi allerede har trukket dette fra. Inntekter som er trukket fra ser du i tabellen ovenfor.",
-                    Nynorsk to "Hadde du ei slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                        .format() + ", må du dokumentere dette innan tre veker frå " + felles.dokumentDato.format() + ". Du treng ikkje sende inn ny dokumentasjon om vi allereie har trekt dette frå. Inntekter som er trekte frå, ser du i tabellen ovanfor.",
+                text(
+                    bokmal { + "Hadde du en slik inntekt i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                        .format() + ", må du dokumentere dette innen 3 uker fra " + felles.dokumentDato.format() + ". Du trenger ikke sende inn ny dokumentasjon om vi allerede har trukket dette fra. Inntekter som er trukket fra ser du i tabellen ovenfor." },
+                    nynorsk { + "Hadde du ei slik inntekt i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                        .format() + ", må du dokumentere dette innan tre veker frå " + felles.dokumentDato.format() + ". Du treng ikkje sende inn ny dokumentasjon om vi allereie har trekt dette frå. Inntekter som er trekte frå, ser du i tabellen ovanfor." },
                 )
             }
         }
@@ -354,14 +352,14 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
             paragraph {
                 text(
-                    Bokmal to "Dette gjelder kun dersom du hadde en slik inntekt. Det gjelder ikke for inntekten til annen forelder.",
-                    Nynorsk to "Dette gjeld berre dersom du hadde ei slik inntekt. Det gjeld ikkje for inntekta til den andre forelderen.",
+                    bokmal { + "Dette gjelder kun dersom du hadde en slik inntekt. Det gjelder ikke for inntekten til annen forelder." },
+                    nynorsk { + "Dette gjeld berre dersom du hadde ei slik inntekt. Det gjeld ikkje for inntekta til den andre forelderen." },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vi kan trekke fra:",
-                    Nynorsk to "Vi kan trekkje frå:",
+                    bokmal { + "Vi kan trekke fra:" },
+                    nynorsk { + "Vi kan trekkje frå:" },
                 )
                 list {
 
@@ -370,8 +368,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
                         item {
                             text(
-                                Bokmal to "Inntekt før du ble innvilget uføretrygd ",
-                                Nynorsk to "Inntekt før du fekk innvilga uføretrygd ",
+                                bokmal { + "Inntekt før du ble innvilget uføretrygd " },
+                                nynorsk { + "Inntekt før du fekk innvilga uføretrygd " },
                             )
                         }
                     }
@@ -381,8 +379,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
                         item {
                             text(
-                                Bokmal to "Inntekt etter at uføretrygden din opphørte",
-                                Nynorsk to "Inntekt etter at uføretrygda di tok slutt",
+                                bokmal { + "Inntekt etter at uføretrygden din opphørte" },
+                                nynorsk { + "Inntekt etter at uføretrygda di tok slutt" },
                             )
                         }
                     }
@@ -392,27 +390,27 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
                         item {
                             text(
-                                Bokmal to "Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel:",
-                                Nynorsk to "Inntekt frå arbeid eller verksemd som blei heilt avslutta før du fekk innvilga uføretrygd, for eksempel:",
+                                bokmal { + "Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel:" },
+                                nynorsk { + "Inntekt frå arbeid eller verksemd som blei heilt avslutta før du fekk innvilga uføretrygd, for eksempel:" },
                             )
                         }
 
                         item {
                             text(
-                                Bokmal to "    Utbetalte feriepenger for et arbeidsforhold som er avsluttet",
-                                Nynorsk to "    Utbetalte feriepengar for eit arbeidsforhold som er avslutta",
+                                bokmal { + "    Utbetalte feriepenger for et arbeidsforhold som er avsluttet" },
+                                nynorsk { + "    Utbetalte feriepengar for eit arbeidsforhold som er avslutta" },
                             )
                         }
                         item {
                             text(
-                                Bokmal to "    Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten",
-                                Nynorsk to "    Inntekter frå sal av produksjonsmiddel i samband med at verksemda blei avslutta",
+                                bokmal { + "    Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten" },
+                                nynorsk { + "    Inntekter frå sal av produksjonsmiddel i samband med at verksemda blei avslutta" },
                             )
                         }
                         item {
                             text(
-                                Bokmal to "    Produksjonstillegg og andre overføringer til gårdbrukere",
-                                Nynorsk to "    Produksjonstillegg og andre overføringar til gardbrukarar",
+                                bokmal { + "    Produksjonstillegg og andre overføringer til gårdbrukere" },
+                                nynorsk { + "    Produksjonstillegg og andre overføringar til gardbrukarar" },
                             )
                         }
                     }
@@ -421,42 +419,42 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles >= 1 AND Year(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_PeriodeFom) >= 2023)  AND PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"  AND (PE_pebrevkode = "PE_UT_23_001"  OR  PE_pebrevkode = "PE_UT_04_402") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().greaterThanOrEqual(1) and FUNKSJON_Year(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom()).greaterThanOrEqual(2023)) and pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("tilbakekr") and (pe.pebrevkode().equalTo("PE_UT_23_001") or pe.pebrevkode().equalTo("PE_UT_04_402"))) {
                     text(
-                        Bokmal to "I tillegg kan vi se bort fra følgende inntekt for deg, og annen forelder som mottar uføretrygd eller alderspensjon fra Nav:",
-                        Nynorsk to "Vi kan også sjå bort frå følgjande inntekt for deg og den andre forelderen som mottek uføretrygd eller alderspensjon frå Nav:",
+                        bokmal { + "I tillegg kan vi se bort fra følgende inntekt for deg, og annen forelder som mottar uføretrygd eller alderspensjon fra Nav:" },
+                        nynorsk { + "Vi kan også sjå bort frå følgjande inntekt for deg og den andre forelderen som mottek uføretrygd eller alderspensjon frå Nav:" },
                     )
 
                     list {
                         item {
                             text(
-                                Bokmal to "Erstatning for inntektstap ved erstatningsoppgjør etter",
-                                Nynorsk to "Erstatning for inntektstap ved erstatningsoppgjer etter:",
+                                bokmal { + "Erstatning for inntektstap ved erstatningsoppgjør etter" },
+                                nynorsk { + "Erstatning for inntektstap ved erstatningsoppgjer etter:" },
                             )
                         }
                         item {
                             text(
-                                Bokmal to "    Skadeerstatningsloven § 3-1",
-                                Nynorsk to "    Skadeerstatningsloven § 3-1",
+                                bokmal { + "    Skadeerstatningsloven § 3-1" },
+                                nynorsk { + "    Skadeerstatningsloven § 3-1" },
                             )
                         }
                         item {
                             text(
-                                Bokmal to "    Yrkesskadeforsikringsloven § 13",
-                                Nynorsk to "    Yrkesskadeforsikringsloven § 13",
+                                bokmal { + "    Yrkesskadeforsikringsloven § 13" },
+                                nynorsk { + "    Yrkesskadeforsikringsloven § 13" },
                             )
                         }
                         item {
                             text(
-                                Bokmal to "    Pasientskadeloven § 4 første ledd",
-                                Nynorsk to "    Pasientskadeloven § 4 første ledd",
+                                bokmal { + "    Pasientskadeloven § 4 første ledd" },
+                                nynorsk { + "    Pasientskadeloven § 4 første ledd" },
                             )
                         }
                     }
 
-                    textExpr(
-                        Bokmal to "Slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                            .format() + ", må dokumenteres innen 3 uker fra " + felles.dokumentDato.format() + ". Du trenger ikke sende inn ny dokumentasjon om vi allerede har trukket dette fra. Inntekter som er trukket fra ser du i tabellen ovenfor.",
-                        Nynorsk to "Slik inntekt i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                            .format() + ", må du dokumentere innan tre veker frå " + felles.dokumentDato.format() + ". Du treng ikkje sende inn ny dokumentasjon om vi allereie har trekt dette frå. Inntekter som er trekte frå, ser du i tabellen ovanfor.",
+                    text(
+                        bokmal { + "Slik inntekt i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                            .format() + ", må dokumenteres innen 3 uker fra " + felles.dokumentDato.format() + ". Du trenger ikke sende inn ny dokumentasjon om vi allerede har trukket dette fra. Inntekter som er trukket fra ser du i tabellen ovenfor." },
+                        nynorsk { + "Slik inntekt i " + pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                            .format() + ", må du dokumentere innan tre veker frå " + felles.dokumentDato.format() + ". Du treng ikkje sende inn ny dokumentasjon om vi allereie har trekt dette frå. Inntekter som er trekte frå, ser du i tabellen ovanfor." },
                     )
                 }
             }
@@ -471,15 +469,15 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
             paragraph {
                 text(
-                    Bokmal to "Inntekt i perioder før innvilgelse av uføretrygd og etter at uføretrygden opphørte, skal ikke være med i vurderingen om du har fått for mye eller for lite i barnetillegg. ",
-                    Nynorsk to "Inntekt i periodar før du fekk innvilga uføretrygd og etter at uføretrygda tok slutt, skal ikkje vere med i vurderinga av om du har fått for mykje eller for lite i barnetillegg. ",
+                    bokmal { + "Inntekt i perioder før innvilgelse av uføretrygd og etter at uføretrygden opphørte, skal ikke være med i vurderingen om du har fått for mye eller for lite i barnetillegg. " },
+                    nynorsk { + "Inntekt i periodar før du fekk innvilga uføretrygd og etter at uføretrygda tok slutt, skal ikkje vere med i vurderinga av om du har fått for mykje eller for lite i barnetillegg. " },
                 )
 
                 //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = true) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb())) {
                     text(
-                        Bokmal to "Dersom du mottar barnetillegg for barn som bor sammen med begge sine foreldre, vil vi også holde slik inntekt utenfor inntekt som er oppgitt for annen forelder. ",
-                        Nynorsk to "Dersom du får barnetillegg for barn som bur saman med begge foreldra sine, held vi også slik inntekt utanfor inntekta som er oppgitt for den andre forelderen. ",
+                        bokmal { + "Dersom du mottar barnetillegg for barn som bor sammen med begge sine foreldre, vil vi også holde slik inntekt utenfor inntekt som er oppgitt for annen forelder. " },
+                        nynorsk { + "Dersom du får barnetillegg for barn som bur saman med begge foreldra sine, held vi også slik inntekt utanfor inntekta som er oppgitt for den andre forelderen. " },
                     )
                 }
             }
@@ -490,28 +488,28 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
             paragraph {
                 text(
-                    Bokmal to "Vi kan se bort fra næringsinntekt ",
-                    Nynorsk to "Vi kan sjå bort frå næringsinntekt ",
+                    bokmal { + "Vi kan se bort fra næringsinntekt " },
+                    nynorsk { + "Vi kan sjå bort frå næringsinntekt " },
                 )
 
                 //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = true) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb())) {
                     text(
-                        Bokmal to "til deg eller annen forelder ",
-                        Nynorsk to "til deg eller den andre forelderen ",
+                        bokmal { + "til deg eller annen forelder " },
+                        nynorsk { + "til deg eller den andre forelderen " },
                     )
                 }
                 text(
-                    Bokmal to "fra en næringsvirksomhet som ble avsluttet før innvilgelse av uføretrygd, eller pensjon fra utland i perioden før uføretrygden ble innvilget eller at den opphørte.",
-                    Nynorsk to "frå ei næringsverksemd som blei avslutta før uføretrygda blei innvilga, eller pensjon frå utlandet i perioden før uføretrygda blei innvilga, eller etter at ho tok slutt.",
+                    bokmal { + "fra en næringsvirksomhet som ble avsluttet før innvilgelse av uføretrygd, eller pensjon fra utland i perioden før uføretrygden ble innvilget eller at den opphørte." },
+                    nynorsk { + "frå ei næringsverksemd som blei avslutta før uføretrygda blei innvilga, eller pensjon frå utlandet i perioden før uføretrygda blei innvilga, eller etter at ho tok slutt." },
                 )
             }
         }
 
         paragraph {
             text(
-                Bokmal to "Hvis vi mottar dokumentasjon fra deg som har betydning for etteroppgjøret, vil vi gjøre et nytt etteroppgjør og du får et nytt brev. Vi vil også gjøre et nytt etteroppgjør dersom Skatteetaten endrer fastsetting av skatten din og det har betydning for uføretrygden din. ",
-                Nynorsk to "Dersom vi får dokumentasjon frå deg som har noko å seie for etteroppgjeret, gjer vi eit nytt etteroppgjer og du får eit nytt brev. Vi gjer også eit nytt etteroppgjer dersom Skatteetaten endrar på fastsettinga av skatten din, og det har betydning for uføretrygda di. ",
+                bokmal { + "Hvis vi mottar dokumentasjon fra deg som har betydning for etteroppgjøret, vil vi gjøre et nytt etteroppgjør og du får et nytt brev. Vi vil også gjøre et nytt etteroppgjør dersom Skatteetaten endrer fastsetting av skatten din og det har betydning for uføretrygden din. " },
+                nynorsk { + "Dersom vi får dokumentasjon frå deg som har noko å seie for etteroppgjeret, gjer vi eit nytt etteroppgjer og du får eit nytt brev. Vi gjer også eit nytt etteroppgjer dersom Skatteetaten endrar på fastsettinga av skatten din, og det har betydning for uføretrygda di. " },
             )
         }
     }

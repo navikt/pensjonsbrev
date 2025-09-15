@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -27,14 +27,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
-        @DisplayText("Slutthandling medfører: Økning i pensjonen")
-        val oekningIPensjonen: Boolean,
-        @DisplayText("Slutthandling medfører: Reduksjon i pensjonen")
-        val reduksjonIPensjonen: Boolean,
-        @DisplayText("Hvis supplerende stønad")
-        val supplerendeStoenad: Boolean,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -47,6 +39,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val erEOSLand: Boolean,  // v1.Land
         val erMellombehandling: Boolean,  // v3.Krav
         val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav
+        val beloepEndring: BeloepEndring?,
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
         val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
         val inngangOgEksportVurdering: InngangOgEksportVurdering?,
@@ -90,6 +83,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
     // v1.VedtaksresultatUtland
     data class VedtaksresultatUtland(
         val antallLandVilkarsprovd: Int,
-        val landNavn: String?,  // Ett eller flere land som sendes i en string, komma separert
+        val landNavn: List<String>,
     )
 }

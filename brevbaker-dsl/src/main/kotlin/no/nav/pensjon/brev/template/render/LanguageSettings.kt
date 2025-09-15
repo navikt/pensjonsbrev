@@ -9,7 +9,7 @@ object LanguageSetting {
         const val navn = "navnprefix"
         const val gjelderNavn = "gjeldernavnprefix"
         const val vedleggGjelderNavn = "vedlegggjeldernavnprefix"
-        const val vergenavn = "vergenavnprefix"
+        const val annenMottaker = "annenmottakerprefix"
         const val saksnummer = "saksnummerprefix"
         const val foedselsnummer = "foedselsnummerprefix"
     }
@@ -35,11 +35,11 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting(LanguageSetting.Sakspart.vergenavn) {
+    setting(LanguageSetting.Sakspart.annenMottaker) {
         Literal.create(
-            Bokmal to "Verge:",
-            Nynorsk to "Verje:",
-            English to "Guardian:",
+            Bokmal to "Mottaker:",
+            Nynorsk to "Mottakar:",
+            English to "Recipient:",
         )
     }
 

@@ -14,7 +14,6 @@ data class UnleashToggle(val name: String) {
 }
 
 object Features {
-    val brevbakerbrev = UnleashToggle("brevbakerbrev")
     val attestant = UnleashToggle("attestant")
 
     private var unleash: Unleash? = null

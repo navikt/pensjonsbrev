@@ -17,7 +17,15 @@ class Cache<K : Any, V : Any>(private val ttl: Duration = 10.minutes) {
     suspend fun getValue(key: K, fetch: suspend (K) -> V?): V? {
         tryClearExpired()
 
-        return cache[key]?.takeIf { it.invalidAt.hasNotPassedNow() }?.value
+        return cache[key]
+            ?.takeIf { it.invalidAt.hasNotPassedNow() }
+            ?.value
+            ?.takeIf {
+                when (it) {
+                    is Expirable -> it.isValid()
+                    else -> true
+                }
+            }
             ?: fetch(key)?.also { cache[key] = Value(timesource.markNow() + ttl, it) }
     }
 
@@ -36,4 +44,8 @@ class Cache<K : Any, V : Any>(private val ttl: Duration = 10.minutes) {
             }
         }
     }
+}
+
+interface Expirable {
+    fun isValid(): Boolean
 }

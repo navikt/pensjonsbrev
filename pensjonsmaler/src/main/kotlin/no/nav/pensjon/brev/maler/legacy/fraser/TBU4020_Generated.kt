@@ -16,29 +16,29 @@ data class TBU4020_Generated(
 		//[TBU4020_NN, TBU4020]
 
 		paragraph {
-			textExpr (
-				Bokmal to "Du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " kroner i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format() + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " kroner for ",
-				Nynorsk to "Du skulle ha fått ".expr() + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " kroner i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format() + " kroner. Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " kroner for ",
+			text (
+				bokmal { + "Du skulle ha fått " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fikk imidlertid " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format() + ". Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for " },
+				nynorsk { + "Du skulle ha fått " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloput().format() + " i uføretrygd i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". Du fekk derimot " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloput().format() + ". Du har derfor fått " + pe.ut_avviksbelopututenminus().format() + " for " },
 			)
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT < 0) THEN      INCLUDE ENDIF
 			showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().lessThan(0))){
 				text (
-					Bokmal to "mye",
-					Nynorsk to "mykje",
+					bokmal { + "mye" },
+					nynorsk { + "mykje" },
 				)
 			}
 
 			//IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT > 0) THEN      INCLUDE ENDIF
 			showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().greaterThan(0))){
 				text (
-					Bokmal to "lite",
-					Nynorsk to "lite",
+					bokmal { + "lite" },
+					nynorsk { + "lite" },
 				)
 			}
 			text (
-				Bokmal to " i uføretrygd.",
-				Nynorsk to " i uføretrygd.",
+				bokmal { + " i uføretrygd." },
+				nynorsk { + " i uføretrygd." },
 			)
 		}
     }

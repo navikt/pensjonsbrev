@@ -10,9 +10,9 @@ object TBU3800_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         title1 {
             text(
-                Bokmal to "Slik påvirker inntekt barnetillegget ditt ",
-                Nynorsk to "Slik verkar inntekt inn på barnetillegget ditt",
-                English to "Income will affect your child supplement",
+                bokmal { + "Slik påvirker inntekt barnetillegget ditt " },
+                nynorsk { + "Slik verkar inntekt inn på barnetillegget ditt" },
+                english { + "Income will affect your child supplement" },
             )
         }
     }

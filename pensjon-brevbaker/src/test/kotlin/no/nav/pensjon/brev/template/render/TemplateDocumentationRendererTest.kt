@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.outlineTestTemplate
-import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.pensjonOgUfoereProductionTemplates
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.ContentOrControlStructure.Conditional
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.ContentOrControlStructure.Content
@@ -27,7 +26,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun canRenderDocumentationForAllTemplates() {
-        (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler()).forEach {
+        (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler()).forEach {
             TemplateDocumentationRenderer.render(
                 it.template,
                 it.template.language.all().first(),
@@ -38,7 +37,7 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun flattenAndMergeTextExpr() {
-        val fourPlusThree = Kroner(4).expr().plus(Kroner(3).expr()).format()
+        val fourPlusThree = Kroner(4).expr().plus(Kroner(3).expr()).format(false)
         val expr = "hei hvordan ".expr() + "går det? 4 + 3 = " + fourPlusThree + " QED"
 
         val flattened = expr.flattenLiteralConcat()
@@ -51,13 +50,13 @@ class TemplateDocumentationRendererTest {
         val templ = outlineTestTemplate<Unit> {
             paragraph {
                 showIf(true.expr()) {
-                    text(Bokmal to "første")
+                    text(bokmal { +"første" })
                 }.orShowIf(false.expr()) {
-                    text(Bokmal to "andre")
+                    text(bokmal { +"andre" })
                 }.orShowIf(1.expr().greaterThan(2.expr())) {
-                    text(Bokmal to "tredje")
+                    text(bokmal { +"tredje" })
                 } orShow {
-                    text(Bokmal to "else")
+                    text(bokmal { +"else" })
                 }
             }
         }
@@ -95,16 +94,16 @@ class TemplateDocumentationRendererTest {
         val templ = outlineTestTemplate<Unit> {
             paragraph {
                 showIf(true.expr()) {
-                    text(Bokmal to "første")
+                    text(bokmal { +"første" })
                 } orShow {
                     showIf(false.expr()) {
-                        text(Bokmal to "andre")
+                        text(bokmal { +"andre" })
                     }.orShow {
-                        text(Bokmal to "ekstra")
+                        text(bokmal { +"ekstra" })
                         showIf(1.expr().greaterThan(2.expr())) {
-                            text(Bokmal to "tredje")
+                            text(bokmal { +"tredje" })
                         } orShow {
-                            text(Bokmal to "else")
+                            text(bokmal { +"else" })
                         }
                     }
                 }
@@ -147,7 +146,7 @@ class TemplateDocumentationRendererTest {
     fun `collection isEmpty expr blir forenklet`() {
         val templ = outlineTestTemplate<Unit> {
             paragraph {
-                textExpr(Bokmal to emptyList<String>().expr().isEmpty().format(BooleanFormatter))
+                text(bokmal { +emptyList<String>().expr().isEmpty().format(BooleanFormatter) })
             }
         }
         val expected = Content(

@@ -51,10 +51,11 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
         LetterMarkupImpl(
-            title = renderText(scope, template.title).joinToString(separator = "") { it.text },
+            title = renderText(scope, template.title),
             sakspart = SakspartImpl(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
-                gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
+                gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer,
+                annenMottakerNavn = scope.felles.annenMottakerNavn,
                 vergeNavn = scope.felles.vergeNavn,
                 saksnummer = scope.felles.saksnummer,
                 dokumentDato = scope.felles.dokumentDato,
@@ -138,7 +139,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         renderRows(scope, table.rows).takeIf { it.isNotEmpty() }?.let { rows ->
             ParagraphContentImpl.TableImpl(
                 id = table.stableHashCode(),
-                rows = renderRows(scope, table.rows),
+                rows = rows,
                 header = renderHeader(scope, table.header),
             )
         }

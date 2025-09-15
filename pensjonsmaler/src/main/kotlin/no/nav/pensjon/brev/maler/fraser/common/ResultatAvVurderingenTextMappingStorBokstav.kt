@@ -16,33 +16,33 @@ data class ResultatAvVurderingenTextMappingStorBokstav(
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(resultatAvVurderingen.isOneOf(TilbakekrevingResultat.FULL_TILBAKEKREV)) {
             text(
-                Bokmal to "Full tilbakekreving",
-                Nynorsk to "Full tilbakekrevjing",
-                English to "Full repayment"
+                bokmal { + "Full tilbakekreving" },
+                nynorsk { + "Full tilbakekrevjing" },
+                english { + "Full repayment" }
             )
         }.orShowIf(resultatAvVurderingen.isOneOf(TilbakekrevingResultat.DELVIS_TILBAKEKREV)) {
             text(
-                Bokmal to "Delvis tilbakekreving",
-                Nynorsk to "Delvis tilbakekrevjing",
-                English to "Part repayment"
+                bokmal { + "Delvis tilbakekreving" },
+                nynorsk { + "Delvis tilbakekrevjing" },
+                english { + "Part repayment" }
             )
         }.orShowIf(resultatAvVurderingen.isOneOf(TilbakekrevingResultat.INGEN_TILBAKEKREV)) {
             text(
-                Bokmal to "Ingen tilbakekreving",
-                Nynorsk to "Ingen tilbakekrevjing",
-                English to "No repayment"
+                bokmal { + "Ingen tilbakekreving" },
+                nynorsk { + "Ingen tilbakekrevjing" },
+                english { + "No repayment" }
             )
         }.orShowIf(resultatAvVurderingen.isOneOf(TilbakekrevingResultat.FORELDET)) {
             text(
-                Bokmal to "Foreldet",
-                Nynorsk to "Foreldet",
-                English to "Outdated"
+                bokmal { + "Foreldet" },
+                nynorsk { + "Foreldet" },
+                english { + "Outdated" }
             )
         }.orShowIf(resultatAvVurderingen.isOneOf(TilbakekrevingResultat.FEILREGISTRERT)) {
             text(
-                Bokmal to "Feil registrert",
-                Nynorsk to "Feil registrert",
-                English to "Incorrectly registered"
+                bokmal { + "Feil registrert" },
+                nynorsk { + "Feil registrert" },
+                english { + "Incorrectly registered" }
             )
         }
     }

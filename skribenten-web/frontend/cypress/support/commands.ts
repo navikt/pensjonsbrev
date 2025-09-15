@@ -45,7 +45,7 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/internal/userInfo", (req) =>
     req.reply({ id: "Z990297", navn: "F_Z990297 E_Z990297", rolle: "Saksbehandler" }),
   ).as("userInfo");
-  cy.intercept("POST", "bff/internal/logg", (req) => req.reply(200));
+  cy.intercept("POST", "/bff/internal/logg", (req) => req.reply(200));
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/pdf", { fixture: "helloWorldPdf.txt" }).as("pdf");
   cy.intercept("GET", "/bff/skribenten-backend/brevmal/*/modelSpecification", (req) =>
     req.reply({ types: {}, letterModelTypeName: null }),

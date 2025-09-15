@@ -20,7 +20,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
     fun build(): Edit.Letter =
         edited.copy(
-            title = rendered.title,
+            title = mergeTitle(edited.title, rendered.title),
             sakspart = rendered.sakspart,
             signatur = rendered.signatur,
             blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues),
@@ -71,7 +71,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                     // The currentEdited element is present in the fresh render.
 
                     // We add any new elements from the fresh render that precedes currentEdited in the fresh render.
-                    (0 until renderedIndex).forEach { add(remainingRendered.removeFirst()) }
+                    repeat((0 until renderedIndex).count()) { add(remainingRendered.removeFirst()) }
 
                     // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
                     if (currentEdited.isEdited()) {
@@ -82,7 +82,6 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    // TODO: dette elementet er ikke lenger med i rendring, vurdere om vi skal annotere det på et vis eller noe (slik at det kan vises til saksbehandler).
                     add(updateVariables(currentEdited))
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
@@ -93,6 +92,12 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         }
         addAll(remainingRendered)
     }
+
+    private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
+        edited.copy(
+            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
+            deletedContent = edited.deletedContent.filter { id -> rendered.text.any { it.id == id } }.toSet()
+        )
 
     private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
         when (edited) {

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -38,36 +39,9 @@ data class EndringAvAlderspensjonSivilstandDto(
         // Alders-og sykehjem eller EPS på annen institusjon:
         val institusjonsopphold: Boolean,
 
-        // Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå:
-        @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
-        val epsIkkeFylt62Aar: Boolean,
-        @DisplayText("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon")
-        val epsIkkeRettTilFullAlderspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS gir avkall på egen alderspensjon")
-        val epsAvkallPaaEgenAlderspenspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS git avkall på egen uføretrygd")
-        val epsAvkallPaaEgenUfoeretrygd: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS har inntekt over 1 G")
-        val epsHarInntektOver1G: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS har rett til full alderspensjon")
-        val epsHarRettTilFullAlderspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS tar ut alderspensjon")
-        val epsTarUtAlderspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS tar ut AFP i statlig sektor")
-        val epsTarUtAlderspensjonIStatligSektor: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS tar ut uføretrygd")
-        val epsTarUtUfoeretrygd: Boolean,
-
         // Betydning for pensjons utbetaling?
-        @DisplayText("Betydning får omregulering for pensjon? Ingen")
-        val ingenBetydning: Boolean,
-        @DisplayText("Betydning får omregulering for pensjon? Pensjonen øker")
-        val pensjonenOeker: Boolean,
-        @DisplayText("Betydning får omregulering for pensjon? Pensjonen blir redusert")
-        val pensjonenRedusert: Boolean,
-
-        @DisplayText("Informasjon om årlig kontroll til 67 år")
-        val aarligKontrollEPS: Boolean,
+        @DisplayText("Er beløpet endret?")
+        val beloepEndring: BeloepEndring,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
         @DisplayText("Hvis endring i pensjonen")
@@ -83,7 +57,6 @@ data class EndringAvAlderspensjonSivilstandDto(
         val kravAarsak: KravArsakType,  //v3.Krav
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
-        val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
@@ -110,8 +83,6 @@ data class EndringAvAlderspensjonSivilstandDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val garantitillegg: Kroner?,  //beregnetPensjonPerManedVedVirk <- v1.ALderspensjon
-        val grunnbelop: Kroner,  // beregnetPensjonPerManedVedVirk
         val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
         val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
     )

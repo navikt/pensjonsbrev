@@ -1,4 +1,4 @@
-name: "Build and release pensjon-brevbaker-api-model"
+name: "Build and release brevbaker-api-models"
 on:
   workflow_dispatch:
   pull_request:
@@ -6,6 +6,8 @@ on:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
+      - "alder-brevbaker-api-model/**"
+      - "ufoere-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
       - ".github/workflows/brevbaker-api-model.yaml"
   push:
@@ -13,6 +15,8 @@ on:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
+      - "alder-brevbaker-api-model/**"
+      - "ufoere-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
       - ".github/workflows/brevbaker-api-model.yaml"
 env:
@@ -26,8 +30,10 @@ jobs:
     outputs:
       common: ${{ steps.changes.outputs.common }}
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
+      aldersbrev: ${{ steps.changes.outputs.aldersbrev }}
+      ufoerebrev: ${{ steps.changes.outputs.ufoerebrev }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
@@ -38,6 +44,10 @@ jobs:
               - 'brevbaker-api-model-common/**'
             pensjonsbrev:
               - 'pensjon-brevbaker-api-model/**'
+            aldersbrev:
+              - 'alder-brevbaker-api-model/**'
+            ufoerebrev:
+              - 'ufoere-brevbaker-api-model/**'
   "release-common":
     name: "brevbaker-api-model-common"
     runs-on: "ubuntu-latest"
@@ -45,12 +55,12 @@ jobs:
       packages: write
     needs: [ changes ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: gradle/actions/wrapper-validation@v4
       - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
@@ -75,12 +85,12 @@ jobs:
     needs: [ release-common, changes ]
     if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped' || github.event_name == 'workflow_dispatch') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: gradle/actions/wrapper-validation@v4
       - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
@@ -98,5 +108,73 @@ jobs:
       - name: "Release maven manually"
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
         run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :pensjon-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  "release-alder":
+    name: "alder-brevbaker-api-model"
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    needs: [ release-common, changes ]
+    if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-java@v5
+        with:
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
+      - name: "compile and run tests"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal  
+          ./gradlew :alder-brevbaker-api-model:build
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven artifact"
+        if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.aldersbrev == 'true' }}
+        run: "./gradlew :alder-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven manually"
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :alder-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  "release-ufoere":
+    name: "ufoere-brevbaker-api-model"
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    needs: [ release-common, changes ]
+    if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-java@v5
+        with:
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
+      - name: "compile and run tests"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal  
+          ./gradlew :ufoere-brevbaker-api-model:build
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven artifact"
+        if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.ufoerebrev == 'true' }}
+        run: "./gradlew :ufoere-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven manually"
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :ufoere-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

@@ -303,6 +303,21 @@ function RedigerBrev({
   return (
     <FormProvider {...form}>
       <form
+        css={css`
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          align-self: center;
+
+          @media (width <= 1023px) {
+            align-self: start;
+          }
+          min-width: 946px;
+          max-width: 1106px;
+          background: var(--a-white);
+          border-left: 1px solid var(--a-gray-200);
+          border-right: 1px solid var(--a-gray-200);
+        `}
         onSubmit={form.handleSubmit((v) =>
           onSubmit(v, () =>
             navigate({
@@ -324,87 +339,79 @@ function RedigerBrev({
         )}
         <div
           css={css`
-            background: var(--a-white);
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid var(--a-gray-200);
-            border-right: 1px solid var(--a-gray-200);
+            display: grid;
+            grid-template-columns: minmax(304px, 384px) minmax(640px, 720px);
+
+            > :first-of-type {
+              padding: var(--a-spacing-6);
+              border-right: 1px solid var(--a-gray-200);
+              height: var(--main-page-content-height);
+              overflow-y: auto;
+            }
+
+            @media (width <= 1024px) {
+              > :first-of-type {
+                padding: var(--a-spacing-3);
+              }
+            }
           `}
         >
-          <div
-            css={css`
-              display: grid;
-              grid-template-columns: 25% 75%;
+          <VStack gap="3">
+            <Heading size="small" spacing>
+              {brevmal.data?.name}
+            </Heading>
+            <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+            <UnderskriftTextField of="Saksbehandler" />
+          </VStack>
+          <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+        </div>
+        <HStack
+          css={css`
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--a-white);
 
-              > :first-of-type {
-                padding: var(--a-spacing-6);
-                border-right: 1px solid var(--a-gray-200);
+            border-top: 1px solid var(--a-gray-200);
+            padding: 0.5rem 1rem;
+          `}
+          justify={"space-between"}
+        >
+          <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
+            <HStack align={"center"} gap="1">
+              <ArrowCirclepathIcon
+                css={css`
+                  transform: scaleX(-1);
+                `}
+                fontSize="1.5rem"
+                title="Tilbakestill mal"
+              />
+              Tilbakestill malen
+            </HStack>
+          </Button>
+          <HStack gap="2" justify={"end"}>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevvelger",
+                  params: { saksId: saksId },
+                  search: (s) => ({ ...s, brevId: brev.info.id }),
+                })
               }
-
-              @media (width <= 1024px) {
-                > :first-of-type {
-                  padding: var(--a-spacing-3);
-                }
-              }
-            `}
-          >
-            <VStack gap="3">
-              <Heading size="small" spacing>
-                {brevmal.data?.name}
-              </Heading>
-              <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
-              <UnderskriftTextField of="Saksbehandler" />
-            </VStack>
-            <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
-          </div>
-          <HStack
-            css={css`
-              position: sticky;
-              bottom: 0;
-              left: 0;
-              width: 100%;
-              background: var(--a-white);
-
-              border-top: 1px solid var(--a-gray-200);
-              padding: 0.5rem 1rem;
-            `}
-            justify={"space-between"}
-          >
-            <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-              <HStack align={"center"} gap="1">
-                <ArrowCirclepathIcon
-                  css={css`
-                    transform: scaleX(-1);
-                  `}
-                  fontSize="1.5rem"
-                  title="Tilbakestill mal"
-                />
-                Tilbakestill malen
+              size="small"
+              type="button"
+              variant="tertiary"
+            >
+              Tilbake til brevvelger
+            </Button>
+            <Button loading={oppdaterBrevMutation.isPending} size="small">
+              <HStack align={"center"} gap="2">
+                <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
               </HStack>
             </Button>
-            <HStack gap="2" justify={"end"}>
-              <Button
-                onClick={() =>
-                  navigate({
-                    to: "/saksnummer/$saksId/brevvelger",
-                    params: { saksId: saksId },
-                    search: (s) => ({ ...s, brevId: brev.info.id }),
-                  })
-                }
-                size="small"
-                type="button"
-                variant="tertiary"
-              >
-                Tilbake til brevvelger
-              </Button>
-              <Button loading={oppdaterBrevMutation.isPending} size="small">
-                <HStack align={"center"} gap="2">
-                  <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
-                </HStack>
-              </Button>
-            </HStack>
           </HStack>
-        </div>
+        </HStack>
       </form>
     </FormProvider>
   );
@@ -420,11 +427,12 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
   const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
-  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredfields : [];
+  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 
   const panelStyle = css`
+    /* stylelint-disable-next-line nesting-selector-no-missing-scoping-root */
     &[data-state="active"] {
       display: flex;
     }

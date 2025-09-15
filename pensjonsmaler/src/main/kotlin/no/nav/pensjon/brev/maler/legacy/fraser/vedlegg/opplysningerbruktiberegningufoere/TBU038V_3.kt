@@ -34,7 +34,6 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
@@ -47,10 +46,10 @@ data class TBU038V_3(
             //IF(  PE_UT_Avdod() = true AND  (PE_pebrevkode <> "PE_UT_05_100"  AND PE_pebrevkode <> "PE_UT_07_100" AND PE_pebrevkode <> "PE_UT_14_300"  AND PE_pebrevkode <> "PE_UT_04_300"  AND PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_06_300"  AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod")) AND PE_UT_InntektslandTrueHvorBruktLikFalse_Avdod())  ) THEN      INCLUDE ENDIF
             showIf((pe.ut_avdod() and (pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) and pe.ut_inntektslandtruehvorbruktlikfalse_avdod()))){
                 paragraph {
-                    textExpr (
-                        Bokmal to "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra ".expr() + virkFom.format(),
-                        Nynorsk to "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå ".expr() + virkFom.format(),
-                        English to "Income on which to calculate the disability benefit for the decedent of ".expr() + virkFom.format(),
+                    text (
+                        bokmal { + "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra " + virkFom.format() },
+                        nynorsk { + "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå " + virkFom.format() },
+                        english { + "Income on which to calculate the disability benefit for the decedent of " + virkFom.format() },
                         BOLD
                     )
                 }
@@ -59,37 +58,37 @@ data class TBU038V_3(
                     table(header = {
                         column {
                             text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                                English to "Year",
+                                bokmal { + "År" },
+                                nynorsk { + "År" },
+                                english { + "Year" },
                             )
                         }
                         column{
                             text (
-                                Bokmal to "Inntekt i utlandet",
-                                Nynorsk to "Inntekt i utlandet",
-                                English to "Income from abroad",
+                                bokmal { + "Inntekt i utlandet" },
+                                nynorsk { + "Inntekt i utlandet" },
+                                english { + "Income from abroad" },
                             )
                         }
                         column {
                             text (
-                                Bokmal to "Pensjonsgivende inntekt",
-                                Nynorsk to "Pensjonsgivande inntekt",
-                                English to "Pensionable income",
+                                bokmal { + "Pensjonsgivende inntekt" },
+                                nynorsk { + "Pensjonsgivande inntekt" },
+                                english { + "Pensionable income" },
                             )
                         }
                         column {
                             text (
-                                Bokmal to "Inntekt brukt i beregningen",
-                                Nynorsk to "Inntekt brukt i berekninga",
-                                English to "Income applied in the calculation",
+                                bokmal { + "Inntekt brukt i beregningen" },
+                                nynorsk { + "Inntekt brukt i berekninga" },
+                                english { + "Income applied in the calculation" },
                             )
                         }
                         column {
                             text(
-                                Bokmal to "Merknad",
-                                Nynorsk to "Merknad",
-                                English to "Comments",
+                                bokmal { + "Merknad" },
+                                nynorsk { + "Merknad" },
+                                english { + "Comments" },
                             )
                         }
                     }){
@@ -98,17 +97,17 @@ data class TBU038V_3(
                                 //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Brukt,SYS_TableRow) = false) THEN      INCLUDE ENDIF
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            Nynorsk to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            English to opptjeningUt.ar_safe.ifNull(0).format(),
+                                        text(
+                                            bokmal { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            nynorsk { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            english { + opptjeningUt.ar_safe.ifNull(0).format() },
                                             BOLD,
                                         )
                                     }.orShow {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            Nynorsk to opptjeningUt.ar_safe.ifNull(0).format(),
-                                            English to opptjeningUt.ar_safe.ifNull(0).format(),
+                                        text(
+                                            bokmal { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            nynorsk { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            english { + opptjeningUt.ar_safe.ifNull(0).format() },
                                         )
                                     }
                                 }
@@ -120,49 +119,49 @@ data class TBU038V_3(
                                     }
                                 }
                                 cell {
-                                    textExpr(
-                                        Bokmal to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format() + " kr",
-                                        Nynorsk to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format() + " kr",
-                                        English to opptjeningUt.pgi_safe.ifNull(Kroner(0)).format() + " NOK",
+                                    text(
+                                        bokmal { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                        nynorsk { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                        english { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " NOK" },
                                     )
                                 }
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format() + " kr",
-                                            Nynorsk to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format() + " kr",
-                                            English to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format() + " NOK",
+                                        text(
+                                            bokmal { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            english { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " NOK" },
                                             BOLD,
                                         )
                                     }.orShow {
-                                        textExpr(
-                                            Bokmal to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format() + " kr",
-                                            Nynorsk to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format() + " kr",
-                                            English to opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format() + " NOK",
+                                        text(
+                                            bokmal { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            english { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " NOK" },
                                         )
                                     }
                                     text (
-                                        Bokmal to " **",
-                                        Nynorsk to " **",
-                                        English to " **",
+                                        bokmal { + " **" },
+                                        nynorsk { + " **" },
+                                        english { + " **" },
                                     )
                                 }
                                 cell {
                                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,SYS_TableRow) <> 0) THEN      INCLUDE ENDIF
                                     showIf(opptjeningUt.forstegansgstjeneste_safe.ifNull(0).notEqualTo(0)){
                                         text (
-                                            Bokmal to "Førstegangsteneste * ",
-                                            Nynorsk to "Førstegongsteneste * ",
-                                            English to "Initial service * ",
+                                            bokmal { + "Førstegangsteneste * " },
+                                            nynorsk { + "Førstegongsteneste * " },
+                                            english { + "Initial service * " },
                                         )
                                     }
 
                                     //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,SYS_TableRow) = true) THEN      INCLUDE ENDIF
                                     showIf(opptjeningUt.omsorgsaar_safe.ifNull(false)){
                                         text (
-                                            Bokmal to "Omsorgsår *",
-                                            Nynorsk to "Omsorgsår *",
-                                            English to "Care Work *",
+                                            bokmal { + "Omsorgsår *" },
+                                            nynorsk { + "Omsorgsår *" },
+                                            english { + "Care Work *" },
                                         )
                                     }
                                 }

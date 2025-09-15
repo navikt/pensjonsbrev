@@ -9,6 +9,7 @@ data class EndretUTPgaInntektDtoV2 (
     val uforetrygd: Uforetrygd,
     val btfbEndret: Boolean,
     val btsbEndret: Boolean,
+    val gjtEndret: Boolean,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val gjenlevendetillegg: Gjenlevendetillegg?,
@@ -34,7 +35,7 @@ data class EndretUTPgaInntektDtoV2 (
         val nettoPerAr: Int,
         val nettoAkkumulert: Int,
         val nettoRestbelop: Int,
-        val totalNettoInnevarendeAr: Int?,
+        val totalNettoInnevarendeAr: Int,
     )
 
     data class BarnetilleggFellesbarn(
@@ -46,6 +47,8 @@ data class EndretUTPgaInntektDtoV2 (
         val fribelop: Int,
         val inntektstak: Int,
         val antallBarn: Int,
+        val periodisert: Boolean,
+        val totalNettoInnevarendeAr: Int
     )
 
     data class BarnetilleggSaerkullsbarn(
@@ -55,6 +58,8 @@ data class EndretUTPgaInntektDtoV2 (
         val fribelop: Int,
         val inntektstak: Int,
         val antallBarn: Int,
+        val periodisert: Boolean,
+        val totalNettoInnevarendeAr: Int
     )
 
     data class Gjenlevendetillegg (

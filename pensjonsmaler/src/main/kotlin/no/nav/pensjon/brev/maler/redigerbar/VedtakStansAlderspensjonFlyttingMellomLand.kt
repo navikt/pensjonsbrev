@@ -46,7 +46,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //MF_000128 / AP_STANS_FLYTT_MAN
@@ -76,10 +75,10 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
         val regelverkType = pesysData.regelverkType
 
         title {
-            textExpr(
-                Bokmal to "Vi stanser alderspensjonen din fra ".expr() + kravVirkDatoFom.format(),
-                Nynorsk to "Vi stansar alderspensjonen din frå ".expr() + kravVirkDatoFom.format(),
-                English to "We are stopping your retirement pension from ".expr() + kravVirkDatoFom.format(),
+            text(
+                bokmal { + "Vi stanser alderspensjonen din fra " + kravVirkDatoFom.format() },
+                nynorsk { + "Vi stansar alderspensjonen din frå " + kravVirkDatoFom.format() },
+                english { + "We are stopping your retirement pension from " + kravVirkDatoFom.format() },
             )
         }
         outline {
@@ -88,15 +87,15 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             // flyttingAPstans
             paragraph {
                 text(
-                    Bokmal to "Vi har fått melding om at du har flyttet til ",
-                    Nynorsk to "Vi har fått melding om at du har flytta til ",
-                    English to "We have received notice that you have moved to "
+                    bokmal { + "Vi har fått melding om at du har flyttet til " },
+                    nynorsk { + "Vi har fått melding om at du har flytta til " },
+                    english { + "We have received notice that you have moved to " }
                 )
                 eval(pesysData.brukersBostedsland.ifNull(fritekst("BOSTEDSLAND")))
                 text(
-                    Bokmal to ".",
-                    Nynorsk to ".",
-                    English to ".",
+                    bokmal { + "." },
+                    nynorsk { + "." },
+                    english { + "." },
                 )
             }
             ifNotNull(
@@ -107,24 +106,24 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     // eksportUngUforStans
                     paragraph {
                         text(
-                            Bokmal to "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
-                                    + "Derfor stanser vi utbetalingen av alderspensjonen din.",
-                            Nynorsk to "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
-                                    + "Derfor stansar vi utbetalinga av alderspensjonen din.",
-                            English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
-                                    + "you have to live in Norway. We are therefore stopping your retirement pension.",
+                            bokmal { + "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
+                                    + "Derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
+                                    + "Derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { + "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
+                                    + "you have to live in Norway. We are therefore stopping your retirement pension." },
                         )
                     }
                 }.orShowIf(eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
                     // eksportFlyktningStans
                     paragraph {
                         text(
-                            Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
-                                    + "Derfor stanser vi utbetalingen av alderspensjonen din.",
-                            Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
-                                    + "Derfor stansar vi utbetalinga av alderspensjonen din.",
-                            English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
-                                    + "We are therefore stopping your retirement pension.",
+                            bokmal { + "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
+                                    + "Derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
+                                    + "Derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { + "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
+                                    + "We are therefore stopping your retirement pension." },
                         )
                     }
                 }
@@ -134,27 +133,27 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     // eksportAP2016Under20aarStans, eksportAP2011Under20aarStans
                     paragraph {
                         text(
-                            Bokmal to "For å få utbetalt alderspensjonen din når du flytter til dette landet må du enten ha vært medlem i folketrygden i minst 20 år",
-                            Nynorsk to "For få utbetalt alderspensjonen din når du flyttar til dette landet må du anten ha vore medlem i folketrygda i minst 20 år",
-                            English to "To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years"
+                            bokmal { + "For å få utbetalt alderspensjonen din når du flytter til dette landet må du enten ha vært medlem i folketrygden i minst 20 år" },
+                            nynorsk { + "For få utbetalt alderspensjonen din når du flyttar til dette landet må du anten ha vore medlem i folketrygda i minst 20 år" },
+                            english { + "To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
                         )
                         showIf(regelverkType.equalTo(AP2016)) {
                             text(
-                                Bokmal to ", ha rett til tilleggspensjon eller ha tjent opp inntektspensjon.",
-                                Nynorsk to ", ha rett til tilleggspensjon eller ha tent opp inntektspensjon. ",
-                                English to ", be entitled to a supplementary pension or have had a pensionable income. "
+                                bokmal { + ", ha rett til tilleggspensjon eller ha tjent opp inntektspensjon." },
+                                nynorsk { + ", ha rett til tilleggspensjon eller ha tent opp inntektspensjon. " },
+                                english { + ", be entitled to a supplementary pension or have had a pensionable income. " }
                             )
                         }.orShow {
                             text(
-                                Bokmal to " eller ha rett til tilleggspensjon. ",
-                                Nynorsk to " eller ha rett til tilleggspensjon. ",
-                                English to " or be entitled to a supplementary pension. "
+                                bokmal { + " eller ha rett til tilleggspensjon. " },
+                                nynorsk { + " eller ha rett til tilleggspensjon. " },
+                                english { + " or be entitled to a supplementary pension. " }
                             )
                         }
                         text(
-                            Bokmal to "Det har du ikke, og derfor stanser vi utbetalingen av alderspensjonen din.",
-                            Nynorsk to "Det har du ikkje, og derfor stansar vi utbetalinga av alderspensjonen din.",
-                            English to "You do not meet any of these requirements, therefore we are stopping your retirement pension."
+                            bokmal { + "Det har du ikke, og derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + "Det har du ikkje, og derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { + "You do not meet any of these requirements, therefore we are stopping your retirement pension." }
                         )
                 }
             }
@@ -162,27 +161,27 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod,
                 paragraph {
                     text(
-                        Bokmal to "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år",
-                        Nynorsk to "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år",
-                        English to "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years"
+                        bokmal { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år" },
+                        nynorsk { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år" },
+                        english { + "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
                     )
                     showIf(regelverkType.equalTo(AP2016)) {
                         text(
-                            Bokmal to ", rett til tilleggspensjon eller ha tjent opp inntektspensjon. ",
-                            Nynorsk to ", rett til tilleggspensjon eller inntektspensjon. ",
-                            English to ", are entitled to a supplementary pension or income-based pension. "
+                            bokmal { + ", rett til tilleggspensjon eller ha tjent opp inntektspensjon. " },
+                            nynorsk { + ", rett til tilleggspensjon eller inntektspensjon. " },
+                            english { + ", are entitled to a supplementary pension or income-based pension. " }
                         )
                     }.orShow {
                         text(
-                            Bokmal to " eller har rett til tilleggspensjon. ",
-                            Nynorsk to " eller har rett til tilleggspensjon. ",
-                            English to " or are entitled to a supplementary pension. "
+                            bokmal { + " eller har rett til tilleggspensjon. " },
+                            nynorsk { + " eller har rett til tilleggspensjon. " },
+                            english { + " or are entitled to a supplementary pension. " }
                         )
                     }
                     text(
-                        Bokmal to "Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din.",
-                        Nynorsk to "Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din.",
-                        English to "Then you are not eligible for your retirement pension when you move to this country. We are therefore stopping your retirement pension."
+                        bokmal { + "Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
+                        nynorsk { + "Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
+                        english { + "Then you are not eligible for your retirement pension when you move to this country. We are therefore stopping your retirement pension." }
                     )
                 }
             }
@@ -191,18 +190,18 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 // flyttingAPGarantipensjonHjemmel
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-10 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-10 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-3, 20-10 and 22-12 of the National Insurance Act.",
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-10 og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-10 og 22-12." },
+                        english { + "This decision was made pursuant to the provisions of §§ 19-3, 20-10 and 22-12 of the National Insurance Act." },
                     )
                 }
             }.orShow {
                 // flyttingAPHjemmel
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-3 and 22-12 of the National Insurance Act.",
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-3 og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-3 og 22-12." },
+                        english { + "This decision was made pursuant to the provisions of §§ 19-3 and 22-12 of the National Insurance Act." },
                     )
                 }
             }
@@ -210,12 +209,12 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             // flytteAPInfo
             paragraph {
                 text(
-                    Bokmal to "Du må selv gi oss beskjed dersom du flytter tilbake til Norge eller til et annet land. "
-                            + "Da vil vi vurdere retten din til alderspensjon på nytt.",
-                    Nynorsk to "Du må sjølv gi oss beskjed dersom du flyttar tilbake til Noreg eller til eit anna land. "
-                            + "Da vil vi vurdere retten din til alderspensjon på nytt.",
-                    English to "You must give us notice if you move back to Norway or to another country. "
-                            + "We will then review your right to retirement pension.",
+                    bokmal { + "Du må selv gi oss beskjed dersom du flytter tilbake til Norge eller til et annet land. "
+                            + "Da vil vi vurdere retten din til alderspensjon på nytt." },
+                    nynorsk { + "Du må sjølv gi oss beskjed dersom du flyttar tilbake til Noreg eller til eit anna land. "
+                            + "Da vil vi vurdere retten din til alderspensjon på nytt." },
+                    english { + "You must give us notice if you move back to Norway or to another country. "
+                            + "We will then review your right to retirement pension." },
                 )
             }
 
@@ -224,9 +223,9 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             // skattAPstans
             title1 {
                 text(
-                    Bokmal to "Stans av alderspensjon kan ha betydning for skatten",
-                    Nynorsk to "Stans av alderspensjon kan ha betyding for skatt",
-                    English to "Stoppage of retirement pension may affect how much tax you pay",
+                    bokmal { + "Stans av alderspensjon kan ha betydning for skatten" },
+                    nynorsk { + "Stans av alderspensjon kan ha betyding for skatt" },
+                    english { + "Stoppage of retirement pension may affect how much tax you pay" },
                 )
             }
             includePhrase(Skatteplikt)

@@ -30,63 +30,63 @@ object Ufoeretrygd {
                 val kroner = perMaaned.format()
                 showIf(ufoeretrygd) {
                     showIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i uføretrygd per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i uføretrygd per månad før skatt." },
+                            english { + "Your monthly disability benefit payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and not(gjenlevende) and not(ektefelle)) {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i uføretrygd og barnetillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i uføretrygd og barnetillegg per månad før skatt." },
+                            english { + "Your monthly disability benefit and child supplement payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and gjenlevende) {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og attlevandetillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i uføretrygd og gjenlevendetillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i uføretrygd og attlevandetillegg per månad før skatt." },
+                            english { + "Your monthly disability benefit and survivor's supplement payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i uføretrygd, barne- og ektefelletillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i uføretrygd, barne- og ektefelletillegg per månad før skatt." },
+                            english { + "Your monthly disability benefit, child supplement and survivor's supplement payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf(not(fellesbarn) and not(saerkullsbarn) and ektefelle and not(gjenlevende)) {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit and spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i uføretrygd og ektefelletillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i uføretrygd og ektefelletillegg per månad før skatt." },
+                            english { + "Your monthly disability benefit and spouse supplement payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and not(ektefelle) and gjenlevende) {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.".expr(),
-                            English to "Your monthly disability benefit, child supplement and spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i uføretrygd, barne- og attlevandetillegg per månad før skatt." },
+                            english { + "Your monthly disability benefit, child supplement and spouse supplement payment will be " + kroner + " before tax." }
                         )
                     }
                 }.orShow {
                     showIf((fellesbarn or saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
                         // TBU4082
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i barnetillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i barnetillegg per månad før skatt.".expr(),
-                            English to "Your monthly child supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i barnetillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i barnetillegg per månad før skatt." },
+                            english { + "Your monthly child supplement payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf((fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
                         // TBU4083
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i barne- og ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i barne- og ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly child supplement and spouse supplement  payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i barne- og ektefelletillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i barne- og ektefelletillegg per månad før skatt." },
+                            english { + "Your monthly child supplement and spouse supplement  payment will be " + kroner + " before tax." }
                         )
                     }.orShowIf(not(fellesbarn or saerkullsbarn) and not(gjenlevende) and (ektefelle)) {
                         // TBU4084
-                        textExpr(
-                            Bokmal to "Du får ".expr() + kroner + " kroner i ektefelletillegg per måned før skatt.".expr(),
-                            Nynorsk to "Du får ".expr() + kroner + " kroner i ektefelletillegg per månad før skatt.".expr(),
-                            English to "Your monthly spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                        text(
+                            bokmal { + "Du får " + kroner + " i ektefelletillegg per måned før skatt." },
+                            nynorsk { + "Du får " + kroner + " i ektefelletillegg per månad før skatt." },
+                            english { + "Your monthly spouse supplement payment will be " + kroner + " before tax." }
                         )
                     }
                 }
@@ -100,8 +100,8 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-13 og § 22-12.",
-                    Nynorsk to "Vedtaket har vi gjort etter folketrygdlova § 12-13 og § 22-12.",
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 12-13 og § 22-12." },
+                    nynorsk { + "Vedtaket har vi gjort etter folketrygdlova § 12-13 og § 22-12." },
                 )
             }
     }
@@ -113,9 +113,9 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 text(
-                    Bokmal to "Dette er virkningstidspunktet ditt",
-                    Nynorsk to "Dette er verknadstidspunktet ditt",
-                    English to "This is your effective date",
+                    bokmal { + "Dette er virkningstidspunktet ditt" },
+                    nynorsk { + "Dette er verknadstidspunktet ditt" },
+                    english { + "This is your effective date" },
                 )
             }
     }
@@ -128,9 +128,9 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 val dato = kravVirkningFraOgMed.format()
-                textExpr(
-                    Bokmal to "Uføretrygden din er endret fra ".expr() + dato + ". Dette kaller vi virkningstidspunktet. Du vil derfor få en ny utbetaling fra og med måneden vilkåret er oppfylt.".expr(),
-                    Nynorsk to "Uføretrygda di er endra frå ".expr() + dato + ". Dette kallar vi verknadstidspunktet. Du vil derfor få ny utbetaling frå og med månaden vilkåret er oppfylt.".expr(),
+                text(
+                    bokmal { + "Uføretrygden din er endret fra " + dato + ". Dette kaller vi virkningstidspunktet. Du vil derfor få en ny utbetaling fra og med måneden vilkåret er oppfylt." },
+                    nynorsk { + "Uføretrygda di er endra frå " + dato + ". Dette kallar vi verknadstidspunktet. Du vil derfor få ny utbetaling frå og med månaden vilkåret er oppfylt." },
                 )
             }
     }
@@ -142,22 +142,22 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Sjekk utbetalingene dine",
-                    Nynorsk to "Sjekk utbetalingane dine",
-                    English to "Information about your payments",
+                    bokmal { + "Sjekk utbetalingene dine" },
+                    nynorsk { + "Sjekk utbetalingane dine" },
+                    english { + "Information about your payments" },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
-                            "Du kan se alle utbetalingene du har mottatt på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
+                    bokmal { + "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
+                            "Du kan se alle utbetalingene du har mottatt på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt." },
 
-                    Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
-                            "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
+                    nynorsk { + "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
+                            "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt." },
 
-                    English to "Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
-                            "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here.",
+                    english { + "Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
+                            "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here." },
                 )
             }
         }
@@ -170,9 +170,9 @@ object Ufoeretrygd {
             showIf(faarUtbetaltUfoeretrygd) {
                 paragraph {
                     text(
-                        Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-                        Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
-                        English to "Your disability benefit will still be paid no later than the 20th of every month."
+                        bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                        nynorsk { + "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad." },
+                        english { + "Your disability benefit will still be paid no later than the 20th of every month." }
                     )
                 }
             }
@@ -184,9 +184,9 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
-                    Nynorsk to "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet.",
-                    English to "In this letter we will explain your rights and obligations. Therefore, it is important that you read the whole letter."
+                    bokmal { + "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
+                    nynorsk { + "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
+                    english { + "In this letter we will explain your rights and obligations. Therefore, it is important that you read the whole letter." }
                 )
             }
         }
@@ -197,9 +197,9 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Du må melde fra om eventuell inntekt",
-                    Nynorsk to "Du må melde frå om eventuell inntekt",
-                    English to "Report any income"
+                    bokmal { + "Du må melde fra om eventuell inntekt" },
+                    nynorsk { + "Du må melde frå om eventuell inntekt" },
+                    english { + "Report any income" }
                 )
             }
         }
@@ -209,10 +209,10 @@ object Ufoeretrygd {
     object MeldeFraOmEventuellInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                textExpr(
-                    Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget ".expr() + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din.",
-                    Nynorsk to "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet ".expr() + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di.",
-                    English to "If you are working or are planning to work, you must report any changes in your income. It is important that you report this as soon as possible, so that you receive the correct disability benefit payments. You can register your change in income under the option ".expr() + quoted("uføretrygd") +" at $NAV_URL. You can register how much you expect to earn in the calendar year. You will then be able to see how much disability benefit you will receive in addition to your income."
+                text(
+                    bokmal { + "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
+                    nynorsk { + "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
+                    english { + "If you are working or are planning to work, you must report any changes in your income. It is important that you report this as soon as possible, so that you receive the correct disability benefit payments. You can register your change in income under the option " + quoted("uføretrygd") +" at $NAV_URL. You can register how much you expect to earn in the calendar year. You will then be able to see how much disability benefit you will receive in addition to your income." }
                 )
             }
         }
@@ -222,24 +222,24 @@ object Ufoeretrygd {
     object MeldeFraOmEventuellInntektBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
-                textExpr(
-                    Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. ".expr() +
+                text(
+                    bokmal { + "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. " +
                             "Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd og barnetillegg. " +
                             "Dette kan du gjøre under menyvalget " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL. " +
                             "Her kan du legge inn hvor mye du forventer å tjene i løpet av året. " +
-                            "Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd og barnetillegg.",
+                            "Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd og barnetillegg." },
 
-                    Nynorsk to "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. ".expr() +
+                    nynorsk { + "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. " +
                             "Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd og barnetillegg. " +
                             "Dette kan du gjere under menyvalet " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL. " +
                             "Her kan du leggje inn kor mykje du forventar å tene i løpet av året. " +
-                            "Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd og barnetillegg.",
+                            "Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd og barnetillegg." },
 
-                    English to "If you are working or are planning to work, you must report any changes in your income. ".expr() +
+                    english { + "If you are working or are planning to work, you must report any changes in your income. " +
                             "It is important that you report this as soon as possible, so that you receive the correct disability benefit and child supplement payments. " +
                             "You can register your change in income under the option " + quoted("uføretrygd") +" at $NAV_URL. " +
                             "You can register how much you expect to earn in the calendar year. " +
-                            "You will then be able to see how much disability benefit and child supplement you will receive."
+                            "You will then be able to see how much disability benefit and child supplement you will receive." }
                 )
             }
     }
@@ -249,22 +249,22 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "Du må melde frå om endringar",
-                    English to "You must notify any changes"
+                    bokmal { + "Du må melde fra om endringer" },
+                    nynorsk { + "Du må melde frå om endringar" },
+                    english { + "You must notify any changes" }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ",
-                    English to "You must notify us immediately of any changes in your situation. In the attachment "
+                    bokmal { + "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget " },
+                    nynorsk { + "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget " },
+                    english { + "You must notify us immediately of any changes in your situation. In the attachment " }
                 )
                 namedReference(vedleggDineRettigheterOgPlikterUfoere)
                 text(
-                    Bokmal to " ser du hvilke endringer du må si fra om.",
-                    Nynorsk to " ser du kva endringar du må seie frå om.",
-                    English to " you will see which changes you must report."
+                    bokmal { + " ser du hvilke endringer du må si fra om." },
+                    nynorsk { + " ser du kva endringar du må seie frå om." },
+                    english { + " you will see which changes you must report." }
                 )
             }
         }
@@ -275,16 +275,16 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Skattekort",
-                    Nynorsk to "Skattekort",
-                    English to "Tax card"
+                    bokmal { + "Skattekort" },
+                    nynorsk { + "Skattekort" },
+                    english { + "Tax card" }
                 )
             }
             paragraph {
-                textExpr(
-                    Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til Nav fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. Du bør likevel sjekke at du har riktig skattekort. Skattekortet kan du endre på $SKATTEETATEN_URL. Under menyvalget ".expr() + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL, kan du se hvilket skattetrekk som er registrert hos Nav.",
-                    Nynorsk to "Uføretrygd blir skattlagd som lønsinntekt. Du treng ikkje levere skattekortet ditt til Nav, fordi skatteopplysningane dine blir sende elektronisk frå Skatteetaten. Du bør likevel sjekke at du har rett skattekort. Skattekortet kan du endre på $SKATTEETATEN_URL. Under menyvalet ".expr() + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL, kan du sjå kva skattetrekk som er registrert hos Nav.",
-                    English to "You do not need to submit your tax card to Nav because your tax details are sent electronically from the Norwegian Tax Administration. However, you should check that you have the correct tax card. You may change your tax card under $SKATTEETATEN_URL. You may see your registered income tax rate under the option ".expr() + quoted("uføretrygd") +" at $NAV_URL."
+                text(
+                    bokmal { + "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til Nav fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. Du bør likevel sjekke at du har riktig skattekort. Skattekortet kan du endre på $SKATTEETATEN_URL. Under menyvalget " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL, kan du se hvilket skattetrekk som er registrert hos Nav." },
+                    nynorsk { + "Uføretrygd blir skattlagd som lønsinntekt. Du treng ikkje levere skattekortet ditt til Nav, fordi skatteopplysningane dine blir sende elektronisk frå Skatteetaten. Du bør likevel sjekke at du har rett skattekort. Skattekortet kan du endre på $SKATTEETATEN_URL. Under menyvalet " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL, kan du sjå kva skattetrekk som er registrert hos Nav." },
+                    english { + "You do not need to submit your tax card to Nav because your tax details are sent electronically from the Norwegian Tax Administration. However, you should check that you have the correct tax card. You may change your tax card under $SKATTEETATEN_URL. You may see your registered income tax rate under the option " + quoted("uføretrygd") +" at $NAV_URL." }
                 )
             }
         }
@@ -297,16 +297,16 @@ object Ufoeretrygd {
             showIf(not(brukerBorInorge)) {
                 title1 {
                     text(
-                        Bokmal to "Skatt for deg som bor i utlandet",
-                        Nynorsk to "Skatt for deg som bur i utlandet",
-                        English to "Tax for people who live abroad"
+                        bokmal { + "Skatt for deg som bor i utlandet" },
+                        nynorsk { + "Skatt for deg som bur i utlandet" },
+                        english { + "Tax for people who live abroad" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på $SKATTEETATEN_URL. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor.",
-                        Nynorsk to "Bur du i utlandet og betaler kjeldeskatt, finn du meir informasjon om kjeldeskatt på $SKATTEETATEN_URL. Viss du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur.",
-                        English to "You can find more information about withholding tax to Norway at $SKATTEETATEN_URL. For information about taxation from your country of residence, you can contact the locale tax authorities."
+                        bokmal { + "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på $SKATTEETATEN_URL. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor." },
+                        nynorsk { + "Bur du i utlandet og betaler kjeldeskatt, finn du meir informasjon om kjeldeskatt på $SKATTEETATEN_URL. Viss du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur." },
+                        english { + "You can find more information about withholding tax to Norway at $SKATTEETATEN_URL. For information about taxation from your country of residence, you can contact the locale tax authorities." }
                     )
                 }
             }

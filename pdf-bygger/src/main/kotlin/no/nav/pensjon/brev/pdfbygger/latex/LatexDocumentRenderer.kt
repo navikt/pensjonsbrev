@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -64,7 +63,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", letter.title)
+        appendCmd("Title", renderTextsToString(letter.title))
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -76,7 +75,7 @@ internal object LatexDocumentRenderer {
         appendln("""\documentclass{pensjonsbrev_v4}""", escape = false)
         appendCmd("begin", "document")
         appendCmd("firstpage")
-        appendCmd("tittel", letter.title)
+        appendCmd("tittel", renderTextsToString(letter.title))
         renderBlocks(letter.blocks)
         appendCmd("closing")
         attachments.indices.forEach { id ->
@@ -119,15 +118,16 @@ internal object LatexDocumentRenderer {
     private fun LatexAppendable.sakspartCommands(sakspart: LetterMarkup.Sakspart, language: Language) {
         appendNewCmd("feltdato", sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)))
         appendNewCmd("feltsaksnummer", sakspart.saksnummer)
-        appendNewCmd("feltfoedselsnummerbruker", Foedselsnummer(sakspart.gjelderFoedselsnummer).format())
+        appendNewCmd("feltfoedselsnummerbruker", sakspart.gjelderFoedselsnummer.format())
         appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
-        val verge = sakspart.vergeNavn?.also { appendNewCmd("feltvergenavn", it) }
+        // TODO slett når all bruk er borte
+        val annenMottaker = (sakspart.annenMottakerNavn ?: sakspart.vergeNavn)?.also { appendNewCmd("feltannenmottakernavn", it) }
 
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")
 
-            if (verge != null) {
-                appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
+            if (annenMottaker != null) {
+                appendln("""\felt${LanguageSetting.Sakspart.annenMottaker} & \feltannenmottakernavn \\""", escape = false)
                 appendln("""\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""", escape = false)
             } else {
                 appendln("""\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""", escape = false)

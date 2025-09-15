@@ -4,13 +4,24 @@ object "pensjon-brevbaker" as brevbaker
 brevbaker : dagens applikasjon
 
 object pensjonsmalene #pink
-pensjonsmalene : - ny modul
-pensjonsmalene : - her ligger malene og malkodene
+pensjonsmalene : - her ligger malene og malkodene. \n denne skal bort
+
+object ufoeremalene #pink
+ufoeremalene : - her ligger malene og malkodene
+
+object aldersmalene #pink
+aldersmalene : - her ligger malene og malkodene
 
 object "etterlattemaler" as etterlatte #pink
 
-object "pensjon-brevbaker-api-model" as apimodel #pink
-apimodel : som i dag
+object "pensjon-brevbaker-api-model" as pensjonapimodel #pink
+pensjonapimodel : denne skal bort
+
+object "alder-brevbaker-api-model" as alderapimodel #pink
+alderapimodel : som i dag
+
+object "ufoere-brevbaker-api-model" as ufoereapimodel #pink
+ufoereapimodel : som i dag
 
 object "brevbaker-dsl" as dsl
 dsl : - ny modul
@@ -29,25 +40,35 @@ object "brevbaker-selector-generator" as tmg
 tmg : dagens template-model-generator
 
 object PEN #yellow
-PEN : som i dag
 
 object Skribenten
 Skribenten : som i dag
 
 bibliotek --> dsl
 brevbaker --> pensjonsmalene
+brevbaker --> aldersmalene
+brevbaker --> ufoeremalene
 brevbaker --> etterlatte
-pensjonsmalene --> apimodel
+pensjonsmalene --> pensjonapimodel
+
+aldersmalene --> alderapimodel
+ufoeremalene --> ufoereapimodel
+
 pensjonsmalene -> bibliotek
 etterlatte --> bibliotek
-apimodel --> modelcommon
+pensjonapimodel --> modelcommon
+alderapimodel --> modelcommon
+ufoereapimodel --> modelcommon
 dsl --> modelcommon
 tmg --> dsl
 etterlatte ..> tmg
 pensjonsmalene ..> tmg
+ufoeremalene ..> tmg
 bibliotek ..> tmg
 
-PEN --> apimodel
+PEN --> pensjonapimodel
+PEN --> alderapimodel
+PEN --> ufoereapimodel
 Gjenny --> modelcommon
 
 Skribenten --> modelcommon

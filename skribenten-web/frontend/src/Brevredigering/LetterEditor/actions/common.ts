@@ -2,9 +2,10 @@ import type { Draft } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
+import { isFritekst, isLiteral, isTableCellIndex } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
+  Cell,
   ColumnSpec,
   Content,
   ElementTags,
@@ -36,8 +37,16 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
-  return !isItemContentIndex(f);
+export function isBlockContentIndex(f: Focus | LiteralIndex | undefined): f is BlockContentIndex {
+  return (
+    f !== undefined &&
+    "blockIndex" in f &&
+    f.blockIndex !== undefined &&
+    "contentIndex" in f &&
+    f.contentIndex !== undefined &&
+    !isItemContentIndex(f) &&
+    !isTableCellIndex(f)
+  );
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
@@ -98,8 +107,9 @@ export function create(brev: BrevResponse): LetterEditorState {
     info: brev.info,
     redigertBrev: brev.redigertBrev,
     redigertBrevHash: brev.redigertBrevHash,
-    isDirty: false,
+    saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
+    history: { entries: [], entryPointer: -1 },
   };
 }
 
@@ -380,19 +390,23 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
   };
 }
 
+export function newCell(text?: TextContent[]): Cell {
+  return {
+    id: null,
+    parentId: null,
+    text: text ?? [newLiteral({ editedText: "" })],
+  };
+}
+
 export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
-    cells: Array.from({ length: colCount }, () => ({
-      id: null,
-      parentId: null,
-      text: [newLiteral({ editedText: "" })],
-    })),
+    cells: Array.from({ length: colCount }, () => newCell()),
   };
 }
 
-export function newColSpec(colCount: number): ColumnSpec[] {
+export function newColSpec(colCount: number, headers?: { text: string; font?: FontType }[]): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
     parentId: null,
@@ -403,8 +417,8 @@ export function newColSpec(colCount: number): ColumnSpec[] {
       parentId: null,
       text: [
         newLiteral({
-          editedText: `Kolonne ${i + 1}`,
-          fontType: FontType.PLAIN,
+          editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
+          fontType: headers?.[i]?.font ?? FontType.PLAIN,
         }),
       ],
     },

@@ -1,21 +1,15 @@
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title1Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title2Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.InstanceOfAssertFactories
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,7 +17,6 @@ import java.time.LocalDate
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
-import no.nav.pensjon.brev.skribenten.letter.Edit.Identifiable as E_Identifiable
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table as E_Table
@@ -41,11 +34,12 @@ class UpdateRenderedLetterTest {
     fun `updates fields of editedLetter from renderedLetter`() {
         val rendered = letter(Title1Impl(1, true, listOf(LiteralImpl(1, "Noe tekst"))))
         val next = rendered.copy(
-            title = "ny tittel11",
+            title = listOf(LiteralImpl(1, "ny tittel11")),
             sakspart = SakspartImpl(
                 gjelderNavn = "ny gjelder",
-                gjelderFoedselsnummer = "nytt fødselsnummer",
+                gjelderFoedselsnummer = Foedselsnummer("nytt fødselsnummer"),
                 vergeNavn = null,
+                annenMottakerNavn = null,
                 saksnummer = "nytt saksnummer",
                 dokumentDato = LocalDate.now(),
             ),

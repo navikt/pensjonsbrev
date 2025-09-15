@@ -49,7 +49,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                 head {
                     meta(charset = Charsets.UTF_8.name())
                     meta(name = "viewport", content = "width=device-width")
-                    title { text(letter.title) }
+                    title { renderTextWithoutStyle(letter.title) }
                     style { unsafe { fontBinary.forEach { raw(it) } } }
                     style { unsafe { raw(css) } }
                 }
@@ -65,7 +65,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                                 renderSakspart(language, felles)
                                 brevdato(language, felles)
                             }
-                            h1(classes("tittel")) { text(letter.title) }
+                            h1(classes("tittel")) { renderTextWithoutStyle(letter.title) }
                             div(classes("brevkropp")) {
                                 letter.blocks.forEach { renderBlock(it) }
                                 renderClosing(language, felles, brevtype)
@@ -285,11 +285,12 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
+                val annenMottakerNavn = felles.annenMottakerNavn ?: felles.vergeNavn
                 val navnPrefix =
-                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+                    if (annenMottakerNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
 
                 listOfNotNull(
-                    felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    annenMottakerNavn?.let { LanguageSetting.Sakspart.annenMottaker to it },
                     navnPrefix to fulltNavn(),
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
                     LanguageSetting.Sakspart.saksnummer to felles.saksnummer,

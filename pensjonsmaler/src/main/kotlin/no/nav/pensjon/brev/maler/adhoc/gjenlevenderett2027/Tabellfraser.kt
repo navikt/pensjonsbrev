@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Tabeller {
     data class DineInntekterTabell(
@@ -30,23 +29,23 @@ object Tabeller {
                     header = {
                         column(1) {
                             text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                                English to "Year"
+                                bokmal { + "År" },
+                                nynorsk { + "År" },
+                                english { + "Year" }
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Din inntekt",
-                                Nynorsk to "Di inntekt",
-                                English to "Your income"
+                                bokmal { + "Din inntekt" },
+                                nynorsk { + "Di inntekt" },
+                                english { + "Your income" }
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Din inntekt i G",
-                                Nynorsk to "Di inntekt i G",
-                                English to "Your income in G"
+                                bokmal { + "Din inntekt i G" },
+                                nynorsk { + "Di inntekt i G" },
+                                english { + "Your income in G" }
                             )
                         }
                     },
@@ -54,24 +53,24 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2019",
-                                Nynorsk to "2019",
-                                English to "2019",
+                                bokmal { + "2019" },
+                                nynorsk { + "2019" },
+                                english { + "2019" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2019.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2019.format(CurrencyFormat),
+                            text(
+                                bokmal { + inntekt2019.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + inntekt2019.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + inntekt2019.format(CurrencyFormat) },
 
                                 )
                         }
                         cell {
-                            textExpr(
-                            Bokmal to inntekt2019G.format(6) + " G",
-                            Nynorsk to inntekt2019G.format(6) + " G",
-                            English to inntekt2019G.format(6) + " G",
+                            text(
+                            bokmal { + inntekt2019G.format(6) + " G" },
+                            nynorsk { + inntekt2019G.format(6) + " G" },
+                            english { + inntekt2019G.format(6) + " G" },
 
                                 )
                         }
@@ -79,23 +78,23 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2020",
-                                Nynorsk to "2020",
-                                English to "2020",
+                                bokmal { + "2020" },
+                                nynorsk { + "2020" },
+                                english { + "2020" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2020.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2020.format(CurrencyFormat)
+                            text(
+                                bokmal { + inntekt2020.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + inntekt2020.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + inntekt2020.format(CurrencyFormat) }
                             )
                         }
                         cell {
-                            textExpr(
-                            Bokmal to inntekt2020G.format(6) + " G",
-                            Nynorsk to inntekt2020G.format(6) + " G",
-                            English to inntekt2020G.format(6) + " G",
+                            text(
+                            bokmal { + inntekt2020G.format(6) + " G" },
+                            nynorsk { + inntekt2020G.format(6) + " G" },
+                            english { + inntekt2020G.format(6) + " G" },
 
                                 )
                         }
@@ -103,24 +102,24 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2021",
-                                Nynorsk to "2021",
-                                English to "2021",
+                                bokmal { + "2021" },
+                                nynorsk { + "2021" },
+                                english { + "2021" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2021.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2021.format(CurrencyFormat)
+                            text(
+                                bokmal { + inntekt2021.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + inntekt2021.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + inntekt2021.format(CurrencyFormat) }
 
                             )
                         }
                         cell {
-                            textExpr(
-                            Bokmal to inntekt2021G.format(6) + " G",
-                            Nynorsk to inntekt2021G.format(6) + " G",
-                            English to inntekt2021G.format(6) + " G",
+                            text(
+                            bokmal { + inntekt2021G.format(6) + " G" },
+                            nynorsk { + inntekt2021G.format(6) + " G" },
+                            english { + inntekt2021G.format(6) + " G" },
 
                                 )
                         }
@@ -128,23 +127,23 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                                English to "2022",
+                                bokmal { + "2022" },
+                                nynorsk { + "2022" },
+                                english { + "2022" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2022.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2022.format(CurrencyFormat)
+                            text(
+                                bokmal { + inntekt2022.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + inntekt2022.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + inntekt2022.format(CurrencyFormat) }
                             )
                         }
                         cell {
-                            textExpr(
-                            Bokmal to inntekt2022G.format(6) + " G",
-                            Nynorsk to inntekt2022G.format(6) + " G",
-                            English to inntekt2022G.format(6) + " G",
+                            text(
+                            bokmal { + inntekt2022G.format(6) + " G" },
+                            nynorsk { + inntekt2022G.format(6) + " G" },
+                            english { + inntekt2022G.format(6) + " G" },
 
                                 )
                         }
@@ -152,23 +151,23 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                                English to "2023",
+                                bokmal { + "2023" },
+                                nynorsk { + "2023" },
+                                english { + "2023" },
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2023.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2023.format(CurrencyFormat)
+                            text(
+                                bokmal { + inntekt2023.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + inntekt2023.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + inntekt2023.format(CurrencyFormat) }
                             )
                         }
                         cell {
-                            textExpr(
-                            Bokmal to inntekt2023G.format(6) + " G",
-                            Nynorsk to inntekt2023G.format(6) + " G",
-                            English to inntekt2023G.format(6) + " G",
+                            text(
+                            bokmal { + inntekt2023G.format(6) + " G" },
+                            nynorsk { + inntekt2023G.format(6) + " G" },
+                            english { + inntekt2023G.format(6) + " G" },
                             )
                         }
                     }
@@ -177,17 +176,17 @@ object Tabeller {
                         cell {}
                         cell {
                             text(
-                                Bokmal to "Ditt gjennomsnitt: ",
-                                Nynorsk to "Gjennomsnittet ditt: ",
-                                English to "Your average: ",
+                                bokmal { + "Ditt gjennomsnitt: " },
+                                nynorsk { + "Gjennomsnittet ditt: " },
+                                english { + "Your average: " },
                                 Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                             )
                         }
                         cell {
-                            textExpr(
-                            Bokmal to gjennomsnittInntektG.format(6) + " G",
-                            Nynorsk to gjennomsnittInntektG.format(6) + " G",
-                            English to gjennomsnittInntektG.format(6) + " G",
+                            text(
+                            bokmal { + gjennomsnittInntektG.format(6) + " G" },
+                            nynorsk { + gjennomsnittInntektG.format(6) + " G" },
+                            english { + gjennomsnittInntektG.format(6) + " G" },
                                 Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                             )
                         }
@@ -206,16 +205,16 @@ object Tabeller {
                     header = {
                         column(1) {
                             text(
-                                Bokmal to "År ",
-                                Nynorsk to "År ",
-                                English to "Year ",
+                                bokmal { + "År " },
+                                nynorsk { + "År " },
+                                english { + "Year " },
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3",
-                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 3",
-                                English to "Average National Insurance basic amount (G) times 3"
+                                bokmal { + "Gjennomsnittlig grunnbeløp (G) ganger 3" },
+                                nynorsk { + "Gjennomsnittleg grunnbeløp (G) gongar 3" },
+                                english { + "Average National Insurance basic amount (G) times 3" }
                             )
                         }
                     },
@@ -223,17 +222,17 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                                English to "2022"
+                                bokmal { + "2022" },
+                                nynorsk { + "2022" },
+                                english { + "2022" }
 
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2022.format(CurrencyFormat) + " kroner",
-                                Nynorsk to g2022.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + g2022.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2022.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + g2022.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + g2022.format(CurrencyFormat) }
 
                             )
                         }
@@ -241,17 +240,17 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                                English to "2023"
+                                bokmal { + "2023" },
+                                nynorsk { + "2023" },
+                                english { + "2023" }
 
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2023.format(CurrencyFormat) + " kroner",
-                                Nynorsk to g2023.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + g2023.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2023.format(CurrencyFormat) + " kroner" },
+                                nynorsk { + g2023.format(CurrencyFormat) + " kroner" },
+                                english { + "NOK " + g2023.format(CurrencyFormat) }
 
                             )
                         }
@@ -274,17 +273,17 @@ object Tabeller {
                     header = {
                         column(1) {
                             text(
-                                Bokmal to "År ",
-                                Nynorsk to "År ",
-                                English to "Year ",
+                                bokmal { + "År " },
+                                nynorsk { + "År " },
+                                english { + "Year " },
 
                                 )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2",
-                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 2",
-                                English to "Average National Insurance basic amount (G) times 2"
+                                bokmal { + "Gjennomsnittlig grunnbeløp (G) ganger 2" },
+                                nynorsk { + "Gjennomsnittleg grunnbeløp (G) gongar 2" },
+                                english { + "Average National Insurance basic amount (G) times 2" }
 
                             )
                         }
@@ -293,81 +292,81 @@ object Tabeller {
                     row {
                         cell {
                             text(
-                                Bokmal to "2019",
-                                Nynorsk to "2019",
-                                English to "2019"
+                                bokmal { + "2019" },
+                                nynorsk { + "2019" },
+                                english { + "2019" }
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2019.format(CurrencyFormat) +" kroner",
-                                Nynorsk to g2019.format(CurrencyFormat) +" kroner",
-                                English to "NOK ".expr() + g2019.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2019.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2019.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2019.format(CurrencyFormat) }
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2020",
-                                Nynorsk to "2020",
-                                English to "2020"
+                                bokmal { + "2020" },
+                                nynorsk { + "2020" },
+                                english { + "2020" }
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2020.format(CurrencyFormat) +" kroner",
-                                Nynorsk to g2020.format(CurrencyFormat) +" kroner",
-                                English to "NOK ".expr() + g2020.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2020.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2020.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2020.format(CurrencyFormat) }
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2021",
-                                Nynorsk to "2021",
-                                English to "2021"
+                                bokmal { + "2021" },
+                                nynorsk { + "2021" },
+                                english { + "2021" }
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2021.format(CurrencyFormat) +" kroner",
-                                Nynorsk to g2021.format(CurrencyFormat) +" kroner",
-                                English to "NOK ".expr() + g2021.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2021.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2021.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2021.format(CurrencyFormat) }
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                                English to "2022"
+                                bokmal { + "2022" },
+                                nynorsk { + "2022" },
+                                english { + "2022" }
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2022.format(CurrencyFormat) +" kroner",
-                                Nynorsk to g2022.format(CurrencyFormat) +" kroner",
-                                English to "NOK ".expr() + g2022.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2022.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2022.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2022.format(CurrencyFormat) }
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                                English to "2023"
+                                bokmal { + "2023" },
+                                nynorsk { + "2023" },
+                                english { + "2023" }
 
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to g2023.format(CurrencyFormat) +" kroner",
-                                Nynorsk to g2023.format(CurrencyFormat) +" kroner",
-                                English to "NOK ".expr() + g2023.format(CurrencyFormat)
+                            text(
+                                bokmal { + g2023.format(CurrencyFormat) +" kroner" },
+                                nynorsk { + g2023.format(CurrencyFormat) +" kroner" },
+                                english { + "NOK " + g2023.format(CurrencyFormat) }
                             )
                         }
                     }

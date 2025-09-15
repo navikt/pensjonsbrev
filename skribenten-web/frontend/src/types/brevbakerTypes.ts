@@ -168,15 +168,19 @@ export type Title2Block = Block & {
 };
 
 export type Title = {
-  readonly content: TextContent[];
+  readonly text: TextContent[];
   readonly deletedContent: number[];
 };
 
 export interface EditedLetter {
-  // TODO: Fjern string når skribenten-backend produserer Title-objekter
-  readonly title: Title | string;
+  readonly title: Title;
   readonly sakspart: Sakspart;
   readonly blocks: AnyBlock[];
   readonly signatur: Signatur;
   readonly deletedBlocks: number[];
+}
+
+export interface PropertyUsage {
+  readonly typeName: string;
+  readonly propertyName: string;
 }

@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -103,10 +102,10 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.client.encoding)
-    implementation(libs.kafka.streams)
-    implementation(libs.connect.runtime)
 
     implementation(project(":pensjonsmaler"))
+    implementation(project(":aldersmaler"))
+    implementation(project(":ufoeremaler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
@@ -123,7 +122,8 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.mockk)
+
+    testImplementation(libs.pdfbox)
 
     testImplementation(testFixtures(project(":brevbaker")))
 }

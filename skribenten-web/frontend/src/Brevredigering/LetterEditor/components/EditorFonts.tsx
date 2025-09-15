@@ -4,59 +4,53 @@ import type { ReactNode } from "react";
 import React from "react";
 
 import { fontTypeOf, isItemContentIndex, isTable } from "~/Brevredigering/LetterEditor/actions/common";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isItemList, isTableCellIndex, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import type { TextContent } from "~/types/brevbakerTypes";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
-import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
   const focus = editorState.focus;
-  const focusedContent = block.content[focus.contentIndex];
+  const blockContent = block?.content[editorState.focus.contentIndex];
 
-  if (isTable(focusedContent) && isTableCellIndex(focus)) {
+  let textContent: TextContent | undefined = undefined;
+
+  if (isTable(blockContent) && isTableCellIndex(focus)) {
     const cell =
       focus.rowIndex === -1
-        ? focusedContent.header.colSpec[focus.cellIndex]?.headerContent
-        : focusedContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
+        ? blockContent.header.colSpec[focus.cellIndex]?.headerContent
+        : blockContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
 
-    const cellText = cell?.text.at(focus.cellContentIndex);
-
-    return isTextContent(cellText) ? fontTypeOf(cellText) : FontType.PLAIN;
+    textContent = cell?.text?.at(focus.cellContentIndex);
+  } else if (isItemList(blockContent) && isItemContentIndex(focus)) {
+    textContent = blockContent?.items[focus.itemIndex]?.content[focus.itemContentIndex];
+  } else if (isTextContent(blockContent)) {
+    textContent = blockContent;
   }
 
-  const blockContent = block?.content[editorState.focus.contentIndex];
-  const textContent =
-    isItemContentIndex(editorState.focus) && isItemList(blockContent)
-      ? blockContent.items[editorState.focus.itemIndex]?.content[editorState.focus.itemContentIndex]
-      : blockContent;
-
-  if (isTextContent(textContent)) {
-    return fontTypeOf(textContent);
-  } else {
-    return FontType.PLAIN;
-  }
+  return isTextContent(textContent) ? fontTypeOf(textContent) : FontType.PLAIN;
 };
 
-const EditorFonts = (props: {
-  editorState: LetterEditorState;
-  setEditorState: CallbackReceiver<LetterEditorState>;
-}) => {
-  const activeFontType = getCurrentActiveFontTypeAtCursor(props.editorState);
+const EditorFonts = () => {
+  const { editorState, freeze, setEditorState } = useEditor();
+  const activeFontType = getCurrentActiveFontTypeAtCursor(editorState);
 
   return (
-    <div>
+    <>
       <FontButton
         active={activeFontType === FontType.BOLD}
         dataCy="fonttype-bold"
+        disabled={freeze}
         onClick={() => {
           if (activeFontType === FontType.BOLD) {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
+            applyAction(Actions.switchFontType, setEditorState, editorState.focus, FontType.PLAIN);
           } else {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
+            applyAction(Actions.switchFontType, setEditorState, editorState.focus, FontType.BOLD);
           }
         }}
         text={<Label>F</Label>}
@@ -64,11 +58,12 @@ const EditorFonts = (props: {
       <FontButton
         active={activeFontType === FontType.ITALIC}
         dataCy="fonttype-italic"
+        disabled={freeze}
         onClick={() => {
           if (activeFontType === FontType.ITALIC) {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
+            applyAction(Actions.switchFontType, setEditorState, editorState.focus, FontType.PLAIN);
           } else {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
+            applyAction(Actions.switchFontType, setEditorState, editorState.focus, FontType.ITALIC);
           }
         }}
         text={
@@ -81,7 +76,7 @@ const EditorFonts = (props: {
           </Label>
         }
       />
-    </div>
+    </>
   );
 };
 

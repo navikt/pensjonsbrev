@@ -18,21 +18,13 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
-        @DisplayText("Bruk alternativ tittel")
-        val gjenlevendetilleggTittel: Boolean,
-        @DisplayText("Vis avsnitt om gjenlevendetillegg pga pensjonsrettigheter")
-        val visGjenlevendetilleggPensjonsrettigheter: Boolean,
-        val visTilleggspensjonavsnittAP1967: Boolean,
         val omregnetTilEnsligISammeVedtak: Boolean,
-        val pensjonenOeker: Boolean,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
         val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis avdøde har redusert trygdetid/poengår")
         val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis endring i pensjonsutbetaling")
         val endringIPensjonsutbetaling: Boolean,
-        @DisplayText("Hvis etterbetaling av pensjon")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -59,7 +51,8 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
 
     data class Krav(
         val virkDatoFom: LocalDate,
-        val kravInitiertAv: KravInitiertAv
+        val kravInitiertAv: KravInitiertAv,
+        val etterbetaling: Boolean,
     )
 
     data class AlderspensjonVedVirk(
