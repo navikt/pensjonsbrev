@@ -16,7 +16,7 @@ const MERGE_TIME_THRESHOLD_MS = 1000;
 
 function getHistoryEntryLabel(patches: Patch[]): string | undefined {
   const isTextUpdate =
-    patches.some((p) => p.path[p.path.length - 1] === "editedText") &&
+    patches.some((p) => p.path[p.path.length - 1] === "editedText" && typeof p.value === "string") &&
     patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
 
   if (isTextUpdate) {
@@ -34,10 +34,7 @@ function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): HistoryE
   };
 }
 
-function updateHistory(
-  history: { entries: HistoryEntry[]; entryPointer: number },
-  newHistoryEntry: HistoryEntry,
-): { entries: HistoryEntry[]; entryPointer: number } {
+function updateHistory(history: History, newHistoryEntry: HistoryEntry): History {
   const lastHistoryEntry = history.entries[history.entries.length - 1];
 
   const shouldMerge =
