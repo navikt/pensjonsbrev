@@ -45,7 +45,7 @@ data class EtteroppgjoerForhaandsvarselBrevDTO(
 enum class EtteroppgjoerResultatType {
     TILBAKEKREVING,
     ETTERBETALING,
-    INGEN_ENDRING
+    INGEN_ENDRING_MED_UTBETALING,
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
@@ -86,7 +86,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     ) {
         title {
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING)) {
                 textExpr(
                     Language.Bokmal to "Informasjon om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
                     Language.Nynorsk to "Informasjon om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
@@ -108,7 +108,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             konverterElementerTilBrevbakerformat(innhold)
 
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING)) {
                 title2 {
                     textExpr(
                         Language.Bokmal to "Etteroppgjøret for ".expr() + data.etteroppgjoersAar.format() + " er nå avsluttet",
