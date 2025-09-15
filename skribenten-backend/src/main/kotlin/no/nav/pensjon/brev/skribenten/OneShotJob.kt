@@ -110,6 +110,7 @@ fun JobConfig.updateBrevredigeringJson() {
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
+            logger.info("Oppdaterer $brevId")
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 update[BrevredigeringTable.redigertBrev] = redigertBrev
