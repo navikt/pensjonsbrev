@@ -34,7 +34,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
-import org.apache.commons.codec.binary.Hex
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -258,11 +257,11 @@ class BrevredigeringServiceTest {
             )
         }
 
-        brevbakerService.redigerbareMaler.put(Testbrevkoder.INFORMASJONSBREV, informasjonsbrev)
-        brevbakerService.redigerbareMaler.put(Testbrevkoder.VEDTAKSBREV, vedtaksbrev)
+        brevbakerService.redigerbareMaler[Testbrevkoder.INFORMASJONSBREV] = informasjonsbrev
+        brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         stagePdf(stagetPDF)
 
-        stageSak(sak1)
+        penService.pesysBrevdata = brevdataResponseData
         penService.sendBrevResponse = bestillBrevresponse
     }
 
@@ -837,7 +836,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
-        penService.pesysBrevdata = brevdataResponseData
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         brevbakerService.renderPdfResultat = ServiceResult.Ok(letterResponse)
@@ -874,7 +872,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
-        penService.pesysBrevdata = brevdataResponseData
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         brevbakerService.renderPdfResultat = ServiceResult.Ok(letterResponse)
@@ -1099,6 +1096,30 @@ class BrevredigeringServiceTest {
 
         assertThrows<BrevIkkeKlartTilSendingException> {
             brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
+        }
+    }
+
+    @Test
+    fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
+        runBlocking {
+            val brev = opprettBrev().resultOrNull()!!
+
+            withPrincipal(saksbehandler1Principal) {
+                brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)?.resultOrNull()
+                brevredigeringService.oppdaterSignatur(brev.info.id, "en ny signatur")
+                brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+            }
+            // verifiser forskjellig hash
+            transaction {
+                val redigering = Brevredigering[brev.info.id]
+                assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
+            }
+
+            withPrincipal(saksbehandler1Principal) {
+                assertThrows<BrevIkkeKlartTilSendingException> {
+                    brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
+                }
+            }
         }
     }
 
@@ -1439,8 +1460,8 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan hente brev for flere saker`(): Unit = runBlocking {
-        val sak2 = sak1.copy(saksId = sak1.saksId + 1).also { stageSak(it) }
-        val sak3 = sak1.copy(saksId = sak2.saksId + 1).also { stageSak(it) }
+        val sak2 = sak1.copy(saksId = sak1.saksId + 1)
+        val sak3 = sak1.copy(saksId = sak2.saksId + 1)
         val forventedeBrev = listOf(
             opprettBrev(sak = sak1),
             opprettBrev(sak = sak1),
@@ -1487,10 +1508,6 @@ class BrevredigeringServiceTest {
                 )
             )
         )
-    }
-
-    private fun stageSak(sak: Pen.SakSelection) {
-        penService.pesysBrevdata = brevdataResponseData
     }
 
     private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =

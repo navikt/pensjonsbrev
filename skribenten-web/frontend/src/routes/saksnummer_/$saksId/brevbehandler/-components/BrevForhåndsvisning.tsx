@@ -1,7 +1,7 @@
 import { Alert, Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
+import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import PDFViewer from "../../-components/PDFViewer";
@@ -9,7 +9,7 @@ import PDFViewer from "../../-components/PDFViewer";
 const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
-    queryFn: () => hentPdfForBrevFunction(properties.saksId, properties.brevId),
+    queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
   });
 
   return queryFold({
