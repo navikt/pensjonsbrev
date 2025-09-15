@@ -67,6 +67,7 @@ public abstract interface class no/nav/pensjon/brev/template/AutobrevTemplate : 
 }
 
 public final class no/nav/pensjon/brev/template/AutobrevTemplate$DefaultImpls {
+	public static fun createTemplate (Lno/nav/pensjon/brev/template/AutobrevTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public static fun description (Lno/nav/pensjon/brev/template/AutobrevTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Autobrev;
 }
 
@@ -221,9 +222,14 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$Tuple : no/nav/p
 }
 
 public abstract interface class no/nav/pensjon/brev/template/BrevTemplate : no/nav/pensjon/brev/template/HasModel {
+	public fun createTemplate (Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public abstract fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public abstract fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
+}
+
+public final class no/nav/pensjon/brev/template/BrevTemplate$DefaultImpls {
+	public static fun createTemplate (Lno/nav/pensjon/brev/template/BrevTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/BrevTemplateKt {
@@ -822,6 +828,7 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 }
 
 public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls {
+	public static fun createTemplate (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public static fun fritekst (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 }

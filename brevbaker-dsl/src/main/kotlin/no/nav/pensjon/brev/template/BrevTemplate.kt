@@ -7,13 +7,23 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import kotlin.reflect.KClass
 
 interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
     val template: LetterTemplate<*, LetterData>
     val kode: Kode
     fun description(): TemplateDescription
+
+    fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
+        letterDataType: KClass<LetterData>,
+        languages: Lang,
+        letterMetadata: LetterMetadata,
+        init: TemplateRootScope<Lang, LetterData>.() -> Unit
+    ): LetterTemplate<Lang, LetterData> = no.nav.pensjon.brev.template.dsl.createTemplate(kode.kode(), letterDataType, languages, letterMetadata, init)
 }
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
