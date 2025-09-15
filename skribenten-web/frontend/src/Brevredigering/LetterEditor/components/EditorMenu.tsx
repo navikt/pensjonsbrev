@@ -16,6 +16,7 @@ import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
 import EditorBulletList from "./EditorBulletList";
 import EditorFonts from "./EditorFonts";
+import { EditorUndoRedo } from "./EditorUndoRedo";
 
 const SelectTypography = () => {
   const { editorState, freeze, setEditorState } = useEditor();
@@ -47,7 +48,14 @@ const SelectTypography = () => {
   );
 };
 
-export const EditorMenu = () => {
+type EditorMenuProps = {
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+};
+
+export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) => {
   return (
     <div
       css={css`
@@ -62,7 +70,9 @@ export const EditorMenu = () => {
         justify-content: space-between;
       `}
     >
-      <HStack align="center" gap="5" margin-block="2">
+      <HStack align="center" gap="4" margin-block="2">
+        <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+        <VerticalDivider />
         <EditorFonts />
         <VerticalDivider />
         <EditorBulletList />

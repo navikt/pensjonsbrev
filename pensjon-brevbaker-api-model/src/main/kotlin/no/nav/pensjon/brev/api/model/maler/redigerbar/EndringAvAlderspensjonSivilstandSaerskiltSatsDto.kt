@@ -49,7 +49,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 
         // Betydning for pensjons utbetaling?
         @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring,
+        val beloepEndring: BeloepEndring?,
 
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
@@ -76,11 +76,8 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
     ) : BrevbakerBrevdata
 
     data class AlderspensjonVedVirk(
-        val garantipensjonInnvilget: Boolean,
         val innvilgetFor67: Boolean,
         val minstenivaaIndividuellInnvilget: Boolean,
-        val minstenivaaPensjonsistParInnvilget: Boolean,
-        val pensjonstilleggInnvilget: Boolean,
         val saertilleggInnvilget: Boolean,
         val ufoereKombinertMedAlder: Boolean,
         val uttaksgrad: Int,

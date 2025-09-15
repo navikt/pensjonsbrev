@@ -70,37 +70,6 @@ class AzureADServiceTest {
         }
     }
 
-    @Test
-    fun `getOnBehalfOfToken caches the aqcuired token`() {
-        val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla2", 1024L)
-        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload)
-
-        val service = createService {
-            respond(
-                content = ByteReadChannel(objectMapper.writeValueAsBytes(onBehalfOfToken)),
-                status = HttpStatusCode.OK,
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            )
-        }
-        runBlocking {
-            service.getOnBehalfOfToken(userPrincipal, "bla2")
-        }
-        assertEquals(onBehalfOfToken, userPrincipal.getOnBehalfOfToken(onBehalfOfToken.scope))
-    }
-
-    @Test
-    fun `getOnBehalfOfToken uses cached token`() {
-        val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla3", 1024L)
-        val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload).apply { setOnBehalfOfToken("bla3", onBehalfOfToken) }
-
-        val service = createService()
-        runBlocking {
-            service.getOnBehalfOfToken(userPrincipal, "bla3")
-        }
-        assertEquals(onBehalfOfToken, userPrincipal.getOnBehalfOfToken(onBehalfOfToken.scope))
-    }
-
-
     private fun createService(handler: (suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData) = { respond("") }) =
         AzureADService(
             jwtConfig = jwtConfig,

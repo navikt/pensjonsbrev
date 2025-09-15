@@ -30,7 +30,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.saerskiltSatsErBrukt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
@@ -110,9 +109,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             val grunnpensjon = pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
 
-            val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
             val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
             val epsNavn = fritekst("navn")
+
+            val beloepEndring = saksbehandlerValg.beloepEndring
 
             title {
                 text(
@@ -524,9 +524,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
                 includePhrase(OmregningGarantiPen(regelverkType))
 
-                showIf(saerskiltSatsErBrukt) {
-                    includePhrase(BetydningForUtbetaling(regelverkType, saksbehandlerValg.beloepEndring))
-                }
+                includePhrase(BetydningForUtbetaling(regelverkType, beloepEndring))
 
                 showIf(uforeKombinertMedAlder) {
                     // innvilgelseAPogUTInnledn
@@ -547,19 +545,71 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
                 includePhrase(Utbetalingsinformasjon)
 
-                includePhrase(
-                    SivilstandHjemler(
-                        regelverkType = regelverkType,
-                        kravArsakType = kravArsakType,
-                        sivilstand = sivilstand,
-                        saertilleggInnvilget = saertilleggInnvilget,
-                        pensjonstilleggInnvilget = pensjonstilleggInnvilget,
-                        minstenivaaIndividuellInnvilget = minstenivaaIndividuellInnvilget,
-                        minstenivaaPensjonistParInnvilget = minstenivaaPensjonistParInnvilget,
-                        garantipensjonInnvilget = garantipensjonInnvilget,
-                        saerskiltSatsErBrukt = saerskiltSatsErBrukt,
-                    ),
-                )
+                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
+                    // hjemmelSivilstandAP2025
+                    paragraph {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                            english { +
+                            "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act." },
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
+                            english { + "This decision was made pursuant to the provisions of §§ " },
+                        )
+                        showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                            text(
+                                bokmal { + "1-5, " },
+                                nynorsk { + "1-5, " },
+                                english { + "1-5, " },
+                            )
+                        }
+                        text(
+                            bokmal { + "3-2" },
+                            nynorsk { + "3-2" },
+                            english { + "3-2" },
+                        )
+
+                        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
+                            text(
+                                bokmal { + ", 3-3" },
+                                nynorsk { + ", 3-3" },
+                                english { + ", 3-3" },
+                            )
+                        }
+                        showIf(pensjonstilleggInnvilget or minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget) {
+                            text(
+                                bokmal { + ", 19-8" },
+                                nynorsk { + ", 19-8" },
+                                english { + ", 19-8" },
+                            )
+                        }
+                        showIf(pensjonstilleggInnvilget) {
+                            text(
+                                bokmal { + ", 19-9" },
+                                nynorsk { + ", 19-9" },
+                                english { + ", 19-9" },
+                            )
+                        }
+                        showIf(garantipensjonInnvilget) {
+                            text(
+                                bokmal { + ", 20-9" },
+                                nynorsk { + ", 20-9" },
+                                english { + ", 20-9" },
+                            )
+                        }
+                        text(
+                            bokmal { + " og 22-12." },
+                            nynorsk { + " og 22-12." },
+                            english { + " and 22-12." },
+                        )
+                    }
+                }
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
                 showIf(saksbehandlerValg.feilutbetaling) {

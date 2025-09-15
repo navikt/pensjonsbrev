@@ -57,7 +57,6 @@ data class EndringAvAlderspensjonSivilstandDto(
         val kravAarsak: KravArsakType,  //v3.Krav
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
-        val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,

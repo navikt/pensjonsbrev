@@ -9,16 +9,6 @@ public final class no/nav/pensjon/brev/PDFRequest {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/PDFRequestAsync {
-	public fun <init> (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Ljava/lang/String;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getMessageId ()Ljava/lang/String;
-	public final fun getReplyTopic ()Ljava/lang/String;
-	public final fun getRequest ()Lno/nav/pensjon/brev/PDFRequest;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract interface class no/nav/pensjon/brev/api/FeatureToggleService {
 	public abstract fun isEnabled (Lno/nav/pensjon/brev/api/model/FeatureToggle;)Z
 	public abstract fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
@@ -943,20 +933,6 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$Not : no/nav/pens
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/UnaryOperation$QuotationEnd : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$QuotationEnd;
-	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/UnaryOperation$QuotationStart : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$QuotationStart;
-	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/UnaryOperation$SafeCall : no/nav/pensjon/brev/template/UnaryOperation {
 	public fun <init> (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 	public fun <init> (Lno/nav/pensjon/brev/template/UnaryOperation;)V
@@ -1100,6 +1076,7 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 	public fun addControlStructure (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun addParagraphContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun addTextContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
+	public fun addTextContentBaseLanguages (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun bokmal (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
@@ -1198,12 +1175,6 @@ public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$English : no/
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks$English;
 	public fun getEnd ()Ljava/lang/String;
 	public fun getStart ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$Expr {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks$Expr;
-	public final fun getEnd ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun getStart ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
@@ -1343,6 +1314,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {
 public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/TextScope {
 	public fun addControlStructure (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun addTextContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
+	public fun addTextContentBaseLanguages (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun bokmal (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
@@ -1364,6 +1336,7 @@ public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensj
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/TextScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
 	public abstract fun addTextContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
+	public abstract fun addTextContentBaseLanguages (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
 	public static synthetic fun eval$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public abstract fun newline ()V
@@ -1597,12 +1570,12 @@ public final class no/nav/pensjon/brev/template/render/LanguageSetting$HTML {
 
 public final class no/nav/pensjon/brev/template/render/LanguageSetting$Sakspart {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/LanguageSetting$Sakspart;
+	public static final field annenMottaker Ljava/lang/String;
 	public static final field foedselsnummer Ljava/lang/String;
 	public static final field gjelderNavn Ljava/lang/String;
 	public static final field navn Ljava/lang/String;
 	public static final field saksnummer Ljava/lang/String;
 	public static final field vedleggGjelderNavn Ljava/lang/String;
-	public static final field vergenavn Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {

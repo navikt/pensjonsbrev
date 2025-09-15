@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 class CacheTest {
 
@@ -30,4 +31,17 @@ class CacheTest {
 
         assertEquals(-1, cache.cached("aaa") { -1 })
     }
+
+    @Test
+    fun `cached vil hente ny verdi ved expirable hvis tokenet er utgaatt selv om cache-innslaget ikke er utgaatt`() = runBlocking {
+        val cache = Cache<String, Expirable>(ttl = 10.minutes)
+        cache.cached("aaa") { DummyExpirable(false) }
+
+        assertEquals(DummyExpirable(true), cache.cached("aaa") { DummyExpirable(true) })
+    }
+}
+
+private data class DummyExpirable(val valid: Boolean) : Expirable {
+    override fun isValid(): Boolean = valid
+
 }

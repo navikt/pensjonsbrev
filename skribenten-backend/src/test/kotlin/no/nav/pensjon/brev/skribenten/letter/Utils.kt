@@ -14,6 +14,7 @@ fun letter(vararg blocks: LetterMarkup.Block) =
             gjelderNavn = "Test Testeson",
             gjelderFoedselsnummer = Foedselsnummer("1234568910"),
             vergeNavn = null,
+            annenMottakerNavn = null,
             saksnummer = "1234",
             dokumentDato = LocalDate.now()
         ),
@@ -28,6 +29,7 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
             gjelderNavn = "Test Testeson",
             gjelderFoedselsnummer = Foedselsnummer("1234568910"),
             vergeNavn = null,
+            annenMottakerNavn = null,
             saksnummer = "1234",
             dokumentDato = dokumentDato
         ),

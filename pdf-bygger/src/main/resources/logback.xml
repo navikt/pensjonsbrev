@@ -6,5 +6,4 @@
         <appender-ref ref="stdout_json"/>
     </root>
     <logger name="io.netty" level="INFO"/>
-    <logger name="org.apache.kafka" level="WARN"/>
 </configuration>

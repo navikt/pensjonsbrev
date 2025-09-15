@@ -21,7 +21,7 @@ object FellesFactory {
                 nettside = "nav.no",
                 navn = "Nav Familie- og pensjonsytelser Porsgrunn",
                 telefonnummer = Telefonnummer("55553334"),
-        ),
+            ),
         bruker = Bruker(
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
@@ -29,6 +29,7 @@ object FellesFactory {
             foedselsnummer = Foedselsnummer("01019878910"),
         ),
         signerendeSaksbehandlere = signerendeSaksbehandlere,
+        annenMottakerNavn = null,
         vergeNavn = null,
     )
 
@@ -48,6 +49,7 @@ object FellesFactory {
         saksnummer: String,
         avsenderEnhet: NavEnhet,
         bruker: Bruker,
+        annenMottaker: String?,
         vergeNavn: String?,
         signerendeSaksbehandlere: SignerendeSaksbehandlere?,
     ): Felles = Felles(
@@ -55,6 +57,7 @@ object FellesFactory {
         saksnummer = saksnummer,
         avsenderEnhet = avsenderEnhet,
         bruker = bruker,
+        annenMottakerNavn = annenMottaker,
         vergeNavn = vergeNavn,
         signerendeSaksbehandlere = signerendeSaksbehandlere,
     )
