@@ -101,11 +101,14 @@ fun JobConfig.updateBrevredigeringJson() {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
             BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrev
+            BrevredigeringTable.redigertBrev,
+            BrevredigeringTable.redigertBrevHash,
+            BrevredigeringTable.redigertBrevKryptertHash,
         ).toList()
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres =
-            alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+        val kanOppdateres = alleBrev
+            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+            .filter { it[BrevredigeringTable.redigertBrevKryptertHash] != it[BrevredigeringTable.redigertBrevHash] }
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
@@ -119,10 +122,15 @@ fun JobConfig.updateBrevredigeringJson() {
             }
         }
 
-        val ulikHash = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevHash,
-            BrevredigeringTable.redigertBrevKryptertHash).where({
-            BrevredigeringTable.redigertBrevKryptertHash.neq(BrevredigeringTable.redigertBrevHash)
-        }).map { it[BrevredigeringTable.id].value }
+        val ulikHash = BrevredigeringTable.select(
+            BrevredigeringTable.id,
+            BrevredigeringTable.redigertBrevHash,
+            BrevredigeringTable.redigertBrevKryptertHash
+        )
+            .where({
+                BrevredigeringTable.redigertBrevKryptertHash.neq(BrevredigeringTable.redigertBrevHash)
+            })
+            .map { it[BrevredigeringTable.id].value }
         if (ulikHash.isNotEmpty()) {
             logger.info("Fikk forskjellig hash mellom vanlig og kryptert for brevene ${ulikHash.joinToString(",")}")
             completed = false
