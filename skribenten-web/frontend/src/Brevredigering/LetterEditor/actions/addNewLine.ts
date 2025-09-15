@@ -25,7 +25,7 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
           if (offset === 0) {
             addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
             draft.focus = {
-              contentIndex: 1,
+              contentIndex: focus.contentIndex + 1,
               cursorPosition: 0,
               blockIndex: focus.blockIndex,
             };
@@ -55,6 +55,11 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
         }
         case NEW_LINE: {
           addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
+          draft.focus = {
+            contentIndex: focus.cursorPosition === 0 ? focus.contentIndex + 1 : focus.contentIndex + 2,
+            cursorPosition: 0,
+            blockIndex: focus.blockIndex,
+          };
           draft.saveStatus = "DIRTY";
           break;
         }

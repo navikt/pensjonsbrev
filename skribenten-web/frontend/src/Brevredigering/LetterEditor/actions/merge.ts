@@ -3,6 +3,7 @@ import type { Draft } from "immer";
 import {
   addElements,
   getMergeIds,
+  mergeLiteralsIfPossible,
   newLiteral,
   removeElements,
   text,
@@ -12,7 +13,8 @@ import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
-import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
+import { isEmptyBlock, isEmptyContent, isEmptyItem, isFritekst, isLiteral, isTextContent } from "../model/utils";
+import { updateLiteralText } from "./updateContentText";
 
 export enum MergeTarget {
   PREVIOUS = "PREVIOUS",
@@ -22,10 +24,9 @@ export enum MergeTarget {
 export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = withPatches(
   (draft, literalIndex, target) => {
     const editedLetter = draft.redigertBrev;
-    const blocks = editedLetter.blocks;
-    const block = blocks[literalIndex.blockIndex];
-    const previousContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex - 1];
-    const nextContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex + 1];
+    const block = editedLetter.blocks[literalIndex.blockIndex];
+    const previousContentSameBlock = block.content[literalIndex.contentIndex - 1];
+    const nextContentSameBlock = block.content[literalIndex.contentIndex + 1];
 
     if ("itemIndex" in literalIndex) {
       mergeFromItemList(draft, literalIndex, target);
@@ -53,6 +54,23 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           contentIndex: literalIndex.contentIndex - 1,
           cursorPosition: text(previousContentSameBlock).length,
         };
+        if (isLiteral(previousContentSameBlock) && !isFritekst(previousContentSameBlock)) {
+          const endOfPrevious = (previousContentSameBlock.editedText || previousContentSameBlock.text).length;
+          const merged = mergeLiteralsIfPossible(previousContentSameBlock, content)[0];
+          if (isLiteral(merged)) {
+            updateLiteralText(previousContentSameBlock, text(merged));
+            removeElements(literalIndex.contentIndex, 1, {
+              content: block.content,
+              deletedContent: block.deletedContent,
+              id: block.id,
+            });
+            draft.focus = {
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: literalIndex.contentIndex - 1,
+              cursorPosition: endOfPrevious,
+            };
+          }
+        }
       }
       draft.saveStatus = "DIRTY";
     } else if (
@@ -73,6 +91,27 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
         cursorPosition: 0,
       };
       draft.saveStatus = "DIRTY";
+
+      // Merge with content of previous line if LITERAL
+      const afterNewLineContent = block?.content[literalIndex.contentIndex - 1];
+      const beforeNewLineContent = block?.content[literalIndex.contentIndex - 2];
+      if (isLiteral(beforeNewLineContent)) {
+        const endOfPrevious = (beforeNewLineContent.editedText || beforeNewLineContent.text).length;
+        const merged = mergeLiteralsIfPossible(beforeNewLineContent, afterNewLineContent)[0];
+        if (isLiteral(merged)) {
+          updateLiteralText(beforeNewLineContent, text(merged));
+          removeElements(literalIndex.contentIndex - 1, 1, {
+            content: block.content,
+            deletedContent: block.deletedContent,
+            id: block.id,
+          });
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: literalIndex.contentIndex - 2,
+            cursorPosition: endOfPrevious,
+          };
+        }
+      }
     } else if (target === MergeTarget.NEXT && nextContentSameBlock?.type === NEW_LINE) {
       const content = block?.content[literalIndex.contentIndex];
 
