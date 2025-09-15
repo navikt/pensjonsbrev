@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.UfoereTemplates
+import no.nav.pensjon.brev.UforeTemplates
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -18,21 +18,21 @@ class UfoereProductionTemplatesTest {
 
     @Test
     fun `alle autobrev fins i templates`() {
-        val brukteKoder = UfoereTemplates.hentAutobrevmaler().map { it.kode }
+        val brukteKoder = UforeTemplates.hentAutobrevmaler().map { it.kode }
         val ubrukteKoder = Ufoerebrevkoder.AutoBrev.entries.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
     @Test
     fun `alle redigerbare brev fins i templates`() {
-        val brukteKoder = UfoereTemplates.hentRedigerbareMaler().map { it.kode }
+        val brukteKoder = UforeTemplates.hentRedigerbareMaler().map { it.kode }
         val ubrukteKoder = Ufoerebrevkoder.Redigerbar.entries.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
 
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
-        (UfoereTemplates.hentAutobrevmaler() + UfoereTemplates.hentRedigerbareMaler())
+        (UforeTemplates.hentAutobrevmaler() + UforeTemplates.hentRedigerbareMaler())
             .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class)  }
             .forEach {
                 assertTrue(
@@ -47,7 +47,7 @@ class UfoereProductionTemplatesTest {
     fun `brev som er deklarert med brevtype vedtaksbrev skal ha brevkontekst vedtak`() {
         assertEquals(
             emptyList<String>(),
-            UfoereTemplates.hentRedigerbareMaler()
+            UforeTemplates.hentRedigerbareMaler()
                 .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
                 .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
                 .map { it.javaClass.simpleName }
