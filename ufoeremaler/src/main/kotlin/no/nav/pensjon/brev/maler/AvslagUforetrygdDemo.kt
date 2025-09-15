@@ -23,7 +23,7 @@ object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
 
 
     override val template = createTemplate(
-        name = "Avslag uføretrygd demo",
+        name = kode.name,
         letterDataType = AvslagUforetrygdDemoDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
