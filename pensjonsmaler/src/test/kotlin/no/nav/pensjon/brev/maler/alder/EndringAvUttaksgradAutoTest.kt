@@ -17,7 +17,7 @@ class EndringAvUttaksgradAutoTest {
                 EndringAvUttaksgradAuto.template,
                 Fixtures.create<EndringAvUttaksgradAutoDto>(),
                 Language.Bokmal,
-                Fixtures.felles
+                Fixtures.fellesAuto
             ).renderTestPDF(EndringAvUttaksgradAuto.kode.name)
         }
 
@@ -27,7 +27,7 @@ class EndringAvUttaksgradAutoTest {
                 EndringAvUttaksgradAuto.template,
                 Fixtures.create<EndringAvUttaksgradAutoDto>(),
                 Language.Bokmal,
-                Fixtures.felles
+                Fixtures.fellesAuto
             ).renderTestHtml(EndringAvUttaksgradAuto.kode.name)
         }
     }
