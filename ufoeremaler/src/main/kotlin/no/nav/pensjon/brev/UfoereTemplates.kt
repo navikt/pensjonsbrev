@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.maler.AvslagUforetrygdDemo
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
-object UforeTemplates : AllTemplates {
+object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
     )
 

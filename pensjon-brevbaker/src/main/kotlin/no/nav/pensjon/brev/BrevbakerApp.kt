@@ -11,9 +11,9 @@ fun Application.brevbakerModulePensjon() = this.brevbakerModule(pensjonOgUfoereP
 
 val pensjonOgUfoereProductionTemplates = object : AllTemplates {
     override fun hentAutobrevmaler() =
-        ProductionTemplates.hentAutobrevmaler() + AlderTemplates.hentAutobrevmaler() + UforeTemplates.hentAutobrevmaler()
+        ProductionTemplates.hentAutobrevmaler() + AlderTemplates.hentAutobrevmaler() + UfoereTemplates.hentAutobrevmaler()
 
     override fun hentRedigerbareMaler() =
-        ProductionTemplates.hentRedigerbareMaler() + AlderTemplates.hentRedigerbareMaler() + UforeTemplates.hentRedigerbareMaler()
+        ProductionTemplates.hentRedigerbareMaler() + AlderTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
 
 }
