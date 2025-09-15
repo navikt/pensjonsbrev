@@ -153,7 +153,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         async {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
-                job("test-hashing-1") {
+                job("samkjoer-hash") {
                     updateBrevredigeringJson()
                 }
             }
