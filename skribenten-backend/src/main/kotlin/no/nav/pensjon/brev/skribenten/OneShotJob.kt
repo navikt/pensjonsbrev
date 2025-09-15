@@ -115,12 +115,12 @@ fun JobConfig.updateBrevredigeringJson() {
             }
         }
 
-        val kryptertNull = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevKryptert).where({
-            BrevredigeringTable.redigertBrevKryptert.isNull()
-        }).map { it[BrevredigeringTable.id].value }
-        if (kryptertNull.isNotEmpty()) {
-            logger.info("Kunne ikke oppdatere brevene ${kryptertNull.joinToString(",")}")
-            completed = false
-        }
+//        val kryptertNull = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevKryptert).where({
+//            BrevredigeringTable.redigertBrevKryptert.isNull()
+//        }).map { it[BrevredigeringTable.id].value }
+//        if (kryptertNull.isNotEmpty()) {
+//            logger.info("Kunne ikke oppdatere brevene ${kryptertNull.joinToString(",")}")
+//            completed = false
+//        }
     }
 }
