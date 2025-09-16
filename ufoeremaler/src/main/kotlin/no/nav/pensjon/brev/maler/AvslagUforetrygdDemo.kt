@@ -59,20 +59,18 @@ object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
             paragraph {
                 text(bokmal { + "Funksjonsnedsettelsen vises i form av " + fritekst("X")})
                 text(bokmal { + ". Følgene av dette er at du ikke klarer å fungere i arbeid. Det er forsøkt behandling i form av " + fritekst("X")})
-                text(bokmal { + ". Det er for tidlig å ta stilling til effekten av behandlingen fordi du "})
-                fritekst("fortsatt er under behandling/det finnes behandling som ikke er forsøkt.")
+                text(bokmal { + ". Det er for tidlig å ta stilling til effekten av behandlingen fordi du " +
+                        fritekst("fortsatt er under behandling/det finnes behandling som ikke er forsøkt.")})
             }
             paragraph {
-                text(bokmal {+ "Fastlegen din vurderer at videre behandling i form av "})
-                fritekst("X")
-                text(bokmal {+ "kan bedre inntektsevnen din. Rådgivende lege/spesialist vurderer "})
-                fritekst("X")
-                text(bokmal {+ "."})
+                text(bokmal {+ "Fastlegen din vurderer at videre behandling i form av " + fritekst("X")})
+                text(bokmal {+ "kan bedre inntektsevnen din. Rådgivende lege/spesialist vurderer " + fritekst("X") + "."})
             }
             paragraph {
-                text(bokmal {+ "Vi mener at du ikke har fått all hensiktsmessig behandling som kan bedre inntektsevnen. "})
-                fritekst("(Individuell begrunnelse, vær konkret, f.eks utredning, samarbeidende spesialist, " +
-                        "anbefalt konkret behandling som ikke er forsøkt, våre retningslinjer ved spesielle sykdomstilstander, alder).")
+                text(bokmal {+ "Vi mener at du ikke har fått all hensiktsmessig behandling som kan bedre inntektsevnen. " +
+                        fritekst("(Individuell begrunnelse, vær konkret, f.eks utredning, samarbeidende spesialist, " +
+                                "anbefalt konkret behandling som ikke er forsøkt, våre retningslinjer ved spesielle sykdomstilstander, alder).")})
+
             }
             paragraph {
                 text(bokmal {+ "Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
