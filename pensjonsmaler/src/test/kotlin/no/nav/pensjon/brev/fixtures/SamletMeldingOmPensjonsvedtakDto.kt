@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.P1Dto.Avslagsbegrunnelse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Epost
 import no.nav.pensjon.brev.api.model.maler.P1Dto.GrunnlagInnvilget
 import no.nav.pensjon.brev.api.model.maler.P1Dto.InnvilgetPensjon
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Institusjon
+import no.nav.pensjon.brev.api.model.maler.P1Dto.UtfyllendeInstitusjon
 import no.nav.pensjon.brev.api.model.maler.P1Dto.P1Person
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Pensjonstype
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Postnummer
@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 import java.time.Month
-import java.time.Period
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
@@ -297,7 +296,7 @@ fun createP1Dto() = P1Dto(
         ),
         avslaattePensjoner =
             (0..<11).map { avslaattPensjon() },
-        utfyllendeInstitusjon = Institusjon(
+        utfyllendeInstitusjon = UtfyllendeInstitusjon(
             navn = "NFP",
             adresselinje = "Lilleviksgrenda",
             poststed = Poststed("Lillevik"),
