@@ -30,7 +30,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
         }
             .let { pdfVedleggAppender.leggPaaVedlegg(
                 it,
-                letter.template.pdfAttachments.map { a -> a.doTransform(letter.toScope()) },
+                letter.template.pdfAttachments.map { a -> a.eval(letter.toScope()) },
                 letter.language.toCode())
             }
             .let { pdf ->

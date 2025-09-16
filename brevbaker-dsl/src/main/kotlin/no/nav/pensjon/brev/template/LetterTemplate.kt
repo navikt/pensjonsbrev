@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -17,7 +17,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
-    val pdfAttachments: List<PDFTemplate<Lang,*>> = emptyList(),
+    val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
     init {

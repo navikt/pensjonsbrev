@@ -11,10 +11,6 @@ class PDFVedlegg() {
     fun side(filnavn: String, init: Side.() -> Unit) {
         muterbarSider.add(Side(filnavn).apply(init))
     }
-
-    companion object {
-        fun create(init: PDFVedlegg.() -> Unit): PDFVedlegg = PDFVedlegg().apply(init)
-    }
 }
 
 @PDFVedleggMarker
