@@ -146,7 +146,7 @@ export type Block = Identifiable & {
   readonly locked?: boolean;
   readonly editable?: boolean;
   readonly deletedContent: number[];
-  readonly originalType?: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2 | null;
+  readonly originalType?: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2;
 };
 
 export const PARAGRAPH = "PARAGRAPH";

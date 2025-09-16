@@ -100,7 +100,7 @@ describe("switchTypography", () => {
     const title1block = select<Title1Block>(result, { blockIndex: 0 });
     expect(title1block.type).toEqual(TITLE1);
     expect(title1block.content).toHaveLength(3);
-    expect(title1block.originalType).toBeNull();
+    expect(title1block.originalType).toBeUndefined();
 
     const paragraphBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
     expect(paragraphBlock.type).toEqual(PARAGRAPH);
@@ -128,7 +128,7 @@ describe("switchTypography", () => {
     const title2block = select<Title2Block>(result, { blockIndex: 1 });
     expect(title2block.type).toEqual(TITLE2);
     expect(title2block.content).toHaveLength(3);
-    expect(title2block.originalType).toBeNull();
+    expect(title2block.originalType).toBeUndefined();
 
     const paragraphBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
     expect(paragraphBlock.type).toEqual(PARAGRAPH);
@@ -156,7 +156,7 @@ describe("switchTypography", () => {
     const title1block = select<Title1Block>(result, { blockIndex: 1 });
     expect(title1block.type).toEqual(TITLE1);
     expect(title1block.content).toHaveLength(2);
-    expect(title1block.originalType).toBeNull();
+    expect(title1block.originalType).toBeUndefined();
 
     const paragraphBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
     expect(paragraphBlock.type).toEqual(PARAGRAPH);
@@ -185,7 +185,7 @@ describe("switchTypography", () => {
     const title2block = select<Title2Block>(result, { blockIndex: 1 });
     expect(title2block.type).toEqual(TITLE2);
     expect(title2block.content).toEqual(state.redigertBrev.blocks[0].content.slice(2, 4));
-    expect(title2block.originalType).toBeNull();
+    expect(title2block.originalType).toBeUndefined();
 
     const paragraphBlock1 = select<ParagraphBlock>(result, { blockIndex: 0 });
     expect(paragraphBlock1.type).toEqual(PARAGRAPH);
