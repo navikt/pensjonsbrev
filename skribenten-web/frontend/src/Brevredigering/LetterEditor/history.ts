@@ -1,9 +1,11 @@
 import type { Patch } from "immer";
 
+export type PatchKind = "TEXT_UPDATE";
+
 export interface HistoryEntry {
   patches: Patch[];
   inversePatches: Patch[];
-  label?: string;
+  kind?: PatchKind;
   timestamp?: number;
 }
 export interface History {
@@ -14,7 +16,7 @@ export interface History {
 // Time threshold for merging text update actions in history (1 second)
 const MERGE_TIME_THRESHOLD_MS = 1000;
 
-function getHistoryEntryLabel(patches: Patch[]): string | undefined {
+function getHistoryEntryLabel(patches: Patch[]): PatchKind | undefined {
   const isTextUpdate =
     patches.some((p) => p.path[p.path.length - 1] === "editedText" && typeof p.value === "string") &&
     patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
@@ -29,7 +31,7 @@ function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): HistoryE
   return {
     patches,
     inversePatches,
-    label: getHistoryEntryLabel(patches),
+    kind: getHistoryEntryLabel(patches),
     timestamp: Date.now(),
   };
 }
@@ -39,8 +41,8 @@ function updateHistory(history: History, newHistoryEntry: HistoryEntry): History
 
   const shouldMerge =
     lastHistoryEntry &&
-    newHistoryEntry.label === "TEXT_UPDATE" &&
-    lastHistoryEntry.label === "TEXT_UPDATE" &&
+    newHistoryEntry.kind === "TEXT_UPDATE" &&
+    lastHistoryEntry.kind === "TEXT_UPDATE" &&
     lastHistoryEntry.timestamp != null &&
     newHistoryEntry.timestamp != null &&
     newHistoryEntry.timestamp - lastHistoryEntry.timestamp < MERGE_TIME_THRESHOLD_MS &&
