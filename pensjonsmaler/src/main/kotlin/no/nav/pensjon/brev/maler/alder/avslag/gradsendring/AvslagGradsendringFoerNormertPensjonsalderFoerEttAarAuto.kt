@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormer
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,7 +18,6 @@ object AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto : AutobrevTempla
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

@@ -2,12 +2,9 @@ package no.nav.pensjon.brev.maler.ufoereBrev.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -20,7 +17,6 @@ class FeilBelopInntekstendringsbrev_AvkortetTil0 {
         override val kode = Pesysbrevkoder.AutoBrev.UT_ADHOC_FEIL_BELOP_INNT_ENDR_AVKORTET_TIL_0
 
         override val template = createTemplate(
-            name = kode.name,
             letterDataType = EmptyBrevdata::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(

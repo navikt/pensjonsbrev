@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -49,7 +48,6 @@ object OmstillingsstoenadRevurderingRedigerbartUtfall:
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING_UTFALL
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = OmstillingsstoenadRevurderingRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(

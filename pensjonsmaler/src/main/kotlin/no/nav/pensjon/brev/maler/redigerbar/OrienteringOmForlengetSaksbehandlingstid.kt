@@ -8,9 +8,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -27,7 +24,6 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
     override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(

@@ -23,7 +23,13 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
         languages: Lang,
         letterMetadata: LetterMetadata,
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
-    ): LetterTemplate<Lang, LetterData> = no.nav.pensjon.brev.template.dsl.createTemplate(kode.kode(), letterDataType, languages, letterMetadata, init)
+    ): LetterTemplate<Lang, LetterData> = no.nav.pensjon.brev.template.dsl.createTemplate(
+        kode.kode(),
+        letterDataType,
+        languages,
+        letterMetadata,
+        init
+    )
 }
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {

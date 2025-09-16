@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -29,7 +28,6 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
     override val sakstyper = Sakstype.all
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = BrukerTestBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(

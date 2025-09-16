@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeidManue
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -27,7 +26,6 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = OmsorgEgenManuellDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(

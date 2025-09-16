@@ -21,7 +21,6 @@ object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeye
     override val kode = Pesysbrevkoder.AutoBrev.PE_OMSORG_HJELPESTOENAD_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

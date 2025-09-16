@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -18,7 +17,6 @@ object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevMedTittelDTO>, H
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VARSEL
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = ManueltBrevMedTittelDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(

@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -33,7 +32,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
-        name = kode.name, letterDataType = AvslagUfoeretrygdDto::class, languages = languages(Bokmal, Nynorsk, English), letterMetadata = LetterMetadata(
+        letterDataType = AvslagUfoeretrygdDto::class, languages = languages(Bokmal, Nynorsk, English), letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på uføretrygd",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

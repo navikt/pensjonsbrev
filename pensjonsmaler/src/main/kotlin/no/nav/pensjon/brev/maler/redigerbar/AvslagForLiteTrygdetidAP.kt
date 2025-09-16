@@ -45,7 +45,6 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = AvslagForLiteTrygdetidAPDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

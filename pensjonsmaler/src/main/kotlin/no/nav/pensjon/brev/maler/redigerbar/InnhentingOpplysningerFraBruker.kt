@@ -9,9 +9,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -30,7 +27,6 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(

@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
@@ -36,7 +35,6 @@ private class BrevTemplateTest {
         override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =
             createTemplate(
-                name = "test",
                 letterDataType = EmptyRedigerbarBrevdata::class,
                 languages = languages(Language.Bokmal),
                 letterMetadata = LetterMetadata(

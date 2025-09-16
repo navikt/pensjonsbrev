@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -29,7 +28,6 @@ object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksb
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = OrienteringOmSaksbehandlingstidDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(

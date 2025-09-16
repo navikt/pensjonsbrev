@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -30,7 +29,6 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VARSEL_UTFALL
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = BarnepensjonVarselRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

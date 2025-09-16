@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -43,7 +42,6 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
     EtterlatteTemplate<BarnepensjonForeldreloesRedigerbarDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_UTFALL_FORELDRELOES
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = BarnepensjonForeldreloesRedigerbarDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(

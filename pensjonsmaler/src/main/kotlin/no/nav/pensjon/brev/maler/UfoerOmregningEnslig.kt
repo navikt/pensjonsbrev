@@ -61,7 +61,6 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = UfoerOmregningEnsligDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

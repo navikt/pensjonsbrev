@@ -3,7 +3,6 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,7 +18,6 @@ object OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTem
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VEDLEGG_FORHAANDSVARSEL_UTFALL
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = ManueltBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

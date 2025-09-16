@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -15,7 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AdhocMidlertidigOpphoerHvilenderett10Aar : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_UT_ADHOC_2024_MIDL_OPPHOER_HVILENDE_RETT_10_AAR
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
-        name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
