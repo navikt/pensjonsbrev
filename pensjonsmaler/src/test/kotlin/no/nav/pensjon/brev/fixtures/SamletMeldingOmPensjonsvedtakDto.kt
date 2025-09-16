@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.P1Dto
@@ -55,21 +56,21 @@ fun createP1Dto() = P1Dto(
         kravMottattDato = LocalDate.of(1983, Month.FEBRUARY, 2),
         innvilgedePensjoner = listOf(
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -79,31 +80,31 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -113,31 +114,31 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -147,32 +148,32 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
 
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode =  "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -182,31 +183,31 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -216,31 +217,31 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode =  "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -250,31 +251,31 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY",
+                institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloep = 1000,
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode =  "tjue år",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("FI"),
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
-                ),
+                )),
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
@@ -284,14 +285,14 @@ fun createP1Dto() = P1Dto(
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
-                adresseNyVurdering = Adresse(
+                adresseNyVurdering = listOf(Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
                     adresselinje2 = null,
                     adresselinje3 = null,
                     landkode = Landkode("DK"),
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
-                ),
+                )),
             ),
         ),
         avslaattePensjoner =
@@ -310,17 +311,26 @@ fun createP1Dto() = P1Dto(
         )
     )
 
+private fun nay(): List<P1Dto.Institusjon> = listOf(
+    P1Dto.Institusjon(
+        institusjonsid = null,
+        institusjonsnavn = "NAY",
+        saksnummer = null,
+        land = null
+    )
+)
+
 private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = "NAY 4",
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "en måned",
-    adresseNyVurdering = Adresse(
+    adresseNyVurdering = listOf(Adresse(
         adresselinje1 = "Lillevik Torgvei 1",
         adresselinje2 = null,
         adresselinje3 = null,
         landkode = Landkode("FI"),
         postnummer = Postnummer("4321"),
         poststed = Poststed("Lillevik Østre")
-    )
+    ))
 )
