@@ -4,7 +4,6 @@ import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
-import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.sql.insert
@@ -102,27 +101,38 @@ fun JobConfig.updateBrevredigeringJson() {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
             BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrev
+            BrevredigeringTable.redigertBrev,
+            BrevredigeringTable.redigertBrevHash,
+            BrevredigeringTable.redigertBrevKryptertHash,
         ).toList()
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres =
-            alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+        val kanOppdateres = alleBrev
+            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+            .filter { it[BrevredigeringTable.redigertBrevKryptertHash] != it[BrevredigeringTable.redigertBrevHash] }
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
+            logger.debug("Oppdaterer {}", brevId)
             val redigertBrev = it[BrevredigeringTable.redigertBrev]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
+                update[BrevredigeringTable.redigertBrev] = redigertBrev
+                update[BrevredigeringTable.redigertBrevHash] = EditLetterHash.read(redigertBrev)
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
-                update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
-                    .let { bytes -> EditLetterHash.fromBytes(WithEditLetterHash.hashBrev(bytes)) }
+                update[BrevredigeringTable.redigertBrevKryptertHash] = EditLetterHash.read(redigertBrev)
             }
         }
 
-        val kryptertNull = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevKryptert).where({
-            BrevredigeringTable.redigertBrevKryptert.isNull()
-        }).map { it[BrevredigeringTable.id].value }
-        if (kryptertNull.isNotEmpty()) {
-            logger.info("Kunne ikke oppdatere brevene ${kryptertNull.joinToString(",")}")
+        val ulikHash = BrevredigeringTable.select(
+            BrevredigeringTable.id,
+            BrevredigeringTable.redigertBrevHash,
+            BrevredigeringTable.redigertBrevKryptertHash
+        )
+            .where({
+                BrevredigeringTable.redigertBrevKryptertHash.neq(BrevredigeringTable.redigertBrevHash)
+            })
+            .map { it[BrevredigeringTable.id].value }
+        if (ulikHash.isNotEmpty()) {
+            logger.info("Fikk forskjellig hash mellom vanlig og kryptert for brevene ${ulikHash.joinToString(",")}")
             completed = false
         }
     }

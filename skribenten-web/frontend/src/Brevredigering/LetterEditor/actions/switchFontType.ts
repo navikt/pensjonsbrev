@@ -276,12 +276,12 @@ const switchFontTypeOfCurrentWord = (args: {
   }
 
   let wordStartPosition = cursorPosition;
-  while (wordStartPosition > 0 && text[wordStartPosition - 1].trim() !== "") {
+  while (wordStartPosition > 0 && text[wordStartPosition - 1]?.trim() !== "") {
     wordStartPosition--;
   }
 
   let wordEndPosition = cursorPosition;
-  while (wordEndPosition < text.length && text[wordEndPosition].trim() !== "") {
+  while (wordEndPosition < text.length && text[wordEndPosition]?.trim() !== "") {
     wordEndPosition++;
   }
 

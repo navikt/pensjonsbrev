@@ -1,41 +1,20 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.db.Brevredigering
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.Document
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.db.Mottaker
-import no.nav.pensjon.brev.skribenten.db.MottakerType
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.klarTilSending
-import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.toMarkup
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
-import no.nav.pensjon.brev.skribenten.model.toPen
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.ArkivertBrevException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevIkkeKlartTilSendingException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevLaastForRedigeringException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeReservereBrevredigeringException
+import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.letter.*
+import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
@@ -173,7 +152,12 @@ class BrevredigeringService(
             }
 
             transaction {
-                brevDb.laastForRedigering = laastForRedigering ?: brevDb.laastForRedigering
+                if (laastForRedigering == false) {
+                    brevDb.laastForRedigering = laastForRedigering
+                    brevDb.attestertAvNavIdent = null
+                } else if (laastForRedigering == true) {
+                    brevDb.laastForRedigering = laastForRedigering
+                }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
                 mottaker?.also { brevDb.mottaker?.oppdater(it) ?: Mottaker.new(brevId) { oppdater(it) } }
                 brevDb.redigeresAvNavIdent = null
@@ -342,6 +326,9 @@ class BrevredigeringService(
                 throw BrevIkkeKlartTilSendingException("Brev må være markert som klar til sending")
             }
             brev.validerErFerdigRedigert()
+            if (document.redigertBrevHash != brev.redigertBrevHash) {
+                throw BrevIkkeKlartTilSendingException("Det finnes en nyere versjon av brevet enn den som er generert til PDF")
+            }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
@@ -559,7 +546,7 @@ class BrevredigeringService(
         val template = brevbakerService.getRedigerbarTemplate(brevkode)
 
         return if (template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-            vedtaksId ?: throw BrevredigeringException.VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
+            vedtaksId ?: throw VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
         } else {
             null
         }
@@ -577,17 +564,17 @@ private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
 
 private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
     if (!userPrincipal.isAttestant()) {
-        throw BrevredigeringException.HarIkkeAttestantrolleException(
+        throw HarIkkeAttestantrolleException(
             "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${info.id}",
         )
     }
     if (userPrincipal.navIdent == info.opprettetAv) {
-        throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
+        throw KanIkkeAttestereEgetBrevException(
             "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${info.id}",
         )
     }
     if (info.attestertAv != null && info.attestertAv != userPrincipal.navIdent) {
-        throw BrevredigeringException.AlleredeAttestertException("Brev ${info.id} er allerede attestert av ${info.attestertAv}")
+        throw AlleredeAttestertException("Brev ${info.id} er allerede attestert av ${info.attestertAv}")
     }
 }
 
