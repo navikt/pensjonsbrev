@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
-import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.P1Dto
@@ -73,7 +72,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -107,7 +106,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -141,7 +140,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -176,7 +175,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -210,7 +209,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -244,7 +243,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -278,7 +277,7 @@ fun createP1Dto() = P1Dto(
                 )),
             ),
             InnvilgetPensjon(
-                institusjon = "NAY2",
+                institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloep = 2000,
@@ -320,8 +319,22 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
     )
 )
 
+private fun nay2(): List<P1Dto.Institusjon> = listOf(
+    P1Dto.Institusjon(
+        institusjonsid = null,
+        institusjonsnavn = "NAY2",
+        saksnummer = null,
+        land = null
+    )
+)
+
 private fun avslaattPensjon() = AvslaattPensjon(
-    institusjon = "NAY 4",
+    institusjon = P1Dto.Institusjon(
+        institusjonsid = null,
+        institusjonsnavn = "NAY 4",
+        saksnummer = null,
+        land = null
+    ),
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "en måned",
