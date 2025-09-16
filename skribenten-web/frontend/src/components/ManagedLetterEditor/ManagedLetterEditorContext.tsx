@@ -15,14 +15,14 @@ interface ManagedLetterEditorContextValue {
   onSaveSuccess: (response: BrevResponse) => void;
 }
 
+const nullsToUndefined = (obj: unknown) =>
+  JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
+
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
 export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
-
-  const nullsToUndefined = (obj: unknown) =>
-    JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
 
   const onSaveSuccess = useCallback(
     (response: BrevResponse) => {
