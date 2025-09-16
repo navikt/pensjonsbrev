@@ -81,7 +81,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
         letterDataType = EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Endring av alderspensjon (sivilstand)",
+            displayTitle = "Vedtak - Endring av alderspensjon (særskilt sats)",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
