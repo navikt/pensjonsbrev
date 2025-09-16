@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.template.render.dsl
 
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 
 inline fun <reified LetterData : Any> outlineTestTemplate(

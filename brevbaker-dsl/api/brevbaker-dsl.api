@@ -1265,7 +1265,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateKt {
 	public static synthetic fun choice$default (Lno/nav/pensjon/brev/template/dsl/TemplateFormChoiceScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun choice$default (Lno/nav/pensjon/brev/template/dsl/TemplateFormChoiceScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun choice$default (Lno/nav/pensjon/brev/template/dsl/TemplateFormChoiceScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static final fun createTemplate (Ljava/lang/String;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
