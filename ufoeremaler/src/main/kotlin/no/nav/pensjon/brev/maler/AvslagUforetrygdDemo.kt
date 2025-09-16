@@ -57,10 +57,8 @@ object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
                 text(bokmal { + "Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din."})
             }
             paragraph {
-                text(bokmal { + "Funksjonsnedsettelsen vises i form av "})
-                fritekst("X")
-                text(bokmal { + ". Følgene av dette er at du ikke klarer å fungere i arbeid. Det er forsøkt behandling i form av "})
-                fritekst("X")
+                text(bokmal { + "Funksjonsnedsettelsen vises i form av " + fritekst("X")})
+                text(bokmal { + ". Følgene av dette er at du ikke klarer å fungere i arbeid. Det er forsøkt behandling i form av " + fritekst("X")})
                 text(bokmal { + ". Det er for tidlig å ta stilling til effekten av behandlingen fordi du "})
                 fritekst("fortsatt er under behandling/det finnes behandling som ikke er forsøkt.")
             }
