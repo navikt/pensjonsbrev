@@ -143,6 +143,13 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
                     )
                 }
                 item {
+                    text (
+                        bokmal { + "Store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere."},
+                        nynorsk { + ""},
+                        english { + ""},
+                    )
+                }
+                item {
                     text(
                         bokmal { + "Erstatningsoppgjør etter skadeerstatningsloven § 3-1 (også voldsoffererstatning), yrkesskadeloven § 13, og pasientskadeloven § 4 første ledd." },
                         nynorsk { + "Erstatningsoppgjer etter lova om skadeserstatning § 3-1 (også valdsoffererstatning), yrkesskadelova § 13, og pasientskadelova § 4 første ledd." },
@@ -178,6 +185,14 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
                         nynorsk { + "kopi av vedtak om erstatning" },
                         english { + "copy of the compensation decision" }
                     )
+                }
+                item {
+                    text(
+                        bokmal { + "kopi av vedtak om etterbetaling" },
+                        nynorsk { + "kopi av vedtak om etterbetaling" },
+                        english { + "copy of " }
+                    )
+
                 }
             }
         }
