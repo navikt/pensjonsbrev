@@ -247,6 +247,7 @@ export function newTitle(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
+    originalType: null,
   };
 }
 
@@ -263,6 +264,7 @@ export function newParagraph(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
+    originalType: null,
   };
 }
 

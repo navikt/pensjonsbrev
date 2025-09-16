@@ -21,6 +21,9 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const queryClient = useQueryClient();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
 
+  const nullsToUndefined = (obj: unknown) =>
+    JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
+
   const onSaveSuccess = useCallback(
     (response: BrevResponse) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
@@ -30,7 +33,10 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus !== "DIRTY") {
-          const keepHistory = _.isEqual(previousState.redigertBrev, response.redigertBrev);
+          const keepHistory = _.isEqual(
+            nullsToUndefined(previousState.redigertBrev),
+            nullsToUndefined(response.redigertBrev),
+          );
           return {
             ...previousState,
             redigertBrev: response.redigertBrev,
