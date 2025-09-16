@@ -97,7 +97,7 @@ object InfoAldersovergangEps60AarAuto : AutobrevTemplate<InfoAldersovergangEps60
                     text(bokmal { +"Som dokumentasjon kan du sende kopi av skatteoppgjøret for siste år. Vi godtar også bekreftelse fra regnskapsfører, årsoppgave fra bank eller kopier av lønns- og trekkoppgaver." })
                 }
                 paragraph {
-                    text(bokmal { +"Husk å merke forsendelsen med både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
+                    text(bokmal { +"Husk å legge ved både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
                 }
                 paragraph {
                     text(bokmal { +"Du bør sende inn dokumentasjonen innen 14 dager fra du mottar dette brevet, til:" })
