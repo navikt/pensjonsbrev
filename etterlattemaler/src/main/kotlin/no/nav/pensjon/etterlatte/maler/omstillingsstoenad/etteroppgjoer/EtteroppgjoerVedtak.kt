@@ -52,7 +52,7 @@ data class EtteroppgjoerVedtakDataDTO(
     val grunnlag: EtteroppgjoerGrunnlagDTO
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true)
 }
 
 @TemplateModelHelpers
