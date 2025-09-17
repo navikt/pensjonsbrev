@@ -120,6 +120,7 @@ export const LetterEditor = ({
             size="medium"
           >
             <EditedLetterTitle title={letter.title} />
+            {/* <ContentGroup literalIndex={{ blockIndex: -1, contentIndex: 0 }} /> */}
           </Heading>
           <div onKeyDown={editorKeyboardShortcuts}>
             {blocks.map((block, blockIndex) => (
