@@ -324,10 +324,8 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTextLiteral(text: String, fontType: Text.FontType, textScopeType: TextScopeType? = TextScopeType.TEXT): Unit =
-        if(textScopeType == TextScopeType.PLAIN_TEXT) {
-            append(text)
-        } else when (fontType) {
+    private fun LatexAppendable.renderTextLiteral(text: String, fontType: Text.FontType): Unit =
+        when (fontType) {
             Text.FontType.PLAIN -> append(text)
             Text.FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
             Text.FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
@@ -335,6 +333,7 @@ internal object LatexDocumentRenderer {
 
     private fun LatexAppendable.renderPlainTextLiteral(text: String): Unit =
         append(text)
+
     private fun LatexAppendable.renderForm(element: Form): Unit =
         when (element) {
             is Form.MultipleChoice -> {
@@ -374,8 +373,4 @@ internal object LatexDocumentRenderer {
             }
         }
 
-    private enum class TextScopeType{
-        PLAIN_TEXT,
-        TEXT,
-    }
 }
