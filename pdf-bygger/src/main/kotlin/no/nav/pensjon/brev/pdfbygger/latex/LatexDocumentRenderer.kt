@@ -174,7 +174,7 @@ internal object LatexDocumentRenderer {
         appendCmd("sluttvedlegg")
     }
 
-    private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+    private fun LatexAppendable.renderTitleIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
         val text = renderTextsToString(content)
         if (text.isNotEmpty()) {
             render(text)
@@ -200,15 +200,15 @@ internal object LatexDocumentRenderer {
         when (block) {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block, previous)
 
-            is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
+            is LetterMarkup.Block.Title1 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitleone", titleText)
+                    appendCmd("lettersectiontitleone", titleText, escape = false) // allerede escapet over.
                 }
             }
 
-            is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
+            is LetterMarkup.Block.Title2 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitletwo", titleText)
+                    appendCmd("lettersectiontitletwo", titleText, escape = false)  // allerede escapet over.
                 }
             }
         }
