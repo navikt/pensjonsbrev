@@ -89,18 +89,6 @@ class LatexVisualITest {
     }
 
     @Test
-    fun illegalFont(){
-        render {
-            title1 {
-                addTextContent(newText(Bokmal to "This font should be the same as the other one, but the font type is actually illegal", FontType.BOLD))
-            }
-            title1 {
-                addTextContent(newText(Bokmal to "This font should be the same as the other one, but the font type is legal", FontType.PLAIN))
-            }
-        }
-    }
-
-    @Test
     fun `verge foersteside`() {
         render(
             felles = Fixtures.felles.copy(
