@@ -24,7 +24,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivils
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.saerskiltSatsErBrukt
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
@@ -140,7 +139,6 @@ object EndringAvAlderspensjonSivilstandAuto :
                         minstenivaaIndividuellInnvilget = alderspensjonVedVirk.minstenivaaIndividuellInnvilget,
                         minstenivaaPensjonistParInnvilget = alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget,
                         garantipensjonInnvilget = alderspensjonVedVirk.garantipensjonInnvilget,
-                        saerskiltSatsErBrukt = saerskiltSatsErBrukt,
                     ),
                 )
 
