@@ -30,6 +30,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.faktiskStoenad
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.stoenadUtbetalt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.erVedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
@@ -45,6 +46,7 @@ data class BeregningsVedleggData(
     val etteroppgjoersAar: Int,
     val utbetalingData : EtteroppgjoerUtbetalingDTO,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
+    val erVedtak: Boolean = false
 ) : BrevDTO
 
 data class EtteroppgjoerGrunnlagDTO(
@@ -80,20 +82,40 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.opplysningerOmEtteroppgjoer(
     etteroppgjoersAar: Expression<Int>
 ) {
-    paragraph {
-        text(
-            bokmal { +"Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i " + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no." },
-            nynorsk { +"Omstillingsstønaden din blei rekna ut på grunnlag av det du oppgav som forventa inntekt i " + etteroppgjoersAar.format() +". Vi har no gjort ei ny utrekning av den faktiske inntekta di for "+etteroppgjoersAar.format()+" basert på opplysningar frå Skatteetaten og a-ordninga. Du kan sjå skatteoppgjeret ditt på skatteetaten.no." },
-            english { +"Your adjustment allowance was calculated based on your expected income you stated in " + etteroppgjoersAar.format() +". We have now carried out a new calculation based on information provided by the Tax Administration and A-scheme regarding your actual income for "+etteroppgjoersAar.format()+". You can see your tax settlement at: skatteetaten.no." },
-        )
+
+    showIf(erVedtak) {
+        paragraph {
+            text(
+                bokmal { +"Omstillingsstønaden din er nå beregnet på nytt for " + etteroppgjoersAar.format() +"." },
+                nynorsk { +"Vi har no gjort ei ny utrekning av omstillingsstønaden din for " + etteroppgjoersAar.format() +"." },
+                english { +"Your transitional benefit has now been recalculated for " + etteroppgjoersAar.format() +"." }
+            )
+        }
+        paragraph {
+            text(
+                bokmal { +"Det er opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for " + etteroppgjoersAar.format() + " som er brukt i beregningen. Hvis du har svart på varselet du fikk tidligere, har vi vurdert det du har skrevet og kommentert dette i avsnittet «Beløp trukket fra din pensjonsgivende inntekt»." },
+                nynorsk { +"Utrekninga er gjort ut frå opplysningar om di faktiske inntekt for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga.  Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du har skrive og kommentert dette i avsnittet «Beløp trekt frå di pensjonsgivande inntekt»." },
+                english { +"The recalculation is based on information from the Tax Administration and the A-scheme regarding your actual income for " + etteroppgjoersAar.format() + ". If you responded to the notice you received earlier, we have reviewed your input and commented on it in the section «Amount deducted from your pensionable income»." },
+            )
+        }
+    }.orShow {
+        paragraph {
+            text(
+                bokmal { +"Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i " + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no." },
+                nynorsk { +"Omstillingsstønaden din blei rekna ut på grunnlag av det du oppgav som forventa inntekt i " + etteroppgjoersAar.format() +". Vi har no gjort ei ny utrekning av den faktiske inntekta di for "+etteroppgjoersAar.format()+" basert på opplysningar frå Skatteetaten og a-ordninga. Du kan sjå skatteoppgjeret ditt på skatteetaten.no." },
+                english { +"Your adjustment allowance was calculated based on your expected income you stated in " + etteroppgjoersAar.format() +". We have now carried out a new calculation based on information provided by the Tax Administration and A-scheme regarding your actual income for "+etteroppgjoersAar.format()+". You can see your tax settlement at: skatteetaten.no." },
+            )
+        }
+        paragraph {
+            text(
+                bokmal { +"Husk at du må melde fra til oss innen tre uker hvis du mener beregningene er feil." },
+                nynorsk { +"Hugs at du må melde frå til oss innan tre veker dersom du meiner at utrekningane ikkje stemmer." },
+                english { +"Remember that you must notify us within three weeks if you believe that the calculations are incorrect." },
+            )
+        }
     }
-    paragraph {
-        text(
-            bokmal { +"Husk at du må melde fra til oss innen tre uker hvis du mener beregningene er feil." },
-            nynorsk { +"Hugs at du må melde frå til oss innan tre veker dersom du meiner at utrekningane ikkje stemmer." },
-            english { +"Remember that you must notify us within three weeks if you believe that the calculations are incorrect." },
-        )
-    }
+
+
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hvaDuFikkUtbetalt(
