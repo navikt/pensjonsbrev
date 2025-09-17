@@ -12,7 +12,6 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
     noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
 ): LetterTemplate<LangBokmal, LetterData> =
     createTemplate(
-        name = "test",
         letterDataType = LetterData::class,
         languages = languages(Bokmal),
         letterMetadata = testLetterMetadata,
@@ -22,7 +21,6 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
     }
 
 internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
-    name = "test",
     title = listOf(bokmalTittel),
     letterDataType = Unit::class,
     language = languages(Bokmal),

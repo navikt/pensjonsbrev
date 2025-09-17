@@ -20,7 +20,6 @@ class ShowIfTest {
     @Test
     fun `createTemplate adds showIf`() {
         val expected = LetterTemplate(
-            name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -41,7 +40,6 @@ class ShowIfTest {
         )
 
         val actual = createTemplate(
-            name = "test",
             letterDataType = SomeDto::class,
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
@@ -66,7 +64,6 @@ class ShowIfTest {
     fun `orShowIf adds a conditional element as else`() {
         val exprScope = Expression.FromScope.Argument<SomeDto>()
         val expected = LetterTemplate(
-            name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -93,7 +90,6 @@ class ShowIfTest {
         )
 
         val actual = createTemplate(
-            name = "test",
             letterDataType = SomeDto::class,
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
@@ -117,7 +113,6 @@ class ShowIfTest {
     fun `final orShow nests as showOr in inner-most conditional element`() {
         val exprScope = Expression.FromScope.Argument<SomeDto>()
         val expected = LetterTemplate(
-            name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -144,7 +139,6 @@ class ShowIfTest {
         )
 
         val actual = createTemplate(
-            name = "test",
             letterDataType = SomeDto::class,
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,

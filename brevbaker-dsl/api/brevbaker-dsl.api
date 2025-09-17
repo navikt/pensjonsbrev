@@ -677,7 +677,6 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getLanguage ()Lno/nav/pensjon/brev/template/LanguageSupport;
 	public final fun getLetterDataType ()Lkotlin/reflect/KClass;
 	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
-	public final fun getName ()Ljava/lang/String;
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I

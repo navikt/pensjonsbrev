@@ -119,7 +119,6 @@ class Letter2MarkupTest {
     @Test
     fun `template title with expression renders as declared`() {
         val template = createTemplate(
-            name = "test",
             letterDataType = EmptyBrevdata::class,
             languages = languages(Bokmal),
             letterMetadata = testLetterMetadata,

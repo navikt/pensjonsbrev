@@ -41,7 +41,6 @@ class CreateAttachmentTest {
         val testVedlegg = vedlegg
 
         val testTemplate = createTemplate(
-            name = "test",
             letterDataType = LittInnhold::class,
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,

@@ -15,7 +15,6 @@ class LetterTest {
     data class TestData(val s: String)
 
     val template = createTemplate(
-        name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(

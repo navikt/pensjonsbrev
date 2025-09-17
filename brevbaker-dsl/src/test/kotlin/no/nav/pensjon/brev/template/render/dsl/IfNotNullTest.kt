@@ -24,7 +24,6 @@ object Helpers : HasModel<NullBrevDto>
 class IfNotNullTest {
 
     val template = createTemplate(
-        name = "NULL_BREV",
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
@@ -99,7 +98,6 @@ class IfNotNullTest {
 }
 
 fun <Lang : LanguageSupport, LetterData : Any> LetterTemplate<Lang, LetterData>.copy(outline: List<OutlineElement<Lang>>) = LetterTemplate(
-    name = this.name,
     title = this.title,
     letterDataType = this.letterDataType,
     language = this.language,

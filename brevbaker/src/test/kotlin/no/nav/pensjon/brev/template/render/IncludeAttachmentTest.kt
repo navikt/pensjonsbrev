@@ -40,7 +40,6 @@ class IncludeAttachmentTest {
         }
 
         private val testTemplate = createTemplate(
-            name = "test",
             letterDataType = NullData::class,
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,

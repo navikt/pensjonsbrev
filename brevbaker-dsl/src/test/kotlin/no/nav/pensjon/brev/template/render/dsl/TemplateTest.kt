@@ -19,7 +19,6 @@ class TemplateTest {
     @Test
     fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
-            name = "test",
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -34,7 +33,6 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
@@ -75,7 +73,6 @@ class TemplateTest {
         }
 
         val doc = createTemplate(
-            name = "test",
             letterDataType = SomeDto::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -86,7 +83,6 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
@@ -121,7 +117,6 @@ class TemplateTest {
     @Test
     fun `createTemplate adds literal title`() {
         val doc = createTemplate(
-            name = "test",
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -134,7 +129,6 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
@@ -157,7 +151,6 @@ class TemplateTest {
     @Test
     fun `createTemplate adds outline`() {
         val doc = createTemplate(
-            name = "test",
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -173,7 +166,6 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),

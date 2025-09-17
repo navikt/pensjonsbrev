@@ -27,7 +27,6 @@ object Helpers : HasModel<NullBrevDto>
 class IfNotNullTest {
 
     val template = createTemplate(
-        name = "NULL_BREV",
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(

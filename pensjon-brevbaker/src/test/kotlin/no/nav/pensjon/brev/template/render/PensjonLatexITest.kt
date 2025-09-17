@@ -39,7 +39,6 @@ class PensjonLatexITest {
     @Test
     fun canRender() {
         val template = createTemplate(
-            name = "test-template",
             letterDataType = TestTemplateDto::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
@@ -109,7 +108,6 @@ class PensjonLatexITest {
     private fun testCharacters(startChar: Int, endChar: Int): Boolean {
         try {
             val testTemplate = createTemplate(
-                name = "test-template",
                 letterDataType = TestTemplateDto::class,
                 languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(

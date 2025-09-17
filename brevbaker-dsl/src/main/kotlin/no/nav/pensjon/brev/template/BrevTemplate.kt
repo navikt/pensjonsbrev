@@ -25,7 +25,7 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
     ): LetterTemplate<Lang, LetterData> =
         with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-            return LetterTemplate(kode.kode(), title, letterDataType, languages, outline, attachments, letterMetadata)
+            return LetterTemplate(title, letterDataType, languages, outline, attachments, letterMetadata)
         }
 }
 
@@ -36,7 +36,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
 
     override fun description(): TemplateDescription.Redigerbar =
         TemplateDescription.Redigerbar(
-            name = template.name,
+            name = kode.kode(),
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
             metadata = template.letterMetadata,
@@ -54,7 +54,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
     override fun description(): TemplateDescription.Autobrev =
         TemplateDescription.Autobrev(
-            name = template.name,
+            name = kode.kode(),
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
             metadata = template.letterMetadata,
