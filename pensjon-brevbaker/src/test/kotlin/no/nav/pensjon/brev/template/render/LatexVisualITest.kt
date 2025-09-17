@@ -92,10 +92,10 @@ class LatexVisualITest {
     fun illegalFont(){
         render {
             title1 {
-                addTextContent(newText(Bokmal to "This font is actually illegal, but it should lead to nothing...", FontType.BOLD))
+                addTextContent(newText(Bokmal to "This font should be the same as the other one, but the font type is actually illegal", FontType.BOLD))
             }
             title1 {
-                addTextContent(newText(Bokmal to "This font is actually illegal, but it should lead to nothing...", FontType.PLAIN))
+                addTextContent(newText(Bokmal to "This font should be the same as the other one, but the font type is legal", FontType.PLAIN))
             }
         }
     }
