@@ -150,7 +150,7 @@ describe("attestering", () => {
     cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
 
     //------Forhåndsvisning------
-    cy.contains("Information about application processing time").should("exist");
+    cy.contains("Informasjon om saksbehandlingstid").should("exist");
     cy.contains("Mottaker").should("exist");
     cy.contains("Tydelig Bakke").should("exist");
     cy.contains("Mauråsveien 29").should("exist");
