@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import java.util.Objects
 
 @PDFVedleggMarker
 class PDFVedlegg() {
@@ -11,6 +12,13 @@ class PDFVedlegg() {
     fun side(filnavn: String, init: Side.() -> Unit) {
         muterbarSider.add(Side(filnavn).apply(init))
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is PDFVedlegg) return false
+        return muterbarSider == other.muterbarSider
+    }
+    override fun hashCode() = muterbarSider.hashCode()
+    override fun toString() = "PDFVedlegg(muterbarSider=$muterbarSider)"
 }
 
 @PDFVedleggMarker
@@ -22,6 +30,14 @@ class Side(val filnavn: String) {
     fun felt(init: Felt.() -> Unit) {
         muterbarFelt.add(Felt().apply(init))
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Side) return false
+        return filnavn == other.filnavn && muterbarFelt == other.muterbarFelt
+    }
+
+    override fun hashCode() = Objects.hash(filnavn, muterbarFelt)
+    override fun toString() = "Side(filnavn='$filnavn', felt=$felt)"
 }
 
 @PDFVedleggMarker
@@ -58,6 +74,13 @@ class Felt() {
                 .filter { it.value is Map<*, *> }
                 .forEach { muterbareFelt[it.key] = it.value as Map<LanguageCode, String?> }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Felt) return false
+        return muterbareFelt == other.muterbareFelt
+    }
+    override fun hashCode() = muterbareFelt.hashCode()
+    override fun toString() = "Felt(muterbareFelt=$muterbareFelt)"
 }
 
 @DslMarker
