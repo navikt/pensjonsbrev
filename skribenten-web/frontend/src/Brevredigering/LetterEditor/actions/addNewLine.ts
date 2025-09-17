@@ -23,6 +23,12 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
         case LITERAL: {
           // split literal and add new line
           if (offset === 0) {
+            if (
+              block.content[focus.contentIndex - 1]?.type === NEW_LINE ||
+              block.content[focus.contentIndex + 1]?.type === NEW_LINE
+            ) {
+              break;
+            }
             addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
             draft.focus = {
               contentIndex: focus.contentIndex + 1,
@@ -30,6 +36,12 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
               blockIndex: focus.blockIndex,
             };
           } else if (offset >= text(content).length) {
+            if (
+              block.content[focus.contentIndex - 1]?.type === NEW_LINE ||
+              block.content[focus.contentIndex + 1]?.type === NEW_LINE
+            ) {
+              break;
+            }
             const isAtEndOfBlock = focus.contentIndex + 1 === block.content.length;
             const toAdd = isAtEndOfBlock ? [createNewLine(), newLiteral()] : [createNewLine()];
             addElements(toAdd, focus.contentIndex + 1, block.content, block.deletedContent);
