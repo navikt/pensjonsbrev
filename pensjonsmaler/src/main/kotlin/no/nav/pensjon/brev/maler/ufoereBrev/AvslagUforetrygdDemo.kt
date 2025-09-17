@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDtoSelec
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.AvslagUforetrygdDemoDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -22,6 +23,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
+
+    override val featureToggle = FeatureToggles.utAvslagUforetrygdDemo.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD_DEMO
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING

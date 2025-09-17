@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.brevbaker.AutoMal
 import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.RedigerbarMal
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -69,7 +67,7 @@ class GenererAlleMaleneTest {
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
         val malKoder = (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler())
-            .map { it.template.kode.kode() }
+            .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
             assert(a != b) { "Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev." }
@@ -89,10 +87,10 @@ class GenererAlleMaleneTest {
             return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
                 (ProductionTemplates.hentAutobrevmaler() +
                         ProductionTemplates.hentRedigerbareMaler()
-                        + AutoMal(LetterExample)
-                        + RedigerbarMal(EksempelbrevRedigerbart)
-                ).filter { filter.isEmpty() || filter.any { f -> it.template.kode.kode() == f.kode() } }
-                    .map { Arguments.of(it.template.template, it.template.kode, Fixtures.create(it.template.template.letterDataType), spraak) }
+                        + LetterExample
+                        + EksempelbrevRedigerbart
+                        ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
+                    .map { Arguments.of(it.template, it.kode, Fixtures.create(it.template.letterDataType), spraak) }
             }
         }
     }

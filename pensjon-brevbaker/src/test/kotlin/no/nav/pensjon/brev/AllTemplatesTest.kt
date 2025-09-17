@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev
 
-import no.nav.brev.brevbaker.AutoMal
-import no.nav.brev.brevbaker.RedigerbarMal
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -29,7 +27,6 @@ class AllTemplatesTest {
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
         val malKoder = (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler())
-            .map { it.template }
             .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
@@ -70,11 +67,9 @@ class AllTemplatesTest {
             return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
                 (ProductionTemplates.hentAutobrevmaler() +
                         ProductionTemplates.hentRedigerbareMaler()
-                        + AutoMal(LetterExample)
-                        + RedigerbarMal(EksempelbrevRedigerbart)
-                )
-                    .map { it.template }
-                    .filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
+                        + LetterExample
+                        + EksempelbrevRedigerbart
+                        ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
                     .map { Arguments.of(it.template, it.kode, spraak) }
             }
         }

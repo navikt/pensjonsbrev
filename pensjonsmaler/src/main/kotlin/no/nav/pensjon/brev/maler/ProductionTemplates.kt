@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.brev.brevbaker.AutoMal
-import no.nav.brev.brevbaker.RedigerbarMal
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
@@ -32,9 +31,11 @@ import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates : AllTemplates {
-    private val autobrev = setOf(
+    private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
@@ -94,53 +95,52 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer
-    ).map { AutoMal(it) }.toSet()
+    )
 
-    private val redigerbare: Set<RedigerbarMal<RedigerbarBrevdata<*, *>>> = setOf(
-        RedigerbarMal(AvslagForLiteTrygdetidAP, FeatureToggles.avslagForLiteTrygdetidAP.toggle),
-        RedigerbarMal(AvslagGradsendringFoerNormertPensjonsalder, FeatureToggles.apAvslagGradsendringNormertPensjonsalder.toggle),
-        RedigerbarMal(AvslagGradsendringFoerNormertPensjonsalderAP2016, FeatureToggles.apAvslagGradsendringNormertPensjonsalderAP2016.toggle),
-        RedigerbarMal(AvslagGradsendringFoerNormertPensjonsalderFoerEttAar, FeatureToggles.apAvslagGradsendringNormertPensjonsalderFoerEttAar.toggle),
-        RedigerbarMal(AvslagPaaGjenlevenderettIAlderspensjon, FeatureToggles.apAvslagGjenlevenderett.toggle),
-        RedigerbarMal(AvslagUfoeretrygd, FeatureToggles.brevmalUtAvslag.toggle),
-        RedigerbarMal(AvslagUttakFoerNormertPensjonsalder, FeatureToggles.apAvslagNormertPensjonsalder.toggle),
-        RedigerbarMal(AvslagUttakFoerNormertPensjonsalderAP2016, FeatureToggles.apAvslagNormertPensjonsalderAP2016.toggle),
-        RedigerbarMal(BekreftelsePaaFlyktningstatus),
-        RedigerbarMal(BrukerTestBrev, FeatureToggles.brukertestbrev2025.toggle),
-        RedigerbarMal(EndringAvAlderspensjonPgaGarantitillegg, FeatureToggles.endringAvAlderspensjonSivilstandGarantitillegg.toggle),
-        RedigerbarMal(EndringAvAlderspensjonSivilstand, FeatureToggles.endringAvAlderspensjonSivilstand.toggle),
-        RedigerbarMal(EndringAvAlderspensjonSivilstandSaerskiltSats, FeatureToggles.endringAvAlderspensjonSivilstandVurderSaerskiltSats.toggle),
-        RedigerbarMal(ForespoerselOmDokumentasjonAvBotidINorgeAlder),
-        RedigerbarMal(ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte),
-        RedigerbarMal(ForhaandsvarselVedTilbakekreving),
-        RedigerbarMal(InformasjonOmGjenlevenderettigheter, FeatureToggles.informasjonOmGjenlevenderettigheter.toggle),
-        RedigerbarMal(InformasjonOmSaksbehandlingstid),
-        RedigerbarMal(InformasjonOmSaksbehandlingstidUT),
-        RedigerbarMal(InnhentingDokumentasjonFraBruker),
-        RedigerbarMal(InnhentingInformasjonFraBruker),
-        RedigerbarMal(InnhentingOpplysningerFraBruker),
-        RedigerbarMal(InnvilgelseAvAlderspensjon, FeatureToggles.innvilgelseAvAlderspensjon.toggle),
-        RedigerbarMal(InnvilgelseAvAlderspensjonTrygdeavtale, FeatureToggles.innvilgelseAvAlderspensjonTrygdeavtale.toggle),
-        RedigerbarMal(OmregningAlderUfore2016, FeatureToggles.omregningAlderUfore2016.toggle),
-        RedigerbarMal(OmsorgEgenManuell, FeatureToggles.omsorgEgenManuell.toggle),
-        RedigerbarMal(OrienteringOmForlengetSaksbehandlingstid, FeatureToggles.orienteringOmForlengetSaksbehandlingstid.toggle),
-        RedigerbarMal(OrienteringOmSaksbehandlingstid),
-        RedigerbarMal(OversettelseAvDokumenter, FeatureToggles.oversettelseAvDokumenter.toggle),
-        RedigerbarMal(SamletMeldingOmPensjonsvedtak, FeatureToggles.samletMeldingOmPensjonsvedtak.toggle),
-        RedigerbarMal(TilbakekrevingAvFeilutbetaltBeloep, FeatureToggles.vedtakTilbakekrevingAvFeilutbetaltBeloep.toggle),
-        RedigerbarMal(VarselOmMuligAvslag),
-        RedigerbarMal(VarselRevurderingAvPensjon),
-        RedigerbarMal(VarselTilbakekrevingAvFeilutbetaltBeloep),
-        RedigerbarMal(VedtakEndringAvAlderspensjonFordiOpptjeningErEndret, FeatureToggles.vedtakEndringOpptjeningEndret.toggle),
-        RedigerbarMal(VedtakEndringAvAlderspensjonGjenlevenderettigheter, FeatureToggles.vedtakEndringAvAlderspensjonGjenlevenderettigheter.toggle),
-        RedigerbarMal(VedtakEndringAvAlderspensjonInstitusjonsopphold, FeatureToggles.vedtakEndringAvAlderspensjonInstitusjonsopphold.toggle),
-        RedigerbarMal(VedtakEndringAvUttaksgrad, FeatureToggles.vedtakEndringAvUttaksgrad.toggle),
-        RedigerbarMal(VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge, FeatureToggles.vedtakEndringAvUttaksgradStans.toggle),
-        RedigerbarMal(VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge, FeatureToggles.vedtakEndringAvUttaksgradStans.toggle),
-        RedigerbarMal(VedtakEndringVedFlyttingMellomLand, FeatureToggles.vedtakEndringVedFlyttingMellomLand.toggle),
-        RedigerbarMal(VedtakOmFjerningAvOmsorgsopptjening, FeatureToggles.vedtakOmFjerningAvOmsorgspoeng.toggle),
-        RedigerbarMal(VedtakStansAlderspensjonFlyttingMellomLand, FeatureToggles.vedtakStansFlyttingMellomLand.toggle),
-        RedigerbarMal(AvslagUforetrygdDemo, FeatureToggles.utAvslagUforetrygdDemo.toggle),
+    private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        AvslagForLiteTrygdetidAP,
+        AvslagGradsendringFoerNormertPensjonsalder,
+        AvslagGradsendringFoerNormertPensjonsalderAP2016,
+        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+        AvslagPaaGjenlevenderettIAlderspensjon,
+        AvslagUfoeretrygd,
+        AvslagUttakFoerNormertPensjonsalder,
+        AvslagUttakFoerNormertPensjonsalderAP2016,
+        BekreftelsePaaFlyktningstatus,
+        BrukerTestBrev,
+        EndringAvAlderspensjonPgaGarantitillegg,
+        EndringAvAlderspensjonSivilstand,
+        EndringAvAlderspensjonSivilstandSaerskiltSats,
+        ForespoerselOmDokumentasjonAvBotidINorgeAlder,
+        ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
+        ForhaandsvarselVedTilbakekreving,
+        InformasjonOmGjenlevenderettigheter,
+        InformasjonOmSaksbehandlingstid,
+        InformasjonOmSaksbehandlingstidUT,
+        InnhentingDokumentasjonFraBruker,
+        InnhentingInformasjonFraBruker,
+        InnhentingOpplysningerFraBruker,
+        InnvilgelseAvAlderspensjon,
+        InnvilgelseAvAlderspensjonTrygdeavtale,
+        OmregningAlderUfore2016,
+        OmsorgEgenManuell,
+        OrienteringOmForlengetSaksbehandlingstid,
+        OrienteringOmSaksbehandlingstid,
+        OversettelseAvDokumenter,
+        SamletMeldingOmPensjonsvedtak,
+        TilbakekrevingAvFeilutbetaltBeloep,
+        VarselOmMuligAvslag,
+        VarselRevurderingAvPensjon,
+        VarselTilbakekrevingAvFeilutbetaltBeloep,
+        VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+        VedtakEndringAvAlderspensjonGjenlevenderettigheter,
+        VedtakEndringAvAlderspensjonInstitusjonsopphold,
+        VedtakEndringAvUttaksgrad,
+        VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
+        VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
+        VedtakEndringVedFlyttingMellomLand,
+        VedtakOmFjerningAvOmsorgsopptjening,
+        VedtakStansAlderspensjonFlyttingMellomLand,
     )
 
     override fun hentAutobrevmaler() = autobrev
