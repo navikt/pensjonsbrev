@@ -89,6 +89,18 @@ class LatexVisualITest {
     }
 
     @Test
+    fun illegalFont(){
+        render {
+            title1 {
+                addTextContent(newText(Bokmal to "This font is actually illegal, but it should lead to nothing...", FontType.BOLD))
+            }
+            title1 {
+                addTextContent(newText(Bokmal to "This font is actually illegal, but it should lead to nothing...", FontType.PLAIN))
+            }
+        }
+    }
+
+    @Test
     fun `verge foersteside`() {
         render(
             felles = Fixtures.felles.copy(
