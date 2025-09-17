@@ -52,7 +52,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikte
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -74,8 +74,6 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = EndringAvAlderspensjonSivilstandDto::class,
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(

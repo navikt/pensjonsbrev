@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
 
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -50,8 +50,6 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = OmstillingsstoenadRevurderingDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(

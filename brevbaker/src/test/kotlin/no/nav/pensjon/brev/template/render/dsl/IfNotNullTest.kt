@@ -2,12 +2,10 @@ package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -29,7 +27,6 @@ object Helpers : HasModel<NullBrevDto>
 class IfNotNullTest {
 
     val template = createTemplate(
-        name = "NULL_BREV",
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(

@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -17,8 +17,6 @@ object OmstillingsstoenadVarselRedigerbartUtfall : EtterlatteTemplate<ManueltBre
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VARSEL_UTFALL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - revurdering",

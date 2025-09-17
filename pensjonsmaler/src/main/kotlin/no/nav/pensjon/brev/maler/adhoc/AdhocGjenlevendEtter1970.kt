@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -22,8 +22,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - gjenlevendepensjonen din opphører fra 1. januar 2027",
