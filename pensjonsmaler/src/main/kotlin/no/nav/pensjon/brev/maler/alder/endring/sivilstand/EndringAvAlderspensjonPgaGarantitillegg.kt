@@ -60,7 +60,7 @@ object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAld
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Vedtak - Endring av alderspensjon pga garantitillegg",
+                    displayTitle = "Vedtak - endring av alderspensjon pga garantitillegg",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,

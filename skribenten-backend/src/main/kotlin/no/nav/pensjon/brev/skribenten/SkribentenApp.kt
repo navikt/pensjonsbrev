@@ -153,26 +153,8 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         async {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
-                job("redigertBrev-kryptert") {
+                job("samkjoer-hash") {
                     updateBrevredigeringJson()
-                }
-                job("document-pdf-kryptert") {
-                    val rows: List<Long> = transaction {
-                        DocumentTable.select(DocumentTable.brevredigering)
-                            .map { it[DocumentTable.brevredigering].value }
-                    }
-                    rows.forEach { id ->
-                        transaction {
-                            val pdf: ExposedBlob? = DocumentTable.select(DocumentTable.pdf)
-                                .where { (DocumentTable.brevredigering eq id).and { DocumentTable.pdfKryptert.isNull() } }
-                                .singleOrNull()?.get(DocumentTable.pdf)
-                            if (pdf != null) {
-                                DocumentTable.update({ DocumentTable.brevredigering eq id }) { row ->
-                                    row[DocumentTable.pdfKryptert] = pdf.bytes
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

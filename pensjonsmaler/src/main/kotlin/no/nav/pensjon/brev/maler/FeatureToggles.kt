@@ -8,7 +8,6 @@ enum class FeatureToggles(private val key: String) {
     pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
     brevmalUtAvslag("brevmalUtAvslag"),
-    utAvslagUforetrygdDemo("avslaguforetrygd"),
     apAvslagGjenlevenderett("apAvslagGjenlevenderett"),
     apAvslagGradsendringNormertPensjonsalder("ap_avslag_gradsendring_norm_redigerbar"),
     apAvslagGradsendringNormertPensjonsalderAP2016("ap_avslag_gradsendring_norm_redigerbar_ap2016"),
@@ -35,7 +34,8 @@ enum class FeatureToggles(private val key: String) {
     brukertestbrev2025("brukertestbrev2025"),
     vedtakStansFlyttingMellomLand("vedtakStansFlyttingMellomLand"),
     avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP"),
-    omregningAlderUfore2016("omregningAlderUfore2016");
+    omregningAlderUfore2016("omregningAlderUfore2016"),
+    uforeAvslagDemo("avslaguforetrygd");
 
     val toggle = FeatureToggle(key)
 }
