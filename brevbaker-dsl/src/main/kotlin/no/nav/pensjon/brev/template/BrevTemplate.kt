@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -17,6 +18,8 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     val template: LetterTemplate<*, LetterData>
     val kode: Kode
     fun description(): TemplateDescription
+    val featureToggle: FeatureToggle?
+        get() = null
 
     fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
         letterDataType: KClass<LetterData>,

@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -39,6 +40,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // Doksys redigermal: MF_000066, tvilling autobrev: MF_000177
 @TemplateModelHelpers
 object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto> {
+
+    override val featureToggle = FeatureToggles.avslagForLiteTrygdetidAP.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING

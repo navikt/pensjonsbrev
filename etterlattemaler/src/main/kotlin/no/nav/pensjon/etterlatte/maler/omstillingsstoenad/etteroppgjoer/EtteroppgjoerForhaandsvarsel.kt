@@ -62,7 +62,7 @@ data class EtteroppgjoerForhaandsvarselDTO(
         faktiskStoenad = faktiskStoenad,
         avviksBeloep = avviksBeloep
     )
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, false)
     val dagensDato: LocalDate = LocalDate.now()
 }
 
@@ -113,7 +113,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”. Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
+                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget «Opplysninger om etteroppgjøret». Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
                         nynorsk { +"Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret». Gi oss beskjed dersom opplysningane inneheld feil." },
                         english { +"You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement». Please notify us if you find that any of the information is incorrect." },
                     )

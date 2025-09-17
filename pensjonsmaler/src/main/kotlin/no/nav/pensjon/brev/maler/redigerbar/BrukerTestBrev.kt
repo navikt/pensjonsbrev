@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.SaksbehandlerValgSelectors.kontorplantenTorlill
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.SaksbehandlerValgSelectors.utsiktenFraKontoret
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -23,6 +24,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
+
+    override val featureToggle = FeatureToggles.brukertestbrev2025.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.BRUKERTEST_BREV_PENSJON_2025
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK

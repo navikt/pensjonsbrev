@@ -21,6 +21,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // Mal 000090 i doksys
 @TemplateModelHelpers
 object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakDto> {
+
+    override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtak.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

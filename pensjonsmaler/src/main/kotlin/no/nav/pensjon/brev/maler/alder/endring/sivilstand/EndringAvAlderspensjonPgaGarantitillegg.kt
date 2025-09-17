@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarant
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
@@ -43,8 +44,10 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object EndringAvAlderspensjonPgaGarantitillegg :
-    RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
+object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
+
+    override val featureToggle = FeatureToggles.endringAvAlderspensjonSivilstandGarantitillegg.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

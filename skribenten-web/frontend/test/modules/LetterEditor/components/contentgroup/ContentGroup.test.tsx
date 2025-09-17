@@ -28,6 +28,11 @@ const block: ParagraphBlock = {
 const editorState = letter(block, block, block);
 const setEditorState: Mock<CallbackReceiver<LetterEditorState>> = vi.fn();
 
+beforeEach(() => {
+  // This makes the tests deterministic by ensuring every call to Date.now() returns the same value.
+  vi.spyOn(Date, "now").mockImplementation(() => new Date("2025-01-01T00:00:00.000Z").getTime());
+});
+
 afterEach(() => {
   vi.restoreAllMocks();
 });

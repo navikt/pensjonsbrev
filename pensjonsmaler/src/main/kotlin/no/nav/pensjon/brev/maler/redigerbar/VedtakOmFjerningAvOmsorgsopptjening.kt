@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgso
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.aktuelleAar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -24,6 +25,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerningAvOmsorgsopptjeningDto> {
+
+    override val featureToggle = FeatureToggles.vedtakOmFjerningAvOmsorgspoeng.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

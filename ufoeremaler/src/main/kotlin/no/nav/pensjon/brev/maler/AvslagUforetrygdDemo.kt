@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Constants.KLAGE_URL
@@ -24,6 +25,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object AvslagUforetrygdDemo : RedigerbarTemplate<AvslagUforetrygdDemoDto> {
+
+    override val featureToggle = FeatureToggles.uforeAvslagDemo.toggle
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD_DEMO
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING

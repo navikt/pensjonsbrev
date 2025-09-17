@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevendere
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.gjenlevendesAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -25,6 +26,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGjenlevenderettigheterDto> {
+
+    override val featureToggle = FeatureToggles.informasjonOmGjenlevenderettigheter.toggle
+
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP, Sakstype.ALDER)

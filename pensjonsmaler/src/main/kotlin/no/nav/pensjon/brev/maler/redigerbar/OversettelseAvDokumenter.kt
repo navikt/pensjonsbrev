@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -14,6 +15,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+
+    override val featureToggle = FeatureToggles.oversettelseAvDokumenter.toggle
 
     // PE_IY_03_168
     override val kode = Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER

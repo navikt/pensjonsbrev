@@ -97,7 +97,7 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
                     text(bokmal { +"0607 OSLO" })
                 }
                 paragraph {
-                    text(bokmal { +"Du kan også gi oss beskjed på ${Constants.SKRIVTILOSS_URL}" })
+                    text(bokmal { +"Du kan også gi oss beskjed på ${Constants.KONTAKT_URL}" })
                 }
                 paragraph {
                     text(bokmal { +"Hvis du ikke sender inn opplysninger, forutsetter vi at ektefellen/partneren/samboeren din har full trygdetid i Norge." })
