@@ -51,7 +51,7 @@ internal object LatexDocumentRenderer {
         // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting, LanguageSetting.Closing.saksbehandler.
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
-                renderPlainTextLiteral(settingValue)
+                renderTextLiteral(settingValue, Text.FontType.PLAIN)
             }
         }
 
@@ -330,9 +330,6 @@ internal object LatexDocumentRenderer {
             Text.FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
             Text.FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
         }
-
-    private fun LatexAppendable.renderPlainTextLiteral(text: String): Unit =
-        append(text)
 
     private fun LatexAppendable.renderForm(element: Form): Unit =
         when (element) {
