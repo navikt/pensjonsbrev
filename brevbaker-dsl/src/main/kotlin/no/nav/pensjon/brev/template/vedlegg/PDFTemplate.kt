@@ -12,7 +12,7 @@ interface PDFTemplate<out Lang : LanguageSupport, AttachmentData : PDFVedleggDat
     fun createVedlegg(scope: ExpressionScope<*>, data: Expression<AttachmentData>) = template(data.eval(scope))
 }
 
-data class IncludeAttachmentPDF<out Lang : LanguageSupport, AttachmentData : PDFVedleggData>(
+class IncludeAttachmentPDF<out Lang : LanguageSupport, AttachmentData : PDFVedleggData>(
     val data: Expression<AttachmentData>,
     val template: PDFTemplate<Lang, AttachmentData>,
 ) {

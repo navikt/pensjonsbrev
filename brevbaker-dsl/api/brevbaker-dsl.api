@@ -1595,18 +1595,17 @@ public final class no/nav/pensjon/brev/template/render/UtilsKt {
 public final class no/nav/pensjon/brev/template/vedlegg/Felt {
 	public fun <init> ()V
 	public final fun add (Ljava/util/Map;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelt ()Ljava/util/Map;
+	public fun hashCode ()I
 	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
 	public final fun to (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun to (Ljava/lang/String;Ljava/util/Map;)V
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
 	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;)V
-	public final fun component1 ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun component2 ()Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
-	public final fun copy (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;)Lno/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
@@ -1630,14 +1629,20 @@ public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplateKt {
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {
 	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getSider ()Ljava/util/List;
+	public fun hashCode ()I
 	public final fun side (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/Side {
 	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun felt (Lkotlin/jvm/functions/Function1;)V
 	public final fun getFelt ()Ljava/util/List;
 	public final fun getFilnavn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
