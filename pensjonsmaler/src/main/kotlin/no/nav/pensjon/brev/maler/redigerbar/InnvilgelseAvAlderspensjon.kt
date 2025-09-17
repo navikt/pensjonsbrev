@@ -55,6 +55,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kravVirkDatoFomSenereEnnOensketUttakstidspunkt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
@@ -122,6 +123,9 @@ hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
+
+    override val featureToggle = FeatureToggles.innvilgelseAvAlderspensjon.toggle
+
     override val kategori: TemplateDescription.Brevkategori = FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)

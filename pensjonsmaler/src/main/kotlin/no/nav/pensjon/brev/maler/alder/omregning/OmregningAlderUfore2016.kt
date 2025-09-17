@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Redig
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
@@ -58,6 +59,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
 object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016RedigerbarDto> {
+
+    override val featureToggle = FeatureToggles.omregningAlderUfore2016.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016
 

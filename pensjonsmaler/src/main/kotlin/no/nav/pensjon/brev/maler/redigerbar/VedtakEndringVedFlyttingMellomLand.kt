@@ -60,6 +60,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.reduksjonTilbakeITid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
@@ -103,6 +104,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 //000117 i Doksys
 object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedFlyttingMellomLandDto> {
+
+    override val featureToggle = FeatureToggles.vedtakEndringVedFlyttingMellomLand.toggle
+
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)

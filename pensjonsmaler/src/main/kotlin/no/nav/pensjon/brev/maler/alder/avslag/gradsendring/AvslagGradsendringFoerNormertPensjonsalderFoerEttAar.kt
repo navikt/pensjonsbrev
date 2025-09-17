@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -17,6 +18,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate<AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto> {
+
+    override val featureToggle = FeatureToggles.apAvslagGradsendringNormertPensjonsalderFoerEttAar.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR
 

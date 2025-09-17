@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.YtelseskomponentInformasjonSelectors.belopEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
@@ -67,6 +68,9 @@ import java.time.Month
 // 119 i doksys
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto> {
+
+    override val featureToggle = FeatureToggles.vedtakEndringOpptjeningEndret.toggle
+
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
