@@ -51,8 +51,11 @@ function updateHistory(history: History, newHistoryEntry: HistoryEntry): History
     newHistoryEntry.patches[0]?.path.toString() === lastHistoryEntry.patches[0]?.path.toString();
 
   if (shouldMerge) {
-    const mergedInversePatches = [...newHistoryEntry.inversePatches, ...lastHistoryEntry.inversePatches];
-    const mergedEntry: HistoryEntry = { ...newHistoryEntry, inversePatches: mergedInversePatches };
+    const mergedEntry: HistoryEntry = {
+      ...newHistoryEntry,
+      patches: [...lastHistoryEntry.patches, ...newHistoryEntry.patches],
+      inversePatches: [...newHistoryEntry.inversePatches, ...lastHistoryEntry.inversePatches],
+    };
 
     const newEntries = [...history.entries.slice(0, -1), mergedEntry];
     return {
