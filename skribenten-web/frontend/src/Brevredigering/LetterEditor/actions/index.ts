@@ -1,7 +1,3 @@
-import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
-import { cursorPosition, updateFocus } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
-import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
-import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
 import {
   demoteHeaderToRow,
   insertTable,
@@ -15,13 +11,18 @@ import {
   removeTableRow,
 } from "~/Brevredigering/LetterEditor/actions/table";
 
+import { addNewLine } from "./addNewLine";
 import { create } from "./common";
+import { cursorPosition, updateFocus } from "./cursorPosition";
 import { merge } from "./merge";
+import { paste } from "./paste";
 import { split } from "./split";
 import { switchFontType } from "./switchFontType";
 import { switchTypography } from "./switchTypography";
 import { toggleBulletList } from "./toggleBulletList";
 import { updateContentText } from "./updateContentText";
+import { updateSignatur } from "./updateSignatur";
+import { updateTitle } from "./updateTitle";
 
 const Actions = {
   create,
@@ -33,6 +34,7 @@ const Actions = {
   switchTypography,
   updateContentText,
   updateSignatur,
+  updateTitle,
   toggleBulletList,
   switchFontType,
   insertTable,
