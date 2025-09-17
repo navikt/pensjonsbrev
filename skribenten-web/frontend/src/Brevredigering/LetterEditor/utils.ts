@@ -19,6 +19,8 @@ export const TypographyToText = {
 export const useEditorKeyboardShortcuts = (
   editorState: LetterEditorState,
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
+  undo: () => void,
+  redo: () => void,
 ) => {
   return (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.altKey && event.code === "Digit1") {
@@ -30,6 +32,18 @@ export const useEditorKeyboardShortcuts = (
     } else if (event.altKey && event.code === "Digit3") {
       event.preventDefault();
       applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE2);
+    }
+    const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
+    const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
+    const isRedo =
+      (isMac ? event.metaKey : event.ctrlKey) && (event.key === "y" || (event.key === "z" && event.shiftKey));
+
+    if (isUndo) {
+      event.preventDefault();
+      undo();
+    } else if (isRedo) {
+      event.preventDefault();
+      redo();
     }
   };
 };

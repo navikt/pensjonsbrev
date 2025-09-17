@@ -34,7 +34,6 @@ export const LetterEditor = ({
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
   const canUndo = editorState.history.entryPointer >= 0;
   const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
@@ -71,6 +70,8 @@ export const LetterEditor = ({
       };
     });
   }, [canRedo, setEditorState]);
+
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState, undo, redo);
 
   return (
     <div
