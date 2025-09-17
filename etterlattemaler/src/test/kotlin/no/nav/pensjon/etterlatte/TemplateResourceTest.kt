@@ -95,9 +95,9 @@ class TemplateResourceTest {
             .flatMap { spraak ->
                 EtterlatteMaler.hentAutobrevmaler().map {
                     Arguments.of(
-                        it.template.template,
-                        it.template.kode,
-                        Fixtures.create(it.template.template.letterDataType),
+                        it.template,
+                        it.kode,
+                        Fixtures.create(it.template.letterDataType),
                         spraak,
                     )
                 }

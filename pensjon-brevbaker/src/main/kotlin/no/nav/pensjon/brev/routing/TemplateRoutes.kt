@@ -5,19 +5,19 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.brev.brevbaker.Mal
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.toLanguage
+import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-inline fun <reified Kode : Brevkode<Kode>, T : Mal<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
+inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
     route("/${resource.name}") {
 
         get {

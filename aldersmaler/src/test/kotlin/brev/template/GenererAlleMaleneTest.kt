@@ -68,7 +68,7 @@ class GenererAlleMaleneTest {
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
         val malKoder = (AlderTemplates.hentAutobrevmaler() + AlderTemplates.hentRedigerbareMaler())
-            .map { it.template.kode.kode() }
+            .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
             assert(a != b) { "Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev." }
@@ -88,8 +88,8 @@ class GenererAlleMaleneTest {
             return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
                 (AlderTemplates.hentAutobrevmaler() +
                         AlderTemplates.hentRedigerbareMaler()
-                        ).filter { filter.isEmpty() || filter.any { f -> it.template.kode.kode() == f.kode() } }
-                    .map { Arguments.of(it.template.template, it.template.kode, Fixtures.create(it.template.template.letterDataType), spraak) }
+                        ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
+                    .map { Arguments.of(it.template, it.kode, Fixtures.create(it.template.letterDataType), spraak) }
             }
         }
     }

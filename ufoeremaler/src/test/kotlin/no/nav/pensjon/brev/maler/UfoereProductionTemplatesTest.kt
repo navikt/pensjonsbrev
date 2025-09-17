@@ -18,14 +18,14 @@ class UfoereProductionTemplatesTest {
 
     @Test
     fun `alle autobrev fins i templates`() {
-        val brukteKoder = UfoereTemplates.hentAutobrevmaler().map { it.template.kode }
+        val brukteKoder = UfoereTemplates.hentAutobrevmaler().map { it.kode }
         val ubrukteKoder = Ufoerebrevkoder.AutoBrev.entries.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
     @Test
     fun `alle redigerbare brev fins i templates`() {
-        val brukteKoder = UfoereTemplates.hentRedigerbareMaler().map { it.template.kode }
+        val brukteKoder = UfoereTemplates.hentRedigerbareMaler().map { it.kode }
         val ubrukteKoder = Ufoerebrevkoder.Redigerbar.entries.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
@@ -33,7 +33,6 @@ class UfoereProductionTemplatesTest {
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (UfoereTemplates.hentAutobrevmaler() + UfoereTemplates.hentRedigerbareMaler())
-            .map { it.template }
             .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class)  }
             .forEach {
                 assertTrue(
@@ -49,8 +48,8 @@ class UfoereProductionTemplatesTest {
         assertEquals(
             emptyList<String>(),
             UfoereTemplates.hentRedigerbareMaler()
-                .filter { it.template.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                .filterNot { it.template.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
+                .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
                 .map { it.javaClass.simpleName }
             ,
         )

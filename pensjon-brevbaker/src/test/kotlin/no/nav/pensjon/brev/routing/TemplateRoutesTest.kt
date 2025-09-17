@@ -34,7 +34,7 @@ class TemplateRoutesTest {
     fun `can get names of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(alleAutobrevmaler.map { it.template.kode.kode() }.toSet(), response.body<Set<String>>())
+        assertEquals(alleAutobrevmaler.map { it.kode.kode() }.toSet(), response.body<Set<String>>())
     }
 
     @Test
@@ -43,7 +43,7 @@ class TemplateRoutesTest {
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(
             alleRedigerbareMaler
-            .map { it.template.kode.kode() }.toSet(), response.body<Set<String>>()
+                .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
         )
     }
 
@@ -51,14 +51,14 @@ class TemplateRoutesTest {
     fun `brevkoder of all redigerbare brev are unique`() =
         assertEquals(
             alleRedigerbareMaler
-                .map { it.template.kode.kode() }.distinct().toSet().size, alleRedigerbareMaler.size, "Alle redigerbare maler skal ha unike brevkoder"
+                .map { it.kode.kode() }.distinct().toSet().size, alleRedigerbareMaler.size, "Alle redigerbare maler skal ha unike brevkoder"
         )
 
     @Test
     fun `brevkoder of all autobrev are unique`() =
         assertEquals(
             alleAutobrevmaler
-                .map { it.template.kode.kode() }.distinct().toSet().size, alleAutobrevmaler.size, "Alle autobrev maler skal ha unike brevkoder"
+                .map { it.kode.kode() }.distinct().toSet().size, alleAutobrevmaler.size, "Alle autobrev maler skal ha unike brevkoder"
         )
 
 
@@ -66,7 +66,7 @@ class TemplateRoutesTest {
     fun `can get description of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(alleAutobrevmaler.map { it.template.description() }, response.body<List<TemplateDescription.Autobrev>>())
+        assertEquals(alleAutobrevmaler.map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
     }
 
     @Test
@@ -74,7 +74,7 @@ class TemplateRoutesTest {
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(alleRedigerbareMaler
-            .map { it.template.description() }, response.body<List<TemplateDescription.Redigerbar>>())
+            .map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
     }
 
     @Test
