@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -35,7 +36,6 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER
 
     override val template = createTemplate(
-        letterDataType = AvslagUttakFoerNormertPensjonsalderDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon",

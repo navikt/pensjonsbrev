@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -37,7 +38,6 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
         EtterlatteBrevKode.AKTIVITETSPLIKT_INFORMASJON_4MND_INNHOLD
 
     override val template = createTemplate(
-        letterDataType = OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata =
         LetterMetadata(

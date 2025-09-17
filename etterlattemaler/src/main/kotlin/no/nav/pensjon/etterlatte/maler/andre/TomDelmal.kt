@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.andre
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -18,7 +19,6 @@ object TomDelmal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TOM_DELMAL
 
     override val template = createTemplate(
-        letterDataType = ManueltBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Tom delmal",

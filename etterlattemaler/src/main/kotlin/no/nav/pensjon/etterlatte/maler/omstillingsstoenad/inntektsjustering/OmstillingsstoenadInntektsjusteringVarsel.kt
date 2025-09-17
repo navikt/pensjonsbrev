@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering
 
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -22,7 +23,6 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
 
     override val template =
         createTemplate(
-            letterDataType = AarligInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(

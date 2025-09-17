@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -59,7 +60,6 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE
 
     override val template = createTemplate(
-        letterDataType = BarnepensjonInnvilgelseDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilget søknad om barnepensjon",

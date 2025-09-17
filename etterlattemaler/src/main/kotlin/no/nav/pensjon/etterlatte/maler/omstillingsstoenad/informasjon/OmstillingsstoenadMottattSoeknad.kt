@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -27,7 +28,6 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
 
     override val template =
         createTemplate(
-            letterDataType = OmstillingsstoenadMottattSoeknadDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(

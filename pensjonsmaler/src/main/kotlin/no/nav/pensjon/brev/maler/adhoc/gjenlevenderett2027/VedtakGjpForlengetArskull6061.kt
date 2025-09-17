@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -35,7 +36,6 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VEDTAK_FORLENGELSE_60_61
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Gjenlevendepensjonen din forlenges",

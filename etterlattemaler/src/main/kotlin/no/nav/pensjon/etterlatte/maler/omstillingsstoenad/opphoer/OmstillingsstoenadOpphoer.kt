@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -40,7 +41,6 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_OPPHOER
 
     override val template = createTemplate(
-        letterDataType = OmstillingsstoenadOpphoerDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Opphør av omstillingsstønad",

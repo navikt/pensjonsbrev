@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -40,7 +41,6 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VEDTAK_OPPHOR_60_70_UTLAND
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Gjenlevendepensjonen din er tidsbegrenset",

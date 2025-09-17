@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -13,7 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AdhocVarselOpphoerMedHvilendeRett : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
-        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om opphør av uføretrygden etter 10 år med hvilende rett",

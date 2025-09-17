@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -57,7 +58,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
 
     override val template =
         createTemplate(
-            letterDataType = EtteroppgjoerVedtakBrevDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(

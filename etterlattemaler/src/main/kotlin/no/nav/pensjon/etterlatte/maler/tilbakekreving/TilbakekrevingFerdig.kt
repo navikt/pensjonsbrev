@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -84,7 +85,6 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_FERDIG
 
     override val template = createTemplate(
-        letterDataType = TilbakekrevingBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Tilbakekreving",

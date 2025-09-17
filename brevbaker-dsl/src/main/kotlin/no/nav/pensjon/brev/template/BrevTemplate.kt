@@ -18,7 +18,7 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     val kode: Kode
     fun description(): TemplateDescription
 
-    fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
+    fun <Lang : LanguageSupport, LetterData : Any> innerCreateTemplate(
         letterDataType: KClass<LetterData>,
         languages: Lang,
         letterMetadata: LetterMetadata,
@@ -28,6 +28,12 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
             return LetterTemplate(title, letterDataType, languages, outline, attachments, letterMetadata)
         }
 }
+
+inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : BrevbakerBrevdata> BrevTemplate<LetterData, Kode>.createTemplate(
+    languages: Lang,
+    letterMetadata: LetterMetadata,
+    noinline init: TemplateRootScope<Lang, LetterData>.() -> Unit
+): LetterTemplate<Lang, LetterData> = innerCreateTemplate(LetterData::class, languages, letterMetadata, init)
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori

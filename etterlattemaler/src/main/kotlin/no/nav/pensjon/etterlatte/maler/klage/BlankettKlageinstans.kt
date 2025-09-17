@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -92,7 +93,6 @@ enum class VedtakType {
 object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_OVERSENDELSE_BLANKETT
     override val template = createTemplate(
-        letterDataType = KlageOversendelseBlankettDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Blankett oversendelse klage",

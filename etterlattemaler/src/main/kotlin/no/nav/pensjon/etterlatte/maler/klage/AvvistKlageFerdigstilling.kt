@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.klage
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -34,7 +35,6 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.AVVIST_KLAGE_FERDIG
 
     override val template = createTemplate(
-        letterDataType = AvvistKlageFerdigDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Avvist klage",

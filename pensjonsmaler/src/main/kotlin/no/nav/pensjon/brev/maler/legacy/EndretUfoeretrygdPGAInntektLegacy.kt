@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -54,7 +55,6 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
     override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT
 
     override val template = createTemplate(
-        letterDataType = EndretUfoeretrygdPGAInntektDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt (automatisk)",

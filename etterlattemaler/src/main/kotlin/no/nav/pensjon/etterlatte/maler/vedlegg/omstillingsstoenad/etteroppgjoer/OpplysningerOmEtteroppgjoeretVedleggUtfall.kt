@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -28,7 +29,6 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL_BEREGNINGVEDLEGG_INNHOLD
 
     override val template = createTemplate(
-        letterDataType = EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Utfall beregning",

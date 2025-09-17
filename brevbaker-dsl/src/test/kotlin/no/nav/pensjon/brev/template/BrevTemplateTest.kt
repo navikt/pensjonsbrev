@@ -35,7 +35,6 @@ private class BrevTemplateTest {
         override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =
             createTemplate(
-                letterDataType = EmptyRedigerbarBrevdata::class,
                 languages = languages(Language.Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "testBrev",

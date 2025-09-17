@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -47,7 +48,6 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL_INNHOLD
 
     override val template = createTemplate(
-        letterDataType = EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - Etteroppgjør Innhold",

@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel
 
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -28,7 +29,6 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
 
     override val template =
         createTemplate(
-            letterDataType = OmstillingsstoenadVarselAktivitetspliktDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(

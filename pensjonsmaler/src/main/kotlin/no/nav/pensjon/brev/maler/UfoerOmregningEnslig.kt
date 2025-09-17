@@ -48,6 +48,7 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -61,7 +62,6 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
     override val template = createTemplate(
-        letterDataType = UfoerOmregningEnsligDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",

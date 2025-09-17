@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -35,7 +36,6 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_FORLENGELSE_60_61_UTLAND
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",

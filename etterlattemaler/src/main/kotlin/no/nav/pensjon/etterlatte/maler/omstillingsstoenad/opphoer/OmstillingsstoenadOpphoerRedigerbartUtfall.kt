@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -27,7 +28,6 @@ object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<Omstillin
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_OPPHOER_UTFALL
 
     override val template = createTemplate(
-        letterDataType = OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør",

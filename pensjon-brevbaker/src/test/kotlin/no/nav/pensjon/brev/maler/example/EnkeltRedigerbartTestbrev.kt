@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +28,6 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
-        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Displaytittelen",

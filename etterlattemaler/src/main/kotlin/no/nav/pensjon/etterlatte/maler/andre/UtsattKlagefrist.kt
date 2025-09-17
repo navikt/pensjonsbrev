@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.andre
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -17,7 +18,6 @@ object UtsattKlagefrist : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.UTSATT_KLAGEFRIST
 
     override val template = createTemplate(
-        letterDataType = ManueltBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Utsatt klagefrist",

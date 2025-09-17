@@ -62,6 +62,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -76,7 +77,6 @@ object EndretUforetrygdPGAOpptjeningLegacy : AutobrevTemplate<EndretUforetrygdPG
 override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
     override val template = createTemplate(
-        letterDataType = EndretUforetrygdPGAOpptjeningLegacyDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - ny beregning av uføretrygd på grunn av endring i opptjening (automatisk)",

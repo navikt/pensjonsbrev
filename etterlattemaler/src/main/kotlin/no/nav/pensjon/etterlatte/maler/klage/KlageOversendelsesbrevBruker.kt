@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.klage
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -50,7 +51,6 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_OVERSENDELSE_BRUKER
 
     override val template = createTemplate(
-        letterDataType = KlageOversendelseBrukerDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vi har sendt klagen din tiil Nav klageinstans Vest",

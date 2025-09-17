@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
@@ -58,7 +59,6 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
     override val template = createTemplate(
-        letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems

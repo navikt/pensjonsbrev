@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.klage
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -38,7 +39,6 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
 
     override val template =
         createTemplate(
-            letterDataType = KlageSaksbehandlingstidDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(

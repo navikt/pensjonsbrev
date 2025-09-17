@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -31,7 +32,6 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
     // 000069 / DOD_INFO_RETT_MAN
     override val kode = Pesysbrevkoder.Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER
     override val template = createTemplate(
-        letterDataType = InformasjonOmGjenlevenderettigheterDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om gjenlevenderettigheter",

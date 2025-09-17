@@ -37,6 +37,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -58,7 +59,6 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
     override val kode = Pesysbrevkoder.AutoBrev.UT_ETTEROPPGJOER_ETTERBETALING_AUTO
 
     override val template = createTemplate(
-        letterDataType = EtteroppgjoerEtterbetalingAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak om etteroppgjør - etterbetaling",

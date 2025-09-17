@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -34,7 +35,6 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ENDRING_PGA_OPPTJENING_AUTO
 
     override val template = createTemplate(
-        letterDataType = EndringPgaOpptjeningAutoDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av alderspensjon fordi opptjening er endret",

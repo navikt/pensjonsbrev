@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -13,7 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AdhocFeilEtteroppgjoer2023 : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_ADHOC_2024_FEIL_ETTEROPPGJOER_2023
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
-        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Feil i etteroppgjørsbrev fra Nav",

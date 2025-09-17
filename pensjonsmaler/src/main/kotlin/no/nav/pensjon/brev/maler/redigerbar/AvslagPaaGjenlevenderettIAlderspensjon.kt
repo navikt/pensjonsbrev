@@ -62,6 +62,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -86,7 +87,6 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT
 
     override val template = createTemplate(
-        letterDataType = AvslagPaaGjenlevenderettIAlderspensjonDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på gjenlevenderett i alderspensjon",

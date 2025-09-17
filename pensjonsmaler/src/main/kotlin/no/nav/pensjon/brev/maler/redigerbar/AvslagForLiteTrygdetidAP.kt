@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -45,7 +46,6 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
 
     override val template = createTemplate(
-        letterDataType = AvslagForLiteTrygdetidAPDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om alderspensjon",

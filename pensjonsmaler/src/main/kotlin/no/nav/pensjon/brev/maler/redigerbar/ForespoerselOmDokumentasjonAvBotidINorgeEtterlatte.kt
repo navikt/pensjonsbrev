@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjo
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -25,7 +26,6 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<F
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.BARNEP, Sakstype.GJENLEV)
 
     override val template = createTemplate(
-        letterDataType = ForespoerselOmDokumentasjonAvBotidINorgeDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Forespørsel om dokumentasjon av botid i Norge - barnepensjon eller gjenlevendepensjon",

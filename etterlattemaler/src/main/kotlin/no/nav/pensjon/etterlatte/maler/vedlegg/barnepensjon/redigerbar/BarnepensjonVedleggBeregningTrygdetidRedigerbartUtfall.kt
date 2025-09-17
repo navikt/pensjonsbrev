@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -16,7 +17,6 @@ object BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall : EtterlatteTempla
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDLEGG_BEREGNING_TRYGDETID_UTFALL
 
     override val template = createTemplate(
-        letterDataType = ManueltBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Beregning av trygdetid",

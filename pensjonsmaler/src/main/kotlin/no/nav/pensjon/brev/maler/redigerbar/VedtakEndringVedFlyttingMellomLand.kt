@@ -83,6 +83,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -105,7 +106,6 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND
     override val template = createTemplate(
-        letterDataType = VedtakEndringVedFlyttingMellomLandDto::class,
         languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av alderspensjon ved flytting mellom land",

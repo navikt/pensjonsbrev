@@ -49,6 +49,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAld
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -61,7 +62,6 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016
 
     override val template = createTemplate(
-        letterDataType = OmregningAlderUfore2016RedigerbarDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Omregning fra Uføre til Alder",

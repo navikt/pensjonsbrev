@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -28,7 +29,6 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
 
 
     override val template = createTemplate(
-        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Bekreftelse på flyktningstatus",

@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -32,7 +33,6 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
 
     override val template =
         createTemplate(
-            letterDataType = BarnepensjonMottattSoeknadDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(
