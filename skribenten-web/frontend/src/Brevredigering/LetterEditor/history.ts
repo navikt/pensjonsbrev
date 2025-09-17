@@ -16,7 +16,7 @@ export interface History {
 // Time threshold for merging text update actions in history (1 second)
 const MERGE_TIME_THRESHOLD_MS = 1000;
 
-function getHistoryEntryLabel(patches: Patch[]): PatchKind | undefined {
+function getHistoryEntryPatchKind(patches: Patch[]): PatchKind | undefined {
   const isTextUpdate =
     patches.some((p) => p.path[p.path.length - 1] === "editedText" && typeof p.value === "string") &&
     patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
@@ -31,7 +31,7 @@ function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): HistoryE
   return {
     patches,
     inversePatches,
-    kind: getHistoryEntryLabel(patches),
+    kind: getHistoryEntryPatchKind(patches),
     timestamp: Date.now(),
   };
 }
