@@ -146,7 +146,7 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
                     text (
                         bokmal { + "Store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere."},
                         nynorsk { + "Store etterbetalingar og pengestøtte frå Nav dersom pengestøtta er pensjonsgivande og etterbetalinga blei gjort i 2024 eller seinare."},
-                        english { + ""},
+                        english { + "Large back payments and financial support from Nav if the financial support is pensionable and the back payment was made in 2024 or later"},
                     )
                 }
                 item {
