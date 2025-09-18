@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
@@ -95,7 +97,7 @@ class IncludeAttachmentTest {
                 language = languages(Nynorsk),
                 outline = emptyList(),
                 attachments = listOf(
-                    IncludeAttachment(selector as Expression<String>, testVedlegg, selector.notNull())
+                    IncludeAttachment(selector as Expression<String>, testVedlegg, selector.notNull() and (true.expr().ifNull(true)))
                 ), letterMetadata = testLetterMetadata
             )
             assertThat(testTemplate, equalTo(expected))
