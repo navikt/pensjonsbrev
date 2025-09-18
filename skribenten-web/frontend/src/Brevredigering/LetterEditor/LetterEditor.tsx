@@ -2,8 +2,9 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
+import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -35,6 +36,42 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
+  const canUndo = editorState.history.entryPointer >= 0;
+  const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
+
+  const undo = useCallback(() => {
+    if (!canUndo) return;
+    setEditorState((current) => {
+      const { inversePatches } = current.history.entries[current.history.entryPointer];
+      const previous = applyPatches(current, inversePatches);
+      return {
+        ...previous,
+        saveStatus: "DIRTY",
+        history: {
+          ...previous.history,
+          entryPointer: current.history.entryPointer - 1,
+        },
+      };
+    });
+  }, [canUndo, setEditorState]);
+
+  const redo = useCallback(() => {
+    if (!canRedo) return;
+    setEditorState((current) => {
+      const nextPointer = current.history.entryPointer + 1;
+      const { patches } = current.history.entries[nextPointer];
+      const next = applyPatches(current, patches);
+      return {
+        ...next,
+        saveStatus: "DIRTY",
+        history: {
+          ...next.history,
+          entryPointer: nextPointer,
+        },
+      };
+    });
+  }, [canRedo, setEditorState]);
+
   return (
     <div
       css={css`
@@ -54,7 +91,7 @@ export const LetterEditor = ({
             z-index: 1;
           `}
         >
-          <EditorMenu />
+          <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
         </div>
         <div
           className="editor"

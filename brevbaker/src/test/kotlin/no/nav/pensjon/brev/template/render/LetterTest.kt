@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -15,7 +15,6 @@ class LetterTest {
     data class TestData(val s: String)
 
     val template = createTemplate(
-        name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(

@@ -1,10 +1,9 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import type { Table } from "~/types/brevbakerTypes";
 import { PARAGRAPH } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
@@ -46,7 +45,7 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   });
 };
 
-export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number, cols: number]> = produce(
+export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number, cols: number]> = withPatches(
   (draft, focus, rows, cols) => {
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     if (block.type !== PARAGRAPH) return;
@@ -62,7 +61,7 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
   },
 );
 
-export const removeTableRow = produce<LetterEditorState>((draft) => {
+export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
@@ -100,7 +99,7 @@ export const removeTableRow = produce<LetterEditorState>((draft) => {
   draft.saveStatus = "DIRTY";
 });
 
-export const removeTableColumn = produce<LetterEditorState>((draft) => {
+export const removeTableColumn: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: col } = draft.focus;
 
@@ -113,7 +112,7 @@ export const removeTableColumn = produce<LetterEditorState>((draft) => {
   draft.saveStatus = "DIRTY";
 });
 
-export const removeTable = produce<LetterEditorState>((draft) => {
+export const removeTable: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex } = draft.focus;
 
@@ -127,7 +126,7 @@ export const removeTable = produce<LetterEditorState>((draft) => {
   draft.saveStatus = "DIRTY";
 });
 
-export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((draft) => {
+export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: at } = draft.focus;
 
@@ -142,7 +141,7 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
   draft.saveStatus = "DIRTY";
 });
 
-export const insertTableColumnRight: Action<LetterEditorState, []> = produce((draft) => {
+export const insertTableColumnRight: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex } = draft.focus;
 
@@ -158,7 +157,7 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
   draft.saveStatus = "DIRTY";
 });
 
-export const insertTableRowAbove: Action<LetterEditorState, []> = produce((draft) => {
+export const insertTableRowAbove: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
@@ -169,7 +168,7 @@ export const insertTableRowAbove: Action<LetterEditorState, []> = produce((draft
   draft.saveStatus = "DIRTY";
 });
 
-export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft) => {
+export const insertTableRowBelow: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
@@ -193,7 +192,7 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
 export const promoteRowToHeader: Action<
   LetterEditorState,
   [blockIndex: number, contentIndex: number, rowIndex: number]
-> = produce((draft, blockIndex, contentIndex, rowIndex) => {
+> = withPatches((draft, blockIndex, contentIndex, rowIndex) => {
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
   if (rowIndex < 0 || rowIndex >= table.rows.length) return;
@@ -222,7 +221,7 @@ export const promoteRowToHeader: Action<
   draft.saveStatus = "DIRTY";
 });
 
-export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, contentIndex: number]> = produce(
+export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, contentIndex: number]> = withPatches(
   (draft, blockIndex, contentIndex) => {
     const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
     if (!isTable(table)) return;

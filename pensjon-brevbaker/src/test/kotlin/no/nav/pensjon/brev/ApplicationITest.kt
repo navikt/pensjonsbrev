@@ -132,7 +132,7 @@ private val reqValue = """
                 "mellomnavn":"\"bruker\"",
                 "etternavn":"Testerson"
             },
-            "vergeNavn":null,
+            "annenMottaker":null,
             "signerendeSaksbehandlere":null
         },
         "language":"BOKMAL"
@@ -191,7 +191,7 @@ private val reqWrapped = """
                 "mellomnavn":"\"bruker\"",
                 "etternavn":"Testerson"
             },
-            "vergeNavn":null,
+            "annenMottaker":null,
             "signerendeSaksbehandlere":null
         },
         "language":"BOKMAL"

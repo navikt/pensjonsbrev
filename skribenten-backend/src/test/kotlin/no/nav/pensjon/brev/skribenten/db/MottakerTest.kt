@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -25,6 +26,7 @@ class MottakerTest {
 
     @BeforeAll
     fun startDb() {
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         postgres.start()
         initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
     }
@@ -102,6 +104,7 @@ class MottakerTest {
                     gjelderNavn = "b",
                     gjelderFoedselsnummer = Foedselsnummer("c"),
                     vergeNavn = null,
+                    annenMottakerNavn = null,
                     saksnummer = "d",
                     dokumentDato = LocalDate.now(),
                 ),

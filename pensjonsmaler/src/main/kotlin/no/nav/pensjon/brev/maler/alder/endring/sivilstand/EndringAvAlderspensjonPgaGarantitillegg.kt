@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarant
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
@@ -32,7 +33,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikte
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
@@ -43,8 +44,10 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object EndringAvAlderspensjonPgaGarantitillegg :
-    RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
+object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
+
+    override val featureToggle = FeatureToggles.endringAvAlderspensjonSivilstandGarantitillegg.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -52,12 +55,10 @@ object EndringAvAlderspensjonPgaGarantitillegg :
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = EndringAvAlderspensjonGarantitilleggDto::class,
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Vedtak - Endring av alderspensjon pga garantitillegg",
+                    displayTitle = "Vedtak - endring av alderspensjon pga garantitillegg",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,

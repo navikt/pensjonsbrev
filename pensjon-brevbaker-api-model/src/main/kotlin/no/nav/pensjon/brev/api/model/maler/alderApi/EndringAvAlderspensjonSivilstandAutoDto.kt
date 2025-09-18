@@ -16,22 +16,17 @@ data class EndringAvAlderspensjonSivilstandAutoDto(
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
     val epsVedVirk: EpsVedVirk,
-    val kravAarsak: KravArsakType, // v3.Krav
-    val kravVirkDatoFom: LocalDate, // v3.Krav
+    val kravAarsak: KravArsakType,
+    val kravVirkDatoFom: LocalDate,
     val regelverkType: AlderspensjonRegelverkType,
-    val saerskiltSatsErBrukt: Boolean, // saerskiltSatsVedVirk
     val sivilstand: MetaforceSivilstand,
-    val vedtakEtterbetaling: Boolean, // v1.Vedtak
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val beloepEndring: BeloepEndring,
 ) : BrevbakerBrevdata {
     data class EpsVedVirk(
-        val borSammenMedBruker: Boolean,
         val harInntektOver2G: Boolean,
-        val mottarOmstillingsstonad: Boolean,
-        val mottarPensjon: Boolean,
     )
 
     data class AlderspensjonVedVirk(
@@ -46,9 +41,6 @@ data class EndringAvAlderspensjonSivilstandAutoDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val garantitillegg: Kroner?, // beregnetPensjonPerManedVedVirk <- v1.ALderspensjon
-        val grunnbelop: Kroner, // beregnetPensjonPerManedVedVirk
-        val grunnpensjon: Kroner?, // beregnetPensjonPerManedVedVirk
-        val totalPensjon: Kroner, // beregnetPensjonPerManedVedVirk
+        val totalPensjon: Kroner,
     )
 }

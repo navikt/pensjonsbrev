@@ -24,7 +24,6 @@ data class SivilstandHjemler(
     val minstenivaaIndividuellInnvilget: Expression<Boolean>,
     val minstenivaaPensjonistParInnvilget: Expression<Boolean>,
     val garantipensjonInnvilget: Expression<Boolean>,
-    val saerskiltSatsErBrukt: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
@@ -88,51 +87,6 @@ data class SivilstandHjemler(
                         nynorsk { + "Vedtaket er gjort etter folketrygdlova § 20-20." },
                         english { + 
                             "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act." },
-                    )
-                }
-            }
-        }
-
-        showIf(
-            kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saerskiltSatsErBrukt,
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
-                    english { + "This decision was made pursuant to the provisions of §§ " },
-                )
-                showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
-                    includePhrase(SivilstandSamboerHjemler(sivilstand))
-                    showIf(saertilleggInnvilget) {
-                        text(
-                            bokmal { + ", 3-3" },
-                            nynorsk { + ", 3-3" },
-                            english { + ", 3-3" },
-                        )
-                    }
-                    text(
-                        bokmal { + ", 19-8 og 22-12." },
-                        nynorsk { + ", 19-8 og 22-12." },
-                        english { + ", 19-8 and 22-12 of the National Insurance Act." },
-                    )
-                }.orShowIf(
-                    regelverkType.isOneOf(
-                        AlderspensjonRegelverkType.AP2011,
-                        AlderspensjonRegelverkType.AP2016,
-                    ),
-                ) {
-                    showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
-                        text(
-                            bokmal { + "1-5, " },
-                            nynorsk { + "1-5, " },
-                            english { + "1-5, " },
-                        )
-                    }
-                    text(
-                        bokmal { + "19-8, 19-9 og 22-12." },
-                        nynorsk { + "19-8, 19-9 og 22-12." },
-                        english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
                     )
                 }
             }

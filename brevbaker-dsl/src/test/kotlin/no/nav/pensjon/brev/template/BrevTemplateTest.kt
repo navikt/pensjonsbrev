@@ -10,13 +10,14 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 
 private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
     TESTBREV_REDIGERBART;
@@ -34,8 +35,6 @@ private class BrevTemplateTest {
         override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =
             createTemplate(
-                name = "test",
-                letterDataType = EmptyRedigerbarBrevdata::class,
                 languages = languages(Language.Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "testBrev",
@@ -60,6 +59,25 @@ private class BrevTemplateTest {
                         .eval(testExpressionScope),
                     equalTo(text)
                 )
+            }
+        }
+    }
+
+    @Test
+    fun `kan ikke ha fritekst uten tekst`() {
+        with(EksempelBrev.template) {
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                    assertThrows<IllegalArgumentException> { fritekst("       ") }
+            }
+        }
+    }
+
+
+    @Test
+    fun `kan ha fritekst med mellomrom foerst og sist`() {
+        with(EksempelBrev.template) {
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                assertDoesNotThrow{ fritekst(" hei ") }
             }
         }
     }

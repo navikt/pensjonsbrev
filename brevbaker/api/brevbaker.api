@@ -99,6 +99,10 @@ public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
 
 public final class no/nav/pensjon/brevbaker/api/model/FellesSelectors {
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/FellesSelectors;
+	public final fun getAnnenMottakerNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAnnenMottakerNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAnnenMottakerNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getAnnenMottakerNavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAvsenderEnhet (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAvsenderEnhet (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAvsenderEnhetSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;

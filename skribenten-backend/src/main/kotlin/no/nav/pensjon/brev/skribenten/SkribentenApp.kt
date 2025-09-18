@@ -23,30 +23,44 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import kotlin.apply
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
 fun main() {
     val skribentenConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(ConfigFactory.load("azuread"), ConfigResolveOptions.defaults().setAllowUnresolved(true)) // loads azuread secrets for local
+            .resolveWith(
+                ConfigFactory.load("azuread"),
+                ConfigResolveOptions.defaults().setAllowUnresolved(true)
+            ) // loads azuread secrets for local
             .resolveWith(ConfigFactory.load("unleash"))
             .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
+    KrypteringService.init(skribentenConfig.getString("krypteringsnoekkel"))
 
-    embeddedServer(Netty,
+    embeddedServer(
+        Netty,
         configure = {
             connectors.add(EngineConnectorBuilder().apply {
                 host = "0.0.0.0"
@@ -60,7 +74,7 @@ fun main() {
     }.start(wait = true)
 }
 
-suspend fun Application.skribentenApp(skribentenConfig: Config) {
+fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -135,8 +149,15 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
 
-    oneShotJobs(skribentenConfig) {
-        // Blir utført når appen starter
+    monitor.subscribe(ServerReady) {
+        async {
+            delay(5.minutes)
+            oneShotJobs(skribentenConfig) {
+                job("samkjoer-hash") {
+                    updateBrevredigeringJson()
+                }
+            }
+        }
     }
 
     monitor.subscribe(ApplicationStopPreparing) {

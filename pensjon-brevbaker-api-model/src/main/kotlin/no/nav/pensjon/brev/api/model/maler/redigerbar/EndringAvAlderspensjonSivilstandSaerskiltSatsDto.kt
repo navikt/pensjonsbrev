@@ -20,13 +20,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 ) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData> {
 
     data class SaksbehandlerValg(
-
-        @DisplayText("Sivilstandsendring årsak - inngått ekteskap men bor ikke sammen")
-        val giftBorIkkeSammen: Boolean,
-
-        // Alders-og sykehjem eller EPS på annen institusjon:
-        val institusjonsopphold: Boolean,
-
         // Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå:
         @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
         val epsIkkeFylt62Aar: Boolean,

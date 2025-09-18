@@ -1,5 +1,3 @@
-import { produce } from "immer";
-
 import {
   addElements,
   findAdjoiningContent,
@@ -9,14 +7,14 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { BlockContentIndex, LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 
 export const switchTypography: Action<
   LetterEditorState,
   [literalIndex: BlockContentIndex, typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
-> = produce((draft, literalIndex, typography) => {
+> = withPatches((draft, literalIndex, typography) => {
   const editedLetter = draft.redigertBrev;
   const block = editedLetter.blocks[literalIndex.blockIndex];
 

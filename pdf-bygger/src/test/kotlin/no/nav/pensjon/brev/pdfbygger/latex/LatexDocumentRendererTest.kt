@@ -3,14 +3,19 @@ package no.nav.pensjon.brev.pdfbygger.latex
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
+import io.ktor.util.debug.addToContextInDebugMode
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.pdfbygger.LetterMarkupBlocksBuilder
 import no.nav.pensjon.brev.pdfbygger.ParagraphBuilder
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
+import no.nav.pensjon.brev.pdfbygger.lipsums
 import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.test.Test
 
@@ -125,6 +130,42 @@ class LatexDocumentRendererTest {
             rendered.files.first { it.fileName == "attachment_0.tex" }.content,
             containsSubstring("Test vedlegg")
         )
+    }
+
+    @Test
+    fun `illegal bold title should have font type discarded`(){
+        val markup = letterMarkup {
+            title {
+                text(
+                    "Denne teksten skal ikke faktisk bli bold!",
+                    fontType = FontType.BOLD
+                )
+            }
+
+            // Main letter content
+            outline {
+                // section title
+                title1 {
+                    text("Denne teksten skal ikke faktisk bli bold!", fontType = FontType.BOLD)
+                }
+            }
+        }
+
+        val pdfRequest = PDFRequest(
+            letterMarkup = markup,
+            attachments = emptyList(),
+            language = LanguageCode.BOKMAL,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+        )
+
+        val rendered = LatexDocumentRenderer.render(pdfRequest)
+
+        assertThat(
+            rendered.files.first { it.fileName == "letter.tex" }.content,
+            !containsSubstring("textbf")
+        )
+
+
     }
 
     private fun assertNumberOfParagraphs(

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEF
 import no.nav.pensjon.brev.maler.fraser.common.Constants.PERSONVERNERKLAERING_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,8 +19,6 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2025_SKJERMT_FEIL_BEROERT_BRUKER
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har sendt ditt brev til feil mottaker",

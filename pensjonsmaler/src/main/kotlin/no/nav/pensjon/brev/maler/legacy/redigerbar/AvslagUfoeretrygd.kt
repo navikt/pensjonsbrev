@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -15,7 +16,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -26,6 +27,8 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
+    override val featureToggle = FeatureToggles.brevmalUtAvslag.toggle
+
     // PE_UT_04_104
     override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
@@ -33,7 +36,8 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
-        name = kode.name, letterDataType = AvslagUfoeretrygdDto::class, languages = languages(Bokmal, Nynorsk, English), letterMetadata = LetterMetadata(
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på uføretrygd",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import _ from "lodash";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createContext, useCallback, useContext, useState } from "react";
 
@@ -13,6 +14,9 @@ interface ManagedLetterEditorContextValue {
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse) => void;
 }
+
+const nullsToUndefined = (obj: unknown) =>
+  JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
 
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
@@ -29,6 +33,10 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus !== "DIRTY") {
+          const keepHistory = _.isEqual(
+            nullsToUndefined(previousState.redigertBrev),
+            nullsToUndefined(response.redigertBrev),
+          );
           return {
             ...previousState,
             redigertBrev: response.redigertBrev,
@@ -36,6 +44,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
             saksbehandlerValg: response.saksbehandlerValg,
             info: response.info,
             saveStatus: "SAVED",
+            history: keepHistory ? previousState.history : { entries: [], entryPointer: -1 },
           };
         } else {
           return previousState;
