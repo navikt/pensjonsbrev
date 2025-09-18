@@ -7,9 +7,9 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiD
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.opplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
@@ -33,12 +33,13 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.includeAttachment
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype
 
 
-// MF_000118 : AP_INNV_AO_75_AUTO / AO_AP_GRAD_AP_75
+/* MF_000118 : AP_INNV_AO_75_AUTO / AO_AP_GRAD_AP_75
+Det er omregning til 100 prosent alderspensjon for de som har gradert pensjon med regelverk AP2011 og AP2016.
+ */
 @TemplateModelHelpers
 object EndringAvAlderspensjonFordiDuFyller75AarAuto :
     AutobrevTemplate<EndringAvAlderspensjonFordiDuFyller75AarAutoDto> {
@@ -108,11 +109,9 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
                 includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
-                    }
+            }
             includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)
             includeAttachment(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
-            includeAttachment(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlderDt0)
-                }
-            }
+            includeAttachment(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlder)
         }
 }
