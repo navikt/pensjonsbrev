@@ -5,6 +5,9 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiD
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -49,6 +52,8 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
             outline {
                 includePhrase(Vedtak.Overskrift)
                 includePhrase(DuFaarHverMaaned(totalPensjon))
+                includePhrase(Utbetalingsinformasjon)
+
         }
 
 }
