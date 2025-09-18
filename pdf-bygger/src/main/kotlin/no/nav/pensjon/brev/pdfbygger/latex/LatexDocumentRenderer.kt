@@ -190,7 +190,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.renderTextAsPlain(elements: List<Text>): Unit =
-        renderText(elements, true)
+        renderText(elements, forcePlainText = true)
 
     private fun LatexAppendable.renderText(elements: List<Text>, forcePlainText: Boolean = false): Unit =
         elements.forEach { renderTextContent(it, forcePlainText) }
