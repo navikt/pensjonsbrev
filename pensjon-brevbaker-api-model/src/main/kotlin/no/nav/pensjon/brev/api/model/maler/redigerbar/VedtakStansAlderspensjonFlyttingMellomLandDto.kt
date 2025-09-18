@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.EksportForbudKode
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
@@ -30,6 +31,7 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val minst20ArTrygdetid: Boolean,
         val minst20AarTrygdetidKap20Avdoed: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
+        val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
         val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
         val informasjonOmMedlemskapOgHelserettigheter: InformasjonOmMedlemskapOgHelserettigheterDto?
         ) : BrevbakerBrevdata
