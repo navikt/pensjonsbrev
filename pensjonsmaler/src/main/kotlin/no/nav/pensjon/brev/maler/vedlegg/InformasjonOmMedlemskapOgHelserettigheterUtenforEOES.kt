@@ -20,19 +20,12 @@ import no.nav.pensjon.brev.template.dsl.text
 val vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES =
     createAttachment<LangBokmalNynorskEnglish, InformasjonOmMedlemskapOgHelserettigheterDto>(
         title = newText(
-            Bokmal to "Informasjon om medlemskap og rett til helsetjenester",
-            Nynorsk to "Informasjon om medlemskap og rett til helsetenester",
-            English to "Information about membership and entitlement to health services",
+            Bokmal to "Informasjon om medlemskap og rett til helsetjenester - for alderspensjonister som bosetter seg utenfor EØS-området",
+            Nynorsk to "Informasjon om medlemskap og rett til helsetenester - for alderspensjonistar som buset seg utanfor EØS-området",
+            English to "Information about membership and entitlement to health services - for retirement pensioners who take up residence outside the EEA",
         ),
         includeSakspart = false
     ) {
-        title1 {
-            text(
-                bokmal { +"- for alderspensjonister som bosetter seg utenfor EØS-området" },
-                nynorsk { +"- for alderspensjonistar som buset seg utanfor EØS-området." },
-                english { +"- for retirement pensioners who take up residence outside the EEA" }
-            )
-        }
         title2 {
             text(
                 bokmal { +"Medlemskap i folketrygden" },
