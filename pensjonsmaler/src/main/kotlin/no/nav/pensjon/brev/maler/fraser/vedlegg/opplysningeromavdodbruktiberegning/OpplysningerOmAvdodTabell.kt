@@ -138,7 +138,9 @@ data class OpplysningerOmAvdodTabell(
                                 )
 
                                 //vedleggTabellAvdodKap19FaktiskePoengArNorge_001
-                                antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.faktiskPoengArNorge_safe)
+                                showIf(beregningsmetode.equalTo(NORDISK)) {
+                                    antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.faktiskPoengArNorge_safe)
+                                }
 
                                 //vedleggTabellAvdodKap19FramtidigPoengar_001
                                 showIf(beregningsmetode.equalTo(FOLKETRYGD)) {
