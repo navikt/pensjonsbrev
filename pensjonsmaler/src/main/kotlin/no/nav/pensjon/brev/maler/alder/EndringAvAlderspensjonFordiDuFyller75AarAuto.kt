@@ -102,9 +102,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                     }
                 }
 
-                // skattAPendring
                 includePhrase(EndringKanHaBetydningForSkatt)
-
                 includePhrase(MeldFraOmEndringer2)
                 includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
                 includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
