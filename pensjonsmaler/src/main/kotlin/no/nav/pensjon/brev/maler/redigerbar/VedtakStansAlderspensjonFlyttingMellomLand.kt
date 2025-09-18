@@ -22,13 +22,15 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFl
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDtoSelectors.erEOSLand_safe
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheter
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -234,6 +236,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlage)
-        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheter,pesysData.informasjonOmMedlemskapOgHelserettigheter)
+        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES,pesysData.informasjonOmMedlemskapOgHelserettigheter, pesysData.informasjonOmMedlemskapOgHelserettigheter.erEOSLand_safe)
+        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES,pesysData.informasjonOmMedlemskapOgHelserettigheter, not(pesysData.informasjonOmMedlemskapOgHelserettigheter.erEOSLand_safe))
     }
 }

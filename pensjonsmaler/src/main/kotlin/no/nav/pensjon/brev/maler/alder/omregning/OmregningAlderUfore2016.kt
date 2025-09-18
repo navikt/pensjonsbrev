@@ -40,17 +40,20 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Redig
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
+import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDtoSelectors.erEOSLand_safe
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheter
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -119,7 +122,9 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderDto)
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning,pesysData.opplysningerOmAvdoedBruktIBeregningDto)
         includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
-        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheter,pesysData.informasjonOmMedlemskapOgHelserettigheterDto)
+        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES,pesysData.informasjonOmMedlemskapOgHelserettigheterDto, pesysData.informasjonOmMedlemskapOgHelserettigheterDto.erEOSLand_safe)
+        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES,pesysData.informasjonOmMedlemskapOgHelserettigheterDto, not(pesysData.informasjonOmMedlemskapOgHelserettigheterDto.erEOSLand_safe))
+
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)
     }
 
