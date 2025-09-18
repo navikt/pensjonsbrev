@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.EksportForbudKode
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -39,6 +40,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetpensjonPerMaanedVedVirk: BeregnetPensjonPerMaanedVedVirk,
         val erEtterbetaling1Maaned: Boolean,
+        val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
