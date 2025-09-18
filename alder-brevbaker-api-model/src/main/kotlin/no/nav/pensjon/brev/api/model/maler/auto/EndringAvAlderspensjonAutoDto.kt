@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Institusjon
+import no.nav.pensjon.brev.api.model.maler.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.SivilstandAvdoed
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -17,7 +18,9 @@ data class EndringAvAlderspensjonAutoDto (
     val avdod: AvdodInformasjon,
     val avdodNavn: String,
     val virkFom: LocalDate,
-
+    val barn: Barn,
+    val sivilstand: BorMedSivilstand,
+    val etterBetaling: Boolean,
     ): BrevbakerBrevdata {
 
     data class AlderspensjonVedVirk (
@@ -46,6 +49,11 @@ data class EndringAvAlderspensjonAutoDto (
     data class AvdodInformasjon (
         val sivilstandAvdoed: SivilstandAvdoed,
         val ektefelletilleggOpphort: Boolean,
+        val gjenlevendesAlder: Int,
+    )
+
+    data class Barn(
+        val harBarnUnder18: Boolean,
     )
 
 }

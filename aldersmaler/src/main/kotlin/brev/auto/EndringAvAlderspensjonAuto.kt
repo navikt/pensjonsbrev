@@ -1,8 +1,12 @@
 package brev.auto
 
+import brev.felles.Constants.DITT_NAV_URL
+import brev.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.maler.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.Institusjon
+import no.nav.pensjon.brev.api.model.maler.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.SivilstandAvdoed
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.harEndretPensjon
@@ -11,7 +15,9 @@ import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSel
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.AvdodInformasjonSelectors.ektefelletilleggOpphort
+import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.AvdodInformasjonSelectors.gjenlevendesAlder
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.AvdodInformasjonSelectors.sivilstandAvdoed
+import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.BarnSelectors.harBarnUnder18
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.BeregnetPensjonPerManedSelectors.erPerioderMedUttak
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.BeregnetPensjonPerManedSelectors.garantiPensjon
@@ -20,9 +26,12 @@ import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSel
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.avdod
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.avdodNavn
+import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.barn
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.beregnetPensjonPerManed
+import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.etterBetaling
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.institusjonsoppholdVedVirk
+import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -479,31 +488,269 @@ object EndringAvAlderspensjonAuto : AutobrevTemplate<EndringAvAlderspensjonAutoD
                 title2 {
                     text(
                         bokmal { +"Rettigheter du kan ha som tidligere samboer med " + avdodNavn },
-                        nynorsk { +"Rettar du kan ha som tidlegare sambuar med " + avdodNavn  },
-                        english { +"Rights you may be entitled to as a former cohabitant with" + avdodNavn  }
+                        nynorsk { +"Rettar du kan ha som tidlegare sambuar med " + avdodNavn },
+                        english { +"Rights you may be entitled to as a former cohabitant with" + avdodNavn }
                     )
                 }
 
                 paragraph {
                     text(
-                        bokmal { +"Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, " +
-                                "kan ha rett til høyere alderspensjon hvis avdødes pensjonsopptjening tas med i beregningen. " +
-                                "Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, " +
-                                "partner eller samboer på nav.no/gjenlevendeektefelle." },
-                        nynorsk { +"Sambuarar som tidlegare har vore gift, eller som har eller har hatt felles barn, " +
-                                "kan ha rett til høgare alderspensjon viss avdøde si pensjonsopptening blir tatt med i utrekninga. " +
-                                "Du finn meir informasjon og søknadsskjema for attlevande ektefelle, " +
-                                "partnar eller sambuar på nav.no/gjenlevendeektefelle." },
-                        english { +"Cohabitants who have previously been married, " +
-                                "or who have or have had children together, may be entitled to a higher retirement pension if the deceased's earned pension is included in the calculation. " +
-                                "You will find more information and the application form for benefits for surviving spouse, " +
-                                "partner or cohabitant at nav.no/gjenlevendeektefelle." }
+                        bokmal {
+                            +"Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, " +
+                                    "kan ha rett til høyere alderspensjon hvis avdødes pensjonsopptjening tas med i beregningen. " +
+                                    "Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, " +
+                                    "partner eller samboer på nav.no/gjenlevendeektefelle."
+                        },
+                        nynorsk {
+                            +"Sambuarar som tidlegare har vore gift, eller som har eller har hatt felles barn, " +
+                                    "kan ha rett til høgare alderspensjon viss avdøde si pensjonsopptening blir tatt med i utrekninga. " +
+                                    "Du finn meir informasjon og søknadsskjema for attlevande ektefelle, " +
+                                    "partnar eller sambuar på nav.no/gjenlevendeektefelle."
+                        },
+                        english {
+                            +"Cohabitants who have previously been married, " +
+                                    "or who have or have had children together, may be entitled to a higher retirement pension if the deceased's earned pension is included in the calculation. " +
+                                    "You will find more information and the application form for benefits for surviving spouse, " +
+                                    "partner or cohabitant at nav.no/gjenlevendeektefelle."
+                        }
                     )
                 }
             }
 
+            showIf(
+                avdod.sivilstandAvdoed.isOneOf(
+                    SivilstandAvdoed.PARTNER,
+                    SivilstandAvdoed.GIFT,
+                    SivilstandAvdoed.SAMBOER1_5
+                )
+            ) {
+                showIf(alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
+                    title2 {
+                        text(
+                            bokmal { +"Du kan ha rett til høyere pensjon" },
+                            nynorsk { +"Du kan ha rett til høgare pensjon" },
+                            english { +"You may be entitled to a higher pension" }
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du kan få høyere alderspensjon hvis avdødes pensjonsopptjening tas med i beregningen. Da må du som hovedregel:" },
+                            nynorsk { +"Du kan få høgare alderspensjon dersom avdøde si pensjonsopptening blir tatt med i utrekninga. Da må du som hovudregel:" },
+                            english {
+                                +"You may receive a higher retirement pension if the deceased's earned pension is included in the calculation. " +
+                                        "To be entitled to survivor's rights in your retirement pension, you must as a rule:"
+                            }
+                        )
+                        list {
+                            item {
+                                text(
+                                    bokmal { +"være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet " },
+                                    nynorsk { +"vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet" },
+                                    english { +"be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death" },
+                                )
+                            }
+                            item {
+                                text(
+                                    bokmal { +"ha vært gift med den avdøde i minst fem år, eller " },
+                                    nynorsk { +"ha vore gift med den avdøde i minst fem år, eller " },
+                                    english { +"have been married to the deceased for at least five years, or " }
+                                )
+                            }
+                            item {
+                                text(
+                                    bokmal { +"ha vært gift eller vært samboer med den avdøde og har eller ha hatt barn med den avdøde, eller " },
+                                    nynorsk { +"ha vore gift eller vore sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller " },
+                                    english { +"have been married to or a cohabitant with the deceased, and have/had children together, or " }
+                                )
+                            }
+                            item {
+                                text(
+                                    bokmal { +"ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år." },
+                                    nynorsk { +"ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år." },
+                                    english { +"have had care of the children of the deceased at the time of the death. The marriage and care of the child after the death must have lasted for at least five years." }
+                                )
+                            }
+                        }
+                        text(
+                            bokmal { +"Selv om du ikke har rett til ytelsen etter hovedreglene, kan du likevel ha rettigheter etter avdøde. Du kan lese mer om dette på $NAV_URL" },
+                            nynorsk { +"Sjølv om du ikkje har rett til ytinga etter hovudreglane, kan du likevel ha rettar etter avdøde. Du kan lese meir om dette på $NAV_URL" },
+                            english {
+                                +"Even if you are not entitled to benefits in accordance with the general rules, " +
+                                        "you may nevertheless have rights as a surviving spouse. You can read more about this at $NAV_URL"
+                            }
+                        )
+                    }
+                }
+
+                showIf(alderspensjonVedVirk.uttaksgrad.equalTo(0) and avdod.gjenlevendesAlder.lessThan(67)) {
+                    paragraph {
+                        text(
+                            bokmal { +"ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år." },
+                            nynorsk { +"ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år." },
+                            english { +"have had care of the children of the deceased at the time of the death. The marriage and care of the child after the death must have lasted for at least five years." }
+                        )
+                    }
+                }
+                title2 {
+                    text(
+                        bokmal { +"Rettigheter hvis avdøde har bodd eller arbeidet i utlandet" },
+                        nynorsk { +"Rettar når avdøde har budd eller arbeidd i utlandet" },
+                        english { +"Rights if the deceased has lived or worked abroad" }
+                    )
+                }
+                showIf(alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for hvor mye du får ubetalt i pensjon. " +
+                                        "Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
+                                        "Derfor kan du også ha rett til pensjon fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med."
+                            },
+                            nynorsk {
+                                +"Dersom avdøde har budd eller arbeidd i utlandet, kan dette få noko å seie for kor mykje du får ubetalt i pensjon. " +
+                                        "Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
+                                        "Derfor kan du også ha rett til pensjon frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med."
+                            },
+                            english {
+                                +"If the deceased has lived or worked abroad, this may affect the amount of your pension. " +
+                                        "Norway has social security cooperates with a number of countries through the EEA Agreement and other social security agreements. " +
+                                        "You may therefore also be entitled to a pension from other countries. " +
+                                        "We can help assist you with your application to apply to countries with which Norway has a social security agreement."
+                            }
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
+                                        "Derfor kan du ha rett til pensjon på grunnlag av avdøde sin opptjening i andre land. " +
+                                        "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med."
+                            },
+                            nynorsk {
+                                +"Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
+                                        "Derfor kan du også ha rett til pensjon på grunnlag av avdøde si pensjonsopptening frå andre land. " +
+                                        "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med."
+                            },
+                            english {
+                                +"Norway has social security cooperation with several countries through the EEA Agreement and other agreements. " +
+                                        "Therefore, you may be entitled to a pension based on the deceased’s earnings in other countries. " +
+                                        "We can assist you with applications to countries with which Norway has social security agreements."
+                            }
+                        )
+                    }
+                }
+                title2 {
+                    text(
+                        bokmal { +"Andre pensjonsordninger" },
+                        nynorsk { +"Andre pensjonsordningar" },
+                        english { +"Other pension schemes" }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, kan du kontakte avdødes arbeidsgiver. " +
+                                    "Du kan også ta kontakt med pensjonsordningen eller forsikringsselskapet."
+                        },
+                        nynorsk {
+                            +"Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. " +
+                                    "Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet."
+                        },
+                        english {
+                            +"If the deceased was a member of a private or public pension scheme and you have questions about this, " +
+                                    "you can contact the deceased's employer. You can also contact the pension scheme or insurance company."
+                        }
+                    )
+                }
+            }
+
+            showIf(barn.harBarnUnder18 or sivilstand.equalTo(BorMedSivilstand.SAMBOER3_2)) {
+                title2 {
+                    text(
+                        bokmal { +"For deg som har barn under 18 år" },
+                        nynorsk { +"For deg som har barn under 18 år" },
+                        english { +"If you have children under the age of 18" }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd. Du finner søknadsskjema og mer informasjon om dette på $NAV_URL" },
+                        nynorsk { +"Forsørgjer du barn under 18 år, kan du ha rett til utvida barnetrygd. Du finn søknadsskjema og meir informasjon om dette på $NAV_URL" },
+                        english { +"If you provide for children under the age of 18, you may be entitled to extended child benefit. " +
+                                "You will find the application form and more information about this at $NAV_URL" }
+                    )
+                }
+            }
+
+            showIf(etterBetaling) {
+                title2 {
+                    text(
+                        bokmal { +"Etterbetaling" },
+                        nynorsk { +"Etterbetaling" },
+                        english { +"Retroactive payment" }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du får etterbetalt pensjon fra " + virkFom.formatMonthYear() + ". " +
+                                "Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. " +
+                                "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel $NAV_URL eller tjenestepensjonsordninger. " +
+                                "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
+                                "Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV_URL" },
+                        nynorsk { +"Du får etterbetalt pensjon frå " + virkFom.formatMonthYear() + " . " +
+                                "Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. " +
+                                "Vi kan trekkje frå skatt og ytingar du har fått frå for eksempel $NAV_URL eller tenestepensjonsordningar. " +
+                                "Etterbetalinga di kan derfor bli forseinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. " +
+                                "Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV_URL" },
+                        english { +"You will receive retroactive pension payments from " + virkFom.formatMonthYear() + ". " +
+                                "The retroactive payments will normally be made in the course of seven working days. " +
+                                "We can make deductions for tax and benefits you have received, for example, from $NAV_URL or occupational pension schemes. " +
+                                "Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. " +
+                                "You can check if there are any deductions from the payment notice at $DITT_NAV_URL" }
+                    )
+                }
+
+                paragraph {
+                    text(
+                        bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
+                        nynorsk { +"Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten." },
+                        english { +"Retroactive If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates." }
+                    )
+                }
+            }
+
+            title2 {
+                text(
+                    bokmal { +"Du må melde fra om endringer" },
+                    nynorsk { +"Du må melde frå om endringar" },
+                    english { +"You must notify Nav if anything changes " }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om. " },
+                    nynorsk { +"Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om. " },
+                    english { +"If your circumstances change, you must inform Nav immediately. " +
+                            "The appendix specifies which changes you are obligated to notify us of. " }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
+                            "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
+                    nynorsk { +"Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
+                            "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
+                    english { +"If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
+                            "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav" }
+                )
+            }
+
 
         }
+
+
     }
 
 }
