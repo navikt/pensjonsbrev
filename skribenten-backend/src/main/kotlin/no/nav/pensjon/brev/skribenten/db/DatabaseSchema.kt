@@ -62,9 +62,9 @@ private inline fun <reified T> readJsonColumn(json: String): T =
 fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
     binary(name).transform(columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray))
 
-private inline fun <reified T> readJsonBinary(json: ByteArray?): T? =
+private inline fun <reified T> readJsonBinary(json: ByteArray): T =
     try {
-        json?.let { databaseObjectMapper.readValue<T>(it) }
+        json.let { databaseObjectMapper.readValue<T>(it) }
     } catch (e: JacksonException) {
         throw DatabaseJsonDeserializeException(e)
     }
@@ -77,14 +77,13 @@ object BrevredigeringTable : LongIdTable() {
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrevKryptert: Column<Edit.Letter?> = encryptedBinary("redigertBrevKryptert")
-        .nullable()
+    val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
 
 
     val redigertBrevHash: Column<EditLetterHash> = hashColumn("redigertBrevHash")
-    val redigertBrevKryptertHash: Column<EditLetterHash?> = hashColumn("redigertBrevKryptertHash").nullable()
+    val redigertBrevKryptertHash: Column<EditLetterHash> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -107,7 +106,6 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     private var _redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
     private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
-    private val _redigertBrevHash by BrevredigeringTable.redigertBrevHash
     private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
@@ -123,7 +121,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     var redigertBrev: Edit.Letter
-        get() = redigertBrevKryptert ?: _redigertBrev
+        get() = redigertBrevKryptert
         set(letter) {
             redigertBrevKryptertHash = EditLetterHash.read(letter)
             redigertBrevKryptert = letter
@@ -131,7 +129,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
         }
 
     val redigertBrevHash: EditLetterHash
-        get() = redigertBrevKryptertHash ?: _redigertBrevHash
+        get() = redigertBrevKryptertHash
 
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
@@ -150,7 +148,7 @@ object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
-    val pdfKryptert: Column<ByteArray?> = encryptedBinary("pdfKryptert").nullable()
+    val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<EditLetterHash> = hashColumn("redigertBrevHash")
 }
@@ -163,7 +161,7 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
 
     var redigertBrevHash by DocumentTable.redigertBrevHash
     var pdf: ByteArray
-        get() = pdfKryptert ?: _pdf.bytes
+        get() = pdfKryptert
         set(value) {
             pdfKryptert = value
             _pdf = ExposedBlob(value)
