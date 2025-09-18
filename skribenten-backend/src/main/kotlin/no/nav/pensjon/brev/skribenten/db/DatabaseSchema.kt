@@ -64,7 +64,7 @@ fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
 
 private inline fun <reified T> readJsonBinary(json: ByteArray): T =
     try {
-        json.let { databaseObjectMapper.readValue<T>(it) }
+        databaseObjectMapper.readValue<T>(json)
     } catch (e: JacksonException) {
         throw DatabaseJsonDeserializeException(e)
     }
