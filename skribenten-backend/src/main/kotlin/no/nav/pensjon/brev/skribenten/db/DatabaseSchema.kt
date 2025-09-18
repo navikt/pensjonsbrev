@@ -105,7 +105,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     private var _redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
-    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
+    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
     private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
@@ -123,7 +123,6 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var redigertBrev: Edit.Letter
         get() = redigertBrevKryptert
         set(letter) {
-            redigertBrevKryptertHash = EditLetterHash.read(letter)
             redigertBrevKryptert = letter
             _redigertBrev = letter
         }
