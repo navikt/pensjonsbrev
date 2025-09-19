@@ -58,19 +58,19 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 val dato = fritekst("dato")
                 text(
                     bokmal { + "Vi viser til vedtaket vårt "
-                            + felles.dokumentDato.format() +
+                            + fritekst("dato") +
                             ". Du har fått " + fritekst("beløp") +
                             " kroner for mye utbetalt i " + sakstype + " fra og med "
                             + dato + " til og med " + dato + "." },
 
                     nynorsk { + "Vi viser til vedtaket vårt "
-                            + felles.dokumentDato.format() +
+                            + fritekst("dato") +
                             ". Du har fått " + fritekst("beløp") +
                             " kroner for mykje utbetalt i " + sakstype + " frå og med "
                             + dato + " til og med " + dato + "." },
 
                     english { + "We refer to our decision dated "
-                            + felles.dokumentDato.format() + ". You have received NOK " + fritekst("beløp") +
+                            + fritekst("dato") + ". You have received NOK " + fritekst("beløp") +
                             " too much in " + sakstype + " starting from " + dato +
                             " up to and including " + dato + "." },
                 )
