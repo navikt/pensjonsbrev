@@ -293,21 +293,17 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Radioknapper: Hva er årsaken til sivilstandsendringen?
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(
-                    kravArsakType.isOneOf(SIVILSTANDSENDRING) and
-                            not(borSammenMedBruker) and saksbehandlerValg.fraFlyttet
-                ) {
-                    // flyttetEPS
-                    paragraph {
-                        text(
-                            bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
-                            nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
-                            english { +"You and " + epsNavn + "no longer live together." },
-                        )
+                showIf(kravArsakType.isOneOf(SIVILSTANDSENDRING) and not(borSammenMedBruker)) {
+                    showIf(saksbehandlerValg.fraFlyttet) {
+                        // flyttetEPS
+                        paragraph {
+                            text(
+                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
+                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
+                                english { +"You and " + epsNavn + "no longer live together." },
+                            )
+                        }
                     }
-
-                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     showIf(saksbehandlerValg.giftBorIkkeSammen) {
                         // endirngSivilstandGiftBorIkkeSammen
                         paragraph {
