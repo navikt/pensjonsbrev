@@ -42,9 +42,10 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     fun <AttachmentData : Any> includeAttachmentIfNotNull(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData?>,
+        predicate: Expression<Boolean?> = true.expr(),
     ) {
         @Suppress("UNCHECKED_CAST")
-        attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+        attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull() and predicate.ifNull(true)))
     }
 }
 

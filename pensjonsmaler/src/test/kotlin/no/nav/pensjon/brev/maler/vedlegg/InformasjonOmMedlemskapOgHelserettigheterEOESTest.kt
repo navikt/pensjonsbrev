@@ -13,27 +13,24 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-class InformasjonOmMedlemskapOgHelserettigheterTest {
+class InformasjonOmMedlemskapOgHelserettigheterEOESTest {
 
     @ParameterizedTest
     @MethodSource("sakstyperOgSpraak")
-    fun `test vedlegg vedleggInformasjonOmMedlemskapOgHelserettigheter`(sakstype: Sakstype, spraak: Language, erEOSLand: Boolean) {
+    fun `test vedlegg vedleggInformasjonOmMedlemskapOgHelserettigheter`(sakstype: Sakstype, spraak: Language) {
         val template = createVedleggTestTemplate(
-            vedleggInformasjonOmMedlemskapOgHelserettigheter,
-            InformasjonOmMedlemskapOgHelserettigheterDto(erEOSLand).expr(),
-            languages(Language.Bokmal, Language.English),
+            vedleggInformasjonOmMedlemskapOgHelserettigheterEOES,
+            InformasjonOmMedlemskapOgHelserettigheterDto(true).expr(),
+            languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         LetterTestImpl(
-            template,
-            Unit,
-            spraak,
-            Fixtures.fellesAuto
-        ).renderTestHtml(this::class.simpleName + "_${sakstype}_${spraak::class.simpleName}_${erEOSLand}")
+            template, Unit, spraak, Fixtures.fellesAuto
+        ).renderTestHtml(this::class.simpleName + "_${sakstype}_${spraak::class.simpleName}")
     }
 
     companion object {
         @JvmStatic
-        fun sakstyperOgSpraak() = listOf(Language.Bokmal, Language.Nynorsk, Language.English)
-            .flatMap { spraak -> listOf(true, false).map { Arguments.of(Sakstype.ALDER, spraak, it) } }
+        fun sakstyperOgSpraak() =
+            listOf(Language.Bokmal, Language.Nynorsk, Language.English).map { Arguments.of(Sakstype.ALDER, it) }
     }
 }
