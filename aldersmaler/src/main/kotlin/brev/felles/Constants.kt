@@ -5,7 +5,9 @@ import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"
+    const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val KONTAKT_URL = "$NAV_URL/kontakt"
+    const val KLAGE_URL = "$NAV_URL/klage"
     const val PENSJON_URL = "$NAV_URL/pensjon"
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09.00-15.00"
     const val NAV_KONTAKTSENTER_OPEN_HOURS = "09:00-15:00"
