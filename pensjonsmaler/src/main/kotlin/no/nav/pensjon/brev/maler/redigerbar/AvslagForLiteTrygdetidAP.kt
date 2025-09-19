@@ -275,17 +275,17 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                                     english { + ", 20-5 til 20-8 og 20-10," },
                                 )
                             }
-                            text(
-                                bokmal { + " og reglene i trygdeavtalen med " + avtaleland },
-                                nynorsk { + " og reglane i trygdeavtalen med " + avtaleland },
-                                english { + " of the National Insurance Act and to the provisions of the social security agreement with " + avtaleland },
-                            )
-
-                            showIf(erAvtaleland and erEOSland) {
+                            showIf( erEOSland) {
                                 text(
                                     bokmal { + ", og EØS-avtalens forordning 883/2004 artikkel 6" },
                                     nynorsk { + ", og EØS-avtalens forordning 883/2004 artikkel 6" },
                                     english { + ", and Article 6 of regulation (EC) 883/200" }
+                                )
+                            }.orShow {
+                                text(
+                                    bokmal { + " og reglene i trygdeavtalen med " + avtaleland },
+                                    nynorsk { + " og reglane i trygdeavtalen med " + avtaleland },
+                                    english { + " of the National Insurance Act and to the provisions of the social security agreement with " + avtaleland },
                                 )
                             }
                             text(bokmal { + "." }, nynorsk { + "." }, english { + "." })
