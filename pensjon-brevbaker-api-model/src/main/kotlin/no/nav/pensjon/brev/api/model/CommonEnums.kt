@@ -221,3 +221,9 @@ enum class VedtaksBegrunnelse{
     VIRKFOM_FOR_2011,
     VIRK_FOR_LANGT_FREM
 }
+
+enum class InformasjonOmMedlemskap {
+    EOES,
+    UTENFOR_EOES,
+    IKKE_RELEVANT
+}
