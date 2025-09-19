@@ -9,6 +9,7 @@ object Constants {
     const val KONTAKT_URL = "$NAV_URL/kontakt"
     const val KLAGE_URL = "$NAV_URL/klage"
     const val PENSJON_URL = "$NAV_URL/pensjon"
+    const val DITT_NAV_URL = "$NAV_URL/dittnav"
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09.00-15.00"
     const val NAV_KONTAKTSENTER_OPEN_HOURS = "09:00-15:00"
     private val navKontaktsenterPensjon = Telefonnummer("55553334")
