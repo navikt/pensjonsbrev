@@ -615,7 +615,7 @@ describe("LetterEditorActions.merge", () => {
       expect(result.redigertBrev.blocks[0].content.length).toEqual(2);
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toEqual("l1");
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }).text).toEqual("l2");
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 2 });
     });
 
     test("newline is next", () => {
