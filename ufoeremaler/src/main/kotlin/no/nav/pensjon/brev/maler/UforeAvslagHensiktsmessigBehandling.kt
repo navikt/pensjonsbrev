@@ -12,13 +12,14 @@ import no.nav.pensjon.brev.maler.fraser.Constants.UFORE_URL
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.UforeAvslagHensiktsmessigBehandlingPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.UforeAvslagHensiktsmessigBehandlingPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.saksbehandlerValg
@@ -51,7 +52,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagHensi
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi fikk din søknad om uføretrygd den 20. august 2025. Vi har avslått søknaden"})
+                text(bokmal { + "Vi fikk din søknad om uføretrygd den " + pesysData.kravMottattDato.format() + ". Vi har avslått søknaden"})
             }
             title1 {
                 text(bokmal { + "Derfor får du ikke uføretrygd"})
