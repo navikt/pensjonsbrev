@@ -6,7 +6,7 @@ import { PARAGRAPH } from "~/types/brevbakerTypes";
 import { type Action, withPatches } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
-import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
+import { isEmptyTableHeader, isLiteral, isTableCellIndex } from "../model/utils";
 import {
   addElements,
   cleanseText,
@@ -55,8 +55,14 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     const safeContentIndex = safeIndex(focus.contentIndex, block.content);
     const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
     addElements([table], insertAt, block.content, block.deletedContent);
-
-    draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
+    draft.focus = {
+      blockIndex: focus.blockIndex,
+      contentIndex: insertAt,
+      rowIndex: -1,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
     draft.saveStatus = "DIRTY";
   },
 );
@@ -119,11 +125,29 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
 
-  // Adjust focus to a valid position
-  const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
-  draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
-
   draft.saveStatus = "DIRTY";
+
+  // Determine the new focus target
+  const newContentIndex = Math.max(0, draft.focus.contentIndex - 1);
+  const previousContent = draft.redigertBrev.blocks[draft.focus.blockIndex].content[newContentIndex];
+
+  // If the previous content is a simple literal, focus the end of it.
+  if (previousContent && isLiteral(previousContent)) {
+    const text = previousContent.editedText ?? previousContent.text;
+    draft.focus = {
+      blockIndex: draft.focus.blockIndex,
+      contentIndex: newContentIndex,
+      cursorPosition: text.length,
+    };
+  } else {
+    // Fallback for other content types (or if it's the first element)
+    // This creates a simple, but incomplete focus. It's better to handle
+    // other cases like focusing the last cell of a preceding table if needed.
+    draft.focus = {
+      blockIndex: draft.focus.blockIndex,
+      contentIndex: newContentIndex,
+    };
+  }
 });
 
 export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {

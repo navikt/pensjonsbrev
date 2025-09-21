@@ -31,6 +31,7 @@ import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
+import { updateCursorPositionNoHistory } from "../actions/cursorPosition";
 import { isTableCellIndex } from "../model/utils";
 import {
   addRow,
@@ -45,6 +46,21 @@ import {
  * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
  */
 const Y_COORD_SAFETY_MARGIN = 10;
+
+const getCharacterOffset = (element: Node): number => {
+  const selection = globalThis.getSelection();
+  if (selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+    if (range.startContainer && element.contains(range.startContainer)) {
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      // Using textContent length instead of toString().length to handle potential HTML entities correctly.
+      return preCaretRange.toString().length;
+    }
+  }
+  return 0;
+};
 
 function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
   const content = letter.blocks[literalIndex.blockIndex].content;
@@ -139,7 +155,7 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
-  const { freeze, editorState, setEditorState } = useEditor();
+  const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -148,21 +164,23 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const text = textOf(content) || "​";
   useEffect(() => {
-    if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
-      contentEditableReference.current.textContent = text;
-    }
-  }, [text]);
+    const element = contentEditableReference.current;
+    if (!element) return;
 
-  useEffect(() => {
-    if (
-      !freeze &&
-      shouldBeFocused &&
-      contentEditableReference.current !== null &&
-      editorState.focus.cursorPosition !== undefined
-    ) {
-      focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
+    // 1. Ensure the text content is correct.
+    if (element.textContent !== text) {
+      element.textContent = text;
     }
-  }, [editorState.focus.cursorPosition, shouldBeFocused, freeze]);
+
+    // 2. After ensuring text is correct, handle the focus and cursor position.
+    if (!freeze && shouldBeFocused && editorState.focus.cursorPosition !== undefined) {
+      // The text node might not exist immediately after setting textContent,
+      // so we check for it before trying to set the focus.
+      if (element.childNodes[0]) {
+        focusAtOffset(element.childNodes[0], editorState.focus.cursorPosition);
+      }
+    }
+  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -414,14 +432,57 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {
+        const target = event.target as HTMLSpanElement;
+        const postEditCursorPosition = getCharacterOffset(target);
         applyAction(
           Actions.updateContentText,
           setEditorState,
           literalIndex,
           (event.target as HTMLSpanElement).textContent ?? "",
+          postEditCursorPosition,
         );
       }}
       onKeyDown={(event) => {
+        const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
+        const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
+        const isRedo =
+          (isMac ? event.metaKey : event.ctrlKey) && (event.key === "y" || (event.key === "z" && event.shiftKey));
+
+        if (isUndo) {
+          event.preventDefault();
+          event.stopPropagation();
+          // Explicitly remove focus from the current element before undoing.
+          // This prevents the browser from "snapping back" focus to this element after the state update.
+          undo();
+          return;
+        }
+        if (isRedo) {
+          event.preventDefault();
+          event.stopPropagation();
+          redo();
+          return;
+        }
+
+        const isEditingKey =
+          !event.ctrlKey &&
+          !event.altKey &&
+          !event.metaKey &&
+          (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete" || event.key === "Enter");
+
+        if (isEditingKey && contentEditableReference.current) {
+          const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
+
+          if (
+            editorState.focus.cursorPosition !== preEditCursorPosition ||
+            !hasFocus(editorState.focus, literalIndex)
+          ) {
+            applyAction(updateCursorPositionNoHistory, setEditorState, {
+              ...literalIndex,
+              cursorPosition: preEditCursorPosition,
+            });
+          }
+        }
+
         if (event.key === "Backspace") {
           if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
 

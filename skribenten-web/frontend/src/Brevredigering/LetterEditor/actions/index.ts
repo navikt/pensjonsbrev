@@ -1,5 +1,9 @@
 import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
-import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
+import {
+  cursorPosition,
+  updateCursorPosition,
+  updateCursorPositionNoHistory,
+} from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
 import {
@@ -46,5 +50,7 @@ const Actions = {
   insertTableRowBelow,
   promoteRowToHeader,
   demoteHeaderToRow,
+  updateCursorPosition,
+  updateCursorPositionNoHistory,
 };
 export default Actions;
