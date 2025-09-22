@@ -53,7 +53,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagHensi
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi fikk din søknad om uføretrygd den " + pesysData.kravMottattDato.format() + ". Vi har avslått søknaden" })
+                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
