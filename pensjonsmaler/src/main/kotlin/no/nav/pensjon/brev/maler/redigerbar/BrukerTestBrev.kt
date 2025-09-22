@@ -69,7 +69,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             showIf(saksbehandlerValg.utsiktenFraKontoret.equalTo(MOT_TRAER_OG_NATUR)) {
                 title1 {
                     text(
-                        bokmal { + "Grønt er skjønt" },
+                        bokmal { + "Trær og natur" },
                     )
                 }
                 paragraph {
@@ -80,7 +80,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             }.orShowIf(saksbehandlerValg.utsiktenFraKontoret.equalTo(MOT_PARKERINGSPLASSEN)) {
                 title1 {
                     text(
-                        bokmal { + "Grått er rått" },
+                        bokmal { + "Parkeringsplassen" },
                     )
                 }
                 paragraph {
@@ -93,9 +93,19 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             ifNotNull(saksbehandlerValg.denBesteKaken) { denBesteKaken ->
                 showIf(denBesteKaken.isOneOf(GULROTKAKE, RULLEKAKE, OSTEKAKE)) {
                     title1 {
-                        text(
-                            bokmal { +"Min favorittkake" },
-                        )
+                        showIf(denBesteKaken.equalTo(GULROTKAKE)) {
+                            text(
+                                bokmal { +"Den beste kaken er gulrotkake" },
+                            )
+                        }.orShowIf(denBesteKaken.equalTo(RULLEKAKE)) {
+                            text(
+                                bokmal { +"Den beste kaken er rullekake" },
+                            )
+                        }.orShowIf(denBesteKaken.equalTo(OSTEKAKE)) {
+                            text(
+                                bokmal { +"Den beste kaken er ostekake" },
+                            )
+                        }
                     }
                     paragraph {
                         showIf(denBesteKaken.equalTo(GULROTKAKE)) {
