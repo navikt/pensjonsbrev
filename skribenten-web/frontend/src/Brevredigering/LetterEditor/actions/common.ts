@@ -2,12 +2,19 @@ import type { Draft } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral, isTableCellIndex } from "~/Brevredigering/LetterEditor/model/utils";
+import {
+  isFritekst,
+  isItemList,
+  isLiteral,
+  isTableCellIndex,
+  isTextContent,
+} from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Cell,
   ColumnSpec,
   Content,
+  EditedLetter,
   ElementTags,
   Identifiable,
   Item,
@@ -64,11 +71,45 @@ export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is It
 }
 
 export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
-  return (
-    f.contentIndex === 0 &&
-    (offset ?? f.cursorPosition) === 0 &&
-    (isItemContentIndex(f) ? f.itemIndex === 0 && f.itemContentIndex === 0 : true)
-  );
+  if (isItemContentIndex(f)) {
+    return f.contentIndex === 0 && f.itemIndex === 0 && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+  } else if (isTableCellIndex(f)) {
+    return (
+      f.contentIndex === 0 &&
+      f.rowIndex === 0 &&
+      f.cellIndex === 0 &&
+      f.cellContentIndex === 0 &&
+      (offset ?? f.cursorPosition) === 0
+    );
+  } else if (isBlockContentIndex(f)) {
+    return f.contentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+  } else {
+    return false;
+  }
+}
+
+export function isIndexAfter(first: LiteralIndex, after: LiteralIndex): boolean {
+  if (after.blockIndex !== first.blockIndex) {
+    return after.blockIndex > first.blockIndex;
+  } else if (after.contentIndex !== first.contentIndex) {
+    return after.contentIndex > first.contentIndex;
+  } else if (isItemContentIndex(after) && isItemContentIndex(first)) {
+    if (after.itemIndex !== first.itemIndex) {
+      return after.itemIndex > first.itemIndex;
+    } else {
+      return after.itemContentIndex > first.itemContentIndex;
+    }
+  } else if (isTableCellIndex(after) && isTableCellIndex(first)) {
+    if (after.rowIndex !== first.rowIndex) {
+      return after.rowIndex > first.rowIndex;
+    } else if (after.cellIndex !== first.cellIndex) {
+      return after.cellIndex > first.cellIndex;
+    } else {
+      return after.cellContentIndex > first.cellContentIndex;
+    }
+  } else {
+    return false;
+  }
 }
 
 export function isAtStartOfItem(f: Focus, offset?: number): boolean {
@@ -427,4 +468,18 @@ export function newColSpec(colCount: number, headers?: { text: string; font?: Fo
 
 export function safeIndex(index: number, array: unknown[]) {
   return Math.max(0, Math.min(index, array.length - 1));
+}
+
+export function isValidIndex(letter: EditedLetter, index: LiteralIndex) {
+  const content = letter.blocks[index.blockIndex]?.content[index.contentIndex];
+
+  if (isItemList(content) && isItemContentIndex(index)) {
+    return content.items[index.itemIndex]?.content[index.itemContentIndex] !== undefined;
+  } else if (isTable(content) && isTableCellIndex(index)) {
+    return index.rowIndex >= 0
+      ? content.rows[index.rowIndex]?.cells[index.cellIndex]?.text[index.cellContentIndex] !== undefined
+      : content.header.colSpec[index.cellIndex]?.headerContent?.text[index.cellContentIndex] !== undefined;
+  } else {
+    return isTextContent(content) && isBlockContentIndex(index);
+  }
 }
