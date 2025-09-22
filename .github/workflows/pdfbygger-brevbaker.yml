@@ -145,6 +145,7 @@ jobs:
             latex:
               - 'pdf-bygger/containerFiles/latex/**'
               - 'pdf-bygger/Dockerfile'
+              - '.github/workflows/pdfbygger-brevbaker.yml'
 
   runIntegrationTests:
     name: "Integration tests"
