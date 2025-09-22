@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
@@ -56,9 +57,16 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
             }
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+                paragraph {
+                    text(
+                        bokmal { + pesysData.vurdering }
+                    )
+                }
+            }
             showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering })
+                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
                 }
             }.orShow {
                 paragraph {
@@ -87,24 +95,25 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
                     })
 
                 }
-                paragraph {
-                    text(bokmal {
-                        +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
-                                "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du har ikke fått " +
-                                "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
-                    })
-                }
-                paragraph {
-                    text(bokmal {
-                        +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. " +
-                                "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."
-                    })
-                }
+            }
+            paragraph {
+                text(bokmal {
+                    +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
+                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du har ikke fått " +
+                            "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
+                })
+            }
+            paragraph {
+                text(bokmal {
+                    +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. " +
+                            "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."
+                })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
             }
 
+            includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlage)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)

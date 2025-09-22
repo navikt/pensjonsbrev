@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.maler.fraser.Constants.KLAGERETTIGHETER_URL
 import no.nav.pensjon.brev.maler.fraser.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
@@ -13,6 +14,22 @@ import no.nav.pensjon.brev.template.dsl.text
 
 class Felles {
 
+    object HvaSkjerNa : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Hva skjer nå?" },
+                )
+            }
+            paragraph {
+                text(bokmal { +
+                    "Har du fått arbeidsavklaringspenger, får du ikke lenger disse når vi avslår søknaden din om uføretrygd. " +
+                    "Kontakt din veileder på ditt lokale Nav-kontor for å høre om du trenger mer avklaring, eller om det er andre pengestøtter fra Nav som kan være aktuelle for deg. " +
+                    "Din veileder har fått beskjed om at vi har avslått søknaden din. " })
+            }
+        }
+    }
+
     object RettTilAKlage : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {
@@ -23,8 +40,40 @@ class Felles {
             paragraph {
                 text(
                     bokmal { +
-                    "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter»"
-                        + " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL."},
+                    "Hvis du mener vedtaket er feil, kan du klage innen 6 uker fra den datoen vedtaket har kommet fram til deg. Dette følger av folketrygdloven § 21-12. " +
+                    "Du finner skjema og informasjon på $KLAGE_URL."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. " +
+                    "Kontakt oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE hvis du trenger hjelp."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Får du medhold i klagen, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket, for eksempel hjelp fra advokat. " +
+                    "Du kan ha krav på fri rettshjelp etter rettshjelploven. Du kan få mer informasjon om denne ordningen hos advokater, statsforvalteren eller Nav."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Du kan lese om saksomkostninger i forvaltningsloven § 36."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Hvis du sender klage i posten, må du signere klagen."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Mer informasjon om klagerettigheter finner du på $KLAGERETTIGHETER_URL."},
                 )
             }
         }
