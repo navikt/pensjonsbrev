@@ -566,11 +566,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                 bokmal { +"Omstillingsstønaden din er beregnet etter bestemmelsene i EØS-avtalen " +
                     "fordi vilkårene for rett til omstillingsstønad er oppfylt ved sammenlegging av " +
                     ifElse(tidligereFamiliepleier, "din", "avdødes") +
-                    "opptjeningstid i Norge og andre EØS- eller avtaleland. Trygdetiden er beregnet etter " +
+                    " opptjeningstid i Norge og andre EØS- eller avtaleland. Trygdetiden er beregnet etter " +
                     ifElse(tidligereFamiliepleier, "din", "avdødes") +
-                    "samlede opptjeningstid i disse landene. For å beregne norsk del av denne trygdetiden ganges " +
+                    " samlede opptjeningstid i disse landene. For å beregne norsk del av denne trygdetiden ganges " +
                     ifElse(tidligereFamiliepleier, "din", "avdødes") +
-                    "avdødes samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk " +
+                    " samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk " +
                     "opptjeningstid i Norge og samlet faktisk opptjeningstid i Norge og andre EØS- eller avtaleland. " +
                     ifElse(tidligereFamiliepleier, "Din", "Avdødes") +
                     " samlede trygdetid er beregnet til " +
