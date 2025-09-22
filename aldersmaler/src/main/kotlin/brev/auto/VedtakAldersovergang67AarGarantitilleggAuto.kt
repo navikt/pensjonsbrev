@@ -25,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // MF_000240
 @TemplateModelHelpers
 object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAldersovergang67AarGarantitilleggAutoDto> {
-    override val kode = Aldersbrevkoder.AutoBrev.INFO_EPS_62_AAR_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.VEDTAK_ALDERSOVERGANG_67_AAR_GARANTITILLEGG_AUTO
 
     override val template =
         createTemplate(
