@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import java.time.LocalDate
 
 fun createVedtakStansAlderspensjonFlyttingMellomLandDto() =
@@ -27,9 +26,6 @@ fun createVedtakStansAlderspensjonFlyttingMellomLandDto() =
             dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(
                 sakstype = Sakstype.ALDER,
                 brukerUnder18Aar = false
-            ),
-            informasjonOmMedlemskapOgHelserettigheter = InformasjonOmMedlemskapOgHelserettigheterDto(
-                erEOSLand = false,
             )
         )
     )
