@@ -7,16 +7,16 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
 data class UforeAvslagDto(
-    override val pesysData: UforeAvslagHensiktsmessigBehandlingPendata,
+    override val pesysData: UforeAvslagPendata,
     override val saksbehandlerValg: Saksbehandlervalg
-) : RedigerbarBrevdata<Saksbehandlervalg, UforeAvslagHensiktsmessigBehandlingPendata> {
+) : RedigerbarBrevdata<Saksbehandlervalg, UforeAvslagPendata> {
 
     data class Saksbehandlervalg(
         @DisplayText("Bruk vurdering fra vilkårsvedtak")
         val brukVurderingFraVilkarsvedtak: Boolean,
     ) : BrevbakerBrevdata
 
-    data class UforeAvslagHensiktsmessigBehandlingPendata(
+    data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
         val vurdering: String
     ) : BrevbakerBrevdata
