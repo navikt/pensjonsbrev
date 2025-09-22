@@ -19,7 +19,7 @@ logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.15.3"
 pdfboxVersion = "3.0.5"
-postgresqlVersion = "42.7.7"
+postgresqlVersion = "42.7.8"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.1.0"
 
