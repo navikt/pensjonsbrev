@@ -34,7 +34,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.fraFlyttet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.giftBorIkkeSammen
@@ -293,21 +292,17 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Radioknapper: Hva er årsaken til sivilstandsendringen?
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(
-                    kravArsakType.isOneOf(SIVILSTANDSENDRING) and
-                            not(borSammenMedBruker) and saksbehandlerValg.fraFlyttet
-                ) {
-                    // flyttetEPS
-                    paragraph {
-                        text(
-                            bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
-                            nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
-                            english { +"You and " + epsNavn + "no longer live together." },
-                        )
+                showIf(kravArsakType.isOneOf(SIVILSTANDSENDRING) and not(borSammenMedBruker)) {
+                    showIf(saksbehandlerValg.fraFlyttet) {
+                        // flyttetEPS
+                        paragraph {
+                            text(
+                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
+                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
+                                english { +"You and " + epsNavn + "no longer live together." },
+                            )
+                        }
                     }
-
-                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     showIf(saksbehandlerValg.giftBorIkkeSammen) {
                         // endirngSivilstandGiftBorIkkeSammen
                         paragraph {
@@ -611,7 +606,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-                showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+                showIf(vedtakEtterbetaling) {
                     includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
                 }
 
