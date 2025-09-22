@@ -13,19 +13,19 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.UforeAvslagHensiktsmessigBehandlingPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.UforeAvslagHensiktsmessigBehandlingPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagHensiktsmessigBehandlingPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagHensiktsmessigBehandlingPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagHensiktsmessigBehandlingDto> {
+object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> {
 
-    override val featureToggle = FeatureToggles.uforeAvslagDemo.toggle
+    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING

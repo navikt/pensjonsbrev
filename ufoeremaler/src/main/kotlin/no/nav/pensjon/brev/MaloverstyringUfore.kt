@@ -5,7 +5,8 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 
 
 fun isEnabled(kode: String) = when (kode) {
-    Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING.kode() -> FeatureToggles.uforeAvslagDemo
+    Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING.kode() -> FeatureToggles.uforeAvslag
+    Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK.kode() -> FeatureToggles.uforeAvslag
 
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it.toggle) } ?: true
