@@ -50,8 +50,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val feilutbetaling: Boolean,
         @DisplayText("Hvis endring i pensjonen")
         val endringPensjon: Boolean,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
