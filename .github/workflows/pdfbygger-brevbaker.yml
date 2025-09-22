@@ -190,6 +190,12 @@ jobs:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+      - name: Upload images
+        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visuals
+          path: pensjon-brevbaker/build/test_visual/
 
   analyzeImages:
     name: "Analyze images"
@@ -201,6 +207,10 @@ jobs:
       checks: write
       pull-requests: write
     steps:
+      - name: Download visuals
+        uses: actions/download-artifact@v5
+        with:
+          name: visuals
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
         with:
