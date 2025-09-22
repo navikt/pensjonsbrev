@@ -36,7 +36,6 @@ import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAutoDtoSel
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -49,7 +48,6 @@ object EndringAvAlderspensjonAuto : AutobrevTemplate<EndringAvAlderspensjonAutoD
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ENDRING_AV_ALDERSPENSJON_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
         letterDataType = EndringAvAlderspensjonAutoDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
