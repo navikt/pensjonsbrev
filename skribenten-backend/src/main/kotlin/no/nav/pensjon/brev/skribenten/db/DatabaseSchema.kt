@@ -99,8 +99,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
-    private var redigertBrevKryptertHash by BrevredigeringTable.redigertBrevKryptertHash
+    var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
+    val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
@@ -113,16 +113,6 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-
-    var redigertBrev: Edit.Letter
-        get() = redigertBrevKryptert
-        set(letter) {
-            redigertBrevKryptert = letter
-        }
-
-    val redigertBrevHash: EditLetterHash
-        get() = redigertBrevKryptertHash
-
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
@@ -147,14 +137,9 @@ object DocumentTable : LongIdTable() {
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
-    private var pdfKryptert by DocumentTable.pdfKryptert
-
+    var pdf by DocumentTable.pdfKryptert
     var redigertBrevHash by DocumentTable.redigertBrevHash
-    var pdf: ByteArray
-        get() = pdfKryptert
-        set(value) {
-            pdfKryptert = value
-        }
+
     companion object : LongEntityClass<Document>(DocumentTable)
 }
 
