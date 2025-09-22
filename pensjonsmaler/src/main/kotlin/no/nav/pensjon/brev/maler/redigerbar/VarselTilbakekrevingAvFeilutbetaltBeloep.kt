@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -36,8 +37,6 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
     override val sakstyper: Set<Sakstype> = setOf(FAM_PL, AFP, BARNEP, GJENLEV, ALDER, GENRL, AFP_PRIVAT)
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = VarselTilbakekrevingAvFeilutbetaltBeloepDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - tilbakekreving av feilutbetalt beløp",
@@ -59,19 +58,19 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 val dato = fritekst("dato")
                 text(
                     bokmal { + "Vi viser til vedtaket vårt "
-                            + felles.dokumentDato.format() +
+                            + fritekst("dato") +
                             ". Du har fått " + fritekst("beløp") +
                             " kroner for mye utbetalt i " + sakstype + " fra og med "
                             + dato + " til og med " + dato + "." },
 
                     nynorsk { + "Vi viser til vedtaket vårt "
-                            + felles.dokumentDato.format() +
+                            + fritekst("dato") +
                             ". Du har fått " + fritekst("beløp") +
                             " kroner for mykje utbetalt i " + sakstype + " frå og med "
                             + dato + " til og med " + dato + "." },
 
                     english { + "We refer to our decision dated "
-                            + felles.dokumentDato.format() + ". You have received NOK " + fritekst("beløp") +
+                            + fritekst("dato") + ". You have received NOK " + fritekst("beløp") +
                             " too much in " + sakstype + " starting from " + dato +
                             " up to and including " + dato + "." },
                 )

@@ -158,7 +158,7 @@ internal object LatexDocumentRenderer {
 
                 attachments.forEach { attachment ->
                     append("""\item """, escape = false)
-                    renderText(attachment.title)
+                    renderTextAsPlain(attachment.title)
                 }
                 appendCmd("end", "attachmentList")
             }
@@ -167,14 +167,14 @@ internal object LatexDocumentRenderer {
 
     private fun LatexAppendable.renderAttachment(attachment: LetterMarkup.Attachment) {
         appendCmd("startvedlegg") {
-            arg { renderText(attachment.title) }
+            arg { renderTextAsPlain(attachment.title) }
             arg { if (attachment.includeSakspart) append("includesakinfo") }
         }
         renderBlocks(attachment.blocks)
         appendCmd("sluttvedlegg")
     }
 
-    private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+    private fun LatexAppendable.renderTitleIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
         val text = renderTextsToString(content)
         if (text.isNotEmpty()) {
             render(text)
@@ -189,8 +189,11 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderText(elements: List<Text>): Unit =
-        elements.forEach { renderTextContent(it) }
+    private fun LatexAppendable.renderTextAsPlain(elements: List<Text>): Unit =
+        renderText(elements, forcePlainText = true)
+
+    private fun LatexAppendable.renderText(elements: List<Text>, forcePlainText: Boolean = false): Unit =
+        elements.forEach { renderTextContent(it, forcePlainText) }
 
     private fun LatexAppendable.renderBlock(
         block: LetterMarkup.Block,
@@ -200,15 +203,15 @@ internal object LatexDocumentRenderer {
         when (block) {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block, previous)
 
-            is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
+            is LetterMarkup.Block.Title1 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitleone", titleText)
+                    appendCmd("lettersectiontitleone", titleText, escape = false) // allerede escapet over.
                 }
             }
 
-            is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
+            is LetterMarkup.Block.Title2 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitletwo", titleText)
+                    appendCmd("lettersectiontitletwo", titleText, escape = false)  // allerede escapet over.
                 }
             }
         }
@@ -284,7 +287,7 @@ internal object LatexDocumentRenderer {
         }?.takeIf { it.isNotBlank() }
 
     private fun renderTextsToString(texts: List<Text>): String =
-        String(StringBuilder().also { LatexAppendable(it).renderText(texts) })
+        String(StringBuilder().also { LatexAppendable(it).renderTextAsPlain(texts) })
 
     private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->
@@ -312,12 +315,14 @@ internal object LatexDocumentRenderer {
                     }).repeat(it.span)
         }
 
-    private fun LatexAppendable.renderTextContent(element: Text): Unit =
+    private fun LatexAppendable.renderTextContent(element: Text, forcePlainText: Boolean) {
+        val fontType = if (forcePlainText) Text.FontType.PLAIN else element.fontType
         when (element) {
-            is Text.Literal -> renderTextLiteral(element.text, element.fontType)
-            is Text.Variable -> renderTextLiteral(element.text, element.fontType)
+            is Text.Literal -> renderTextLiteral(element.text, fontType)
+            is Text.Variable -> renderTextLiteral(element.text, fontType)
             is Text.NewLine -> appendCmd("newline")
         }
+    }
 
     private fun LatexAppendable.renderTextLiteral(text: String, fontType: Text.FontType): Unit =
         when (fontType) {
@@ -364,4 +369,5 @@ internal object LatexDocumentRenderer {
                 }
             }
         }
+
 }

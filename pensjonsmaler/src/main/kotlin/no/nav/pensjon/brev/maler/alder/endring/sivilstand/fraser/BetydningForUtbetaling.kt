@@ -20,6 +20,7 @@ data class BetydningForUtbetaling(
             regelverkType.isOneOf(
                 AlderspensjonRegelverkType.AP2011,
                 AlderspensjonRegelverkType.AP2016,
+                AlderspensjonRegelverkType.AP2025,
             ),
         ) {
             showIf(beloepEndring.equalTo(BeloepEndring.UENDRET)) {

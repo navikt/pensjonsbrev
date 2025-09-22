@@ -16,14 +16,9 @@ fun createEndringAvAlderspensjonSivilstandDto() =
         saksbehandlerValg =
             EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg(
                 endringPensjon = false,
-                epsInntektOekningReduksjon = false,
-                etterbetaling = false,
                 feilutbetaling = false,
                 fraFlyttet = false,
                 giftBorIkkeSammen = false,
-                institusjonsopphold = false,
-                samboereMedFellesBarn = false,
-                samboereTidligereGift = false,
                 beloepEndring = BeloepEndring.UENDRET,
             ),
         pesysData =

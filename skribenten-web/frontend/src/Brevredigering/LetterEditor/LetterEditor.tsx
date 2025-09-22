@@ -46,6 +46,7 @@ export const LetterEditor = ({
       const previous = applyPatches(current, inversePatches);
       return {
         ...previous,
+        saveStatus: "DIRTY",
         history: {
           ...previous.history,
           entryPointer: current.history.entryPointer - 1,
@@ -62,6 +63,7 @@ export const LetterEditor = ({
       const next = applyPatches(current, patches);
       return {
         ...next,
+        saveStatus: "DIRTY",
         history: {
           ...next.history,
           entryPointer: nextPointer,

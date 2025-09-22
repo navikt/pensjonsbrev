@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler
+package no.nav.pensjon.brev.ufore.api.model
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
@@ -11,6 +11,8 @@ object Ufoerebrevkoder {
     }
 
     enum class Redigerbar : Redigerbart {
+        UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING,
+        UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK,
         ;
 
         override fun kode(): String = this.name

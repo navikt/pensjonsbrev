@@ -44,6 +44,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         defaultRequest {
             url(pdlUrl)
         }
+        installRetry(logger)
         install(ContentNegotiation) {
             jackson()
         }

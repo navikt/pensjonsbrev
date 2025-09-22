@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
@@ -78,7 +77,7 @@ fun renderTestPdfOutline(
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
     val template = createTemplate(
-        testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
+        EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
             testName,
             false,
             LetterMetadata.Distribusjonstype.VEDTAK,
@@ -176,7 +175,6 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
     attachmentData: Expression<AttachmentData>,
     languages: Lang,
 ) = createTemplate(
-    name = "test-template",
     letterDataType = Unit::class,
     languages = languages,
     letterMetadata = LetterMetadata(
@@ -199,7 +197,6 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
     noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
 ): LetterTemplate<LangBokmal, LetterData> =
     createTemplate(
-        name = "test",
         letterDataType = LetterData::class,
         languages = languages(Bokmal),
         letterMetadata = testLetterMetadata,

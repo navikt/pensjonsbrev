@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -34,8 +35,6 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_UNG_UFOER_20_AAR_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",

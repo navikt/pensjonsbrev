@@ -38,6 +38,7 @@ dependencies {
     testFixturesImplementation(libs.ktor.server.callId)
 
     testFixturesImplementation(testFixtures(libs.brevbaker.common))
+    testFixturesImplementation(testFixtures(project(":brevbaker-dsl")))
     testFixturesImplementation(libs.bundles.logging)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {

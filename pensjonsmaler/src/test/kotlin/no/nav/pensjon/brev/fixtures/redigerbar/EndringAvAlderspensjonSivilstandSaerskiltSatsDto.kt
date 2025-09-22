@@ -26,10 +26,7 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                     epsTarUtAlderspensjon = false,
                     epsTarUtAlderspensjonIStatligSektor = false,
                     epsTarUtUfoeretrygd = false,
-                    etterbetaling = false,
                     feilutbetaling = false,
-                    giftBorIkkeSammen = false,
-                    institusjonsopphold = false,
                     beloepEndring = BeloepEndring.UENDRET,
                 ),
             pesysData =

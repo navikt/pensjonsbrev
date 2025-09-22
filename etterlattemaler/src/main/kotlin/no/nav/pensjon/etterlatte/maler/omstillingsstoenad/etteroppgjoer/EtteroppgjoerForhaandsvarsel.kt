@@ -1,11 +1,9 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -44,7 +42,7 @@ data class EtteroppgjoerForhaandsvarselBrevDTO(
 enum class EtteroppgjoerResultatType {
     TILBAKEKREVING,
     ETTERBETALING,
-    INGEN_ENDRING
+    INGEN_ENDRING_MED_UTBETALING,
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
@@ -64,7 +62,7 @@ data class EtteroppgjoerForhaandsvarselDTO(
         faktiskStoenad = faktiskStoenad,
         avviksBeloep = avviksBeloep
     )
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, false)
     val dagensDato: LocalDate = LocalDate.now()
 }
 
@@ -73,8 +71,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EtteroppgjoerForhaandsvarselBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - Etteroppgjør",
@@ -85,7 +81,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     ) {
         title {
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING)) {
                 text(
                     bokmal { +"Informasjon om etteroppgjør av omstillingsstønad for " + data.etteroppgjoersAar.format() },
                     nynorsk { +"Informasjon om etteroppgjer av omstillingsstønad for " + data.etteroppgjoersAar.format() },
@@ -107,7 +103,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             konverterElementerTilBrevbakerformat(innhold)
 
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING)) {
                 title2 {
                     text(
                         bokmal { +"Etteroppgjøret for " + data.etteroppgjoersAar.format() + " er nå avsluttet" },
@@ -117,7 +113,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”. Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
+                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget «Opplysninger om etteroppgjøret». Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
                         nynorsk { +"Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret». Gi oss beskjed dersom opplysningane inneheld feil." },
                         english { +"You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement». Please notify us if you find that any of the information is incorrect." },
                     )

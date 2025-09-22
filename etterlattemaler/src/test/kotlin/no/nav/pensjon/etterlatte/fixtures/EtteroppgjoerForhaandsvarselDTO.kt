@@ -19,7 +19,7 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
-            resultatType = EtteroppgjoerResultatType.INGEN_ENDRING,
+            resultatType = EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING,
             stoenad = Kroner(321),
             faktiskStoenad = Kroner(4444),
             avviksBeloep = Kroner(0),
@@ -44,7 +44,7 @@ fun createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() =
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
-            resultatType = EtteroppgjoerResultatType.INGEN_ENDRING,
+            resultatType = EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING,
             avviksBeloep = Kroner(0),
         )
     )

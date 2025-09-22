@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
@@ -28,6 +29,7 @@ data class OmregningAlderUfore2016Dto(
     val fullTrygdetid: Boolean,
     val persongrunnlagAvdod: PersongrunnlagAvdod,
     val faktiskBostedsland: String?,
+    val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
