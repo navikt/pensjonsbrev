@@ -25,14 +25,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val fraFlyttet: Boolean,
         @DisplayText("Sivilstandsendring årsak - inngått ekteskap men bor ikke sammen")
         val giftBorIkkeSammen: Boolean,
-
-        // Betydning for pensjons utbetaling?
-        @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-        @DisplayText("Hvis endring i pensjonen")
-        val endringPensjon: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -43,6 +37,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sivilstand: MetaforceSivilstand,
+        val beloepEndring: BeloepEndring,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
