@@ -36,7 +36,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjonIStatligSektor
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtUfoeretrygd
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.saksbehandlerValg
@@ -358,7 +357,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-            showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+            showIf(vedtakEtterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
