@@ -101,38 +101,25 @@ fun JobConfig.updateBrevredigeringJson() {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
             BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrev,
-            BrevredigeringTable.redigertBrevHash,
+            BrevredigeringTable.redigertBrevKryptert,
             BrevredigeringTable.redigertBrevKryptertHash,
         ).toList()
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
         val kanOppdateres = alleBrev
             .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
-            .filter { it[BrevredigeringTable.redigertBrevKryptertHash] != it[BrevredigeringTable.redigertBrevHash] }
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
             logger.debug("Oppdaterer {}", brevId)
-            val redigertBrev = it[BrevredigeringTable.redigertBrev]
+            val redigertBrev = it[BrevredigeringTable.redigertBrevKryptert]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.redigertBrev] = redigertBrev
-                update[BrevredigeringTable.redigertBrevHash] = EditLetterHash.read(redigertBrev)
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
                 update[BrevredigeringTable.redigertBrevKryptertHash] = EditLetterHash.read(redigertBrev)
             }
         }
 
-        val ulikHash = BrevredigeringTable.select(
-            BrevredigeringTable.id,
-            BrevredigeringTable.redigertBrevHash,
-            BrevredigeringTable.redigertBrevKryptertHash
-        )
-            .where({
-                BrevredigeringTable.redigertBrevKryptertHash.neq(BrevredigeringTable.redigertBrevHash)
-            })
-            .map { it[BrevredigeringTable.id].value }
-        if (ulikHash.isNotEmpty()) {
-            logger.info("Fikk forskjellig hash mellom vanlig og kryptert for brevene ${ulikHash.joinToString(",")}")
+        if (alleBrev.size != kanOppdateres.size) {
+            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
             completed = false
         }
     }
