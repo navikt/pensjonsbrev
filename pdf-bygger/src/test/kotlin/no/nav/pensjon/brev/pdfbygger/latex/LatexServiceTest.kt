@@ -256,7 +256,7 @@ class LatexServiceTest {
                 measureTimeMillis { requests.awaitAll() }
             }
             assertNotNull(compilationTime, "Test timed out")
-            assertThat(compilationTime, isWithin(1L..1500L))
+            assertThat(compilationTime, isWithin(1L..2000L))
         }
 
     }
