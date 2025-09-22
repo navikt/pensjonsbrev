@@ -40,9 +40,6 @@ fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Express
 operator fun Expression<Boolean>.not(): Expression<Boolean> =
     not(this)
 
-@JvmName("nullableNot")
-fun not(expr: Expression<Boolean?>) = not(expr.ifNull(true))
-
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     UnaryOperation.Not(expr)
 
