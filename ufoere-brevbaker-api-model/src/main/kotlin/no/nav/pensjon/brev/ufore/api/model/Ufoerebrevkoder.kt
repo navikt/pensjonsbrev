@@ -11,7 +11,8 @@ object Ufoerebrevkoder {
     }
 
     enum class Redigerbar : Redigerbart {
-        UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
+        UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING,
+        UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK,
         ;
 
         override fun kode(): String = this.name
