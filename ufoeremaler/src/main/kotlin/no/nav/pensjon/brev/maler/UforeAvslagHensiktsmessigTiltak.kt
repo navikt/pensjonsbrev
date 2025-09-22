@@ -5,9 +5,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -23,7 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagHensiktsmessigBehandlingDto> {
+object UforeAvslagHensiktsmessigTiltak : RedigerbarTemplate<UforeAvslagHensiktsmessigBehandlingDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslagDemo.toggle
 
@@ -36,7 +35,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagHensi
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - Hensiktsmessig behandling",
+            displayTitle = "Avslag uføretrygd - Hensiktsmessig tiltak",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
