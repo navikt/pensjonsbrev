@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,7 +19,7 @@ class InformasjonOmMedlemskapOgHelserettigheterUtenforEOESTest {
     fun `test vedlegg vedleggInformasjonOmMedlemskapOgHelserettigheter`(sakstype: Sakstype, spraak: Language) {
         val template = createVedleggTestTemplate(
             vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES,
-            InformasjonOmMedlemskapOgHelserettigheterDto(false).expr(),
+            Unit.expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         LetterTestImpl(

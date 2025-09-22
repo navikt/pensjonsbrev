@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.maler.fraser.common.Constants.HELFO
 import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSENORGE
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MEDLEMSKAP_URL
@@ -18,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.text
 // V00009 i metaforce
 @TemplateModelHelpers
 val vedleggInformasjonOmMedlemskapOgHelserettigheterEOES =
-    createAttachment<LangBokmalNynorskEnglish, InformasjonOmMedlemskapOgHelserettigheterDto>(
+    createAttachment<LangBokmalNynorskEnglish, Unit>(
         title = newText(
             Bokmal to "Informasjon om medlemskap og rett til helsetjenester - for alderspensjonister som flytter til et EØS-land og er omfattet av EØS-avtalens regler om trygd",
             Nynorsk to "Informasjon om medlemskap og rett til helsetenester - for alderspensjonistar som flyttar til eit EØS-land og er omfatta av reglane om trygd i EØS-avtalen",

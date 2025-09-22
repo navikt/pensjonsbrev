@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -22,7 +23,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskapOgHelserettigheterDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattAlderspensjonDto
@@ -40,7 +41,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Redig
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
-import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDtoSelectors.erEOSLand_safe
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
@@ -53,7 +53,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAld
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -122,8 +122,9 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderDto)
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning,pesysData.opplysningerOmAvdoedBruktIBeregningDto)
         includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
-        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES,pesysData.informasjonOmMedlemskapOgHelserettigheterDto, pesysData.informasjonOmMedlemskapOgHelserettigheterDto.erEOSLand_safe)
-        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES,pesysData.informasjonOmMedlemskapOgHelserettigheterDto, not(pesysData.informasjonOmMedlemskapOgHelserettigheterDto.erEOSLand_safe))
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
+
 
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)
     }

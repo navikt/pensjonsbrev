@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.EksportForbudKode
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
@@ -22,6 +23,7 @@ fun createVedtakStansAlderspensjonFlyttingMellomLandDto() =
             minst20ArTrygdetid = false,
             minst20AarTrygdetidKap20Avdoed = false,
             regelverkType = AP2016,
+            informasjonOmMedlemskap = InformasjonOmMedlemskap.UTENFOR_EOES,
             dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(
                 sakstype = Sakstype.ALDER,
                 brukerUnder18Aar = false
