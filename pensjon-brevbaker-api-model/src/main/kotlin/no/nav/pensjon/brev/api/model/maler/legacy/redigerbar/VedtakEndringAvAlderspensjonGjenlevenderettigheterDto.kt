@@ -23,8 +23,6 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis avdøde har redusert trygdetid/poengår")
         val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
-        @DisplayText("Hvis endring i pensjonsutbetaling")
-        val endringIPensjonsutbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
