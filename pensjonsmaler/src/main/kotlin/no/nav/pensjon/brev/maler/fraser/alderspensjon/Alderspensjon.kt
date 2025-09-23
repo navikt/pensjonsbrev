@@ -12,9 +12,9 @@ class Alderspensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    bokmal { + "Nav Familie-og pensjonsytelser Oslo 2" },
-                    nynorsk { + "Nav Familie-og pensjonsytelser Oslo 2" },
-                    english { + "NAV Familie-og pensjonsytelser Oslo 2" },
+                    bokmal { + "Nav Familie-og pensjonsytelser" },
+                    nynorsk { + "Nav Familie-og pensjonsytelser" },
+                    english { + "NAV Familie-og pensjonsytelser" },
                 )
                 newline()
                 text(
@@ -30,8 +30,8 @@ class Alderspensjon {
                 )
                 showIf(Expression.FromScope.Language.equalTo(English.expr())) { newline() }
                 text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
+                    bokmal { + "NORGE" },
+                    nynorsk { + "NORGE" },
                     english { + "NORWAY" },
                 )
             }
