@@ -1,6 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.Companion.SHADOW_JAR_TASK_NAME
-import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -16,19 +13,6 @@ version = "0.0.1"
 
 application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
-}
-
-// Merge cxf/bus-extensions.txt fra alle cxf-avhengigheter
-tasks.named(SHADOW_JAR_TASK_NAME, ShadowJar::class.java) {
-	transform(AppendingTransformer::class.java) {
-		resource = "META-INF/cxf/bus-extensions.txt"
-	}
-}
-
-ktor {
-	fatJar {
-		archiveFileName.set("app.jar")
-	}
 }
 
 val cxfVersion = "3.6.3"
@@ -107,4 +91,7 @@ tasks {
 	compileTestJava {
 		targetCompatibility = javaTarget
 	}
+    build {
+        dependsOn(installDist)
+    }
 }
