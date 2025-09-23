@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -355,69 +356,72 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
         )
     }
 
-    paragraph {
-        table(
-            header = {
-                column(1) {
-                    text(
-                        bokmal { +"Type inntekt" },
-                        nynorsk { +"Type inntekt" },
-                        english { +"Type of income " },
-                    )
+    showIf(grunnlag.loennsinntekt.absoluteValue().greaterThan(0).or(grunnlag.naeringsinntekt.absoluteValue().greaterThan(0).or(grunnlag.afp.absoluteValue().greaterThan(0).or(grunnlag.utlandsinntekt.absoluteValue().greaterThan(0))))) {
+        paragraph {
+            table(
+                header = {
+                    column(1) {
+                        text(
+                            bokmal { +"Type inntekt" },
+                            nynorsk { +"Type inntekt" },
+                            english { +"Type of income " },
+                        )
+                    }
+                    column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                        text(
+                            bokmal { +"Beløp" },
+                            nynorsk { +"Beløp" },
+                            english { +"Amount " },
+                        )
+                    }
                 }
-                column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                    text(
-                        bokmal { +"Beløp" },
-                        nynorsk { +"Beløp" },
-                        english { +"Amount " },
-                    )
+            ) {
+                row {
+                    cell { text(
+                        bokmal { +"Lønnsinntekt" },
+                        nynorsk { +"Lønnsinntekt" },
+                        english { +"Wage income" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
                 }
-            }
-        ) {
-            row {
-                cell { text(
-                    bokmal { +"Lønnsinntekt" },
-                    nynorsk { +"Lønnsinntekt" },
-                    english { +"Wage income" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
-            }
-            row {
-                cell { text(
-                    bokmal { +"Avtalefestet pensjon (AFP) offentlig eller privat" },
-                    nynorsk { +"Avtalefesta pensjon (AFP) offentleg eller privat" },
-                    english { +"AFP (contractual pension in the public or private sector)" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.afp)) }
-            }
-            row {
-                cell { text(
-                    bokmal { +"Næringsinntekt" },
-                    nynorsk { +"Næringsinntekt" },
-                    english { +"Income from self-employment" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
-            }
-            row {
-                cell { text(
-                    bokmal { +"Utlandsinntekt" },
-                    nynorsk { +"Utlandsinntekt" },
-                    english { +"Foreign income" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
-            }
+                row {
+                    cell { text(
+                        bokmal { +"Avtalefestet pensjon (AFP) offentlig eller privat" },
+                        nynorsk { +"Avtalefesta pensjon (AFP) offentleg eller privat" },
+                        english { +"AFP (contractual pension in the public or private sector)" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.afp)) }
+                }
+                row {
+                    cell { text(
+                        bokmal { +"Næringsinntekt" },
+                        nynorsk { +"Næringsinntekt" },
+                        english { +"Income from self-employment" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
+                }
+                row {
+                    cell { text(
+                        bokmal { +"Utlandsinntekt" },
+                        nynorsk { +"Utlandsinntekt" },
+                        english { +"Foreign income" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
+                }
 
-            row {
-                cell { text(
-                    bokmal { +"Sum" },
-                    nynorsk { +"Sum" },
-                    english { +"Total" },
-                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                ) }
-                cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                row {
+                    cell { text(
+                        bokmal { +"Sum" },
+                        nynorsk { +"Sum" },
+                        english { +"Total" },
+                        fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                }
             }
         }
     }
+
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.inntektBruktIBeregningenAvOms(
