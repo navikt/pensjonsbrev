@@ -40,16 +40,10 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         @DisplayText("Ikke brukt i beregningen. EPS tar ut uføretrygd")
         val epsTarUtUfoeretrygd: Boolean,
 
-        // Betydning for pensjons utbetaling?
-        @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring?,
-
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-        @DisplayText("Hvis endring i pensjonen")
-        val endringPensjon: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -60,6 +54,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val regelverkType: AlderspensjonRegelverkType,
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
+        val beloepEndring: BeloepEndring,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,

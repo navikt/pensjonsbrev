@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.alder.endring.sivilstand
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -15,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
@@ -25,8 +27,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenAlderspenspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsHarInntektOver1G
@@ -59,7 +59,6 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -266,10 +265,8 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                 }
             }
 
-            ifNotNull(saksbehandlerValg.beloepEndring) { beloepEndring ->
-                showIf(saerskiltSatsErBrukt) {
-                    includePhrase(BetydningForUtbetaling(regelverkType, beloepEndring))
-                }
+            showIf(saerskiltSatsErBrukt) {
+                includePhrase(BetydningForUtbetaling(regelverkType, pesysData.beloepEndring))
             }
 
             showIf(saksbehandlerValg.aarligKontrollEPS) {
@@ -352,7 +349,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Hvis endring i pensjonen (Selectable) - skattAPendring
-            showIf(saksbehandlerValg.endringPensjon) {
+            showIf(pesysData.beloepEndring.isOneOf(BeloepEndring.ENDR_OKT, BeloepEndring.ENDR_RED)) {
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
