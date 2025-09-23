@@ -17,9 +17,10 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -211,7 +212,8 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                     nynorsk { +"Du har rett til å uttale deg får vi tar den endelege avgjerda om tilbakebetaling. Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}." },
                     english { +"You have the right to provide your comments before we make a final decision about repayment. You can write to us at ${Constants.KONTAKT_URL} or call us at ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}." },
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Du kan også sende et skriftlig svar til:" },
                     nynorsk { +"Du kan også sende eit skriftleg svar til:" },
