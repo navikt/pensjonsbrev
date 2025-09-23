@@ -45,14 +45,13 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -288,12 +287,18 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
                 )
             }
-            paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
-                text(
-                    bokmal { + "Du må melde fra til Nav hvis" },
-                    nynorsk { + "Du må melde frå til Nav om" },
-                    english { + "You must notify Nav if" },
-                )
+            showIf(
+                (brukerBorINorge and erIkkePaaInstitusjon) or
+                (sivilstand.isOneOf(ENSLIG, ENKE, UKJENT)) or
+                (harBarnetillegg.notNull())
+            ) {
+                paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
+                    text(
+                        bokmal { +"Du må melde fra til Nav hvis" },
+                        nynorsk { +"Du må melde frå til Nav om" },
+                        english { +"You must notify Nav if" },
+                    )
+                }
             }
             paragraph {
                 list {
