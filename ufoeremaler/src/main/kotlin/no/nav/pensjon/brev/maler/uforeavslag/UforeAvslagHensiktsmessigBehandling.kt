@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.uforeavslag
 
 import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -37,7 +37,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - Hensiktsmessig behandling",
+            displayTitle = "Avslag uføretrygd - 12-5",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
