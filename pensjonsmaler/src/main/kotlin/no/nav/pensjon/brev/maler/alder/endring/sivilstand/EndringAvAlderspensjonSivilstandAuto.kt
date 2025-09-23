@@ -24,7 +24,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivils
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.saerskiltSatsErBrukt
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
@@ -46,16 +45,13 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKl
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -68,12 +64,10 @@ object EndringAvAlderspensjonSivilstandAuto :
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = EndringAvAlderspensjonSivilstandAutoDto::class,
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Vedtak - Endring av alderspensjon (sivilstand)",
+                    displayTitle = "Vedtak - endring av alderspensjon (sivilstand)",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -127,8 +121,8 @@ object EndringAvAlderspensjonSivilstandAuto :
                 }.orShow {
                     includePhrase(
                         DuFaarAP(
-                            kravVirkDatoFom = kravVirkDatoFom.format(),
-                            totalPensjon = beregnetPensjonPerManedVedVirk.totalPensjon.format(),
+                            kravVirkDatoFom = kravVirkDatoFom,
+                            totalPensjon = beregnetPensjonPerManedVedVirk.totalPensjon,
                         ),
                     )
                 }
@@ -145,7 +139,6 @@ object EndringAvAlderspensjonSivilstandAuto :
                         minstenivaaIndividuellInnvilget = alderspensjonVedVirk.minstenivaaIndividuellInnvilget,
                         minstenivaaPensjonistParInnvilget = alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget,
                         garantipensjonInnvilget = alderspensjonVedVirk.garantipensjonInnvilget,
-                        saerskiltSatsErBrukt = saerskiltSatsErBrukt,
                     ),
                 )
 

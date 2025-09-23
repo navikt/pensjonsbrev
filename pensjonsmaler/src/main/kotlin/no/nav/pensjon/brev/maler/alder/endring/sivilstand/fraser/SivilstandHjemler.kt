@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -25,7 +24,6 @@ data class SivilstandHjemler(
     val minstenivaaIndividuellInnvilget: Expression<Boolean>,
     val minstenivaaPensjonistParInnvilget: Expression<Boolean>,
     val garantipensjonInnvilget: Expression<Boolean>,
-    val saerskiltSatsErBrukt: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
@@ -41,7 +39,7 @@ data class SivilstandHjemler(
                     nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
                     english { + "This decision was made pursuant to the provisions of §§ " },
                 )
-                includePhrase(SivilstandIntro(sivilstand))
+                includePhrase(SivilstandSamboerHjemler(sivilstand))
                 showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
                     text(
                         bokmal { + ", 3-3" },
@@ -94,51 +92,6 @@ data class SivilstandHjemler(
             }
         }
 
-        showIf(
-            kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saerskiltSatsErBrukt,
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
-                    english { + "This decision was made pursuant to the provisions of §§ " },
-                )
-                showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
-                    includePhrase(SivilstandIntro(sivilstand))
-                    showIf(saertilleggInnvilget) {
-                        text(
-                            bokmal { + ", 3-3" },
-                            nynorsk { + ", 3-3" },
-                            english { + ", 3-3" },
-                        )
-                    }
-                    text(
-                        bokmal { + ", 19-8 og 22-12." },
-                        nynorsk { + ", 19-8 og 22-12." },
-                        english { + ", 19-8 and 22-12 of the National Insurance Act." },
-                    )
-                }.orShowIf(
-                    regelverkType.isOneOf(
-                        AlderspensjonRegelverkType.AP2011,
-                        AlderspensjonRegelverkType.AP2016,
-                    ),
-                ) {
-                    showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
-                        text(
-                            bokmal { + "1-5, " },
-                            nynorsk { + "1-5, " },
-                            english { + "1-5, " },
-                        )
-                    }
-                    text(
-                        bokmal { + "19-8, 19-9 og 22-12." },
-                        nynorsk { + "19-8, 19-9 og 22-12." },
-                        english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
-                    )
-                }
-            }
-        }
-
         showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
             // hjemmelSivilstandAP2025
             paragraph {
@@ -153,7 +106,7 @@ data class SivilstandHjemler(
     }
 }
 
-private data class SivilstandIntro(
+data class SivilstandSamboerHjemler(
     val sivilstand: Expression<MetaforceSivilstand>,
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

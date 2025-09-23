@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -11,9 +12,7 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -120,7 +119,6 @@ class Letter2MarkupTest {
     @Test
     fun `template title with expression renders as declared`() {
         val template = createTemplate(
-            name = "test",
             letterDataType = EmptyBrevdata::class,
             languages = languages(Bokmal),
             letterMetadata = testLetterMetadata,

@@ -12,38 +12,5 @@ fun hentMuligOverstyrtMal(kode: String) = when (kode) {
     Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() if FeatureToggleSingleton.isEnabled(
         FeatureToggles.pl7231ForventetSvartid.toggle
     ) -> VarselSaksbehandlingstidAutoV2
-
     else -> null
 }
-
-fun isEnabled(kode: String) = when (kode) {
-    Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK.kode() -> FeatureToggles.samletMeldingOmPensjonsvedtak
-    Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() -> FeatureToggles.brevMedFritekst
-    Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() -> FeatureToggles.brevmalUtAvslag
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT.kode() -> FeatureToggles.apAvslagGjenlevenderett
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalder
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalderAP2016
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalderFoerEttAar
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER.kode() -> FeatureToggles.apAvslagNormertPensjonsalder
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016.kode() -> FeatureToggles.apAvslagNormertPensjonsalderAP2016
-    Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELOEP.kode() -> FeatureToggles.vedtakTilbakekrevingAvFeilutbetaltBeloep
-    Pesysbrevkoder.Redigerbar.PE_OMSORG_EGEN_MANUELL.kode() -> FeatureToggles.omsorgEgenManuell
-    Pesysbrevkoder.Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER.kode() -> FeatureToggles.informasjonOmGjenlevenderettigheter
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT.kode() -> FeatureToggles.vedtakEndringAvAlderspensjonGjenlevenderettigheter
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_INSTITUSJONSOPPHOLD.kode() -> FeatureToggles.vedtakEndringAvAlderspensjonInstitusjonsopphold
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD.kode() -> FeatureToggles.vedtakEndringAvUttaksgrad
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND.kode() -> FeatureToggles.endringAvAlderspensjonSivilstand
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE.kode(),
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE.kode() -> FeatureToggles.vedtakEndringAvUttaksgradStans
-    Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING.kode() -> FeatureToggles.vedtakOmFjerningAvOmsorgspoeng
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_PGA_OPPTJENING.kode() -> FeatureToggles.vedtakEndringOpptjeningEndret
-    Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE.kode() -> FeatureToggles.innvilgelseAvAlderspensjon
-    Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE.kode() -> FeatureToggles.innvilgelseAvAlderspensjonTrygdeavtale
-    Pesysbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakStansFlyttingMellomLand
-    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID.kode() -> FeatureToggles.avslagForLiteTrygdetidAP
-    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakEndringVedFlyttingMellomLand
-    Pesysbrevkoder.Redigerbar.BRUKERTEST_BREV_PENSJON_2025.kode() -> FeatureToggles.brukertestbrev2025
-    Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID.kode() -> FeatureToggles.orienteringOmForlengetSaksbehandlingstid
-
-    else -> null
-}?.let { FeatureToggleSingleton.isEnabled(it.toggle) } ?: true

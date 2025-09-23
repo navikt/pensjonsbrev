@@ -21,10 +21,8 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -42,8 +40,6 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
     override val kode = Pesysbrevkoder.AutoBrev.UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
 
     override val template = createTemplate(
-            name = kode.name,
-            letterDataType = ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata = LetterMetadata(
                 displayTitle = "Varsel - etteroppgjør av uføretrygd ved feilutbetaling (automatisk)",
@@ -280,8 +276,8 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 }
                 paragraph {
                     text(
-                        bokmal { + "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42." },
-                        nynorsk { + "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42." },
+                        bokmal { + "Dette er et varselsbrev. Du har en frist på 3 uker fra du får varselet til å komme med tilbakemeldinger eller nye opplysninger. Hører vi ikke fra deg, blir varselet automatisk omgjort til et vedtak etter 4 uker. Fra vedtaket er gyldig, er fristen for å klage på vedtaket 6 uker. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42." },
+                        nynorsk { + "Dette er eit varselbrev. Du har ein frist på 3 veker frå du får varselet til å komma med tilbakemeldingar eller nye opplysningar. Høyrer vi ikkje frå deg, blir varselet automatisk omgjort til eit vedtak etter 4 veker. Frå vedtaket er gyldig, er fristen for å klaga på vedtaket 6 veker. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42." },
                         english { + "The deadline for appealing the decision is 6 weeks after the case has been forwarded to the Norwegian Tax Administration. You can find forms and information about how to appeal at ${Constants.KLAGE_URL}. As a rule, you are required to start repaying even if you appeal the decision, as stated in section 42 of the Public Administration Act." }
                     )
                 }

@@ -1,4 +1,4 @@
-import { format, formatISO } from "date-fns";
+import { formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
 
@@ -34,11 +34,11 @@ describe("Brevredigering", () => {
 
   it("Autolagrer etter redigering", () => {
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
     cy.wait("@hurtiglagreRedigertBrev", { timeout: 20000 });
-    cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("hello!").should("exist");
   });
 
@@ -114,7 +114,7 @@ describe("Brevredigering", () => {
     });
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
 
@@ -128,7 +128,7 @@ describe("Brevredigering", () => {
 
   it("beholder brevet etter å ville tilbakestille", () => {
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
 

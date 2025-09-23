@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -25,8 +25,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmsorgEgenAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Egenerklæring godskriving omsorgspoeng",

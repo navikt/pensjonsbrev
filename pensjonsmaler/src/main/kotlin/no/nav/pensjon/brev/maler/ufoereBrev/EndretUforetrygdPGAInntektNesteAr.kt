@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.btsbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.datoForNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.gjtEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.pe
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.sokerMottarApIlaAret
@@ -47,7 +48,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -62,8 +63,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
     override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT_NESTE_AR
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EndretUTPgaInntektDtoV2::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt neste år (automatisk)",
@@ -73,6 +72,10 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         )
     ) {
         val endretUt = uforetrygd.endringsbelop.notEqualTo(0)
+        val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()
+        val fellesbarnPeriodisert = barnetilleggFellesbarn.periodisert_safe.ifNull(false)
+        val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)
+
         title {
             showIf(endretUt and not(btfbEndret or btsbEndret)) {
                 text(
@@ -214,7 +217,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     title1 {
                         text(
                             Bokmal to "Derfor oppjusterer vi din og annen forelders inntekt",
-                            Nynorsk to "Derfor oppjusterer vi inntekta di og annen forelder",
+                            Nynorsk to "Derfor oppjusterer vi di og annen forelders inntekt",
                         )
                     }
                     paragraph {
@@ -328,7 +331,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         textExpr(
                             Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Dette påvirker bare utbetalingen av barnetillegget. Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt.",
-                            Nynorsk to "Den årlege inntekta vi vil bruke for den andre forelderen, er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                            Nynorsk to "Den årlege inntekta vi vil bruke for den andre forelderen er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Dette påverkar berre utbetalinga av barnetillegget. Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen."
                         )
                     }
@@ -368,7 +371,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }
             }
-            ifNotNull(gjenlevendetillegg) {
+            showIf(gjtEndret) {
                 title1 {
                     text(
                         Bokmal to "Ditt gjenlevendetillegg",
@@ -396,7 +399,10 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }
 
-                showIf((barnetilleggFellesbarn.periodisert_safe.ifNull(false) and btfbEndret) or (barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false) and btsbEndret)) {
+                showIf((btfbEndret and fellesbarnPeriodisert)
+                        or (btsbEndret and sarkullsbarnPeriodisert)
+                        or (harBarnetillegg and sokerMottarApIlaAret)
+                ) {
                     paragraph {
                         text(
                             Bokmal to "Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløp for neste år justert slik at det kun gjelder for perioden du mottar barnetillegg.",
@@ -405,8 +411,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     }
                 }
 
-                ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
-                    showIf(btfbEndret and btsbEndret) {
+                showIf(btfbEndret and btsbEndret) {
+                    ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
                         title2 {
                             text(
                                 Bokmal to "Dine barnetillegg",
@@ -431,8 +437,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         }
                     }
                 }.orShow {
-                    ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
-                        showIf(btfbEndret) {
+                    showIf(btfbEndret) {
+                        ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                             title2 {
                                 text(
                                     Bokmal to "Barnetillegg for fellesbarn",
@@ -459,8 +465,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             }
                         }
                     }
-                    ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
-                        showIf(btsbEndret) {
+                    showIf(btsbEndret) {
+                        ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
                             title2 {
                                 text(
                                     Bokmal to "Barnetillegg for særkullsbarn",
@@ -491,15 +497,15 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet».",
-                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Slik er uføretrygda di rekna ut»."
+                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Opplysninger om beregningen».",
+                    Nynorsk to "Du finn fullstendige utrekningar i vedlegget «Opplysningar om utrekninga»."
                 )
             }
             paragraph {
                 showIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
                             and (btfbEndret or btsbEndret)
-                            and gjenlevendetillegg.notNull() //UT, BT og GJT
+                            and gjtEndret //UT, BT og GJT
                 ) {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12.",
@@ -515,7 +521,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }.orShowIf(
                     uforetrygd.endringsbelop.notEqualTo(0)
-                            and gjenlevendetillegg.notNull() //UT og GJT
+                            and gjtEndret //UT og GJT
                 ) {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12.",
@@ -697,18 +703,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL.",
                     Nynorsk to "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL."
-                )
-            }
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram."
                 )
             }
 

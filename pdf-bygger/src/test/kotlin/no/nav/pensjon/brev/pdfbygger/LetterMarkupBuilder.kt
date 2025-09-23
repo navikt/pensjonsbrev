@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.pdfbygger
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import java.time.LocalDate
 
@@ -56,6 +57,7 @@ class LetterMarkupBuilder {
 class SakspartBuilder {
     var gjelderNavn: String = "Navn Navnesen"
     var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer("12345678901")
+    var annenMottaker: String? = null
     var vergeNavn: String? = null
     var saksnummer: String = "123"
     var dokumentDato: LocalDate = LocalDate.of(2025, 1, 1)
@@ -64,6 +66,7 @@ class SakspartBuilder {
         LetterMarkupImpl.SakspartImpl(
             gjelderNavn = gjelderNavn,
             gjelderFoedselsnummer = gjelderFoedselsnummer,
+            annenMottakerNavn = annenMottaker,
             vergeNavn = vergeNavn,
             saksnummer = saksnummer,
             dokumentDato = dokumentDato,
@@ -144,14 +147,15 @@ class LetterMarkupBlocksBuilder {
 
 @LetterMarkupBuilderDsl
 class TextBuilder {
-    private val texts = mutableListOf<String>()
+    private data class Text(val text: String, val fontType: FontType)
+    private val texts = mutableListOf<Text>()
 
-    fun text(text: String) {
-        texts.add(text)
+    fun text(text: String, fontType: FontType = FontType.PLAIN) {
+        texts.add(Text(text, fontType))
     }
 
     fun build(): List<LetterMarkup.ParagraphContent.Text> = texts.map {
-        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(it.hashCode(), it)
+        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(it.hashCode(), it.text, it.fontType)
     }
 }
 

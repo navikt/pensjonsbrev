@@ -3,21 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import kotlin.reflect.KClass
-
-fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
-    name: String,
-    letterDataType: KClass<LetterData>,
-    languages: Lang,
-    letterMetadata: LetterMetadata,
-    init: TemplateRootScope<Lang, LetterData>.() -> Unit
-): LetterTemplate<Lang, LetterData> =
-    with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
-    }
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(

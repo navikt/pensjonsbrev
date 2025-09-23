@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -41,7 +41,6 @@ class CreateAttachmentTest {
         val testVedlegg = vedlegg
 
         val testTemplate = createTemplate(
-            name = "test",
             letterDataType = LittInnhold::class,
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,

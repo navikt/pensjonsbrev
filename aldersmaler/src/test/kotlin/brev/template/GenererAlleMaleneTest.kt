@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -33,7 +32,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
-            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
+            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
         val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
@@ -41,7 +40,6 @@ class GenererAlleMaleneTest {
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
 
-    @Disabled // TODO: Skru på denne når første mal er flytta over til denne modulen
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
@@ -51,7 +49,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
-            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
+            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
         LetterTestImpl(

@@ -6,26 +6,32 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.columnTransformer
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<ByteArray>) =
+fun Column<Edit.Letter>.writeHashTo(hash: Column<EditLetterHash>) =
     WithEditLetterHash(this, hash)
 
-fun Table.hashColumn(name: String): Column<ByteArray> =
-    binary(name)
+fun Table.hashColumn(name: String): Column<EditLetterHash> =
+    binary(name).transform(columnTransformer({ it.hexBytes }, { EditLetterHash.fromBytes(it) }))
 
-fun Column<ByteArray>.editLetterHash(): ValueClassWrapper<EditLetterHash, ByteArray> =
-    wrap({ EditLetterHash(Hex.encodeHexString(it)) }, { Hex.decodeHex(it.hex) })
 
 @JvmInline
-value class EditLetterHash(val hex: String)
+value class EditLetterHash(private val hex: String) {
+    val hexBytes: ByteArray
+        get() = Hex.decodeHex(hex)
+    companion object {
+        fun read(letter: Edit.Letter): EditLetterHash = fromBytes(WithEditLetterHash.hashBrev(letter))
+        fun fromBytes(bytes: ByteArray) = EditLetterHash(Hex.encodeHexString(bytes))
+    }
+}
 
-class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<ByteArray>) {
+class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<EditLetterHash>) {
 
     operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: Edit.Letter) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
-            hash.setValue(thisRef, property, hashBrev(value))
+            hash.setValue(thisRef, property, EditLetterHash.fromBytes(hashBrev(value)))
         }
     }
 

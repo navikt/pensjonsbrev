@@ -124,7 +124,7 @@ export const exitTable = (direction: "forward" | "backward") =>
         // If next block is an empty paragraph, insert a blank literal so it can receive focus
         if (insertBlankLiteralIfEmptyBlock(nextBlock, 0)) {
           draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
-          draft.isDirty = true;
+          draft.saveStatus = "DIRTY";
           return;
         }
         // Otherwise, focus the (empty) next block
@@ -135,7 +135,7 @@ export const exitTable = (direction: "forward" | "backward") =>
       const inserted = insertBlankLiteralIfEmptyBlock(block, f.contentIndex + 1);
       if (inserted) {
         draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex + 1, cursorPosition: 0 };
-        draft.isDirty = true;
+        draft.saveStatus = "DIRTY";
       }
       return;
     }
@@ -156,7 +156,7 @@ export const exitTable = (direction: "forward" | "backward") =>
       // If previous block is empty paragraph, insert a blank literal for focus
       if (insertBlankLiteralIfEmptyBlock(prevBlock, 0)) {
         draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: 0, cursorPosition: 0 };
-        draft.isDirty = true;
+        draft.saveStatus = "DIRTY";
         return;
       }
       draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: 0, cursorPosition: 0 };
@@ -166,7 +166,7 @@ export const exitTable = (direction: "forward" | "backward") =>
     const inserted = insertBlankLiteralIfEmptyBlock(block, f.contentIndex);
     if (inserted) {
       draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex, cursorPosition: 0 };
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     }
   });
 
@@ -211,7 +211,7 @@ export function addRow(
 
       if (isLastRow) {
         addElements([newRow(columnCount)], table.rows.length, table.rows, table.deletedRows);
-        draft.isDirty = true;
+        draft.saveStatus = "DIRTY";
       }
 
       draft.focus = {
@@ -357,7 +357,7 @@ export function handleBackspaceInTableCell(
         };
       }
 
-      draft.isDirty = true;
+      draft.saveStatus = "DIRTY";
     }),
   );
 

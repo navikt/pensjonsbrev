@@ -26,24 +26,16 @@ fun createEndringAvAlderspensjonSivilstandAutoDto() =
             ),
         beregnetPensjonPerManedVedVirk =
             EndringAvAlderspensjonSivilstandAutoDto.BeregnetPensjonPerManedVedVirk(
-                garantitillegg = null,
-                grunnbelop = Kroner(124028),
-                grunnpensjon = Kroner(320000),
                 totalPensjon = Kroner(340000),
             ),
         epsVedVirk =
             EndringAvAlderspensjonSivilstandAutoDto.EpsVedVirk(
-                borSammenMedBruker = true,
                 harInntektOver2G = false,
-                mottarOmstillingsstonad = false,
-                mottarPensjon = false,
             ),
         kravAarsak = KravArsakType.SIVILSTANDSENDRING,
         kravVirkDatoFom = LocalDate.of(2025, 6, 1),
         regelverkType = AlderspensjonRegelverkType.AP2011,
-        saerskiltSatsErBrukt = false,
         sivilstand = MetaforceSivilstand.GIFT,
-        vedtakEtterbetaling = false,
         maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
         maanedligPensjonFoerSkattAP2025Dto =
             MaanedligPensjonFoerSkattAP2025Dto(
@@ -60,5 +52,5 @@ fun createEndringAvAlderspensjonSivilstandAutoDto() =
                 kravVirkFom = LocalDate.now(),
             ),
         orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
-        beloepEndring = BeloepEndring.UENDRET
+        beloepEndring = BeloepEndring.UENDRET,
     )

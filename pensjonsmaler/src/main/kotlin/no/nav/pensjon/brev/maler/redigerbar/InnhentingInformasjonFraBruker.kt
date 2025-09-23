@@ -25,12 +25,9 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -41,8 +38,6 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER     //MF_000133
     override val template: LetterTemplate<*, InnhentingInformasjonFraBrukerDto> = createTemplate(
-        name = kode.name,
-        letterDataType = InnhentingInformasjonFraBrukerDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhenting av opplysninger/dokumentasjon",
@@ -560,8 +555,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
                 paragraph {
                     text(
-                        bokmal { + "Dersom man er bosatt i et EØS-land, og har opparbeidet seg pensjonsrettigheter i dette landet, følger det av EØS-reglementet at man skal søke om pensjon fra annet EØS-land gjennom bostedslandets nasjonale myndigheter. Vi ber derfor om at du kontakter " + fritekst(" ") + " trygdemyndigheter for oversendelse av SED-dokumentene P2000, P5000 og P4000, eventuelt EØS-blankettene E202, E205 og E207." },
-                        nynorsk { + "Dersom man bur i eit EØS-land, og har opparbeida seg pensjonsrettighetar i dette landet, følgjer det av EØS-reglementet at man skal søkje om pensjon frå anna EØS-land gjennom bustadslandet sine nasjonale myndigheiter. Vi ber derfor om at du kontaktar " + fritekst(" ") + " trygdemyndigheiter for oversendelse av SED-dokumenta P2000, P5000 og P4000, eventuelt EØS-blankettane E202, E205 og E207." },
+                        bokmal { + "Dersom man er bosatt i et EØS-land, og har opparbeidet seg pensjonsrettigheter i dette landet, følger det av EØS-reglementet at man skal søke om pensjon fra annet EØS-land gjennom bostedslandets nasjonale myndigheter. Vi ber derfor om at du kontakter " + fritekst("hvilke") + " trygdemyndigheter for oversendelse av SED-dokumentene P2000, P5000 og P4000, eventuelt EØS-blankettene E202, E205 og E207." },
+                        nynorsk { + "Dersom man bur i eit EØS-land, og har opparbeida seg pensjonsrettighetar i dette landet, følgjer det av EØS-reglementet at man skal søkje om pensjon frå anna EØS-land gjennom bustadslandet sine nasjonale myndigheiter. Vi ber derfor om at du kontaktar " + fritekst("hvilke") + " trygdemyndigheiter for oversendelse av SED-dokumenta P2000, P5000 og P4000, eventuelt EØS-blankettane E202, E205 og E207." },
                         english { + "According to the EEA agreement, a resident of an EEA country has to forward his/her claim for benefits in another EEA country through the national authorities in the country of residence. In order for us to process your claim for retirement pension from the Norwegian National Insurance Scheme, you must contact your local authorities." },
                     )
                 }

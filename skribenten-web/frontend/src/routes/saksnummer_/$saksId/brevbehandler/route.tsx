@@ -72,6 +72,7 @@ function Brevbehandler() {
           padding: var(--a-spacing-6);
           border-right: 1px solid var(--a-gray-200);
           height: var(--main-page-content-height);
+          overflow-y: auto;
         `}
         gap="3"
       >

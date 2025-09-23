@@ -22,12 +22,7 @@ class BrevbakerLoadTest(FastHttpUser):
         # headers = {'Content-Type': 'application/json'}
 
         # Test av async på clusteret:
-#         headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
-#         self.client.post("/letter/autobrev/pdfAsync", payload, headers=headers)
-
-        #Test av synkront kall på clusteret:
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
-        self.client.post("/letter/pdf", payload, headers=headers)
+         headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
 
 
     def access_token(self):

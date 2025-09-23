@@ -92,7 +92,7 @@ class LatexVisualITest {
     fun `verge foersteside`() {
         render(
             felles = Fixtures.felles.copy(
-                vergeNavn = "Verge vergeson"
+                annenMottaker = "Verge vergeson"
             )
         ) {
             testTitle1()
@@ -178,7 +178,7 @@ class LatexVisualITest {
         renderTestVedlegg(
             includeSakspart = true,
             felles = Fixtures.felles.copy(
-                vergeNavn = "Verge vergeson"
+                annenMottaker = "Verge vergeson"
             ),
         ) {
             testTitle1()

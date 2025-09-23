@@ -99,21 +99,14 @@ interface UserPrincipal {
     val fullName: String
 
     fun isInGroup(groupId: ADGroup): Boolean
-    fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken?
-    fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken)
     fun isAttestant(): Boolean = isInGroup(ADGroups.attestant)
 }
 
 data class JwtUserPrincipal(override val accessToken: UserAccessToken, private val jwtPayload: Payload) : UserPrincipal {
     override val navIdent: NavIdent by lazy { NavIdent(getClaimAsString("NAVident")) }
     override val fullName: String by lazy { getClaimAsString("name") }
-    private val onBehalfOfTokens = mutableMapOf<String, TokenResponse.OnBehalfOfToken>()
 
     override fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
-    override fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]
-    override fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
-        onBehalfOfTokens[scope] = token
-    }
 
     private fun getClaimAsString(claim: String): String =
         jwtPayload.getClaim(claim).asString()

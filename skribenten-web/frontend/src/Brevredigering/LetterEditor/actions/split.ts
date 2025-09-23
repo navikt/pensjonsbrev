@@ -1,10 +1,9 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
 import { ITEM_LIST } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
 import {
@@ -18,7 +17,7 @@ import {
   text,
 } from "./common";
 
-export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(splitRecipe);
+export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = withPatches(splitRecipe);
 
 export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number) {
   const editedLetter = draft.redigertBrev;
@@ -75,7 +74,7 @@ function splitBlockAtLiteral(
     }
 
     draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex + 1 };
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   }
 }
 
@@ -156,7 +155,7 @@ function splitItemList(
         itemContentIndex: 0,
       };
     }
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
   } else {
     // eslint-disable-next-line no-console
     console.warn("Can't split an ItemList without itemIndex");
