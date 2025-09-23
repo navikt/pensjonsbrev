@@ -43,7 +43,6 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.OmregningGarantiPen
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.SivilstandSamboerHjemler
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -313,7 +312,18 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         english { + "This decision was made pursuant to the provisions of §§ " },
                     )
                     showIf(regelverkType.isOneOf(AP1967)) {
-                        includePhrase(SivilstandSamboerHjemler(sivilstand))
+                        showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                            text(
+                                bokmal { +"1-5, " },
+                                nynorsk { +"1-5, " },
+                                english { +"1-5, " },
+                            )
+                        }
+                        text(
+                            bokmal { +"3-2" },
+                            nynorsk { +"3-2" },
+                            english { +"3-2" },
+                        )
                         showIf(saertilleggInnvilget) {
                             text(
                                 bokmal { + ", 3-3" },
