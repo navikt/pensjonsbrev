@@ -28,7 +28,7 @@ class Alderspensjon {
                     nynorsk { + "0607 Oslo" },
                     english { + "0607 Oslo" }
                 )
-                showIf(Expression.FromScope.Language.equalTo(English.expr())) { newline() }
+                newline()
                 text(
                     bokmal { + "NORGE" },
                     nynorsk { + "NORGE" },
