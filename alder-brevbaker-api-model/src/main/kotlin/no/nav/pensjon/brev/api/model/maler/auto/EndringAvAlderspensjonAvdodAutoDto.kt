@@ -4,22 +4,20 @@ import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Institusjon
-import no.nav.pensjon.brev.api.model.maler.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.SivilstandAvdoed
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
-data class EndringAvAlderspensjonAutoDto (
+data class EndringAvAlderspensjonAvdodAutoDto (
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val beregnetPensjonPerManed: BeregnetPensjonPerManed,
-    val institusjonsoppholdVedVirk: InstitusjonsoppholdVedVirk,
-    val institusjonsoppholdGjeldende: InstitusjonsoppholdGjeldende,
-    val avdod: AvdodInformasjon,
-    val avdodNavn: String,
-    val virkFom: LocalDate,
-    val barn: Barn,
+    val avdodInformasjon: AvdodInformasjon,
+    val institusjonsoppholdVedVirk: Institusjon,
+    val institusjonsoppholdGjeldende: Institusjon,
     val sivilstand: BorMedSivilstand,
+    val virkFom: LocalDate,
+    val harBarnUnder18: Boolean,
     val etterBetaling: Boolean,
     ): BrevbakerBrevdata {
 
@@ -38,22 +36,10 @@ data class EndringAvAlderspensjonAutoDto (
 
     )
 
-    data class InstitusjonsoppholdVedVirk (
-        val institusjon: Institusjon,
-    )
-
-    data class InstitusjonsoppholdGjeldende (
-        val institusjon: Institusjon,
-    )
-
     data class AvdodInformasjon (
         val sivilstandAvdoed: SivilstandAvdoed,
         val ektefelletilleggOpphort: Boolean,
         val gjenlevendesAlder: Int,
+        val avdodNavn: String,
     )
-
-    data class Barn(
-        val harBarnUnder18: Boolean,
-    )
-
 }
