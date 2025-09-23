@@ -17,8 +17,6 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
     saksbehandlerValg = VedtakEndringVedFlyttingMellomLandDto.SaksbehandlerValg(
         innvandret = false,
         reduksjonTilbakeITid = true,
-        endringIPensjonen = true,
-        etterbetaling = true,
         aarsakTilAtPensjonenOeker = VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING,
     ),
     pesysData = VedtakEndringVedFlyttingMellomLandDto.PesysData(
@@ -59,8 +57,8 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
         beregnetpensjonPerMaanedVedVirk = VedtakEndringVedFlyttingMellomLandDto.PesysData.BeregnetPensjonPerMaanedVedVirk(
             grunnpensjon = Kroner(200)
         ),
-        informasjonOmMedlemskap = InformasjonOmMedlemskap.EOES,
         erEtterbetaling1Maaned = true,
+        informasjonOmMedlemskap = InformasjonOmMedlemskap.EOES,
         maanedligPensjonFoerSkatt = createMaanedligPensjonFoerSkatt(),
         maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025(),
         opplysningerBruktIBeregningen = createOpplysningerBruktIBeregningAlderDto(),
