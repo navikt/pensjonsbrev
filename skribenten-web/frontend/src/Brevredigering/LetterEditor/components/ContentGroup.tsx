@@ -167,20 +167,30 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     if (!element) return;
 
-    // 1. Ensure the text content is correct.
     if (element.textContent !== text) {
       element.textContent = text;
     }
 
-    // 2. After ensuring text is correct, handle the focus and cursor position.
-    if (!freeze && shouldBeFocused && editorState.focus.cursorPosition !== undefined) {
-      // The text node might not exist immediately after setting textContent,
-      // so we check for it before trying to set the focus.
+    if (!freeze && shouldBeFocused) {
+      // Fallback to end-of-text if cursorPosition missing
+      const desiredPos =
+        editorState.focus.cursorPosition !== undefined
+          ? Math.min(editorState.focus.cursorPosition, text.length)
+          : text.length;
+
+      // If it was missing, persist it (so next undo/redo already has it)
+      if (editorState.focus.cursorPosition === undefined) {
+        setEditorState((s) => ({
+          ...s,
+          focus: { ...s.focus, cursorPosition: desiredPos },
+        }));
+      }
+
       if (element.childNodes[0]) {
-        focusAtOffset(element.childNodes[0], editorState.focus.cursorPosition);
+        focusAtOffset(element.childNodes[0], desiredPos);
       }
     }
-  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze]);
+  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -451,8 +461,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         if (isUndo) {
           event.preventDefault();
           event.stopPropagation();
-          // Explicitly remove focus from the current element before undoing.
-          // This prevents the browser from "snapping back" focus to this element after the state update.
           undo();
           return;
         }
