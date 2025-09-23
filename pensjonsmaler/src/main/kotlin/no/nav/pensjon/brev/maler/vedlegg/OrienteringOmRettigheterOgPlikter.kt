@@ -72,13 +72,16 @@ val vedleggOrienteringOmRettigheterOgPlikter =
         includeSakspart = false
     ) {
         val erIkkePaaInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+        val borSammenMedBrukerAndNotEpsPaInstitusjon = borSammenMedBruker and not(epsPaInstitusjon)
+        val samboer = sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2)
+        val erEllerHarVaertEktefelleEllerPartner = sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)
+
         showIf(sakstype.equalTo(Sakstype.ALDER)) {
+            // Denne showIf-en skal dekke alle scenarie der det kommer minst ett kulepunkt i lista under
             showIf(
                 erIkkePaaInstitusjon or
-                        (sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)) or
-                        (borSammenMedBruker and sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2)) or
-                        (sivilstand.isNotAnyOf(ENSLIG, ENKE, UKJENT) and borSammenMedBruker and not(epsPaInstitusjon)) or
-                        (sivilstand.isOneOf(ENSLIG, ENKE, UKJENT) and brukerBorINorge)
+                        (borSammenMedBrukerAndNotEpsPaInstitusjon and samboer) or
+                        erEllerHarVaertEktefelleEllerPartner
             ) {
                 includePhrase(VedleggPlikter)
             }
@@ -113,7 +116,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             }
                         }
                     }
-                    showIf(borSammenMedBruker and not(epsPaInstitusjon)) {
+                    showIf(borSammenMedBrukerAndNotEpsPaInstitusjon) {
                         showIf(sivilstand.equalTo(GIFT)) {
                             item {
                                 text(
@@ -132,7 +135,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                                 )
                             }
                         }
-                        showIf((sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2))) {
+                        showIf(samboer) {
                             item {
                                 text(
                                     bokmal { + "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din" },
@@ -161,7 +164,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                                 )
                             }
                         }
-                        showIf(sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2) and erIkkePaaInstitusjon) {
+                        showIf(samboer and erIkkePaaInstitusjon) {
                             item { // vedleggPlikterAP18_001
                                 text(
                                     bokmal { + "du og samboeren din flytter fra hverandre" },
@@ -212,7 +215,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             }
                         }
                     }
-                    showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)) { // vedleggPlikterAP9_001
+                    showIf(erEllerHarVaertEktefelleEllerPartner) { // vedleggPlikterAP9_001
                         item {
                             text(
                                 bokmal { + "du blir skilt" },
@@ -239,7 +242,8 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)
+                    showIf(
+                        erEllerHarVaertEktefelleEllerPartner
                             and not(borSammenMedBruker) and erIkkePaaInstitusjon and not(epsPaInstitusjon)
                     ) { // vedleggPlikterAP10_001
                         item {
@@ -289,25 +293,19 @@ val vedleggOrienteringOmRettigheterOgPlikter =
             }
         }
         showIf(sakstype.equalTo(Sakstype.UFOREP)) {
-            showIf(
-                (brukerBorINorge and erIkkePaaInstitusjon) or
-                        (sivilstand.isOneOf(ENSLIG, ENKE, UKJENT)) or
-                        (harBarnetillegg.notNull())
-            ) {
-                title1 {
-                    text(
-                        bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
-                        nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
-                        english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
-                    )
-                }
-                paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
-                    text(
-                        bokmal { +"Du må melde fra til Nav hvis" },
-                        nynorsk { +"Du må melde frå til Nav om" },
-                        english { +"You must notify Nav if" },
-                    )
-                }
+            title1 {
+                text(
+                    bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
+                    nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
+                    english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
+                )
+            }
+            paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
+                text(
+                    bokmal { +"Du må melde fra til Nav hvis" },
+                    nynorsk { +"Du må melde frå til Nav om" },
+                    english { +"You must notify Nav if" },
+                )
             }
             paragraph {
                 list {
