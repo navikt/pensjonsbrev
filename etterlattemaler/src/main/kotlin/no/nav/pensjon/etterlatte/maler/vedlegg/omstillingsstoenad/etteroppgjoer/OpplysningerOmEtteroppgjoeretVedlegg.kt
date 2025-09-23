@@ -356,7 +356,12 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
         )
     }
 
-    showIf(grunnlag.loennsinntekt.absoluteValue().greaterThan(0).or(grunnlag.naeringsinntekt.absoluteValue().greaterThan(0).or(grunnlag.afp.absoluteValue().greaterThan(0).or(grunnlag.utlandsinntekt.absoluteValue().greaterThan(0))))) {
+    showIf(
+        grunnlag.loennsinntekt.absoluteValue().greaterThan(0)
+            .or(grunnlag.naeringsinntekt.absoluteValue().greaterThan(0)
+                .or(grunnlag.afp.absoluteValue().greaterThan(0)
+                    .or(grunnlag.utlandsinntekt.absoluteValue().greaterThan(0))))
+    ) {
         paragraph {
             table(
                 header = {
