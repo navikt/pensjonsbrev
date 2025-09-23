@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BorI
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -14,14 +15,13 @@ import java.time.LocalDate
 data class InnvilgelseAvAlderspensjonAutoDto(
     val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
     val alderspensjonVedVirk: AlderspensjonVedVirk,
-    val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
     val avtalelandNavn: String?,  // v1.Land
-    val borIAvtaleland: Boolean,  // v3.Person
-    val borINorge: Boolean,  // v3.Person
+    val borI: BorI,
+    val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
     val erEOSLand: Boolean,  // v1.Land
     val erForstegangsbehandletNorgeUtland: Boolean,  // v3.Krav
     val faktiskBostedsland: String,  // v3.Person
-    val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
+    val fullTrygdetid: Boolean,  // v4.AlderspensjonPerManed
     val inngangOgEksportVurdering: InngangOgEksportVurdering,
     val kravVirkDatoFom: LocalDate,
     val norgeBehandlendeLand: Boolean,  // v3.Krav
