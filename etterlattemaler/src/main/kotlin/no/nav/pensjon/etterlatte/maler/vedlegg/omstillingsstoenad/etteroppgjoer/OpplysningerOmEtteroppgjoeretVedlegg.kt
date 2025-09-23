@@ -256,9 +256,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.om
             }
             item {
                 text(
-                    bokmal { +"dagpenger, sykepenger og arbeidsavklaringspenger" },
-                    nynorsk { +"dagpengar, sjukepengar og arbeidsavklaringspengar" },
-                    english { +"Unemployment benefits, sick pay and work assessment allowance" },
+                    bokmal { +"dagpenger, sykepenger, arbeidsavklaringspenger og kvalifiseringsstønad" },
+                    nynorsk { +"dagpengar, sjukepengar, arbeidsavklaringspengar og kvalifiseringsstønad" },
+                    english { +"Unemployment benefits, sick pay, work assessment allowance and qualification benefit" },
                 )
             }
             item {
