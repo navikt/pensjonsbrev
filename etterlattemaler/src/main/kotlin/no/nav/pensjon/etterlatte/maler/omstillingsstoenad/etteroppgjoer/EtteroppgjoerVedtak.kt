@@ -89,9 +89,9 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {
                         text(
-                            bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() + " for mye u omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr. Du må derfor betale tilbake det feilutbetalte beløpet." },
-                            nynorsk { +"Utrekning vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for mykje i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet." },
-                            english { +"Our calculations show that you have been overpaid " + data.avviksBeloep.absoluteValue().format() + " in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you." }
+                            bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() + " for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr. Du må derfor betale tilbake det feilutbetalte beløpet." },
+                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for mykje omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet." },
+                            english { +"Our calculations show that you have been overpaid " + data.avviksBeloep.absoluteValue().format() + " adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you." }
                         )
                     }
                 }
@@ -100,9 +100,9 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.ETTERBETALING)) {
                     paragraph {
                         text(
-                            bokmal { +"Vår beregning viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for lite i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret og du har oppfylt aktivitetsplikten. Du får derfor etterbetalt for lite utbetalt." },
-                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " kroner for lite i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig 25 prosent av rettsgebyret og du har oppfylt aktivitetsplikta. Du får etterbetalt for lite utbetalt." },
-                            english { +"Our calculations show that you have been paid " + data.avviksBeloep.absoluteValue().format() + " too little in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds 25 percent of a standard court fee and you have fulfilled the activity obligation. Therefore, you will receive back payments for the amount underpaid." }
+                            bokmal { +"Vår beregning viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstiger 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjørsperioden, og du vil derfor få etterbetalt beløpet som er for lite utbetalt." },
+                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstig 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjerperioden, og du vil difor få etterbetalt beløpet som har vore for lite utbetalt." },
+                            english { +"Our calculations show that you have been paid " + data.avviksBeloep.absoluteValue().format() + " too little adjustment allowance in " + data.etteroppgjoersAar.format() + ". The amount exceeds 25 percent of the court fee. The activity requirement has been met during the post-assessment period, and you will therefore receive a back payment of the amount that was previously underpaid." }
                         )
                     }
                 }
@@ -148,8 +148,8 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     }
                     paragraph {
                         text(
-                            bokmal { +"Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke fra skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake." },
-                            nynorsk { +"Fordi du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje frå skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen du får frå Skatteetaten står det kor mykje du faktisk skal betale tilbake." },
+                            bokmal { +"Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake." },
+                            nynorsk { +"Fordi du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen du får frå Skatteetaten står det kor mykje du faktisk skal betale tilbake." },
                             english { +"Since you have already paid tax on the amount that was overpaid to you, we will deduct the tax from the amount you need to repay. The payment information from the Tax Administration will state the actual amount you have to repay." },
                         )
                     }
