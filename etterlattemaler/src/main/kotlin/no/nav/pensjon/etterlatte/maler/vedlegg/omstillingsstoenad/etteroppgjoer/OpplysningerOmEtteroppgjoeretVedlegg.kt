@@ -384,9 +384,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
             }
             row {
                 cell { text(
-                    bokmal { +"Avtalefestet pensjon (AFP)" },
-                    nynorsk { +"Avtalefesta pensjon (AFP)" },
-                    english { +"Contractual pension (AFP)" },
+                    bokmal { +"Avtalefestet pensjon (AFP) offentlig eller privat" },
+                    nynorsk { +"Avtalefesta pensjon (AFP) offentleg eller privat" },
+                    english { +"AFP (contractual pension in the public or private sector)" },
                 ) }
                 cell { includePhrase(KronerText(grunnlag.afp)) }
             }
