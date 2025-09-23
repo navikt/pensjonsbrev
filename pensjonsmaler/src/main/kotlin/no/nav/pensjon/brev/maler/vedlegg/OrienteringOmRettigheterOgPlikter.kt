@@ -73,7 +73,16 @@ val vedleggOrienteringOmRettigheterOgPlikter =
     ) {
         val erIkkePaaInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
         showIf(sakstype.equalTo(Sakstype.ALDER)) {
-            includePhrase(VedleggPlikter)
+            showIf(
+                erIkkePaaInstitusjon or
+                        (sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)) or
+                        (borSammenMedBruker and sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2)) or
+                        (sivilstand.isNotAnyOf(ENSLIG, ENKE, UKJENT) and borSammenMedBruker and not(epsPaInstitusjon)) or
+                        (sivilstand.isOneOf(ENSLIG, ENKE, UKJENT) and brukerBorINorge)
+            ) {
+                includePhrase(VedleggPlikter)
+            }
+
             paragraph {
                 list {
                     showIf(erIkkePaaInstitusjon) {
@@ -280,18 +289,18 @@ val vedleggOrienteringOmRettigheterOgPlikter =
             }
         }
         showIf(sakstype.equalTo(Sakstype.UFOREP)) {
-            title1 {
-                text(
-                    bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
-                    nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
-                    english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
-                )
-            }
             showIf(
                 (brukerBorINorge and erIkkePaaInstitusjon) or
-                (sivilstand.isOneOf(ENSLIG, ENKE, UKJENT)) or
-                (harBarnetillegg.notNull())
+                        (sivilstand.isOneOf(ENSLIG, ENKE, UKJENT)) or
+                        (harBarnetillegg.notNull())
             ) {
+                title1 {
+                    text(
+                        bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
+                        nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
+                        english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
+                    )
+                }
                 paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
                     text(
                         bokmal { +"Du må melde fra til Nav hvis" },
