@@ -38,6 +38,17 @@ class Felles(
             signerendeSaksbehandlere = signerendeSaksbehandlere,
             vergeNavn = this.vergeNavn,
         )
+
+    fun medAnnenMottaker(annenMottakerNavn: String?): Felles =
+        Felles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            annenMottakerNavn = annenMottakerNavn,
+            signerendeSaksbehandlere = signerendeSaksbehandlere,
+            vergeNavn = this.vergeNavn,
+        )
 }
 
 class SignerendeSaksbehandlere(

@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
-import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -85,6 +84,7 @@ class BrevredigeringService(
                 saksbehandlerValg = saksbehandlerValg,
                 avsenderEnhetsId = avsenderEnhetsId,
                 signaturSignerende = signerendeSaksbehandler,
+                annenMottaker = mottaker?.navn
             ).map { letter ->
                 transaction {
                     Brevredigering.new {
@@ -102,7 +102,7 @@ class BrevredigeringService(
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistRedigertAvNavIdent = principal.navIdent
-                        redigertBrev = letter.markup.toEdit().withAnnenMottaker(mottaker)
+                        redigertBrev = letter.markup.toEdit()
                     }.also {
                         if (mottaker != null) {
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
@@ -477,6 +477,7 @@ class BrevredigeringService(
         saksbehandlerValg: SaksbehandlerValg? = null,
         signaturSignerende: String? = null,
         signaturAttestant: String? = null,
+        annenMottaker: String? = null,
     ) =
         rendreBrev(
             brevkode = brev.info.brevkode,
@@ -488,6 +489,7 @@ class BrevredigeringService(
             signaturSignerende = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
             ?: principalSignatur(),
             signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
+            annenMottaker = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn,
         )
 
     private suspend fun rendreBrev(
@@ -499,6 +501,7 @@ class BrevredigeringService(
         avsenderEnhetsId: String?,
         signaturSignerende: String,
         signaturAttestant: String? = null,
+        annenMottaker: String? = null,
     ): ServiceResult<LetterMarkupWithDataUsage> =
         penService.hentPesysBrevdata(
             saksId = saksId,
@@ -519,7 +522,7 @@ class BrevredigeringService(
                             saksbehandler = signaturSignerende,
                             attesterendeSaksbehandler = signaturAttestant
                         )
-                    )
+                    ).medAnnenMottaker(annenMottaker)
                 )
             }
 
@@ -557,6 +560,7 @@ class BrevredigeringService(
                 ),
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
                 felles = pesysData.felles
+                    .medAnnenMottaker(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
                     .medSignerendeSaksbehandlere(null),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
