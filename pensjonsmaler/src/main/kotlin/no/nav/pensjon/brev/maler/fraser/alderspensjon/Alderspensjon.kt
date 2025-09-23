@@ -14,7 +14,7 @@ class Alderspensjon {
                 text(
                     bokmal { + "Nav Familie-og pensjonsytelser" },
                     nynorsk { + "Nav Familie-og pensjonsytelser" },
-                    english { + "NAV Familie-og pensjonsytelser" },
+                    english { + "Nav Familie-og pensjonsytelser" },
                 )
                 newline()
                 text(
@@ -32,7 +32,7 @@ class Alderspensjon {
                 text(
                     bokmal { + "NORGE" },
                     nynorsk { + "NORGE" },
-                    english { + "NORWAY" },
+                    english { + "NORGE" },
                 )
             }
         }
