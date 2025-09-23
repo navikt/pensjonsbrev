@@ -476,7 +476,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     ) {
                         showIf(
                             not(minstenivaaPensjonistParInnvilget) and
-                                    not(minstenivaaPensjonistParInnvilget)
+                                    not(minstenivaaIndividuellInnvilget)
                         ) {
                             // omregningGPST
                             paragraph {
