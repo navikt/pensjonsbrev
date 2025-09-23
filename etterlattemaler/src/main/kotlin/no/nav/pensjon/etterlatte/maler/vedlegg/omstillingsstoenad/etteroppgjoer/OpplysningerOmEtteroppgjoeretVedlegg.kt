@@ -256,9 +256,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.om
             }
             item {
                 text(
-                    bokmal { +"dagpenger, sykepenger og arbeidsavklaringspenger" },
-                    nynorsk { +"dagpengar, sjukepengar og arbeidsavklaringspengar" },
-                    english { +"Unemployment benefits, sick pay and work assessment allowance" },
+                    bokmal { +"dagpenger, sykepenger, arbeidsavklaringspenger og kvalifiseringsstønad" },
+                    nynorsk { +"dagpengar, sjukepengar, arbeidsavklaringspengar og kvalifiseringsstønad" },
+                    english { +"Unemployment benefits, sick pay, work assessment allowance and qualification benefit" },
                 )
             }
             item {
@@ -384,9 +384,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
             }
             row {
                 cell { text(
-                    bokmal { +"AFP" },
-                    nynorsk { +"AFP" },
-                    english { +"AFP (contractual pension)" },
+                    bokmal { +"Avtalefestet pensjon (AFP)" },
+                    nynorsk { +"Avtalefesta pensjon (AFP)" },
+                    english { +"Contractual pension (AFP)" },
                 ) }
                 cell { includePhrase(KronerText(grunnlag.afp)) }
             }
