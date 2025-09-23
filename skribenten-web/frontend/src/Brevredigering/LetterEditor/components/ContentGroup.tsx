@@ -23,6 +23,7 @@ import {
   findOnLineBelow,
   focusAtOffset,
   getCaretRect,
+  getCharacterOffset,
   getCursorOffset,
   getCursorOffsetOrRange,
   gotoCoordinates,
@@ -46,21 +47,6 @@ import {
  * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
  */
 const Y_COORD_SAFETY_MARGIN = 10;
-
-const getCharacterOffset = (element: Node): number => {
-  const selection = globalThis.getSelection();
-  if (selection && selection.rangeCount > 0) {
-    const range = selection.getRangeAt(0);
-    if (range.startContainer && element.contains(range.startContainer)) {
-      const preCaretRange = range.cloneRange();
-      preCaretRange.selectNodeContents(element);
-      preCaretRange.setEnd(range.startContainer, range.startOffset);
-      // Using textContent length instead of toString().length to handle potential HTML entities correctly.
-      return preCaretRange.toString().length;
-    }
-  }
-  return 0;
-};
 
 function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
   const content = letter.blocks[literalIndex.blockIndex].content;
@@ -163,6 +149,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
   const text = textOf(content) || "​";
+
+  // True when a fritekst has a live selection covering its entire text;
+  // used to avoid collapsing it to a caret so first key press removes placeholder.
+  const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement): boolean => {
+    if (!isFritekst) return false;
+    const sel = globalThis.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+    const r = sel.getRangeAt(0);
+    if (!element.contains(r.startContainer) || !element.contains(r.endContainer)) return false;
+    const fullText = element.textContent ?? "";
+    return r.startOffset === 0 && r.endOffset === fullText.length;
+  };
+
   useEffect(() => {
     const element = contentEditableReference.current;
     if (!element) return;
@@ -172,25 +171,28 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     if (!freeze && shouldBeFocused) {
+      if (shouldPreserveFullSelection(erFritekst, element)) {
+        return;
+      }
       // Fallback to end-of-text if cursorPosition missing
-      const desiredPos =
+      const resolvedCursorPosition =
         editorState.focus.cursorPosition !== undefined
           ? Math.min(editorState.focus.cursorPosition, text.length)
           : text.length;
 
-      // If it was missing, persist it (so next undo/redo already has it)
+      // If cursorPosition was missing, persist it (needed for stable undo/redo caret restore)
       if (editorState.focus.cursorPosition === undefined) {
-        setEditorState((s) => ({
-          ...s,
-          focus: { ...s.focus, cursorPosition: desiredPos },
+        setEditorState((state) => ({
+          ...state,
+          focus: { ...state.focus, cursorPosition: resolvedCursorPosition },
         }));
       }
 
       if (element.childNodes[0]) {
-        focusAtOffset(element.childNodes[0], desiredPos);
+        focusAtOffset(element.childNodes[0], resolvedCursorPosition);
       }
     }
-  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState]);
+  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -479,7 +481,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
         if (isEditingKey && contentEditableReference.current) {
           const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
-
+          // Store the caret position (without adding to undo/redo history) before a text-changing key
+          // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
           if (
             editorState.focus.cursorPosition !== preEditCursorPosition ||
             !hasFocus(editorState.focus, literalIndex)
