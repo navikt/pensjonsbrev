@@ -659,12 +659,10 @@ private fun Mottaker.toDto(): Dto.Mottaker =
 
         MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
             navn = navn!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
-            landkode = landkode!!
+            landkode = landkode!!,
         )
     }
 

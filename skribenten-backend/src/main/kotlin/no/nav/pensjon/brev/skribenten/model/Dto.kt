@@ -94,7 +94,14 @@ object Dto {
                 tssId = tssId,
             )
 
-            fun norskAdresse(navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) =
+            fun norskAdresse(
+                navn: String,
+                postnummer: String,
+                poststed: String,
+                adresselinje1: String?,
+                adresselinje2: String?,
+                adresselinje3: String?,
+            ) =
                 Mottaker(
                     type = MottakerType.NORSK_ADRESSE,
                     navn = navn,
@@ -107,8 +114,6 @@ object Dto {
 
             fun utenlandskAdresse(
                 navn: String,
-                postnummer: String?,
-                poststed: String?,
                 adresselinje1: String,
                 adresselinje2: String?,
                 adresselinje3: String?,
@@ -116,8 +121,6 @@ object Dto {
             ) = Mottaker(
                 type = MottakerType.UTENLANDSK_ADRESSE,
                 navn = navn,
-                postnummer = postnummer,
-                poststed = poststed,
                 adresselinje1 = adresselinje1,
                 adresselinje2 = adresselinje2,
                 adresselinje3 = adresselinje3,
@@ -140,8 +143,6 @@ fun Api.OverstyrtMottaker.toDto() =
         )
         is Api.OverstyrtMottaker.UtenlandskAdresse -> utenlandskAdresse(
             navn = navn,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,

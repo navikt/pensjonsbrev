@@ -93,14 +93,12 @@ object Api {
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
-            val adresselinje3: String?
+            val adresselinje3: String?,
         ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
             val navn: String,
-            val postnummer: String?,
-            val poststed: String?,
             val adresselinje1: String,
             val adresselinje2: String?,
             val adresselinje3: String?,
