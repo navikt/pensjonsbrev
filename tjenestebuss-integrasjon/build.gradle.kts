@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin.SHADOW_JAR_TASK_NAME
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -19,7 +18,7 @@ application {
 }
 
 // Merge cxf/bus-extensions.txt fra alle cxf-avhengigheter
-tasks.named(SHADOW_JAR_TASK_NAME, ShadowJar::class.java) {
+tasks.named("shadowJar", ShadowJar::class.java) {
 	transform(AppendingTransformer::class.java) {
 		resource = "META-INF/cxf/bus-extensions.txt"
 	}
