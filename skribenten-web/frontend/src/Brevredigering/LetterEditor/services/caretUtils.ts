@@ -82,8 +82,8 @@ export function gotoCoordinates(coordinates: Coordinates) {
 
   // caretPositionFromPoint() (supported by all except WebKit/Safari per 2025)
   // caretRangeFromPoint() (supported by all except Gecko/Firefox per 2025)
-  // We should prioritize the non-deprecated caretPositionFromPoin,
-  // but will keep caretRangeFromPoint first until we figure out a component test issue
+  // We should prioritize the non-deprecated caretPositionFromPoint,
+  // but will keep caretRangeFromPoint first until we resolve a component test issue
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretRangeFromPoint
   if (document.caretRangeFromPoint) {
