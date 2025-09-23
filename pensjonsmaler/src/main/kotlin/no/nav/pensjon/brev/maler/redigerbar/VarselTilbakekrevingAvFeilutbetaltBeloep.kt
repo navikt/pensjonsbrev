@@ -249,7 +249,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             paragraph {
                 text(
                     bokmal { +"Vi vil vurdere saken og sende deg et vedtak. Hvis du må betale hele eller deler av beløpet, vil du få beskjed om hvordan du betaler tilbake i vedtaket. Nav kan gjøre trekk i framtidige utbetalinger for å kreve inn beløpet." },
-                    nynorsk { +"Vi vil vurdere saka og sende deg eit vedtak. Dersom du må betale heile eller delar av beløpet, vil du få melding om korleis du betaler tilbake i vedtaket." },
+                    nynorsk { +"Vi vil vurdere saka og sende deg eit vedtak. Dersom du må betale heile eller delar av beløpet, vil du få melding om korleis du betaler tilbake i vedtaket. Nav kan gjere trekk i framtidige utbetalingar for å krevje inn beløpet." },
                     english { +"We will consider your case and send you a decision. If you must repay all or part of the overpaid amount, you will be notified about how to make the repayment in the decision. Nav can make deductions from future payments to collect the amount." },
                 )
             }
