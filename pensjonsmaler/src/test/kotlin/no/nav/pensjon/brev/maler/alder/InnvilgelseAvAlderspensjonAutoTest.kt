@@ -20,7 +20,7 @@ class InnvilgelseAvAlderspensjonAutoTest {
             InnvilgelseAvAlderspensjonAuto.template,
             Fixtures.create<InnvilgelseAvAlderspensjonAutoDto>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.fellesAuto
         ).renderTestPDF(InnvilgelseAvAlderspensjonAuto.kode.name)
     }
 
@@ -30,7 +30,7 @@ class InnvilgelseAvAlderspensjonAutoTest {
             InnvilgelseAvAlderspensjonAuto.template,
             Fixtures.create<InnvilgelseAvAlderspensjonAutoDto>(),
             Language.Nynorsk,
-            Fixtures.felles
+            Fixtures.fellesAuto
         ).renderTestHtml(InnvilgelseAvAlderspensjonAuto.kode.name)
     }
 }
