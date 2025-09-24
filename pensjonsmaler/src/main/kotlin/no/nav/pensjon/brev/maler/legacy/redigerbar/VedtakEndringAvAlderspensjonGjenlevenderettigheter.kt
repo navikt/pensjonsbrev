@@ -717,6 +717,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // skattAPendring_001
+            // Kjens litt unødig å sjekke på begge disse, men vi har begge
             showIf(pesysData.alderspensjonVedVirk.harEndretPensjon or pesysData.ytelseskomponentInformasjon.beloepEndring.isOneOf(BeloepEndring.ENDR_OKT, BeloepEndring.ENDR_RED)) {
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
