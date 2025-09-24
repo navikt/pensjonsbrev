@@ -5,26 +5,25 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDtoSelectors.SaksbehandlervalgGrunnbelopSelectors.brukVurderingFraVilkarsvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDtoSelectors.UforeAvslagGrunnbelopPendataSelectors.grunnbelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDtoSelectors.UforeAvslagGrunnbelopPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDtoSelectors.UforeAvslagGrunnbelopPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagGrunnbelopDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagGrunnbelopDto> {
+object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
@@ -62,7 +61,8 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagGrunnbelopDto> {
                 text(bokmal { +"år du søker om uføretrygd mellom fylte 62 og 67 år, " +
                         "må din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet. " +
                         "Hvis du ikke oppfyller dette vilkåret, må du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet. " +
-                        "Grunnbeløpet utgjør " + pesysData.grunnbelop.format(CurrencyFormat) + " kroner.  I tillegg kan du ikke få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
+                        "Grunnbeløpet utgjør " + fritekst("grunnbeløp") + " kroner. " +
+                        "I tillegg kan du ikke få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
             }
             showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
