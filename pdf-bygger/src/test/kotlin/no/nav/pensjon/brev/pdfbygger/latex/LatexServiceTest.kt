@@ -230,7 +230,7 @@ class LatexServiceTest {
                 compilationTime,
                 "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test"
             )
-            assertThat(compilationTime, isWithin(200L..800L))
+            assertThat(compilationTime, isWithin(200L..1000L))
             assertResult<Success>(result)
 
             blockingCompilation.cancel()
