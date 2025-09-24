@@ -33,7 +33,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikte
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -58,18 +58,14 @@ Stans av alderspensjon -> når bruker endrer uttaksgrad til null */
 @TemplateModelHelpers
 object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ENDRING_UTTAKSGRAD_AUTO
-    override val template =
-        createTemplate(
-            name = kode.name,
-            letterDataType = EndringAvUttaksgradAutoDto::class,
-            languages = languages(Bokmal, Nynorsk, English),
-            letterMetadata =
-                LetterMetadata(
-                    displayTitle = "Vedtak - endring av uttaksgrad (auto)",
-                    isSensitiv = false,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                    brevtype = VEDTAKSBREV,
-                ),
+    override val template = createTemplate(
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Vedtak - endring av uttaksgrad (auto)",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = VEDTAKSBREV
+        ),
         ) {
             title {
                 showIf(alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
