@@ -45,19 +45,25 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Begrunnelse for vedtaket" })
+                text(bokmal { +"Derfor får du ikke uføretrygd med ung ufør fordel" })
             }
             paragraph {
-                text(bokmal { +"For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." })
+                text(bokmal { +"Du har satt frem søknaden etter at du fylte 36 år, og har jobbet mer enn 50 prosent." })
             }
             paragraph {
-                text(bokmal { +"Du var over 26 år på uføretidspunktet og kan derfor ikke innvilges rettighet som ung ufør." })
+                text(bokmal { +"For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig " +
+                        "og varig sykdom eller skade, som er klart dokumentert. " +
+                        "Dersom du har vært mer enn 50 prosent yrkesaktiv etter at du fylte 26 år, må du ha søkt om uføretrygd før du fyller 36 år." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-6 og 12-7." })
+                text(bokmal { +"Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
+                        "Du søkte om uføretrygd etter at du fylte 36 år og oppfyller derfor ikke dette vilkåret." })
+            }
+            paragraph {
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
             }
 
             includePhrase(RettTilAKlage)
