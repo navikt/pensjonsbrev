@@ -39,7 +39,7 @@ class Felles(
             vergeNavn = this.vergeNavn,
         )
 
-    fun medAnnenMottaker(annenMottakerNavn: String?): Felles =
+    fun medAnnenMottakerNavn(annenMottakerNavn: String?): Felles =
         Felles(
             dokumentDato = this.dokumentDato,
             saksnummer = this.saksnummer,

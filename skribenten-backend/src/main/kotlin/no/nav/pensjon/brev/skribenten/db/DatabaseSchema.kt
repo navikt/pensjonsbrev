@@ -154,6 +154,7 @@ object MottakerTable : IdTable<Long>() {
     val adresselinje2: Column<String?> = text("adresselinje2").nullable()
     val adresselinje3: Column<String?> = text("adresselinje3").nullable()
     val landkode: Column<String?> = varchar("landkode", 2).nullable()
+    val erBrukersAdresse: Column<Boolean?> = bool("landkode").nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -169,6 +170,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2
     var adresselinje3 by MottakerTable.adresselinje3
+    var erBrukersAdresse by MottakerTable.erBrukersAdresse
     var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)

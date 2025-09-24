@@ -286,7 +286,7 @@ public final class no/nav/pensjon/brevbaker/api/model/Felles {
 	public final fun getSignerendeSaksbehandlere ()Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;
 	public final fun getVergeNavn ()Ljava/lang/String;
 	public fun hashCode ()I
-	public final fun medAnnenMottaker (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun medAnnenMottakerNavn (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun medSignerendeSaksbehandlere (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public fun toString ()Ljava/lang/String;
 }

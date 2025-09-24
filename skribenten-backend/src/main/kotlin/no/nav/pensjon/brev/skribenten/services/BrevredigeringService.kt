@@ -73,8 +73,9 @@ class BrevredigeringService(
         harTilgangTilEnhet(avsenderEnhetsId) {
             val principal = PrincipalInContext.require()
             val signerendeSaksbehandler = principalSignatur()
-
+            val annenMottakerNavn = mottaker?.fetchNavn()
             val vedtaksIdOmVedtaksbrev = beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId, brevkode)
+
 
             rendreBrev(
                 brevkode = brevkode,
@@ -84,7 +85,7 @@ class BrevredigeringService(
                 saksbehandlerValg = saksbehandlerValg,
                 avsenderEnhetsId = avsenderEnhetsId,
                 signaturSignerende = signerendeSaksbehandler,
-                annenMottaker = mottaker?.navn
+                annenMottakerNavn = annenMottakerNavn
             ).map { letter ->
                 transaction {
                     Brevredigering.new {
@@ -159,6 +160,8 @@ class BrevredigeringService(
                 brevDto.validerErFerdigRedigert()
             }
 
+            val annenMottakerNavn = mottaker?.fetchNavn()
+
             transaction {
                 if (laastForRedigering == false) {
                     brevDb.laastForRedigering = laastForRedigering
@@ -167,9 +170,9 @@ class BrevredigeringService(
                     brevDb.laastForRedigering = laastForRedigering
                 }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
-                mottaker?.also { brevDb.mottaker?.oppdater(it) ?: Mottaker.new(brevId) { oppdater(it) } }
-                if(mottaker != null) {
-                    oppdaterAnnenMottakerNavn(brevDb, mottaker)
+                if(annenMottakerNavn != null) {
+                    brevDb.mottaker?.oppdater(mottaker) ?: Mottaker.new(brevId) { oppdater(mottaker) }
+                    oppdaterSakpartMedAnnenMottakerNavn(brevDb, annenMottakerNavn)
                 }
 
                 brevDb.redigeresAvNavIdent = null
@@ -178,16 +181,22 @@ class BrevredigeringService(
             }
         }
 
-    private fun oppdaterAnnenMottakerNavn(redigering: Brevredigering, mottaker: Dto.Mottaker?) {
+    private fun oppdaterSakpartMedAnnenMottakerNavn(redigering: Brevredigering, annenMottaker: String?) {
         redigering.apply {
             redigertBrev = redigering.redigertBrev
                 .updateEditedLetter(
                     redigering.redigertBrev
-                        .withAnnenMottaker(mottaker)
+                        .withAnnenMottaker(annenMottaker)
                         .toMarkup()
                 )
         }
     }
+
+    private suspend fun Dto.Mottaker.fetchNavn(): String? =
+        when(type) {
+            MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
+            MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE -> navn
+        }
 
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId) {
@@ -408,7 +417,7 @@ class BrevredigeringService(
         transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.also {
                 it.mottaker?.delete()
-                oppdaterAnnenMottakerNavn(it, null)
+                oppdaterSakpartMedAnnenMottakerNavn(it, null)
             } != null
 
         }
@@ -489,7 +498,7 @@ class BrevredigeringService(
             signaturSignerende = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
             ?: principalSignatur(),
             signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
-            annenMottaker = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn,
+            annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn,
         )
 
     private suspend fun rendreBrev(
@@ -501,7 +510,7 @@ class BrevredigeringService(
         avsenderEnhetsId: String?,
         signaturSignerende: String,
         signaturAttestant: String? = null,
-        annenMottaker: String? = null,
+        annenMottakerNavn: String? = null,
     ): ServiceResult<LetterMarkupWithDataUsage> =
         penService.hentPesysBrevdata(
             saksId = saksId,
@@ -522,7 +531,7 @@ class BrevredigeringService(
                             saksbehandler = signaturSignerende,
                             attesterendeSaksbehandler = signaturAttestant
                         )
-                    ).medAnnenMottaker(annenMottaker)
+                    ).medAnnenMottakerNavn(annenMottakerNavn)
                 )
             }
 
@@ -560,7 +569,7 @@ class BrevredigeringService(
                 ),
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
                 felles = pesysData.felles
-                    .medAnnenMottaker(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
+                    .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
                     .medSignerendeSaksbehandlere(null),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
@@ -708,6 +717,7 @@ private fun Mottaker.toDto(): Dto.Mottaker =
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
+            erBrukersAdresse = erBrukersAdresse,
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
@@ -717,7 +727,8 @@ private fun Mottaker.toDto(): Dto.Mottaker =
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
-            landkode = landkode!!
+            landkode = landkode!!,
+            erBrukersAdresse = erBrukersAdresse,
         )
     }
 
@@ -733,9 +744,9 @@ private fun Brevredigering.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true
 
 @OptIn(InterneDataklasser::class)
-fun Edit.Letter.withAnnenMottaker(mottaker: Dto.Mottaker?) =
+fun Edit.Letter.withAnnenMottaker(mottaker: String?) =
     this.copy(
         sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
-            annenMottakerNavn = mottaker?.navn
+            annenMottakerNavn = mottaker
         )
     )

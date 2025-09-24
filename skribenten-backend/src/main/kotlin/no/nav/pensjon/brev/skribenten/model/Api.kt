@@ -93,8 +93,9 @@ object Api {
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
-            val adresselinje3: String?
-        ) : OverstyrtMottaker()
+            val adresselinje3: String?,
+            val erBrukersAdresse: Boolean?,
+            ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
@@ -105,7 +106,8 @@ object Api {
             val adresselinje2: String?,
             val adresselinje3: String?,
             val landkode: Landkode,
-        ) : OverstyrtMottaker()
+            val erBrukersAdresse: Boolean?,
+            ) : OverstyrtMottaker()
     }
 
     data class BrevResponse(
