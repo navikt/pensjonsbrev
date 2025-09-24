@@ -1,16 +1,12 @@
 package no.nav.pensjon.brev.maler.alder
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.api.model.BorI
 import no.nav.pensjon.brev.api.model.BorI.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.garantitilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
-import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
@@ -47,13 +43,11 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspens
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvisFlytetFaktiskBostedsland
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgetGjRettKap19For2024
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
@@ -84,17 +78,13 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
