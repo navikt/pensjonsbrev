@@ -37,6 +37,7 @@ export const LetterEditor = ({
 
   const canUndo = editorState.history.entryPointer >= 0;
   const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
   const undo = useCallback(() => {
     if (!canUndo) return;
@@ -70,8 +71,6 @@ export const LetterEditor = ({
       };
     });
   }, [canRedo, setEditorState]);
-
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
 
   return (
     <div
