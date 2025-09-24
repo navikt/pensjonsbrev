@@ -125,29 +125,11 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
 
+  // Adjust focus to a valid position
+  const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
+  draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+
   draft.saveStatus = "DIRTY";
-
-  // Determine the new focus target
-  const newContentIndex = Math.max(0, draft.focus.contentIndex - 1);
-  const previousContent = draft.redigertBrev.blocks[draft.focus.blockIndex].content[newContentIndex];
-
-  // If the previous content is a simple literal, focus the end of it.
-  if (previousContent && isLiteral(previousContent)) {
-    const text = previousContent.editedText ?? previousContent.text;
-    draft.focus = {
-      blockIndex: draft.focus.blockIndex,
-      contentIndex: newContentIndex,
-      cursorPosition: text.length,
-    };
-  } else {
-    // Fallback for other content types (or if it's the first element)
-    // This creates a simple, but incomplete focus. It's better to handle
-    // other cases like focusing the last cell of a preceding table if needed.
-    draft.focus = {
-      blockIndex: draft.focus.blockIndex,
-      contentIndex: newContentIndex,
-    };
-  }
 });
 
 export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {
