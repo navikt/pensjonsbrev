@@ -6,7 +6,7 @@ import { PARAGRAPH } from "~/types/brevbakerTypes";
 import { type Action, withPatches } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
-import { isEmptyTableHeader, isLiteral, isTableCellIndex } from "../model/utils";
+import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
 import {
   addElements,
   cleanseText,
