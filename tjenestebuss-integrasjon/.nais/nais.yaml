@@ -30,10 +30,11 @@ spec:
     enabled: true
     path: "/metrics"
     port: "8080"
-  logging:
-    destinations:
-      - id: elastic
-      - id: loki
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   resources:
     limits:
       cpu: 500m
