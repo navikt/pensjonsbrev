@@ -196,7 +196,7 @@ class BrevredigeringService(
         when(type) {
             MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
             MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE ->
-                if(erBrukersAdresse == true) navn else null
+                if(erBrukersAdresse == false) navn else null
         }
 
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
