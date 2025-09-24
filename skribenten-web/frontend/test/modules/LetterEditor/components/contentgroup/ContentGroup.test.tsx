@@ -10,7 +10,6 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 import { ElementTags, PARAGRAPH } from "~/types/brevbakerTypes";
 
@@ -38,29 +37,19 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+const undo = vi.fn();
+const redo = vi.fn();
+
 function setup() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState, undo, redo }}>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
   };
 }
-
-const expectCaretAtEnd = (state: LetterEditorState, blockIndex = 0, contentIndex = 0) => {
-  const node = state.redigertBrev.blocks[blockIndex].content[contentIndex];
-  if (!isLiteral(node)) {
-    throw new Error(`Expected literal at block ${blockIndex} content ${contentIndex}, got ${node.type}`);
-  }
-  const text = (node.editedText ?? node.text) as string;
-  expect(state.focus).toEqual({
-    blockIndex,
-    contentIndex,
-    cursorPosition: text.length,
-  });
-};
 
 const complexEditorState = letter(
   paragraph([
@@ -89,7 +78,14 @@ function setupComplex(stateOverride?: LetterEditorState) {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState: stateOverride ?? complexEditorState, setEditorState }}
+        value={{
+          freeze: false,
+          error: false,
+          editorState: stateOverride ?? complexEditorState,
+          setEditorState,
+          undo,
+          redo,
+        }}
       >
         {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
