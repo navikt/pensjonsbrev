@@ -43,7 +43,7 @@ class TemplateRoutesTest {
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(
             alleRedigerbareMaler
-            .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
+                .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
         )
     }
 

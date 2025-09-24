@@ -10,9 +10,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -31,8 +29,6 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ForespoerselOmDokumentasjonAvBotidINorgeDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Forespørsel om dokumentasjon av botid i Norge - alder",

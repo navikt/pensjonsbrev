@@ -2,13 +2,13 @@ package no.nav.pensjon.brev.template.render
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.languages
@@ -35,7 +35,6 @@ class IncludeAttachmentTest {
         }
 
         val expected = LetterTemplate(
-            name = "test",
             title = listOf(newText(Nynorsk to "tittel")),
             letterDataType = SomeDto::class,
             language = languages(Nynorsk),
@@ -47,7 +46,6 @@ class IncludeAttachmentTest {
         )
 
         val actual = createTemplate(
-            name = "test",
             letterDataType = SomeDto::class,
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
@@ -76,7 +74,6 @@ class IncludeAttachmentTest {
         }
 
         private val testTemplate = createTemplate(
-            name = "test",
             letterDataType = NullData::class,
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
@@ -93,7 +90,6 @@ class IncludeAttachmentTest {
 
             @Suppress("UNCHECKED_CAST")
             val expected = LetterTemplate(
-                name = "test",
                 title = listOf(newText(Nynorsk to "tittel")),
                 letterDataType = NullData::class,
                 language = languages(Nynorsk),

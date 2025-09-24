@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -18,8 +18,6 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = EmptyBrevdata::class,
             languages = languages(Language.Bokmal),
             letterMetadata =
                 LetterMetadata(
@@ -99,7 +97,7 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                     }
                 }
                 paragraph {
-                    text(bokmal { +"Husk å merke forsendelsen med både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
+                    text(bokmal { +"Husk å legge ved både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
                 }
                 paragraph {
                     text(bokmal { +"Du bør sende inn dokumentasjonen innen 14 dager fra du mottar dette brevet, til:" })

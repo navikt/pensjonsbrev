@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -31,8 +31,6 @@ object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoer
     override val kode = Pesysbrevkoder.AutoBrev.UT_BARNETILLEGG_ENDRET_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EndretBarnetilleggUfoeretrygdDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Endring av barnetillegg i uføretrygden",

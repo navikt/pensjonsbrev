@@ -20,34 +20,13 @@ data class EndringAvAlderspensjonSivilstandDto(
 ) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandDto.PesysData> {
 
     data class SaksbehandlerValg(
-        // Samboer § 1-5:
-        @DisplayText("Samboere med felles barn")
-        val samboereMedFellesBarn: Boolean,
-        @DisplayText("Samboere som tidligere har vært gift")
-        val samboereTidligereGift: Boolean,
-
-        // Endring i EPS-inntekt:
-        @DisplayText("Endring i EPS inntekt - Økning/Reduksjon")
-        val epsInntektOekningReduksjon: Boolean,
-
         // Årsak til sivilstandsendringen:
         @DisplayText("Sivilstandsendring årsak - Fraflyting")
         val fraFlyttet: Boolean,
         @DisplayText("Sivilstandsendring årsak - inngått ekteskap men bor ikke sammen")
         val giftBorIkkeSammen: Boolean,
-
-        // Alders-og sykehjem eller EPS på annen institusjon:
-        val institusjonsopphold: Boolean,
-
-        // Betydning for pensjons utbetaling?
-        @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-        @DisplayText("Hvis endring i pensjonen")
-        val endringPensjon: Boolean,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -58,6 +37,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sivilstand: MetaforceSivilstand,
+        val beloepEndring: BeloepEndring,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,

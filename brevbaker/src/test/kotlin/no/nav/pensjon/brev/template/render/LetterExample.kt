@@ -12,14 +12,13 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
@@ -43,9 +42,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
     override val template = createTemplate(
-        name = "EKSEMPEL_BREV", //Letter ID
-        letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Bokmal, Nynorsk), // Data class containing the required data of this letter
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
@@ -102,7 +99,6 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     nynorsk { +", håper du har en fin dag!" }
                 )
             }
-
 
 
             // Fetch a value from the letter arguments

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.alder.endring.sivilstand
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -15,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
@@ -25,8 +27,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenAlderspenspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsHarInntektOver1G
@@ -36,14 +36,13 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjonIStatligSektor
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.epsTarUtUfoeretrygd
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.BetydningForUtbetaling
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.DuFaarAP
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.OmregningGarantiPen
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.SivilstandSamboerHjemler
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -55,11 +54,10 @@ import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -71,17 +69,18 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndringAvAlderspensjonSivilstandSaerskiltSats :
     RedigerbarTemplate<EndringAvAlderspensjonSivilstandSaerskiltSatsDto> {
+
+    override val featureToggle = FeatureToggles.endringAvAlderspensjonSivilstandVurderSaerskiltSats.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Endring av alderspensjon (sivilstand)",
+            displayTitle = "Vedtak - endring av alderspensjon (særskilt sats)",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -265,10 +264,8 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                 }
             }
 
-            ifNotNull(saksbehandlerValg.beloepEndring) { beloepEndring ->
-                showIf(saerskiltSatsErBrukt) {
-                    includePhrase(BetydningForUtbetaling(regelverkType, beloepEndring))
-                }
+            showIf(saerskiltSatsErBrukt) {
+                includePhrase(BetydningForUtbetaling(regelverkType, pesysData.beloepEndring))
             }
 
             showIf(saksbehandlerValg.aarligKontrollEPS) {
@@ -315,7 +312,18 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         english { + "This decision was made pursuant to the provisions of §§ " },
                     )
                     showIf(regelverkType.isOneOf(AP1967)) {
-                        includePhrase(SivilstandSamboerHjemler(sivilstand))
+                        showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                            text(
+                                bokmal { +"1-5, " },
+                                nynorsk { +"1-5, " },
+                                english { +"1-5, " },
+                            )
+                        }
+                        text(
+                            bokmal { +"3-2" },
+                            nynorsk { +"3-2" },
+                            english { +"3-2" },
+                        )
                         showIf(saertilleggInnvilget) {
                             text(
                                 bokmal { + ", 3-3" },
@@ -351,12 +359,12 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Hvis endring i pensjonen (Selectable) - skattAPendring
-            showIf(saksbehandlerValg.endringPensjon) {
+            showIf(pesysData.beloepEndring.isOneOf(BeloepEndring.ENDR_OKT, BeloepEndring.ENDR_RED)) {
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
             // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-            showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+            showIf(vedtakEtterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 

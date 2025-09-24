@@ -41,12 +41,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.PesysDataSelectors.opplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.avdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonsutbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
@@ -64,10 +66,9 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
@@ -76,7 +77,6 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -89,13 +89,14 @@ import java.time.Month
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
     RedigerbarTemplate<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto> {
+
+    override val featureToggle = FeatureToggles.vedtakEndringAvAlderspensjonGjenlevenderettigheter.toggle
+
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring ved gjenlevenderett",
@@ -703,7 +704,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             // infoAPopptjRedusPoengOver67Aar_001
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
-                        and saksbehandlerValg.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
+                        and saksbehandlerValg.avdoedeHarRedusertTrygdetidEllerPoengaar
             ) {
                 paragraph {
                     text(

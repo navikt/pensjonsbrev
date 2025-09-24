@@ -1,15 +1,14 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -21,15 +20,20 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.beregningsVedleggData
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.resultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.beregningsVedlegg
@@ -52,7 +56,7 @@ data class EtteroppgjoerVedtakDataDTO(
     val grunnlag: EtteroppgjoerGrunnlagDTO
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true)
 }
 
 @TemplateModelHelpers
@@ -61,8 +65,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = EtteroppgjoerVedtakBrevDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
@@ -75,29 +77,21 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             title {
                 text(
                     bokmal { +"Vedtak om etteroppgjør" },
-                    nynorsk { +"" },
-                    english { +"" },
+                    nynorsk { +"Vedtak om etteroppgjer" },
+                    english { +"Decision on final settlement" },
                 )
             }
 
             outline {
                 konverterElementerTilBrevbakerformat(innhold)
 
-                paragraph {
-                    text(
-                        bokmal { +"Hvert år sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i omstillingsstønad året før." },
-                        nynorsk { +"" },
-                        english { +"" },
-                    )
-                }
-
-                // Dersom feilutbetalt beløp (tilbakekreving)
+                // Hvis feilutbetalt (tilbakekreving)
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {
                         text(
-                            bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() + " for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet." },
-                            nynorsk { +"" },
-                            english { +"" }
+                            bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() + " for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr. Du må derfor betale tilbake det feilutbetalte beløpet." },
+                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for mykje omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet." },
+                            english { +"Our calculations show that you have been overpaid " + data.avviksBeloep.absoluteValue().format() + " adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you." }
                         )
                     }
                 }
@@ -106,43 +100,57 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.ETTERBETALING)) {
                     paragraph {
                         text(
-                            bokmal { +"Vår beregning viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret og du har oppfylt aktivitetsplikten. Du får derfor etterbetalt for lite utbetalt omstillingsstønad." },
-                            nynorsk { +"" },
-                            english { +"" }
+                            bokmal { +"Vår beregning viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstiger 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjørsperioden, og du vil derfor få etterbetalt beløpet som er for lite utbetalt." },
+                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstig 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjerperioden, og du vil difor få etterbetalt beløpet som har vore for lite utbetalt." },
+                            english { +"Our calculations show that you have been paid " + data.avviksBeloep.absoluteValue().format() + " too little adjustment allowance in " + data.etteroppgjoersAar.format() + ". The amount exceeds 25 percent of the court fee. The activity requirement has been met during the post-assessment period, and you will therefore receive a back payment of the amount that was previously underpaid." }
                         )
                     }
                 }
 
                 paragraph {
                     text(
-                        bokmal { +"Se beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”." },
-                        nynorsk { +"" },
-                        english { +"" },
+                        bokmal { +"Se beregningen av omstillingsstønaden din i vedlegget «Opplysninger om etteroppgjøret»." },
+                        nynorsk { +"Sjå utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret»." },
+                        english { +"You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement»." },
                     )
                 }
 
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9 og omstillingsstønadsforskriften § 9." },
-                        nynorsk { +"" },
-                        english { +"" },
+                        nynorsk { +"Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § 17-9 og omstillingsstønadsforskriften § 9." },
+                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations.." },
                     )
                 }
 
-                // Dersom feilutbetalt beløp (tilbakekreving)
+                // Hvis feilutbetalt (tilbakekreving)
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     title2 {
                         text(
-                            bokmal { +"Du vil få informasjon om hvordan du kan betale tilbake etter fire uker" },
-                            nynorsk { +"" },
+                            bokmal { +"Hvordan skal du betale tilbake" },
+                            nynorsk { +"Korleis du skal betale tilbake" },
                             english { +"" },
                         )
                     }
                     paragraph {
                         text(
-                            bokmal { +"Du vil få en faktura med informasjon fra Skatteetaten ved avdelingen “Innkrevingssentralen for bidrag og tilbakebetalingskrav”, etter fire uker om når og hvordan du kan betale tilbake pengene. Før du kan få svar på spørsmål om saken din eller kan betale tilbake, må du ha mottatt betalingsinformasjon fra Skatteetaten. Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke fra skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake. Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjøret»." },
-                            nynorsk { +"" },
-                            english { +"" },
+                            bokmal { +"Etter fire uker får du et brev fra Skatteetatens avdeling “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. I brevet finner du faktura og informasjon om når og hvordan du kan betale tilbake beløpet." },
+                            nynorsk { +"Etter fire veker får du eit brev frå Skatteetaten si avdeling “Innkrevingssentralen for bidrag og tilbakebetalingskrav”. I brevet finn du faktura og informasjon om når og korleis du kan betale tilbake beløpet." },
+                            english { +"After four weeks, you will receive a letter from the Tax Administration’s department “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. The letter will include an invoice and information about when and how to repay the amount." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du skal ikke betale tilbake før du har fått betalingsinformasjon fra Skatteetaten." },
+                            nynorsk { +"Du skal ikkje betale tilbake før du har fått betalingsinformasjon frå Skatteetaten." },
+                            english { +"You should not make any payment until you have received payment information from the Tax Administration." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake." },
+                            nynorsk { +"Fordi du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen du får frå Skatteetaten står det kor mykje du faktisk skal betale tilbake." },
+                            english { +"Since you have already paid tax on the amount that was overpaid to you, we will deduct the tax from the amount you need to repay. The payment information from the Tax Administration will state the actual amount you have to repay." },
                         )
                     }
                 }
@@ -158,17 +166,17 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     }
                     paragraph {
                         text(
-                            bokmal { +"Du får etterbetalt stønad for " + data.etteroppgjoersAar.format() + ". Vanligvis vil du få denne i løpet av tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                            nynorsk { +"" },
-                            english { +"" },
+                            bokmal { +"Du får etterbetalt stønad for " + data.etteroppgjoersAar.format() + ". Utbetalingen skjer vanligvis innen tre uker. Dersom Skatteetaten eller andre instanser har krav mot deg, kan de trekke dette fra etterbetalingen. Eventuelle fradrag vises i utbetalingsmeldingen." },
+                            nynorsk { +"Du får etterbetalt stønad for " + data.etteroppgjoersAar.format() + ". Utbetalinga skjer vanlegvis innan tre veker. Dersom Skatteetaten eller andre instansar har krav mot deg, kan dei trekkje dette frå etterbetalinga. Eventuelle frådrag blir viste i utbetalingsmeldinga." },
+                            english { +"You will receive a back payment of allowance for " + data.etteroppgjoersAar.format() + ". The payment is usually made within three weeks. If the Tax Administration or other agencies have claims against you, they may deduct these from the back payment. Any deductions will be shown in the payment notification." },
                         )
                     }
 
                     paragraph {
                         text(
                             bokmal { +"Etterbetalingen gjelder tidligere år derfor trekker Nav skatt etter Skatteetatens standardsatser. Du kan lese mer om satsene på nav.no/skattetrekk#etterbetaling." },
-                            nynorsk { +"" },
-                            english { +"" },
+                            nynorsk { +"Etterbetalinga gjeld tidlegare år, derfor trekkjer Nav skatt etter Skatteetaten sine standardsatsar. Du kan lese meir om satsane på nav.no/skattetrekk#etterbetaling." },
+                            english { +"Since the back payment applies to a previous year, Nav withholds tax according to the Tax Administration’s standard rates. You can read more about the rates at nav.no/skattetrekk#etterbetaling." },
                         )
                     }
                 }
@@ -176,34 +184,35 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 title2 {
                     text(
                         bokmal { +"Du må melde fra om endringer" },
-                        nynorsk { +"" },
-                        english { +"" },
+                        nynorsk { +"Du må melde frå om endringar" },
+                        english { +"You must report any changes" },
                     )
                 }
 
                 paragraph {
                     text(
-                        bokmal { +"Du får " + data.utbetaltBeloep.format() + " hver måned i omstillingsstønad per i dag." },
-                        nynorsk { +"" },
-                        english { +"" },
+                        bokmal { +"Du får fortsatt omstillingsstønad og den er på " + data.utbetaltBeloep.format() + " kroner hver måned før skatt." },
+                        nynorsk { +"Du får framleis omstillingsstønad. Du får " + data.utbetaltBeloep.format() + " kroner kvar månad før skatt." },
+                        english { +"You will continue to receive adjustment allowance and this will be " + data.utbetaltBeloep.format() + " per month before tax." },
                     )
                 }
 
                 paragraph {
                     text(
-                        bokmal { +"Se hvordan og hvilke endringer du skal melde fra om i vedlegget “Dine rettigheter og plikter”." },
-                        nynorsk { +"" },
-                        english { +"" },
+                        bokmal { +"Se hvordan du melder fra om endringer i vedlegget “Dine rettigheter og plikter”." },
+                        nynorsk { +"I vedlegget «Dine rettar og plikter» ser du kva endringar du må seie frå om." },
+                        english { +"You will see which changes you must report in the attachment, Your Rights and Obligations." },
                     )
                 }
 
                 includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {
                         text(
                             bokmal { +"Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42." },
-                            nynorsk { +"" },
-                            english { +"" },
+                            nynorsk { +"Som hovudregel må du begynne å betale tilbake sjølv om du klagar på vedtaket, sjå forvaltningslova § 42." },
+                            english { +"As a general rule, you must start repaying even if you appeal the decision. This is stated in Section 42 of the Public Administration Act and associated circulars." },
                         )
                     }
                 }
@@ -212,6 +221,12 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             }
 
             includeAttachment(beregningsVedlegg, data.beregningsVedleggData)
-            includeAttachment(praktiskInformasjonOmEtteroppgjoeret)
+            includeAttachment(dineRettigheterOgPlikter, innhold)
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = false, tilbakekreving = true), innhold, data.bosattUtland.not())
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = true, tilbakekreving = true), innhold, data.bosattUtland)
         }
 }

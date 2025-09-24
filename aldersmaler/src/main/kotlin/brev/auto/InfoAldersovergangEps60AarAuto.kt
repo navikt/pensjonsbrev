@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.auto.InfoAldersovergangEps60AarAutoDt
 import no.nav.pensjon.brev.api.model.maler.auto.Ytelse
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -21,8 +21,6 @@ object InfoAldersovergangEps60AarAuto : AutobrevTemplate<InfoAldersovergangEps60
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = InfoAldersovergangEps60AarAutoDto::class,
             languages = languages(Language.Bokmal),
             letterMetadata =
                 LetterMetadata(
@@ -97,7 +95,7 @@ object InfoAldersovergangEps60AarAuto : AutobrevTemplate<InfoAldersovergangEps60
                     text(bokmal { +"Som dokumentasjon kan du sende kopi av skatteoppgjøret for siste år. Vi godtar også bekreftelse fra regnskapsfører, årsoppgave fra bank eller kopier av lønns- og trekkoppgaver." })
                 }
                 paragraph {
-                    text(bokmal { +"Husk å merke forsendelsen med både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
+                    text(bokmal { +"Husk å legge ved både ditt og din ektefelle/partner/samboer sitt navn og fødselsnummer." })
                 }
                 paragraph {
                     text(bokmal { +"Du bør sende inn dokumentasjonen innen 14 dager fra du mottar dette brevet, til:" })

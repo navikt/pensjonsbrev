@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.alder.endring.sivilstand
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravArsakType.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -22,6 +23,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.epsVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravAarsak
@@ -32,18 +34,12 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsInntektOekningReduksjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.fraFlyttet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.giftBorIkkeSammen
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.institusjonsopphold
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboereMedFellesBarn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboereTidligereGift
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.fraser.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -55,7 +51,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikte
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -67,6 +63,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspensjonSivilstandDto> {
+
+    override val featureToggle = FeatureToggles.endringAvAlderspensjonSivilstand.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -74,12 +73,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = EndringAvAlderspensjonSivilstandDto::class,
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Vedtak - Endring av alderspensjon (sivilstand)",
+                    displayTitle = "Vedtak - endring av alderspensjon (sivilstand)",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -112,7 +109,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
             val epsNavn = fritekst("navn")
 
-            val beloepEndring = saksbehandlerValg.beloepEndring
+            val beloepEndring = pesysData.beloepEndring
 
             title {
                 text(
@@ -162,29 +159,22 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             )
                         }
                     }.orShowIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
-                        // Radio knapper: Velg type § 1-5 samboer
-                        // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-
-                        showIf(saksbehandlerValg.samboereMedFellesBarn) {
-                            paragraph {
-                                // endringSivilstand1-5samboerBarn
-                                text(
-                                    bokmal { +"Du har flyttet sammen med " + epsNavn + ", og dere har barn sammen." },
-                                    nynorsk { +"Du har flytta saman med " + epsNavn + ", og dere har barn saman." },
-                                    english { +"You have moved together with " + epsNavn + ", with whom you have children." },
-                                )
-                            }
-                        }
-                        // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                        showIf(saksbehandlerValg.samboereTidligereGift) {
-                            // endringSivilstand1-5samboerTidlGift
-                            paragraph {
-                                text(
-                                    bokmal { +"Du har flyttet sammen med " + epsNavn + ", og dere har vært gift tidligere." },
-                                    nynorsk { +"Du har flytta saman med " + epsNavn + ", og dere har vore gift tidlegare." },
-                                    english { +"You have moved together with " + epsNavn + ", with whom you were previously married." },
-                                )
-                            }
+                        paragraph {
+                            // endringSivilstand1-5samboerBarn
+                            text(
+                                bokmal {
+                                    +"Du har flyttet sammen med " + epsNavn +
+                                        ", og dere har barn sammen eller dere har vært gift tidligere"
+                                },
+                                nynorsk {
+                                    +"Du har flytta saman med " + epsNavn +
+                                        ", og de har barn saman eller de har vore gift tidlegare."
+                                },
+                                english {
+                                    +"You have moved together with " + epsNavn +
+                                        ", with whom you have children or with whom you were previously married."
+                                },
+                            )
                         }
                     }
 
@@ -250,7 +240,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // Radioknapper: Velg endring i EPS inntekt
                 // endringInntektOktEPS, endringInntektRedusertEPS
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(kravArsakType.isOneOf(EPS_ENDRET_INNTEKT) and saksbehandlerValg.epsInntektOekningReduksjon) {
+                showIf(kravArsakType.isOneOf(EPS_ENDRET_INNTEKT)) {
                     paragraph {
                         text(
                             bokmal {
@@ -302,21 +292,17 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Radioknapper: Hva er årsaken til sivilstandsendringen?
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(
-                    kravArsakType.isOneOf(SIVILSTANDSENDRING) and
-                            not(borSammenMedBruker) and saksbehandlerValg.fraFlyttet
-                ) {
-                    // flyttetEPS
-                    paragraph {
-                        text(
-                            bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
-                            nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
-                            english { +"You and " + epsNavn + "no longer live together." },
-                        )
+                showIf(kravArsakType.isOneOf(SIVILSTANDSENDRING) and not(borSammenMedBruker)) {
+                    showIf(saksbehandlerValg.fraFlyttet) {
+                        // flyttetEPS
+                        paragraph {
+                            text(
+                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
+                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
+                                english { +"You and " + epsNavn + "no longer live together." },
+                            )
+                        }
                     }
-
-                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     showIf(saksbehandlerValg.giftBorIkkeSammen) {
                         // endirngSivilstandGiftBorIkkeSammen
                         paragraph {
@@ -337,10 +323,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         }
                     }
                 }
-                // Radioknapper: Alders- og sykehjem eller EPS på annen institusjon
                 // endringSykehjem, endringSykehjemEPS, endringSykkehjemBegge, endringInstitusjonEPS
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(kravArsakType.isOneOf(INSTOPPHOLD) and saksbehandlerValg.institusjonsopphold) {
+                showIf(kravArsakType.isOneOf(INSTOPPHOLD)) {
                     paragraph {
                         text(
                             bokmal {
@@ -492,7 +476,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     ) {
                         showIf(
                             not(minstenivaaPensjonistParInnvilget) and
-                                    not(minstenivaaPensjonistParInnvilget)
+                                    not(minstenivaaIndividuellInnvilget)
                         ) {
                             // omregningGPST
                             paragraph {
@@ -617,12 +601,12 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Hvis endring i pensjonen (Selectable) - skattAPendring
-                showIf(saksbehandlerValg.endringPensjon) {
+                showIf(beloepEndring.isOneOf(BeloepEndring.ENDR_RED, BeloepEndring.ENDR_OKT)) {
                     includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
                 }
 
                 // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-                showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+                showIf(vedtakEtterbetaling) {
                     includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
                 }
 

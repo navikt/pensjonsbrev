@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdod
@@ -44,11 +45,11 @@ fun createOmregningAlderUfore2016Dto() =
                 avdodNavn = "Per",
                 avdodFnr = "13377331"
             ),
+            informasjonOmMedlemskap = InformasjonOmMedlemskap.IKKE_RELEVANT,
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
             opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
             opplysningerOmAvdoedBruktIBeregningDto = null,
             maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
-            informasjonOmMedlemskapOgHelserettigheterDto = null,
             opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto()
         )
 

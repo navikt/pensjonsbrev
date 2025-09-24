@@ -23,9 +23,9 @@ data class BrukerTestBrevDto(
     ) : BrevbakerBrevdata
 
     enum class UtsiktenFraKontoret {
-        @DisplayText("Mot trær og natur")
+        @DisplayText("Trær og natur")
         MOT_TRAER_OG_NATUR,
-        @DisplayText("Mot parkeringsplassen")
+        @DisplayText("Parkeringsplass")
         MOT_PARKERINGSPLASSEN,
     }
 

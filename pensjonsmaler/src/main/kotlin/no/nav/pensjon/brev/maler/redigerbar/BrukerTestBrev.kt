@@ -11,9 +11,10 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.SaksbehandlerValgSelectors.kontorplantenTorlill
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.SaksbehandlerValgSelectors.utsiktenFraKontoret
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -23,14 +24,15 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
+
+    override val featureToggle = FeatureToggles.brukertestbrev2025.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.BRUKERTEST_BREV_PENSJON_2025
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.all
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BrukerTestBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "TEST brev skribenten 2025",
@@ -67,7 +69,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             showIf(saksbehandlerValg.utsiktenFraKontoret.equalTo(MOT_TRAER_OG_NATUR)) {
                 title1 {
                     text(
-                        bokmal { + "Grønt er skjønt" },
+                        bokmal { + "Trær og natur" },
                     )
                 }
                 paragraph {
@@ -78,7 +80,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             }.orShowIf(saksbehandlerValg.utsiktenFraKontoret.equalTo(MOT_PARKERINGSPLASSEN)) {
                 title1 {
                     text(
-                        bokmal { + "Grått er rått" },
+                        bokmal { + "Parkeringsplassen" },
                     )
                 }
                 paragraph {
@@ -91,9 +93,19 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             ifNotNull(saksbehandlerValg.denBesteKaken) { denBesteKaken ->
                 showIf(denBesteKaken.isOneOf(GULROTKAKE, RULLEKAKE, OSTEKAKE)) {
                     title1 {
-                        text(
-                            bokmal { +"Min favorittkake" },
-                        )
+                        showIf(denBesteKaken.equalTo(GULROTKAKE)) {
+                            text(
+                                bokmal { +"Den beste kaken er gulrotkake" },
+                            )
+                        }.orShowIf(denBesteKaken.equalTo(RULLEKAKE)) {
+                            text(
+                                bokmal { +"Den beste kaken er rullekake" },
+                            )
+                        }.orShowIf(denBesteKaken.equalTo(OSTEKAKE)) {
+                            text(
+                                bokmal { +"Den beste kaken er ostekake" },
+                            )
+                        }
                     }
                     paragraph {
                         showIf(denBesteKaken.equalTo(GULROTKAKE)) {

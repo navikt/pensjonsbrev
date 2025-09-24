@@ -15,16 +15,9 @@ fun createEndringAvAlderspensjonSivilstandDto() =
     EndringAvAlderspensjonSivilstandDto(
         saksbehandlerValg =
             EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg(
-                endringPensjon = false,
-                epsInntektOekningReduksjon = false,
-                etterbetaling = false,
                 feilutbetaling = false,
                 fraFlyttet = false,
                 giftBorIkkeSammen = false,
-                institusjonsopphold = false,
-                samboereMedFellesBarn = false,
-                samboereTidligereGift = false,
-                beloepEndring = BeloepEndring.UENDRET,
             ),
         pesysData =
             EndringAvAlderspensjonSivilstandDto.PesysData(
@@ -72,5 +65,6 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                         kravVirkFom = LocalDate.now(),
                     ),
                 orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
+                beloepEndring = BeloepEndring.UENDRET,
             ),
     )

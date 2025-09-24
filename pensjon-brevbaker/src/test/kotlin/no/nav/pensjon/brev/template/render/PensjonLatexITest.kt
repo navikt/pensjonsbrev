@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
@@ -38,7 +39,6 @@ class PensjonLatexITest {
     @Test
     fun canRender() {
         val template = createTemplate(
-            name = "test-template",
             letterDataType = TestTemplateDto::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
@@ -108,7 +108,6 @@ class PensjonLatexITest {
     private fun testCharacters(startChar: Int, endChar: Int): Boolean {
         try {
             val testTemplate = createTemplate(
-                name = "test-template",
                 letterDataType = TestTemplateDto::class,
                 languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(

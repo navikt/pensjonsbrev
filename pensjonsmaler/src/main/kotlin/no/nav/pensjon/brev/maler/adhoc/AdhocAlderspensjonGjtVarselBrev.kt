@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -26,8 +26,6 @@ object AdhocAlderspensjonGjtVarselBrev : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2025_VARSELBREV_GJT_KAP_20
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har beregnet for høyt gjenlevendetillegg",

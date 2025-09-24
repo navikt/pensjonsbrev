@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -30,6 +31,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -39,14 +41,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto> {
 
+    override val featureToggle = FeatureToggles.avslagForLiteTrygdetidAP.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = AvslagForLiteTrygdetidAPDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om alderspensjon",
@@ -126,7 +128,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     }
                 }
 
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAp2011 or erAp2016) {
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and (erAp2011 or erAp2016)) {
 
                 showIf(not(erAvtaleland) and not(erEOSland)) {
                     paragraph {

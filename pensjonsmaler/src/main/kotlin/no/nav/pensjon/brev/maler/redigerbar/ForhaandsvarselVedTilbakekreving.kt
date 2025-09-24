@@ -7,9 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -27,8 +25,6 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - tilbakekreving av feilutbetalt beløp",

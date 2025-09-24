@@ -4,7 +4,6 @@ import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
-import no.nav.pensjon.brev.skribenten.db.WithEditLetterHash
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.sql.insert
@@ -102,27 +101,25 @@ fun JobConfig.updateBrevredigeringJson() {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
             BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrev
+            BrevredigeringTable.redigertBrevKryptert,
+            BrevredigeringTable.redigertBrevKryptertHash,
         ).toList()
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres =
-            alleBrev.filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+        val kanOppdateres = alleBrev
+            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
 
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
-            val redigertBrev = it[BrevredigeringTable.redigertBrev]
+            logger.debug("Oppdaterer {}", brevId)
+            val redigertBrev = it[BrevredigeringTable.redigertBrevKryptert]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
-                update[BrevredigeringTable.redigertBrevKryptertHash] = redigertBrev
-                    .let { bytes -> EditLetterHash.fromBytes(WithEditLetterHash.hashBrev(bytes)) }
+                update[BrevredigeringTable.redigertBrevKryptertHash] = EditLetterHash.read(redigertBrev)
             }
         }
 
-        val kryptertNull = BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.redigertBrevKryptert).where({
-            BrevredigeringTable.redigertBrevKryptert.isNull()
-        }).map { it[BrevredigeringTable.id].value }
-        if (kryptertNull.isNotEmpty()) {
-            logger.info("Kunne ikke oppdatere brevene ${kryptertNull.joinToString(",")}")
+        if (alleBrev.size != kanOppdateres.size) {
+            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
             completed = false
         }
     }

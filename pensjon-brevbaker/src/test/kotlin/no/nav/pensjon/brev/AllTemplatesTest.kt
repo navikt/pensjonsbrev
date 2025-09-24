@@ -42,7 +42,7 @@ class AllTemplatesTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
-            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
+            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
         val templateDocumentation =
