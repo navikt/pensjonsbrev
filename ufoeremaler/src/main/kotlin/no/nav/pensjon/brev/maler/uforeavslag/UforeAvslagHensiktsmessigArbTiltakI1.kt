@@ -62,11 +62,11 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagDto>
             }.orShow {
                 paragraph {
                     text(bokmal { +
-                    "Du er utdannet " + fritekst("utdanning") +
-                            " og har tidligere arbeidet som " + fritekst("yrke") +
-                            ". Fastlegen vurderer " + fritekst("vurdering") +
-                            ", rådgivende lege i Nav vurderer " + fritekst("vurdering") +
-                            ", og det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
+                    "Du har utdanning som " + fritekst("utdanning") +
+                            ", og har tidligere arbeidet som " + fritekst("yrke") +
+                            ". Fastlegen/behandlende lege vurderer " + fritekst("vurdering") +
+                            ", mens rådgivende lege i Nav vurderer " + fritekst("vurdering") +
+                            ". Det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
                             "."
                     })
                 }

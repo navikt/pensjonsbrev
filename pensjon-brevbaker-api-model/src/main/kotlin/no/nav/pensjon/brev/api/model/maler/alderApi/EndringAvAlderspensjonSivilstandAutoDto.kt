@@ -41,6 +41,7 @@ data class EndringAvAlderspensjonSivilstandAutoDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
+        val grunnpensjon: Kroner?,
         val totalPensjon: Kroner,
     )
 }

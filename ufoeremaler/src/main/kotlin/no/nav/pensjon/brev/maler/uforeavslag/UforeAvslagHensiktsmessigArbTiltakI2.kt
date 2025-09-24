@@ -62,12 +62,30 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
             }.orShow {
                 paragraph {
                     text(bokmal { +
-                    "Du er utdannet " + fritekst("utdanning") +
-                            " og har tidligere arbeidet som " + fritekst("yrke") +
-                            ". Fastlegen vurderer " + fritekst("vurdering") +
-                            ", rådgivende lege i Nav vurderer " + fritekst("vurdering") +
-                            ", og det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
+                    "Som en del av oppfølgingen er det forsøkt tiltak, blant annet ved " +
+                            fritekst("navn på tiltaksarrangør") +
+                            " i perioden " + fritekst("dato") +
+                            ". Sluttrapporten, referat fra dialogmøte og/eller uttalelse fra arbeidsgiver konkluderer med " +
+                            fritekst("kort oppsummering av vurdering") + "."
+                    })
+                }
+
+                paragraph {
+                    text(bokmal { +
+                    "Du har utdanning som " + fritekst("utdanning") +
+                            ", og har tidligere arbeidet som " + fritekst("yrke") +
+                            ". Fastlegen/behandlende lege vurderer " + fritekst("vurdering") +
+                            ", mens rådgivende lege i Nav vurderer " + fritekst("vurdering") +
+                            ". Det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
                             "."
+                    })
+                }
+
+                paragraph {
+                    text(bokmal { +
+                    "Sett i sammenheng med " + fritekst("X (f.eks. utdanning, arbeidserfaring, alder)") +
+                            " og funksjonsnedsettelsen, vurderer vi at flere arbeidsrettede tiltak er hensiktsmessig" +
+                            " for å bedre og/eller avklare din inntektsevne."
                     })
                 }
             }

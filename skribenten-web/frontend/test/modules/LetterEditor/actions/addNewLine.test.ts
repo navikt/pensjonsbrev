@@ -37,9 +37,19 @@ describe("Actions.addNewLine", () => {
     const result = Actions.addNewLine(state, { blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
 
-    expect(block.content).toHaveLength(2);
-    expect(block.content[0].type).toEqual(NEW_LINE);
-    expect(block.content[1]).toEqual(state.redigertBrev.blocks[0].content[0]);
+    expect(block.content).toHaveLength(3);
+    expect(block.content[0]).toEqual({
+      id: null,
+      parentId: null,
+      type: "LITERAL",
+      text: "",
+      editedText: null,
+      fontType: "PLAIN",
+      editedFontType: null,
+      tags: [],
+    });
+    expect(block.content[1].type).toEqual(NEW_LINE);
+    expect(block.content[2]).toEqual(state.redigertBrev.blocks[0].content[0]);
   });
 
   test("splits literal and adds newline in between", () => {
