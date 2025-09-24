@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigBehandling
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne30
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne40
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne50
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagManglendeDok
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagSykdom
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor26
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor36
@@ -31,5 +32,6 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagInntektsevne30,
         UforeAvslagUngUfor26,
         UforeAvslagUngUfor36,
+        UforeAvslagManglendeDok,
     )
 }
