@@ -10,6 +10,7 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 import { ElementTags, PARAGRAPH } from "~/types/brevbakerTypes";
 
@@ -47,6 +48,19 @@ function setup() {
     ),
   };
 }
+
+const expectCaretAtEnd = (state: LetterEditorState, blockIndex = 0, contentIndex = 0) => {
+  const node = state.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isLiteral(node)) {
+    throw new Error(`Expected literal at block ${blockIndex} content ${contentIndex}, got ${node.type}`);
+  }
+  const text = (node.editedText ?? node.text) as string;
+  expect(state.focus).toEqual({
+    blockIndex,
+    contentIndex,
+    cursorPosition: text.length,
+  });
+};
 
 const complexEditorState = letter(
   paragraph([
@@ -93,8 +107,10 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End} person");
     expect(setEditorState).toHaveBeenCalled();
+
+    const newText = content[0].text + " person";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + " person"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
   test("enter is not propagated as br-element", async () => {
@@ -104,8 +120,9 @@ describe("updateContent", () => {
 
     // The expectation is that the Enter key does not insert a line break
     // in the final text, so we expect only "asd" to be appended.
+    const newText = content[0].text + "asd";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
   test("space is not propagated as nbsp-entity", async () => {
@@ -113,8 +130,9 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}  asd");
 
+    const newText = content[0].text + "  asd";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "  asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
 });
