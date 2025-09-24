@@ -1263,7 +1263,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f",)
+        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f", null)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(
@@ -1278,7 +1278,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"),)
+        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"), true)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(

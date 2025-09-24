@@ -154,7 +154,7 @@ object MottakerTable : IdTable<Long>() {
     val adresselinje2: Column<String?> = text("adresselinje2").nullable()
     val adresselinje3: Column<String?> = text("adresselinje3").nullable()
     val landkode: Column<String?> = varchar("landkode", 2).nullable()
-    val erBrukersAdresse: Column<Boolean?> = bool("landkode").nullable()
+    val erBrukersAdresse: Column<Boolean?> = bool("erBrukersAdresse").nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

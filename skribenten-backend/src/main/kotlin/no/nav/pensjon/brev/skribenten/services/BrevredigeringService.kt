@@ -170,9 +170,9 @@ class BrevredigeringService(
                     brevDb.laastForRedigering = laastForRedigering
                 }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
+                mottaker?.also { brevDb.mottaker?.oppdater(it) ?: Mottaker.new(brevId) { oppdater(it) } }
                 if(annenMottakerNavn != null) {
-                    brevDb.mottaker?.oppdater(mottaker) ?: Mottaker.new(brevId) { oppdater(mottaker) }
-                    oppdaterSakpartMedAnnenMottakerNavn(brevDb, annenMottakerNavn)
+                    brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
                 }
 
                 brevDb.redigeresAvNavIdent = null
@@ -181,11 +181,11 @@ class BrevredigeringService(
             }
         }
 
-    private fun oppdaterSakpartMedAnnenMottakerNavn(redigering: Brevredigering, annenMottaker: String?) {
-        redigering.apply {
-            redigertBrev = redigering.redigertBrev
+    private fun Brevredigering.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
+        apply {
+            redigertBrev = this@oppdaterMedAnnenMottakerNavn.redigertBrev
                 .updateEditedLetter(
-                    redigering.redigertBrev
+                    this@oppdaterMedAnnenMottakerNavn.redigertBrev
                         .withAnnenMottaker(annenMottaker)
                         .toMarkup()
                 )
@@ -195,7 +195,8 @@ class BrevredigeringService(
     private suspend fun Dto.Mottaker.fetchNavn(): String? =
         when(type) {
             MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
-            MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE -> navn
+            MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE ->
+                if(erBrukersAdresse == true) navn else null
         }
 
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
@@ -417,7 +418,7 @@ class BrevredigeringService(
         transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)?.also {
                 it.mottaker?.delete()
-                oppdaterSakpartMedAnnenMottakerNavn(it, null)
+                it.oppdaterMedAnnenMottakerNavn(null)
             } != null
 
         }
@@ -598,6 +599,7 @@ class BrevredigeringService(
             adresselinje2 = mottaker.adresselinje2
             adresselinje3 = mottaker.adresselinje3
             landkode = mottaker.landkode
+            erBrukersAdresse = mottaker.erBrukersAdresse
         } else delete()
 
     /**

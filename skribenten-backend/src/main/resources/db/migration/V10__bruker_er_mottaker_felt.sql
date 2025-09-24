@@ -1,0 +1,2 @@
+ALTER TABLE mottaker
+ADD COLUMN IF NOT EXISTS "erBrukersAdresse" BOOLEAN NULL;

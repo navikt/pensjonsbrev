@@ -71,7 +71,8 @@ class Dto2ApiService(
             poststed = poststed!!,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3
+            adresselinje3 = adresselinje3,
+            erBrukersAdresse = erBrukersAdresse
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
@@ -81,7 +82,8 @@ class Dto2ApiService(
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
-            landkode = landkode!!
+            landkode = landkode!!,
+            erBrukersAdresse = erBrukersAdresse
         )
     }
 
