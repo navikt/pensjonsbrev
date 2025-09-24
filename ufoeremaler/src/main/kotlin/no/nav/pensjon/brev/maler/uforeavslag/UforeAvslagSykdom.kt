@@ -53,7 +53,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte inntektsevne." })
+                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
             }
             paragraph {
                 text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
@@ -74,7 +74,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
             paragraph {
                 text(bokmal { +
                 "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
-                        "Det er derfor for tidlig å ta stilling til om inntektsevnen din er varig nedsatt."})
+                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
