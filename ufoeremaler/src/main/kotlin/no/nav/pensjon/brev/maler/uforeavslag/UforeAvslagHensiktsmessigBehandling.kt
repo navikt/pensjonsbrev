@@ -63,8 +63,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
                         bokmal { + pesysData.vurdering }
                     )
                 }
-            }
-            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+            }.orShowIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
                 }
@@ -99,7 +98,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
             paragraph {
                 text(bokmal {
                     +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
-                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du har ikke fått " +
+                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du ikke har fått " +
                             "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
                 })
             }
