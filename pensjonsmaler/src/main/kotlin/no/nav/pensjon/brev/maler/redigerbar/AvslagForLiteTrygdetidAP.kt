@@ -128,7 +128,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     }
                 }
 
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAp2011 or erAp2016) {
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and (erAp2011 or erAp2016)) {
 
                 showIf(not(erAvtaleland) and not(erEOSland)) {
                     paragraph {
