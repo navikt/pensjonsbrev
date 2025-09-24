@@ -99,6 +99,7 @@ export const LetterEditor = ({
             align-self: start;
             max-width: 694px;
             min-width: 480px;
+            width: 100%;
             ${freeze && "cursor: wait;"}
           `}
         >

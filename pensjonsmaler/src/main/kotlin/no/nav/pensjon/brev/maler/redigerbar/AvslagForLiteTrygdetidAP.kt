@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -48,8 +49,6 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = AvslagForLiteTrygdetidAPDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om alderspensjon",
@@ -129,7 +128,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     }
                 }
 
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAp2011 or erAp2016) {
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and (erAp2011 or erAp2016)) {
 
                 showIf(not(erAvtaleland) and not(erEOSland)) {
                     paragraph {

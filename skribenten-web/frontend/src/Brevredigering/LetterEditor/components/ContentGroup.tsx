@@ -139,6 +139,7 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
   return false;
 };
 
+const ZERO_WIDTH_SPACE = "​";
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
@@ -148,7 +149,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   //hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
   const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
-  const text = textOf(content) || "​";
+  const text = textOf(content) || ZERO_WIDTH_SPACE;
 
   // True when a fritekst has a live selection covering its entire text;
   // used to avoid collapsing it to a caret so first key press removes placeholder.
@@ -216,7 +217,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    const cursorIsAtEnd = getCursorOffset() >= text.length;
+    const cursorIsAtEnd = getCursorOffset() >= (text === ZERO_WIDTH_SPACE ? 0 : text.length);
     if (cursorIsAtEnd) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
@@ -291,9 +292,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const nextFocus = allSpans[thisSpanIndex];
       focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.endOffset);
     } else {
+      const textLength = text === ZERO_WIDTH_SPACE ? 0 : text.length;
       const cursorIsAtEnd = isCursorOffset
-        ? cursorOffsetOrRange >= text.length
-        : cursorOffsetOrRange.endOffset >= text.length;
+        ? cursorOffsetOrRange >= textLength
+        : cursorOffsetOrRange.endOffset >= textLength;
 
       if (!cursorIsAtEnd) return;
 

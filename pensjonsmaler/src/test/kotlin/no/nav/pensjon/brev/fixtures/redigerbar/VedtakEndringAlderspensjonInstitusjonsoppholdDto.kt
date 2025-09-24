@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -18,8 +19,6 @@ fun createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() =
             alderspensjonStanset = true,
             informasjonOmSivilstandVedInstitusjonsopphold = true,
             hvisReduksjonTilbakeITid = true,
-            hvisEtterbetaling = true,
-            hvisEndringIPensjon = true,
         ),
         pesysData = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData(
             beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.BeregnetPensjonPerManedVedVirk(
@@ -38,7 +37,9 @@ fun createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() =
                 uforeKombinertMedAlder = true,
                 regelverkType = AlderspensjonRegelverkType.AP2011
             ),
+            etterbetaling = true,
+            beloepEndring = BeloepEndring.ENDR_RED,
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto()
+            maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
         )
     )

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.auto.InfoAldersovergangEps60AarAutoDt
 import no.nav.pensjon.brev.api.model.maler.auto.Ytelse
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -21,8 +21,6 @@ object InfoAldersovergangEps60AarAuto : AutobrevTemplate<InfoAldersovergangEps60
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = InfoAldersovergangEps60AarAutoDto::class,
             languages = languages(Language.Bokmal),
             letterMetadata =
                 LetterMetadata(

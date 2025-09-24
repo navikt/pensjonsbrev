@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template.render.dsl
 
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -24,7 +24,6 @@ object Helpers : HasModel<NullBrevDto>
 class IfNotNullTest {
 
     val template = createTemplate(
-        name = "NULL_BREV",
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
@@ -99,7 +98,6 @@ class IfNotNullTest {
 }
 
 fun <Lang : LanguageSupport, LetterData : Any> LetterTemplate<Lang, LetterData>.copy(outline: List<OutlineElement<Lang>>) = LetterTemplate(
-    name = this.name,
     title = this.title,
     letterDataType = this.letterDataType,
     language = this.language,
