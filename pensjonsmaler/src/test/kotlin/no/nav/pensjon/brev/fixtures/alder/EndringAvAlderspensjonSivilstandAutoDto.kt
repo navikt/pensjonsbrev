@@ -26,6 +26,7 @@ fun createEndringAvAlderspensjonSivilstandAutoDto() =
             ),
         beregnetPensjonPerManedVedVirk =
             EndringAvAlderspensjonSivilstandAutoDto.BeregnetPensjonPerManedVedVirk(
+                grunnpensjon = Kroner(320000),
                 totalPensjon = Kroner(340000),
             ),
         epsVedVirk =

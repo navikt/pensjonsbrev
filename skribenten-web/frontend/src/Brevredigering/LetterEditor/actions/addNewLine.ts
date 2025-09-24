@@ -21,16 +21,52 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
     if (isTextContent(content) && !("itemIndex" in focus) && offset !== undefined) {
       switch (content.type) {
         case LITERAL: {
-          // split literal and add new line
-          if (offset === 0) {
-            addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
-          } else if (offset >= text(content).length) {
+          const atStartOfContentWithLength = offset === 0 && text(content).length > 0;
+          const atEndOfContentOrContentZeroLength = offset >= text(content).length;
+          if (atStartOfContentWithLength) {
+            if (block.content[focus.contentIndex - 1]?.type === NEW_LINE) {
+              break;
+            }
+
+            const isAtStartOfBlock = focus.contentIndex === 0;
+            const toAdd = isAtStartOfBlock ? [newLiteral(), createNewLine()] : [createNewLine()];
+            const previousIsVariable = block.content[focus.contentIndex - 1]?.type === VARIABLE;
+            if (previousIsVariable) {
+              toAdd.unshift(newLiteral());
+            }
+            addElements(toAdd, focus.contentIndex, block.content, block.deletedContent);
+            draft.focus = {
+              contentIndex: focus.contentIndex + toAdd.length,
+              cursorPosition: 0,
+              blockIndex: focus.blockIndex,
+            };
+          } else if (atEndOfContentOrContentZeroLength) {
+            if (
+              block.content[focus.contentIndex + 1]?.type === NEW_LINE ||
+              block.content[focus.contentIndex - 1]?.type === NEW_LINE
+            ) {
+              break;
+            }
             const isAtEndOfBlock = focus.contentIndex + 1 === block.content.length;
             const toAdd = isAtEndOfBlock ? [createNewLine(), newLiteral()] : [createNewLine()];
+            const nextIsVariable = block.content[focus.contentIndex + 1]?.type === VARIABLE;
+            if (nextIsVariable) {
+              toAdd.push(newLiteral());
+            }
             addElements(toAdd, focus.contentIndex + 1, block.content, block.deletedContent);
+            draft.focus = {
+              contentIndex: focus.contentIndex + 2,
+              cursorPosition: 0,
+              blockIndex: focus.blockIndex,
+            };
           } else {
             const newLiteral = splitLiteralAtOffset(content, offset);
             addElements([createNewLine(), newLiteral], focus.contentIndex + 1, block.content, block.deletedContent);
+            draft.focus = {
+              contentIndex: focus.contentIndex + 2,
+              cursorPosition: 0,
+              blockIndex: focus.blockIndex,
+            };
           }
           draft.saveStatus = "DIRTY";
           break;
@@ -39,8 +75,6 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
           break;
         }
         case NEW_LINE: {
-          addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
-          draft.saveStatus = "DIRTY";
           break;
         }
       }
