@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -13,17 +14,19 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.brukVurderingFraVilkarsvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektEtterUforhet
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektForUforhet
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
+object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
@@ -36,7 +39,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-4",
+            displayTitle = "Avslag uføretrygd - 12-7",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -54,15 +57,8 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke oppfyller kravet om inntekt for søkere mellom 62 og 67 år. " +
-                        "I tillegg har du rett til å ta ut hel alderspensjon fra folketrygden." })
-            }
-            paragraph {
-                text(bokmal { +"år du søker om uføretrygd mellom fylte 62 og 67 år, " +
-                        "må din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet. " +
-                        "Hvis du ikke oppfyller dette vilkåret, må du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet. " +
-                        "Grunnbeløpet utgjør " + fritekst("grunnbeløp") + " kroner. " +
-                        "I tillegg kan du ikke få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din ikke er nok varig nedsatt. " +
+                        "Inntektsevnen din må som hovedregel være varig nedsatt med minst 50 prosent." })
             }
             showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
@@ -70,18 +66,27 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
                 }
             }.orShow {
                 paragraph {
-                    text(bokmal {+ fritekst("fritekst for utfyllende opplysninger om bruker") })
+                    text(bokmal {+ fritekst("Konkret begrunnelse der det er nødvendig") })
                 }
             }
             paragraph {
-                text(bokmal { +
-                "Din pensjonsgivende inntekt er lavere enn kravene om inntekt for søkere mellom 62 og 67 år. I tillegg har du rett til å ta ut hel alderspensjon."})
+                text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
+                    pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." +
+                    fritekst("Begrunnelse for fastsatt IFU.") +
+                    " Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
+                    "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
+                    "og vi har derfor fastsatt din nedsatte inntektsevne til " +
+                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " +
+                    "Du oppfyller heller ikke unntaksreglene for yrkesskade, yrkessykdom eller personer som har fått arbeidsavklaringspenger."})
+            }
+            paragraph {
+                text(bokmal { + "Inntektsevnen din er ikke varig nedsatt med minst halvparten."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-4." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7." })
             }
 
             includePhrase(HvaSkjerNa)

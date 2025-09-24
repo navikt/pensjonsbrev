@@ -7,6 +7,9 @@ import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagAlder
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigArbTiltakI1
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigArbTiltakI2
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigBehandling
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne30
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne40
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne50
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagSykdom
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor26
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor36
@@ -23,6 +26,9 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagHensiktsmessigArbTiltakI2,
         UforeAvslagAlder,
         UforeAvslagSykdom,
+        UforeAvslagInntektsevne50,
+        UforeAvslagInntektsevne40,
+        UforeAvslagInntektsevne30,
         UforeAvslagUngUfor26,
         UforeAvslagUngUfor36,
     )
