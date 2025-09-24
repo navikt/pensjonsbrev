@@ -23,6 +23,8 @@ data class VedtakEndringVedFlyttingMellomLandDto(
     data class SaksbehandlerValg(
         val innvandret: Boolean,
         val reduksjonTilbakeITid: Boolean,
+        val endringIPensjonen: Boolean,
+        val etterbetaling: Boolean,
         @DisplayText("Relevant hvis innvandret")
         val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker,
     ) : BrevbakerBrevdata
