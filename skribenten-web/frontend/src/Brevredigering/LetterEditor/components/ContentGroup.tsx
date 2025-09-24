@@ -32,7 +32,7 @@ import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import { updateCursorPositionNoHistory } from "../actions/cursorPosition";
+import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex } from "../model/utils";
 import {
   addRow,
@@ -481,13 +481,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
         if (isEditingKey && contentEditableReference.current) {
           const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
-          // Store the caret position (without adding to undo/redo history) before a text-changing key
+          // Store the caret position before a text-changing key
           // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
           if (
             editorState.focus.cursorPosition !== preEditCursorPosition ||
             !hasFocus(editorState.focus, literalIndex)
           ) {
-            applyAction(updateCursorPositionNoHistory, setEditorState, {
+            applyAction(updateFocus, setEditorState, {
               ...literalIndex,
               cursorPosition: preEditCursorPosition,
             });
