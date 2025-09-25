@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(

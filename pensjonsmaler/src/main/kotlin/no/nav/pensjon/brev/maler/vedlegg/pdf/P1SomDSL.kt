@@ -103,22 +103,22 @@ private fun P1Dto.Adresse.formater() =
 private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
         "${radnummer}-institusjon" to pensjon.institusjon,
-        "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
+        "${radnummer}-pensjonstype" to pensjon.pensjonstype?.nummer.toString(),
         "${radnummer}-datoFoersteUtbetaling" to formaterDato(pensjon.datoFoersteUtbetaling),
         "${radnummer}-bruttobeloep" to pensjon.bruttobeloep,
         "${radnummer}-grunnlagInnvilget" to pensjon.grunnlagInnvilget?.nummer?.toString(),
         "${radnummer}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer?.toString(),
         "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
-        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering?.formater(),
+        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.map { it.formater() },
     )
 
 
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
     "${radnummer}-institusjon" to pensjon.institusjon,
-    "${radnummer}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-    "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
+    "${radnummer}-pensjonstype" to pensjon.pensjonstype?.nummer.toString(),
+    "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse?.nummer.toString(),
     "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
-    "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering?.formater(),
+    "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.map { it.formater() },
 )
 
 fun LanguageCode.locale(): Locale =
