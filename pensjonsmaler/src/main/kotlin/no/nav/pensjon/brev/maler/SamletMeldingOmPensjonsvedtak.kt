@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.InformasjonOmP1Dto
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
@@ -21,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.EmptyPDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Mal 000090 i doksys
@@ -97,7 +97,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
         }
 
         includeAttachment(p1Vedlegg, pesysData.vedlegg)
-        includeAttachment(informasjonOmP1Vedlegg, InformasjonOmP1Dto.expr())
+        includeAttachment(informasjonOmP1Vedlegg, EmptyPDFVedleggData.expr())
     }
 
 }

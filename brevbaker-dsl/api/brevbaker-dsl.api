@@ -1625,6 +1625,7 @@ public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
 
 public abstract interface class no/nav/pensjon/brev/template/vedlegg/PDFTemplate {
 	public fun createVedlegg (Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public abstract fun getTitle ()Ljava/util/List;
 	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 }
 
@@ -1633,7 +1634,7 @@ public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate$DefaultImpls
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplateKt {
-	public static final fun createAttachmentPDF (Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
+	public static final fun createAttachmentPDF (Ljava/util/List;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {

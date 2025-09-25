@@ -1,5 +1,5 @@
 package no.nav.pensjon.brevbaker.api.model
 
-interface PDFVedleggData {
-    val tittel: Map<LanguageCode, String>
-}
+interface PDFVedleggData
+
+object EmptyPDFVedleggData : PDFVedleggData

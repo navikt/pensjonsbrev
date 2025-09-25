@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.LocalDate
@@ -12,7 +13,14 @@ import java.util.Locale
 
 private const val RADER_PER_SIDE = 5
 
-val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto> { data ->
+val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
+    title = listOf(
+        newText(
+            Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
+            Language.English to "P1 – Summary of Pension Decisions"
+        )
+    )
+) { data ->
     with(data) {
 
         side("P1-1.pdf") {

@@ -1,19 +1,14 @@
 package no.nav.brev.brevbaker
 
-import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.PDFTittel
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, private val pdfVedleggAppender: PDFVedleggAppender) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
@@ -24,7 +19,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                     attachments = it.attachments,
                     language = letter.language.toCode(),
                     brevtype = letter.template.letterMetadata.brevtype,
-                    pdfVedlegg = mapPDFTitler(letter)
+                    pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
                 )
             )
         }
@@ -50,22 +45,4 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
             Letter2Markup.renderAttachmentsOnly(scope, letter.template),
         )
     }
-}
-
-internal fun mapPDFTitler(letter: Letter<*>) =
-    letter.template.pdfAttachments
-        .map { it.data.eval(letter.toScope()) }
-        .map { it.tittel(letter.language) }
-
-
-@OptIn(InterneDataklasser::class)
-private fun PDFVedleggData.tittel(language: Language) = this.let {
-    PDFTittel(
-        title = listOf(
-            // TODO: Dette kjens litt hacky. Burde kunne finne på noko lurt med expression for å unngå dette
-            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
-                id = it.hashCode(),
-                text = it.tittel[language.toCode()]!!,
-            )
-        ))
 }
