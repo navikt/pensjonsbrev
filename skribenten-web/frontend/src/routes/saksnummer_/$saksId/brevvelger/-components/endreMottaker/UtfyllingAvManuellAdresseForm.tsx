@@ -40,7 +40,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
 
         <Controller
           control={properties.control}
-          name="manuellAdresse.adresse.navn"
+          name="manuellAdresse.adresse.brukersAdresse"
           render={({ field }) => (
             <Checkbox
               {...field}
@@ -73,6 +73,14 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           name="manuellAdresse.adresse.linje2"
           render={({ field, fieldState }) => (
             <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} size="small" />
+          )}
+        />
+
+        <Controller
+          control={properties.control}
+          name="manuellAdresse.adresse.linje3"
+          render={({ field, fieldState }) => (
+            <TextField label="Adresselinje 3" {...field} error={fieldState.error?.message} size="small" />
           )}
         />
 

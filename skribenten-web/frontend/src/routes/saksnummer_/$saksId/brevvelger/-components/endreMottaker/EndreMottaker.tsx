@@ -159,6 +159,7 @@ export const EndreMottakerModal = (properties: {
       navn: "",
       linje1: "",
       linje2: "",
+      linje3: "",
       postnr: "",
       poststed: "",
       //default value skal være norge. Siden vi henter alle landkodene i backend, hardkoder vi norges verdi.
