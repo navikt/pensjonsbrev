@@ -27,5 +27,6 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagYrkesskadeIkkeGodkjent,
         UforeAvslagIFUIkkeVarig,
         UforeAvslagIFUOktStilling,
+        UforeAvslagOktGradInntektsevne,
     )
 }
