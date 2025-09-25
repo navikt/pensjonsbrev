@@ -1,17 +1,6 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import {
-  Alert,
-  BodyShort,
-  Button,
-  Checkbox,
-  Heading,
-  HStack,
-  Link,
-  TextField,
-  UNSAFE_Combobox,
-  VStack,
-} from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
@@ -38,9 +27,9 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           </Link>
         </Alert>
 
-        <Controller
+        {/* <Controller
           control={properties.control}
-          name="manuellAdresse.adresse.brukersAdresse"
+          name="manuellAdresse.adresse.erBrukersAdresse"
           render={({ field }) => (
             <Checkbox
               {...field}
@@ -50,7 +39,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
               Brukers adresse
             </Checkbox>
           )}
-        />
+        /> */}
 
         <Controller
           control={properties.control}

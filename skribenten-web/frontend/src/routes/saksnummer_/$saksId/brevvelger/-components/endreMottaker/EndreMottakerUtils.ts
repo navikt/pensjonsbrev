@@ -95,6 +95,7 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
    */
   adresse: z
     .object({
+      erBrukersAdresse: z.boolean().optional(),
       navn: z.string().min(1, "Obligatorisk"),
       linje1: z.string(),
       linje2: z.string(),
@@ -102,7 +103,6 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
       postnr: z.string(),
       poststed: z.string(),
       land: z.string().min(1, "Obligatorisk"),
-      brukersAdresse: z.boolean().optional(),
     })
     .superRefine((data, refinementContext) => {
       if (data.land === "NO") {
@@ -134,6 +134,7 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
 
 const leggTilManuellAdresseTabNotSelectedSchema = z.object({
   adresse: z.object({
+    erBrukersAdresse: z.boolean(),
     navn: z.string(),
     linje1: z.string(),
     linje2: z.string(),
@@ -141,7 +142,6 @@ const leggTilManuellAdresseTabNotSelectedSchema = z.object({
     postnr: z.string(),
     poststed: z.string(),
     land: z.string(),
-    brukersAdresse: z.boolean().optional(),
   }),
 });
 

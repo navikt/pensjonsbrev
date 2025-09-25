@@ -156,6 +156,7 @@ export const EndreMottakerModal = (properties: {
 
   const defaultManuellAdresse: ManuellAdresseUtfyllingFormData = {
     adresse: {
+      erBrukersAdresse: false,
       navn: "",
       linje1: "",
       linje2: "",
