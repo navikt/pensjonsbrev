@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP1
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP2
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP3
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP4
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterTittel
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT1
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT10
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT11
@@ -77,6 +78,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
         val erEllerHarVaertEktefelleEllerPartner = sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)
 
         showIf(sakstype.equalTo(Sakstype.ALDER)) {
+            includePhrase(VedleggPlikterTittel)
             // Denne showIf-en skal dekke alle scenarie der det kommer minst ett kulepunkt i lista under
             showIf(
                 erIkkePaaInstitusjon or

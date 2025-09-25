@@ -18,15 +18,20 @@ import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 
 // VedleggPlikter_001, VedleggPlikterUT_001
-object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggPlikterTittel : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
-                nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
-                english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
+                bokmal { +"Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
+                nynorsk { +"Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
+                english { +"Duty to inform of changes - Section 21-3 of the National Insurance Act" }
             )
         }
+    }
+}
+
+object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 bokmal { + "Du må gi oss beskjed hvis" },
