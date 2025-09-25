@@ -68,6 +68,7 @@ object ProductionTemplates : AllTemplates {
         EndringAvAlderspensjonFordiDuFyller75AarAuto,
         EndringAvAlderspensjonSivilstandAuto,
         EndringPgaOpptjeningAuto,
+        EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,

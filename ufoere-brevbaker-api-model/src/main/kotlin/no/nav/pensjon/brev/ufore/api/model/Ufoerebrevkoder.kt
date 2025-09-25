@@ -22,6 +22,8 @@ object Ufoerebrevkoder {
         UT_AVSLAG_INNTEKTSEVNE_30,
         UT_AVSLAG_UNG_UFOR_36,
         UT_AVSLAG_UNG_UFOR_26,
+        UT_AVSLAG_YRKESSKADE_GODKJENT,
+        UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT,
         ;
 
         override fun kode(): String = this.name

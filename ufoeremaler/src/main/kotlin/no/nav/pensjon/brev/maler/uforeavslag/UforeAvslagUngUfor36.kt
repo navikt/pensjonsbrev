@@ -41,7 +41,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om rettighet som ung ufør"})
         }
         outline {
             paragraph {
@@ -66,7 +66,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
             }
 
-            includePhrase(RettTilAKlage)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

@@ -105,7 +105,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
             }
 
             includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlage)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

@@ -14,6 +14,8 @@ import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagManglendeDok
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagSykdom
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor26
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor36
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagYrkesskadeGodkjent
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagYrkesskadeIkkeGodkjent
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -33,5 +35,7 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagUngUfor26,
         UforeAvslagUngUfor36,
         UforeAvslagManglendeDok,
+        UforeAvslagYrkesskadeGodkjent,
+        UforeAvslagYrkesskadeIkkeGodkjent
     )
 }
