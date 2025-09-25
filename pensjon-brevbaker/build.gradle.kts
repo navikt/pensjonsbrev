@@ -128,5 +128,6 @@ dependencies {
     testImplementation(libs.pdfbox)
 
     testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation(testFixtures(project(":brevbaker-dsl")))
 }
 

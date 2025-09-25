@@ -1,11 +1,9 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -64,7 +62,7 @@ data class EtteroppgjoerForhaandsvarselDTO(
         faktiskStoenad = faktiskStoenad,
         avviksBeloep = avviksBeloep
     )
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, false)
     val dagensDato: LocalDate = LocalDate.now()
 }
 
@@ -73,8 +71,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EtteroppgjoerForhaandsvarselBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - Etteroppgjør",
@@ -117,7 +113,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”. Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
+                        bokmal { +"Du finner beregningen av omstillingsstønaden din i vedlegget «Opplysninger om etteroppgjøret». Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer." },
                         nynorsk { +"Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret». Gi oss beskjed dersom opplysningane inneheld feil." },
                         english { +"You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement». Please notify us if you find that any of the information is incorrect." },
                     )
@@ -137,14 +133,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                         bokmal { +"Se ny beregning av omstillingsstønaden din for inntektsåret " + data.etteroppgjoersAar.format() + " i vedlegget “Opplysninger om etteroppgjøret”. Du må kontrollere om inntektene som er oppgitt er riktig." },
                         nynorsk { +"Sjå den nye utrekninga av omstillingsstønaden din for inntektsåret " + data.etteroppgjoersAar.format() + " i vedlegget «Opplysningar om etteroppgjeret». Du må kontrollere at inntektene som er oppgitt, stemmer." },
                         english { +"See the new calculation of your adjustment allowance for the income year " + data.etteroppgjoersAar.format() + " in the appendix “Information concerning final settlement”. You must check whether the stated income is correct. " }
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak. " },
-                        nynorsk { +"Dersom du melder frå om feil, vil vi vurdere dei nye opplysningane før du får eit vedtak. " },
-                        english { +"If you report an error, we will evaluate the new information before sending a decision." },
                     )
                 }
 

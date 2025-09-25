@@ -25,7 +25,8 @@ data class P1Dto(
     val kravMottattDato: LocalDate?,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
-    val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
+    val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
+    val vedtaksdato: String? = null,
 ) : BrevbakerBrevdata, PDFVedleggData {
     override val tittel = mapOf(
         BOKMAL to "P1 – Samlet melding om pensjonsvedtak",
@@ -33,9 +34,9 @@ data class P1Dto(
     )
 
     data class P1Person(
-        val fornavn: String,
-        val etternavn: String,
-        val etternavnVedFoedsel: String,
+        val fornavn: String?,
+        val etternavn: String?,
+        val etternavnVedFoedsel: String?,
         val foedselsdato: LocalDate?,
         val adresselinje: String?,
         val poststed: Poststed?,
@@ -44,22 +45,22 @@ data class P1Dto(
     )
 
     data class InnvilgetPensjon(
-        val institusjon: String,
-        val pensjonstype: Pensjonstype,
-        val datoFoersteUtbetaling: LocalDate,
-        val bruttobeloep: Int,
+        val institusjon: List<Institusjon>,
+        val pensjonstype: Pensjonstype?,
+        val datoFoersteUtbetaling: LocalDate?,
+        val bruttobeloep: Int?,
         val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
-        val vurderingsperiode: String,
-        val adresseNyVurdering: Adresse?,
+        val vurderingsperiode: String?,
+        val adresseNyVurdering: List<Adresse>,
     )
 
     data class AvslaattPensjon(
-        val institusjon: String,
-        val pensjonstype: Pensjonstype,
-        val avslagsbegrunnelse: Avslagsbegrunnelse,
-        val vurderingsperiode: String,
-        val adresseNyVurdering: Adresse?,
+        val institusjon: Institusjon?,
+        val pensjonstype: Pensjonstype?,
+        val avslagsbegrunnelse: Avslagsbegrunnelse?,
+        val vurderingsperiode: String?,
+        val adresseNyVurdering: List<Adresse>,
     )
 
     enum class Pensjonstype(val nummer: Int, val fullTekst: String) {
@@ -111,6 +112,13 @@ data class P1Dto(
     )
 
     data class Institusjon(
+        val institusjonsid: String?,
+        val institusjonsnavn: String?,
+        val saksnummer: String?,
+        val land: String?
+    )
+
+    data class UtfyllendeInstitusjon(
         val navn: String,
         val adresselinje: String,
         val poststed: Poststed,

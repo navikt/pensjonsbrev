@@ -11,7 +11,6 @@ import java.util.Objects
 import kotlin.reflect.KClass
 
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
-    val name: String,
     val title: List<TextElement<Lang>>,
     val letterDataType: KClass<out LetterData>,
     val language: Lang,
@@ -22,19 +21,19 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
 ) {
     init {
         if (title.isEmpty()) {
-            throw MissingTitleInTemplateException("Missing title in template: $name")
+            throw MissingTitleInTemplateException("Missing title in template: ${letterMetadata.displayTitle}")
         }
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is LetterTemplate<*, *>) return false
-        return name == other.name && title == other.title && letterDataType == other.letterDataType
+        return title == other.title && letterDataType == other.letterDataType
                 && language == other.language && outline == other.outline && attachments == other.attachments
                 && letterMetadata == other.letterMetadata
     }
-    override fun hashCode() = Objects.hash(name, title, letterDataType, language, outline, attachments, letterMetadata)
+    override fun hashCode() = Objects.hash(title, letterDataType, language, outline, attachments, letterMetadata)
     override fun toString() =
-        "LetterTemplate(name='$name', title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
+        "LetterTemplate(title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
 }
 
 sealed class Expression<out Out> : StableHash {

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.auto.InfoAldersovergangEps62AarAutoDt
 import no.nav.pensjon.brev.api.model.maler.auto.YtelseType
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -22,8 +22,6 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = InfoAldersovergangEps62AarAutoDto::class,
             languages = languages(Language.Bokmal),
             letterMetadata =
                 LetterMetadata(
@@ -99,7 +97,7 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
                     text(bokmal { +"0607 OSLO" })
                 }
                 paragraph {
-                    text(bokmal { +"Du kan også gi oss beskjed på ${Constants.SKRIVTILOSS_URL}" })
+                    text(bokmal { +"Du kan også gi oss beskjed på ${Constants.KONTAKT_URL}" })
                 }
                 paragraph {
                     text(bokmal { +"Hvis du ikke sender inn opplysninger, forutsetter vi at ektefellen/partneren/samboeren din har full trygdetid i Norge." })

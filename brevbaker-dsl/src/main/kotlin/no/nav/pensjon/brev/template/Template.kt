@@ -6,19 +6,6 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
-import no.nav.pensjon.brevbaker.api.model.*
-import kotlin.reflect.KClass
-
-fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
-    name: String,
-    letterDataType: KClass<LetterData>,
-    languages: Lang,
-    letterMetadata: LetterMetadata,
-    init: TemplateRootScope<Lang, LetterData>.() -> Unit
-): LetterTemplate<Lang, LetterData> =
-    with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, pdfAttachments, letterMetadata)
-    }
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
