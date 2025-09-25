@@ -37,12 +37,6 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             Les rutinen for endring av adresse her {<ExternalLinkIcon />}
           </Link>
         </Alert>
-        <Alert size="small" variant="info">
-          <BodyShort size="small">
-            Brev sendes til brukers folkeregistrerte adresse eller annen foretrukken kanal. Legg til mottaker dersom
-            brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
-          </BodyShort>
-        </Alert>
 
         <Controller
           control={properties.control}
