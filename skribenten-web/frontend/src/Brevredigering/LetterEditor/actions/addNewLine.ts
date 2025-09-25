@@ -21,9 +21,9 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
     if (isTextContent(content) && !("itemIndex" in focus) && offset !== undefined) {
       switch (content.type) {
         case LITERAL: {
-          const atStartOfContentWithLength = offset === 0 && text(content).length > 0;
+          const atStartOfNonEmptyContent = offset === 0 && text(content).length > 0;
           const atEndOfContentOrContentZeroLength = offset >= text(content).length;
-          if (atStartOfContentWithLength) {
+          if (atStartOfNonEmptyContent) {
             if (block.content[focus.contentIndex - 1]?.type === NEW_LINE) {
               break;
             }
