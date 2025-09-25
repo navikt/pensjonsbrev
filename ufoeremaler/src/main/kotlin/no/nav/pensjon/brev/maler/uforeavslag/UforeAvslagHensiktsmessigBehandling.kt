@@ -8,7 +8,9 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKl
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -63,11 +65,14 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
                         bokmal { + pesysData.vurdering }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+            }
+            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
                 }
-            }.orShow {
+            }
+
+            showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { +"Funksjonsnedsettelsen vises i form av " + fritekst("X") })
                     text(bokmal {

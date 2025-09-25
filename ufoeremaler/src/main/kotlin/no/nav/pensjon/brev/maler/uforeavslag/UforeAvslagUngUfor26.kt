@@ -45,19 +45,23 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Begrunnelse for vedtaket" })
+                text(bokmal { +"Derfor får du ikke uføretrygd med ung ufør fordel" })
             }
             paragraph {
-                text(bokmal { +"For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." })
+                text(bokmal { +"Uføretidspunktet ditt er fastsatt til etter at du fylte 26 år." })
+            }
+            paragraph {
+                text(bokmal { +"For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år " +
+                        "på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." })
             }
             paragraph {
                 text(bokmal { +"Du var over 26 år på uføretidspunktet og kan derfor ikke innvilges rettighet som ung ufør." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-6 og 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
             }
 
             includePhrase(RettTilAKlage)
