@@ -170,8 +170,8 @@ class BrevredigeringService(
                     brevDb.laastForRedigering = laastForRedigering
                 }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
-                mottaker?.also { brevDb.mottaker?.oppdater(it) ?: Mottaker.new(brevId) { oppdater(it) } }
-                if(annenMottakerNavn != null) {
+                if(mottaker != null) {
+                    brevDb.mottaker?.oppdater(mottaker) ?: Mottaker.new(brevId) { oppdater(mottaker) }
                     brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
                 }
 
@@ -196,7 +196,7 @@ class BrevredigeringService(
         when(type) {
             MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
             MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE ->
-                if(erBrukersAdresse == false) navn else null
+                if(manueltAdressertTil == Dto.Mottaker.ManueltAdressertTil.ANNEN) navn else null
         }
 
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
@@ -599,7 +599,7 @@ class BrevredigeringService(
             adresselinje2 = mottaker.adresselinje2
             adresselinje3 = mottaker.adresselinje3
             landkode = mottaker.landkode
-            erBrukersAdresse = mottaker.erBrukersAdresse
+            manueltAdressertTil = mottaker.manueltAdressertTil
         } else delete()
 
     /**
@@ -719,7 +719,7 @@ private fun Mottaker.toDto(): Dto.Mottaker =
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
-            erBrukersAdresse = erBrukersAdresse,
+            manueltAdressertTil = manueltAdressertTil,
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
@@ -730,7 +730,7 @@ private fun Mottaker.toDto(): Dto.Mottaker =
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
             landkode = landkode!!,
-            erBrukersAdresse = erBrukersAdresse,
+            manueltAdressertTil = manueltAdressertTil,
         )
     }
 

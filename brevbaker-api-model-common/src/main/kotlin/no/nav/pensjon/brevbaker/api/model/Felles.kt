@@ -46,7 +46,7 @@ class Felles(
             avsenderEnhet = this.avsenderEnhet,
             bruker = this.bruker,
             annenMottakerNavn = annenMottakerNavn,
-            signerendeSaksbehandlere = signerendeSaksbehandlere,
+            signerendeSaksbehandlere = this.signerendeSaksbehandlere,
             vergeNavn = this.vergeNavn,
         )
 }

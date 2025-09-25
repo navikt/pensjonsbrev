@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -94,7 +95,7 @@ object Api {
             val adresselinje1: String?,
             val adresselinje2: String?,
             val adresselinje3: String?,
-            val erBrukersAdresse: Boolean?,
+            val manueltAdressertTil: ManueltAdressertTil?,
             ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
@@ -106,7 +107,7 @@ object Api {
             val adresselinje2: String?,
             val adresselinje3: String?,
             val landkode: Landkode,
-            val erBrukersAdresse: Boolean?,
+            val manueltAdressertTil: ManueltAdressertTil?
             ) : OverstyrtMottaker()
     }
 
