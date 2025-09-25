@@ -20,7 +20,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 ) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData> {
 
     data class SaksbehandlerValg(
-        @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste")
+        @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå")
         val eps: EPS,
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
@@ -28,7 +28,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val feilutbetaling: Boolean,
     ) : BrevbakerBrevdata {
         enum class EPS {
-            // Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå:
             @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
             epsIkkeFylt62Aar,
             @DisplayText("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon")
