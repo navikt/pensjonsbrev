@@ -65,7 +65,7 @@ export type Signatur = {
   readonly navAvsenderEnhet: string;
 };
 
-export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
+export type AnyBlock = Title | Title1Block | Title2Block | ParagraphBlock;
 
 export type Identifiable = {
   readonly id: number | null;

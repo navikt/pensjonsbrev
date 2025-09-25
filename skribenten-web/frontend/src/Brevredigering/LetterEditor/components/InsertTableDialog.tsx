@@ -56,6 +56,8 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               size="small"
               step={1}
               type="number"
+              // type="text"
+              // inputMode="numeric"
               value={columnCount}
             />
           </HStack>
