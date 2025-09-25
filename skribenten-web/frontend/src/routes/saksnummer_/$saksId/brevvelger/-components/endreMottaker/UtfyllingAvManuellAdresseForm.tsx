@@ -1,6 +1,17 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Button,
+  Checkbox,
+  Heading,
+  HStack,
+  Link,
+  TextField,
+  UNSAFE_Combobox,
+  VStack,
+} from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
@@ -32,6 +43,20 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
           </BodyShort>
         </Alert>
+
+        <Controller
+          control={properties.control}
+          name="manuellAdresse.adresse.navn"
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              description="Kryss av hvis brevet skal til bruker, men til en annen adresse"
+              size="small"
+            >
+              Brukers adresse
+            </Checkbox>
+          )}
+        />
 
         <Controller
           control={properties.control}
