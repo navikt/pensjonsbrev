@@ -10,6 +10,7 @@ import type {
   Item,
   ItemList,
   LiteralValue,
+  NewLine,
   ParagraphBlock,
   Row,
   Table,
@@ -23,7 +24,7 @@ import type { ContentGroup, Focus, LiteralIndex, TableCellIndex } from "./state"
 export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
 export function isTextContent(obj: Content | null | undefined): obj is TextContent;
 export function isTextContent(obj: Identifiable | null | undefined): obj is TextContent {
-  return isLiteral(obj) || isVariable(obj);
+  return isLiteral(obj) || isVariable(obj) || isNewLine(obj);
 }
 
 export function isLiteral(obj: Draft<Identifiable | null | undefined>): obj is Draft<LiteralValue>;
@@ -34,6 +35,11 @@ export function isLiteral(obj: Identifiable | null | undefined): obj is LiteralV
 export function isVariable(obj: Draft<Identifiable | null | undefined>): obj is Draft<VariableValue>;
 export function isVariable(obj: Identifiable | null | undefined): obj is VariableValue {
   return !!obj && "type" in obj && obj.type === VARIABLE;
+}
+
+export function isNewLine(obj: Draft<Identifiable | null | undefined>): obj is Draft<NewLine>;
+export function isNewLine(obj: Identifiable | null | undefined): obj is NewLine {
+  return !!obj && "type" in obj && obj.type === NEW_LINE;
 }
 
 export function isItemList(obj: Draft<Identifiable | null | undefined>): obj is Draft<ItemList>;

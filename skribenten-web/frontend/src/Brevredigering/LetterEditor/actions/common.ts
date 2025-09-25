@@ -34,7 +34,14 @@ import type {
 import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
+import type {
+  BlockContentIndex,
+  Focus,
+  ItemContentIndex,
+  LetterEditorState,
+  LiteralIndex,
+  TableCellIndex,
+} from "../model/state";
 
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
@@ -70,6 +77,14 @@ export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is It
   );
 }
 
+export function isIndicesOfSameType<T extends LiteralIndex>(first: T, second: LiteralIndex): second is T {
+  return (
+    (isItemContentIndex(first) && isItemContentIndex(second)) ||
+    (isTableCellIndex(first) && isTableCellIndex(second)) ||
+    (isBlockContentIndex(first) && isBlockContentIndex(second))
+  );
+}
+
 export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
   if (isItemContentIndex(f)) {
     return f.contentIndex === 0 && f.itemIndex === 0 && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
@@ -86,6 +101,51 @@ export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
   } else {
     return false;
   }
+}
+
+export function isAtStartOfTable(f: Focus): boolean {
+  return (
+    isTableCellIndex(f) && f.rowIndex === -1 && f.cellIndex === 0 && f.cellContentIndex === 0 && f.cursorPosition === 0
+  );
+}
+
+export function isAtEndOfTable(f: Focus, table: Table): boolean {
+  if (isTableCellIndex(f)) {
+    if (isTable(table)) {
+      const lastRowIndex = table.rows.length - 1;
+      const lastCellIndex = table.rows[lastRowIndex]?.cells.length - 1;
+      const lastCellContentIndex = table.rows[lastRowIndex]?.cells[lastCellIndex]?.text.length - 1;
+      return (
+        f.rowIndex === lastRowIndex &&
+        f.cellIndex === lastCellIndex &&
+        f.cellContentIndex === lastCellContentIndex &&
+        f.cursorPosition != null &&
+        f.cursorPosition >= text(table.rows[lastRowIndex].cells[lastCellIndex].text[lastCellContentIndex]).length
+      );
+    }
+  }
+  return false;
+}
+
+export function isAtSameBlockContent(first: LiteralIndex, second: LiteralIndex): boolean {
+  return first.blockIndex === second.blockIndex && first.contentIndex === second.contentIndex;
+}
+
+export function isAtSameItem(first: ItemContentIndex, second: ItemContentIndex): boolean {
+  return (
+    first.blockIndex === first.blockIndex &&
+    second.contentIndex === second.contentIndex &&
+    first.itemIndex === second.itemIndex
+  );
+}
+
+export function isAtSameTableCell(first: TableCellIndex, second: TableCellIndex): boolean {
+  return (
+    first.blockIndex === second.blockIndex &&
+    first.contentIndex === second.contentIndex &&
+    first.rowIndex === second.rowIndex &&
+    first.cellIndex === second.cellIndex
+  );
 }
 
 export function isIndexAfter(first: LiteralIndex, after: LiteralIndex): boolean {
