@@ -21,7 +21,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 
     data class SaksbehandlerValg(
         @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå")
-        val eps: EPS,
+        val eps: EPS?,
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
         @DisplayText("Hvis reduksjon tilbake i tid")
