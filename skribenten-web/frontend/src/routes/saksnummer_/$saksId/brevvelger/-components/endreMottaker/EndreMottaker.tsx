@@ -364,7 +364,6 @@ const OppsummeringsTab = (properties: {
   if (properties.manuellAdresseValues) {
     const adresse: Adresse = {
       ...properties.manuellAdresseValues.adresse,
-      linje3: "",
     };
 
     return (
