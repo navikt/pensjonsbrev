@@ -20,14 +20,20 @@ data class EndringAvAlderspensjonSivilstandDto(
 ) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandDto.PesysData> {
 
     data class SaksbehandlerValg(
-        // Årsak til sivilstandsendringen:
-        @DisplayText("Sivilstandsendring årsak - Fraflyting")
-        val fraFlyttet: Boolean,
-        @DisplayText("Sivilstandsendring årsak - inngått ekteskap men bor ikke sammen")
-        val giftBorIkkeSammen: Boolean,
+        @DisplayText("Årsak til sivilstandsendringen")
+        val sivilstandsendringsaarsak: Sivilstandsendringsaarsak?,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-    ) : BrevbakerBrevdata
+    ) : BrevbakerBrevdata {
+        enum class Sivilstandsendringsaarsak {
+            @DisplayText("Fraflytting")
+            fraFlyttet,
+            @DisplayText("Inngått ekteskap, men bor ikke sammen")
+            giftBorIkkeSammen,
+            @DisplayText("Annet eller ingen")
+            annet
+        }
+    }
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
