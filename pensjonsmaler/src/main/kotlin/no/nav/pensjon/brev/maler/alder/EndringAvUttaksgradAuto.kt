@@ -42,6 +42,7 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -58,6 +59,7 @@ Stans av alderspensjon -> når bruker endrer uttaksgrad til null */
 @TemplateModelHelpers
 object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ENDRING_UTTAKSGRAD_AUTO
+
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
@@ -142,7 +144,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                     }
                 }
 
-                showIf(regelverkType.isOneOf(AP2011)) {
+                showIf(regelverkType.equalTo(AP2011) and not(alderspensjonVedVirk.skjermingstilleggInnvilget)) {
                     // endrUtaksgradAP2011
                     paragraph {
                         text(
@@ -151,7 +153,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
                         )
                     }
-                }.orShowIf(regelverkType.isOneOf(AP2016)) {
+                }.orShowIf(regelverkType.equalTo(AP2016)) {
                     // endrUtaksgradAP2016
                     paragraph {
                         text(
@@ -160,7 +162,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
                         )
                     }
-                }.orShowIf(regelverkType.isOneOf(AP2025)) {
+                }.orShowIf(regelverkType.equalTo(AP2025)) {
                     // endrUtaksgradAP2025Soknad
                     paragraph {
                         text(
