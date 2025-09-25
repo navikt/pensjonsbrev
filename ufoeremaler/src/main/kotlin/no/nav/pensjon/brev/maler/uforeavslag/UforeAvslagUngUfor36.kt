@@ -41,7 +41,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om rettighet som ung ufør"})
         }
         outline {
             paragraph {
