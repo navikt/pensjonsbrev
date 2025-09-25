@@ -504,23 +504,17 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
 
     private data class EOSogEllerAvtaleland(val erEOSland: Expression<Boolean>, val erAvtaleland: Expression<Boolean>): TextOnlyPhrase<LangBokmalNynorskEnglish>(){
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(erEOSland and not(erAvtaleland)) {
+            showIf(erEOSland) {
                 text(
                     bokmal { + "EØS-land" },
                     nynorsk { + "EØS-land" },
                     english { + "an other EEA country" },
                 )
-            }.orShowIf(erAvtaleland and not(erEOSland)) {
+            }.orShow{
                 text(
                     bokmal { + "avtaleland" },
                     nynorsk { + "avtaleland" },
                     english { + "an other signatory country" },
-                )
-            }.orShowIf(erEOSland and erAvtaleland) {
-                text(
-                    bokmal { + "EØS- og avtaleland" },
-                    nynorsk { + "EØS- og avtaleland" },
-                    english { + "other EEA and signatory countries" },
                 )
             }
 
