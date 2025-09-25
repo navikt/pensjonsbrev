@@ -15,6 +15,13 @@ object Ufoerebrevkoder {
         UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I1,
         UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2,
         UT_AVSLAG_SYKDOM,
+        UT_AVSLAG_ALDER,
+        UT_AVSLAG_MANGLENDE_DOK,
+        UT_AVSLAG_INNTEKTSEVNE_50,
+        UT_AVSLAG_INNTEKTSEVNE_40,
+        UT_AVSLAG_INNTEKTSEVNE_30,
+        UT_AVSLAG_UNG_UFOR_36,
+        UT_AVSLAG_UNG_UFOR_26,
         ;
 
         override fun kode(): String = this.name

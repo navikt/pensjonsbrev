@@ -22,11 +22,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto> {
+object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2
+    override val kode = UT_AVSLAG_MANGLENDE_DOK
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -35,7 +35,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-5",
+            displayTitle = "Avslag uføretrygd - 21-3",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -50,10 +50,12 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
                 text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Begrunnelse for vedtaket" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
+                text(bokmal { +"For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss de opplysningene vi trenger. " +
+                        "Vi sendte deg et brev " + fritekst("dato") + " der vi ba deg sende oss dokumentene som manglet, " +
+                        "og varslet deg om at søknaden din ville bli avslått dersom vi ikke fikk dem innen fristen." })
             }
             showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
@@ -61,50 +63,17 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
                 }
             }.orShow {
                 paragraph {
-                    text(bokmal { +
-                    "Som en del av oppfølgingen er det forsøkt tiltak, blant annet ved " +
-                            fritekst("navn på tiltaksarrangør") +
-                            " i perioden " + fritekst("dato") +
-                            ". Sluttrapporten, referat fra dialogmøte og/eller uttalelse fra arbeidsgiver konkluderer med " +
-                            fritekst("kort oppsummering av vurdering") + "."
-                    })
-                }
-
-                paragraph {
-                    text(bokmal { +
-                    "Du har utdanning som " + fritekst("utdanning") +
-                            ", og har tidligere arbeidet som " + fritekst("yrke") +
-                            ". Fastlegen/behandlende lege vurderer " + fritekst("vurdering") +
-                            ", mens rådgivende lege i Nav vurderer " + fritekst("vurdering") +
-                            ". Det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
-                            "."
-                    })
-                }
-
-                paragraph {
-                    text(bokmal { +
-                    "Sett i sammenheng med " + fritekst("X (f.eks. utdanning, arbeidserfaring, alder)") +
-                            " og funksjonsnedsettelsen, vurderer vi at flere arbeidsrettede tiltak er hensiktsmessig" +
-                            " for å bedre og/eller avklare din inntektsevne."
-                    })
+                    text(bokmal { + fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene") })
                 }
             }
             paragraph {
-                text(bokmal { +
-                "Vi vurderer at du har gjennomført relevant behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
-                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere tiltak. "})
+                text(bokmal { + "Vi har ikke mottatt disse dokumentene og avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { + "Det er derfor for tidlig å ta stilling til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "})
-            }
-            paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
-            }
-            paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 21-3 " +
+                fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 
-            includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlage)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
