@@ -49,6 +49,11 @@ import {
 const Y_COORD_SAFETY_MARGIN = 10;
 
 function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
+  if (literalIndex.blockIndex === -1) {
+    // TODO(stw): Evaluate usage of as
+    console.log(JSON.stringify(letter.title, null, 2));
+    return letter.title.content;
+  }
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
   if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
