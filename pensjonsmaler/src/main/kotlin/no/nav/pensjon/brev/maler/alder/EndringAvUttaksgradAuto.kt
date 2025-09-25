@@ -40,7 +40,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -174,13 +173,14 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                 }
 
                 showIf(alderspensjonVedVirk.uttaksgrad.lessThan(100)) {
+                    val uttaksgradStoerreEnn0 = alderspensjonVedVirk.uttaksgrad.greaterThan(0)
                     // gradsendrAPSoknadInfo, nySoknadAPInfo
                     paragraph {
                         text(
                             bokmal {
                                 +"Du må sende oss en ny søknad når du ønsker å ta ut "
                                 +ifElse(
-                                    alderspensjonVedVirk.uttaksgrad.greaterThan(0),
+                                    uttaksgradStoerreEnn0,
                                     ifTrue = "mer alderspensjon",
                                     ifFalse = "alderspensjon"
                                 ) + ". En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden."
@@ -188,7 +188,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             nynorsk {
                                 +"Du må sende oss ein ny søknad når du ønskjer å ta ut "
                                 +ifElse(
-                                    alderspensjonVedVirk.uttaksgrad.greaterThan(0),
+                                    uttaksgradStoerreEnn0,
                                     ifTrue = "meir alderspensjon",
                                     ifFalse = "alderspensjon"
                                 ) + ". Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden."
@@ -196,7 +196,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             english {
                                 +"You have to submit an application when you want to "
                                 +ifElse(
-                                    alderspensjonVedVirk.uttaksgrad.greaterThan(0),
+                                    uttaksgradStoerreEnn0,
                                     ifTrue = "increase",
                                     ifFalse = "start drawing"
                                 ) + " your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
@@ -239,10 +239,10 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
-            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)  // V00003
+        includeAttachmentIfNotNull(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)  // V00001
+        includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)  // V00002
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)  // V00003
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025Dto)  // V00010
             includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, opplysningerBruktIBeregningenEndretUttaksgradDto)  // V00005
-            includeAttachmentIfNotNull(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)  // V00001
-            includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)  // V00002
         }
 }
