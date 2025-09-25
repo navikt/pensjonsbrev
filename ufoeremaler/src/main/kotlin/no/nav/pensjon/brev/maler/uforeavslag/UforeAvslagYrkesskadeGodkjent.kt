@@ -44,7 +44,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om å få yrkessykdom eller yrkesskade tatt med i uføretrygden"})
         }
         outline {
             paragraph {
