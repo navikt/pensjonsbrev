@@ -15,16 +15,8 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
     EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
             saksbehandlerValg =
                 EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg(
+                    eps = EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS.epsHarInntektOver1G,
                     aarligKontrollEPS = false,
-                    epsAvkallPaaEgenAlderspenspensjon = false,
-                    epsAvkallPaaEgenUfoeretrygd = false,
-                    epsHarInntektOver1G = true,
-                    epsHarRettTilFullAlderspensjon = false,
-                    epsIkkeFylt62Aar = false,
-                    epsIkkeRettTilFullAlderspensjon = false,
-                    epsTarUtAlderspensjon = false,
-                    epsTarUtAlderspensjonIStatligSektor = false,
-                    epsTarUtUfoeretrygd = false,
                     feilutbetaling = false,
                 ),
             pesysData =
