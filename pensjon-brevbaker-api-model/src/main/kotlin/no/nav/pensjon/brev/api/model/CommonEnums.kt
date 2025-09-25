@@ -221,3 +221,15 @@ enum class VedtaksBegrunnelse{
     VIRKFOM_FOR_2011,
     VIRK_FOR_LANGT_FREM
 }
+
+enum class InformasjonOmMedlemskap {
+    EOES,
+    UTENFOR_EOES,
+    IKKE_RELEVANT
+}
+
+enum class BorI {
+    AVTALELAND,  // v3.Person - if borIAvtaleland is true and borIEOS is false and borINorge is false
+    EOS,  // v3.Person - if borIEOS is true and borIAvaleland i false and borINorge is false
+    NORGE,  // v3.Person - if BorI Norge is true and borIAvtaleland is false and borIEOS is false
+}

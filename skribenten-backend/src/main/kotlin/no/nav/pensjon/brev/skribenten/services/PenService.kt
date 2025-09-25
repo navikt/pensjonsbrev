@@ -14,6 +14,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.jackson.jackson
@@ -64,6 +65,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         defaultRequest {
             url(penUrl)
         }
+        installRetry(logger, shouldNotRetry = { it.method != HttpMethod.Get } )
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())

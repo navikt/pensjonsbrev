@@ -138,14 +138,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
 
                 paragraph {
                     text(
-                        bokmal { +"Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak. " },
-                        nynorsk { +"Dersom du melder frå om feil, vil vi vurdere dei nye opplysningane før du får eit vedtak. " },
-                        english { +"If you report an error, we will evaluate the new information before sending a decision." },
-                    )
-                }
-
-                paragraph {
-                    text(
                         bokmal { +"Hvis opplysningene er feil, må du gi beskjed innen tre uker. Nye opplysninger må dokumenteres. Hvis du ikke svarer, får du et vedtak basert på de opplysningene som står i vedlegget. Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak." },
                         nynorsk { +"Dersom opplysningane er feil, må du gi beskjed innan tre veker. Nye opplysningar må dokumenterast. Dersom du ikkje svarer, får du eit vedtak basert på opplysningane som står i vedlegget." },
                         english { +"If the information is incorrect, you must notify us within three weeks. New information must be documented. If you do not reply, a decision will be made based on the information in the appendix." },

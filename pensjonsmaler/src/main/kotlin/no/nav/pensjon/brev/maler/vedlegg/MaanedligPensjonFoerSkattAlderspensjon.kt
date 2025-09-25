@@ -32,7 +32,7 @@ val maanedligPensjonFoerSkattAlderspensjon =
             text(
                 bokmal { + "Oversikt over pensjonen fra " + krav.virkDatoFom.format() },
                 nynorsk { + "Oversikt over pensjonen frå " + krav.virkDatoFom.format() },
-                english { + "Pension specifications as of" + krav.virkDatoFom.format() },
+                english { + "Pension specifications as of " + krav.virkDatoFom.format() },
             )
         },
         includeSakspart = false,
