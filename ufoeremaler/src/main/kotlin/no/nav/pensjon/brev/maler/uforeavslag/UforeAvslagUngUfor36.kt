@@ -66,7 +66,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
             }
 
-            includePhrase(RettTilAKlage)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }
