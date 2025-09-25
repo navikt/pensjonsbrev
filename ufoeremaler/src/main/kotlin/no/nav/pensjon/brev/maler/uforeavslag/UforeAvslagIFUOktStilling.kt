@@ -1,0 +1,86 @@
+package no.nav.pensjon.brev.maler.uforeavslag
+
+import no.nav.pensjon.brev.FeatureToggles
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_IFU_OKT_STILLING
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
+
+@TemplateModelHelpers
+object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagDto> {
+
+    override val featureToggle = FeatureToggles.uforeAvslag.toggle
+
+    override val kode = UT_AVSLAG_IFU_OKT_STILLING
+    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.UFOREP)
+
+
+    override val template = createTemplate(
+        languages = languages(Bokmal),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Avslag uføretrygd - 12-9",
+            isSensitiv = false,
+            distribusjonstype = VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+        ),
+    )
+    {
+        title {
+            text (bokmal { + "Nav har avslått søknaden din om endring av inntekten din før uførhet"})
+        }
+        outline {
+            paragraph {
+                text(bokmal { +"Vi har avslått søknaden din om å endre den fastsatte inntekten din før du ble ufør, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+            }
+            title1 {
+                text(bokmal { + "Derfor endres ikke inntekten din før du ble ufør"})
+            }
+            paragraph {
+                text(bokmal { + "Du har hatt en varig inntektsøkning, men det er fordi du har økt stillingsandelen din."})
+            }
+            paragraph {
+                text(bokmal { +"For å ha rett til å endre den fastsatte inntekten din før du ble ufør, " +
+                        "må du ha hatt en varig inntektsøkning uten at stillingsandelen din har økt. " +
+                        "Inntekt før uførhet kan bare endres dersom du mottar gradert uføretrygd." })
+            }
+            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+                paragraph {
+                    text(bokmal { +pesysData.vurdering })
+                }
+            }.orShow {
+                paragraph {
+                    text(bokmal { +fritekst("Utfyllende opplysninger") })
+                }
+            }
+            paragraph {
+                text(bokmal { + "Du oppfyller ikke vilkåret, og vi avslår derfor søknaden din om endring av inntekten din før uførhet."})
+            }
+            paragraph {
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-9 og forskrift om uføretrygd fra folketrygden §§ 2-2." })
+            }
+
+            includePhrase(RettTilAKlageKort)
+            includePhrase(RettTilInnsyn)
+            includePhrase(HarDuSporsmal)
+        }
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
+    }
+}
