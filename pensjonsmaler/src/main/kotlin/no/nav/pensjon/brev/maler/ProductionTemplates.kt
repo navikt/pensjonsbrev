@@ -67,6 +67,7 @@ object ProductionTemplates : AllTemplates {
         EndretUforetrygdPGAOpptjeningLegacy,
         EndringAvAlderspensjonSivilstandAuto,
         EndringPgaOpptjeningAuto,
+        EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
