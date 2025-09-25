@@ -17,15 +17,25 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg, AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
     data class SaksbehandlerValg(
+        @DisplayText("Samboer uten felles barn")
         val samboerUtenFellesBarn: Boolean,
+        @DisplayText("Avdød navn")
         val avdoedNavn: String,
+        @DisplayText("Under ett års medlemstid EØS eller avtaleland")
         val underEttAarsMedlemstidEOESEllerAvtaleland: Boolean,
+        @DisplayText("Under tre/fem års medlemstid nasjonal sak")
         val underTreFemAarsMedlemstidNasjonalSak: Boolean,
+        @DisplayText("Under tre/fem års medlemstid EØS-sak")
         val underTreFemAarsMedlemstidEOESSak: Boolean,
+        @DisplayText("Under tre/fem års medlemstid avtalesak")
         val underTrefemAarsMedlemstidAvtalesak: Boolean,
+        @DisplayText("Under 20 år botid")
         val under20AarBotid: Boolean,
+        @DisplayText("Ekteskap under fem år")
         val ekteskapUnderFemAar: Boolean,
+        @DisplayText("Hjemmel EØS")
         val hjemmelEOES: Boolean,
+        @DisplayText("Hjemmel avtaleland")
         val hjemmelAvtaleland: Boolean,
         @DisplayText("Inkluder tekst om trygdetid")
         val harTrygdetid: Boolean,
