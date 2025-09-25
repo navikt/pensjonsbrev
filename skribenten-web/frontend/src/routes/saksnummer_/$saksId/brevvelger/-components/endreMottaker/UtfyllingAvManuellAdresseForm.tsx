@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
 
@@ -14,6 +14,13 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   onCloseIntent: () => void;
 }) => {
   const { data: landData, isLoading, isError, isSuccess } = useLandData();
+
+  const land = useWatch({
+    control: properties.control,
+    name: "manuellAdresse.adresse.land",
+  });
+  const isNorge = typeof land === "string" && land === "NO";
+
   return (
     <VStack gap="6">
       <VStack gap="4">
@@ -72,40 +79,40 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             <TextField label="Adresselinje 3" {...field} error={fieldState.error?.message} size="small" />
           )}
         />
-
-        <HStack gap="4">
-          <Controller
-            control={properties.control}
-            name="manuellAdresse.adresse.postnr"
-            render={({ field, fieldState }) => (
-              <TextField
-                css={css`
-                  width: 25%;
-                `}
-                label="Postnummer"
-                {...field}
-                error={fieldState.error?.message}
-                size="small"
-              />
-            )}
-          />
-          <Controller
-            control={properties.control}
-            name="manuellAdresse.adresse.poststed"
-            render={({ field, fieldState }) => (
-              <TextField
-                css={css`
-                  width: 25%;
-                `}
-                label="Poststed"
-                {...field}
-                error={fieldState.error?.message}
-                size="small"
-              />
-            )}
-          />
-        </HStack>
-
+        {isNorge && (
+          <HStack gap="4">
+            <Controller
+              control={properties.control}
+              name="manuellAdresse.adresse.postnr"
+              render={({ field, fieldState }) => (
+                <TextField
+                  css={css`
+                    width: 25%;
+                  `}
+                  label="Postnummer"
+                  {...field}
+                  error={fieldState.error?.message}
+                  size="small"
+                />
+              )}
+            />
+            <Controller
+              control={properties.control}
+              name="manuellAdresse.adresse.poststed"
+              render={({ field, fieldState }) => (
+                <TextField
+                  css={css`
+                    width: 25%;
+                  `}
+                  label="Poststed"
+                  {...field}
+                  error={fieldState.error?.message}
+                  size="small"
+                />
+              )}
+            />
+          </HStack>
+        )}
         <div>
           {isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
           {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
