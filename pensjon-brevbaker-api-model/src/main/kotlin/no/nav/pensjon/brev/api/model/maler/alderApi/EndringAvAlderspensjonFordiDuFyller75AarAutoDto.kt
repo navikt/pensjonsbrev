@@ -12,10 +12,10 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringAvAlderspensjonFordiDuFyller75AarAutoDto(
-    val harFlereBeregningsperioder: Boolean,
-    val kravVirkDatoFom: LocalDate,
+    val harFlereBeregningsperioder: Boolean,  // v1.BerengnetPensjonPerManed
+    val kravVirkDatoFom: LocalDate, // v3.Krav
     val regelverkType: AlderspensjonRegelverkType,
-    val totalPensjon: Kroner,
+    val totalPensjon: Kroner,  // v4.Alderpensjon
     val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
     val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto,
