@@ -172,23 +172,38 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     if (!freeze && shouldBeFocused) {
+      // Preserve full selection for untouched fritekst placeholders (first key should replace it).
       if (shouldPreserveFullSelection(erFritekst, element)) {
         return;
       }
-      // Fallback to end-of-text if cursorPosition missing
-      const resolvedCursorPosition =
-        editorState.focus.cursorPosition !== undefined
-          ? Math.min(editorState.focus.cursorPosition, text.length)
-          : text.length;
 
-      // If cursorPosition was missing, persist it (needed for stable undo/redo caret restore)
+      // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
       if (editorState.focus.cursorPosition === undefined) {
-        setEditorState((state) => ({
-          ...state,
-          focus: { ...state.focus, cursorPosition: resolvedCursorPosition },
+        const selection = globalThis.getSelection();
+        if (
+          selection &&
+          selection.rangeCount > 0 &&
+          element.contains(selection.anchorNode) &&
+          element.contains(selection.focusNode)
+        ) {
+          // Do not set fallback or move caret yet.
+          return;
+        }
+
+        // No stored cursor yet and no valid selection, fall back to end of text.
+        const fallbackCursorPosition = text.length;
+        setEditorState((s) => ({
+          ...s,
+          focus: { ...s.focus, cursorPosition: fallbackCursorPosition },
         }));
+        if (element.childNodes[0]) {
+          focusAtOffset(element.childNodes[0], fallbackCursorPosition);
+        }
+        return;
       }
 
+      // Normal path once cursorPosition is known: clamp and restore.
+      const resolvedCursorPosition = Math.min(editorState.focus.cursorPosition, text.length);
       if (element.childNodes[0]) {
         focusAtOffset(element.childNodes[0], resolvedCursorPosition);
       }
