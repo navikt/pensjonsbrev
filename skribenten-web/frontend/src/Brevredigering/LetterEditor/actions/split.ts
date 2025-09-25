@@ -1,11 +1,19 @@
 import type { Draft } from "immer";
 
-import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST } from "~/types/brevbakerTypes";
+import type { AnyBlock, Content, ItemList, TextContent, Title } from "~/types/brevbakerTypes";
+import { ITEM_LIST, TITLE_BLOCK } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
+import {
+  isEmptyBlock,
+  isEmptyContent,
+  isEmptyContentList,
+  isEmptyItem,
+  isItemList,
+  isLiteral,
+  isVariable,
+} from "../model/utils";
 import {
   addElements,
   isAtStartOfBlock,
@@ -21,16 +29,22 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 
 export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number) {
   const editedLetter = draft.redigertBrev;
-  const block = editedLetter.blocks[literalIndex.blockIndex];
-  const content = block.content[literalIndex.contentIndex];
 
-  if (isLiteral(content)) {
+  if (literalIndex.blockIndex === TITLE_BLOCK) {
+    const block = editedLetter.title;
     splitBlockAtLiteral(draft, literalIndex, offset, block);
-  } else if (isItemList(content)) {
-    splitItemList(draft, literalIndex, offset, block, content);
   } else {
-    // eslint-disable-next-line no-console
-    console.warn("Don't know how to split content with type: " + content.type);
+    const block = editedLetter.blocks[literalIndex.blockIndex];
+    const content = block.content[literalIndex.contentIndex];
+
+    if (isLiteral(content)) {
+      splitBlockAtLiteral(draft, literalIndex, offset, block);
+    } else if (isItemList(content)) {
+      splitItemList(draft, literalIndex, offset, block, content);
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn("Don't know how to split content with type: " + content.type);
+    }
   }
 }
 
@@ -38,17 +52,34 @@ function splitBlockAtLiteral(
   draft: Draft<LetterEditorState>,
   literalIndex: LiteralIndex,
   offset: number,
-  block: AnyBlock,
+  block: AnyBlock | Title,
 ) {
+  // block is of type Title:
+  // if ("text" in block && block.text !== undefined) {
+  //   if (isAtStartOfBlock(literalIndex, offset))
+  // } else {
+
   const editedLetter = draft.redigertBrev;
   const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
   const previousBlockIsNotEmpty = previousBlock && !isEmptyBlock(previousBlock);
   const isAtFirstBlock = literalIndex.blockIndex === 0;
 
-  if (!isEmptyBlock(block) && (!isAtStartOfBlock(literalIndex, offset) || previousBlockIsNotEmpty || isAtFirstBlock)) {
+  // if (!isEmptyBlock(block) && (!isAtStartOfBlock(literalIndex, offset) || previousBlockIsNotEmpty || isAtFirstBlock)) {
+  if ("text" in block && block.text?.length > 0) {
     if (isAtStartOfBlock(literalIndex, offset)) {
-      // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
-      // one position.
+      console.log("startofblock");
+      addElements([newLiteral()], 0, editedLetter.title.text, editedLetter.title.deletedContent);
+    } else {
+      console.log("not startofblock");
+    }
+  } else if (
+    "content" in block &&
+    !isEmptyBlock(block) &&
+    (!isAtStartOfBlock(literalIndex, offset) || previousBlockIsNotEmpty || isAtFirstBlock)
+  ) {
+    if (isAtStartOfBlock(literalIndex, offset)) {
+      // Since we're at the very beginning of a block, it makes sense that we
+      // create a new block and push `block` one position.
       addElements(
         [newParagraph({ content: [newLiteral()] })],
         literalIndex.blockIndex,
@@ -56,7 +87,8 @@ function splitBlockAtLiteral(
         editedLetter.deletedBlocks,
       );
     } else {
-      // We're splitting a block somewhere inside it, so we modify `block` and move content after cursor to a new block.
+      // We're splitting a block somewhere inside it, so we modify `block` and
+      // move content after cursor to a new block.
 
       // Update content in `block` and get the content for the new (next) block
       const nextContent = splitContentArrayAtLiteral(

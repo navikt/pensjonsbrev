@@ -105,7 +105,10 @@ export function isNew(obj: Identifiable): boolean {
 export function create(brev: BrevResponse): LetterEditorState {
   return {
     info: brev.info,
-    redigertBrev: brev.redigertBrev,
+    redigertBrev: {
+      ...brev.redigertBrev,
+      ...{ brev: { redigertBrev: { title: { content: brev.redigertBrev.title.text } } } },
+    },
     redigertBrevHash: brev.redigertBrevHash,
     saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },

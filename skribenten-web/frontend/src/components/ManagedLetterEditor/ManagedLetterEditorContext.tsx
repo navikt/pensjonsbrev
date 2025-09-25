@@ -39,7 +39,11 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
           );
           return {
             ...previousState,
-            redigertBrev: response.redigertBrev,
+            // redigertBrev: response.redigertBrev,
+            redigertBrev: {
+              ...response.redigertBrev,
+              ...{ title: { content: response.redigertBrev.title.text } },
+            },
             redigertBrevHash: response.redigertBrevHash,
             saksbehandlerValg: response.saksbehandlerValg,
             info: response.info,

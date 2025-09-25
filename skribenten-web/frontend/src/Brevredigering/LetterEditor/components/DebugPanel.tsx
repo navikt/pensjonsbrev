@@ -78,6 +78,7 @@ export function DebugPanel() {
 const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorState }) => {
   return (
     <>
+      {<Block block={redigertBrev.title} focus={focus} index={-1} key={-1} />}
       {redigertBrev.blocks.map((b, index) => (
         <Block block={b} focus={focus} index={index} key={index} />
       ))}
@@ -98,11 +99,12 @@ const useToggleWithFocusUpdate = (
   return [isOpen, setIsOpen];
 };
 
-const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: number }) => {
+const Block = ({ block, focus, index }: { block: AnyBlock | Title; focus: Focus; index: number }) => {
   const blockText = block.content
     .map((c) => (isTextContent(c) ? textOf(c) : null))
     .filter((c) => c !== null)
     .join("");
+
   const highlightColor = getHighlightColor(isNew(block), isEdited(block));
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus.blockIndex, index);
@@ -244,6 +246,7 @@ function isEdited(content: Content | AnyBlock): boolean {
       return isNew(content) || content.editedText !== null || content.editedFontType !== null;
     case "VARIABLE":
       return false;
+    case "TITLE":
     case "TITLE1":
     case "TITLE2":
     case "PARAGRAPH":
