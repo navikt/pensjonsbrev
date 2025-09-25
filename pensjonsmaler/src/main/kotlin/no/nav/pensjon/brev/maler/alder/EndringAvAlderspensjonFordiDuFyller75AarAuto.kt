@@ -25,10 +25,10 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -38,7 +38,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype
 
 
 /* MF_000118 : AP_INNV_AO_75_AUTO / AO_AP_GRAD_AP_75
-Det er omregning til 100 prosent alderspensjon for de som har gradert pensjon med regelverk AP2011 og AP2016.
+Det er omregning til 100 prosent alderspensjon for de som har gradert pensjon med regelverk AP2011 eller AP2016.
  */
 @TemplateModelHelpers
 object EndringAvAlderspensjonFordiDuFyller75AarAuto :
@@ -52,7 +52,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 LetterMetadata(
                     displayTitle = "Informasjon til deg som snart fyller 67 år",
                     isSensitiv = false,
-                    distribusjonstype = Distribusjonstype.VIKTIG,
+                    distribusjonstype = Distribusjonstype.VEDTAK,
                     brevtype = Brevtype.VEDTAKSBREV
                 ),
 
@@ -82,7 +82,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                     )
                 }
 
-                showIf(regelverkType.isOneOf(AP2011)) {
+                showIf(regelverkType.equalTo(AP2011)) {
                     // endrUtaksgradAP2011
                     paragraph {
                         text(
@@ -91,7 +91,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                             english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
                         )
                     }
-                }.orShow {
+                }.orShowIf(regelverkType.equalTo(AP2016)) {
                     // endrUtaksgradAP2016
                     paragraph {
                         text(
