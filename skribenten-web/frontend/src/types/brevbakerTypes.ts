@@ -167,7 +167,12 @@ export type Title2Block = Block & {
   readonly content: TextContent[];
 };
 
+export const TITLE_BLOCK = -1;
+// export const TITLE = "TITLE";
+// export type Title = Block & {
 export type Title = {
+  // readonly type: typeof TITLE;
+  // readonly content: LiteralValue[];
   readonly text: TextContent[];
   readonly deletedContent: number[];
 };

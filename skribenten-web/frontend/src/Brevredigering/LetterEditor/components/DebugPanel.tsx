@@ -9,7 +9,7 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { AnyBlock, Block, Content, Item } from "~/types/brevbakerTypes";
+import type { AnyBlock, Block, Content, Item, Title } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
   const { freeze, editorState } = useEditor();
@@ -56,7 +56,8 @@ export function DebugPanel() {
         ))}
       </HStack>
       <HStack gap={"4"}>
-        FREEZE: <b>{freeze.toString()}</b>
+        FREEZE: <b css={css({ color: freeze ? "red" : "black" })}>{freeze.toString()}</b>
+        SAVESTATUS: <b>{editorState.saveStatus}</b>
       </HStack>
       <HStack gap={"4"}>
         MOUSE:

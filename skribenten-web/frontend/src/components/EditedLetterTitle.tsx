@@ -1,8 +1,6 @@
-import { css } from "@emotion/react";
 import { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { fontTypeOf } from "~/Brevredigering/LetterEditor/actions/common";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
@@ -11,7 +9,7 @@ import {
   getCaretRect,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import { type EditedLetter, FontType } from "~/types/brevbakerTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 
 export const EditedLetterTitle = ({ title }: { title: EditedLetter["title"] }) => {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
@@ -28,18 +26,6 @@ export const EditedLetterTitle = ({ title }: { title: EditedLetter["title"] }) =
       contentEditableReference.current.textContent = text;
     }
   }, [text]);
-
-  // useEffect(() => {
-  //   if (
-  //     !freeze &&
-  //     // shouldBeFocused &&
-  //     contentEditableReference.current !== null &&
-  //     editorState.focus.cursorPosition !== undefined
-  //   ) {
-  //     focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
-  //   }
-  // }, [editorState.focus.cursorPosition, freeze]);
-  // // }, [editorState.focus.cursorPosition, shouldBeFocused, freeze]);
 
   /**
    * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
