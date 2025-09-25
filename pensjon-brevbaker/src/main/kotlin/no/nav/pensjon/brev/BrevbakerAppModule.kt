@@ -122,6 +122,7 @@ fun Application.brevbakerModule(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
+
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()

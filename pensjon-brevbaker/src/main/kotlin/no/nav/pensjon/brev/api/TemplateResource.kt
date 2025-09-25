@@ -25,7 +25,7 @@ private val objectMapper = brevbakerJacksonObjectMapper()
 abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>>(
     val name: String,
     templates: Set<T>,
-    pdfByggerService: PDFByggerService
+    pdfByggerService: PDFByggerService,
 ) {
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
 

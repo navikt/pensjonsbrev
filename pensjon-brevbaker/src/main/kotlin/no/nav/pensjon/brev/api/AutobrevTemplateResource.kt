@@ -12,6 +12,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
+
     ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, pdfByggerService) {
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =

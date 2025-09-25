@@ -48,7 +48,7 @@ fun Application.brevRouting(
                     "",
                     EtterlatteMaler.hentAutobrevmaler(),
                     pdfByggerService,
-                    )
+                )
                 autobrevRoutes(etterlatteResource)
 
                 post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") { request ->

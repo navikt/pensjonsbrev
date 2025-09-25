@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.template.render
 
-import kotlinx.html.Entities
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
