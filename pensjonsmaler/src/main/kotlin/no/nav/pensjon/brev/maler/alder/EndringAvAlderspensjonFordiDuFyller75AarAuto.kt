@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
@@ -24,11 +23,10 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -50,7 +48,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Informasjon til deg som snart fyller 67 år",
+                    displayTitle = "Vedtak - endring av alderspensjon fordi du fyller 75 år",
                     isSensitiv = false,
                     distribusjonstype = Distribusjonstype.VEDTAK,
                     brevtype = Brevtype.VEDTAKSBREV
@@ -69,9 +67,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(DuFaarHverMaaned(totalPensjon))
                 includePhrase(Utbetalingsinformasjon)
 
-                showIf(harFlereBeregningsperioder and totalPensjon.greaterThan(0)) {
-                    includePhrase(Felles.FlereBeregningsperioder)
-                }
+                showIf(maanedligPensjonFoerSkattDto.notNull()) {includePhrase(Felles.FlereBeregningsperioder) }
 
                 // begrunnAP75
                 paragraph {
@@ -109,7 +105,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
             includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)
-            includeAttachment(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
             includeAttachment(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlder)
         }
 }
