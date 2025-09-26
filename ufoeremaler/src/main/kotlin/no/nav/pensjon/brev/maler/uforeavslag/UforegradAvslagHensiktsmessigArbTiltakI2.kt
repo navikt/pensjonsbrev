@@ -26,11 +26,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto> {
+object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2
+    override val kode = UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -47,14 +47,14 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
@@ -107,17 +107,16 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
                         "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere hensiktsmessige tiltak. "})
             }
             paragraph {
-                text(bokmal { + "Det er derfor for tidlig å ta stilling til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "})
+                text(bokmal { + "Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent. "})
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
             }
 
-            includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

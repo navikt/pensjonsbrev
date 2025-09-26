@@ -29,7 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagOktGradInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
+object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 

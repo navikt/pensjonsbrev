@@ -4,17 +4,17 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
-import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagAlder.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_SYKDOM
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
@@ -26,11 +26,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto> {
+object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2
+    override val kode = UT_AVSLAG_OKT_GRAD_SYKDOM
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -39,7 +39,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-5",
+            displayTitle = "Avslag uføretrygd - 12-6",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -47,17 +47,21 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
+                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
+            }
+            paragraph {
+                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
+                        "Dokumentasjonen i din sak viser at det i all hovedsak er andre forhold enn sykdom og skade som påvirker funksjons- og inntektsevnen din." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -73,51 +77,25 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { +
-                    "Som en del av oppfølgingen er det forsøkt tiltak, blant annet ved " +
-                            fritekst("navn på tiltaksarrangør") +
-                            " i perioden " + fritekst("dato") +
-                            ". Sluttrapporten, referat fra dialogmøte og/eller uttalelse fra arbeidsgiver konkluderer med " +
-                            fritekst("kort oppsummering av vurdering") + "."
-                    })
-                }
-
-                paragraph {
-                    text(bokmal { +
-                    "Du har utdanning som " + fritekst("utdanning") +
-                            ", og har tidligere arbeidet som " + fritekst("yrke") +
-                            ". Fastlegen/behandlende lege vurderer " + fritekst("vurdering") +
-                            ", mens rådgivende lege i Nav vurderer " + fritekst("vurdering") +
-                            ". Det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
-                            ". Vi har ut fra sakens opplysninger vurdert at du har gjennomført hensiktsmessig behandling."
-                    })
-                }
-
-                paragraph {
-                    text(bokmal { +
-                    "Sett i sammenheng med " + fritekst("X (f.eks. utdanning, arbeidserfaring, alder)") +
-                            " og funksjonsnedsettelsen, vurderer vi at flere arbeidsrettede tiltak er hensiktsmessig" +
-                            " for å bedre og/eller avklare din inntektsevne."
+                    "For eksempel " +
+                            fritekst("konkret individuell begrunnelse, som sosiale eller økonomiske forhold, viktig å skrive hva vi mener er hovedårsaken til nedsatt inntektsevne") + "."
                     })
                 }
             }
 
             paragraph {
                 text(bokmal { +
-                "Vi vurderer at du har gjennomført relevant behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
-                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere hensiktsmessige tiltak. "})
+                "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
+                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
             }
             paragraph {
-                text(bokmal { + "Det er derfor for tidlig å ta stilling til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
-            }
-            paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
             }
 
-            includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }
