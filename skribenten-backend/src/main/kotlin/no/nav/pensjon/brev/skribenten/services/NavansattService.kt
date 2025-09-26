@@ -9,6 +9,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AuthService
@@ -40,9 +41,14 @@ class NavansattServiceHttp(config: Config, authService: AuthService) : Navansatt
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
-        return client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
-    }
+    private val navenhetCache = Cache<String, List<NAVAnsattEnhet>>()
+
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> =
+        navenhetCache.cached(ansattId) {
+            client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
+                .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
+                .resultOrNull()
+        }?.let { ServiceResult.Ok(it) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
