@@ -448,7 +448,7 @@ describe("Actions.deleteSelection", () => {
       expect(block.deletedContent).toContain(table1.id);
     });
 
-    it.only("starts before table and ends at end of table, deletes entire table and text before", () => {
+    it("starts before table and ends at end of table, deletes entire table and text before", () => {
       const selection = {
         start: { blockIndex: 0, contentIndex: 2, cursorPosition: 5 },
         end: { blockIndex: 0, contentIndex: 3, rowIndex: 2, cellIndex: 2, cellContentIndex: 2, cursorPosition: 8 },
