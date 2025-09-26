@@ -27,6 +27,11 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagYrkesskadeIkkeGodkjent,
         UforeAvslagIFUIkkeVarig,
         UforeAvslagIFUOktStilling,
-        UforeAvslagOktGradInntektsevne,
+        UforegradAvslagInntektsevne,
+        UforegradAvslagHensiktsmessigBehandling,
+        UforegradAvslagHensiktsmessigArbTiltakI1,
+        UforegradAvslagHensiktsmessigArbTiltakI2,
+        UforegradAvslagSykdom,
+        UforegradAvslagManglendeDok,
     )
 }
