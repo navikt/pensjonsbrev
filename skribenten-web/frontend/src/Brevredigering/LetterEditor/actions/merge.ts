@@ -27,85 +27,81 @@ export enum MergeTarget {
   NEXT = "NEXT",
 }
 
-export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = withPatches(
-  (draft, literalIndex, target) => {
-    const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-    const previousContentSameBlock = block.content[literalIndex.contentIndex - 1];
-    const nextContentSameBlock = block.content[literalIndex.contentIndex + 1];
+export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> =
+  withPatches(mergeRecipe);
 
-    if ("itemIndex" in literalIndex) {
-      mergeFromItemList(draft, literalIndex, target);
-      draft.saveStatus = "DIRTY";
-    } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
-      mergeIntoItemList(draft, previousContentSameBlock, literalIndex);
-      draft.saveStatus = "DIRTY";
-    } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === LITERAL) {
-      const content = block?.content[literalIndex.contentIndex];
-      const cursorPosition = text(previousContentSameBlock).length;
-      if (isEmptyContent(content)) {
-        removeElements(literalIndex.contentIndex, 1, {
-          content: block.content,
-          deletedContent: block.deletedContent,
-          id: block.id,
-        });
-      } else if (isLiteral(previousContentSameBlock) && isLiteral(content)) {
-        updateElementsWithPossiblyMergedLiterals(
-          block,
-          literalIndex.contentIndex - 1,
-          previousContentSameBlock,
-          content,
-        );
-      }
-      draft.saveStatus = "DIRTY";
-      draft.focus = {
-        blockIndex: literalIndex.blockIndex,
-        contentIndex: literalIndex.contentIndex - 1,
-        cursorPosition: cursorPosition,
-      };
-    } else if (
-      (target === MergeTarget.PREVIOUS && literalIndex.contentIndex === 0) ||
-      (target === MergeTarget.NEXT && isLastIndex(literalIndex.contentIndex, block.content))
-    ) {
-      mergeBlocks(draft, literalIndex, target);
-      draft.saveStatus = "DIRTY";
-    } else if (
-      (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === NEW_LINE) ||
-      (target === MergeTarget.NEXT && nextContentSameBlock?.type === NEW_LINE)
-    ) {
-      const nextOrPrevMod = target === MergeTarget.NEXT ? 1 : -1;
-      // Remove NEW_LINE
-      removeElements(literalIndex.contentIndex + nextOrPrevMod, 1, {
+export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, target: MergeTarget) {
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const previousContentSameBlock = block.content[literalIndex.contentIndex - 1];
+  const nextContentSameBlock = block.content[literalIndex.contentIndex + 1];
+
+  if ("itemIndex" in literalIndex) {
+    mergeFromItemList(draft, literalIndex, target);
+    draft.saveStatus = "DIRTY";
+  } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
+    mergeIntoItemList(draft, previousContentSameBlock, literalIndex);
+    draft.saveStatus = "DIRTY";
+  } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === LITERAL) {
+    const content = block?.content[literalIndex.contentIndex];
+    const cursorPosition = text(previousContentSameBlock).length;
+    if (isEmptyContent(content)) {
+      removeElements(literalIndex.contentIndex, 1, {
         content: block.content,
         deletedContent: block.deletedContent,
         id: block.id,
       });
-      draft.saveStatus = "DIRTY";
-
-      const beforeNewLineContent = block.content[literalIndex.contentIndex - 1 + nextOrPrevMod];
-      const afterNewLineContent = block.content[literalIndex.contentIndex + nextOrPrevMod];
-      const cursorPosition = isTextContent(beforeNewLineContent) ? text(beforeNewLineContent).length : 0;
-      if (isLiteral(beforeNewLineContent) && isLiteral(afterNewLineContent)) {
-        updateElementsWithPossiblyMergedLiterals(
-          block,
-          literalIndex.contentIndex - 1 + nextOrPrevMod,
-          beforeNewLineContent,
-          afterNewLineContent,
-        );
-        draft.focus = {
-          blockIndex: literalIndex.blockIndex,
-          contentIndex: literalIndex.contentIndex - 1 + nextOrPrevMod,
-          cursorPosition: cursorPosition,
-        };
-      } else {
-        draft.focus = {
-          blockIndex: literalIndex.blockIndex,
-          contentIndex: literalIndex.contentIndex - (target === MergeTarget.PREVIOUS ? 1 : 0),
-          cursorPosition: target === MergeTarget.PREVIOUS ? 0 : cursorPosition,
-        };
-      }
+    } else if (isLiteral(previousContentSameBlock) && isLiteral(content)) {
+      updateElementsWithPossiblyMergedLiterals(block, literalIndex.contentIndex - 1, previousContentSameBlock, content);
     }
-  },
-);
+    draft.saveStatus = "DIRTY";
+    draft.focus = {
+      blockIndex: literalIndex.blockIndex,
+      contentIndex: literalIndex.contentIndex - 1,
+      cursorPosition: cursorPosition,
+    };
+  } else if (
+    (target === MergeTarget.PREVIOUS && literalIndex.contentIndex === 0) ||
+    (target === MergeTarget.NEXT && isLastIndex(literalIndex.contentIndex, block.content))
+  ) {
+    mergeBlocks(draft, literalIndex, target);
+    draft.saveStatus = "DIRTY";
+  } else if (
+    (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === NEW_LINE) ||
+    (target === MergeTarget.NEXT && nextContentSameBlock?.type === NEW_LINE)
+  ) {
+    const nextOrPrevMod = target === MergeTarget.NEXT ? 1 : -1;
+    // Remove NEW_LINE
+    removeElements(literalIndex.contentIndex + nextOrPrevMod, 1, {
+      content: block.content,
+      deletedContent: block.deletedContent,
+      id: block.id,
+    });
+    draft.saveStatus = "DIRTY";
+
+    const beforeNewLineContent = block.content[literalIndex.contentIndex - 1 + nextOrPrevMod];
+    const afterNewLineContent = block.content[literalIndex.contentIndex + nextOrPrevMod];
+    const cursorPosition = isTextContent(beforeNewLineContent) ? text(beforeNewLineContent).length : 0;
+    if (isLiteral(beforeNewLineContent) && isLiteral(afterNewLineContent)) {
+      updateElementsWithPossiblyMergedLiterals(
+        block,
+        literalIndex.contentIndex - 1 + nextOrPrevMod,
+        beforeNewLineContent,
+        afterNewLineContent,
+      );
+      draft.focus = {
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: literalIndex.contentIndex - 1 + nextOrPrevMod,
+        cursorPosition: cursorPosition,
+      };
+    } else {
+      draft.focus = {
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: literalIndex.contentIndex - (target === MergeTarget.PREVIOUS ? 1 : 0),
+        cursorPosition: target === MergeTarget.PREVIOUS ? 0 : cursorPosition,
+      };
+    }
+  }
+}
 
 function updateElementsWithPossiblyMergedLiterals(
   block: WritableDraft<Title1Block> | WritableDraft<Title2Block> | WritableDraft<ParagraphBlock>,
