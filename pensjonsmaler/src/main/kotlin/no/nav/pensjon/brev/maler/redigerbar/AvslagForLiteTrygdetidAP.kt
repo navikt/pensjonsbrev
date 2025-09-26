@@ -263,23 +263,23 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     showIf(erAvtaleland) {
                         paragraph {
                             text(
-                                bokmal { + "Vedtaket er gjort etter folketrygdloven § 19-2," },
-                                nynorsk { + "Vedtaket er gjort etter folketrygdlova § 19-2," },
-                                english { + "This decision was made pursuant to the provision of § 19-2," },
+                                bokmal { + "Vedtaket er gjort etter folketrygdloven § 19-2" },
+                                nynorsk { + "Vedtaket er gjort etter folketrygdlova § 19-2" },
+                                english { + "This decision was made pursuant to the provision of § 19-2" },
                             )
 
                             showIf(erAp2016) {
                                 text(
-                                    bokmal { + " 20-5 til 20-8 og 20-10," },
-                                    nynorsk { + " 20-5 til 20-8 og 20-10," },
-                                    english { + " 20-5 til 20-8 og 20-10," },
+                                    bokmal { + ", 20-5 til 20-8, 20-10" },
+                                    nynorsk { + ", 20-5 til 20-8, 20-10" },
+                                    english { + ", 20-5 til 20-8, 20-10" },
                                 )
                             }
                             showIf( erEOSland) {
                                 text(
                                     bokmal { + " og EØS-avtalens forordning 883/2004 artikkel 6" },
                                     nynorsk { + " og EØS-avtalens forordning 883/2004 artikkel 6" },
-                                    english { + " and Article 6 of regulation (EC) 883/200" }
+                                    english { + " and Article 6 of regulation (EC) 883/2004" }
                                 )
                             }.orShow {
                                 text(
