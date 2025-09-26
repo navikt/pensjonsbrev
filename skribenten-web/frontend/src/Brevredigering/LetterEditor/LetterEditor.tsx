@@ -9,7 +9,6 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 
 import { ContentGroup } from "./components/ContentGroup";
