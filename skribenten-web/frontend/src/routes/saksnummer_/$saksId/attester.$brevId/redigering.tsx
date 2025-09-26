@@ -7,7 +7,7 @@ import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterSaksbehandlerValg } from "~/api/brev-queries";
+import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
@@ -140,9 +140,17 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     defaultValues: defaultValuesModelEditor,
   });
 
-  const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
-    mutationFn: (saksbehandlerValg) => oppdaterSaksbehandlerValg(props.brev.info.id, saksbehandlerValg),
-    onSuccess: (response) => onSaveSuccess(response),
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+    mutationFn: (values) =>
+      oppdaterBrev({
+        saksId: Number.parseInt(props.saksId),
+        brevId: props.brev.info.id,
+        request: {
+          redigertBrev: values.redigertBrev,
+          saksbehandlerValg: values.saksbehandlerValg,
+        },
+      }),
+    onSuccess: onSaveSuccess,
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
@@ -171,8 +179,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     );
   };
 
-  const freeze = saksbehandlerValgMutation.isPending || attesterMutation.isPending;
-  const error = saksbehandlerValgMutation.isError || attesterMutation.isError;
+  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
+  const error = oppdaterBrevMutation.isError || attesterMutation.isError;
 
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
@@ -240,7 +248,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <VStack>
                 <BrevmalAlternativer
                   brevkode={props.brev.info.brevkode}
-                  submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
+                  submitOnChange={() =>
+                    oppdaterBrevMutation.mutate({
+                      redigertBrev: editorState.redigertBrev,
+                      saksbehandlerValg: form.getValues("saksbehandlerValg"),
+                    })
+                  }
                   withTitle
                 />
               </VStack>
