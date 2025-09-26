@@ -36,6 +36,7 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         if (selectionFocus) {
           event.preventDefault();
           applyAction(Actions.deleteSelection, setEditorState, selectionFocus);
+          globalThis.getSelection()?.collapse(null);
         }
       }
     },

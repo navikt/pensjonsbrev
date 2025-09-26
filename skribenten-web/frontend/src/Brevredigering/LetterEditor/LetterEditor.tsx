@@ -57,7 +57,7 @@ export const LetterEditor = ({
     setSelection((prev) => ({ ...prev, inProgress: false }));
   }, [setSelection]);
   const completeSelection = useCallback(() => {
-    setSelection({ current: getSelectionFocus(), inProgress: false });
+    setSelection({ inProgress: false });
   }, [setSelection]);
 
   const canUndo = editorState.history.entryPointer >= 0;
