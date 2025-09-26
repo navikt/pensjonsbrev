@@ -267,8 +267,9 @@ class BrevredigeringService(
     ): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                val signaturAttestant =
-                    brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
+                brevDto.validerKanAttestere(PrincipalInContext.require())
+
+                val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
 
                 rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
                     transaction {

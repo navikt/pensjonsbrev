@@ -4,15 +4,19 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagAlder.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
@@ -26,7 +30,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2
+    override val kode = UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -55,11 +59,18 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
             }
-            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +pesysData.vurdering })
                 }
-            }.orShow {
+            }
+            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+                paragraph {
+                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                }
+            }
+            showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { +
                     "Som en del av oppfølgingen er det forsøkt tiltak, blant annet ved " +
@@ -89,6 +100,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
                     })
                 }
             }
+
             paragraph {
                 text(bokmal { +
                 "Vi vurderer at du har gjennomført relevant behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
@@ -105,7 +117,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto>
             }
 
             includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlage)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

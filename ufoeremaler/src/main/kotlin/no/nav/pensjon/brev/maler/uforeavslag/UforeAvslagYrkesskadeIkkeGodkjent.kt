@@ -6,15 +6,16 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
 import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagAlder.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
@@ -26,11 +27,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
+object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_SYKDOM
+    override val kode = UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -39,7 +40,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-6",
+            displayTitle = "Avslag uføretrygd - 12-17",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -47,21 +48,17 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om å få yrkessykdom eller yrkesskade tatt med i uføretrygden"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om særbestemmelser for yrkesskade eller yrkessykdom i uføretrygden, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
-            }
-            paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
-                        "Dokumentasjonen i din sak viser at det i all hovedsak er andre forhold enn sykdom og skade som påvirker funksjons- og inntektsevnen din." })
+                text(bokmal { + "Du har ingen registrert eller godkjent yrkesskade eller yrkessykdom." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -76,27 +73,24 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
             }
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
-                    text(bokmal { +
-                    "For eksempel " +
-                            fritekst("konkret individuell begrunnelse, som sosiale eller økonomiske forhold, viktig å skrive hva vi mener er hovedårsaken til nedsatt inntektsevne") + "."
-                    })
+                    text(bokmal { +fritekst("Konkret begrunnelse der det er nødvendig.") })
                 }
             }
 
             paragraph {
-                text(bokmal { +
-                "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
-                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
+                text(bokmal { + "For å ha rett til uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, må uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." })
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
+                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-6 og 12-7." })
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
+            }
+            paragraph {
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-17." })
             }
 
-            includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

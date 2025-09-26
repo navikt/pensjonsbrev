@@ -27,6 +27,7 @@ val vedleggDineRettigheterOgPlikterUfoere =
         ),
         includeSakspart = false,
     ) {
+        includePhrase(VedleggPlikterTittel)
         includePhrase(VedleggPlikter)
         val harInnvilgetBarnetillegg = harInnvilgetBarnetilleggFellesBarn or harInnvilgetBarnetilleggSaerkullsbarn
 

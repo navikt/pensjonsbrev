@@ -26,11 +26,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
+object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_SYKDOM
+    override val kode = UT_AVSLAG_MANGLENDE_DOK
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -39,7 +39,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-6",
+            displayTitle = "Avslag uføretrygd - 21-3",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -54,14 +54,12 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Begrunnelse for vedtaket" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
-            }
-            paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
-                        "Dokumentasjonen i din sak viser at det i all hovedsak er andre forhold enn sykdom og skade som påvirker funksjons- og inntektsevnen din." })
+                text(bokmal { +"For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss de opplysningene vi trenger. " +
+                        "Vi sendte deg et brev " + fritekst("dato") + " der vi ba deg sende oss dokumentene som manglet, " +
+                        "og varslet deg om at søknaden din ville bli avslått dersom vi ikke fikk dem innen fristen." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -76,27 +74,19 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
             }
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
-                    text(bokmal { +
-                    "For eksempel " +
-                            fritekst("konkret individuell begrunnelse, som sosiale eller økonomiske forhold, viktig å skrive hva vi mener er hovedårsaken til nedsatt inntektsevne") + "."
-                    })
+                    text(bokmal { + fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene") })
                 }
             }
 
             paragraph {
-                text(bokmal { +
-                "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
-                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
+                text(bokmal { + "Vi har ikke mottatt disse dokumentene og avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
-            }
-            paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-6 og 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 21-3 " +
+                fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 
-            includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

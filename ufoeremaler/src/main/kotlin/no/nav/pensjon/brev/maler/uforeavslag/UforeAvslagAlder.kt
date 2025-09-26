@@ -4,10 +4,11 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
-import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagAlder.fritekst
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigBehandling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -26,11 +27,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
+object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_SYKDOM
+    override val kode = UT_AVSLAG_ALDER
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -39,7 +40,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-6",
+            displayTitle = "Avslag uføretrygd - 12-4",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -57,11 +58,15 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke oppfyller kravet om inntekt for søkere mellom 62 og 67 år. " +
+                        "I tillegg har du rett til å ta ut hel alderspensjon fra folketrygden." })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
-                        "Dokumentasjonen i din sak viser at det i all hovedsak er andre forhold enn sykdom og skade som påvirker funksjons- og inntektsevnen din." })
+                text(bokmal { +"år du søker om uføretrygd mellom fylte 62 og 67 år, " +
+                        "må din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet. " +
+                        "Hvis du ikke oppfyller dette vilkåret, må du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet. " +
+                        "Grunnbeløpet utgjør " + fritekst("grunnbeløp") + " kroner. " +
+                        "I tillegg kan du ikke få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -76,23 +81,19 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
             }
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
-                    text(bokmal { +
-                    "For eksempel " +
-                            fritekst("konkret individuell begrunnelse, som sosiale eller økonomiske forhold, viktig å skrive hva vi mener er hovedårsaken til nedsatt inntektsevne") + "."
-                    })
+                    text(bokmal {+ fritekst("fritekst for utfyllende opplysninger om bruker") })
                 }
             }
 
             paragraph {
                 text(bokmal { +
-                "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
-                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
+                "Din pensjonsgivende inntekt er lavere enn kravene om inntekt for søkere mellom 62 og 67 år. I tillegg har du rett til å ta ut hel alderspensjon."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-6 og 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-4." })
             }
 
             includePhrase(HvaSkjerNa)
