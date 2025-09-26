@@ -109,19 +109,11 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
     })
     .superRefine((data, refinementContext) => {
       if (data.land === "NO") {
-        if (!/^\d{4}$/.test(data.postnr)) {
-          refinementContext.addIssue({
-            code: "custom",
-            message: "Postnummer må være 4 tegn",
-            path: ["postnr"],
-          });
+        if (!data.postnr || !/^\d{4}$/.test(data.postnr)) {
+          refinementContext.addIssue({ code: "custom", message: "Postnummer må være 4 siffer", path: ["postnr"] });
         }
-        if (data.poststed === "") {
-          refinementContext.addIssue({
-            code: "custom",
-            message: "Poststed må fylles ut",
-            path: ["poststed"],
-          });
+        if (!data.poststed) {
+          refinementContext.addIssue({ code: "custom", message: "Poststed må fylles ut", path: ["poststed"] });
         }
       } else {
         if (data.linje1 === "") {
@@ -132,7 +124,8 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
           });
         }
       }
-    }),
+    })
+    .transform((data) => (data.land === "NO" ? data : { ...data, postnr: "", poststed: "" })),
 });
 
 const leggTilManuellAdresseTabNotSelectedSchema = z.object({

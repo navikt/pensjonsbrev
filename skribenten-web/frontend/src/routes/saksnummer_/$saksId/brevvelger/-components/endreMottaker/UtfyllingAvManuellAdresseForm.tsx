@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
-import { Controller, useWatch } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
 
@@ -14,6 +14,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   onCloseIntent: () => void;
 }) => {
   const { data: landData, isLoading, isError, isSuccess } = useLandData();
+  const { resetField } = useFormContext<CombinedFormData>();
 
   const land = useWatch({
     control: properties.control,
@@ -145,6 +146,10 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                     label="Land *"
                     onToggleSelected={(option) => {
                       field.onChange(option);
+                      if (option !== "NO") {
+                        resetField("manuellAdresse.adresse.postnr", { defaultValue: "" });
+                        resetField("manuellAdresse.adresse.poststed", { defaultValue: "" });
+                      }
                     }}
                     options={options}
                     selectedOptions={options.filter((option) => option.value === field.value) ?? undefined}
