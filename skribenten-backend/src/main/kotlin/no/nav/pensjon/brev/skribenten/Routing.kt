@@ -33,7 +33,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"))
     val brevredigeringService =
-        BrevredigeringService(brevbakerService, navansattService, penService)
+        BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
 
