@@ -747,7 +747,7 @@ private fun Brevredigering.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true
 
 @OptIn(InterneDataklasser::class)
-fun Edit.Letter.withAnnenMottaker(mottaker: String?) =
+private fun Edit.Letter.withAnnenMottaker(mottaker: String?) =
     this.copy(
         sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
             annenMottakerNavn = mottaker
