@@ -11,7 +11,6 @@ import java.time.LocalDate
 
 fun createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() =
     EndringAvAlderspensjonFordiDuFyller75AarAutoDto(
-        harFlereBeregningsperioder = false,
         kravVirkDatoFom = LocalDate.of(2025, 6, 1),
         regelverkType = AlderspensjonRegelverkType.AP2011,
         totalPensjon = Kroner (25000),
