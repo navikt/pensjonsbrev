@@ -53,6 +53,13 @@ export const LetterEditor = ({
     }
   }, [editableDivRef, setSelection]);
 
+  const stopSelection = useCallback(() => {
+    setSelection((prev) => ({ ...prev, inProgress: false }));
+  }, [setSelection]);
+  const completeSelection = useCallback(() => {
+    setSelection({ current: getSelectionFocus(), inProgress: false });
+  }, [setSelection]);
+
   const canUndo = editorState.history.entryPointer >= 0;
   const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
 
@@ -140,12 +147,8 @@ export const LetterEditor = ({
           </Heading>
           <div
             onKeyDown={editorKeyboardShortcuts}
-            onMouseUp={() => {
-              setSelection((prev) => ({ ...prev, inProgress: false }));
-            }}
-            onSelect={() => {
-              setSelection({ current: getSelectionFocus(), inProgress: false });
-            }}
+            onMouseUp={stopSelection}
+            onSelect={completeSelection}
             ref={editableDivRef}
           >
             {blocks.map((block, blockIndex) => (
