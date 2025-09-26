@@ -247,15 +247,15 @@ describe("Endrer på mottaker", () => {
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
-    cy.contains("0000").should("be.visible");
-    cy.contains("Poststedet").should("be.visible");
+    cy.contains("0000").should("not.exist");
+    cy.contains("Poststedet").should("not.exist");
     cy.get("td:contains('Sverige')").should("be.visible");
     cy.getDataCy("bekreft-ny-mottaker").click();
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
-    cy.contains("0000").should("be.visible");
-    cy.contains("Poststedet").should("be.visible");
+    cy.get("body").should("not.contain", "0000");
+    cy.get("body").should("not.contain", "Poststedet");
     cy.contains("Sverige").should("be.visible");
     cy.contains("Tilbakestill mottaker").should("be.visible");
   });
