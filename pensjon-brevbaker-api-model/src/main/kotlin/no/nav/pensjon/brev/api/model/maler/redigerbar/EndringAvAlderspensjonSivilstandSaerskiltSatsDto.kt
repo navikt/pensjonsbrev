@@ -74,7 +74,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 
     data class BeregnetPensjonPerManedVedVirk(
         val grunnbelop: Kroner,  // beregnetPensjonPerManedVedVirk
-        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
         val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
     )
 }

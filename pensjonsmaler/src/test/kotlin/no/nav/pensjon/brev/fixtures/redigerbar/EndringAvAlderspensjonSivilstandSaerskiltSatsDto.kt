@@ -32,7 +32,6 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                     beregnetPensjonPerManedVedVirk =
                         EndringAvAlderspensjonSivilstandSaerskiltSatsDto.BeregnetPensjonPerManedVedVirk(
                             grunnbelop = Kroner(124028),
-                            grunnpensjon = Kroner(320000),
                             totalPensjon = Kroner(340000),
                         ),
                     kravAarsak = KravArsakType.SIVILSTANDSENDRING,
