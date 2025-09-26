@@ -15,6 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
+import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -82,6 +83,12 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 )
             )
         }
+    }
+
+    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> = buildList {
+        return template.pdfAttachments.map {
+            renderText(scope, it.template.title)
+        }.map { PDFTittel(it) }
     }
 
 
