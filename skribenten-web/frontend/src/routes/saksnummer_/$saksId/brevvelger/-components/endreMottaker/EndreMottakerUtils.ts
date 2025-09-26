@@ -100,13 +100,16 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
       linje1: z.string(),
       linje2: z.string(),
       linje3: z.string(),
-      postnr: z.string(),
+      postnr: z
+        .string()
+        .trim()
+        .transform((s) => s.replace(/\s/g, "")),
       poststed: z.string(),
       land: z.string().min(1, "Obligatorisk"),
     })
     .superRefine((data, refinementContext) => {
       if (data.land === "NO") {
-        if (data.postnr.length !== 4) {
+        if (!/^\d{4}$/.test(data.postnr)) {
           refinementContext.addIssue({
             code: "custom",
             message: "Postnummer må være 4 tegn",
@@ -276,6 +279,7 @@ export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "
         : leggTilManuellAdresseTabNotSelectedSchema,
   });
 };
+
 export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
   "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
 
