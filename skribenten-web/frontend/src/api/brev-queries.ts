@@ -9,7 +9,6 @@ import type {
   OppdaterBrevRequest,
   OpprettBrevRequest,
   ReservasjonResponse,
-  SaksbehandlerValg,
 } from "~/types/brev";
 import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
 
@@ -93,12 +92,6 @@ export async function oppdaterBrevtekst(brevId: number, redigertBrev: EditedLett
       `${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev?frigiReservasjon=${frigiReservasjon === true}`,
       redigertBrev,
     )
-  ).data;
-}
-
-export async function oppdaterSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
-  return (
-    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/saksbehandlerValg`, saksbehandlerValg)
   ).data;
 }
 

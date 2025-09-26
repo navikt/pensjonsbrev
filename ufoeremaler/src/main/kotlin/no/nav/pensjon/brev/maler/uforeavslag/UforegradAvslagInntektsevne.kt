@@ -96,9 +96,6 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                     fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " })
             }
             paragraph {
-                text(bokmal { + "Vi vurderer at inntektsevnen din ikke er varig nedsatt med minst 30 prosent." })
-            }
-            paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
