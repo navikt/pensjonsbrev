@@ -16,20 +16,20 @@ export const TypographyToText = {
   [Typography.TITLE2]: "Underoverskrift (alt+3)",
 } as const;
 
-export const useEditorKeyboardShortcuts = (
-  editorState: LetterEditorState,
-  setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
-) => {
-  return (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.altKey && event.code === "Digit1") {
-      event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.PARAGRAPH);
-    } else if (event.altKey && event.code === "Digit2") {
-      event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE1);
-    } else if (event.altKey && event.code === "Digit3") {
-      event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE2);
-    }
-  };
+export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
+  return useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.altKey && event.code === "Digit1") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+      } else if (event.altKey && event.code === "Digit2") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE1);
+      } else if (event.altKey && event.code === "Digit3") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
+      }
+    },
+    [setEditorState],
+  );
 };
