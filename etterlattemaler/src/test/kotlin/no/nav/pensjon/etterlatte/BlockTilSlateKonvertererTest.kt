@@ -5,12 +5,15 @@ import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFVedleggAppender
+import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
@@ -27,7 +30,15 @@ class BlockTilSlateKonvertererTest {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
         val letterMarkup = Brevbaker(object : PDFByggerService {
             override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(ByteArray(0))
-        }).renderLetterMarkup(letter)
+        },
+            object: PDFVedleggAppender {
+                override fun leggPaaVedlegg(
+                    pdfCompilationOutput: PDFCompilationOutput,
+                    attachments: List<PDFVedlegg>,
+                    spraak: LanguageCode
+                ) = pdfCompilationOutput
+            }
+            ).renderLetterMarkup(letter)
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
     }

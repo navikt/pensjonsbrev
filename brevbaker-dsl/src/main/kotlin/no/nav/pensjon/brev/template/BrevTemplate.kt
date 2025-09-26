@@ -28,7 +28,7 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
     ): LetterTemplate<Lang, LetterData> =
         with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-            return LetterTemplate(title, letterDataType, languages, outline, attachments, letterMetadata)
+            return LetterTemplate(title, letterDataType, languages, outline, attachments, pdfAttachments, letterMetadata)
         }
 }
 

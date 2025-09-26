@@ -59,6 +59,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
             }
+
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(
@@ -71,7 +72,6 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
                     text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
                 }
             }
-
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { +"Funksjonsnedsettelsen vises i form av " + fritekst("X") })
@@ -100,6 +100,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
 
                 }
             }
+
             paragraph {
                 text(bokmal {
                     +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +

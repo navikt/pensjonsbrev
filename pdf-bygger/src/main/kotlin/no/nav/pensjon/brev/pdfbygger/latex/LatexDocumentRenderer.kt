@@ -7,9 +7,11 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
+import no.nav.pensjon.brevbaker.api.model.AttachmentTitle
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -23,6 +25,7 @@ internal object LatexDocumentRenderer {
         attachments = pdfRequest.attachments,
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
+        pdfVedlegg = pdfRequest.pdfVedlegg,
     )
 
     private fun render(
@@ -30,10 +33,11 @@ internal object LatexDocumentRenderer {
         attachments: List<LetterMarkup.Attachment>,
         language: Language,
         brevtype: LetterMetadata.Brevtype,
+        pdfVedlegg: List<PDFTittel>,
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(letter, attachments, brevtype, language)
+                appendMasterTemplateParameters(letter, attachments + pdfVedlegg, brevtype, language)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
@@ -44,7 +48,7 @@ internal object LatexDocumentRenderer {
 
     private fun LatexAppendable.appendMasterTemplateParameters(
         letter: LetterMarkup,
-        attachments: List<LetterMarkup.Attachment>,
+        attachments: List<AttachmentTitle>,
         brevtype: LetterMetadata.Brevtype,
         language: Language,
     ) {
@@ -151,7 +155,7 @@ internal object LatexDocumentRenderer {
         return "D:${formattedTime.replace(":", "'")}'"
     }
 
-    private fun LatexAppendable.vedleggCommand(attachments: List<LetterMarkup.Attachment>) {
+    private fun LatexAppendable.vedleggCommand(attachments: List<AttachmentTitle>) {
         appendNewCmd("feltclosingvedlegg") {
             if (attachments.isNotEmpty()) {
                 appendCmd("begin", "attachmentList")

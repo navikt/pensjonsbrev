@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_INNTEKTSEVNE_50
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.brukVurderingFraVilkarsvedtak
@@ -29,11 +29,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
+object UforeAvslagOktGradInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
 
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
-    override val kode = UT_AVSLAG_INNTEKTSEVNE_50
+    override val kode = UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -50,19 +50,26 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din ikke er nok varig nedsatt. " +
-                        "Inntektsevnen din må som hovedregel være varig nedsatt med minst 50 prosent." })
+                text(bokmal { +"Inntektsevnen din er ikke ytterligere varig nedsatt." })
             }
+            paragraph {
+                text(bokmal { +"Du mottar " + fritekst("nåværende uføregrad") + " prosent uføretrygd. " +
+                        "Uføregraden kan økes dersom inntektsevnen blir varig nedsatt med mer enn dette, på grunn av sykdom eller skade." })
+            }
+            paragraph {
+                text(bokmal { +"Vi har sammenliknet inntektsmulighetene dine før og etter at du ble ufør, og har vurdert hvor mye inntektsevnen din er varig nedsatt." })
+            }
+
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +pesysData.vurdering })
@@ -75,9 +82,10 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
-                    text(bokmal {+ fritekst("Konkret begrunnelse der det er nødvendig") })
+                    text(bokmal { + fritekst("Konkret begrunnelse der det er nødvendig") })
                 }
             }
+
             paragraph {
                 text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
                     pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." +
@@ -85,21 +93,19 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     " Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
                     "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
                     "og vi har derfor fastsatt din nedsatte inntektsevne til " +
-                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " +
-                    "Du oppfyller heller ikke unntaksreglene for yrkesskade, yrkessykdom eller personer som har fått arbeidsavklaringspenger."})
+                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " })
             }
             paragraph {
-                text(bokmal { + "Inntektsevnen din er ikke varig nedsatt med minst halvparten."})
+                text(bokmal { + "Vi vurderer at inntektsevnen din ikke er varig nedsatt med minst 30 prosent." })
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7 og 12-10." })
             }
 
-            includePhrase(HvaSkjerNa)
-            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

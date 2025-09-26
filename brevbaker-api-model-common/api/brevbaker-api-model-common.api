@@ -229,6 +229,10 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
+public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
+	public abstract fun getTitle ()Ljava/util/List;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Broek {
 	public fun <init> (II)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -272,6 +276,10 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/ElementTags;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/ElementTags;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
@@ -338,7 +346,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getTitle ()Ljava/util/List;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment : no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
 	public abstract fun getBlocks ()Ljava/util/List;
 	public abstract fun getIncludeSakspart ()Z
 	public abstract fun getTitle ()Ljava/util/List;
@@ -624,6 +632,17 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public final fun getTelefonnummer-ACoMRe8 ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
+	public fun <init> (Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getTitle ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
