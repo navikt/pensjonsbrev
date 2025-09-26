@@ -226,7 +226,7 @@ class BrevredigeringService(
     suspend fun hentBrevAttestering(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                brevDto.validerKanAttestere(principal)
+                brevDto.validerKanAttestere(PrincipalInContext.require())
 
                 val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
 
