@@ -140,7 +140,7 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
 const ZERO_WIDTH_SPACE = "​";
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
-  const { freeze, editorState, setEditorState } = useEditor();
+  const { freeze, editorState, setEditorState, selection } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -370,8 +370,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnclick = (e: React.MouseEvent) => {
-    e.preventDefault();
     if (!erFritekst) return;
+    e.preventDefault();
     handleWordSelect(e.target as HTMLSpanElement);
   };
 
@@ -402,7 +402,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
-      contentEditable={!freeze}
+      contentEditable={!freeze && !selection.inProgress}
       css={css`
         ${erFritekst &&
         css`
@@ -413,6 +413,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ${fontTypeOf(content) === FontType.BOLD && "font-weight: bold;"}
         ${fontTypeOf(content) === FontType.ITALIC && "font-style: italic;"}
       `}
+      data-literal-index={JSON.stringify(literalIndex)}
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {

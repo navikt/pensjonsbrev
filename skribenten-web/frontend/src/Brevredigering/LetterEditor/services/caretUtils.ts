@@ -1,4 +1,9 @@
+import _ from "lodash";
 import { inRange, minBy } from "lodash";
+
+import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
+import type { LiteralIndex, SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
+import { isTableCellIndex } from "~/Brevredigering/LetterEditor/model/utils";
 
 type Coordinates = {
   x: number;
@@ -16,6 +21,36 @@ export function getCursorOffset() {
     return range?.collapsed ? range.startOffset : -1;
   }
   return -1;
+}
+
+export function getSelectionFocus(): SelectionFocus | undefined {
+  const range = getRange();
+  if (range) {
+    const start = getLiteralIndexFromTextNode(range.startContainer);
+    const end = getLiteralIndexFromTextNode(range.endContainer);
+
+    if (start && end) {
+      const selection = {
+        start: { ...start, cursorPosition: range.startOffset },
+        end: { ...end, cursorPosition: range.endOffset },
+      };
+      if (!_.isEqual(selection.start, selection.end)) {
+        return selection;
+      }
+    }
+  }
+}
+
+function getLiteralIndexFromTextNode(textNode: Node): LiteralIndex | undefined {
+  const index = textNode.parentElement?.closest("[data-literal-index]")?.getAttribute("data-literal-index");
+  if (!index) return undefined;
+
+  try {
+    const parsed = JSON.parse(index);
+    return isBlockContentIndex(parsed) || isItemContentIndex(parsed) || isTableCellIndex(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**
@@ -168,7 +203,7 @@ export function getCaretRect() {
 
 export function getRange() {
   const selection = globalThis.getSelection();
-  return selection?.getRangeAt(0);
+  return (selection?.rangeCount ?? 0) > 0 ? selection?.getRangeAt(0) : undefined;
 }
 
 export function findOnLineBelow(element: Element) {

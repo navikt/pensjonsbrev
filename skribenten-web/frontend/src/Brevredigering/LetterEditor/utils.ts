@@ -1,4 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
+import { useCallback } from "react";
+
+import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
@@ -28,6 +31,12 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       } else if (event.altKey && event.code === "Digit3") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
+      } else if (event.code === "Backspace" || event.code === "Delete") {
+        const selectionFocus = getSelectionFocus();
+        if (selectionFocus) {
+          event.preventDefault();
+          applyAction(Actions.deleteSelection, setEditorState, selectionFocus);
+        }
       }
     },
     [setEditorState],
