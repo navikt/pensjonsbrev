@@ -12,7 +12,7 @@ import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/c
 import type { AnyBlock, Block, Content, Item } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
-  const { freeze, editorState } = useEditor();
+  const { freeze, editorState, selection } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
   const [caretRect, setCaretRect] = useState<DOMRect>();
@@ -36,6 +36,8 @@ export function DebugPanel() {
     };
   }, []);
 
+  const currentSelection = selection.current;
+
   return (
     <div
       css={css`
@@ -46,6 +48,27 @@ export function DebugPanel() {
         width: 100%;
       `}
     >
+      <HStack gap={"4"}>
+        SELECTION:
+        <ul>
+          <li>
+            <b>inProgress: </b>
+            <span>{selection.inProgress.toString()}</span>
+          </li>
+          {currentSelection && (
+            <>
+              <li>
+                <b>start: </b>
+                <span>{JSON.stringify(currentSelection.start)}</span>
+              </li>
+              <li>
+                <b>end: </b>
+                <span>{JSON.stringify(currentSelection.end)}</span>
+              </li>
+            </>
+          )}
+        </ul>
+      </HStack>
       <HStack gap={"4"}>
         FOCUS:
         {Object.entries(editorState.focus).map(([key, value]) => (

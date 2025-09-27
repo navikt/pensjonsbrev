@@ -41,7 +41,9 @@ function setup() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState }}>
+      <EditorStateContext.Provider
+        value={{ freeze: false, error: false, editorState, setEditorState, selection: { inProgress: false } }}
+      >
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
@@ -75,7 +77,13 @@ function setupComplex(stateOverride?: LetterEditorState) {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState: stateOverride ?? complexEditorState, setEditorState }}
+        value={{
+          freeze: false,
+          error: false,
+          editorState: stateOverride ?? complexEditorState,
+          setEditorState,
+          selection: { inProgress: false },
+        }}
       >
         {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>

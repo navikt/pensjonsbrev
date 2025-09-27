@@ -25,3 +25,6 @@ cypress/screenshots
 *.njsproj
 *.sln
 *.sw?
+
+# Cypress
+cypress/downloads/*
