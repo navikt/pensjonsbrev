@@ -139,7 +139,20 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
   return false;
 };
 
+// True when a fritekst has a live selection covering its entire text;
+// used to avoid collapsing it to a caret so first key press removes placeholder.
+const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement): boolean => {
+  if (!isFritekst) return false;
+  const sel = globalThis.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  const r = sel.getRangeAt(0);
+  if (!element.contains(r.startContainer) || !element.contains(r.endContainer)) return false;
+  const fullText = element.textContent ?? "";
+  return r.startOffset === 0 && r.endOffset === fullText.length;
+};
+
 const ZERO_WIDTH_SPACE = "​";
+
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
@@ -150,18 +163,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
-
-  // True when a fritekst has a live selection covering its entire text;
-  // used to avoid collapsing it to a caret so first key press removes placeholder.
-  const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement): boolean => {
-    if (!isFritekst) return false;
-    const sel = globalThis.getSelection();
-    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
-    const r = sel.getRangeAt(0);
-    if (!element.contains(r.startContainer) || !element.contains(r.endContainer)) return false;
-    const fullText = element.textContent ?? "";
-    return r.startOffset === 0 && r.endOffset === fullText.length;
-  };
 
   useEffect(() => {
     const element = contentEditableReference.current;
