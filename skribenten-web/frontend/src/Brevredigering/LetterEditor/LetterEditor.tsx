@@ -82,7 +82,7 @@ export const LetterEditor = ({
         overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
         <div
           css={css`
             position: sticky;
@@ -146,11 +146,15 @@ export const EditorStateContext = createContext<{
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
+  undo: () => void;
+  redo: () => void;
 }>({
   freeze: false,
   error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
+  undo: () => {},
+  redo: () => {},
 });
 export const useEditor = () => {
   return useContext(EditorStateContext);
