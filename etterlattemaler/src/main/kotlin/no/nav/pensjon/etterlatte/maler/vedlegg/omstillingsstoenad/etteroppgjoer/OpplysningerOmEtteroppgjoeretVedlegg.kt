@@ -173,7 +173,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
 
                 cell { includePhrase(KronerText(utbetalingData.faktiskStoenad)) }
                 cell { includePhrase(KronerText(utbetalingData.stoenadUtbetalt)) }
-                cell { includePhrase(KronerText(utbetalingData.avviksBeloep)) }
+                cell { includePhrase(KronerText(utbetalingData.avviksBeloep.absoluteValue())) }
             }
         }
     }
