@@ -15,6 +15,8 @@ data class UforeAvslagInntektDto(
         val VisVurderingFraVilkarvedtak: Boolean,
         @DisplayText("Erstatt standardtekst med fritekst")
         val brukVurderingFraVilkarsvedtak: Boolean,
+        @DisplayText("Vis vurdering 12-9 Inntekt før uførhet")
+        val visVurderingIFU: Boolean
     ) : BrevbakerBrevdata
 
     data class UforeAvslagInntektPendata(
@@ -22,5 +24,6 @@ data class UforeAvslagInntektDto(
         val vurdering: String,
         val inntektForUforhet: Int,
         val inntektEtterUforhet: Int,
+        val vurderingIFU: String,
     ) : BrevbakerBrevdata
 }
