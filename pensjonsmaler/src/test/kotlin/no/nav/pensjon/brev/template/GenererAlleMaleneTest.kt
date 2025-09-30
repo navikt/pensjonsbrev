@@ -1,28 +1,42 @@
 package no.nav.pensjon.brev.template
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.jacksonObjectMapper
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.FeatureToggleService
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.time.LocalDate
+import java.time.Month
 
 
-val filterForPDF = listOf(LetterExample.kode)
+val filterForPDF = listOf(SamletMeldingOmPensjonsvedtak.kode)
 
 class GenererAlleMaleneTest {
 
+    @OptIn(InterneDataklasser::class)
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("filtrerteMaler")
@@ -38,8 +52,105 @@ class GenererAlleMaleneTest {
         }
         val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
 
+        val testRequest = BestillRedigertBrevRequest(
+            letterData = fixtures as SamletMeldingOmPensjonsvedtakDto,
+            kode = SamletMeldingOmPensjonsvedtak.kode,
+            felles = Fixtures.felles,
+            language = LanguageCode.BOKMAL,
+            letterMarkup = LetterMarkupImpl(
+                title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(1, "Et dokument fra brevbakeren")),
+                sakspart = LetterMarkupImpl.SakspartImpl(
+                    gjelderNavn = "Ola Nordmann",
+                    gjelderFoedselsnummer = Foedselsnummer("1"),
+                    saksnummer = "1",
+                    dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
+                    vergeNavn = null,
+                    annenMottakerNavn = null,
+                ),
+                blocks = listOf(
+                    LetterMarkupImpl.BlockImpl.ParagraphImpl(
+                        id = 1,
+                        editable = true,
+                        content = listOf(
+                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                id = 2,
+                                text = "Tekst før punktliste blir tatt ut som eget paragraf-element.",
+                            ),
+                            LetterMarkupImpl.ParagraphContentImpl.ItemListImpl(
+                                id = 3,
+                                items = listOf(
+                                    LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl(
+                                        id = 44,
+                                        content = listOf(
+                                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                                id = 4,
+                                                text = "Denne punktlisten blir"
+                                            )
+                                        )
+                                    ),
+                                    LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl(
+                                        id = 55,
+                                        content = listOf(
+                                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                                id = 5,
+                                                text = "Trukket opp ett nivå"
+                                            )
+                                        )
+                                    ),
+                                    LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl(
+                                        id = 66,
+                                        content = listOf(
+                                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                                id = 6,
+                                                text = "Slik at den kan editeres i slate-editor"
+                                            )
+                                        )
+                                    ),
+                                )
+                            ),
+                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                id = 7,
+                                text = "Tekst under punktlisten.",
+                            ),
+                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                id = 8,
+                                text = "Blir slått sammen til ett paragraf-element så lenge det allerede befinner seg i samme paragraf-element."
+                            )
+                        )
+                    ),
+                    LetterMarkupImpl.BlockImpl.ParagraphImpl(
+                        id = 9,
+                        editable = true,
+                        content = listOf(
+                            LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                                id = 10,
+                                text = "Frittstående paragraf under punktlisten vil fortsatt være frittstående.",
+                            )
+                        )
+                    )
+                ),
+                signatur = LetterMarkupImpl.SignaturImpl(
+                    hilsenTekst = "Med vennlig hilsen",
+                    saksbehandlerRolleTekst = "Saksbehandler",
+                    saksbehandlerNavn = "Ole Saksbehandler",
+                    attesterendeSaksbehandlerNavn = "Per Attesterende",
+                    navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"
+                )
+            )
+            ,
+        )
+        jacksonObjectMapper()
+
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
+    val mapper = ObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        enable(SerializationFeature.INDENT_OUTPUT)
+        disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+    }
+
+    fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }
 
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")

@@ -23,26 +23,26 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
 ) { data ->
     with(data) {
 
-        side("P1-1.pdf") {
+        side("p1-side1") {
             felt {
                 // innehaver
-                "holder-fornavn" to innehaver.fornavn
-                "holder-etternavn" to innehaver.etternavn
-                "holder-etternavnVedFoedsel" to innehaver.etternavnVedFoedsel
-                "holder-foedselsdato" to formaterDato(innehaver.foedselsdato)
-                "holder-adresselinje" to innehaver.adresselinje
-                "holder-poststed" to innehaver.poststed?.value
-                "holder-postnummer" to innehaver.postnummer?.value
-                "holder-landkode" to innehaver.landkode?.landkode
+                "Forenames[0]" to innehaver.fornavn
+                "Surname[0]" to innehaver.etternavn
+                "Surname_at_birth[0]" to innehaver.etternavnVedFoedsel
+                "holder-foedselsdato" to formaterDato(innehaver.foedselsdato) // TODO hvor er den?
+                "Street_N[0]" to innehaver.adresselinje
+                "Town[0]" to innehaver.poststed?.value
+                "Post_code[0]" to innehaver.postnummer?.value
+                "Country_code[0]" to innehaver.landkode?.landkode
                 // forsikrede
-                "insured-fornavn" to forsikrede.fornavn
-                "insured-etternavn" to forsikrede.etternavn
-                "insured-etternavnVedFoedsel" to forsikrede.etternavnVedFoedsel
-                "insured-foedselsdato" to formaterDato(forsikrede.foedselsdato)
-                "insured-adresselinje" to forsikrede.adresselinje
-                "insured-poststed" to forsikrede.poststed?.value
-                "insured-postnummer" to forsikrede.postnummer?.value
-                "insured-landkode" to forsikrede.landkode?.landkode
+                "Forenames[1]" to forsikrede.fornavn
+                "Surname[1]" to forsikrede.etternavn
+                "Surname_at_birth[1]" to forsikrede.etternavnVedFoedsel
+                "Date_of_birth[0]" to formaterDato(forsikrede.foedselsdato)
+                "Street_N[1]" to forsikrede.adresselinje
+                "Town[1]" to forsikrede.poststed?.value
+                "Post_code[1]" to forsikrede.postnummer?.value
+                "Country_code[1]" to forsikrede.landkode?.landkode
 
                 "kravMottattDato" to formaterDato(kravMottattDato)
                 "sakstype" to mapOf(
@@ -53,7 +53,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         }
 
         innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
-            side("P1-2.pdf") {
+            side("p1-side2") {
                 felt {
                     add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index + 1, pensjon) }
                         .reduce { a, b -> a + b })
@@ -62,7 +62,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         }
 
         avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
-            side("P1-3.pdf") {
+            side("p1-side3") {
                 felt {
                     add(side.mapIndexed { index, pensjon -> avslaattPensjon(index + 1, pensjon) }
                         .reduce { a, b -> a + b })
@@ -70,7 +70,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
             }
         }
 
-        side("P1-4.pdf") {
+        side("p1-side4") {
             felt {
                 // utfyllende institusjon
                 "institution-navn" to utfyllendeInstitusjon.navn

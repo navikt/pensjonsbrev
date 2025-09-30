@@ -84,7 +84,7 @@ environment:
 
 Vi har ikke noe bra oppsett for dette, men her er en oppskrift på hvordan man kan løse det.
 
-1. Endre PEN_URL environment variable i docker-compose.yaml for skribenten-backend til `http://host.docker.internal/pen/api/`
+1. Endre PEN_URL environment variable i docker-compose.yaml for skribenten-backend til `http://host.docker.internal:8089/pen/api/`
 
 Om du får ConnectTimeoutException på kall til PEN fra skribenten, så betyr det mest sannsynlig at du har en brannmur som blokkerer. Følgende oppskrift er for linux.
 
