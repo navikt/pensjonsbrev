@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.HvorBorBruker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_EPS
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_SKILT
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.gjenlevendesAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendeHarBarnUnder18MedAvdoed
@@ -33,6 +34,8 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -73,15 +76,6 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     nynorsk { +"Vi skriv til deg fordi vi har fått melding om at " + avdoedesNavn + " er død, og du kan ha rettar etter avdøde." },
                     english { +"We are writing to you because we have received notice that " + avdoedesNavn + " has died ,and you may have rights as a surviving spouse." },
                 )
-            }
-            showIf(pesysData.sakstype.isOneOf(ALDER)) {
-                title2 {
-                    text(
-                        bokmal { +"Hvem kan ha rett til ytelser etter avdøde?" },
-                        nynorsk { +"Kven kan ha rett til ytingar etter avdøde?" },
-                        english { +"Who may be entitled to benefits as a surviving spouse?" }
-                    )
-                }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
                 showIf(saksbehandlerValg.infoOmstillingsstoenad) {
@@ -149,11 +143,20 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     paragraph {
                         eval(fritekst("fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde"))
                     }
-                    includePhrase(Felles.DuKanLeseMer)
                 }
             }
 
             showIf(pesysData.sakstype.isOneOf(ALDER)) {
+
+                showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.notNull()) {
+                    title2 {
+                        text(
+                            bokmal { +"Hvem kan ha rett til ytelser etter avdøde?" },
+                            nynorsk { +"Kven kan ha rett til ytingar etter avdøde?" },
+                            english { +"Who may be entitled to benefits as a surviving spouse?" }
+                        )
+                    }
+                }
                 showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_EPS)) {
                     paragraph {
                         text(
@@ -202,7 +205,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
 
-                showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_EPS)) {
+                showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_SKILT)) {
                     paragraph {
                         text(
                             bokmal { +"Har du tidligere vært gift med avdøde, og ikke har giftet deg igjen, kan du ha rett til gjenlevenderett i alderspensjonen. Da må dere ha vært gift i minst 25 år eller i minst 15 år hvis dere hadde barn sammen. Dødsfallet må ha skjedd innen 5 år etter skilsmissen." },
@@ -271,7 +274,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                             english { +"We encourage you to apply as soon as possible because we normally only pay retroactively for three months. You will find information and the application form at $ALDERSPENSJON_GJENLEVENDE_URL." },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.hvorBorBruker.equalTo(HvorBorBruker.GJENLEVENDE_BOR_I_NORGE_ELLER_IKKE_AVTALELAND)) {
+                }.orShowIf(saksbehandlerValg.hvorBorBruker.equalTo(HvorBorBruker.GJENLEVENDE_BOR_I_AVTALELAND)) {
                     paragraph {
                         text(
                             bokmal { +"Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. Dersom du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt. Du kan lese mer om dette på ${Constants.NAV_URL}." },
@@ -281,7 +284,11 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
             }
-            showIf(pesysData.sakstype.isOneOf(UFOREP)) {
+            showIf(pesysData.sakstype.isOneOf(UFOREP)
+                and (saksbehandlerValg.infoOmstillingsstoenad
+                    or saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad
+                    or saksbehandlerValg.infoVilkaarSkiltGjenlevende
+                )) {
                 includePhrase(Felles.DuKanLeseMer)
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP, ALDER)
