@@ -41,6 +41,7 @@ class GenererAlleMaleneTest {
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
 
+    @Disabled // TODO: Skru på denne når første mal er flytta over til denne modulen
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
