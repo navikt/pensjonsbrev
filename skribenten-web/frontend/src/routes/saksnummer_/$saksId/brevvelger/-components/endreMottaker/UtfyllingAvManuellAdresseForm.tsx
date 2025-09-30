@@ -149,8 +149,8 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                     onToggleSelected={(option) => {
                       field.onChange(option);
                       if (option !== "NO") {
-                        resetField("manuellAdresse.adresse.postnr", { defaultValue: "" });
-                        resetField("manuellAdresse.adresse.poststed", { defaultValue: "" });
+                        resetField("manuellAdresse.adresse.postnr", { defaultValue: null });
+                        resetField("manuellAdresse.adresse.poststed", { defaultValue: null });
                       }
                     }}
                     options={options}
