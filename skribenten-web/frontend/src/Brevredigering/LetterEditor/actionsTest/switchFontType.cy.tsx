@@ -76,31 +76,16 @@ describe("Switch font type ", () => {
           });
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
-          const selection = globalThis.getSelection()!;
-          selection.removeAllRanges();
-
-          // Find first text node descendant
-          const textNode = Array.from(element.childNodes).find((n) => n.nodeType === Node.TEXT_NODE) as
-            | Text
-            | undefined;
-          if (!textNode) {
-            throw new Error("No text node found in literal for selection test");
-          }
-
-          const full = textNode.data;
-          const target = "teste piltast";
-          const start = full.indexOf(target);
-          expect(start).to.be.greaterThan(-1); // sanity
-
           const range = document.createRange();
-          range.setStart(textNode, start);
-          range.setEnd(textNode, start + target.length);
+          const selection = globalThis.getSelection()!;
+          range.setStart(element.firstChild!, 15);
+          range.setEnd(element.firstChild!, 28);
           selection.addRange(range);
           element.focus();
         });
         cy.document().then((doc) => {
           const selectedText = doc.getSelection()?.toString();
-          expect(selectedText).to.eq("teste piltast");
+          expect(selectedText).to.eq("teste piltast"); // Sanity check
         });
         cy.getDataCy("fonttype-bold").click();
         cy.contains("Er laget for").should("have.css", "font-weight", "400");
