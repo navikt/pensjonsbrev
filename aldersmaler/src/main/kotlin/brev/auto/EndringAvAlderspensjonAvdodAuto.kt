@@ -2,6 +2,7 @@ package brev.auto
 
 import brev.felles.Constants.DITT_NAV_URL
 import brev.felles.Constants.NAV_URL
+import brev.felles.ubestemtForm
 import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BorMedSivilstand
@@ -460,9 +461,9 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
 
                 paragraph {
                     text(
-                        bokmal { +"Du forsørger ikke lenger en [_Script Script_Tekst_001_]. Derfor opphører ektefelletillegget ditt." }, //todo må lage formatter for pensjon også
-                        nynorsk { +"Du forsørgjer ikkje lenger for ein [_Script Script_Tekst_001_]. Derfor vert ektefelletillegget ditt avslutta." },
-                        english { +"You no longer provide for a [_Script Script_Tekst_001_]. Your spouse supplement will therefore end." }
+                        bokmal { +"Du forsørger ikke lenger en "+ avdodInformasjon.sivilstandAvdoed.ubestemtForm() +". Derfor opphører ektefelletillegget ditt." }, //todo må lage formatter for pensjon også
+                        nynorsk { +"Du forsørgjer ikkje lenger for ein "+ avdodInformasjon.sivilstandAvdoed.ubestemtForm() +". Derfor vert ektefelletillegget ditt avslutta." },
+                        english { +"You no longer provide for a "+ avdodInformasjon.sivilstandAvdoed.ubestemtForm() +". Your spouse supplement will therefore end." }
                     )
                 }
 
