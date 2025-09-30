@@ -94,6 +94,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                   {...field}
                   error={fieldState.error?.message}
                   size="small"
+                  value={field.value ?? ""}
                 />
               )}
             />
@@ -109,6 +110,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                   {...field}
                   error={fieldState.error?.message}
                   size="small"
+                  value={field.value ?? ""}
                 />
               )}
             />
