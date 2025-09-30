@@ -173,7 +173,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
 
                 cell { includePhrase(KronerText(utbetalingData.faktiskStoenad)) }
                 cell { includePhrase(KronerText(utbetalingData.stoenadUtbetalt)) }
-                cell { includePhrase(KronerText(utbetalingData.avviksBeloep)) }
+                cell { includePhrase(KronerText(utbetalingData.avviksBeloep.absoluteValue())) }
             }
         }
     }
@@ -192,9 +192,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     .orShow {
         paragraph {
             text(
-                bokmal { +"Du fikk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt." },
-                nynorsk { +"Du fekk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt." },
-                english { +"You received " + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " in " + etteroppgjoersAar.format() + " including tax." },
+                bokmal { +"Du fikk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i stønad " + etteroppgjoersAar.format() + " inkludert skatt." },
+                nynorsk { +"Du fekk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i stønad " + etteroppgjoersAar.format() + " inkludert skatt." },
+                english { +"You received " + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " allowance in " + etteroppgjoersAar.format() + " including tax." },
             )
         }
     }
