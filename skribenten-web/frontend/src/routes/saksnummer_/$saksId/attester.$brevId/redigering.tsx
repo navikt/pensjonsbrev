@@ -9,12 +9,12 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
-import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -25,6 +25,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 
@@ -215,7 +216,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           <FormProvider {...form}>
             <VStack gap="8">
               <Heading size="small">
-                <EditedLetterTitle title={props.brev.redigertBrev.title} />
+                <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
               </Heading>
               <VStack gap="4">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />

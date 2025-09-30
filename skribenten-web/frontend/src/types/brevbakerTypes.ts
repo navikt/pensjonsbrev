@@ -65,7 +65,7 @@ export type Signatur = {
   readonly navAvsenderEnhet: string;
 };
 
-export type AnyBlock = Title | Title1Block | Title2Block | ParagraphBlock;
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
 
 export type Identifiable = {
   readonly id: number | null;
@@ -167,13 +167,13 @@ export type Title2Block = Block & {
   readonly content: TextContent[];
 };
 
-export const TITLE_BLOCK = -1;
-// export const TITLE = "TITLE";
-// export type Title = Block & {
+export const TITLE_INDEX = -1;
 export type Title = {
-  // readonly type: typeof TITLE;
+  // TODO(stw): Change title.text to title.content: LiteralValue[] ???
+  // Local overload forcing 'content' for 'text'
   // readonly content: LiteralValue[];
-  readonly text: TextContent[];
+  readonly text: LiteralValue[];
+  // readonly text: TextContent[];
   readonly deletedContent: number[];
 };
 

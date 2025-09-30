@@ -20,6 +20,8 @@ import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE }
 
 import type { ContentGroup, Focus, LiteralIndex, TableCellIndex } from "./state";
 
+export const ZERO_WIDTH_SPACE = "​";
+
 export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
 export function isTextContent(obj: Content | null | undefined): obj is TextContent;
 export function isTextContent(obj: Identifiable | null | undefined): obj is TextContent {
@@ -50,7 +52,7 @@ export function isEmptyContent(content: Content) {
     case VARIABLE:
     case NEW_LINE:
     case LITERAL: {
-      return text(content).trim().replaceAll("​", "").length === 0;
+      return text(content).trim().replaceAll(ZERO_WIDTH_SPACE, "").length === 0;
     }
     case ITEM_LIST: {
       return content.items.length === 0 || content.items.every(isEmptyItem);

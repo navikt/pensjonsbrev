@@ -105,10 +105,12 @@ export function isNew(obj: Identifiable): boolean {
 export function create(brev: BrevResponse): LetterEditorState {
   return {
     info: brev.info,
-    redigertBrev: {
-      ...brev.redigertBrev,
-      ...{ brev: { redigertBrev: { title: { content: brev.redigertBrev.title.text } } } },
-    },
+    redigertBrev: brev.redigertBrev,
+    // TODO(stw): Can we change the api to tile.content instead of title.text?
+    // redigertBrev: {
+    //   ...brev.redigertBrev,
+    //   ...{ brev: { redigertBrev: { title: { content: brev.redigertBrev.title.text } } } },
+    // },
     redigertBrevHash: brev.redigertBrevHash,
     saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },

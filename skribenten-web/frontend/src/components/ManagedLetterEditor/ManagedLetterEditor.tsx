@@ -16,8 +16,11 @@ import type { EditedLetter } from "~/types/brevbakerTypes";
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
 const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
-  //TODO(stw): Can we change the api to tile.content instead of title.text?
-  props.brev.redigertBrev.title.content = props.brev.redigertBrev.title.text;
+  // TODO(stw): Change title.text to title.content: LiteralValue[] ???
+  // Local overload forcing 'content' for 'text'
+  // if ("text" in props.brev.redigertBrev.title) {
+  //   props.brev.redigertBrev.title.content = props.brev.redigertBrev.title.text;
+  // }
   const { editorState, setEditorState, onSaveSuccess: onSaveSuccess } = useManagedLetterEditorContext();
 
   const { mutate, isError } = useMutation<BrevResponse, AxiosError, EditedLetter>({

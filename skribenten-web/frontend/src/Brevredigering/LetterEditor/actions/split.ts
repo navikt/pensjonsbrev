@@ -1,19 +1,11 @@
 import type { Draft } from "immer";
 
 import type { AnyBlock, Content, ItemList, TextContent, Title } from "~/types/brevbakerTypes";
-import { ITEM_LIST, TITLE_BLOCK } from "~/types/brevbakerTypes";
+import { ITEM_LIST, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import {
-  isEmptyBlock,
-  isEmptyContent,
-  isEmptyContentList,
-  isEmptyItem,
-  isItemList,
-  isLiteral,
-  isVariable,
-} from "../model/utils";
+import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
 import {
   addElements,
   isAtStartOfBlock,
@@ -30,7 +22,7 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number) {
   const editedLetter = draft.redigertBrev;
 
-  if (literalIndex.blockIndex === TITLE_BLOCK) {
+  if (literalIndex.blockIndex === TITLE_INDEX) {
     const block = editedLetter.title;
     splitBlockAtLiteral(draft, literalIndex, offset, block);
   } else {
@@ -63,14 +55,26 @@ function splitBlockAtLiteral(
   const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
   const previousBlockIsNotEmpty = previousBlock && !isEmptyBlock(previousBlock);
   const isAtFirstBlock = literalIndex.blockIndex === 0;
+  const isAtTitle = literalIndex.blockIndex === TITLE_INDEX;
 
   // if (!isEmptyBlock(block) && (!isAtStartOfBlock(literalIndex, offset) || previousBlockIsNotEmpty || isAtFirstBlock)) {
-  if ("text" in block && block.text?.length > 0) {
-    if (isAtStartOfBlock(literalIndex, offset)) {
-      console.log("startofblock");
-      addElements([newLiteral()], 0, editedLetter.title.text, editedLetter.title.deletedContent);
-    } else {
-      console.log("not startofblock");
+  if (isAtTitle) {
+    if ("text" in block && block.text?.length > 0) {
+      if (isAtStartOfBlock(literalIndex, offset)) {
+        const nextBlock = editedLetter.blocks[0];
+        if (block.text.length === 0 && isEmptyBlock(nextBlock)) {
+          return;
+        }
+        const el = removeElements(0, 1, {
+          content: editedLetter.title.text,
+          deletedContent: editedLetter.title.deletedContent,
+          id: null,
+        });
+        addElements([newLiteral()], 0, editedLetter.title.text, editedLetter.title.deletedContent);
+        addElements([newParagraph({ content: el })], 0, editedLetter.blocks, editedLetter.deletedBlocks);
+      } else {
+        console.log("not startofblock");
+      }
     }
   } else if (
     "content" in block &&

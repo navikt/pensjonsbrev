@@ -22,7 +22,6 @@ import { switchTypography } from "./switchTypography";
 import { toggleBulletList } from "./toggleBulletList";
 import { updateContentText } from "./updateContentText";
 import { updateSignatur } from "./updateSignatur";
-import { updateTitle } from "./updateTitle";
 
 const Actions = {
   create,
@@ -34,7 +33,6 @@ const Actions = {
   switchTypography,
   updateContentText,
   updateSignatur,
-  updateTitle,
   toggleBulletList,
   switchFontType,
   insertTable,

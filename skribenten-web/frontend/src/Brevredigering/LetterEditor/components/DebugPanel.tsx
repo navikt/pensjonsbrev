@@ -9,7 +9,7 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { AnyBlock, Block, Content, Item, Title } from "~/types/brevbakerTypes";
+import { TITLE_INDEX, type AnyBlock, type Block, type Content, type Item, type Title } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
   const { freeze, editorState } = useEditor();
@@ -78,7 +78,7 @@ export function DebugPanel() {
 const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorState }) => {
   return (
     <>
-      {<Block block={redigertBrev.title} focus={focus} index={-1} key={-1} />}
+      {<Title focus={focus} index={TITLE_INDEX} key={TITLE_INDEX} title={redigertBrev.title} />}
       {redigertBrev.blocks.map((b, index) => (
         <Block block={b} focus={focus} index={index} key={index} />
       ))}
@@ -99,7 +99,37 @@ const useToggleWithFocusUpdate = (
   return [isOpen, setIsOpen];
 };
 
-const Block = ({ block, focus, index }: { block: AnyBlock | Title; focus: Focus; index: number }) => {
+const Title = ({ title, focus, index }: { title: Title; focus: Focus; index: number }) => {
+  const blockText = title.text
+    .map((c) => (isTextContent(c) ? textOf(c) : null))
+    .filter((c) => c !== null)
+    .join("");
+
+  const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus.blockIndex, index);
+
+  return (
+    <ExpansionCard aria-label={`Title - ${index}`} onToggle={setIsOpen} open={isOpen} size={"small"}>
+      <ExpansionCard.Header>
+        <ExpansionCard.Title>
+          <HStack gap={"4"}>
+            <span>TITLE</span>
+            <span>Index: {index}</span>
+          </HStack>
+        </ExpansionCard.Title>
+        <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
+      </ExpansionCard.Header>
+      <ExpansionCard.Content>
+        <Accordion headingSize={"xsmall"} size={"small"}>
+          {title.text.map((c, index) => (
+            <Content content={c} focus={focus} index={index} key={index} />
+          ))}
+        </Accordion>
+      </ExpansionCard.Content>
+    </ExpansionCard>
+  );
+};
+
+const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: number }) => {
   const blockText = block.content
     .map((c) => (isTextContent(c) ? textOf(c) : null))
     .filter((c) => c !== null)

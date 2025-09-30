@@ -7,6 +7,8 @@
         "type": "LITERAL",
         "text": "Informasjon om saksbehandlingstiden vår",
         "editedText": null,
+        "fontType": "PLAIN",
+        "editedFontType": null,
         "tags": []
       }
     ],
