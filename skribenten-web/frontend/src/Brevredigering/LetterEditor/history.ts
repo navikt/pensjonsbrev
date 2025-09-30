@@ -17,11 +17,9 @@ export interface History {
 const MERGE_TIME_THRESHOLD_MS = 1000;
 
 function getHistoryEntryPatchKind(patches: Patch[]): PatchKind | undefined {
-  const allowedPaths: (string | number)[] = ["editedText", "saveStatus", "focus", "cursorPosition"];
-
   const isTextUpdate =
     patches.some((p) => p.path[p.path.length - 1] === "editedText" && typeof p.value === "string") &&
-    patches.every((p) => allowedPaths.includes(p.path[p.path.length - 1]));
+    patches.every((p) => p.path[p.path.length - 1] === "editedText" || p.path[p.path.length - 1] === "saveStatus");
 
   if (isTextUpdate) {
     return "TEXT_UPDATE";
