@@ -4,7 +4,8 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { createContext, useCallback, useContext } from "react";
+import { useCallback } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -14,7 +15,7 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import type { LetterEditorState } from "./model/state";
+import type { LetterEditorState, SelectionState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 export const LetterEditor = ({
@@ -34,7 +35,29 @@ export const LetterEditor = ({
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
+  const [selection, setSelection] = useState<SelectionState>({ inProgress: false });
+  const editableDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const editableDiv = editableDivRef.current;
+    if (editableDiv !== null) {
+      const handleSelectStart = () => {
+        setSelection((prev) => ({ ...prev, inProgress: true }));
+      };
+      editableDiv.addEventListener("selectstart", handleSelectStart);
+      return () => {
+        editableDiv.removeEventListener("selectstart", handleSelectStart);
+      };
+    }
+  }, [editableDivRef, setSelection]);
+
+  const stopSelection = useCallback(() => {
+    setSelection((prev) => ({ ...prev, inProgress: false }));
+  }, [setSelection]);
+  const completeSelection = useCallback(() => {
+    setSelection({ inProgress: false });
+  }, [setSelection]);
 
   const canUndo = editorState.history.entryPointer >= 0;
   const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
@@ -82,7 +105,7 @@ export const LetterEditor = ({
         overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze: freeze, error, editorState, setEditorState, selection }}>
         <div
           css={css`
             position: sticky;
@@ -121,7 +144,12 @@ export const LetterEditor = ({
           >
             <EditedLetterTitle title={letter.title} />
           </Heading>
-          <div onKeyDown={editorKeyboardShortcuts}>
+          <div
+            onKeyDown={editorKeyboardShortcuts}
+            onMouseUp={stopSelection}
+            onSelect={completeSelection}
+            ref={editableDivRef}
+          >
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
@@ -146,11 +174,13 @@ export const EditorStateContext = createContext<{
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
+  selection: SelectionState;
 }>({
   freeze: false,
   error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
+  selection: { inProgress: false },
 });
 export const useEditor = () => {
   return useContext(EditorStateContext);

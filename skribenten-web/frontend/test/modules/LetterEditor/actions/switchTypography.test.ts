@@ -1,15 +1,24 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { ParagraphBlock, Title1Block, Title2Block } from "~/types/brevbakerTypes";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, paragraph, select, title1, title2, variable } from "../utils";
 
+function switchTypography(
+  state: LetterEditorState,
+  index: Focus,
+  typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2,
+) {
+  return Actions.switchTypography({ ...state, focus: index }, typography);
+}
+
 describe("switchTypography", () => {
   test("can switch from paragraph to title1", () => {
     const state = letter(paragraph([literal({ text: "en literal" })]));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE1);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE1);
 
     const block = select<Title1Block>(result, { blockIndex: 0 });
     expect(block.type).toEqual(TITLE1);
@@ -18,7 +27,7 @@ describe("switchTypography", () => {
 
   test("can switch from paragraph to title2", () => {
     const state = letter(paragraph([literal({ text: "en literal" })]));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
 
     const block = select<Title2Block>(result, { blockIndex: 0 });
     expect(block.type).toEqual(TITLE2);
@@ -27,7 +36,7 @@ describe("switchTypography", () => {
 
   test("can switch from title1 to paragraph", () => {
     const state = letter(title1(literal({ text: "en literal" })));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH);
 
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
     expect(block.type).toEqual(PARAGRAPH);
@@ -36,7 +45,7 @@ describe("switchTypography", () => {
 
   test("can switch from title1 to title2", () => {
     const state = letter(title1(literal({ text: "en literal" })));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
 
     const block = select<Title2Block>(result, { blockIndex: 0 });
     expect(block.type).toEqual(TITLE2);
@@ -45,7 +54,7 @@ describe("switchTypography", () => {
 
   test("can switch from title2 to title1", () => {
     const state = letter(title2(literal({ text: "en literal" })));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE1);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE1);
 
     const block = select<Title1Block>(result, { blockIndex: 0 });
     expect(block.type).toEqual(TITLE1);
@@ -54,7 +63,7 @@ describe("switchTypography", () => {
 
   test("can switch from title2 to paragraph", () => {
     const state = letter(title2(literal({ text: "en literal" })));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH);
 
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
     expect(block.type).toEqual(PARAGRAPH);
@@ -63,8 +72,8 @@ describe("switchTypography", () => {
 
   test("originalType is not replaced when switching a second time", () => {
     const state = letter(title2(literal({ text: "en literal" })));
-    const result = Actions.switchTypography(
-      Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH),
+    const result = switchTypography(
+      switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH),
       { blockIndex: 0, contentIndex: 0 },
       TITLE1,
     );
@@ -75,8 +84,8 @@ describe("switchTypography", () => {
 
   test("originalType is cleared when switching back", () => {
     const state = letter(title2(literal({ text: "en literal" })));
-    const result = Actions.switchTypography(
-      Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH),
+    const result = switchTypography(
+      switchTypography(state, { blockIndex: 0, contentIndex: 0 }, PARAGRAPH),
       { blockIndex: 0, contentIndex: 0 },
       TITLE2,
     );
@@ -94,7 +103,7 @@ describe("switchTypography", () => {
         itemList({ items: [item(literal({ text: "en literal" }))] }),
       ]),
     );
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 1 }, TITLE1);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 1 }, TITLE1);
     expect(result.redigertBrev.blocks).toHaveLength(2);
 
     const title1block = select<Title1Block>(result, { blockIndex: 0 });
@@ -122,7 +131,7 @@ describe("switchTypography", () => {
         variable("to variabel"),
       ]),
     );
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE2);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE2);
     expect(result.redigertBrev.blocks).toHaveLength(2);
 
     const title2block = select<Title2Block>(result, { blockIndex: 1 });
@@ -150,7 +159,7 @@ describe("switchTypography", () => {
         variable("to variabel"),
       ]),
     );
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE1);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE1);
     expect(result.redigertBrev.blocks).toHaveLength(2);
 
     const title1block = select<Title1Block>(result, { blockIndex: 1 });
@@ -179,7 +188,7 @@ describe("switchTypography", () => {
         itemList({ items: [item(literal({ text: "punktliste 2" }))] }),
       ]),
     );
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE2);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 2 }, TITLE2);
     expect(result.redigertBrev.blocks).toHaveLength(3);
 
     const title2block = select<Title2Block>(result, { blockIndex: 1 });
@@ -207,15 +216,15 @@ describe("switchTypography", () => {
         literal({ text: "noe mer tekst" }),
       ]),
     );
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 1 }, TITLE1);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 1 }, TITLE1);
 
-    expect(result).toBe(state);
-    expect(result).toEqual(state);
+    expect(result.redigertBrev).toBe(state.redigertBrev);
+    expect(result.redigertBrev).toEqual(state.redigertBrev);
   });
 
   test("does not set originalType for new blocks", () => {
     const state = letter(asNew(paragraph([literal({ text: "noe tekst" })])));
-    const result = Actions.switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
+    const result = switchTypography(state, { blockIndex: 0, contentIndex: 0 }, TITLE2);
     expect(select<ParagraphBlock>(result, { blockIndex: 0 }).originalType).toBeUndefined();
   });
 });

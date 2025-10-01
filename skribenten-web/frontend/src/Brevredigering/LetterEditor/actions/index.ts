@@ -1,5 +1,6 @@
 import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
+import { deleteSelection } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
 import {
@@ -26,6 +27,7 @@ import { updateContentText } from "./updateContentText";
 const Actions = {
   create,
   cursorPosition,
+  deleteSelection,
   merge,
   addNewLine,
   paste,
