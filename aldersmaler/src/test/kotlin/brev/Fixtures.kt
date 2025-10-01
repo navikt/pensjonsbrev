@@ -2,7 +2,11 @@ package no.nav.pensjon.brev
 
 import brev.maler.auto.createVedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.auto.*
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps60AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps62AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.Ytelse
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.YtelseType
 import kotlin.reflect.KClass
 
 object Fixtures {

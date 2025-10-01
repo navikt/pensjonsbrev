@@ -1,4 +1,4 @@
-package brev.auto
+package brev.aldersovergang
 
 import brev.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder

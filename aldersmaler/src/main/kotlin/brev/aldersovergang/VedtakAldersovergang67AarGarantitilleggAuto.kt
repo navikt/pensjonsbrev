@@ -1,4 +1,4 @@
-package brev.auto
+package brev.aldersovergang
 
 import brev.felles.Constants
 import brev.felles.HarDuSpoersmaal
@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.auto.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.auto.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.auto.BeregnetPensjonPerManedVedVirkSelectors.garantitillegg
-import no.nav.pensjon.brev.api.model.maler.auto.VedtakAldersovergang67AarGarantitilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.auto.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.auto.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.maler.auto.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.virkFom
