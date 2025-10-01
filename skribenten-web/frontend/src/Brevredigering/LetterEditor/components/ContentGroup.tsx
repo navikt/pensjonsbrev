@@ -499,20 +499,17 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
         if (isEditingKey && contentEditableReference.current) {
           const selection = globalThis.getSelection();
-          // We only update focus if there's no selection, to avoid interfering with user selection with a mouse.
-          if (!selection || selection.isCollapsed) {
-            const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
-            // Store the caret position before a text-changing key
-            // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
-            if (
-              editorState.focus.cursorPosition !== preEditCursorPosition ||
-              !hasFocus(editorState.focus, literalIndex)
-            ) {
-              applyAction(updateFocus, setEditorState, {
-                ...literalIndex,
-                cursorPosition: preEditCursorPosition,
-              });
-            }
+          const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
+          // Store the caret position before a text-changing key
+          // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
+          if (
+            editorState.focus.cursorPosition !== preEditCursorPosition ||
+            !hasFocus(editorState.focus, literalIndex)
+          ) {
+            applyAction(updateFocus, setEditorState, {
+              ...literalIndex,
+              cursorPosition: selection?.isCollapsed ? preEditCursorPosition : undefined,
+            });
           }
         }
 

@@ -78,7 +78,7 @@ describe("EditableText - updateFocus respects user selection", () => {
     expect(selection?.isCollapsed).toBe(false);
     expect(selection?.getRangeAt(0).startOffset).toBe(0);
     expect(selection?.getRangeAt(0).endOffset).toBe(4);
-    expect(setEditorStateMock.mock.calls.length).toBe(callsBeforeKeyDown);
+    expect(setEditorStateMock.mock.calls.length).toBe(callsBeforeKeyDown + 1);
   });
 
   test("calls updateFocus when only a caret is present", () => {
