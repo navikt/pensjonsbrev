@@ -99,34 +99,30 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     english { + "." },
                 )
             }
-            ifNotNull(
-                pesysData.eksportForbudKode_safe,
-                pesysData.eksportForbudKodeAvdoed_safe
-            ) { eksportForbudKode, eksportForbudKodeAvdoed ->
-                showIf(eksportForbudKode.equalTo(UFOR25_ALDER)) {
-                    // eksportUngUforStans
-                    paragraph {
-                        text(
-                            bokmal { + "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
-                                    + "Derfor stanser vi utbetalingen av alderspensjonen din." },
-                            nynorsk { + "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
-                                    + "Derfor stansar vi utbetalinga av alderspensjonen din." },
-                            english { + "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
-                                    + "you have to live in Norway. We are therefore stopping your retirement pension." },
-                        )
-                    }
-                }.orShowIf(eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
-                    // eksportFlyktningStans
-                    paragraph {
-                        text(
-                            bokmal { + "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
-                                    + "Derfor stanser vi utbetalingen av alderspensjonen din." },
-                            nynorsk { + "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
-                                    + "Derfor stansar vi utbetalinga av alderspensjonen din." },
-                            english { + "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
-                                    + "We are therefore stopping your retirement pension." },
-                        )
-                    }
+            showIf(pesysData.eksportForbudKode_safe.equalTo(UFOR25_ALDER)) {
+                // eksportUngUforStans
+                paragraph {
+                    text(
+                        bokmal { + "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
+                            + "Derfor stanser vi utbetalingen av alderspensjonen din." },
+                        nynorsk { + "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
+                            + "Derfor stansar vi utbetalinga av alderspensjonen din." },
+                        english { + "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
+                            + "you have to live in Norway. We are therefore stopping your retirement pension." },
+                    )
+                }
+            }.orShowIf(pesysData.eksportForbudKode_safe.equalTo(FLYKT_ALDER) or
+                    pesysData.eksportForbudKodeAvdoed_safe.equalTo(FLYKT_ALDER)) {
+                // eksportFlyktningStans
+                paragraph {
+                    text(
+                        bokmal { + "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
+                            + "Derfor stanser vi utbetalingen av alderspensjonen din." },
+                        nynorsk { + "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
+                            + "Derfor stansar vi utbetalinga av alderspensjonen din." },
+                        english { + "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
+                            + "We are therefore stopping your retirement pension." },
+                    )
                 }
             }
 
