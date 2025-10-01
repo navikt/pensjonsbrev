@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne30.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
@@ -75,14 +76,16 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering })
+                    text(bokmal { + pesysData.vurdering })
                 }
             }
+
             showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
-                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                    text(bokmal {+ fritekst("Konkret begrunnelse der det er nødvendig") })
                 }
             }
+
             showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal { + fritekst("Konkret begrunnelse der det er nødvendig") })

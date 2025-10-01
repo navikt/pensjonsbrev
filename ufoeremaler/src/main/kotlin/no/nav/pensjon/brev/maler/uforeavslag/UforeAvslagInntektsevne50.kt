@@ -76,11 +76,19 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
                 }
             }
-            showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+                paragraph {
+                    text(bokmal { + pesysData.vurdering })
+                }
+            }
+
+            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
                 paragraph {
                     text(bokmal {+ fritekst("Konkret begrunnelse der det er nødvendig") })
                 }
             }
+
             paragraph {
                 text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
                     pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." })
