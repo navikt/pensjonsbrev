@@ -1,6 +1,6 @@
 package brev.aldersovergang
 
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -112,7 +112,7 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                     text(bokmal { +"Alderspensjonen din blir vurdert på nytt etter vi har mottatt dokumentasjonen." })
                 }
 
-                includePhrase(HarDuSpoersmaal())
+                includePhrase(HarDuSpoersmaalAlder())
             }
         }
 }

@@ -1,11 +1,11 @@
-package no.nav.pensjon.brev.maler.adhoc.skjermingstillegg
+package brev.adhoc
 
+import brev.felles.Constants.KONTAKT_URL
+import brev.felles.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
+import brev.felles.Constants.PERSONVERNERKLAERING_URL
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.PERSONVERNERKLAERING_URL
+import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
@@ -16,7 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata> {
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2025_SKJERMT_FEIL_BEROERT_BRUKER
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ADHOC_2025_SKJERMT_FEIL_BEROERT_BRUKER
 
     override val template = createTemplate(
         languages = languages(Bokmal),

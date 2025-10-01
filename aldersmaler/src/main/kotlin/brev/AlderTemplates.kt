@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev
 
+import brev.adhoc.*
 import brev.aldersovergang.InfoAldersovergangEps60AarAuto
 import brev.aldersovergang.InfoAldersovergangEps62AarAuto
 import brev.aldersovergang.InfoFyller67AarSaerskiltSats
@@ -15,7 +16,17 @@ object AlderTemplates : AllTemplates {
         InfoFyller67AarSaerskiltSats,
         InfoAldersovergangEps60AarAuto,
         InfoAldersovergangEps62AarAuto,
-        VedtakAldersovergang67AarGarantitilleggAuto
+        VedtakAldersovergang67AarGarantitilleggAuto,
+        AdhocAFPInformasjonOekningToleransebeloep,
+        AdhocAlderspensjonFraFolketrygden,
+        AdhocAlderspensjonFraFolketrygden2,
+        AdhocAlderspensjonGjtOpprydding,
+        AdhocAlderspensjonGjtVarselBrev,
+        AdhocSkjermingstilleggFeilBeroertBruker,
+        AdhocSkjermingstilleggFeilMottaker,
+        AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
+        AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+        FeilUtsendingAvGjenlevenderett,
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(

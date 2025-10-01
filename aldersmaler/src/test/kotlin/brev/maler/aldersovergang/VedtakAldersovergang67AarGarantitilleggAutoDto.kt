@@ -1,4 +1,4 @@
-package brev.maler.auto
+package brev.maler.aldersovergang
 
 import no.nav.pensjon.brev.api.model.maler.aldersovergang.AlderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.aldersovergang.BeregnetPensjonPerManedVedVirk
