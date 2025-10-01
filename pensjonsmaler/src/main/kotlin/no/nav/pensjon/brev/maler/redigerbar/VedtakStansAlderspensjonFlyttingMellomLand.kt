@@ -130,60 +130,61 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 }
             }
 
-            showIf(regelverkType.isOneOf(AP2011, AP2016) and not(minst20ArTrygdetid) and pesysData.eksportForbudKode_safe.isNull() and pesysData.minst20AarTrygdetidKap20Avdoed) {
-                    // eksportAP2016Under20aarStans, eksportAP2011Under20aarStans
+            showIf(regelverkType.isOneOf(AP2011, AP2016) and not(minst20ArTrygdetid) and pesysData.eksportForbudKode_safe.isNull()) {
+                showIf(pesysData.harAvdoed and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
+                    // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod
                     paragraph {
                         text(
-                            bokmal { + "For å få utbetalt alderspensjonen din når du flytter til dette landet må du enten ha vært medlem i folketrygden i minst 20 år" },
-                            nynorsk { + "For få utbetalt alderspensjonen din når du flyttar til dette landet må du anten ha vore medlem i folketrygda i minst 20 år" },
-                            english { + "To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
+                            bokmal { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år." },
+                            nynorsk { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år." },
+                            english { + "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
                         )
                         showIf(regelverkType.equalTo(AP2016)) {
                             text(
-                                bokmal { + ", ha rett til tilleggspensjon eller ha tjent opp inntektspensjon." },
-                                nynorsk { + ", ha rett til tilleggspensjon eller ha tent opp inntektspensjon. " },
-                                english { + ", be entitled to a supplementary pension or have had a pensionable income. " }
+                                bokmal { + " Du har ikke rett til tilleggspensjon eller inntektspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon eller inntektspensjon." },
+                                english { + ", are entitled to a supplementary pension or income-based pension." }
                             )
                         }.orShow {
                             text(
-                                bokmal { + " eller ha rett til tilleggspensjon. " },
-                                nynorsk { + " eller ha rett til tilleggspensjon. " },
-                                english { + " or be entitled to a supplementary pension. " }
+                                bokmal { + " Du har ikke rett til tilleggspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon." },
+                                english { + " or are entitled to a supplementary pension." }
                             )
                         }
                         text(
-                            bokmal { + "Det har du ikke, og derfor stanser vi utbetalingen av alderspensjonen din." },
-                            nynorsk { + "Det har du ikkje, og derfor stansar vi utbetalinga av alderspensjonen din." },
-                            english { + "You do not meet any of these requirements, therefore we are stopping your retirement pension." }
-                        )
-                }
-            }
-            showIf(regelverkType.isOneOf(AP2011, AP2016) and pesysData.eksportForbudKodeAvdoed_safe.isNull() and pesysData.harAvdoed and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
-                // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod,
-                paragraph {
-                    text(
-                        bokmal { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år" },
-                        nynorsk { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år" },
-                        english { + "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
-                    )
-                    showIf(regelverkType.equalTo(AP2016)) {
-                        text(
-                            bokmal { + ", rett til tilleggspensjon eller ha tjent opp inntektspensjon. " },
-                            nynorsk { + ", rett til tilleggspensjon eller inntektspensjon. " },
-                            english { + ", are entitled to a supplementary pension or income-based pension. " }
-                        )
-                    }.orShow {
-                        text(
-                            bokmal { + " eller har rett til tilleggspensjon. " },
-                            nynorsk { + " eller har rett til tilleggspensjon. " },
-                            english { + " or are entitled to a supplementary pension. " }
+                            bokmal { + " Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + " Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { + " Then you are not eligible for your retirement pension when you move to this country. We are therefore stopping your retirement pension." }
                         )
                     }
-                    text(
-                        bokmal { + "Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
-                        nynorsk { + "Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
-                        english { + "Then you are not eligible for your retirement pension when you move to this country. We are therefore stopping your retirement pension." }
-                    )
+                }.orShow {
+                    // eksportAP2016Under20aarStans, eksportAP2011Under20aarStans
+                    paragraph {
+                        text(
+                            bokmal { +"Du har ikke vært medlem i folketrygden i minst 20 år." },
+                            nynorsk { +"Du har ikkje vore medlem i folketrygda i minst 20 år." },
+                            english { +"To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
+                        )
+                        showIf(regelverkType.equalTo(AP2016)) {
+                            text(
+                                bokmal { + " Du har ikke rett til tilleggspensjon eller inntektspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon eller inntektspensjon." },
+                                english { + ", be entitled to a supplementary pension or have had a pensionable income." }
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { + " Du har ikke rett til tilleggspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon." },
+                                english { +" or be entitled to a supplementary pension." }
+                            )
+                        }
+                        text(
+                            bokmal { + " Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + " Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { +" You do not meet any of these requirements, therefore we are stopping your retirement pension." }
+                        )
+                    }
                 }
             }
 
