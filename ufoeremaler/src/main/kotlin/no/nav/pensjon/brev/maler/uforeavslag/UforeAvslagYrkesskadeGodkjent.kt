@@ -58,6 +58,10 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
             }
 
+            paragraph {
+                text( bokmal { + "Du har en godkjent yrkesskade/yrkessykdom, jf. vedtak datert " + fritekst("dato") + ". Etter en samlet vurdering mener vi at denne mest sannsynlig ikke er årsaken til den arbeidsuførheten du har nå. "})
+            }
+
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +pesysData.vurdering })
