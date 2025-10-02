@@ -35,7 +35,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagDto> {
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_UNG_UFOR_26
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
