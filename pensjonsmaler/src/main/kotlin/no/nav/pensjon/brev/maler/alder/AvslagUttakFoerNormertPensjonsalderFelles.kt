@@ -30,7 +30,8 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val borINorge: Expression<Boolean>,
     val regelverkType: Expression<AlderspensjonRegelverkType>,
     val harEOSLand: Expression<Boolean>,
-    val avtaleland: Expression<String?>
+    val avtaleland: Expression<String?>,
+    val visInfoOmUttakFoer67: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -42,19 +43,29 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                         "For å ta ut alderspensjon før du er " + normertPensjonsalder.aarOgMaanederFormattert() + ", må du ha høy nok pensjonsopptjening. " +
                         "Du har for lav pensjonsopptjening til at du kan ta ut " + uttaksgrad.format() +
                         " prosent pensjon fra " + virkFom.format() + ". Derfor har vi avslått søknaden din." },
-                nynorsk { + 
+                nynorsk { +
                         "For å ta ut alderspensjon før du er " + normertPensjonsalder.aarOgMaanederFormattert() + ", må du ha høg nok pensjonsopptjening. " +
                         "Du har for låg pensjonsopptening til at du kan ta ut " + uttaksgrad.format() +
                         " prosent pensjon frå " + virkFom.format() + ". Derfor har vi avslått søknaden din." },
-                english { + 
+                english { +
                         "Your pension accrual must be sufficient to start drawing retirement pension before you turn " + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
                         "Your accumulated pension capital is not sufficient for you to draw a retirement pension at " + uttaksgrad.format() +
                         " percent from " + virkFom.format() + ". Therefore, we have declined your application." },
             )
+        }
+
+        showIf(visInfoOmUttakFoer67) {
+            paragraph {
+                text(
+                    bokmal { +"Våre beregninger viser at du ikke har rett til å ta ut alderspensjonen din før du blir 67 år." },
+                    nynorsk { +"Våre berekningar viser at du ikkje har rett til å ta ut alderspensjon før du blir 67 år." },
+                    english { +"Our calculations shows that you are not eligible for retirement pension before the age of 67." }
+                )
+            }
         }
 
         includePhrase(AvslagHjemler(regelverkType, harEOSLand, prorataBruktIBeregningen, avtaleland))
