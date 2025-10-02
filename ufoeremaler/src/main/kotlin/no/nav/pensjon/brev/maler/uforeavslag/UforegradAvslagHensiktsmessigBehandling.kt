@@ -123,7 +123,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
             }
 
-            includePhrase(RettTilAKlageKort)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }
