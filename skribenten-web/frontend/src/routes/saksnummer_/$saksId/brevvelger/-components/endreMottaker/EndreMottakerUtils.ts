@@ -103,8 +103,9 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
       postnr: z
         .string()
         .trim()
-        .transform((s) => s.replace(/\s/g, "")),
-      poststed: z.string(),
+        .transform((s) => s.replace(/\s/g, ""))
+        .nullable(),
+      poststed: z.string().nullable(),
       land: z.string().min(1, "Obligatorisk"),
     })
     .superRefine((data, refinementContext) => {
@@ -135,8 +136,8 @@ const leggTilManuellAdresseTabNotSelectedSchema = z.object({
     linje1: z.string(),
     linje2: z.string(),
     linje3: z.string(),
-    postnr: z.string(),
-    poststed: z.string(),
+    postnr: z.string().nullable(),
+    poststed: z.string().nullable(),
     land: z.string(),
   }),
 });

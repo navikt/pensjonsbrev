@@ -55,14 +55,8 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     const safeContentIndex = safeIndex(focus.contentIndex, block.content);
     const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
     addElements([table], insertAt, block.content, block.deletedContent);
-    draft.focus = {
-      blockIndex: focus.blockIndex,
-      contentIndex: insertAt,
-      rowIndex: -1,
-      cellIndex: 0,
-      cellContentIndex: 0,
-      cursorPosition: 0,
-    };
+
+    draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
     draft.saveStatus = "DIRTY";
   },
 );

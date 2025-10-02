@@ -62,7 +62,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagDto> {
                         "I tillegg har du rett til å ta ut hel alderspensjon fra folketrygden." })
             }
             paragraph {
-                text(bokmal { +"år du søker om uføretrygd mellom fylte 62 og 67 år, " +
+                text(bokmal { +"Når du søker om uføretrygd mellom fylte 62 og 67 år, " +
                         "må din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet. " +
                         "Hvis du ikke oppfyller dette vilkåret, må du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet. " +
                         "Grunnbeløpet utgjør " + fritekst("grunnbeløp") + " kroner. " +
