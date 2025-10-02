@@ -24,8 +24,8 @@
     "@tanstack/react-router": "1.132.31",
     "axios": "1.12.2",
     "lodash": "4.17.21",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   },
   "devDependencies": {
     "@eslint/compat": "1.4.0",
@@ -37,10 +37,10 @@
     "@tanstack/router-plugin": "1.132.31",
     "@types/lodash": "4.17.20",
     "@types/node": "24.6.2",
-    "@types/react": "19.2.0",
-    "@types/react-dom": "19.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.45.0",
-    "@typescript-eslint/parser": "^8.31.1",
+    "@types/react": "19.1.1",
+    "@types/react-dom": "19.1.1",
+    "@typescript-eslint/eslint-plugin": "8.45.0",
+    "@typescript-eslint/parser": "8.45.0",
     "@vitejs/plugin-react": "5.0.4",
     "eslint": "9.36.0",
     "eslint-config-prettier": "10.1.8",
