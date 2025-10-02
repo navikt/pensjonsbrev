@@ -55,7 +55,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("p1-side2") {
                 felt {
-                    add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index + 1, pensjon) }
+                    add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon) }
                         .reduce { a, b -> a + b })
                 }
             }
@@ -64,7 +64,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("p1-side3") {
                 felt {
-                    add(side.mapIndexed { index, pensjon -> avslaattPensjon(index + 1, pensjon) }
+                    add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
                         .reduce { a, b -> a + b })
                 }
             }
@@ -73,25 +73,25 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         side("p1-side4") {
             felt {
                 // utfyllende institusjon
-                "institution-navn" to utfyllendeInstitusjon.navn
-                "institution-adresselinje" to utfyllendeInstitusjon.adresselinje
-                "institution-poststed" to utfyllendeInstitusjon.poststed.value
-                "institution-postnummer" to utfyllendeInstitusjon.postnummer.value
-                "institution-landkode" to utfyllendeInstitusjon.landkode.landkode
-                "institution-institusjonsID" to utfyllendeInstitusjon.institusjonsID
-                "institution-faksnummer" to utfyllendeInstitusjon.faksnummer
-                "institution-telefonnummer" to utfyllendeInstitusjon.telefonnummer?.value
-                "institution-epost" to utfyllendeInstitusjon.epost?.value
-                "institution-dato" to formaterDato(utfyllendeInstitusjon.dato)
-                "institution-underskrift" to ""
+                "Name[0]" to utfyllendeInstitusjon.navn
+                "Street_N[0]" to utfyllendeInstitusjon.adresselinje
+                "Town[0]" to utfyllendeInstitusjon.poststed.value
+                "Post_code[0]" to utfyllendeInstitusjon.postnummer.value
+                "Country_code[0]" to utfyllendeInstitusjon.landkode.landkode
+                "Institution_ID[0]" to utfyllendeInstitusjon.institusjonsID
+                "Office_fax_N[0]" to utfyllendeInstitusjon.faksnummer
+                "Office_phone_N[0]" to utfyllendeInstitusjon.telefonnummer?.value
+                "E-mail[0]" to utfyllendeInstitusjon.epost?.value
+                "Date[0]" to formaterDato(utfyllendeInstitusjon.dato)
+                "Signature[0]" to "" // TODO
             }
         }
     }
 }
 
-private fun formaterDato(dato: LocalDate?): Map<Language, String?> = mapOf(
-    Language.Bokmal to dato?.formater(Language.Bokmal),
-    Language.English to dato?.formater(Language.English)
+private fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
+    LanguageCode.BOKMAL to dato?.formater(Language.Bokmal),
+    LanguageCode.ENGLISH to dato?.formater(Language.English)
 )
 
 private fun LocalDate.formater(language: Language): String? =
@@ -110,23 +110,26 @@ private fun P1Dto.Adresse.formater() =
 
 private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
-        "${radnummer}-institusjon" to pensjon.institusjon,
-        "${radnummer}-pensjonstype" to pensjon.pensjonstype?.nummer.toString(),
-        "${radnummer}-datoFoersteUtbetaling" to formaterDato(pensjon.datoFoersteUtbetaling),
-        "${radnummer}-bruttobeloep" to pensjon.bruttobeloep,
-        "${radnummer}-grunnlagInnvilget" to pensjon.grunnlagInnvilget?.nummer?.toString(),
-        "${radnummer}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer?.toString(),
-        "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
-        "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.map { it.formater() },
+        "Institution_awarding_the_pension[$radnummer]" to pensjon.institusjon.mapNotNull { it.institusjonsnavn }.joinToString(", "),
+        "Type_of_pension[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
+        "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
+        "Gross_amount[$radnummer]" to pensjon.bruttobeloep,
+        "Pension_has_been_awarded[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]"},
+        "Pension_has_been_reduced[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]"},
+        "Review_period[${radnummer*2}]" to pensjon.vurderingsperiode, // TODO skal egentlig være start og slutt for vurderingsperiode...
+        "Review_period[${(radnummer*2)+1}]" to pensjon.vurderingsperiode,
+        "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.joinToString("\n") { it.formater() },
     )
 
 
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
-    "${radnummer}-institusjon" to pensjon.institusjon,
-    "${radnummer}-pensjonstype" to pensjon.pensjonstype?.nummer.toString(),
-    "${radnummer}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse?.nummer.toString(),
-    "${radnummer}-vurderingsperiode" to pensjon.vurderingsperiode,
-    "${radnummer}-adresseNyVurdering" to pensjon.adresseNyVurdering.map { it.formater() },
+    "Institution_awarding_the_pension[$radnummer]" to pensjon.institusjon,
+    "Type_of_pension[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
+    // Ja fro er riktig
+    "Reasons_fro_the_rejection[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
+    "Review_period[${radnummer*2}]" to pensjon.vurderingsperiode,// TODO skal egentlig være start og slutt for vurderingsperiode...
+    "Review_period[${(radnummer*2)+1}]" to pensjon.vurderingsperiode,
+    "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.joinToString("\n") { it.formater() },
 )
 
 fun LanguageCode.locale(): Locale =

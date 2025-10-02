@@ -5,6 +5,9 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.pdmodel.interactive.form.PDComboBox
+import org.apache.pdfbox.pdmodel.interactive.form.PDField
+import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
 internal object VedleggAppender {
 
@@ -19,7 +22,9 @@ internal object VedleggAppender {
                     .flatMap { it.felt.entries }
                     .associate { it.key to it.value?.get(spraak) }
 
-                pdfSide.setValues(map + ("page" to "${index + 1}/${sider.size}"))
+                // TODO hvordan setter vi faktiske sidetallet? (er ikke en form)
+                //pdfSide.setValues(map + ("page" to "${index + 1}/${sider.size}"))
+                fillFields(pdfSide, map)
                 merger.leggTilSide(target, pdfSide)
             }
         }
@@ -31,4 +36,30 @@ internal object VedleggAppender {
         javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
             ?.let { Loader.loadPDF(it.readBytes()) }
             ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
+
+
+    fun fillFields(document: PDDocument, feltVerdier: Map<String, String?>) {
+        document.documentCatalog?.acroForm?.fieldIterator?.forEach { field ->
+            fillFields(field, feltVerdier)
+        }
+    }
+
+    private fun fillFields(field: PDField, feltVerdier: Map<String, String?>) {
+        if(feltVerdier.containsKey(field.partialName)){
+            val feltVerdi = feltVerdier[field.partialName]
+            when(field) {
+                is PDTextField -> {
+                    field.value = feltVerdi
+                }
+
+                is PDComboBox -> {
+                    field.setValue(feltVerdi)
+                }
+            }
+
+        }
+        feltVerdier[field.partialName]?.let { feltVerdi ->
+        }
+    }
 }
+
