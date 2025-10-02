@@ -31,7 +31,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_BEHANDLING
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
