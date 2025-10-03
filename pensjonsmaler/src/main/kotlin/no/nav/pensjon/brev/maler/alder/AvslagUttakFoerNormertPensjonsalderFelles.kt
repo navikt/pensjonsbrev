@@ -63,7 +63,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                 text(
                     bokmal { +"Våre beregninger viser at du ikke har rett til å ta ut alderspensjonen din før du blir 67 år." },
                     nynorsk { +"Våre berekningar viser at du ikkje har rett til å ta ut alderspensjon før du blir 67 år." },
-                    english { +"Our calculations shows that you are not eligible for retirement pension before the age of 67." }
+                    english { +"Our calculations show that you are not eligible for retirement pension before the age of 67." }
                 )
             }
         }
