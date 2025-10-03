@@ -74,7 +74,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 text(
                     bokmal { +"Vi skriver til deg fordi vi har mottatt melding om at " + avdoedesNavn + " er død, og du kan ha rettigheter etter avdøde." },
                     nynorsk { +"Vi skriv til deg fordi vi har fått melding om at " + avdoedesNavn + " er død, og du kan ha rettar etter avdøde." },
-                    english { +"We are writing to you because we have received notice that " + avdoedesNavn + " has died ,and you may have rights as a surviving spouse." },
+                    english { +"We are writing to you because we have received notice that " + avdoedesNavn + " has died, and you may have rights as a surviving spouse." },
                 )
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {

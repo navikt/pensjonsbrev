@@ -11,10 +11,12 @@ data class UforeAvslagInntektDto(
 ) : RedigerbarBrevdata<UforeAvslagInntektDto.SaksbehandlervalgInntekt, UforeAvslagInntektDto.UforeAvslagInntektPendata> {
 
     data class SaksbehandlervalgInntekt(
-        @DisplayText("Vis vurdering fra vilkårsvedtak")
+        @DisplayText("Vis vurdering fra vilkår")
         val VisVurderingFraVilkarvedtak: Boolean,
         @DisplayText("Erstatt standardtekst med fritekst")
         val brukVurderingFraVilkarsvedtak: Boolean,
+        @DisplayText("Vis vurdering 12-9 IFU")
+        val visVurderingIFU: Boolean
     ) : BrevbakerBrevdata
 
     data class UforeAvslagInntektPendata(
@@ -22,5 +24,6 @@ data class UforeAvslagInntektDto(
         val vurdering: String,
         val inntektForUforhet: Int,
         val inntektEtterUforhet: Int,
+        val vurderingIFU: String,
     ) : BrevbakerBrevdata
 }

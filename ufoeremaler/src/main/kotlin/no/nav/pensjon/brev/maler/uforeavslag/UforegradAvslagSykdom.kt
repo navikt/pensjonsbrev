@@ -31,7 +31,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_OKT_GRAD_SYKDOM
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -95,7 +95,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
             }
 
-            includePhrase(RettTilAKlageKort)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

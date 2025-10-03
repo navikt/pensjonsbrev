@@ -71,8 +71,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
                 paragraph {
                     text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
                 }
-            }
-            showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+            }.orShow {
                 paragraph {
                     text(bokmal { +"Funksjonsnedsettelsen vises i form av " + fritekst("X") })
                     text(bokmal {

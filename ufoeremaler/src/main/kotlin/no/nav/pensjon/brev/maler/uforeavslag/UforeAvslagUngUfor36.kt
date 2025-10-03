@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagUngUfor26.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -14,8 +15,12 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -25,7 +30,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_UNG_UFOR_36
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -58,6 +63,18 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagDto> {
                         "og varig sykdom eller skade, som er klart dokumentert. " +
                         "Dersom du har vært mer enn 50 prosent yrkesaktiv etter at du fylte 26 år, må du ha søkt om uføretrygd før du fyller 36 år." })
             }
+
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+                paragraph {
+                    text(bokmal { +pesysData.vurdering })
+                }
+            }
+            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
+                paragraph {
+                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                }
+            }
+
             paragraph {
                 text(bokmal { +"Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
                         "Du søkte om uføretrygd etter at du fylte 36 år og oppfyller derfor ikke dette vilkåret." })

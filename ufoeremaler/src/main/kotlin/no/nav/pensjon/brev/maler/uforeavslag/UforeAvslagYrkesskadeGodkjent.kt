@@ -32,7 +32,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagDto> {
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_YRKESSKADE_GODKJENT
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -56,6 +56,10 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
+            }
+
+            paragraph {
+                text( bokmal { + "Du har en godkjent yrkesskade/yrkessykdom, jf. vedtak datert " + fritekst("dato") + ". Etter en samlet vurdering mener vi at denne mest sannsynlig ikke er årsaken til den arbeidsuførheten du har nå. "})
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
