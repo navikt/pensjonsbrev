@@ -30,12 +30,6 @@ export type LetterEditorState = {
   history: History;
 };
 
-export type SelectionState = {
-  inProgress: boolean;
-  // TODO: current er kanskje ikke egentlig nødvendig. getSelectionFocus kan kalles på direkte i backspace/delete handler.
-  current?: SelectionIndex;
-};
-
 export type SelectionIndex = {
   start: Focus & { cursorPosition: number };
   end: Focus & { cursorPosition: number };
