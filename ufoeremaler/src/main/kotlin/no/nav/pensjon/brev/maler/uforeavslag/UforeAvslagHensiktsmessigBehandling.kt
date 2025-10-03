@@ -8,13 +8,11 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKl
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
