@@ -15,7 +15,7 @@ application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
-val cxfVersion = "3.6.3"
+val cxfVersion = "4.1.3"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
