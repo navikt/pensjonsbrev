@@ -65,9 +65,7 @@ const SlettBrevModal = (properties: {
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo?.filter((brev) => {
-          return brev.id !== properties.brevId;
-        }),
+        currentBrevInfo?.filter((brev) => brev.id !== properties.brevId),
       );
     },
   });
@@ -86,7 +84,7 @@ const SlettBrevModal = (properties: {
         <BodyLong>
           {!slett.isSuccess
             ? (properties.texts?.body ?? "Brevet vil bli slettet, og du kan ikke angre denne handlingen.")
-            : `Brevet med id ${properties.brevId} er slettet. Vil du tilbake til brevbehandleren?`}
+            : `Brevet med id ${properties.brevId} er slettet. Vil du gå til brevbehandler?`}
         </BodyLong>
         {slett.isError && <ErrorMessage>Kunne ikke slette brev {properties.brevId}. Vil du prøve igjen?</ErrorMessage>}
       </Modal.Body>
