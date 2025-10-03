@@ -51,7 +51,7 @@ describe("attestering", () => {
     cy.clock().invoke("restore");
     cy.wait("@oppdaterBrevtekst", { timeout: 10000 });
 
-    cy.get("p:contains('Dette er en signatur')").should("exist");
+    cy.get("div:contains('Dette er en signatur')").should("exist");
     cy.contains("Dette er en ny tekstblokk").should("exist");
     cy.get("@lagreBrev.all").should("have.length", 0);
 
@@ -140,7 +140,7 @@ describe("attestering", () => {
     cy.wait("@oppdaterBrevtekst");
 
     // underskrift og brevtekst er oppdatert
-    cy.get("p:contains('Dette er det nye attestant navnet mitt')").should("exist");
+    cy.get("div:contains('Dette er det nye attestant navnet mitt')").should("exist");
     cy.contains("Dette er en ny tekstblokk").should("exist");
 
     //attesterer
