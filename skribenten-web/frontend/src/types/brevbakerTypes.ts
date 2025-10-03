@@ -169,7 +169,7 @@ export type Title2Block = Block & {
 
 export const TITLE_INDEX = -1;
 export type Title = {
-  readonly text: LiteralValue[];
+  readonly text: TextContent[];
   readonly deletedContent: number[];
 };
 
