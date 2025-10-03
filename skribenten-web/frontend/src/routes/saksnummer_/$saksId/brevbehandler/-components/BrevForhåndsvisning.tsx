@@ -24,7 +24,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     error: (error) => <Alert variant="error">{error.message}</Alert>,
     success: (pdf) =>
       pdf === null ? (
-        <VStack align="center">Fant ikke PDF</VStack>
+        <VStack align="center">Fant ikke PDF for brev med id {properties.brevId}</VStack>
       ) : (
         <PDFViewer
           brevId={properties.brevId}

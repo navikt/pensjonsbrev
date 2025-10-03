@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { TrashIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, HStack, Modal } from "@navikt/ds-react";
+import { BodyLong, Button, ErrorMessage, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -65,33 +65,43 @@ const SlettBrevModal = (properties: {
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.filter((brev) => brev.id !== properties.brevId),
+        currentBrevInfo?.filter((brev) => brev.id !== properties.brevId),
       );
-      properties.onSlettSuccess();
     },
   });
 
   return (
     <Modal
-      header={{ heading: properties.texts?.heading ?? "Vil du slette brevet?" }}
+      header={{
+        heading: !slett.isSuccess ? (properties.texts?.heading ?? "Vil du slette brevet?") : "Brevet er slettet",
+      }}
       onClose={properties.onClose}
       open={properties.åpen}
       portal
       width={450}
     >
       <Modal.Body>
-        <BodyShort>
-          {properties.texts?.body ?? "Brevet vil bli slettet, og du kan ikke angre denne handlingen."}
-        </BodyShort>
+        <BodyLong>
+          {!slett.isSuccess
+            ? (properties.texts?.body ?? "Brevet vil bli slettet, og du kan ikke angre denne handlingen.")
+            : `Brevet med id ${properties.brevId} er slettet. Vil du gå til brevbehandler?`}
+        </BodyLong>
+        {slett.isError && <ErrorMessage>Kunne ikke slette brev {properties.brevId}. Vil du prøve igjen?</ErrorMessage>}
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="4">
-          <Button onClick={properties.onClose} type="button" variant="tertiary">
-            {properties.texts?.buttonNo ?? "Nei, behold brevet"}
+          <Button disabled={slett.isPending} onClick={properties.onClose} type="button" variant="tertiary">
+            {slett.isSuccess ? "Avbryt" : (properties.texts?.buttonNo ?? "Nei, behold brevet")}
           </Button>
-          <Button loading={slett.isPending} onClick={() => slett.mutate()} type="button" variant="danger">
-            {properties.texts?.buttonYes ?? "Ja, slett brevet"}
-          </Button>
+          {!slett.isSuccess ? (
+            <Button loading={slett.isPending} onClick={() => slett.mutate()} type="button" variant="danger">
+              {properties.texts?.buttonYes ?? "Ja, slett brevet"}
+            </Button>
+          ) : (
+            <Button onClick={() => properties.onSlettSuccess()} type="button" variant="primary">
+              {"Gå til brevbehandler"}
+            </Button>
+          )}
         </HStack>
       </Modal.Footer>
     </Modal>
