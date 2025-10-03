@@ -25,6 +25,8 @@ data class InnvilgelseAvAlderspensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
+        @DisplayText("Hvis etterbetaling av pensjon")
+        val etterbetaling: Boolean?,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -46,7 +48,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val norgeBehandlendeLand: Boolean,  // v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
-        val vedtakEtterbetaling: Boolean,  // v1.Vedtak
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
