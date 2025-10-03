@@ -125,9 +125,9 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
     "Institution_awarding_the_pension[$radnummer]" to pensjon.institusjon,
     "Type_of_pension[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
-    // Ja fro er riktig
+    // Ja Reasons_fro er riktig
     "Reasons_fro_the_rejection[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
-    "Review_period[${radnummer*2}]" to pensjon.vurderingsperiode,// TODO skal egentlig være start og slutt for vurderingsperiode...
+    "Review_period[${radnummer*2}]" to pensjon.vurderingsperiode, // TODO skal egentlig være start og slutt for vurderingsperiode...
     "Review_period[${(radnummer*2)+1}]" to pensjon.vurderingsperiode,
     "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.joinToString("\n") { it.formater() },
 )

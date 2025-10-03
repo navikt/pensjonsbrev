@@ -27,12 +27,10 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
         PDDocument().use { target ->
             val merger = PDFMergerUtility()
 
-            // TODO brev får blank førsteside.
             Loader.loadPDF(pdfCompilationOutput.bytes).use {
                 merger.leggTilSide(target, it)
             }
 
-            // TODO den blanke siden er større enn A4 :/
             attachments.forEach {
                 VedleggAppender.lesInnVedlegg(it, spraak).use { vedlegg ->
                     leggTilBlankPartallsideOgSaaLeggTilSide(vedlegg, target, merger)
@@ -49,10 +47,6 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
     }
 }
 
-internal fun PDDocument.setValues(values: Map<String, String?>) = values.forEach { entry ->
-    documentCatalog?.acroForm?.fields?.firstOrNull { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
-}
-
 private fun leggTilBlankPartallsideOgSaaLeggTilSide(source: PDDocument, target: PDDocument, merger: PDFMergerUtility) {
     leggPaaBlankPartallsside(source, target)
     merger.leggTilSide(target, source)
@@ -64,7 +58,7 @@ private fun leggPaaBlankPartallsside(
 ) {
     if (originaltDokument.pages.count % 2 == 1) {
         target.addPage(PDPage())
-    }
+    } 
 }
 
 internal fun PDFMergerUtility.leggTilSide(destionation: PDDocument, source: PDDocument) =
