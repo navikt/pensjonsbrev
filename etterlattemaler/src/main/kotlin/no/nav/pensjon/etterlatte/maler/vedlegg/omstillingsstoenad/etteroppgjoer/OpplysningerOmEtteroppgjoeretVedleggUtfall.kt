@@ -73,13 +73,6 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     english { +"You received adjustment allowance for part of " + data.etteroppgjoersAar.format() + ". This means that income earned before the allowance was approved is deducted. We have deducted NOK xxxxx." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                )
-            }
 
             paragraph {
                 text(
