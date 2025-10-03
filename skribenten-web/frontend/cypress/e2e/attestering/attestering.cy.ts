@@ -246,6 +246,6 @@ describe("attestering", () => {
     cy.wait("@slettBrev2").its("response.statusCode").should("eq", 204);
 
     cy.contains("Gå til brevbehandler").click();
-    cy.url().should("contain", "/saksnummer/123456/brevbehandler");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
   });
 });
