@@ -13,8 +13,6 @@ data class UforeAvslagInntektDto(
     data class SaksbehandlervalgInntekt(
         @DisplayText("Vis vurdering fra vilkår")
         val VisVurderingFraVilkarvedtak: Boolean,
-        @DisplayText("Erstatt standardtekst med fritekst")
-        val brukVurderingFraVilkarsvedtak: Boolean,
         @DisplayText("Vis vurdering 12-9 IFU")
         val visVurderingIFU: Boolean
     ) : BrevbakerBrevdata
