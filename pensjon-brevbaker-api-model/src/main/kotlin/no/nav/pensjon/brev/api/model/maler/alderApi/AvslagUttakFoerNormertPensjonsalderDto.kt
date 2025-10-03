@@ -12,7 +12,7 @@ data class AvslagUttakFoerNormertPensjonsalderDto(
 ) : RedigerbarBrevdata<AvslagUttakFoerNormertPensjonsalderDto.SaksbehandlerValg, AvslagUttakFoerNormertPensjonsalderAutoDto> {
     data class SaksbehandlerValg(
         @DisplayText("Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år")
-        val visInfoOmUttakFoer67: Boolean
+        val visInfoOmUttakFoer67: Boolean?
     ) : BrevbakerBrevdata
 }
 
@@ -22,7 +22,7 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016Dto(
 ) : RedigerbarBrevdata<SaksbehandlerValg, AvslagUttakFoerNormertPensjonsalderAP2016AutoDto> {
     data class SaksbehandlerValg(
         @DisplayText("Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år")
-        val visInfoOmUttakFoer67: Boolean
+        val visInfoOmUttakFoer67: Boolean?
     ) : BrevbakerBrevdata
 }
 
