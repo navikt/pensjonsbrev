@@ -26,6 +26,14 @@
   box-shadow: none;
 }
 
+.editor-surface td [data-literal-index],
+.editor-surface th [data-literal-index] {
+  display: block;
+  width: 100%;
+  min-height: 1.4rem;
+  white-space: pre-wrap;
+}
+
 .PARAGRAPH {
   font-size: 16.5px;
   line-height: var(--a-font-line-height-heading-xsmall);
