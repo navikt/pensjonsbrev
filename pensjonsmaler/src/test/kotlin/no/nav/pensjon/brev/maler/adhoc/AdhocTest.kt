@@ -4,9 +4,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.maler.adhoc.skjermingstillegg.AdhocSkjermingstilleggFeilBeroertBruker
-import no.nav.pensjon.brev.maler.adhoc.skjermingstillegg.AdhocSkjermingstilleggFeilMottaker
+import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -104,77 +102,6 @@ class AdhocTest {
         testAdhocPdf(
             AdhocVarselOpphoerMedHvilendeRett.template,
             pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT",
-            Bokmal
-        )
-    }
-
-    @Test
-    fun `testAdhocAlderspensjonFraFolketrygden pdf`() {
-        testAdhocPdf(
-            AdhocAlderspensjonFraFolketrygden.template,
-            pdfName = "PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV",
-            Bokmal,
-            Nynorsk,
-            English
-        )
-    }
-
-    @Test
-    fun `testAdhocAlderspensjonFraFolketrygden 2 pdf`() {
-        testAdhocPdf(
-            AdhocAlderspensjonFraFolketrygden2.template,
-            pdfName = "PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2",
-            Bokmal,
-            Nynorsk,
-            English
-        )
-    }
-
-
-    @Test
-    fun `testAdhocFeilUtsendingAvGjenlevenderett pdf`() {
-        testAdhocPdf(
-            FeilUtsendingAvGjenlevenderett.template,
-            pdfName = "PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER",
-            Bokmal,
-            Nynorsk,
-            English
-        )
-    }
-
-    @Test
-    fun `testAdhocAlderspensjonGjtVarselBrev pdf`() {
-        testAdhocPdf(
-            AdhocAlderspensjonGjtVarselBrev.template,
-            pdfName = AdhocAlderspensjonGjtVarselBrev.kode.name,
-            Bokmal, Nynorsk, English
-        )
-    }
-
-
-    @Test
-    fun `testAdhocAlderspensjonGjtVedtakBrev pdf`() {
-        testAdhocPdf(
-            AdhocAlderspensjonGjtOpprydding.template,
-            pdfName = AdhocAlderspensjonGjtOpprydding.kode.name,
-            Bokmal, Nynorsk, English
-        )
-    }
-
-    @Test
-    fun `testAdhocSkjermingstilleggFeilMottaker pdf`() {
-        testAdhocPdf(
-            AdhocSkjermingstilleggFeilMottaker.template,
-            pdfName = AdhocSkjermingstilleggFeilMottaker.kode.name,
-            Bokmal
-        )
-    }
-
-    @Test
-    fun `testAdhocSkjermingstilleggFeilBeroertBruker pdf`() {
-        testAdhocPdf(
-            AdhocSkjermingstilleggFeilBeroertBruker.template,
-            pdfName = AdhocSkjermingstilleggFeilBeroertBruker.kode.name,
             Bokmal
         )
     }

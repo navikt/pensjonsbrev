@@ -1,8 +1,8 @@
-package brev.maler.auto
+package brev.maler.aldersovergang
 
-import no.nav.pensjon.brev.api.model.maler.auto.AlderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.auto.BeregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.auto.VedtakAldersovergang67AarGarantitilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.AlderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.BeregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.api.model.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
