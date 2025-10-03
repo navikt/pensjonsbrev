@@ -92,14 +92,13 @@ describe("attestering", () => {
 
     cy.visit("/saksnummer/123456/attester/1/redigering");
     cy.contains("Underskrift").should("exist");
-    cy.clock();
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (req) => {
       req.reply({
         journalpostId: 9908,
         error: null,
       });
-    });
+    }).as("pdf");
 
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (req) => {
       req.reply({ ...defaultBrev, redigertBrev: req.body });
@@ -174,5 +173,78 @@ describe("attestering", () => {
     cy.contains("Sentral print").should("exist");
     cy.contains("Journalpost ID").should("exist");
     cy.contains("9908").should("exist");
+  });
+
+  it("kan slette brev til attestering", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (req) =>
+      req.reply(defaultBrev),
+    ).as("brev");
+
+    cy.visit("/saksnummer/123456/attester/1/redigering");
+    cy.contains("Underskrift").should("exist");
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (req) => {
+      req.reply({
+        journalpostId: 9908,
+        error: null,
+      });
+    }).as("pdf");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (req) => {
+      req.reply({ ...defaultBrev, redigertBrev: req.body });
+    }).as("oppdaterBrevtekst");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", (req) => {
+      req.reply({
+        ...defaultBrev,
+        redigertBrev: req.body.redigertBrev,
+        saksbehandlerValg: req.body.saksbehandlerValg,
+        info: { ...defaultBrev.info, status: { type: "Attestering" } },
+      });
+    }).as("attester");
+
+    //attesterer
+    cy.get("@attester.all").should("have.length", 0);
+    cy.contains("Fortsett").click();
+    cy.wait("@attester");
+    cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
+
+    //------Forhåndsvisning------
+    cy.contains("Informasjon om saksbehandlingstid").should("exist");
+    cy.contains("Mottaker").should("exist");
+    cy.contains("Tydelig Bakke").should("exist");
+    cy.contains("Mauråsveien 29").should("exist");
+    cy.contains("4844 Arendal").should("exist");
+    cy.contains("Distribusjonstype").should("exist");
+    cy.contains("Sentral print").should("exist");
+    cy.wait("@pdf").its("response.statusCode").should("eq", 200);
+
+    cy.intercept("DELETE", "/bff/skribenten-backend/sak/123456/brev/1", (req) => {
+      req.reply(404);
+    }).as("slettBrev1");
+
+    cy.contains("Slett").click();
+    cy.contains("Vil du slette brevet?").should("exist");
+    cy.contains("Brevet vil bli slettet, og du kan ikke angre denne handlingen.").should("exist");
+
+    cy.contains("Nei, behold brev").click();
+    cy.contains("Brevet vil bli slettet, og du kan ikke angre denne handlingen.").should("not.exist");
+
+    cy.contains("Slett").click();
+    cy.contains("Brevet vil bli slettet, og du kan ikke angre denne handlingen.").should("exist");
+
+    cy.contains("Ja, slett brev").click();
+    cy.contains("Kunne ikke slette brev 1. Vil du prøve igjen?").should("exist");
+    cy.wait("@slettBrev1").its("response.statusCode").should("eq", 404);
+
+    cy.intercept("DELETE", "/bff/skribenten-backend/sak/123456/brev/1", (req) => {
+      req.reply(204);
+    }).as("slettBrev2");
+
+    cy.contains("Ja, slett brev").click();
+    cy.wait("@slettBrev2").its("response.statusCode").should("eq", 204);
+
+    cy.contains("Gå til brevbehandler").click();
+    cy.url().should("contain", "/saksnummer/123456/brevbehandler");
   });
 });
