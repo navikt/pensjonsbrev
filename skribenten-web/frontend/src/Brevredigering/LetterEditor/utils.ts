@@ -11,11 +11,19 @@ export enum Typography {
   TITLE2 = "TITLE2",
 }
 
-export const TypographyToText = {
-  [Typography.TITLE1]: "Overskrift 1 (alt+1)",
-  [Typography.TITLE2]: "Overskrift 2 (alt+2)",
-  [Typography.PARAGRAPH]: "Normal (alt+3)",
-} as const;
+const isMacOS = navigator.userAgent.includes("Mac OS X");
+
+export const TypographyToText = isMacOS
+  ? ({
+      [Typography.TITLE1]: "Overskrift 1 (⌥+1)",
+      [Typography.TITLE2]: "Overskrift 2 (⌥+2)",
+      [Typography.PARAGRAPH]: "Normal (⌥+3)",
+    } as const)
+  : ({
+      [Typography.TITLE1]: "Overskrift 1 (Alt+1)",
+      [Typography.TITLE2]: "Overskrift 2 (Alt+2)",
+      [Typography.PARAGRAPH]: "Normal (Alt+3)",
+    } as const);
 
 export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
   return useCallback(
