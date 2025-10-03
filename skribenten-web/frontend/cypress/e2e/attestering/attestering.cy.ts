@@ -92,6 +92,7 @@ describe("attestering", () => {
 
     cy.visit("/saksnummer/123456/attester/1/redigering");
     cy.contains("Underskrift").should("exist");
+    cy.clock();
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (req) => {
       req.reply({
