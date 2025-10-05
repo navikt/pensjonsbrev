@@ -6,8 +6,9 @@ import { useEffect } from "react";
 // continuous block of text, but only during a drag-selection.
 
 export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefObject<T | null>, enabled = true) {
+  const host = hostRef.current;
+
   useEffect(() => {
-    const host = hostRef.current;
     if (!host || !enabled) return;
 
     const isInside = (n: Node | null) => !!n && host.contains(n);
@@ -69,5 +70,5 @@ export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefOb
       document.removeEventListener("pointercancel", onPointerCancel, true);
       window.removeEventListener("blur", onWindowBlur);
     };
-  }, [hostRef, enabled]);
+  }, [enabled, host]);
 }
