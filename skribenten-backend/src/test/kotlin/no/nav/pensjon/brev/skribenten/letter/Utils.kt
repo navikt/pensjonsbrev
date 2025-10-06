@@ -19,7 +19,12 @@ fun letter(vararg blocks: LetterMarkup.Block) =
             dokumentDato = LocalDate.now()
         ),
         blocks = blocks.toList(),
-        signatur = SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn")
+        signatur = SignaturImpl(
+            hilsenTekst = "Med vennlig hilsen",
+            saksbehandlerNavn = "Kjersti Saksbehandler",
+            attesterendeSaksbehandlerNavn = null,
+            navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
+        )
     )
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =
@@ -36,7 +41,6 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         blocks = if (fixParentIds) { blocks.map { it.fixParentIds(null) }.toList() } else blocks.toList(),
         signatur = SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
-            saksbehandlerRolleTekst = "Saksbehandler",
             saksbehandlerNavn = "Kjersti Saksbehandler",
             attesterendeSaksbehandlerNavn = null,
             navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
