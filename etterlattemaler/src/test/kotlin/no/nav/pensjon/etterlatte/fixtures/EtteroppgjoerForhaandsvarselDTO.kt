@@ -53,5 +53,6 @@ fun createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO() =
     EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
         data = EtteroppgjoerBeregningVedleggInnholdDTO(
             etteroppgjoersAar = 2024,
+            erVedtak = true,
         )
     )

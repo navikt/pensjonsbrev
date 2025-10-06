@@ -14,11 +14,14 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.erVedtak
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.erVedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTOSelectors.data
 
 data class EtteroppgjoerBeregningVedleggInnholdDTO(
     val etteroppgjoersAar: Int,
+    val erVedtak: Boolean,
 )
 data class EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
     val data: EtteroppgjoerBeregningVedleggInnholdDTO
@@ -26,7 +29,7 @@ data class EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
 
 @TemplateModelHelpers
 object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO>, Vedlegg {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL_BEREGNINGVEDLEGG_INNHOLD
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_BEREGNINGVEDLEGG_INNHOLD
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
@@ -73,12 +76,15 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     english { +"You received adjustment allowance for part of " + data.etteroppgjoersAar.format() + ". This means that income earned before the allowance was approved is deducted. We have deducted NOK xxxxx." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                )
+
+            showIf(data.erVedtak) {
+                paragraph {
+                    text(
+                        bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                    )
+                }
             }
 
             paragraph {
