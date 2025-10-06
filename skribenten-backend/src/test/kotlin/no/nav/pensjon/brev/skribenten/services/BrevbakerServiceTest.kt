@@ -74,7 +74,6 @@ class BrevbakerServiceTest {
         ),
         signatur = SignaturImpl(
             hilsenTekst = "Friendly regards",
-            saksbehandlerRolleTekst = "case worker",
             saksbehandlerNavn = "case worker name",
             attesterendeSaksbehandlerNavn = "case worker name2",
             navAvsenderEnhet = "Nav abc"

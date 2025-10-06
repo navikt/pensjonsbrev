@@ -553,7 +553,6 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 	public abstract fun getHilsenTekst ()Ljava/lang/String;
 	public abstract fun getNavAvsenderEnhet ()Ljava/lang/String;
 	public abstract fun getSaksbehandlerNavn ()Ljava/lang/String;
-	public abstract fun getSaksbehandlerRolleTekst ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl {

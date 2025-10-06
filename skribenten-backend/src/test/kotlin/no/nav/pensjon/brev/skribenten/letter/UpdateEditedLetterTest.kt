@@ -43,7 +43,12 @@ class UpdateRenderedLetterTest {
                 saksnummer = "nytt saksnummer",
                 dokumentDato = LocalDate.now(),
             ),
-            signatur = SignaturImpl("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
+            signatur = SignaturImpl(
+                hilsenTekst = "ny hilsenTekst",
+                saksbehandlerNavn = "ny saksbehandlernavn",
+                attesterendeSaksbehandlerNavn = "ny attesterendenavn",
+                navAvsenderEnhet = "ny avsenderenhet"
+            ),
         )
 
         assertEquals(next.toEdit(), rendered.toEdit().copy(deletedBlocks = setOf(-1)).updateEditedLetter(next))
