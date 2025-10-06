@@ -17,6 +17,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
+            etterbetaling = true
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
@@ -51,7 +52,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             kravVirkDatoFom = LocalDate.of(2025, 6, 1),
             regelverkType = AlderspensjonRegelverkType.AP2025,
             sakstype = Sakstype.ALDER,
-            vedtakEtterbetaling = true,
             vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
                 antallLandVilkarsprovd = 2,
                 landNavn = listOf("Sverige", "Finland"),

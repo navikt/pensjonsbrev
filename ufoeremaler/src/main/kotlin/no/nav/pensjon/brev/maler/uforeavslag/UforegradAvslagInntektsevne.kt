@@ -4,23 +4,18 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
-import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagInntektsevne30.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.brukVurderingFraVilkarsvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.visVurderingIFU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektEtterUforhet
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektForUforhet
@@ -38,7 +33,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
     override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -80,16 +75,8 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 }
             }
 
-            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
-                paragraph {
-                    text(bokmal {+ fritekst("Konkret begrunnelse der det er nødvendig") })
-                }
-            }
-
-            showIf(!saksbehandlerValg.VisVurderingFraVilkarvedtak and !saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
-                paragraph {
-                    text(bokmal { + fritekst("Konkret begrunnelse der det er nødvendig") })
-                }
+            paragraph {
+                text(bokmal { +fritekst("Konkret begrunnelse der det er nødvendig") })
             }
 
             paragraph {
@@ -114,7 +101,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7 og 12-10." })
             }
 
-            includePhrase(RettTilAKlageKort)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsyn)
             includePhrase(HarDuSporsmal)
         }

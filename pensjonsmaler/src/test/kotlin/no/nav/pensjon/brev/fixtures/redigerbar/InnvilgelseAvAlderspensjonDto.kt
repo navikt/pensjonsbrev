@@ -15,6 +15,7 @@ fun createInnvilgelseAvAlderspensjonDto() =
     InnvilgelseAvAlderspensjonDto(
         saksbehandlerValg = InnvilgelseAvAlderspensjonDto.SaksbehandlerValg(
             kravVirkDatoFomSenereEnnOensketUttakstidspunkt = false,
+            etterbetaling = true
         ),
         pesysData = InnvilgelseAvAlderspensjonDto.PesysData(
             afpPrivatResultatFellesKontoret = false,
@@ -58,7 +59,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             norgeBehandlendeLand = false,
             regelverkType = AlderspensjonRegelverkType.AP2016,
             sakstype = Sakstype.ALDER,
-            vedtakEtterbetaling = false,
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
             maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(

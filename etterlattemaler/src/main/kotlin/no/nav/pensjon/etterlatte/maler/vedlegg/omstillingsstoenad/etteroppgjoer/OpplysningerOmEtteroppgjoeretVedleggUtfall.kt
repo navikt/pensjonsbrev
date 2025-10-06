@@ -45,13 +45,19 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             )
         }
 
-        // TODO: NN og EN senere
         outline {
             title2 {
                 text(
-                    bokmal { +"Beløp trukket fra din pensjonsgivende inntekt" },
-                    nynorsk { +"Beløp som er trekt frå den pensjonsgivande inntekta di" },
-                    english { +"Amounts deducted from your pensionable income" },
+                    bokmal { +"Beløp trukket fra din pensjonsgivende inntekt - fradragsbeløp" },
+                    nynorsk { +"Beløp som er trekt frå den pensjonsgivande inntekta di - frådragsbeløpet" },
+                    english { +"Amounts deducted from your pensionable income - deductible amount" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Fradragsbeløpet er den delen av inntekten din som ikke tas med når vi beregner omstillingsstønaden i inntektsoppgjørsåret." },
+                    nynorsk { +"Frådragsbeløpet er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i inntektsoppgjersåret." },
+                    english { +"The deductible amount is the part of your income that is not included when we calculate the adjustment allowance in the income settlement year." },
                 )
             }
             paragraph {
@@ -62,16 +68,9 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 text(
-                    bokmal { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde før du fikk innvilget stønaden. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>." },
-                    nynorsk { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde før du fikk innvilget stønaden. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>." },
-                    english { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde før du fikk innvilget stønaden. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>." },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                    bokmal { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde før du fikk innvilget stønaden. Dette er fradragsbeløpet. Vi har trukket fra xxxxx kroner." },
+                    nynorsk { +"Du har hatt omstillingsstønad i delar av " + data.etteroppgjoersAar.format() + ". Det betyr at vi trekkjer frå inntekt du hadde før du fekk innvilga stønaden. Dette er frådragsbeløpet. Vi har trekt frå xxxxx kroner." },
+                    english { +"You received adjustment allowance for part of " + data.etteroppgjoersAar.format() + ". This means that income earned before the allowance was approved is deducted. We have deducted NOK xxxxx." },
                 )
             }
 
@@ -83,9 +82,23 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 text(
-                    bokmal { +"Du har hatt omstillingsstønad i hele " + data.etteroppgjoersAar.format() + ". Det er kun omstillingsstønaden som ikke skal regnes med i inntekten som reduseres omstillingsstønaden din." },
-                    nynorsk { +"Du har hatt omstillingsstønad i hele " + data.etteroppgjoersAar.format() + ". Det er kun omstillingsstønaden som ikke skal regnes med i inntekten som reduseres omstillingsstønaden din." },
-                    english { +"Du har hatt omstillingsstønad i hele " + data.etteroppgjoersAar.format() + ". Det er kun omstillingsstønaden som ikke skal regnes med i inntekten som reduseres omstillingsstønaden din." },
+                    bokmal { +"Du har hatt omstillingsstønad i hele " + data.etteroppgjoersAar.format() + ". Det er kun omstillingsstønaden som ikke skal regnes med i inntekten som reduserer omstillingsstønaden din." },
+                    nynorsk { +"Du har hatt omstillingsstønad heile  " + data.etteroppgjoersAar.format() + ". Det er berre omstillingsstønaden som ikkje skal reknast med i inntekta som reduserer omstillingsstønaden din." },
+                    english { +"You have received adjustment allowance for the whole of " + data.etteroppgjoersAar.format() + ". Only the adjustment allowance itself is excluded from the income used to reduce your benefit." },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"EVENTUELT: " },
+                    nynorsk { +"EVENTUELT: " },
+                    english { +"EVENTUELT: " },
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
+                text(
+                    bokmal { +"Du har mottatt omstillingsstønad gjennom hele " + data.etteroppgjoersAar.format() + ". Det er kun selve omstillingsstønaden som holdes utenfor når inntekten som påvirker stønadens størrelse beregnes. Det foreligger derfor ingen annen inntekt som skal trekkes fra i beregningen." },
+                    nynorsk { +"Du har motteke omstillingsstønad gjennom heile " + data.etteroppgjoersAar.format() + ". Det er berre sjølve omstillingsstønaden som blir halden utanfor når vi reknar ut inntekta som påverkar storleiken på stønaden. Det er derfor ingen annan inntekt som skal trekkjast frå i utrekninga." },
+                    english { +"You have received adjustment allowance throughout " + data.etteroppgjoersAar.format() + ". Only the adjustment allowance itself is excluded when calculating the income that affects the amount of the allowance. Therefore, there is no other income to be deducted in the calculation." },
                 )
             }
 
@@ -97,9 +110,9 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 )
                 text(
-                    bokmal { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde etter stønaden ble opphørt. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>." },
-                    nynorsk { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde etter stønaden ble opphørt. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>." },
-                    english { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde etter stønaden ble opphørt. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>." },
+                    bokmal { +"Du har hatt omstillingsstønad i deler av " + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde etter stønaden ble opphørt. Vi har trukket fra xxxxx kroner." },
+                    nynorsk { +"Du har hatt omstillingsstønad i delar av " + data.etteroppgjoersAar.format() + ". Det betyr at vi trekkjer frå inntekt du hadde etter at stønaden vart avslutta. Vi har trekt frå xxxxx kroner." },
+                    english { +"You have received adjustment allowance during part of " + data.etteroppgjoersAar.format() + ". This means we deduct any income you earned after your allowance ended. We have deducted NOK xxxxx." },
                 )
             }
 

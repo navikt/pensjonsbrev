@@ -158,13 +158,11 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("brev-title-textfield").click().type("GGMU");
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
 
     cy.getDataCy("is-sensitive").get(".navds-error-message");
     cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
 
-    //tanstack knappen hovrer over ferdigstill knappen - vå i klikker på vestre side av knappen som er synlig. Se om vi kan fikse dette
     cy.getDataCy("order-letter").click("left");
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",

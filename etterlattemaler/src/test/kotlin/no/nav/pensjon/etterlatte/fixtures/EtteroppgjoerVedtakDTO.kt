@@ -31,7 +31,8 @@ fun createEtteroppgjoerVedtakBrevDTO() =
                 Kroner(4444)
             ),
             vedleggInnhold = emptyList(),
-            utbetaltBeloep = Kroner(4444)
+            utbetaltBeloep = Kroner(4444),
+            rettsgebyrBeloep = Kroner(1234)
         )
     )
 

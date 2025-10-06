@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 
 import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST } from "~/types/brevbakerTypes";
+import { ITEM_LIST, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
@@ -20,9 +20,12 @@ import {
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = withPatches(splitRecipe);
 
 export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number) {
-  const editedLetter = draft.redigertBrev;
-  const block = editedLetter.blocks[literalIndex.blockIndex];
-  const content = block.content[literalIndex.contentIndex];
+  if (literalIndex.blockIndex === TITLE_INDEX) {
+    return;
+  }
+
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const content = block?.content[literalIndex.contentIndex];
 
   if (isLiteral(content)) {
     splitBlockAtLiteral(draft, literalIndex, offset, block);

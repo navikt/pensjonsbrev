@@ -9,9 +9,13 @@ import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
 import { withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isParagraph, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import { LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+import { LITERAL, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
 
 export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches((draft, focus) => {
+  if (focus.blockIndex === TITLE_INDEX) {
+    return;
+  }
+
   const block = draft.redigertBrev.blocks[focus.blockIndex];
 
   if (isParagraph(block)) {
@@ -21,9 +25,9 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
     if (isTextContent(content) && !("itemIndex" in focus) && offset !== undefined) {
       switch (content.type) {
         case LITERAL: {
-          const atStartOfContentWithLength = offset === 0 && text(content).length > 0;
+          const atStartOfNonEmptyContent = offset === 0 && text(content).length > 0;
           const atEndOfContentOrContentZeroLength = offset >= text(content).length;
-          if (atStartOfContentWithLength) {
+          if (atStartOfNonEmptyContent) {
             if (block.content[focus.contentIndex - 1]?.type === NEW_LINE) {
               break;
             }

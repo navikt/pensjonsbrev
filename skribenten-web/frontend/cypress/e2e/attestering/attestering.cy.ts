@@ -51,7 +51,7 @@ describe("attestering", () => {
     cy.clock().invoke("restore");
     cy.wait("@oppdaterBrevtekst", { timeout: 10000 });
 
-    cy.get("p:contains('Dette er en signatur')").should("exist");
+    cy.get("div:contains('Dette er en signatur')").should("exist");
     cy.contains("Dette er en ny tekstblokk").should("exist");
     cy.get("@lagreBrev.all").should("have.length", 0);
 
@@ -140,7 +140,7 @@ describe("attestering", () => {
     cy.wait("@oppdaterBrevtekst");
 
     // underskrift og brevtekst er oppdatert
-    cy.get("p:contains('Dette er det nye attestant navnet mitt')").should("exist");
+    cy.get("div:contains('Dette er det nye attestant navnet mitt')").should("exist");
     cy.contains("Dette er en ny tekstblokk").should("exist");
 
     //attesterer
@@ -150,7 +150,7 @@ describe("attestering", () => {
     cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
 
     //------Forhåndsvisning------
-    cy.contains("Information about application processing time").should("exist");
+    cy.contains("Informasjon om saksbehandlingstid").should("exist");
     cy.contains("Mottaker").should("exist");
     cy.contains("Tydelig Bakke").should("exist");
     cy.contains("Mauråsveien 29").should("exist");
