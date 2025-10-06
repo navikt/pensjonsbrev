@@ -24,6 +24,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val sivilstandsendringsaarsak: Sivilstandsendringsaarsak?,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
+        @DisplayText("Hvis etterbetaling")
+        val etterbetaling: Boolean?,
     ) : BrevbakerBrevdata {
         enum class Sivilstandsendringsaarsak {
             @DisplayText("Fraflytting")
@@ -44,7 +46,6 @@ data class EndringAvAlderspensjonSivilstandDto(
         val regelverkType: AlderspensjonRegelverkType,
         val sivilstand: MetaforceSivilstand,
         val beloepEndring: BeloepEndring,
-        val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto

@@ -19,6 +19,7 @@ fun createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() =
             alderspensjonStanset = true,
             informasjonOmSivilstandVedInstitusjonsopphold = true,
             hvisReduksjonTilbakeITid = true,
+            etterbetaling = true
         ),
         pesysData = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData(
             beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.BeregnetPensjonPerManedVedVirk(
@@ -37,7 +38,6 @@ fun createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() =
                 uforeKombinertMedAlder = true,
                 regelverkType = AlderspensjonRegelverkType.AP2011
             ),
-            etterbetaling = true,
             beloepEndring = BeloepEndring.ENDR_RED,
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),

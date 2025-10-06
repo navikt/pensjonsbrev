@@ -26,6 +26,8 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val aarligKontrollEPS: Boolean,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
+        @DisplayText("Hvis etterbetaling")
+        val etterbetaling: Boolean?,
     ) : BrevbakerBrevdata {
         enum class EPS {
             @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
@@ -58,7 +60,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
         val beloepEndring: BeloepEndring,
-        val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto

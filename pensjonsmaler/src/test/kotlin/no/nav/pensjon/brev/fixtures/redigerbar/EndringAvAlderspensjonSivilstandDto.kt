@@ -17,6 +17,7 @@ fun createEndringAvAlderspensjonSivilstandDto() =
             EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg(
                 feilutbetaling = false,
                 sivilstandsendringsaarsak = EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak.annet,
+                etterbetaling = true
             ),
         pesysData =
             EndringAvAlderspensjonSivilstandDto.PesysData(
@@ -47,7 +48,6 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                 kravVirkDatoFom = LocalDate.of(2025, 6, 1),
                 regelverkType = AlderspensjonRegelverkType.AP2011,
                 sivilstand = MetaforceSivilstand.GIFT,
-                vedtakEtterbetaling = false,
                 maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
                 maanedligPensjonFoerSkattAP2025Dto =
                     MaanedligPensjonFoerSkattAP2025Dto(
