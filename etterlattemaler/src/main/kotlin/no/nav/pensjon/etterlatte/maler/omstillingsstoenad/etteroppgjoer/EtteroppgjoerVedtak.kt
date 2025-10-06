@@ -31,6 +31,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.resultatType
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.rettsgebyrBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
@@ -53,7 +54,8 @@ data class EtteroppgjoerVedtakDataDTO(
     val resultatType: EtteroppgjoerResultatType,
     val stoenad: Kroner,
     val faktiskStoenad: Kroner,
-    val grunnlag: EtteroppgjoerGrunnlagDTO
+    val grunnlag: EtteroppgjoerGrunnlagDTO,
+    val rettsgebyrBeloep: Kroner,
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
     val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true)
@@ -109,6 +111,14 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
 
                 paragraph {
                     text(
+                        bokmal { +"Ett rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
+                        nynorsk { +"Eitt rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
+                        english { +"One court fee as of December 31st " + data.etteroppgjoersAar.format() + " is " + data.rettsgebyrBeloep.format() + "." }
+                    )
+                }
+
+                paragraph {
+                    text(
                         bokmal { +"Se beregningen av omstillingsstønaden din i vedlegget «Opplysninger om etteroppgjøret»." },
                         nynorsk { +"Sjå utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret»." },
                         english { +"You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement»." },
@@ -134,9 +144,9 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     }
                     paragraph {
                         text(
-                            bokmal { +"Etter fire uker får du et brev fra Skatteetatens avdeling “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. I brevet finner du faktura og informasjon om når og hvordan du kan betale tilbake beløpet." },
-                            nynorsk { +"Etter fire veker får du eit brev frå Skatteetaten si avdeling “Innkrevingssentralen for bidrag og tilbakebetalingskrav”. I brevet finn du faktura og informasjon om når og korleis du kan betale tilbake beløpet." },
-                            english { +"After four weeks, you will receive a letter from the Tax Administration’s department “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. The letter will include an invoice and information about when and how to repay the amount." },
+                            bokmal { +"Om fire uker får du et brev fra Skatteetatens avdeling “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. I brevet finner du faktura og informasjon om når og hvordan du kan betale tilbake beløpet." },
+                            nynorsk { +"Om fire veker får du eit brev frå Skatteetaten si avdeling “Innkrevingssentralen for bidrag og tilbakebetalingskrav”. I brevet finn du faktura og informasjon om når og korleis du kan betale tilbake beløpet." },
+                            english { +"In four weeks, you will receive a letter from the Tax Administration’s department “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. The letter will include an invoice and information about when and how to repay the amount." },
                         )
                     }
                     paragraph {
@@ -148,9 +158,9 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     }
                     paragraph {
                         text(
-                            bokmal { +"Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake." },
-                            nynorsk { +"Fordi du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen du får frå Skatteetaten står det kor mykje du faktisk skal betale tilbake." },
-                            english { +"Since you have already paid tax on the amount that was overpaid to you, we will deduct the tax from the amount you need to repay. The payment information from the Tax Administration will state the actual amount you have to repay." },
+                            bokmal { +"Hvis du allerede har betalt skatt av beløpet du har fått for mye utbetalt, blir denne skatten trukket fra det du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake." },
+                            nynorsk { +"Dersom du allereie har betalt skatt av beløpet du har fått for mykje utbetalt, blir denne skatten trekt frå det du skal betale tilbake. I betalingsinformasjonen du får frå Skatteetaten, står det kor mykje du faktisk skal betale tilbake." },
+                            english { +"If you have already paid tax on the amount you were overpaid, that tax will be deducted from the amount you need to repay. The payment information you receive from the Norwegian Tax Administration will show how much you actually have to pay back." },
                         )
                     }
                 }

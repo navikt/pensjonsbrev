@@ -96,16 +96,13 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             val signerende = felles.signerendeSaksbehandlere
             if (signerende != null) {
                 div(classes("closing-manuell")) {
-                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.saksbehandler)
                     signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
-                            div { text(saksbehandlerTekst) }
                         }
                     }
                     div(classes("closing-saksbehandler")) {
                         div { text(signerende.saksbehandler) }
-                        div { text(saksbehandlerTekst) }
                     }
                 }
             } else {

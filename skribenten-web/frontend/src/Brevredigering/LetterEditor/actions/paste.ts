@@ -42,12 +42,15 @@ import type {
   Table as BrevbakerTable,
   TextContent,
 } from "~/types/brevbakerTypes";
-import { FontType, TABLE } from "~/types/brevbakerTypes";
+import { FontType, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   withPatches((draft, literalIndex, offset, clipboard) => {
+    if (literalIndex.blockIndex === TITLE_INDEX) {
+      return;
+    }
     // Since we always paste where the cursor is, then focus has to be at literalIndex and offset.
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };

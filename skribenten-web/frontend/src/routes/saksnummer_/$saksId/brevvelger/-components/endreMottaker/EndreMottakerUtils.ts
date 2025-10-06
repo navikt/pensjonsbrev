@@ -95,28 +95,26 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
    */
   adresse: z
     .object({
+      erBrukersAdresse: z.boolean().optional(),
       navn: z.string().min(1, "Obligatorisk"),
       linje1: z.string(),
       linje2: z.string(),
-      postnr: z.string(),
-      poststed: z.string(),
+      linje3: z.string(),
+      postnr: z
+        .string()
+        .trim()
+        .transform((s) => s.replace(/\s/g, ""))
+        .nullable(),
+      poststed: z.string().nullable(),
       land: z.string().min(1, "Obligatorisk"),
     })
     .superRefine((data, refinementContext) => {
       if (data.land === "NO") {
-        if (data.postnr.length !== 4) {
-          refinementContext.addIssue({
-            code: "custom",
-            message: "Postnummer må være 4 tegn",
-            path: ["postnr"],
-          });
+        if (!data.postnr || !/^\d{4}$/.test(data.postnr)) {
+          refinementContext.addIssue({ code: "custom", message: "Postnummer må være 4 siffer", path: ["postnr"] });
         }
-        if (data.poststed === "") {
-          refinementContext.addIssue({
-            code: "custom",
-            message: "Poststed må fylles ut",
-            path: ["poststed"],
-          });
+        if (!data.poststed) {
+          refinementContext.addIssue({ code: "custom", message: "Poststed må fylles ut", path: ["poststed"] });
         }
       } else {
         if (data.linje1 === "") {
@@ -127,16 +125,19 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
           });
         }
       }
-    }),
+    })
+    .transform((data) => (data.land === "NO" ? data : { ...data, postnr: "", poststed: "" })),
 });
 
 const leggTilManuellAdresseTabNotSelectedSchema = z.object({
   adresse: z.object({
+    erBrukersAdresse: z.boolean(),
     navn: z.string(),
     linje1: z.string(),
     linje2: z.string(),
-    postnr: z.string(),
-    poststed: z.string(),
+    linje3: z.string(),
+    postnr: z.string().nullable(),
+    poststed: z.string().nullable(),
     land: z.string(),
   }),
 });
@@ -272,6 +273,7 @@ export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "
         : leggTilManuellAdresseTabNotSelectedSchema,
   });
 };
+
 export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
   "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
 

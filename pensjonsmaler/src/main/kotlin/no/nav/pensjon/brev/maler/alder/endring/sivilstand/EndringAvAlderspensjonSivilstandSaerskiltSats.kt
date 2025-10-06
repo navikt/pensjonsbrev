@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnbelop
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.beloepEndring
@@ -55,7 +54,6 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // MF_000102 Vedtaksbrevet dekker alle regelverkstypene.
@@ -85,7 +83,6 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
         val sivilstand = pesysData.sivilstand
         val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = true)
         val sivilstandBestemtLitenBokstav = pesysData.sivilstand.bestemtForm(storBokstav = false)
-        val grunnpensjon = pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
         val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
         val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
@@ -152,13 +149,13 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                     paragraph {
                         text(
                             bokmal {
-                                +"Du får ikke beregnet alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din har inntekt høyere enn grunnbeløpet (" + grunnpensjon.format() + ")."
+                                +"Du får ikke beregnet alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din har inntekt høyere enn grunnbeløpet (" + grunnbelop.format() + ")."
                             },
                             nynorsk {
-                                +"Du får ikkje berekna alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din har inntekt høgare enn grunnbeløpet (" + grunnpensjon.format() + ")."
+                                +"Du får ikkje berekna alderspensjonen din med særskilt sats fordi " + sivilstandBestemtLitenBokstav + " din har inntekt høgare enn grunnbeløpet (" + grunnbelop.format() + ")."
                             },
                             english {
-                                +"Your retirement pension is not recalculated according to a special rate because your " + sivilstandBestemtLitenBokstav + " has a higher income than the basic amount which is " + grunnpensjon.format() + "."
+                                +"Your retirement pension is not recalculated according to a special rate because your " + sivilstandBestemtLitenBokstav + " has a higher income than the basic amount which is " + grunnbelop.format() + "."
                             },
                         )
                     }

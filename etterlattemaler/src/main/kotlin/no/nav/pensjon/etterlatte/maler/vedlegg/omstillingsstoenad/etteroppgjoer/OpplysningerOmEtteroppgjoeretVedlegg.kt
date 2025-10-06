@@ -94,9 +94,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
         }
         paragraph {
             text(
-                bokmal { +"Det er opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for " + etteroppgjoersAar.format() + " som er brukt i beregningen. Hvis du har svart på varselet du fikk tidligere, har vi vurdert det du har skrevet og kommentert dette i avsnittet «Beløp trukket fra din pensjonsgivende inntekt»." },
-                nynorsk { +"Utrekninga er gjort ut frå opplysningar om di faktiske inntekt for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga.  Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du har skrive og kommentert dette i avsnittet «Beløp trekt frå di pensjonsgivande inntekt»." },
-                english { +"The recalculation is based on information from the Tax Administration and the A-scheme regarding your actual income for " + etteroppgjoersAar.format() + ". If you responded to the notice you received earlier, we have reviewed your input and commented on it in the section «Amount deducted from your pensionable income»." },
+                bokmal { +"I beregningen har vi brukt opplysninger om din faktiske inntekt for " + etteroppgjoersAar.format() + " fra Skatteetaten og a-ordningen. Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”." },
+                nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga. Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”." },
+                english { +"In the calculation, we have used information about your actual income for " + etteroppgjoersAar.format() + " from the Norwegian Tax Administration and the A-scheme. If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”." },
             )
         }
     }.orShow {
@@ -173,7 +173,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
 
                 cell { includePhrase(KronerText(utbetalingData.faktiskStoenad)) }
                 cell { includePhrase(KronerText(utbetalingData.stoenadUtbetalt)) }
-                cell { includePhrase(KronerText(utbetalingData.avviksBeloep)) }
+                cell { includePhrase(KronerText(utbetalingData.avviksBeloep.absoluteValue())) }
             }
         }
     }
@@ -192,9 +192,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     .orShow {
         paragraph {
             text(
-                bokmal { +"Du fikk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt." },
-                nynorsk { +"Du fekk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt." },
-                english { +"You received " + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " in " + etteroppgjoersAar.format() + " including tax." },
+                bokmal { +"Du fikk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i stønad " + etteroppgjoersAar.format() + " inkludert skatt." },
+                nynorsk { +"Du fekk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i stønad " + etteroppgjoersAar.format() + " inkludert skatt." },
+                english { +"You received " + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " allowance in " + etteroppgjoersAar.format() + " including tax." },
             )
         }
     }

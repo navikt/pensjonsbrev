@@ -6,16 +6,16 @@ assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.181"
 commonsCodecVersion = "1.19.0"
-commonVersion = "2.2.1"
+commonVersion = "2.3.1"
 exposedVersion = "0.61.0"
-flywayVersion = "11.13.1"
+flywayVersion = "11.13.2"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "7.0.2"
 jacksonJsr310Version = "2.20.0"
-jupiterVersion = "5.13.4"
+jupiterVersion = "6.0.0"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
-logbackVersion = "1.5.18"
+logbackVersion = "1.5.19"
 logstashVersion = "8.1"
 micrometerVersion = "1.15.4"
 pdfboxVersion = "3.0.5"
@@ -89,7 +89,7 @@ assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" 
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.13.4" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.0" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}
 

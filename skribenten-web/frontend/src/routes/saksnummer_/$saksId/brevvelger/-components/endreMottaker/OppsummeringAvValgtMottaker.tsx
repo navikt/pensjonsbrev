@@ -90,6 +90,7 @@ const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Ad
         <InversedTableRow label="Postnummer" value={properties.adresse.postnr} />
         <InversedTableRow label="Poststed" value={properties.adresse.poststed} />
         <InversedTableRow label="Land" value={getCountryNameByKode(properties.adresse.land, landData || [])} />
+        {/* <InversedTableRow label="Brukers adresse" value={properties.adresse.erBrukersAdresse ? "Ja" : "Nei"} /> */}
       </Table.Body>
     </Table>
   );
