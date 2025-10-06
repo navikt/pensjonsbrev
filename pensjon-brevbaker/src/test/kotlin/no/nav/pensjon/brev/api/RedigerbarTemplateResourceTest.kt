@@ -47,7 +47,6 @@ class RedigerbarTemplateResourceTest {
             blocks = emptyList(),
             signatur = LetterMarkupImpl.SignaturImpl(
                 hilsenTekst = "hilsen oss",
-                saksbehandlerRolleTekst = "en rolle",
                 saksbehandlerNavn = "Saksbehandlersen",
                 attesterendeSaksbehandlerNavn = null,
                 navAvsenderEnhet = "Akersgata"

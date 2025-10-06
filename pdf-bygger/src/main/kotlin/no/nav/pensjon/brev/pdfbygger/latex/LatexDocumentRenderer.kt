@@ -52,7 +52,7 @@ internal object LatexDocumentRenderer {
         brevtype: LetterMetadata.Brevtype,
         language: Language,
     ) {
-        // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting, LanguageSetting.Closing.saksbehandler.
+        // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
                 renderTextLiteral(settingValue, Text.FontType.PLAIN)
