@@ -1,6 +1,7 @@
 import { addNewLine } from "./addNewLine";
 import { create } from "./common";
 import { cursorPosition } from "./cursorPosition";
+import { deleteSelection } from "./deleteSelection";
 import { merge } from "./merge";
 import { paste } from "./paste";
 import { split } from "./split";
@@ -26,6 +27,7 @@ const Actions = {
   addNewLine,
   create,
   cursorPosition,
+  deleteSelection,
   demoteHeaderToRow,
   insertTable,
   insertTableColumnLeft,
