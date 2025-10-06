@@ -19,6 +19,7 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             omregnetTilEnsligISammeVedtak = true,
             brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar = true,
             avdoedeHarRedusertTrygdetidEllerPoengaar = true,
+            etterbetaling = true
         ),
         pesysData = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData(
             avdod = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Avdod(
@@ -30,7 +31,6 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             krav = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Krav(
                 virkDatoFom = LocalDate.of(2024, Month.FEBRUARY, 2),
                 kravInitiertAv = KravInitiertAv.NAV,
-                etterbetaling = true
             ),
             alderspensjonVedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.AlderspensjonVedVirk(
                 totalPensjon = Kroner(1000),

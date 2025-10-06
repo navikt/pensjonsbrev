@@ -1,7 +1,12 @@
-import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
-import { cursorPosition, updateFocus } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
-import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
-import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
+import { addNewLine } from "./addNewLine";
+import { create } from "./common";
+import { cursorPosition, updateFocus } from "./cursorPosition";
+import { deleteSelection } from "./deleteSelection";
+import { merge } from "./merge";
+import { paste } from "./paste";
+import { split } from "./split";
+import { switchFontType } from "./switchFontType";
+import { switchTypography } from "./switchTypography";
 import {
   demoteHeaderToRow,
   insertTable,
@@ -13,39 +18,34 @@ import {
   removeTable,
   removeTableColumn,
   removeTableRow,
-} from "~/Brevredigering/LetterEditor/actions/table";
-
-import { create } from "./common";
-import { merge } from "./merge";
-import { split } from "./split";
-import { switchFontType } from "./switchFontType";
-import { switchTypography } from "./switchTypography";
+} from "./table";
 import { toggleBulletList } from "./toggleBulletList";
 import { updateContentText } from "./updateContentText";
+import { updateSignatur } from "./updateSignatur";
 
 const Actions = {
+  addNewLine,
   create,
   cursorPosition,
-  merge,
-  addNewLine,
-  paste,
-  split,
-  switchTypography,
-  updateContentText,
-  updateSignatur,
-  toggleBulletList,
-  switchFontType,
+  deleteSelection,
+  demoteHeaderToRow,
   insertTable,
-
-  removeTableRow,
-  removeTableColumn,
-  removeTable,
   insertTableColumnLeft,
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  merge,
+  paste,
   promoteRowToHeader,
-  demoteHeaderToRow,
   updateFocus,
+  removeTable,
+  removeTableColumn,
+  removeTableRow,
+  split,
+  switchFontType,
+  switchTypography,
+  toggleBulletList,
+  updateContentText,
+  updateSignatur,
 };
 export default Actions;

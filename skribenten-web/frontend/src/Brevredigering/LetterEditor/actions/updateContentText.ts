@@ -1,6 +1,6 @@
 import type { Draft } from "immer";
 
-import type { LiteralValue } from "~/types/brevbakerTypes";
+import { type LiteralValue, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
@@ -12,8 +12,11 @@ export const updateContentText: Action<
   [literalIndex: LiteralIndex, text: string, cursorPosition: number]
 > = withPatches((draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, text: string, cursorPosition: number) => {
   const focus = literalIndex;
-  const block = draft.redigertBrev.blocks[focus.blockIndex];
-  const paraContent = block.content[focus.contentIndex];
+
+  const paraContent =
+    literalIndex.blockIndex === TITLE_INDEX
+      ? draft.redigertBrev.title.text[focus.contentIndex]
+      : draft.redigertBrev.blocks[focus.blockIndex].content[focus.contentIndex];
 
   let textWasUpdated = false;
 

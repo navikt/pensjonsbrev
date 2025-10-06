@@ -29,11 +29,11 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
+import { NEW_LINE, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import { updateFocus } from "../actions/cursorPosition";
-import { isTableCellIndex } from "../model/utils";
+import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
   exitTable,
@@ -49,6 +49,9 @@ import {
 const Y_COORD_SAFETY_MARGIN = 10;
 
 function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
+  if (literalIndex.blockIndex === TITLE_INDEX) {
+    return letter.title.text;
+  }
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
   if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
@@ -151,8 +154,6 @@ const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement):
   return r.startOffset === 0 && r.endOffset === fullText.length;
 };
 
-const ZERO_WIDTH_SPACE = "​";
-
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
@@ -225,7 +226,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const cursorPosition = getCursorOffset();
     if (
       cursorPosition === 0 ||
-      (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
+      (contentEditableReference.current?.textContent?.startsWith(ZERO_WIDTH_SPACE) && cursorPosition === 1)
     ) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.PREVIOUS);
@@ -368,10 +369,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleTab = (event: React.KeyboardEvent<HTMLSpanElement>): boolean => {
     const { focus } = editorState;
-    const block = editorState.redigertBrev.blocks[focus.blockIndex];
-    const content = block.content[focus.contentIndex];
 
-    if (!isTableCellIndex(focus) || !isTable(content)) {
+    if (
+      !isTableCellIndex(focus) ||
+      !isTable(editorState.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex])
+    ) {
       return false;
     }
 

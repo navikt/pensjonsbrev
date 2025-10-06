@@ -53,7 +53,6 @@ data class LetterMarkupImpl(
     @InterneDataklasser
     data class SignaturImpl(
         override val hilsenTekst: String,
-        override val saksbehandlerRolleTekst: String,
         override val saksbehandlerNavn: String?,
         override val attesterendeSaksbehandlerNavn: String?,
         override val navAvsenderEnhet: String,

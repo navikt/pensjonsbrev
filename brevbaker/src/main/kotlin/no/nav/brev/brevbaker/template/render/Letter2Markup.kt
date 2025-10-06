@@ -65,7 +65,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
                 SignaturImpl(
                     hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
-                    saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.saksbehandler),
                     saksbehandlerNavn = sign?.saksbehandler,
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = scope.felles.avsenderEnhet.navn,

@@ -96,7 +96,6 @@ class BlockTilSlateKonvertererTest {
         ),
         signatur = LetterMarkupImpl.SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
-            saksbehandlerRolleTekst = "Saksbehandler",
             saksbehandlerNavn = "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn = "Per Attesterende",
             navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"
@@ -209,7 +208,6 @@ class BlockTilSlateKonvertererTest {
         ),
         signatur = LetterMarkupImpl.SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
-            saksbehandlerRolleTekst = "Saksbehandler",
             saksbehandlerNavn = "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn = "Per Attesterende",
             navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"

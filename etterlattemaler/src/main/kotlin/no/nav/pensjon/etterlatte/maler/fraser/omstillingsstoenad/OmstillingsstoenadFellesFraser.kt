@@ -85,14 +85,17 @@ object OmstillingsstoenadFellesFraser {
             paragraph {
                 text(
                     bokmal { +"Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
-                            "fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema " +
-                            "og informasjon på ${Constants.KLAGE_URL}." },
-                    nynorsk { +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den " +
-                            "datoen du fekk vedtaket. Klaga må vere skriftleg. Du finn skjema og informasjon " +
-                            "på ${Constants.KLAGE_URL}." },
-                    english { +"If you believe the decision is incorrect, you may appeal the decision within " +
-                            "six weeks from the date you received the decision. The appeal must be in writing. " +
-                            "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}." }
+                            "fra den datoen du mottok vedtaket." },
+                    nynorsk { +"Dersom du meiner at vedtaket er feil, kan du sende inn ei klage. Du må klage innan seks veker frå den dagen du fekk vedtaket." },
+                    english { +"If you believe the decision is incorrect, you can submit an appeal. You must appeal within six weeks from the day you received the decision." }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du kan lese mer om hvordan du klager i vedlegget \"Informasjon om klage og anke\" eller på ${Constants.KLAGE_URL}." },
+                    nynorsk { +"Du kan lese meir om korleis du klagar i vedlegget \"Informasjon om klage og anke\" eller på ${Constants.KLAGE_URL}." },
+                    english { +"You can read more about how to appeal in the attachment \"Information about appeals\" or at ${Constants.Engelsk.KLAGE_URL}." }
                 )
             }
         }
