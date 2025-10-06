@@ -23,6 +23,7 @@ import {
   findOnLineBelow,
   focusAtOffset,
   getCaretRect,
+  getCharacterOffset,
   getCursorOffset,
   getCursorOffsetOrRange,
   gotoCoordinates,
@@ -31,6 +32,7 @@ import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
+import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
@@ -140,9 +142,21 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
   return false;
 };
 
+// True when a fritekst has a live selection covering its entire text;
+// used to avoid collapsing it to a caret so first key press removes placeholder.
+const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement): boolean => {
+  if (!isFritekst) return false;
+  const sel = globalThis.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  const r = sel.getRangeAt(0);
+  if (!element.contains(r.startContainer) || !element.contains(r.endContainer)) return false;
+  const fullText = element.textContent ?? "";
+  return r.startOffset === 0 && r.endOffset === fullText.length;
+};
+
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
-  const { freeze, editorState, setEditorState } = useEditor();
+  const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -150,22 +164,53 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
-  useEffect(() => {
-    if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
-      contentEditableReference.current.textContent = text;
-    }
-  }, [text]);
 
   useEffect(() => {
-    if (
-      !freeze &&
-      shouldBeFocused &&
-      contentEditableReference.current !== null &&
-      editorState.focus.cursorPosition !== undefined
-    ) {
-      focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
+    const element = contentEditableReference.current;
+    if (!element) return;
+
+    if (element.textContent !== text) {
+      element.textContent = text;
     }
-  }, [editorState.focus.cursorPosition, shouldBeFocused, freeze]);
+
+    if (!freeze && shouldBeFocused) {
+      // Preserve full selection for untouched fritekst placeholders (first key should replace it).
+      if (shouldPreserveFullSelection(erFritekst, element)) {
+        return;
+      }
+
+      // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
+      if (editorState.focus.cursorPosition === undefined) {
+        const selection = globalThis.getSelection();
+        if (
+          selection &&
+          selection.rangeCount > 0 &&
+          element.contains(selection.anchorNode) &&
+          element.contains(selection.focusNode)
+        ) {
+          // Do not set fallback or move caret yet.
+          return;
+        }
+
+        // No stored cursor yet and no valid selection, fall back to end of text.
+        const fallbackCursorPosition = text.length;
+        setEditorState((s) => ({
+          ...s,
+          focus: { ...s.focus, cursorPosition: fallbackCursorPosition },
+        }));
+        if (element.childNodes[0]) {
+          focusAtOffset(element.childNodes[0], fallbackCursorPosition);
+        }
+        return;
+      }
+
+      // Normal path once cursorPosition is known: clamp and restore.
+      const resolvedCursorPosition = Math.min(editorState.focus.cursorPosition, text.length);
+      if (element.childNodes[0]) {
+        focusAtOffset(element.childNodes[0], resolvedCursorPosition);
+      }
+    }
+  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -419,14 +464,57 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {
+        const target = event.target as HTMLSpanElement;
+        const postEditCursorPosition = getCharacterOffset(target);
         applyAction(
           Actions.updateContentText,
           setEditorState,
           literalIndex,
           (event.target as HTMLSpanElement).textContent ?? "",
+          postEditCursorPosition,
         );
       }}
       onKeyDown={(event) => {
+        const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
+        const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
+        const isRedo =
+          (isMac ? event.metaKey : event.ctrlKey) && (event.key === "y" || (event.key === "z" && event.shiftKey));
+
+        if (isUndo) {
+          event.preventDefault();
+          event.stopPropagation();
+          undo();
+          return;
+        }
+        if (isRedo) {
+          event.preventDefault();
+          event.stopPropagation();
+          redo();
+          return;
+        }
+
+        const isEditingKey =
+          !event.ctrlKey &&
+          !event.altKey &&
+          !event.metaKey &&
+          (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete" || event.key === "Enter");
+
+        if (isEditingKey && contentEditableReference.current) {
+          const selection = globalThis.getSelection();
+          const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
+          // Store the caret position before a text-changing key
+          // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
+          if (
+            editorState.focus.cursorPosition !== preEditCursorPosition ||
+            !hasFocus(editorState.focus, literalIndex)
+          ) {
+            applyAction(updateFocus, setEditorState, {
+              ...literalIndex,
+              cursorPosition: selection?.isCollapsed ? preEditCursorPosition : undefined,
+            });
+          }
+        }
+
         if (event.key === "Backspace") {
           if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
 
