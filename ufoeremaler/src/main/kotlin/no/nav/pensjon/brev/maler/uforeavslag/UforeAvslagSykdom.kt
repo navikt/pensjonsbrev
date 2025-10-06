@@ -25,8 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 @TemplateModelHelpers
 object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
-
     override val kode = UT_AVSLAG_SYKDOM
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

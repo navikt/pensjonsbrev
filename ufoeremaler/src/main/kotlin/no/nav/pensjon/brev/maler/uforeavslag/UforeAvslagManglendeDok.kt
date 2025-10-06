@@ -25,8 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 @TemplateModelHelpers
 object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
-
     override val kode = UT_AVSLAG_MANGLENDE_DOK
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

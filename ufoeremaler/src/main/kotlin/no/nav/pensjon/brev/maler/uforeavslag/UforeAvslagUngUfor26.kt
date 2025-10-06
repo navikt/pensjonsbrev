@@ -26,8 +26,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 @TemplateModelHelpers
 object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
-
     override val kode = UT_AVSLAG_UNG_UFOR_26
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
