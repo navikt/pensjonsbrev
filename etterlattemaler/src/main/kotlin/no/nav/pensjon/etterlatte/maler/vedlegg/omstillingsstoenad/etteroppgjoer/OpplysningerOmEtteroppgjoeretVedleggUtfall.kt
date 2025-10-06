@@ -78,16 +78,6 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                 )
             }
 
-            showIf(data.erVedtak.not()) {
-                paragraph {
-                    text(
-                        bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                        nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                        english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                    )
-                }
-            }
-
             paragraph {
                 text(
                     bokmal { +"FORSLAG 2: " },
@@ -128,6 +118,16 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     nynorsk { +"Du har hatt omstillingsstønad i delar av " + data.etteroppgjoersAar.format() + ". Det betyr at vi trekkjer frå inntekt du hadde etter at stønaden vart avslutta. Vi har trekt frå xxxxx kroner." },
                     english { +"You have received adjustment allowance during part of " + data.etteroppgjoersAar.format() + ". This means we deduct any income you earned after your allowance ended. We have deducted NOK xxxxx." },
                 )
+            }
+
+            showIf(data.erVedtak.not()) {
+                paragraph {
+                    text(
+                        bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                    )
+                }
             }
 
         }
