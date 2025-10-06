@@ -118,8 +118,8 @@ export function isAtEndOfTable(f: Focus, table: Table): boolean {
           ? (table.rows[lastRowIndex]?.cells ?? [])
           : table.header.colSpec.map((cs) => cs.headerContent);
 
-      const lastCellIndex = Math.min(0, lastRowCells?.length - 1);
-      const lastCellContentIndex = Math.min(0, (lastRowCells[lastCellIndex]?.text.length ?? 0) - 1);
+      const lastCellIndex = Math.max(0, lastRowCells?.length - 1);
+      const lastCellContentIndex = Math.max(0, (lastRowCells[lastCellIndex]?.text.length ?? 0) - 1);
       const lastContent = lastRowCells[lastCellIndex]?.text[lastCellContentIndex];
       return (
         f.rowIndex === lastRowIndex &&
