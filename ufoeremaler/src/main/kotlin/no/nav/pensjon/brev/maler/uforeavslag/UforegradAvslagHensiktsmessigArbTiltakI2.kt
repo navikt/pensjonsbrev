@@ -107,7 +107,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
                 text(bokmal { + "Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent. "})
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd."})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })

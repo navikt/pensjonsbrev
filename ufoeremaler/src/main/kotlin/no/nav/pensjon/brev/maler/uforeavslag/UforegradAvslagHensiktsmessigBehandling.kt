@@ -113,7 +113,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
             }
             paragraph {
                 text(bokmal {
-                    +"Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd."
+                    +"Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."
                 })
             }
             paragraph {
