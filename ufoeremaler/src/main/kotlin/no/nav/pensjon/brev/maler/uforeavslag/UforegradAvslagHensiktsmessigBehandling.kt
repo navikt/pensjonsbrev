@@ -100,9 +100,9 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
 
             paragraph {
                 text(bokmal {
-                    +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
-                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du ikke har fått " +
-                            "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
+                    +"Vi kan ikke utelukke at behandlingen kan bedre funksjons- og inntektsevnen din. " +
+                            "Derfor vurderer vi at du må gjennomføre mer behandling. Før du har gått gjennom all behandling " +
+                            "er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
                 })
             }
             paragraph {
@@ -113,7 +113,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
             }
             paragraph {
                 text(bokmal {
-                    +"Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd."
+                    +"Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."
                 })
             }
             paragraph {
