@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -63,7 +64,8 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                     borINorge = borINorge,
                     regelverkType = regelverkType,
                     harEOSLand = harEOSLand,
-                    avtaleland = avtaleland
+                    avtaleland = avtaleland,
+                    visInfoOmUttakFoer67 = false.expr(),
                 )
             )
         }

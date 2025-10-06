@@ -22,11 +22,17 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagInntektsevne30,
         UforeAvslagUngUfor26,
         UforeAvslagUngUfor36,
+        UforeAvslagUngUforVarig,
         UforeAvslagManglendeDok,
         UforeAvslagYrkesskadeGodkjent,
         UforeAvslagYrkesskadeIkkeGodkjent,
         UforeAvslagIFUIkkeVarig,
         UforeAvslagIFUOktStilling,
-        UforeAvslagOktGradInntektsevne,
+        UforegradAvslagInntektsevne,
+        UforegradAvslagHensiktsmessigBehandling,
+        UforegradAvslagHensiktsmessigArbTiltakI1,
+        UforegradAvslagHensiktsmessigArbTiltakI2,
+        UforegradAvslagSykdom,
+        UforegradAvslagManglendeDok,
     )
 }

@@ -9,8 +9,8 @@ import { createContext, useContext, useRef } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
+import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
@@ -124,7 +124,7 @@ export const LetterEditor = ({
             level="3"
             size="medium"
           >
-            <EditedLetterTitle title={letter.title} />
+            <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
           </Heading>
           <div className="editor-surface" data-editor-root onKeyDown={editorKeyboardShortcuts} ref={editableDivRef}>
             {blocks.map((block, blockIndex) => (

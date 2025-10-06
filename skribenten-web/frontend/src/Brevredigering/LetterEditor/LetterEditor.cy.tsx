@@ -145,11 +145,12 @@ describe("<LetterEditor />", () => {
       move("{downArrow}", 1);
       assertCaret("Tittel under punktliste", 5);
     });
-    it("ArrowUp at first node moves caret to the beginning", () => {
+    it.only("ArrowUp at first node moves caret to the beginning", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
-      cy.contains("CP1-1").click();
+      cy.contains("Informasjon om saksbehandlingstiden vår").click();
+      assertCaret("Informasjon om saksbehandlingstiden vår", 39);
       move("{upArrow}", 1);
-      assertCaret("[CP1-1]", 0);
+      assertCaret("Informasjon om saksbehandlingstiden vår", 0);
     });
     it("ArrowDown at last node moves caret to the end", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);

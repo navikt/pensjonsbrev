@@ -17,7 +17,6 @@ object LanguageSetting {
     object Closing {
         const val automatiskVedtaksbrev = "closingautomatisktextvedtaksbrev"
         const val greeting = "closinggreeting"
-        const val saksbehandler = "closingsaksbehandlersuffix"
         const val automatiskInformasjonsbrev = "closingautomatisktextinfobrev"
     }
 
@@ -107,13 +106,6 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting(LanguageSetting.Closing.saksbehandler) {
-        Literal.create(
-            Bokmal to "Saksbehandler",
-            Nynorsk to "Saksbehandlar",
-            English to "Caseworker",
-        )
-    }
     setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
         Literal.create(
             Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",

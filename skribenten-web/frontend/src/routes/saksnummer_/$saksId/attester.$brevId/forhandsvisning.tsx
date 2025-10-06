@@ -9,7 +9,6 @@ import { useState } from "react";
 import { attesteringBrevKeys, getBrevAttesteringQuery } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
@@ -113,9 +112,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         }
         left={
           <VStack gap="3">
-            <Heading size="small">
-              <EditedLetterTitle title={props.brev.redigertBrev.title} />
-            </Heading>
+            <Heading size="small">{props.brev.info.brevtittel}</Heading>
             <VStack gap="4">
               <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
               <VStack gap="1">

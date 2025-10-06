@@ -16,7 +16,7 @@ import type {
   Title1Block,
   Title2Block,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
@@ -31,6 +31,10 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
   withPatches(mergeRecipe);
 
 export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, target: MergeTarget) {
+  if (literalIndex.blockIndex === TITLE_INDEX) {
+    return;
+  }
+
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const previousContentSameBlock = block.content[literalIndex.contentIndex - 1];
   const nextContentSameBlock = block.content[literalIndex.contentIndex + 1];

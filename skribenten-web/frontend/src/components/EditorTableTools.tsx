@@ -18,7 +18,7 @@ const EditorTableTools = () => {
       <HStack gap="2">
         <Button
           data-cy="toolbar-table-btn"
-          disabled={freeze}
+          disabled={freeze || editorState.focus.blockIndex < 0}
           icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
           onClick={() => {
             setFocusAtOpen(editorState.focus);

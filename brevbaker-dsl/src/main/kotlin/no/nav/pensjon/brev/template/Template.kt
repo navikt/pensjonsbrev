@@ -4,12 +4,16 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
+import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
+    val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
@@ -30,6 +34,13 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         predicate: Expression<Boolean> = true.expr(),
     ) {
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
+    }
+
+    fun <AttachmentData : PDFVedleggData> includeAttachment(
+        template: PDFTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData>,
+    ) {
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
     }
 
     fun includeAttachment(

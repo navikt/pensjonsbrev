@@ -48,7 +48,7 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
 export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number, cols: number]> = withPatches(
   (draft, focus, rows, cols) => {
     const block = draft.redigertBrev.blocks[focus.blockIndex];
-    if (block.type !== PARAGRAPH) return;
+    if (block?.type !== PARAGRAPH) return;
 
     const table = newTable(rows, cols);
 
