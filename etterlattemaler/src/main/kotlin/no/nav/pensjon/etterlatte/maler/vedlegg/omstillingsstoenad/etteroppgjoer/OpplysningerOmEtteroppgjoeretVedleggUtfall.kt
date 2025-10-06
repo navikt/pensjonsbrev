@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -14,11 +15,14 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.erVedtak
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.erVedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTOSelectors.data
 
 data class EtteroppgjoerBeregningVedleggInnholdDTO(
     val etteroppgjoersAar: Int,
+    val erVedtak: Boolean,
 )
 data class EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
     val data: EtteroppgjoerBeregningVedleggInnholdDTO
@@ -26,7 +30,7 @@ data class EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
 
 @TemplateModelHelpers
 object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO>, Vedlegg {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL_BEREGNINGVEDLEGG_INNHOLD
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_BEREGNINGVEDLEGG_INNHOLD
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
@@ -72,6 +76,16 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                     nynorsk { +"Du har hatt omstillingsstønad i delar av " + data.etteroppgjoersAar.format() + ". Det betyr at vi trekkjer frå inntekt du hadde før du fekk innvilga stønaden. Dette er frådragsbeløpet. Vi har trekt frå xxxxx kroner." },
                     english { +"You received adjustment allowance for part of " + data.etteroppgjoersAar.format() + ". This means that income earned before the allowance was approved is deducted. We have deducted NOK xxxxx." },
                 )
+            }
+
+            showIf(data.erVedtak.not()) {
+                paragraph {
+                    text(
+                        bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                    )
+                }
             }
 
             paragraph {
