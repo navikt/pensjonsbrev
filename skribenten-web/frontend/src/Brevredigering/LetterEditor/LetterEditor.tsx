@@ -126,7 +126,7 @@ export const LetterEditor = ({
           >
             <EditedLetterTitle title={letter.title} />
           </Heading>
-          <div className="editor-surface" onKeyDown={editorKeyboardShortcuts} ref={editableDivRef}>
+          <div className="editor-surface" data-editor-root onKeyDown={editorKeyboardShortcuts} ref={editableDivRef}>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
