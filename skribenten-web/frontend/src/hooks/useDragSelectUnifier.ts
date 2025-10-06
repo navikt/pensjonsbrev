@@ -55,19 +55,30 @@ export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefOb
     const onPointerUp = () => restore();
     const onPointerCancel = () => restore();
     const onWindowBlur = () => restore();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") restore();
+    };
+    const onMouseLeave = (e: MouseEvent) => {
+      if (e.target === host) restore();
+    };
 
     // use capture to beat other listeners that might interfere
     host.addEventListener("selectstart", onSelectStart, true);
+    host.addEventListener("mouseleave", onMouseLeave, true);
     document.addEventListener("selectionchange", onSelectionChange);
     document.addEventListener("pointerup", onPointerUp, true);
     document.addEventListener("pointercancel", onPointerCancel, true);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("blur", onWindowBlur);
 
     return () => {
+      restore();
       host.removeEventListener("selectstart", onSelectStart, true);
+      host.removeEventListener("mouseleave", onMouseLeave, true);
       document.removeEventListener("selectionchange", onSelectionChange);
       document.removeEventListener("pointerup", onPointerUp, true);
       document.removeEventListener("pointercancel", onPointerCancel, true);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("blur", onWindowBlur);
     };
   }, [enabled, host]);
