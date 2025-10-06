@@ -288,14 +288,17 @@ describe("Brevbehandler", () => {
       request.reply({ fixture: "helloWorldPdf.txt" });
     });
     cy.intercept("DELETE", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      request.reply({});
-    });
+      request.reply(204);
+    }).as("slettBrev");
 
     cy.contains(kladdBrev.brevtittel).click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
     cy.contains("Slett").click();
     cy.contains("Vil du slette brevet?").should("be.visible");
     cy.contains("Ja, slett brevet").click();
+    cy.wait("@slettBrev").its("response.statusCode").should("eq", 204);
+
+    cy.contains("Gå til brevbehandler").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
   });
 
