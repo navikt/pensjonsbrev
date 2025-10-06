@@ -113,14 +113,20 @@ export function isAtEndOfTable(f: Focus, table: Table): boolean {
   if (isTableCellIndex(f)) {
     if (isTable(table)) {
       const lastRowIndex = table.rows.length - 1;
-      const lastCellIndex = table.rows[lastRowIndex]?.cells.length - 1;
-      const lastCellContentIndex = table.rows[lastRowIndex]?.cells[lastCellIndex]?.text.length - 1;
+      const lastRowCells =
+        lastRowIndex >= 0
+          ? (table.rows[lastRowIndex]?.cells ?? [])
+          : table.header.colSpec.map((cs) => cs.headerContent);
+
+      const lastCellIndex = Math.min(0, lastRowCells?.length - 1);
+      const lastCellContentIndex = Math.min(0, (lastRowCells[lastCellIndex]?.text.length ?? 0) - 1);
+      const lastContent = lastRowCells[lastCellIndex]?.text[lastCellContentIndex];
       return (
         f.rowIndex === lastRowIndex &&
         f.cellIndex === lastCellIndex &&
         f.cellContentIndex === lastCellContentIndex &&
         f.cursorPosition != null &&
-        f.cursorPosition >= text(table.rows[lastRowIndex].cells[lastCellIndex].text[lastCellContentIndex]).length
+        f.cursorPosition >= (lastContent ? text(lastContent).length : 0)
       );
     }
   }
