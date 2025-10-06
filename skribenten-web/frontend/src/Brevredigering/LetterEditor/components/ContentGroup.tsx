@@ -371,12 +371,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnclick = (e: React.MouseEvent) => {
     if (!erFritekst) return;
-    e.preventDefault();
-    handleWordSelect(e.target as HTMLSpanElement);
+    const selection = globalThis.getSelection();
+    const collapsed = !selection || selection.rangeCount === 0 || selection.getRangeAt(0).collapsed;
+    if (collapsed) handleWordSelect(e.target as HTMLSpanElement);
   };
 
   const handleOnFocus = (e: React.FocusEvent) => {
-    e.preventDefault();
     //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
     setEditorState((oldState) => ({
       ...oldState,
@@ -425,10 +425,18 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
+        const selection = globalThis.getSelection();
+        const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
+
+        if (hasRange && (event.key === "Backspace" || event.key === "Delete")) {
+          return; // bubble to wrapper div and handle there
+        }
+
         if (event.key === "Backspace") {
           if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
 
           handleBackspace(event);
+          event.stopPropagation();
           return;
         }
 
@@ -438,9 +446,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "Enter") {
           handleEnter(event);
+          event.stopPropagation();
         }
         if (event.key === "Delete") {
           handleDelete(event);
+          event.stopPropagation();
         }
         if (event.key === "ArrowLeft") {
           handleArrowLeft(event);

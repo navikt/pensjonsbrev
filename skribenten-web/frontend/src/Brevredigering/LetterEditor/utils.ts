@@ -31,8 +31,9 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       } else if (event.altKey && event.code === "Digit3") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
-      } else if (event.code === "Backspace" || event.code === "Delete") {
-        const selectionFocus = getSelectionFocus();
+      } else if (event.key === "Backspace" || event.key === "Delete") {
+        const rootDiv = event.currentTarget as HTMLElement;
+        const selectionFocus = getSelectionFocus(rootDiv);
         if (selectionFocus) {
           event.preventDefault();
           applyAction(Actions.deleteSelection, setEditorState, selectionFocus);

@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { inRange, minBy } from "lodash";
 
 import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
@@ -21,36 +20,6 @@ export function getCursorOffset() {
     return range?.collapsed ? range.startOffset : -1;
   }
   return -1;
-}
-
-export function getSelectionFocus(): SelectionFocus | undefined {
-  const range = getRange();
-  if (range) {
-    const start = getLiteralIndexFromTextNode(range.startContainer);
-    const end = getLiteralIndexFromTextNode(range.endContainer);
-
-    if (start && end) {
-      const selection = {
-        start: { ...start, cursorPosition: range.startOffset },
-        end: { ...end, cursorPosition: range.endOffset },
-      };
-      if (!_.isEqual(selection.start, selection.end)) {
-        return selection;
-      }
-    }
-  }
-}
-
-function getLiteralIndexFromTextNode(textNode: Node): LiteralIndex | undefined {
-  const index = textNode.parentElement?.closest("[data-literal-index]")?.getAttribute("data-literal-index");
-  if (!index) return undefined;
-
-  try {
-    const parsed = JSON.parse(index);
-    return isBlockContentIndex(parsed) || isItemContentIndex(parsed) || isTableCellIndex(parsed) ? parsed : undefined;
-  } catch {
-    return undefined;
-  }
 }
 
 /**
@@ -244,4 +213,106 @@ export function findOnLineAbove(element: Element) {
   }
 
   return findOnLineAbove(previous);
+}
+
+const ZWSP = "\u200B";
+
+function closestLiteralEl(n: Node | null): HTMLElement | null {
+  const el = (n && (n.nodeType === Node.ELEMENT_NODE ? (n as Element) : n.parentElement)) || null;
+  return el ? el.closest<HTMLElement>("[data-literal-index]") : null;
+}
+
+function getTextLengthExcludingZWSP(el: HTMLElement): number {
+  const text = el.textContent ?? "";
+  return text.startsWith(ZWSP) ? Math.max(0, text.length - 1) : text.length;
+}
+
+function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
+  const dataLiteralIndex = el.getAttribute("data-literal-index");
+  if (!dataLiteralIndex) return undefined;
+  try {
+    const parsedLiteralIndex = JSON.parse(dataLiteralIndex);
+    return isBlockContentIndex(parsedLiteralIndex) ||
+      isItemContentIndex(parsedLiteralIndex) ||
+      isTableCellIndex(parsedLiteralIndex)
+      ? parsedLiteralIndex
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset: number): number {
+  const range = document.createRange();
+  range.setStart(literalEl, 0);
+  range.setEnd(container, offset);
+  let len = range.toString().length;
+  const txt = literalEl.textContent ?? "";
+  if (txt.startsWith(ZWSP)) len = Math.max(0, len - 1);
+  const max = txt.startsWith(ZWSP) ? Math.max(0, txt.length - 1) : txt.length;
+  return Math.min(Math.max(len, 0), max);
+}
+
+function rangeIntersectsNodeSafe(range: Range, node: Node): boolean {
+  try {
+    return range.intersectsNode(node);
+  } catch {
+    return false;
+  }
+}
+
+/* Selection => Model mapping (handles ELEMENT/TEXT nodes, nested tags, ZWSP)
+ * Map current DOM selection to model literalIndexes, with root-aware clamping.
+ */
+export function getSelectionFocus(root?: HTMLElement): SelectionFocus | undefined {
+  const selection = globalThis.getSelection();
+  if (!selection || selection.rangeCount === 0) return;
+
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) return;
+
+  const literalEls = root ? Array.from(root.querySelectorAll<HTMLElement>("[data-literal-index]")) : [];
+
+  let startEl = closestLiteralEl(range.startContainer);
+  let endEl = closestLiteralEl(range.endContainer);
+
+  if (!startEl && literalEls.length > 0) {
+    for (const el of literalEls) {
+      if (rangeIntersectsNodeSafe(range, el)) {
+        startEl = el;
+        break;
+      }
+    }
+  }
+  if (!endEl && literalEls.length > 0) {
+    for (let i = literalEls.length - 1; i >= 0; i -= 1) {
+      const el = literalEls[i];
+      if (rangeIntersectsNodeSafe(range, el)) {
+        endEl = el;
+        break;
+      }
+    }
+  }
+  if (!startEl || !endEl) return;
+
+  const startIdx = parseLiteralIndex(startEl);
+  const endIdx = parseLiteralIndex(endEl);
+  if (!startIdx || !endIdx) return;
+
+  const sIsDirect = startEl === closestLiteralEl(range.startContainer);
+  const eIsDirect = endEl === closestLiteralEl(range.endContainer);
+
+  const start = {
+    ...startIdx,
+    cursorPosition: sIsDirect ? charOffsetWithinLiteral(startEl, range.startContainer, range.startOffset) : 0,
+  };
+  const end = {
+    ...endIdx,
+    cursorPosition: eIsDirect
+      ? charOffsetWithinLiteral(endEl, range.endContainer, range.endOffset)
+      : getTextLengthExcludingZWSP(endEl),
+  };
+
+  if (startEl === endEl && start.cursorPosition === end.cursorPosition) return;
+  return { start, end };
 }
