@@ -55,7 +55,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har vært gjennom alle passende arbeidsrettede tiltak." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -100,14 +100,14 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
 
             paragraph {
                 text(bokmal { +
-                "Vi vurderer at du har gjennomført relevant behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
-                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere hensiktsmessige tiltak. "})
+                "Vi vurderer at du har gjennomført relevant behandling, men ikke alle passende arbeidsrettede tiltak. Du har heller ikke prøvd annet arbeid som kan bedre inntektsevnen din. " +
+                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere passende tiltak. "})
             }
             paragraph {
                 text(bokmal { + "Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent. "})
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd."})
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
