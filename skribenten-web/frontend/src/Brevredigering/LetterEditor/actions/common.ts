@@ -2,12 +2,19 @@ import type { Draft } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral, isTableCellIndex } from "~/Brevredigering/LetterEditor/model/utils";
+import {
+  isFritekst,
+  isItemList,
+  isLiteral,
+  isTableCellIndex,
+  isTextContent,
+} from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Cell,
   ColumnSpec,
   Content,
+  EditedLetter,
   ElementTags,
   Identifiable,
   Item,
@@ -27,7 +34,14 @@ import type {
 import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
+import type {
+  BlockContentIndex,
+  Focus,
+  ItemContentIndex,
+  LetterEditorState,
+  LiteralIndex,
+  TableCellIndex,
+} from "../model/state";
 
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
@@ -63,12 +77,105 @@ export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is It
   );
 }
 
-export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
+export function isIndicesOfSameType<T extends LiteralIndex>(first: T, second: LiteralIndex): second is T {
   return (
-    f.contentIndex === 0 &&
-    (offset ?? f.cursorPosition) === 0 &&
-    (isItemContentIndex(f) ? f.itemIndex === 0 && f.itemContentIndex === 0 : true)
+    (isItemContentIndex(first) && isItemContentIndex(second)) ||
+    (isTableCellIndex(first) && isTableCellIndex(second)) ||
+    (isBlockContentIndex(first) && isBlockContentIndex(second))
   );
+}
+
+export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
+  if (isItemContentIndex(f)) {
+    return f.contentIndex === 0 && f.itemIndex === 0 && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+  } else if (isTableCellIndex(f)) {
+    return (
+      f.contentIndex === 0 &&
+      f.rowIndex === 0 &&
+      f.cellIndex === 0 &&
+      f.cellContentIndex === 0 &&
+      (offset ?? f.cursorPosition) === 0
+    );
+  } else if (isBlockContentIndex(f)) {
+    return f.contentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+  } else {
+    return false;
+  }
+}
+
+export function isAtStartOfTable(f: Focus): boolean {
+  return (
+    isTableCellIndex(f) && f.rowIndex === -1 && f.cellIndex === 0 && f.cellContentIndex === 0 && f.cursorPosition === 0
+  );
+}
+
+export function isAtEndOfTable(f: Focus, table: Table): boolean {
+  if (isTableCellIndex(f)) {
+    if (isTable(table)) {
+      const lastRowIndex = table.rows.length - 1;
+      const lastRowCells =
+        lastRowIndex >= 0
+          ? (table.rows[lastRowIndex]?.cells ?? [])
+          : table.header.colSpec.map((cs) => cs.headerContent);
+
+      const lastCellIndex = Math.max(0, lastRowCells?.length - 1);
+      const lastCellContentIndex = Math.max(0, (lastRowCells[lastCellIndex]?.text.length ?? 0) - 1);
+      const lastContent = lastRowCells[lastCellIndex]?.text[lastCellContentIndex];
+      return (
+        f.rowIndex === lastRowIndex &&
+        f.cellIndex === lastCellIndex &&
+        f.cellContentIndex === lastCellContentIndex &&
+        f.cursorPosition != null &&
+        f.cursorPosition >= (lastContent ? text(lastContent).length : 0)
+      );
+    }
+  }
+  return false;
+}
+
+export function isAtSameBlockContent(first: LiteralIndex, second: LiteralIndex): boolean {
+  return first.blockIndex === second.blockIndex && first.contentIndex === second.contentIndex;
+}
+
+export function isAtSameItem(first: ItemContentIndex, second: ItemContentIndex): boolean {
+  return (
+    first.blockIndex === first.blockIndex &&
+    second.contentIndex === second.contentIndex &&
+    first.itemIndex === second.itemIndex
+  );
+}
+
+export function isAtSameTableCell(first: TableCellIndex, second: TableCellIndex): boolean {
+  return (
+    first.blockIndex === second.blockIndex &&
+    first.contentIndex === second.contentIndex &&
+    first.rowIndex === second.rowIndex &&
+    first.cellIndex === second.cellIndex
+  );
+}
+
+export function isIndexAfter(first: LiteralIndex, after: LiteralIndex): boolean {
+  if (after.blockIndex !== first.blockIndex) {
+    return after.blockIndex > first.blockIndex;
+  } else if (after.contentIndex !== first.contentIndex) {
+    return after.contentIndex > first.contentIndex;
+  } else if (isItemContentIndex(after) && isItemContentIndex(first)) {
+    if (after.itemIndex !== first.itemIndex) {
+      return after.itemIndex > first.itemIndex;
+    } else {
+      return after.itemContentIndex > first.itemContentIndex;
+    }
+  } else if (isTableCellIndex(after) && isTableCellIndex(first)) {
+    if (after.rowIndex !== first.rowIndex) {
+      return after.rowIndex > first.rowIndex;
+    } else if (after.cellIndex !== first.cellIndex) {
+      return after.cellIndex > first.cellIndex;
+    } else {
+      return after.cellContentIndex > first.cellContentIndex;
+    }
+  } else {
+    return false;
+  }
 }
 
 export function isAtStartOfItem(f: Focus, offset?: number): boolean {
@@ -427,4 +534,18 @@ export function newColSpec(colCount: number, headers?: { text: string; font?: Fo
 
 export function safeIndex(index: number, array: unknown[]) {
   return Math.max(0, Math.min(index, array.length - 1));
+}
+
+export function isValidIndex(letter: EditedLetter, index: LiteralIndex) {
+  const content = letter.blocks[index.blockIndex]?.content[index.contentIndex];
+
+  if (isItemList(content) && isItemContentIndex(index)) {
+    return content.items[index.itemIndex]?.content[index.itemContentIndex] !== undefined;
+  } else if (isTable(content) && isTableCellIndex(index)) {
+    return index.rowIndex >= 0
+      ? content.rows[index.rowIndex]?.cells[index.cellIndex]?.text[index.cellContentIndex] !== undefined
+      : content.header.colSpec[index.cellIndex]?.headerContent?.text[index.cellContentIndex] !== undefined;
+  } else {
+    return isTextContent(content) && isBlockContentIndex(index);
+  }
 }

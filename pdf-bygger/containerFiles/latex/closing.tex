@@ -5,17 +5,17 @@
 \newcommand{\closingsinglesignature}{
     \vspace{4pt}
     \feltsaksbehandlernavn
-    \\ \feltclosingsaksbehandlersuffix
     \par
     \vspace*{18pt}
     \feltnavenhet
 }
 
 \newcommand{\closingdoublesignature}{
-    \vspace{5pt}
+    % It seems that table takes a bit more space than normal text, so we have 3.5pt here vs. 4pt for single signature.
+    \vspace{3.5pt}
     \doublesignature{\feltattestantnavn}{\feltsaksbehandlernavn}
     \par
-    \vspace*{11pt}
+    \vspace*{3pt}
     \feltnavenhet
 }
 
@@ -80,6 +80,5 @@
     \setlength{\tabcolsep}{12pt}
     \begin{signaturestable}{colspec={X[l]X[l]}, column{1} = {rightsep = 10mm},column{2} = {leftsep = 10mm}}
         #1 & #2 \\
-        \feltclosingsaksbehandlersuffix & \feltclosingsaksbehandlersuffix \\
     \end{signaturestable}
 }

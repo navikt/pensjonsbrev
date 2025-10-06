@@ -30,7 +30,8 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val borINorge: Expression<Boolean>,
     val regelverkType: Expression<AlderspensjonRegelverkType>,
     val harEOSLand: Expression<Boolean>,
-    val avtaleland: Expression<String?>
+    val avtaleland: Expression<String?>,
+    val visInfoOmUttakFoer67: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -42,19 +43,34 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                         "For å ta ut alderspensjon før du er " + normertPensjonsalder.aarOgMaanederFormattert() + ", må du ha høy nok pensjonsopptjening. " +
                         "Du har for lav pensjonsopptjening til at du kan ta ut " + uttaksgrad.format() +
                         " prosent pensjon fra " + virkFom.format() + ". Derfor har vi avslått søknaden din." },
-                nynorsk { + 
+                nynorsk { +
                         "For å ta ut alderspensjon før du er " + normertPensjonsalder.aarOgMaanederFormattert() + ", må du ha høg nok pensjonsopptjening. " +
                         "Du har for låg pensjonsopptening til at du kan ta ut " + uttaksgrad.format() +
                         " prosent pensjon frå " + virkFom.format() + ". Derfor har vi avslått søknaden din." },
-                english { + 
+                english { +
                         "Your pension accrual must be sufficient to start drawing retirement pension before you turn " + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
                         "Your accumulated pension capital is not sufficient for you to draw a retirement pension at " + uttaksgrad.format() +
                         " percent from " + virkFom.format() + ". Therefore, we have declined your application." },
             )
+        }
+
+        showIf(visInfoOmUttakFoer67) {
+            paragraph {
+                text(
+                    bokmal { +"Våre beregninger viser at du ikke har rett til å ta ut alderspensjonen din før du blir 67 år." },
+                    nynorsk { +"Våre berekningar viser at du ikkje har rett til å ta ut alderspensjon før du blir 67 år." },
+                    english { +"Our calculations show that you are not eligible for retirement pension before the age of 67." }
+                )
+                text(
+                    bokmal { + " Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon, omtrent fire måneder før du blir 67 år." },
+                    nynorsk { + " Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjon, om lag fire månader før du blir 67 år." },
+                    english { + " You must submit a new application when you want to start drawing your retirement pension, approximately 4 moths before you turn 67." }
+                )
+            }
         }
 
         includePhrase(AvslagHjemler(regelverkType, harEOSLand, prorataBruktIBeregningen, avtaleland))
@@ -180,69 +196,72 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                 english { + " you will find a table showing the data we have used." }
             )
         }
-        title2 {
-            text(
-                bokmal { + "Se når du kan ta ut alderspensjon" },
-                nynorsk { + "Sjå når du kan ta ut alderspensjon" },
-                english { + "Find out when you can start drawing retirement pension" }
-            )
-        }
-        paragraph {
-            showIf(borINorge) {
+
+        showIf(visInfoOmUttakFoer67.not()) {
+            title2 {
                 text(
-                    bokmal { + "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du blir " +
-                            normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                            "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
-                            "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidligst kan ta ut alderspensjon. " +
-                            "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut." },
-                    nynorsk { + "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du blir " +
-                            normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                            "Då må du kunne velje ein lågare uttaksgrad eller ta ut pensjonen seinare. " +
-                            "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidlegast kan ta ut alderspensjon. " +
-                            "Du kan også sjå kva pensjonen din blir, avhengig av når og kor mykje du tar ut." },
-                    english { + "Even though we have rejected this application, you may still be eligible to withdraw your retirement pension before you turn " +
-                            normertPensjonsalder.aarOgMaanederFormattert() + " old. " +
-                            "You must then be able to choose a lower withdrawal rate or take out the pension later. " +
-                            "Log in to ${Constants.DIN_PENSJON_URL} to check the earliest date you can withdraw your retirement pension. " +
-                            "You can also see what your pension will be, depending on when and how much you withdraw." },
-                )
-            }.orShow {
-                text(
-                    bokmal { + "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidligst kan ta ut alderspensjon. " +
-                            "Der kan du også se hva pensjonen din blir avhengig av når og hvor mye du tar ut. Du kan " +
-                            "logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
-                            " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du trenger hjelp til dette. " },
-                    nynorsk { + "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidlegast kan ta ut " +
-                            "alderspensjon. Der kan du også sjå kva pensjonen din blir, avhengig av når og kor mykje du " +
-                            "tar ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
-                            " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} om du treng hjelp til dette. " },
-                    english { + "Log in to ${Constants.DIN_PENSJON_URL} to check the earliest date you can withdraw your retirement pension. " +
-                            "There, you can also see how your pension will vary depending on when and how much you choose to withdraw. " +
-                            "You can log in using BankID, Buypass, or Commfides. If you need assistance, please contact us by phone at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}. " +
-                            "Even though we have rejected this application, you may still have the right to withdraw your retirement pension before turning" + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                                "To do so, you would need to choose a lower withdrawal rate or postpone your pension withdrawal to a later date." },
-                )
-                text(
-                    bokmal { + "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før " +
-                            "du blir " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velge en lavere " +
-                            "uttaksgrad eller ta ut pensjonen på et senere tidspunkt." },
-                    nynorsk { + "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon " +
-                            "før du blir " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velje ei lågare " +
-                            "uttaksgrad eller ta ut pensjonen på eit seinare tidspunkt." },
-                    english { + "" },
+                    bokmal { + "Se når du kan ta ut alderspensjon" },
+                    nynorsk { + "Sjå når du kan ta ut alderspensjon" },
+                    english { + "Find out when you can start drawing retirement pension" }
                 )
             }
-        }
+            paragraph {
+                showIf(borINorge) {
+                    text(
+                        bokmal { + "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du blir " +
+                                normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                                "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
+                                "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidligst kan ta ut alderspensjon. " +
+                                "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut." },
+                        nynorsk { + "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du blir " +
+                                normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                                "Då må du kunne velje ein lågare uttaksgrad eller ta ut pensjonen seinare. " +
+                                "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidlegast kan ta ut alderspensjon. " +
+                                "Du kan også sjå kva pensjonen din blir, avhengig av når og kor mykje du tar ut." },
+                        english { + "Even though we have rejected this application, you may still be eligible to withdraw your retirement pension before you turn " +
+                                normertPensjonsalder.aarOgMaanederFormattert() + " old. " +
+                                "You must then be able to choose a lower withdrawal rate or take out the pension later. " +
+                                "Log in to ${Constants.DIN_PENSJON_URL} to check the earliest date you can withdraw your retirement pension. " +
+                                "You can also see what your pension will be, depending on when and how much you withdraw." },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { + "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidligst kan ta ut alderspensjon. " +
+                                "Der kan du også se hva pensjonen din blir avhengig av når og hvor mye du tar ut. Du kan " +
+                                "logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
+                                " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du trenger hjelp til dette. " },
+                        nynorsk { + "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidlegast kan ta ut " +
+                                "alderspensjon. Der kan du også sjå kva pensjonen din blir, avhengig av når og kor mykje du " +
+                                "tar ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
+                                " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} om du treng hjelp til dette. " },
+                        english { + "Log in to ${Constants.DIN_PENSJON_URL} to check the earliest date you can withdraw your retirement pension. " +
+                                "There, you can also see how your pension will vary depending on when and how much you choose to withdraw. " +
+                                "You can log in using BankID, Buypass, or Commfides. If you need assistance, please contact us by phone at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}. " +
+                                "Even though we have rejected this application, you may still have the right to withdraw your retirement pension before turning " + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                                    "To do so, you would need to choose a lower withdrawal rate or postpone your pension withdrawal to a later date." },
+                    )
+                    text(
+                        bokmal { + "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før " +
+                                "du blir " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velge en lavere " +
+                                "uttaksgrad eller ta ut pensjonen på et senere tidspunkt." },
+                        nynorsk { + "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon " +
+                                "før du blir " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velje ei lågare " +
+                                "uttaksgrad eller ta ut pensjonen på eit seinare tidspunkt." },
+                        english { + "" },
+                    )
+                }
+            }
 
-        paragraph {
-            text(
-                bokmal { + "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. " +
-                        "En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
-                nynorsk { + "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjon. " +
-                        "Ei eventuell endring kan tidlegast skje månaden etter at vi har fått søknaden." },
-                english { + "You must submit a new application when you want to start drawing your retirement pension. " +
-                        "Any change will be implemented at the earliest the month after we have received the application." }
-            )
+            paragraph {
+                text(
+                    bokmal { + "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. " +
+                            "En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
+                    nynorsk { + "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjon. " +
+                            "Ei eventuell endring kan tidlegast skje månaden etter at vi har fått søknaden." },
+                    english { + "You must submit a new application when you want to start drawing your retirement pension. " +
+                            "Any change will be implemented at the earliest the month after we have received the application." }
+                )
+            }
         }
 
         title2 {

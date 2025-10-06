@@ -56,7 +56,8 @@ export function DebugPanel() {
         ))}
       </HStack>
       <HStack gap={"4"}>
-        FREEZE: <b>{freeze.toString()}</b>
+        FREEZE: <b css={css({ color: freeze ? "red" : "black" })}>{freeze.toString()}</b>
+        SAVESTATUS: <b>{editorState.saveStatus}</b>
       </HStack>
       <HStack gap={"4"}>
         MOUSE:

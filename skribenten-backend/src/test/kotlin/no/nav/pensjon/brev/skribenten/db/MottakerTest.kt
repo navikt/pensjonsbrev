@@ -111,7 +111,6 @@ class MottakerTest {
                 emptyList(),
                 LetterMarkupImpl.SignaturImpl(
                     hilsenTekst = "f",
-                    saksbehandlerRolleTekst = "g",
                     saksbehandlerNavn = "en signatur",
                     attesterendeSaksbehandlerNavn = "i",
                     navAvsenderEnhet = "j",

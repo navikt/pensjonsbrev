@@ -27,6 +27,8 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
+        @DisplayText("Hvis etterbetaling av pensjon")
+        val etterbetaling: Boolean?,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -46,7 +48,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
-        val vedtakEtterbetaling: Boolean,  // v1.Vedtak
         val vedtaksresultatUtland: VedtaksresultatUtland?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,

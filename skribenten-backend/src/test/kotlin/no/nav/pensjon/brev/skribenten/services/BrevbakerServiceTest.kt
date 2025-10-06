@@ -13,7 +13,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -74,7 +73,6 @@ class BrevbakerServiceTest {
         ),
         signatur = SignaturImpl(
             hilsenTekst = "Friendly regards",
-            saksbehandlerRolleTekst = "case worker",
             saksbehandlerNavn = "case worker name",
             attesterendeSaksbehandlerNavn = "case worker name2",
             navAvsenderEnhet = "Nav abc"
