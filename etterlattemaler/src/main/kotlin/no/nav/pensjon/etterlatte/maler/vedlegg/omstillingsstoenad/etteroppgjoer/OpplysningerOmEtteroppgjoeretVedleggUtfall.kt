@@ -37,7 +37,7 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
         letterMetadata = LetterMetadata(
             displayTitle = "Utfall beregning",
             isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK, // TODO: ?
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
     ) {
@@ -59,8 +59,8 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             }
             paragraph {
                 text(
-                    bokmal { +"Fradragsbeløpet er den delen av inntekten din som ikke tas med når vi beregner omstillingsstønaden i inntektsoppgjørsåret." },
-                    nynorsk { +"Frådragsbeløpet er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i inntektsoppgjersåret." },
+                    bokmal { +"Fradragsbeløpet er den delen av inntekten din som ikke tas med når vi beregner omstillingsstønaden i etteroppgjørsåret." },
+                    nynorsk { +"Frådragsbeløpet er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i etteroppgjørsåret." },
                     english { +"The deductible amount is the part of your income that is not included when we calculate the adjustment allowance in the income settlement year." },
                 )
             }
@@ -124,8 +124,8 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                 paragraph {
                     text(
                         bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                        nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                        english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        nynorsk { +"Dersom du har hatt andre inntekter som kan trekkjast frå, eller viss opplysningane våre er feil, må du sende oss dokumentasjon på dette innan tre veker." },
+                        english { +"If you have had other income that can be deducted or if our information is incorrect, you must send us documentation within three weeks." },
                     )
                 }
             }
