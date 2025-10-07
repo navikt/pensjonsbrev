@@ -585,10 +585,10 @@ class DuFaarHverMaaned(
         showIf(totalPensjon.greaterThan(0)) {
             paragraph {
                 text(
-                    bokmal { + "Du får " + totalPensjon.format(false) + " i alderspensjon fra folketrygden hver måned før skatt." },
-                    nynorsk { + "Du får " + totalPensjon.format(false) + " i alderspensjon frå folketrygda kvar månad før skatt." },
+                    bokmal { + "Du får " + totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt." },
+                    nynorsk { + "Du får " + totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt." },
                     english { +
-                        "You will receive " + totalPensjon.format(false) +
+                        "You will receive " + totalPensjon.format() +
                         " every month before tax as retirement pension through the National Insurance Act." },
                 )
             }
