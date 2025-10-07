@@ -275,7 +275,7 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  || !document.dokumentDato.isEqual(LocalDate.now()))) {
+            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
                 Ok(document.pdf)
             } else {
                 opprettPdf(brevredigering)
