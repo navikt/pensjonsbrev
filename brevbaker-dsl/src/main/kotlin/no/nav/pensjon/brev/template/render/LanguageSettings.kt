@@ -102,7 +102,7 @@ val pensjonLatexSettings = languageSettings {
         Literal.create(
             Bokmal to "Med vennlig hilsen",
             Nynorsk to "Med vennleg helsing",
-            English to "Yours sincerely",
+            English to "Sincerely",
         )
     }
 
