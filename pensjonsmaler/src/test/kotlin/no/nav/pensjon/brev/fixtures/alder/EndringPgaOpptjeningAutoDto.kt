@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedV
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.Opptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningType
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -39,4 +40,11 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
     erFoerstegangsbehandling = false,
     uforeKombinertMedAlder = false,
     regelverkType = AlderspensjonRegelverkType.AP2016,
+    orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
+    opplysningerBruktIBeregningenAlder = null,
+    opplysningerBruktIBeregningenAlderAP2025 = null,
+    maanedligPensjonFoerSkatt = null,
+    maanedligPensjonFoerSkattAP2025 = null,
+    opplysningerOmAvdoedBruktIBeregning = null,
+
 )

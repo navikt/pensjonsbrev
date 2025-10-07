@@ -38,7 +38,6 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettighete
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.beregningsVedlegg
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.praktiskInformasjonOmEtteroppgjoeret
 
 data class EtteroppgjoerVedtakBrevDTO(
     override val innhold: List<Element>,
