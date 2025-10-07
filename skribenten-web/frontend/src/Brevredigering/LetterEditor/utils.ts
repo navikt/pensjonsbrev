@@ -11,9 +11,9 @@ export enum Typography {
 }
 
 export const TypographyToText = {
-  [Typography.PARAGRAPH]: "Normal (alt+1)",
-  [Typography.TITLE1]: "Overskrift (alt+2)",
-  [Typography.TITLE2]: "Underoverskrift (alt+3)",
+  [Typography.TITLE1]: "Overskrift (alt/option+1)",
+  [Typography.TITLE2]: "Underoverskrift (alt/option+2)",
+  [Typography.PARAGRAPH]: "Normal (alt/option+3)",
 } as const;
 
 export const useEditorKeyboardShortcuts = (
@@ -23,13 +23,13 @@ export const useEditorKeyboardShortcuts = (
   return (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.altKey && event.code === "Digit1") {
       event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.PARAGRAPH);
+      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE1);
     } else if (event.altKey && event.code === "Digit2") {
       event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE1);
+      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE2);
     } else if (event.altKey && event.code === "Digit3") {
       event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE2);
+      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.PARAGRAPH);
     }
   };
 };

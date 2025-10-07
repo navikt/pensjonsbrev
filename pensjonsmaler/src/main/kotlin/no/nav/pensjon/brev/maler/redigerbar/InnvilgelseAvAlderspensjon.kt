@@ -51,7 +51,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.opplysningerOmAvdodBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kravVirkDatoFomSenereEnnOensketUttakstidspunkt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
@@ -178,7 +178,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.ifNull(Kroner(0))
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.uforeKombinertMedAlder
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad
-        val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
 
 
         title {
@@ -261,7 +260,11 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(harAvdod) {
-                showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget) and not(gjenlevendetilleggInnvilget)) {
+                showIf(
+                    gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget) and not(
+                        gjenlevendetilleggInnvilget
+                    )
+                ) {
                     paragraph {
                         textExpr(
                             Bokmal to "I beregningen vår har vi tatt utgangspunkt i pensjonsrettigheter du har etter ".expr() + avdodNavn + ". Dette gir deg en høyere pensjon enn om vi bare hadde tatt utgangspunkt i din egen opptjening.",
@@ -394,43 +397,32 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(
                 HjemlerInnvilgelseForAP2011AP2016(
-                    garantipensjonInnvilget = garantipensjonInnvilget,
-                    godkjentYrkesskade = godkjentYrkesskade,
-                    innvilgetFor67 = innvilgetFor67,
-                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
-                    regelverkType = regelverkType,
+                    garantipensjonInnvilget,
+                    godkjentYrkesskade,
+                    innvilgetFor67,
+                    pensjonstilleggInnvilget,
+                    regelverkType
                 )
             )
-
             includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))
-
-            showIf(innvilgetFor67) { includePhrase(AP2025TidligUttakHjemmel(regelverkType)) }
+            includePhrase(AP2025TidligUttakHjemmel(innvilgetFor67, regelverkType))
             includePhrase(
                 EOSLandAvtaleHjemmel(
-                    borINorge = borINorge,
-                    eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
-                    erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
+                    borINorge, eksportTrygdeavtaleEOS, erEOSLand, harOppfyltVedSammenlegging
                 )
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn = avtalelandNavn.ifNull(fritekst("avtaleland")),
-                    eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
-                    erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
+                    avtalelandNavn.ifNull(fritekst("avtaleland")),
+                    eksportTrygdeavtaleAvtaleland,
+                    erEOSLand,
+                    harOppfyltVedSammenlegging
                 )
             )
-
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget))
+            includePhrase(InnvilgetGjRettKap19For2024(gjenlevenderettAnvendt, gjenlevendetilleggKap19Innvilget))
 
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
-            includePhrase(
-                InnvilgetGjRettKap19For2024(
-                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
-                )
-            )
             title1 {
                 text(
                     Bokmal to "Andre utbetalinger",
@@ -471,7 +463,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 includePhrase(Skatteplikt)
             }
 
-            showIf(vedtakEtterbetaling) {
+            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
@@ -495,9 +487,18 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
-        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderspensjon)
-        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderspensjonAP2025)
-        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, pesysData.opplysningerOmAvdodBruktIBeregning)
+        includeAttachmentIfNotNull(
+            vedleggOpplysningerBruktIBeregningenAlder,
+            pesysData.opplysningerBruktIBeregningenAlderspensjon
+        )
+        includeAttachmentIfNotNull(
+            vedleggOpplysningerBruktIBeregningenAlderAP2025,
+            pesysData.opplysningerBruktIBeregningenAlderspensjonAP2025
+        )
+        includeAttachmentIfNotNull(
+            vedleggOpplysningerOmAvdoedBruktIBeregning,
+            pesysData.opplysningerOmAvdodBruktIBeregning
+        )
     }
 }
 

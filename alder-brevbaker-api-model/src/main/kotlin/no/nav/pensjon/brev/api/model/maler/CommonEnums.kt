@@ -39,3 +39,10 @@ enum class Institusjon {
     SYKEHJEM,
     INGEN,
 }
+
+enum class MetaforceSivilstand {
+    EKTEFELLE, ENKE, ENSLIG,
+    FELLES_BARN, FORELDER, GIFT, GLAD_EKT, GLAD_PART, PARTNER, SAMBOER,
+    SAMBOER_1_5,
+    SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
+}

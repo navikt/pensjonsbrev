@@ -44,7 +44,7 @@ env:
   JavaVersion: 21
 
 jobs:
-  "build-brevbaker":
+  buildBrevbaker:
     name: "build brevbaker"
     runs-on: "ubuntu-latest"
     permissions:
@@ -86,7 +86,7 @@ jobs:
           pull: true
           docker_context: ./pensjon-brevbaker
           dockerfile: pensjon-brevbaker/Dockerfile
-  "build-pdfbygger":
+  buildPdfbygger:
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
     permissions:
@@ -148,7 +148,7 @@ jobs:
 
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ build-pdfbygger, changes ]
+    needs: [ buildPdfbygger, changes ]
     services:
       pdf-bygger:
         env:
@@ -185,24 +185,42 @@ jobs:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@1a128e49c0585bc0b8e38e541ac3b6e35a5bc727
+        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+      - name: Upload images
+        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visuals
+          path: pensjon-brevbaker/build/test_visual/
+
+  analyzeImages:
+    name: "Analyze images"
+    needs: [ runIntegrationTests, changes ]
+    runs-on: ubuntu-latest-16-cores
+    if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+    permissions:
+      statuses: write
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Download visuals
+        uses: actions/download-artifact@v5
+        with:
+          name: visuals
+          path: pensjon-brevbaker/build/test_visual/
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
-        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
         with:
           command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
-      - uses: actions/setup-node@v4
-        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
       - run: npm install --save-dev @percy/cli
-        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
       - name: Publish visual-tests to percy
-        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
         run: |
           npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
           cat percy.log
@@ -223,7 +241,7 @@ jobs:
       contents: "read"
       id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: ["runIntegrationTests", "build-brevbaker"]
+    needs: [runIntegrationTests, buildBrevbaker]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
@@ -235,7 +253,7 @@ jobs:
           "ENVIRONMENT": "dev-gcp:brevbaker"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-brevbaker.outputs.image }}
+          "VAR": image=${{ needs.buildBrevbaker.outputs.image }}
           "VARS": "pensjon-brevbaker/.nais/dev.yaml"
 
   "deployPdfByggerToDev":
@@ -244,7 +262,7 @@ jobs:
       contents: "read"
       id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: ["runIntegrationTests", "build-pdfbygger"]
+    needs: [runIntegrationTests, buildPdfbygger]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
@@ -256,7 +274,7 @@ jobs:
           "ENVIRONMENT": "dev-gcp:pdf-bygger"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
-          "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
+          "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 
   "deployBrevbakerToProduction":
@@ -265,7 +283,7 @@ jobs:
       contents: "read"
       id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: ["runIntegrationTests", "build-brevbaker"]
+    needs: [runIntegrationTests, buildBrevbaker]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
@@ -277,7 +295,7 @@ jobs:
           "ENVIRONMENT": "prod-gcp:brevbaker"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-brevbaker.outputs.image }}
+          "VAR": image=${{ needs.buildBrevbaker.outputs.image }}
           "VARS": "pensjon-brevbaker/.nais/prod.yaml"
 
   "deployPdfByggerToProduction":
@@ -286,7 +304,7 @@ jobs:
       contents: "read"
       id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: ["runIntegrationTests", "build-pdfbygger"]
+    needs: [runIntegrationTests, buildPdfbygger]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
@@ -298,5 +316,5 @@ jobs:
           "ENVIRONMENT": "prod-gcp:pdf-bygger"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
-          "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
+          "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/prod.yaml"

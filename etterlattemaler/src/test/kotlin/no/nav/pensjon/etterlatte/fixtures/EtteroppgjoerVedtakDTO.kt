@@ -16,10 +16,10 @@ fun createEtteroppgjoerVedtakBrevDTO() =
         data = EtteroppgjoerVedtakDataDTO(
             bosattUtland = true,
             etteroppgjoersAar = 2024,
-            resultatType = EtteroppgjoerResultatType.TILBAKEKREVING,
+            resultatType = EtteroppgjoerResultatType.ETTERBETALING,
             stoenad = Kroner(321),
             faktiskStoenad = Kroner(4444),
-            avviksBeloep = Kroner(12340),
+            avviksBeloep = Kroner(-12340),
             grunnlag = EtteroppgjoerGrunnlagDTO(
                 YearMonth.of(2024, 1),
                 YearMonth.of(2024, 12),
@@ -31,7 +31,8 @@ fun createEtteroppgjoerVedtakBrevDTO() =
                 Kroner(4444)
             ),
             vedleggInnhold = emptyList(),
-            utbetaltBeloep = Kroner(4444)
+            utbetaltBeloep = Kroner(4444),
+            rettsgebyrBeloep = Kroner(1234)
         )
     )
 

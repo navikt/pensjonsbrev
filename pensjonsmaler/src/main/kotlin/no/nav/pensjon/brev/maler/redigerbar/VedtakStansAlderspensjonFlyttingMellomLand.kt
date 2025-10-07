@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.EksportForbudKode.FLYKT_ALDER
 import no.nav.pensjon.brev.api.model.EksportForbudKode.UFOR25_ALDER
+import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -14,7 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFl
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdoed
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskapOgHelserettigheter
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20AarTrygdetidKap20Avdoed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20ArTrygdetid
@@ -28,7 +29,8 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheter
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -97,91 +99,88 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     english { + "." },
                 )
             }
-            ifNotNull(
-                pesysData.eksportForbudKode_safe,
-                pesysData.eksportForbudKodeAvdoed_safe
-            ) { eksportForbudKode, eksportForbudKodeAvdoed ->
-                showIf(eksportForbudKode.equalTo(UFOR25_ALDER)) {
-                    // eksportUngUforStans
-                    paragraph {
-                        text(
-                            bokmal { + "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
-                                    + "Derfor stanser vi utbetalingen av alderspensjonen din." },
-                            nynorsk { + "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
-                                    + "Derfor stansar vi utbetalinga av alderspensjonen din." },
-                            english { + "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
-                                    + "you have to live in Norway. We are therefore stopping your retirement pension." },
-                        )
-                    }
-                }.orShowIf(eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
-                    // eksportFlyktningStans
-                    paragraph {
-                        text(
-                            bokmal { + "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
-                                    + "Derfor stanser vi utbetalingen av alderspensjonen din." },
-                            nynorsk { + "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
-                                    + "Derfor stansar vi utbetalinga av alderspensjonen din." },
-                            english { + "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
-                                    + "We are therefore stopping your retirement pension." },
-                        )
-                    }
+            showIf(pesysData.eksportForbudKode_safe.equalTo(UFOR25_ALDER)) {
+                // eksportUngUforStans
+                paragraph {
+                    text(
+                        bokmal { + "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
+                            + "Derfor stanser vi utbetalingen av alderspensjonen din." },
+                        nynorsk { + "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
+                            + "Derfor stansar vi utbetalinga av alderspensjonen din." },
+                        english { + "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
+                            + "you have to live in Norway. We are therefore stopping your retirement pension." },
+                    )
+                }
+            }.orShowIf(pesysData.eksportForbudKode_safe.equalTo(FLYKT_ALDER) or
+                    pesysData.eksportForbudKodeAvdoed_safe.equalTo(FLYKT_ALDER)) {
+                // eksportFlyktningStans
+                paragraph {
+                    text(
+                        bokmal { + "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
+                            + "Derfor stanser vi utbetalingen av alderspensjonen din." },
+                        nynorsk { + "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
+                            + "Derfor stansar vi utbetalinga av alderspensjonen din." },
+                        english { + "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
+                            + "We are therefore stopping your retirement pension." },
+                    )
                 }
             }
 
-            showIf(regelverkType.isOneOf(AP2011, AP2016) and not(minst20ArTrygdetid) and pesysData.eksportForbudKode_safe.isNull() and pesysData.minst20AarTrygdetidKap20Avdoed) {
-                    // eksportAP2016Under20aarStans, eksportAP2011Under20aarStans
+            showIf(regelverkType.isOneOf(AP2011, AP2016) and not(minst20ArTrygdetid) and pesysData.eksportForbudKode_safe.isNull()) {
+                showIf(pesysData.harAvdoed and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
+                    // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod
                     paragraph {
                         text(
-                            bokmal { + "For å få utbetalt alderspensjonen din når du flytter til dette landet må du enten ha vært medlem i folketrygden i minst 20 år" },
-                            nynorsk { + "For få utbetalt alderspensjonen din når du flyttar til dette landet må du anten ha vore medlem i folketrygda i minst 20 år" },
-                            english { + "To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
+                            bokmal { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år." },
+                            nynorsk { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år." },
+                            english { + "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
                         )
                         showIf(regelverkType.equalTo(AP2016)) {
                             text(
-                                bokmal { + ", ha rett til tilleggspensjon eller ha tjent opp inntektspensjon." },
-                                nynorsk { + ", ha rett til tilleggspensjon eller ha tent opp inntektspensjon. " },
-                                english { + ", be entitled to a supplementary pension or have had a pensionable income. " }
+                                bokmal { + " Du har ikke rett til tilleggspensjon eller inntektspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon eller inntektspensjon." },
+                                english { + ", are entitled to a supplementary pension or income-based pension." }
                             )
                         }.orShow {
                             text(
-                                bokmal { + " eller ha rett til tilleggspensjon. " },
-                                nynorsk { + " eller ha rett til tilleggspensjon. " },
-                                english { + " or be entitled to a supplementary pension. " }
+                                bokmal { + " Du har ikke rett til tilleggspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon." },
+                                english { + " or are entitled to a supplementary pension." }
                             )
                         }
                         text(
-                            bokmal { + "Det har du ikke, og derfor stanser vi utbetalingen av alderspensjonen din." },
-                            nynorsk { + "Det har du ikkje, og derfor stansar vi utbetalinga av alderspensjonen din." },
-                            english { + "You do not meet any of these requirements, therefore we are stopping your retirement pension." }
-                        )
-                }
-            }
-            showIf(regelverkType.isOneOf(AP2011, AP2016) and pesysData.eksportForbudKodeAvdoed_safe.isNull() and pesysData.harAvdoed and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
-                // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod,
-                paragraph {
-                    text(
-                        bokmal { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år" },
-                        nynorsk { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år" },
-                        english { + "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
-                    )
-                    showIf(regelverkType.equalTo(AP2016)) {
-                        text(
-                            bokmal { + ", rett til tilleggspensjon eller ha tjent opp inntektspensjon. " },
-                            nynorsk { + ", rett til tilleggspensjon eller inntektspensjon. " },
-                            english { + ", are entitled to a supplementary pension or income-based pension. " }
-                        )
-                    }.orShow {
-                        text(
-                            bokmal { + " eller har rett til tilleggspensjon. " },
-                            nynorsk { + " eller har rett til tilleggspensjon. " },
-                            english { + " or are entitled to a supplementary pension. " }
+                            bokmal { + " Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + " Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { + " Then you are not eligible for your retirement pension when you move to this country. We are therefore stopping your retirement pension." }
                         )
                     }
-                    text(
-                        bokmal { + "Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
-                        nynorsk { + "Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
-                        english { + "Then you are not eligible for your retirement pension when you move to this country. We are therefore stopping your retirement pension." }
-                    )
+                }.orShow {
+                    // eksportAP2016Under20aarStans, eksportAP2011Under20aarStans
+                    paragraph {
+                        text(
+                            bokmal { +"Du har ikke vært medlem i folketrygden i minst 20 år." },
+                            nynorsk { +"Du har ikkje vore medlem i folketrygda i minst 20 år." },
+                            english { +"To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years" }
+                        )
+                        showIf(regelverkType.equalTo(AP2016)) {
+                            text(
+                                bokmal { + " Du har ikke rett til tilleggspensjon eller inntektspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon eller inntektspensjon." },
+                                english { + ", be entitled to a supplementary pension or have had a pensionable income." }
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { + " Du har ikke rett til tilleggspensjon." },
+                                nynorsk { + " Du har ikkje rett til tilleggspensjon." },
+                                english { +" or be entitled to a supplementary pension." }
+                            )
+                        }
+                        text(
+                            bokmal { + " Da har du ikke rett til å få utbetalt alderspensjonen din når du flytter til dette landet. Derfor stanser vi utbetalingen av alderspensjonen din." },
+                            nynorsk { + " Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. Derfor stansar vi utbetalinga av alderspensjonen din." },
+                            english { +" You do not meet any of these requirements, therefore we are stopping your retirement pension." }
+                        )
+                    }
                 }
             }
 
@@ -234,6 +233,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlage)
-        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheter,pesysData.informasjonOmMedlemskapOgHelserettigheter)
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
     }
 }

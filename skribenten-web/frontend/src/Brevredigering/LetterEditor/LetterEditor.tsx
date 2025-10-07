@@ -8,7 +8,7 @@ import { createContext, useCallback, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import { EditedLetterTitle } from "~/components/EditedLetterTitle";
+import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
@@ -82,7 +82,7 @@ export const LetterEditor = ({
         overflow-y: auto;
       `}
     >
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
         <div
           css={css`
             position: sticky;
@@ -99,6 +99,7 @@ export const LetterEditor = ({
             align-self: start;
             max-width: 694px;
             min-width: 480px;
+            width: 100%;
             ${freeze && "cursor: wait;"}
           `}
         >
@@ -118,7 +119,7 @@ export const LetterEditor = ({
             level="3"
             size="medium"
           >
-            <EditedLetterTitle title={letter.title} />
+            <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
           </Heading>
           <div onKeyDown={editorKeyboardShortcuts}>
             {blocks.map((block, blockIndex) => (
@@ -145,11 +146,15 @@ export const EditorStateContext = createContext<{
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
+  undo: () => void;
+  redo: () => void;
 }>({
   freeze: false,
   error: false,
   editorState: {} as LetterEditorState,
   setEditorState: () => {},
+  undo: () => {},
+  redo: () => {},
 });
 export const useEditor = () => {
   return useContext(EditorStateContext);

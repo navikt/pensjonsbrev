@@ -47,18 +47,18 @@ describe("Typography", () => {
       it("toggler av/på", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title1").click();
-        cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
-        cy.getDataCy("typography-select").select("Normal (alt+1)");
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
+        cy.getDataCy("typography-select").contains("Overskrift (alt/option+1)").should("be.selected");
+        cy.getDataCy("typography-select").select("Normal (alt/option+3)");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
         cy.contains("title1").should("have.css", "font-size", "16.5px");
-        cy.getDataCy("typography-select").select("Overskrift (alt+2)");
-        cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
+        cy.getDataCy("typography-select").select("Overskrift (alt/option+1)");
+        cy.getDataCy("typography-select").contains("Overskrift (alt/option+1)").should("be.selected");
         cy.contains("title1").should("have.css", "font-size", "19.5px");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title1").click().type("{leftArrow}{leftArrow}");
-        cy.getDataCy("typography-select").select("Normal (alt+1)");
+        cy.getDataCy("typography-select").select("Normal (alt/option+3)");
         assertCaret("title1", 22);
       });
     });
@@ -66,12 +66,12 @@ describe("Typography", () => {
       it("toggler av/på", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title1").click();
-        cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
-        cy.contains("title1").type("{alt}1");
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
+        cy.getDataCy("typography-select").contains("Overskrift (alt/option+1)").should("be.selected");
+        cy.contains("title1").type("{alt}3");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
         cy.contains("title1").should("have.css", "font-size", "16.5px");
-        cy.contains("title1").type("{alt}2");
-        cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
+        cy.contains("title1").type("{alt}1");
+        cy.getDataCy("typography-select").contains("Overskrift (alt/option+1)").should("be.selected");
         cy.contains("title1").should("have.css", "font-size", "19.5px");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
@@ -87,18 +87,18 @@ describe("Typography", () => {
       it("toggler av/på", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title2").click();
-        cy.getDataCy("typography-select").contains("Underoverskrift (alt+3)").should("be.selected");
-        cy.getDataCy("typography-select").select("Normal (alt+1)");
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
+        cy.getDataCy("typography-select").contains("Underoverskrift (alt/option+2)");
+        cy.getDataCy("typography-select").select("Normal (alt/option+3)");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
         cy.contains("title2").should("have.css", "font-size", "16.5px");
-        cy.getDataCy("typography-select").select("Underoverskrift (alt+3)");
-        cy.getDataCy("typography-select").contains("Underoverskrift (alt+3)").should("be.selected");
+        cy.getDataCy("typography-select").select("Underoverskrift (alt/option+2)");
+        cy.getDataCy("typography-select").contains("Underoverskrift (alt/option+2)").should("be.selected");
         cy.contains("title2").should("have.css", "font-size", "18px");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title2").click().type("{leftArrow}{leftArrow}");
-        cy.getDataCy("typography-select").select("Normal (alt+1)");
+        cy.getDataCy("typography-select").select("Normal (alt/option+3)");
         assertCaret("title2", 22);
       });
     });
@@ -106,18 +106,18 @@ describe("Typography", () => {
       it("toggler av/på", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title2").click();
-        cy.getDataCy("typography-select").contains("Underoverskrift (alt+3)").should("be.selected");
-        cy.contains("title2").type("{alt}1");
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
-        cy.contains("title2").should("have.css", "font-size", "16.5px");
+        cy.getDataCy("typography-select").contains("Underoverskrift (alt/option+2)").should("be.selected");
         cy.contains("title2").type("{alt}3");
-        cy.getDataCy("typography-select").contains("Underoverskrift (alt+3)").should("be.selected");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
+        cy.contains("title2").should("have.css", "font-size", "16.5px");
+        cy.contains("title2").type("{alt}2");
+        cy.getDataCy("typography-select").contains("Underoverskrift (alt/option+2)").should("be.selected");
         cy.contains("title2").should("have.css", "font-size", "18px");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title2").click();
-        cy.contains("title2").type("{leftArrow}{leftArrow}{alt}1");
+        cy.contains("title2").type("{leftArrow}{leftArrow}{alt}2");
         assertCaret("title2", 22);
       });
     });
@@ -127,18 +127,18 @@ describe("Typography", () => {
       it("toggler av/på", () => {
         cy.mount(<EditorWithState />);
         cy.contains("paragraph").click();
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
-        cy.getDataCy("typography-select").select("Overskrift (alt+2)");
-        cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
+        cy.getDataCy("typography-select").select("Overskrift (alt/option+1)");
+        cy.getDataCy("typography-select").contains("Overskrift (alt/option+1)").should("be.selected");
         cy.contains("paragraph").should("have.css", "font-size", "19.5px");
-        cy.getDataCy("typography-select").select("Normal (alt+1)");
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
+        cy.getDataCy("typography-select").select("Normal (alt/option+3)");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
         cy.contains("paragraph").should("have.css", "font-size", "16.5px");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("paragraph").click().type("{leftArrow}{leftArrow}");
-        cy.getDataCy("typography-select").select("Overskrift (alt+2)");
+        cy.getDataCy("typography-select").select("Overskrift (alt/option+1)");
         assertCaret("paragraph", 25);
       });
     });
@@ -146,18 +146,18 @@ describe("Typography", () => {
       it("toggler av/på", () => {
         cy.mount(<EditorWithState />);
         cy.contains("paragraph").click();
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
-        cy.contains("paragraph").type("{alt}2");
-        cy.getDataCy("typography-select").contains("Overskrift (alt+2)").should("be.selected");
-        cy.contains("paragraph").should("have.css", "font-size", "19.5px");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
         cy.contains("paragraph").type("{alt}1");
-        cy.getDataCy("typography-select").contains("Normal (alt+1)").should("be.selected");
+        cy.getDataCy("typography-select").contains("Overskrift (alt/option+1)").should("be.selected");
+        cy.contains("paragraph").should("have.css", "font-size", "19.5px");
+        cy.contains("paragraph").type("{alt}3");
+        cy.getDataCy("typography-select").contains("Normal (alt/option+3)").should("be.selected");
         cy.contains("paragraph").should("have.css", "font-size", "16.5px");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("paragraph").click();
-        cy.contains("paragraph").type("{leftArrow}{leftArrow}{alt}2");
+        cy.contains("paragraph").type("{leftArrow}{leftArrow}{alt}3");
         assertCaret("paragraph", 25);
       });
     });

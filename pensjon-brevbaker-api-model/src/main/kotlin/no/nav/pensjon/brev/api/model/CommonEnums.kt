@@ -227,3 +227,9 @@ enum class InformasjonOmMedlemskap {
     UTENFOR_EOES,
     IKKE_RELEVANT
 }
+
+enum class BorI {
+    AVTALELAND,  // v3.Person - if borIAvtaleland is true and borIEOS is false and borINorge is false
+    EOS,  // v3.Person - if borIEOS is true and borIAvaleland i false and borINorge is false
+    NORGE,  // v3.Person - if BorI Norge is true and borIAvtaleland is false and borIEOS is false
+}

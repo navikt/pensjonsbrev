@@ -18,15 +18,20 @@ import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 
 // VedleggPlikter_001, VedleggPlikterUT_001
-object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggPlikterTittel : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                bokmal { + "Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
-                nynorsk { + "Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
-                english { + "Duty to inform of changes - Section 21-3 of the National Insurance Act" }
+                bokmal { +"Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
+                nynorsk { +"Plikt til å opplyse om endringar - folketrygdlova § 21-3" },
+                english { +"Duty to inform of changes - Section 21-3 of the National Insurance Act" }
             )
         }
+    }
+}
+
+object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 bokmal { + "Du må gi oss beskjed hvis" },
@@ -411,9 +416,9 @@ data class VedleggKlagePaaVedtaket(val telefonnummer: Expression<Telefonnummer>)
         }
         paragraph {
             text(
-                bokmal { + "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon " + telefonnummer.format() + "." },
-                nynorsk { + "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon " + telefonnummer.format() + "." },
-                english { + "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: " + telefonnummer.format() + "." }
+                bokmal { + "Klagen må inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon " + telefonnummer.format() + "." },
+                nynorsk { + "Klaga må innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon " + telefonnummer.format() + "." },
+                english { + "Your appeal must include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: " + telefonnummer.format() + "." }
             )
         }
         paragraph {

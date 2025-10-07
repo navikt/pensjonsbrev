@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
@@ -33,6 +32,5 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val regelverkType: AlderspensjonRegelverkType,
         val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
         val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
-        val informasjonOmMedlemskapOgHelserettigheter: InformasjonOmMedlemskapOgHelserettigheterDto?
         ) : BrevbakerBrevdata
 }

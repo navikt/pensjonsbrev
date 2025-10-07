@@ -7,7 +7,7 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=zip-6 \
          --output /javaruntime
 
-FROM --platform=linux/amd64 debian:bookworm-slim
+FROM --platform=linux/amd64 debian:trixie-slim
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 COPY --from=jre-build /javaruntime $JAVA_HOME

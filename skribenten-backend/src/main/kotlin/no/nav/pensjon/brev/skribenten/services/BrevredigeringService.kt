@@ -19,6 +19,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -226,6 +227,8 @@ class BrevredigeringService(
     suspend fun hentBrevAttestering(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
+                brevDto.validerKanAttestere(PrincipalInContext.require())
+
                 val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
 
                 rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
@@ -272,7 +275,7 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
+            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
                 Ok(document.pdf)
             } else {
                 opprettPdf(brevredigering)

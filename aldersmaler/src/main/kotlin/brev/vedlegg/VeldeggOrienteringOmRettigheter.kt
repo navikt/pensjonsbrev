@@ -91,9 +91,9 @@ object VedleggKlagePaaVedtaket : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON." },
-                nynorsk { + "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON." },
-                english { + "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: $NAV_KONTAKTSENTER_TELEFON_PENSJON." }
+                bokmal { + "Klagen må inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON." },
+                nynorsk { + "Klaga må innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON." },
+                english { + "Your appeal must include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: $NAV_KONTAKTSENTER_TELEFON_PENSJON." }
             )
         }
         paragraph {

@@ -23,7 +23,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
   (draft, literalIndex, fontType) => {
     const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
 
-    if (block.type !== "PARAGRAPH") {
+    if (block?.type !== "PARAGRAPH") {
       return;
     }
 

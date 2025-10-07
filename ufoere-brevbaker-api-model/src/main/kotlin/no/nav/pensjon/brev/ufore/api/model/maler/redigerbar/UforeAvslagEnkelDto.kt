@@ -2,20 +2,21 @@ package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagHensiktsmessigBehandlingDto.*
 import no.nav.pensjon.brevbaker.api.model.DisplayText
+import java.time.LocalDate
 
-data class UforeAvslagHensiktsmessigBehandlingDto(
-    override val pesysData: UforeAvslagHensiktsmessigBehandlingPendata,
+data class UforeAvslagEnkelDto(
+    override val pesysData: UforeAvslagPendata,
     override val saksbehandlerValg: Saksbehandlervalg
-) : RedigerbarBrevdata<Saksbehandlervalg, UforeAvslagHensiktsmessigBehandlingPendata> {
+) : RedigerbarBrevdata<UforeAvslagEnkelDto.Saksbehandlervalg, UforeAvslagEnkelDto.UforeAvslagPendata> {
 
     data class Saksbehandlervalg(
         @DisplayText("Bruk vurdering fra vilkårsvedtak")
-        val brukVurderingFraVilkarsvedtak: Boolean,
+        val VisVurderingFraVilkarvedtak: Boolean,
     ) : BrevbakerBrevdata
 
-    data class UforeAvslagHensiktsmessigBehandlingPendata(
+    data class UforeAvslagPendata(
+        val kravMottattDato: LocalDate,
         val vurdering: String
     ) : BrevbakerBrevdata
 }

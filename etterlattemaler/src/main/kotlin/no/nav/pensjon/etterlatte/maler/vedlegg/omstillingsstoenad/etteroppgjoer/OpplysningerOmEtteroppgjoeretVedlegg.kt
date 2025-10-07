@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -93,9 +94,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
         }
         paragraph {
             text(
-                bokmal { +"Det er opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for " + etteroppgjoersAar.format() + " som er brukt i beregningen. Hvis du har svart på varselet du fikk tidligere, har vi vurdert det du har skrevet og kommentert dette i avsnittet «Beløp trukket fra din pensjonsgivende inntekt»." },
-                nynorsk { +"Utrekninga er gjort ut frå opplysningar om di faktiske inntekt for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga.  Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du har skrive og kommentert dette i avsnittet «Beløp trekt frå di pensjonsgivande inntekt»." },
-                english { +"The recalculation is based on information from the Tax Administration and the A-scheme regarding your actual income for " + etteroppgjoersAar.format() + ". If you responded to the notice you received earlier, we have reviewed your input and commented on it in the section «Amount deducted from your pensionable income»." },
+                bokmal { +"I beregningen har vi brukt opplysninger om din faktiske inntekt for " + etteroppgjoersAar.format() + " fra Skatteetaten og a-ordningen. Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”." },
+                nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga. Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”." },
+                english { +"In the calculation, we have used information about your actual income for " + etteroppgjoersAar.format() + " from the Norwegian Tax Administration and the A-scheme. If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”." },
             )
         }
     }.orShow {
@@ -172,7 +173,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
 
                 cell { includePhrase(KronerText(utbetalingData.faktiskStoenad)) }
                 cell { includePhrase(KronerText(utbetalingData.stoenadUtbetalt)) }
-                cell { includePhrase(KronerText(utbetalingData.avviksBeloep)) }
+                cell { includePhrase(KronerText(utbetalingData.avviksBeloep.absoluteValue())) }
             }
         }
     }
@@ -191,9 +192,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     .orShow {
         paragraph {
             text(
-                bokmal { +"Du fikk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt." },
-                nynorsk { +"Du fekk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt." },
-                english { +"You received " + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " in " + etteroppgjoersAar.format() + " including tax." },
+                bokmal { +"Du fikk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " stønad i " + etteroppgjoersAar.format() + " inkludert skatt." },
+                nynorsk { +"Du fekk utbetalt " + utbetalingData.avviksBeloep.absoluteValue().format() + " for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mykje", "lite") + " stønad i " + etteroppgjoersAar.format() + " inkludert skatt." },
+                english { +"You received " + utbetalingData.avviksBeloep.absoluteValue().format() + " too " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "much", "little") + " allowance in " + etteroppgjoersAar.format() + " including tax." },
             )
         }
     }
@@ -256,9 +257,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.om
             }
             item {
                 text(
-                    bokmal { +"dagpenger, sykepenger og arbeidsavklaringspenger" },
-                    nynorsk { +"dagpengar, sjukepengar og arbeidsavklaringspengar" },
-                    english { +"Unemployment benefits, sick pay and work assessment allowance" },
+                    bokmal { +"dagpenger, sykepenger, arbeidsavklaringspenger og kvalifiseringsstønad" },
+                    nynorsk { +"dagpengar, sjukepengar, arbeidsavklaringspengar og kvalifiseringsstønad" },
+                    english { +"Unemployment benefits, sick pay, work assessment allowance and qualification benefit" },
                 )
             }
             item {
@@ -347,77 +348,94 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
         )
     }
 
-    paragraph {
-        text(
-            bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:" },
-            nynorsk { +"Ifølgje opplysningar frå Skatteetaten og a-ordninga hadde du ei pensjonsgivande inntekt på " + grunnlag.inntekt.format() + " inkludert skatt i " + etteroppgjoersAar.format()+ ".  Inntekta fordeler seg slik:" },
-            english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + grunnlag.inntekt.format() + " including tax, according to information obtained from the Tax Administration and A-scheme. This is distributed as follows: " },
-        )
-    }
 
-    paragraph {
-        table(
-            header = {
-                column(1) {
-                    text(
-                        bokmal { +"Type inntekt" },
-                        nynorsk { +"Type inntekt" },
-                        english { +"Type of income " },
-                    )
-                }
-                column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                    text(
-                        bokmal { +"Beløp" },
-                        nynorsk { +"Beløp" },
-                        english { +"Amount " },
-                    )
-                }
-            }
-        ) {
-            row {
-                cell { text(
-                    bokmal { +"Lønnsinntekt" },
-                    nynorsk { +"Lønnsinntekt" },
-                    english { +"Wage income" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
-            }
-            row {
-                cell { text(
-                    bokmal { +"AFP" },
-                    nynorsk { +"AFP" },
-                    english { +"AFP (contractual pension)" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.afp)) }
-            }
-            row {
-                cell { text(
-                    bokmal { +"Næringsinntekt" },
-                    nynorsk { +"Næringsinntekt" },
-                    english { +"Income from self-employment" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
-            }
-            row {
-                cell { text(
-                    bokmal { +"Utlandsinntekt" },
-                    nynorsk { +"Utlandsinntekt" },
-                    english { +"Foreign income" },
-                ) }
-                cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
-            }
+    showIf(
+        grunnlag.loennsinntekt.absoluteValue().greaterThan(0)
+            .or(grunnlag.naeringsinntekt.absoluteValue().greaterThan(0)
+                .or(grunnlag.afp.absoluteValue().greaterThan(0)
+                    .or(grunnlag.utlandsinntekt.absoluteValue().greaterThan(0))))
+    ) {
+        paragraph {
+            text(
+                bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:" },
+                nynorsk { +"Ifølgje opplysningar frå Skatteetaten og a-ordninga hadde du ei pensjonsgivande inntekt på " + grunnlag.inntekt.format() + " inkludert skatt i " + etteroppgjoersAar.format()+ ".  Inntekta fordeler seg slik:" },
+                english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + grunnlag.inntekt.format() + " including tax, according to information obtained from the Tax Administration and A-scheme. This is distributed as follows: " },
+            )
+        }
 
-            row {
-                cell { text(
-                    bokmal { +"Sum" },
-                    nynorsk { +"Sum" },
-                    english { +"Total" },
-                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                ) }
-                cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+        paragraph {
+            table(
+                header = {
+                    column(1) {
+                        text(
+                            bokmal { +"Type inntekt" },
+                            nynorsk { +"Type inntekt" },
+                            english { +"Type of income " },
+                        )
+                    }
+                    column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                        text(
+                            bokmal { +"Beløp" },
+                            nynorsk { +"Beløp" },
+                            english { +"Amount " },
+                        )
+                    }
+                }
+            ) {
+                row {
+                    cell { text(
+                        bokmal { +"Lønnsinntekt" },
+                        nynorsk { +"Lønnsinntekt" },
+                        english { +"Wage income" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
+                }
+                row {
+                    cell { text(
+                        bokmal { +"Avtalefestet pensjon (AFP) offentlig eller privat" },
+                        nynorsk { +"Avtalefesta pensjon (AFP) offentleg eller privat" },
+                        english { +"AFP (contractual pension in the public or private sector)" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.afp)) }
+                }
+                row {
+                    cell { text(
+                        bokmal { +"Næringsinntekt" },
+                        nynorsk { +"Næringsinntekt" },
+                        english { +"Income from self-employment" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
+                }
+                row {
+                    cell { text(
+                        bokmal { +"Utlandsinntekt" },
+                        nynorsk { +"Utlandsinntekt" },
+                        english { +"Foreign income" },
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
+                }
+
+                row {
+                    cell { text(
+                        bokmal { +"Sum" },
+                        nynorsk { +"Sum" },
+                        english { +"Total" },
+                        fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                    ) }
+                    cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                }
             }
         }
+    }.orShow {
+        paragraph {
+            text(
+                bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Dersom dette ikke stemmer, må du sende oss opplysninger innen tre uker." },
+                nynorsk { +"Ifølgje opplysningar frå Skatteetaten og a-ordninga hadde du ei pensjonsgivande inntekt på " + grunnlag.inntekt.format() + " inkludert skatt i " + etteroppgjoersAar.format()+ ". Dersom dette ikkje stemmer, må du sende oss korrekte opplysningar innan tre veker" },
+                english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + grunnlag.inntekt.format() + " including tax, according to information obtained from the Tax Administration and A-scheme. If this is incorrect, you must send us information within three weeks." }
+            )
+        }
     }
+
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.inntektBruktIBeregningenAvOms(

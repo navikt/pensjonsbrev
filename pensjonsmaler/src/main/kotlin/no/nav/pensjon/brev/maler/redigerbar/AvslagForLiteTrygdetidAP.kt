@@ -128,7 +128,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     }
                 }
 
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAp2011 or erAp2016) {
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and (erAp2011 or erAp2016)) {
 
                 showIf(not(erAvtaleland) and not(erEOSland)) {
                     paragraph {
@@ -192,8 +192,8 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                         )
                         includePhrase(EOSogEllerAvtaleland(erEOSland, erAvtaleland))
                         text(
-                            bokmal { + ". Den samlede trygdetiden din i Norge og " },
-                            nynorsk { + ". Den samla trygdetida din i Noreg og " },
+                            bokmal { + ". Den samlede trygdetiden din i Norge og annet " },
+                            nynorsk { + ". Den samla trygdetida din i Noreg og anna " },
                             english { + ". Your total national insurance coverage in Norway and " }
                         )
                         includePhrase(EOSogEllerAvtaleland(erEOSland, erAvtaleland))
@@ -270,22 +270,22 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
 
                             showIf(erAp2016) {
                                 text(
-                                    bokmal { + ", 20-5 til 20-8 og 20-10," },
-                                    nynorsk { + ", 20-5 til 20-8 og 20-10," },
-                                    english { + ", 20-5 til 20-8 og 20-10," },
+                                    bokmal { + ", 20-5 til 20-8, 20-10" },
+                                    nynorsk { + ", 20-5 til 20-8, 20-10" },
+                                    english { + ", 20-5 til 20-8, 20-10" },
                                 )
                             }
-                            text(
-                                bokmal { + " og reglene i trygdeavtalen med " + avtaleland },
-                                nynorsk { + " og reglane i trygdeavtalen med " + avtaleland },
-                                english { + " of the National Insurance Act and to the provisions of the social security agreement with " + avtaleland },
-                            )
-
-                            showIf(erAvtaleland and erEOSland) {
+                            showIf( erEOSland) {
                                 text(
-                                    bokmal { + ", og EØS-avtalens forordning 883/2004 artikkel 6" },
-                                    nynorsk { + ", og EØS-avtalens forordning 883/2004 artikkel 6" },
-                                    english { + ", and Article 6 of regulation (EC) 883/200" }
+                                    bokmal { + " og EØS-avtalens forordning 883/2004 artikkel 6" },
+                                    nynorsk { + " og EØS-avtalens forordning 883/2004 artikkel 6" },
+                                    english { + " and Article 6 of regulation (EC) 883/2004" }
+                                )
+                            }.orShow {
+                                text(
+                                    bokmal { + " og reglene i trygdeavtalen med " + avtaleland },
+                                    nynorsk { + " og reglane i trygdeavtalen med " + avtaleland },
+                                    english { + " of the National Insurance Act and to the provisions of the social security agreement with " + avtaleland },
                                 )
                             }
                             text(bokmal { + "." }, nynorsk { + "." }, english { + "." })
@@ -504,23 +504,17 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
 
     private data class EOSogEllerAvtaleland(val erEOSland: Expression<Boolean>, val erAvtaleland: Expression<Boolean>): TextOnlyPhrase<LangBokmalNynorskEnglish>(){
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(erEOSland and not(erAvtaleland)) {
+            showIf(erEOSland) {
                 text(
                     bokmal { + "EØS-land" },
                     nynorsk { + "EØS-land" },
                     english { + "an other EEA country" },
                 )
-            }.orShowIf(erAvtaleland and not(erEOSland)) {
+            }.orShow{
                 text(
                     bokmal { + "avtaleland" },
                     nynorsk { + "avtaleland" },
                     english { + "an other signatory country" },
-                )
-            }.orShowIf(erEOSland and erAvtaleland) {
-                text(
-                    bokmal { + "EØS- og avtaleland" },
-                    nynorsk { + "EØS- og avtaleland" },
-                    english { + "other EEA and signatory countries" },
                 )
             }
 

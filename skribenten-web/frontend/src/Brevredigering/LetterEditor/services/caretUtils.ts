@@ -78,18 +78,36 @@ export function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanEleme
 
 export function gotoCoordinates(coordinates: Coordinates) {
   const { x, y } = fineAdjustCoordinates(coordinates);
+  let range: Range | null = null;
 
-  // This is a non-standard browser function, but it is the only fix I found. It is not implemented in Firefox
+  // caretPositionFromPoint() (supported by all except WebKit/Safari per 2025)
+  // caretRangeFromPoint() (supported by all except Gecko/Firefox per 2025)
+  // We should prioritize the non-deprecated caretPositionFromPoint,
+  // but will keep caretRangeFromPoint first until we resolve a component test issue
+  // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretRangeFromPoint
-  const range = document.caretRangeFromPoint(x, y);
+  if (document.caretRangeFromPoint) {
+    range = document.caretRangeFromPoint(x, y);
+  } else if (document.caretPositionFromPoint) {
+    const position = document.caretPositionFromPoint(x, y);
+    if (position === null) {
+      // eslint-disable-next-line no-console
+      console.warn("Could not get caret for position:", x, y);
+      return;
+    }
+    range = document.createRange();
+    range.setStart(position.offsetNode, position.offset);
+    range.collapse(true);
+  }
   if (range === null) {
     // eslint-disable-next-line no-console
     console.warn("Could not get caret for position:", x, y);
     return;
+  } else {
+    const selection = globalThis.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   }
-  const selection = globalThis.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
 }
 
 export function fineAdjustCoordinates({ x, y }: Coordinates) {
@@ -192,3 +210,23 @@ export function findOnLineAbove(element: Element) {
 
   return findOnLineAbove(previous);
 }
+
+/**
+ * Returns the start offset (in number of characters) of the current caret or selection inside the element.
+ * Used to capture/persist cursor position before key handling and after input (for undo/redo).
+ */
+export const getCharacterOffset = (element: Node): number => {
+  const selection = globalThis.getSelection();
+
+  if (selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+
+    if (range.startContainer && element.contains(range.startContainer)) {
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      return preCaretRange.toString().length;
+    }
+  }
+  return 0;
+};

@@ -15,20 +15,10 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
     EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
             saksbehandlerValg =
                 EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg(
+                    eps = EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS.epsHarInntektOver1G,
                     aarligKontrollEPS = false,
-                    endringPensjon = false,
-                    epsAvkallPaaEgenAlderspenspensjon = false,
-                    epsAvkallPaaEgenUfoeretrygd = false,
-                    epsHarInntektOver1G = true,
-                    epsHarRettTilFullAlderspensjon = false,
-                    epsIkkeFylt62Aar = false,
-                    epsIkkeRettTilFullAlderspensjon = false,
-                    epsTarUtAlderspensjon = false,
-                    epsTarUtAlderspensjonIStatligSektor = false,
-                    epsTarUtUfoeretrygd = false,
-                    etterbetaling = false,
                     feilutbetaling = false,
-                    beloepEndring = BeloepEndring.UENDRET,
+                    etterbetaling = true
                 ),
             pesysData =
                 EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData(
@@ -43,7 +33,6 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                     beregnetPensjonPerManedVedVirk =
                         EndringAvAlderspensjonSivilstandSaerskiltSatsDto.BeregnetPensjonPerManedVedVirk(
                             grunnbelop = Kroner(124028),
-                            grunnpensjon = Kroner(320000),
                             totalPensjon = Kroner(340000),
                         ),
                     kravAarsak = KravArsakType.SIVILSTANDSENDRING,
@@ -51,7 +40,7 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                     regelverkType = AlderspensjonRegelverkType.AP2011,
                     saerskiltSatsErBrukt = false,
                     sivilstand = MetaforceSivilstand.GIFT,
-                    vedtakEtterbetaling = false,
+                    beloepEndring = BeloepEndring.UENDRET,
                     maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
                     maanedligPensjonFoerSkattAP2025Dto =
                         MaanedligPensjonFoerSkattAP2025Dto(

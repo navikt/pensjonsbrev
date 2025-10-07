@@ -10,12 +10,9 @@ import { getCursorOffset } from "../services/caretUtils";
 
 const EditorBulletList = () => {
   const { editorState, freeze, setEditorState } = useEditor();
-  // Alexander: litt usikker på hva som menes med todo under her.
-  //TODO - bug - om du bare taster i vei i tastaturet mens du lager nye avsnitt, og trykker fortsett før lagring, vil focus være på et avsnitt som ikke eksister i blocks
-  //dette fører til en error
-  const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
-  const erAlleElementerIBlockenItemList =
-    block?.content.every((contentItem) => contentItem.type === "ITEM_LIST") ?? true;
+  const focusedIsItemList =
+    editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.content[editorState.focus.contentIndex]?.type ===
+    "ITEM_LIST";
 
   return (
     <Button
@@ -23,7 +20,7 @@ const EditorBulletList = () => {
         width: 32px;
         height: 32px;
 
-        ${erAlleElementerIBlockenItemList &&
+        ${focusedIsItemList &&
         css`
           background-color: #23262a;
           color: #fff;
@@ -32,7 +29,7 @@ const EditorBulletList = () => {
         `}
       `}
       data-cy="editor-bullet-list"
-      disabled={freeze}
+      disabled={freeze || editorState.focus.blockIndex < 0}
       icon={<BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />}
       onClick={() => {
         applyAction(Actions.toggleBulletList, setEditorState, editorState.focus);

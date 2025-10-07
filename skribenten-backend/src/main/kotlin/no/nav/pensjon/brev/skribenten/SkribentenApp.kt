@@ -30,17 +30,12 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.statements.api.ExposedBlob
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import kotlin.apply
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -153,9 +148,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         async {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
-                job("samkjoer-hash") {
-                    updateBrevredigeringJson()
-                }
+                // Sett opp evt. jobber her
             }
         }
     }

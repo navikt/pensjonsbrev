@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -20,8 +22,8 @@ data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
         val alderspensjonStanset: Boolean,
         val informasjonOmSivilstandVedInstitusjonsopphold: Boolean,
         val hvisReduksjonTilbakeITid: Boolean,
-        val hvisEtterbetaling: Boolean,
-        val hvisEndringIPensjon: Boolean
+        @DisplayText("Hvis etterbetaling")
+        val etterbetaling: Boolean?,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -29,6 +31,7 @@ data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
         val krav: Krav,
         val institusjonsoppholdVedVirk: InstitusjonsoppholdVedVirk,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
+        val beloepEndring: BeloepEndring,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?
     ) : BrevbakerBrevdata {

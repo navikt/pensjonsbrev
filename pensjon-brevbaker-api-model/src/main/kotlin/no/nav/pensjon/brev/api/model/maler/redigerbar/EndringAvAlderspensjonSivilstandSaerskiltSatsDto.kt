@@ -20,39 +20,36 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 ) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData> {
 
     data class SaksbehandlerValg(
-        // Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå:
-        @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
-        val epsIkkeFylt62Aar: Boolean,
-        @DisplayText("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon")
-        val epsIkkeRettTilFullAlderspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS gir avkall på egen alderspensjon")
-        val epsAvkallPaaEgenAlderspenspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS git avkall på egen uføretrygd")
-        val epsAvkallPaaEgenUfoeretrygd: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS har inntekt over 1 G")
-        val epsHarInntektOver1G: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS har rett til full alderspensjon")
-        val epsHarRettTilFullAlderspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS tar ut alderspensjon")
-        val epsTarUtAlderspensjon: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS tar ut AFP i statlig sektor")
-        val epsTarUtAlderspensjonIStatligSektor: Boolean,
-        @DisplayText("Ikke brukt i beregningen. EPS tar ut uføretrygd")
-        val epsTarUtUfoeretrygd: Boolean,
-
-        // Betydning for pensjons utbetaling?
-        @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring?,
-
+        @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå")
+        val eps: EPS?,
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-        @DisplayText("Hvis endring i pensjonen")
-        val endringPensjon: Boolean,
         @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean,
-    ) : BrevbakerBrevdata
+        val etterbetaling: Boolean?,
+    ) : BrevbakerBrevdata {
+        enum class EPS {
+            @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
+            epsIkkeFylt62Aar,
+            @DisplayText("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon")
+            epsIkkeRettTilFullAlderspensjon,
+            @DisplayText("Ikke brukt i beregningen. EPS gir avkall på egen alderspensjon")
+            epsAvkallPaaEgenAlderspenspensjon,
+            @DisplayText("Ikke brukt i beregningen. EPS git avkall på egen uføretrygd")
+            epsAvkallPaaEgenUfoeretrygd,
+            @DisplayText("Ikke brukt i beregningen. EPS har inntekt over 1 G")
+            epsHarInntektOver1G,
+            @DisplayText("Ikke brukt i beregningen. EPS har rett til full alderspensjon")
+            epsHarRettTilFullAlderspensjon,
+            @DisplayText("Ikke brukt i beregningen. EPS tar ut alderspensjon")
+            epsTarUtAlderspensjon,
+            @DisplayText("Ikke brukt i beregningen. EPS tar ut AFP i statlig sektor")
+            epsTarUtAlderspensjonIStatligSektor,
+            @DisplayText("Ikke brukt i beregningen. EPS tar ut uføretrygd")
+            epsTarUtUfoeretrygd,
+        }
+    }
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
@@ -62,7 +59,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val regelverkType: AlderspensjonRegelverkType,
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
-        val vedtakEtterbetaling: Boolean,  //v1.Vedtak
+        val beloepEndring: BeloepEndring,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
@@ -78,7 +75,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 
     data class BeregnetPensjonPerManedVedVirk(
         val grunnbelop: Kroner,  // beregnetPensjonPerManedVedVirk
-        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
         val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
     )
 }

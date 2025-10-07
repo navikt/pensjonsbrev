@@ -20,22 +20,22 @@ data class EndringAvAlderspensjonSivilstandDto(
 ) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandDto.PesysData> {
 
     data class SaksbehandlerValg(
-        // Årsak til sivilstandsendringen:
-        @DisplayText("Sivilstandsendring årsak - Fraflyting")
-        val fraFlyttet: Boolean,
-        @DisplayText("Sivilstandsendring årsak - inngått ekteskap men bor ikke sammen")
-        val giftBorIkkeSammen: Boolean,
-
-        // Betydning for pensjons utbetaling?
-        @DisplayText("Er beløpet endret?")
-        val beloepEndring: BeloepEndring,
+        @DisplayText("Årsak til sivilstandsendringen")
+        val sivilstandsendringsaarsak: Sivilstandsendringsaarsak?,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-        @DisplayText("Hvis endring i pensjonen")
-        val endringPensjon: Boolean,
         @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean,
-    ) : BrevbakerBrevdata
+        val etterbetaling: Boolean?,
+    ) : BrevbakerBrevdata {
+        enum class Sivilstandsendringsaarsak {
+            @DisplayText("Fraflytting")
+            fraFlyttet,
+            @DisplayText("Inngått ekteskap, men bor ikke sammen")
+            giftBorIkkeSammen,
+            @DisplayText("Annet eller ingen")
+            annet
+        }
+    }
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
@@ -45,7 +45,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sivilstand: MetaforceSivilstand,
-        val vedtakEtterbetaling: Boolean,  //v1.Vedtak
+        val beloepEndring: BeloepEndring,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
