@@ -38,7 +38,7 @@ internal object VedleggAppender {
             ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
 
 
-    fun fillFields(document: PDDocument, feltVerdier: Map<String, String?>) {
+    private fun fillFields(document: PDDocument, feltVerdier: Map<String, String?>) {
         document.documentCatalog?.acroForm?.fieldIterator?.forEach { field ->
             fillFields(field, feltVerdier)
         }
@@ -57,8 +57,6 @@ internal object VedleggAppender {
                 }
             }
 
-        }
-        feltVerdier[field.partialName]?.let { feltVerdi ->
         }
     }
 }

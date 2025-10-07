@@ -41,7 +41,6 @@ docker-compose up -d --build
      - Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
 2. Hent alle secrets:
    ```bash
-   gcloud auth login --update-adc
    ./fetch-secrets.sh
    ```
 3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)

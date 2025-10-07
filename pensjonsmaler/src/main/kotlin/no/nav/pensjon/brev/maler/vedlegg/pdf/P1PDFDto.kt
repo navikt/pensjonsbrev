@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -30,7 +29,6 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
                 "Forenames[0]" to innehaver.fornavn
                 "Surname[0]" to innehaver.etternavn
                 "Surname_at_birth[0]" to innehaver.etternavnVedFoedsel
-                "holder-foedselsdato" to formaterDato(innehaver.foedselsdato) // TODO hvor er den?
                 "Street_N[0]" to innehaver.adresselinje
                 "Town[0]" to innehaver.poststed?.value
                 "Post_code[0]" to innehaver.postnummer?.value
@@ -75,9 +73,9 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
                 // utfyllende institusjon
                 "Name[0]" to utfyllendeInstitusjon.navn
                 "Street_N[0]" to utfyllendeInstitusjon.adresselinje
-                "Town[0]" to utfyllendeInstitusjon.poststed.value
-                "Post_code[0]" to utfyllendeInstitusjon.postnummer.value
-                "Country_code[0]" to utfyllendeInstitusjon.landkode.landkode
+                "Town[0]" to utfyllendeInstitusjon.poststed?.value
+                "Post_code[0]" to utfyllendeInstitusjon.postnummer?.value
+                "Country_code[0]" to utfyllendeInstitusjon.landkode?.landkode
                 "Institution_ID[0]" to utfyllendeInstitusjon.institusjonsID
                 "Office_fax_N[0]" to utfyllendeInstitusjon.faksnummer
                 "Office_phone_N[0]" to utfyllendeInstitusjon.telefonnummer?.value
