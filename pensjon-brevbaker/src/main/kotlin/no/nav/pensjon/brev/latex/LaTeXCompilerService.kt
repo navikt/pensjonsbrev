@@ -5,25 +5,20 @@ import io.ktor.callid.KtorCallIdContextElement
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.plugins.HttpRequestRetry
-import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpSend
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.utils.unwrapCancellationException
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.io.IOException
 import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -64,17 +59,6 @@ class LaTeXCompilerService(
                 this.maxRetries = maxRetries
                 delayMillis {
                     minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
-                }
-                retryOnExceptionIf { _, cause ->
-                    val actualCause = cause.unwrapCancellationException()
-                    val doRetry = actualCause is HttpRequestTimeoutException
-                            || actualCause is ConnectTimeoutException
-                            || actualCause is ServerResponseException
-                            || actualCause is IOException
-                    if (!doRetry) {
-                        logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
-                    }
-                    doRetry
                 }
             }
             install(HttpSend) {
