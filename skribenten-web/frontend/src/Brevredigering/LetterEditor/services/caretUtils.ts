@@ -210,3 +210,23 @@ export function findOnLineAbove(element: Element) {
 
   return findOnLineAbove(previous);
 }
+
+/**
+ * Returns the start offset (in number of characters) of the current caret or selection inside the element.
+ * Used to capture/persist cursor position before key handling and after input (for undo/redo).
+ */
+export const getCharacterOffset = (element: Node): number => {
+  const selection = globalThis.getSelection();
+
+  if (selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+
+    if (range.startContainer && element.contains(range.startContainer)) {
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      return preCaretRange.toString().length;
+    }
+  }
+  return 0;
+};

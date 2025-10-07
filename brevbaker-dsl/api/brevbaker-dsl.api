@@ -1574,7 +1574,6 @@ public final class no/nav/pensjon/brev/template/render/LanguageSetting$Closing {
 	public static final field automatiskInformasjonsbrev Ljava/lang/String;
 	public static final field automatiskVedtaksbrev Ljava/lang/String;
 	public static final field greeting Ljava/lang/String;
-	public static final field saksbehandler Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/render/LanguageSetting$HTML {

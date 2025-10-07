@@ -8,6 +8,7 @@ import io.getunleash.util.UnleashConfig
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import org.slf4j.LoggerFactory
 import kotlin.properties.Delegates
 
 const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
@@ -15,6 +16,7 @@ const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 object FeatureToggleHandler : FeatureToggleService {
     private lateinit var unleash: Unleash
     private var isFakeUnleash by Delegates.notNull<Boolean>()
+    private val logger = LoggerFactory.getLogger(FeatureToggleHandler::class.java)
 
     override fun isEnabled(toggle: FeatureToggle): Boolean =
         unleash.isEnabled(unleashTogglePrefix + toggle.key(), UnleashContext.builder().build())
@@ -52,7 +54,9 @@ object FeatureToggleHandler : FeatureToggleService {
         val malerIkkeIUnleash = entries.filterNot {
             alleDefinerteBrytere.contains("pensjonsbrev.brevbaker.${it.name}")
         }
-        require(malerIkkeIUnleash.isEmpty()) { "Alle toggles må være definert i Unleash, men $malerIkkeIUnleash" }
+        if (malerIkkeIUnleash.isNotEmpty()) {
+            logger.error("Alle toggles må være definert i Unleash, men $malerIkkeIUnleash")
+        }
     }
 }
 

@@ -35,7 +35,6 @@ interface LetterMarkup {
 
     interface Signatur {
         val hilsenTekst: String
-        val saksbehandlerRolleTekst: String?
         val saksbehandlerNavn: String?
         val attesterendeSaksbehandlerNavn: String?
         val navAvsenderEnhet: String

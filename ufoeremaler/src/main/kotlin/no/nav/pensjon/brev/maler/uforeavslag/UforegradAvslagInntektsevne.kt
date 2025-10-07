@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.uforeavslag
 
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
@@ -29,8 +28,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
-
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

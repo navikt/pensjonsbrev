@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.uforeavslag
 
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
@@ -25,8 +24,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> {
-
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_BEHANDLING
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -100,9 +97,9 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
 
             paragraph {
                 text(bokmal {
-                    +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
-                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du ikke har fått " +
-                            "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
+                    +"Vi kan ikke utelukke at behandlingen kan bedre funksjons- og inntektsevnen din. " +
+                            "Derfor vurderer vi at du må gjennomføre mer behandling. Før du har gått gjennom all behandling " +
+                            "er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
                 })
             }
             paragraph {
@@ -113,7 +110,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagD
             }
             paragraph {
                 text(bokmal {
-                    +"Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd."
+                    +"Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."
                 })
             }
             paragraph {

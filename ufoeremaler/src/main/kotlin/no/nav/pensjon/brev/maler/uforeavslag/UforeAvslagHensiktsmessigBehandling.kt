@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.uforeavslag
 
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
@@ -25,8 +24,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> {
-
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING

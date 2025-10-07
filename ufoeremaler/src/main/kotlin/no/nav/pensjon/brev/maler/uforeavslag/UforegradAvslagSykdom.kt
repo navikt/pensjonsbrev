@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.uforeavslag
 
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
@@ -24,8 +23,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
-
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_OKT_GRAD_SYKDOM
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -54,11 +51,11 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
+                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til at din funksjonsevne er nedsatt i større grad." })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
-                        "Dokumentasjonen i din sak viser at det i all hovedsak er andre forhold enn sykdom og skade som påvirker funksjons- og inntektsevnen din." })
+                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " +
+                        "Dokumentasjonen i din sak viser at det i hovedsak er andre forhold enn sykdom og skade som fører til at din funksjons- og inntektsevne i større grad er nedsatt ." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -72,8 +69,8 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { +
-                "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
-                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
+                "Vi har vurdert at sykdom eller skade har bidratt til økning i din nedsatte funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
+                        "Før andre forhold er rettet kan vi ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
