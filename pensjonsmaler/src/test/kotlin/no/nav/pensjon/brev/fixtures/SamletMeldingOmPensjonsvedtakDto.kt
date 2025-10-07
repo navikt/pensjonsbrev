@@ -70,6 +70,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -87,6 +89,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -104,6 +108,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -121,6 +127,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -138,6 +146,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -155,6 +165,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
 
             InnvilgetPensjon(
@@ -173,6 +185,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -190,6 +204,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -207,6 +223,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -224,6 +242,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -241,6 +261,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -258,6 +280,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -275,6 +299,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -292,6 +318,8 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = "maaned_13_per_aar",
+                valuta = "NOK",
             ),
         ),
         avslaattePensjoner =

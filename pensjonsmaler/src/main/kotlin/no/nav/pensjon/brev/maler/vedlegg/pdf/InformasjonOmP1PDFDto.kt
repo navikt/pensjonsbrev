@@ -14,6 +14,5 @@ val informasjonOmP1Vedlegg = createAttachmentPDF<LangBokmalEnglish, EmptyPDFVedl
         )
     )
 ) {
-    side("InformasjonOmP1.pdf") {
-    }
+    side("InformasjonOmP1") {}
 }
