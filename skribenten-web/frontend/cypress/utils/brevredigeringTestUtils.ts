@@ -232,7 +232,7 @@ export const nySignatur = (args: {
   attesterendeSaksbehandlerNavn?: string;
   navAvsenderEnhet?: string;
 }): Signatur => ({
-  hilsenTekst: args.hilsenTekst ?? "Yours sincerely",
+  hilsenTekst: args.hilsenTekst ?? "Sincerely",
   saksbehandlerRolleTekst: args.saksbehandlerRolleTekst ?? "Caseworker",
   saksbehandlerNavn: args.saksbehandlerNavn ?? "Sak S. Behandler",
   attesterendeSaksbehandlerNavn: args.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
