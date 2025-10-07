@@ -138,7 +138,8 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         language.toCode(),
                         template.letterMetadata.brevtype,
                         Letter2Markup.renderPDFTitlesOnly(this@renderTestPDF.toScope(), this@renderTestPDF.template)
-                    )
+                    ),
+                    shouldRetry = false
                 )
             }.bytes
         }

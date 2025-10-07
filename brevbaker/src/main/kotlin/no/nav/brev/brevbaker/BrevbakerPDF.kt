@@ -20,7 +20,8 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                     language = letter.language.toCode(),
                     brevtype = letter.template.letterMetadata.brevtype,
                     pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
-                )
+                ),
+                shouldRetry = redigertBrev == null
             )
         }
             .let { pdfVedleggAppender.leggPaaVedlegg(
