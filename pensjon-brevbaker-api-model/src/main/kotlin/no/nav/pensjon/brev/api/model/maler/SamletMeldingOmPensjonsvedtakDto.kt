@@ -115,16 +115,16 @@ data class P1Dto(
     )
 
     data class UtfyllendeInstitusjon(
-        val navn: String?,
-        val adresselinje: String?,
-        val poststed: Poststed?,
-        val postnummer: Postnummer?,
-        val landkode: Landkode?,
+        val navn: String,
+        val adresselinje: String,
+        val poststed: Poststed,
+        val postnummer: Postnummer,
+        val landkode: Landkode,
         val institusjonsID: String?,
         val faksnummer: String?,
         val telefonnummer: Telefonnummer?,
         val epost: Epost?,
-        val dato: LocalDate?,
+        val dato: LocalDate,
     )
 
     @JvmInline
