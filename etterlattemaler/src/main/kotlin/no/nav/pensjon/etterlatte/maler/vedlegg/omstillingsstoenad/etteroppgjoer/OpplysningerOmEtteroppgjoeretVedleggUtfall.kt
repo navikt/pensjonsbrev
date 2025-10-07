@@ -124,8 +124,8 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
                 paragraph {
                     text(
                         bokmal { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                        nynorsk { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
-                        english { +"Hvis du har hatt andre inntekter som kan trekkes fra eller at opplysningene våre er feil, må du sende oss dokumentasjon på det innen tre uker." },
+                        nynorsk { +"Dersom du har hatt andre inntekter som kan trekkjast frå, eller viss opplysningane våre er feil, må du sende oss dokumentasjon på dette innan tre veker." },
+                        english { +"If you have had other income that can be deducted or if our information is incorrect, you must send us documentation within three weeks." },
                     )
                 }
             }
