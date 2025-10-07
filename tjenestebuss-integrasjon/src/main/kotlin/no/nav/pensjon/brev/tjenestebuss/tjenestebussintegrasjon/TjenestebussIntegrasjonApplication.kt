@@ -7,19 +7,27 @@ import com.typesafe.config.ConfigResolveOptions
 import com.typesafe.config.ConfigValueFactory
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import org.slf4j.LoggerFactory
 import java.io.File
 
+private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplication")
+
 fun main() {
-    val tjenestebussIntegrasjonConfig: Config =
-        ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .getConfig("tjenestebussintegrasjon")
-            // resolve from secrets files when running on NAIS
-            .resolveWith(getVaultSecretConfig(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            // Resolve from secrets folder when running locally
-            .resolveLocalSecrets("azuread", "pensjonsbrev")
-    embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
-        tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
-    }.start(wait = true)
+    try {
+        val tjenestebussIntegrasjonConfig: Config =
+            ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+                .getConfig("tjenestebussintegrasjon")
+                // resolve from secrets files when running on NAIS
+                .resolveWith(getVaultSecretConfig(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+                // Resolve from secrets folder when running locally
+                .resolveLocalSecrets("azuread", "pensjonsbrev")
+        embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
+            tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
+        }.start(wait = true)
+    } catch (e: Exception) {
+        logger.error(e.message, e)
+        throw e
+    }
 }
 
 /**
