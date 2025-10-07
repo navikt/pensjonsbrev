@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -43,7 +44,6 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
                 "Town[1]" to forsikrede.poststed?.value
                 "Post_code[1]" to forsikrede.postnummer?.value
                 "Country_code[1]" to forsikrede.landkode?.landkode
-
                 "kravMottattDato" to formaterDato(kravMottattDato)
                 "sakstype" to mapOf(
                     Language.Bokmal to sakstype.name,
@@ -89,6 +89,17 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
     }
 }
 
+private fun String.formaterLandkode(languageCode: LanguageCode): String? =
+    this.formaterLandkode()[languageCode]
+
+private fun String.formaterLandkode(): Map<LanguageCode, String?> {
+    val country = Locale.of(this, this)
+    return mapOf(
+        LanguageCode.BOKMAL to country.getDisplayCountry(Language.Bokmal.locale()),
+        LanguageCode.ENGLISH to country.getDisplayCountry(Language.English.locale())
+    )
+}
+
 private fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
     LanguageCode.BOKMAL to dato?.formater(Language.Bokmal),
     LanguageCode.ENGLISH to dato?.formater(Language.English)
@@ -104,22 +115,40 @@ private fun LocalDate.formater(language: Language): String? =
 fun dateFormatter(languageCode: LanguageCode, formatStyle: FormatStyle): DateTimeFormatter =
     DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(languageCode.locale())
 
-private fun P1Dto.Adresse.formater() =
-    listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
-            System.lineSeparator() + "${postnummer.value} ${poststed.value}" + System.lineSeparator() + landkode.landkode
+private fun P1Dto.Adresse.formater(languageCode: LanguageCode) =
+    joinAndSeparateByNotNull(
+        separator = System.lineSeparator(),
+        adresselinje1,
+        adresselinje2,
+        adresselinje3,
+        joinAndSeparateByNotNull(separator = " ", postnummer?.value, poststed?.value),
+        landkode?.landkode?.formaterLandkode(languageCode)
+    )
+
+fun joinAndSeparateByNotNull(separator: String, vararg value: String?) =
+    value.filterNotNull()
+        .filter { it.isNotBlank() }
+        .joinToString(separator)
 
 private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
-        "Institution_awarding_the_pension[$radnummer]" to pensjon.institusjon.mapNotNull { it.institusjonsnavn }.joinToString(", "),
+        "Institution_awarding_the_pension[$radnummer]" to pensjon.institusjon.mapNotNull { it.institusjonsnavn }
+            .joinToString(", "),
         "Type_of_pension[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
         "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
-        "Gross_amount[$radnummer]" to pensjon.bruttobeloep,
-        "Pension_has_been_awarded[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]"},
-        "Pension_has_been_reduced[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]"},
-        "Review_period[${radnummer*2}]" to pensjon.vurderingsperiode, // TODO skal egentlig være start og slutt for vurderingsperiode...
-        "Review_period[${(radnummer*2)+1}]" to pensjon.vurderingsperiode,
-        "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.joinToString("\n") { it.formater() },
+        "Gross_amount[$radnummer]" to formaterValuta(pensjon.bruttobeloep, pensjon.valuta),
+        "Pension_has_been_awarded[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]" },
+        "Pension_has_been_reduced[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
+        "Review_period[${radnummer * 2}]" to pensjon.vurderingsperiode, // TODO skal egentlig være start og slutt for vurderingsperiode...
+        // TODO skal kanskje ikke bruke denne? Det er til og med feltet for vurderingsperiode
+        //"Review_period[${(radnummer * 2) + 1}]" to pensjon.vurderingsperiode,
+        "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
     )
+
+private fun formaterValuta(beloep: Int?, valuta: String?): String? =
+    if (beloep != null && valuta != null) {
+        "$beloep $valuta"
+    } else ""
 
 
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
@@ -127,11 +156,21 @@ private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = ma
     "Type_of_pension[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
     // Ja Reasons_fro er riktig
     "Reasons_fro_the_rejection[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
-    "Review_period[${radnummer*2}]" to pensjon.vurderingsperiode, // TODO skal egentlig være start og slutt for vurderingsperiode...
-    "Review_period[${(radnummer*2)+1}]" to pensjon.vurderingsperiode,
-    "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.joinToString("\n") { it.formater() },
+    "Review_period[${radnummer * 2}]" to pensjon.vurderingsperiode, // TODO skal egentlig være start og slutt for vurderingsperiode...
+    // TODO skal kanskje ikke bruke denne? Det er til og med feltet for vurderingsperiode
+    //"Review_period[${(radnummer * 2) + 1}]" to pensjon.vurderingsperiode,
+    "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
 )
 
+private fun List<P1Dto.Adresse>.formater(): Map<LanguageCode, String?> =
+    mapOf(
+        LanguageCode.BOKMAL to this.joinToString(System.lineSeparator()) {
+            it.formater(LanguageCode.BOKMAL)
+        },
+        LanguageCode.ENGLISH to this.joinToString(System.lineSeparator()) {
+            it.formater(LanguageCode.ENGLISH)
+        },
+    )
 fun LanguageCode.locale(): Locale =
     when (this) {
         LanguageCode.BOKMAL -> Locale.forLanguageTag("no")

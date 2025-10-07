@@ -43,6 +43,8 @@ data class P1Dto(
         val pensjonstype: Pensjonstype?,
         val datoFoersteUtbetaling: LocalDate?,
         val bruttobeloep: Int?,
+        val valuta: String?,
+        val utbetalingsHyppighet: String?,
         val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
         val vurderingsperiode: String?,
@@ -97,12 +99,12 @@ data class P1Dto(
     }
 
     data class Adresse(
-        val adresselinje1: String,
+        val adresselinje1: String?,
         val adresselinje2: String?,
         val adresselinje3: String?,
-        val landkode: Landkode,
-        val postnummer: Postnummer,
-        val poststed: Poststed,
+        val landkode: Landkode?,
+        val postnummer: Postnummer?,
+        val poststed: Poststed?,
     )
 
     data class Institusjon(
