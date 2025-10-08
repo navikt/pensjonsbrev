@@ -28,17 +28,25 @@ const useModelSpecificationForm = (brevkode: string) => {
   };
 };
 
+export const extractRelevantSaksbehandlerValgFields = (
+  propertyUsage: PropertyUsage[],
+  saksbehandlerValgType: string | undefined,
+): Set<string> => {
+  if (!saksbehandlerValgType) {
+    return new Set();
+  }
+  return new Set(
+    propertyUsage.filter((usage) => usage.typeName === saksbehandlerValgType).map((usage) => usage.propertyName),
+  );
+};
+
 export const usePartitionedModelSpecification = (brevkode: string, propertyUsage: PropertyUsage[] = []) => {
   const { status, specification, error, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
-  const relevantFields = useMemo(() => {
-    if (!saksbehandlerValgType) {
-      return new Set<string>();
-    }
-    return new Set(
-      propertyUsage.filter((usage) => usage.typeName === saksbehandlerValgType).map((usage) => usage.propertyName),
-    );
-  }, [propertyUsage, saksbehandlerValgType]);
+  const relevantFields = useMemo(
+    () => extractRelevantSaksbehandlerValgFields(propertyUsage, saksbehandlerValgType),
+    [propertyUsage, saksbehandlerValgType],
+  );
 
   const filteredSpecification = useMemo(() => {
     if (!specification) {
