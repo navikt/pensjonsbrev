@@ -128,18 +128,12 @@ fun Application.brevbakerModule(
     )
 
     konfigurerUnleash(brevbakerConfig)
-    monitor.subscribe(ServerReady) {
-        async {
-            delay(1.minutes)
-            FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
-        }
-    }
 
     configureMetrics()
     brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
 }
 
-private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
+private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
     with(brevbakerConfig.config("unleash")) {
         FeatureToggleHandler.configure {
             useFakeUnleash = booleanProperty("useFakeUnleash")
@@ -148,6 +142,12 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
             environment = stringProperty("environment")
             host = stringProperty("host")
             apiToken = stringProperty("apiToken")
+        }
+    }
+    monitor.subscribe(ServerReady) {
+        async {
+            delay(1.minutes)
+            FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
         }
     }
 }
