@@ -27,6 +27,8 @@ data class InnvilgelseAvAlderspensjonDto(
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
+        @DisplayText("Bruk vanlig skattetrekk")
+        val vanligSkattetrekk: Boolean?,
     ) : BrevbakerBrevdata
 
     data class PesysData(
