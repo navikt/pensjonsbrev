@@ -103,6 +103,19 @@ export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
   }
 }
 
+export function isAtStartOfItemList(f: Focus): boolean {
+  return isItemContentIndex(f) && f.itemIndex === 0 && f.itemContentIndex === 0 && f.cursorPosition === 0;
+}
+
+export function isAtEndOfItemList(f: Focus, itemList: ItemList): boolean {
+  return (
+    isItemContentIndex(f) &&
+    f.itemIndex === itemList.items.length - 1 &&
+    f.itemContentIndex === itemList.items[f.itemIndex].content.length - 1 &&
+    (f.cursorPosition ?? 0) >= text(itemList.items[f.itemIndex].content[f.itemContentIndex]).length
+  );
+}
+
 export function isAtStartOfTable(f: Focus): boolean {
   return (
     isTableCellIndex(f) && f.rowIndex === -1 && f.cellIndex === 0 && f.cellContentIndex === 0 && f.cursorPosition === 0

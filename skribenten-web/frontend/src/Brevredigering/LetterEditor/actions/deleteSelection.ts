@@ -3,10 +3,12 @@ import type { Draft } from "immer";
 
 import {
   addElements,
+  isAtEndOfItemList,
   isAtEndOfTable,
   isAtSameBlockContent,
   isAtSameItem,
   isAtSameTableCell,
+  isAtStartOfItemList,
   isAtStartOfTable,
   isBlockContentIndex,
   isIndexAfter,
@@ -23,6 +25,7 @@ import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateC
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
 import { withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import type {
+  Focus,
   ItemContentIndex,
   LetterEditorState,
   LiteralIndex,
@@ -37,7 +40,7 @@ import {
   isTextContent,
   isVariable,
 } from "~/Brevredigering/LetterEditor/model/utils";
-import type { AnyBlock, Content, ItemList, Table, TextContent } from "~/types/brevbakerTypes";
+import type { AnyBlock, Content, EditedLetter, ItemList, Table, TextContent } from "~/types/brevbakerTypes";
 
 export const deleteSelection: Action<LetterEditorState, [selection: SelectionIndex]> =
   withPatches(deleteSelectionRecipe);
@@ -106,16 +109,36 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
     deleteInContentToOffset(endBlock, endContent, end);
   }
 
-  // Potentially merge start and end which should now be adjacent.
-  if (
-    start.blockIndex < end.blockIndex ||
-    // start.contentIndex < end.contentIndex ||
-    (isItemContentIndex(start) && start.contentIndex < end.contentIndex) ||
-    (isItemContentIndex(start) && isItemContentIndex(end) && start.itemIndex < end.itemIndex)
-  ) {
-    mergeRecipe(draft, start, MergeTarget.NEXT);
+  // Make sure we have a valid literalIndex
+  const indexAfterDeletion = isValidIndex(redigertBrev, start) ? start : deduceValidIndex(redigertBrev, start);
+
+  if (indexAfterDeletion) {
+    draft.focus = indexAfterDeletion;
+
+    // Potentially merge start and end which should now be adjacent.
+    if (shouldMergeAfterDeletetion(indexAfterDeletion, selection)) {
+      mergeRecipe(draft, indexAfterDeletion, MergeTarget.NEXT);
+    }
   }
   draft.saveStatus = "DIRTY";
+}
+
+function shouldMergeAfterDeletetion(
+  indexAfterDeletion: Focus & { cursorPosition: number },
+  { start, end }: SelectionIndex,
+): boolean {
+  if (start.blockIndex < end.blockIndex) {
+    return true;
+  } else if (isItemContentIndex(indexAfterDeletion) && start.contentIndex < end.contentIndex) {
+    return true;
+  } else {
+    return (
+      isItemContentIndex(indexAfterDeletion) &&
+      isItemContentIndex(start) &&
+      isItemContentIndex(end) &&
+      start.itemIndex < end.itemIndex
+    );
+  }
 }
 
 function deleteInTextContentFromOffset(
@@ -173,16 +196,9 @@ function deleteInItemList(
   start: ItemContentIndex & { cursorPosition: number },
   end?: ItemContentIndex & { cursorPosition: number },
 ): boolean {
-  // TODO: Lag funksjoner for isAtStartOfItemList og isAtEndOfItemList
-  const startsAtBeginningOfItemList =
-    start.itemIndex === 0 && start.itemContentIndex === 0 && start.cursorPosition === 0;
-  const includesEndOfItemList =
-    end === undefined ||
-    (end.itemIndex === itemList.items.length - 1 &&
-      end.itemContentIndex === itemList.items[end.itemIndex].content.length - 1 &&
-      end.cursorPosition >= text(itemList.items[end.itemIndex].content[end.itemContentIndex]).length);
+  const includesEndOfItemList = end === undefined || isAtEndOfItemList(end, itemList);
 
-  if (startsAtBeginningOfItemList && includesEndOfItemList) {
+  if (isAtStartOfItemList(start) && includesEndOfItemList) {
     removeElements(start.contentIndex, 1, parent);
     return true;
   } else {
@@ -326,6 +342,11 @@ function deleteInContentAndRemoveRemainingInBlock<T extends ItemList | Table>(
       removeElements(nextStartIndex, end.contentIndex - start.contentIndex - 1, block);
     }
   }
+
+  // Make sure we don't end up with empty block
+  if (block.content.length === 0) {
+    addElements([newLiteral()], 0, block.content, block.deletedContent);
+  }
 }
 
 function deleteInContent<T extends ItemList | Table>(
@@ -425,5 +446,63 @@ function removeInTextContentParent(
   // make sure we don't end up with empty parent
   if (parent.content.length === 0) {
     addElements([newLiteral()], 0, parent.content, parent.deletedContent);
+  }
+}
+
+function deduceValidIndex(
+  redigertBrev: EditedLetter,
+  start: Focus & { cursorPosition: number },
+): (Focus & { cursorPosition: number }) | undefined {
+  const blockIndex = Math.max(0, Math.min(redigertBrev.blocks.length - 1, start.blockIndex));
+  const block = redigertBrev.blocks[blockIndex];
+
+  const contentIndex = Math.max(0, Math.min(block.content.length - 1, start.contentIndex));
+  const content = block.content[contentIndex];
+
+  if (isTextContent(content)) {
+    return {
+      blockIndex,
+      contentIndex,
+      cursorPosition:
+        contentIndex === start.contentIndex
+          ? Math.min(text(content).length, start.cursorPosition)
+          : text(content).length,
+    };
+  } else if (isItemList(content)) {
+    const itemIndex = Math.max(0, content.items.length - 1);
+    const item = content.items[itemIndex];
+
+    const itemContentIndex = Math.max(0, (item?.content.length ?? 1) - 1);
+    const itemContent = item?.content[itemContentIndex];
+
+    return {
+      blockIndex,
+      contentIndex,
+      itemIndex,
+      itemContentIndex,
+      cursorPosition: isTextContent(itemContent) ? text(itemContent).length : 0,
+    };
+  } else if (isTable(content)) {
+    const rowIndex = Math.max(-1, content.rows.length - 1);
+    const cells =
+      rowIndex === -1
+        ? content.header.colSpec.map((spec) => spec.headerContent)
+        : (content.rows[rowIndex]?.cells ?? []);
+
+    const cellIndex = Math.max(0, (cells?.length ?? 1) - 1);
+    const cell = cells[cellIndex];
+    const cellContentIndex = Math.max(0, (cell?.text.length ?? 1) - 1);
+    const cellContent = cell?.text[cellContentIndex];
+    return {
+      blockIndex,
+      contentIndex,
+      rowIndex,
+      cellIndex,
+      cellContentIndex,
+      cursorPosition: isTextContent(cellContent) ? text(cellContent).length : 0,
+    };
+  } else {
+    console.warn("Couldn't deduce valid index after deletion of selection");
+    return undefined;
   }
 }

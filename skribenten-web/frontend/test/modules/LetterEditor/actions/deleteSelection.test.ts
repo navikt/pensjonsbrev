@@ -323,6 +323,39 @@ describe("Actions.deleteSelection", () => {
       expect(block.deletedContent).toContain(state.redigertBrev.blocks[0].content[4].id);
       expect(block.content[3]).toMatchObject({ editedText: "så etter første punktliste." });
     });
+
+    it("starts and ends in same list and includes entire list at end of block, deletes entire list", () => {
+      const state = letter(paragraph([literal("første avsnitt"), itemList2]), paragraph([literal("hei")]));
+      const selection = {
+        start: { blockIndex: 0, contentIndex: 1, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 1, itemIndex: 2, itemContentIndex: 2, cursorPosition: 11 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(state.redigertBrev.blocks[0].content.length - 1);
+    });
+
+    it("includes entire list and it is the only content in block, deletes entire list but leaves a block with an empty literal ", () => {
+      const state = letter(paragraph([itemList2]), paragraph([literal("hei")]));
+      const selection = {
+        start: { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 2, cursorPosition: 11 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ text: "", type: LITERAL });
+    });
+
+    it("includes entire list that is the only content in block and ends in next block, deletes list and merges blocks", () => {
+      const state = letter(paragraph([itemList2]), paragraph([literal("hei")]));
+      const selection = {
+        start: { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 1, contentIndex: 0, cursorPosition: 1 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: "ei", type: LITERAL });
+    });
   });
 
   describe("selection in table", () => {

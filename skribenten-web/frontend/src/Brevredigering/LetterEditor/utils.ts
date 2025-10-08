@@ -14,9 +14,9 @@ export enum Typography {
 }
 
 export const TypographyToText = {
-  [Typography.TITLE1]: "Overskrift (alt/option+1)",
-  [Typography.TITLE2]: "Underoverskrift (alt/option+2)",
-  [Typography.PARAGRAPH]: "Normal (alt/option+3)",
+  [Typography.TITLE1]: "Overskrift (alt+1)",
+  [Typography.TITLE2]: "Underoverskrift (alt+2)",
+  [Typography.PARAGRAPH]: "Normal (alt+3)",
 } as const;
 
 export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
@@ -24,13 +24,13 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.altKey && event.code === "Digit1") {
         event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE1);
       } else if (event.altKey && event.code === "Digit2") {
         event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE1);
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
       } else if (event.altKey && event.code === "Digit3") {
         event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
+        applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
       } else if (event.key === "Backspace" || event.key === "Delete") {
         const rootDiv = event.currentTarget as HTMLElement;
         const selectionFocus = getSelectionFocus(rootDiv);
