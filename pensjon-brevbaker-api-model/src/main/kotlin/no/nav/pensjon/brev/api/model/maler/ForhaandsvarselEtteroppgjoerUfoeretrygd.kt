@@ -12,4 +12,5 @@ data class ForhaandsvarselEtteroppgjoerUfoeretrygdDto(
     val oppjustertInntektFoerUfoerhet: Kroner,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
     val opplysningerOmEtteroppgjoeretUfoeretrygd: OpplysningerOmEtteroppgjoeretDto,
+    val harMotregningIEOAret: Boolean = false
 ) : BrevbakerBrevdata
