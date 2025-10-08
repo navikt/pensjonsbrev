@@ -52,7 +52,7 @@ export const internalRoutes = (server: Express) => {
         level: level,
         statusCode: level == "ERROR" ? "500" : request.statusCode,
         timestamp: body.jsonContent.timestamp,
-        message: 'Feil fra frontend: ' + body.message + ": " + body.jsonContent.url,
+        message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
       }),
     );
