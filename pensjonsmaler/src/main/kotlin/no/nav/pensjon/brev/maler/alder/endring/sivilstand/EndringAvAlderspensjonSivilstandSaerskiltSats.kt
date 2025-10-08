@@ -93,7 +93,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
 
         title {
             text(
-                bokmal { +"Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
+                bokmal { +"Vi har beregnet alderspensjonen din på nytt fra " + kravVirkDatoFom },
                 nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
                 english { +"We have recalculated your retirement pension from " + kravVirkDatoFom },
             )
