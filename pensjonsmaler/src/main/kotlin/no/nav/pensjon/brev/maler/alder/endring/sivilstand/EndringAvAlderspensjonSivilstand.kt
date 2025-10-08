@@ -34,7 +34,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.sivilstandsendringsaarsak_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
@@ -106,14 +106,13 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             val grunnpensjon = pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
 
-            val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
             val epsNavn = fritekst("navn")
 
             val beloepEndring = pesysData.beloepEndring
 
             title {
                 text(
-                    bokmal { +"Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
+                    bokmal { +"Vi har beregnet alderspensjonen din på nytt fra " + kravVirkDatoFom },
                     nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
                     english { +"We have recalculated your retirement pension from " + kravVirkDatoFom },
                 )
@@ -605,7 +604,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-                showIf(vedtakEtterbetaling) {
+                showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
                     includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
                 }
 

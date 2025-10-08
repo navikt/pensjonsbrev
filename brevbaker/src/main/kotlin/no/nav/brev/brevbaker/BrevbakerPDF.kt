@@ -22,18 +22,18 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                     pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
                 )
             )
-        }
-            .let { pdfVedleggAppender.leggPaaVedlegg(
+        }.let {
+            pdfVedleggAppender.leggPaaVedlegg(
                 it,
                 letter.template.pdfAttachments.map { a -> a.eval(letter.toScope()) },
-                letter.language.toCode())
-            }
-            .let { pdf ->
-                LetterResponse(
-                    file = pdf.bytes,
-                    contentType = ContentTypes.PDF,
-                    letterMetadata = letter.template.letterMetadata
-                )
+                letter.language.toCode()
+            )
+        }.let { pdf ->
+            LetterResponse(
+                file = pdf.bytes,
+                contentType = ContentTypes.PDF,
+                letterMetadata = letter.template.letterMetadata
+            )
         }
 
     private fun renderCompleteMarkup(

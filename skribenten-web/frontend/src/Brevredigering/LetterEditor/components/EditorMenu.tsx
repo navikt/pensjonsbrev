@@ -27,7 +27,7 @@ const SelectTypography = () => {
   return (
     <Select
       data-cy="typography-select"
-      disabled={freeze}
+      disabled={freeze || editorState.focus.blockIndex < 0}
       hideLabel
       label="Tekst stil"
       onChange={(e) => {

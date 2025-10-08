@@ -45,7 +45,7 @@ const EditorFonts = () => {
       <FontButton
         active={activeFontType === FontType.BOLD}
         dataCy="fonttype-bold"
-        disabled={freeze}
+        disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
           if (activeFontType === FontType.BOLD) {
             applyAction(Actions.switchFontType, setEditorState, editorState.focus, FontType.PLAIN);
@@ -58,7 +58,7 @@ const EditorFonts = () => {
       <FontButton
         active={activeFontType === FontType.ITALIC}
         dataCy="fonttype-italic"
-        disabled={freeze}
+        disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
           if (activeFontType === FontType.ITALIC) {
             applyAction(Actions.switchFontType, setEditorState, editorState.focus, FontType.PLAIN);
@@ -109,7 +109,7 @@ const FontButton = (props: {
       onClick={props.onClick}
       size="small"
       type="button"
-      variant="tertiary"
+      variant="tertiary-neutral"
     >
       {props.text}
     </Button>

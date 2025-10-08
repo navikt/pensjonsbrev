@@ -15,12 +15,9 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
-import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -29,25 +26,9 @@ import kotlin.time.Duration.Companion.seconds
 class PdfByggerAppTest {
     @OptIn(InterneDataklasser::class)
     private val pdfRequest = PDFRequest(
-        letterMarkup = LetterMarkupImpl(
-            title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(-1, "Tittel 1")),
-            sakspart = LetterMarkupImpl.SakspartImpl(
-                gjelderNavn = "Navn Navnesen",
-                gjelderFoedselsnummer = Foedselsnummer("12345678901"),
-                vergeNavn = null,
-                annenMottakerNavn = null,
-                saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1)
-            ),
-            blocks = listOf(),
-            signatur = LetterMarkupImpl.SignaturImpl(
-                hilsenTekst = "hilsen",
-                saksbehandlerRolleTekst = "saksbehandler",
-                saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
-                attesterendeSaksbehandlerNavn = null,
-                navAvsenderEnhet = "Nav sentralt",
-            )
-        ),
+        letterMarkup = letterMarkup {
+                title { text("Tittel 1") }
+        },
         attachments = listOf(),
         language = LanguageCode.BOKMAL,
         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV

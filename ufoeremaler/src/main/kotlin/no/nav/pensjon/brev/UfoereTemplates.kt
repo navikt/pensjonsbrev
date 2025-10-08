@@ -22,6 +22,7 @@ object UfoereTemplates : AllTemplates {
         UforeAvslagInntektsevne30,
         UforeAvslagUngUfor26,
         UforeAvslagUngUfor36,
+        UforeAvslagUngUforVarig,
         UforeAvslagManglendeDok,
         UforeAvslagYrkesskadeGodkjent,
         UforeAvslagYrkesskadeIkkeGodkjent,

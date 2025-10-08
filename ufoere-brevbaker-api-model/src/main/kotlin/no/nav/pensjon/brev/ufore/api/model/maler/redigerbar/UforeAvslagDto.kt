@@ -12,7 +12,7 @@ data class UforeAvslagDto(
 ) : RedigerbarBrevdata<Saksbehandlervalg, UforeAvslagPendata> {
 
     data class Saksbehandlervalg(
-        @DisplayText("Vis vurdering fra vilkårsvedtak")
+        @DisplayText("Vis vurdering fra vilkår")
         val VisVurderingFraVilkarvedtak: Boolean,
         @DisplayText("Erstatt standardtekst med fritekst")
         val brukVurderingFraVilkarsvedtak: Boolean,
