@@ -42,10 +42,10 @@ class LaTeXCompilerService(
 ) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = brevbakerJacksonObjectMapper()
-    private val httpClientAuto = settOppHttpClient(maxRetries, true)
-    private val httpClientRedigerbar = settOppHttpClient(maxRetries, false)
+    private val httpClientAuto = settOppHttpClient(maxRetries)
+    private val httpClientRedigerbar = settOppHttpClient(0)
 
-    private fun settOppHttpClient(maxRetries: Int, shouldRetry: Boolean): HttpClient = HttpClient(CIO) {
+    private fun settOppHttpClient(maxRetries: Int): HttpClient = HttpClient(CIO) {
             install(ContentNegotiation) {
                 jackson {
                     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -69,24 +69,20 @@ class LaTeXCompilerService(
                         minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
                     }
                     retryOnExceptionIf { _, cause ->
-                        if (!shouldRetry) {
-                            false
-                        } else {
-                            val actualCause = cause.unwrapCancellationException()
-                            val doRetry = actualCause is HttpRequestTimeoutException
-                                    || actualCause is ConnectTimeoutException
-                                    || actualCause is ServerResponseException
-                                    || actualCause is IOException
-                            if (!doRetry) {
-                                logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
-                            }
-                            doRetry
+                        val actualCause = cause.unwrapCancellationException()
+                        val doRetry = actualCause is HttpRequestTimeoutException
+                                || actualCause is ConnectTimeoutException
+                                || actualCause is ServerResponseException
+                                || actualCause is IOException
+                        if (!doRetry) {
+                            logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
                         }
+                        doRetry
                     }
                 }
                 install(HttpSend) {
                     // It is important that maxSendCount exceeds maxRetries.
-                    // If not the client will fail with SendCountExceeded-exception instead of the server response.
+                    // If not, the client will fail with SendCountExceeded-exception instead of the server response.
                     maxSendCount = maxRetries + 20
                 }
             }
