@@ -13,6 +13,8 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.brev.brevbaker.LatexCompileException
 import no.nav.brev.brevbaker.LatexInvalidException
@@ -26,6 +28,8 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 fun Application.brevbakerModule(
     templates: AllTemplates
@@ -124,6 +128,12 @@ fun Application.brevbakerModule(
     )
 
     konfigurerUnleash(brevbakerConfig)
+    monitor.subscribe(ServerReady) {
+        async {
+            delay(1.minutes)
+            FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
+        }
+    }
 
     configureMetrics()
     brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
@@ -138,7 +148,7 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
             environment = stringProperty("environment")
             host = stringProperty("host")
             apiToken = stringProperty("apiToken")
-        }.also { FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle }) }
+        }
     }
 }
 
