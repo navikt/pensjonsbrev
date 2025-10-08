@@ -24,7 +24,11 @@ class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
     private val pdf = pdfInnhold.encodeToByteArray()
     private val fakePDFBygger = object : PDFByggerService {
-        override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
+        override suspend fun producePDF(
+            pdfRequest: PDFRequest,
+            path: String,
+            shouldRetry: Boolean
+        ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger)
