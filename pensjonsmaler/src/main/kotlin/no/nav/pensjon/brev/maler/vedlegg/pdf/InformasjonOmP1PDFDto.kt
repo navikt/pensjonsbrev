@@ -13,6 +13,6 @@ val informasjonOmP1Vedlegg = createAttachmentPDF<LangBokmalEnglish, EmptyPDFVedl
             Language.English to "Information about the P1 form and its use"
         )
     )
-) {
+) { data, felles ->
     side("InformasjonOmP1") {}
 }

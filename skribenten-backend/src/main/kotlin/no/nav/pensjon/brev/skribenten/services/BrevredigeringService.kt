@@ -512,7 +512,12 @@ class BrevredigeringService(
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-                felles = pesysData.felles.medSignerendeSaksbehandlere(null),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(
+                    SignerendeSaksbehandlere(
+                        saksbehandler = brevredigering.redigertBrev.signatur.saksbehandlerNavn ?: "",
+                        attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: ""
+                    )
+                ),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
