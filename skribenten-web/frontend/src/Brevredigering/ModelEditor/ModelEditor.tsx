@@ -1,9 +1,10 @@
 import { VStack } from "@navikt/ds-react";
 import { partition } from "lodash";
+import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
-import type { FieldType, LetterModelSpecification } from "~/types/brevbakerTypes";
+import type { FieldType, LetterModelSpecification, PropertyUsage } from "~/types/brevbakerTypes";
 
 import { FieldEditor } from "./components/ObjectEditor";
 import { isBooleanField, isFieldNullableOrBoolean } from "./components/utils";
@@ -12,29 +13,53 @@ const useModelSpecificationForm = (brevkode: string) => {
   const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
   const saksbehandlerValgType = brevKodeSpecification.specification
     ? findSaksbehandlerValgTypeName(brevKodeSpecification.specification)
-    : "";
-  const saksbehandlerValgSpecification = useModelSpecification(brevkode, (s) => s.types[saksbehandlerValgType]);
+    : undefined;
+  const saksbehandlerValgSpecification = useModelSpecification(brevkode, (s) =>
+    saksbehandlerValgType ? s.types[saksbehandlerValgType] : undefined,
+  );
 
   return {
     status:
       brevKodeSpecification.status === "success" ? saksbehandlerValgSpecification.status : brevKodeSpecification.status,
     specification: saksbehandlerValgSpecification.specification,
+    saksbehandlerValgType,
     error:
       brevKodeSpecification.status === "error" ? brevKodeSpecification.error : saksbehandlerValgSpecification.error,
   };
 };
 
-export const usePartitionedModelSpecification = (brevkode: string) => {
-  const { status, specification, error } = useModelSpecificationForm(brevkode);
-  const [optionalFields, requiredFields] = specification
-    ? partition(Object.entries(specification), (spec) => isFieldNullableOrBoolean(spec[1]))
+export const usePartitionedModelSpecification = (brevkode: string, propertyUsage: PropertyUsage[] = []) => {
+  const { status, specification, error, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
+
+  const relevantFields = useMemo(() => {
+    if (!saksbehandlerValgType) {
+      return new Set<string>();
+    }
+    return new Set(
+      propertyUsage.filter((usage) => usage.typeName === saksbehandlerValgType).map((usage) => usage.propertyName),
+    );
+  }, [propertyUsage, saksbehandlerValgType]);
+
+  const filteredSpecification = useMemo(() => {
+    if (!specification) {
+      return undefined;
+    }
+    if (relevantFields.size === 0) {
+      return specification;
+    }
+    return Object.entries(specification).reduce<Record<string, FieldType>>((acc, [field, type]) => {
+      if (relevantFields.has(field)) {
+        acc[field] = type;
+      }
+      return acc;
+    }, {});
+  }, [specification, relevantFields]);
+
+  const [optionalFields, requiredFields] = filteredSpecification
+    ? partition(Object.entries(filteredSpecification), (spec) => isFieldNullableOrBoolean(spec[1]))
     : [[], []];
-  return {
-    status: status,
-    optionalFields,
-    requiredFields,
-    error: error,
-  };
+
+  return { status, optionalFields, requiredFields, error };
 };
 
 export const createFormElementsFromSpecification = (args: {
