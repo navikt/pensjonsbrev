@@ -650,7 +650,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             }
             paragraph {
                 text(
-                    bokmal { + "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + "  etter at vi mottok søknaden. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss." },
+                    bokmal { + "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi mottok søknaden. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss." },
                     nynorsk { + "Saka vil bli behandla innan " + fritekst("talet på dagar/veker/månader") + " etter at vi fekk søknaden. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss." },
                     english { + "Your case will be processed within " + fritekst("antall days/weeks/months") + " after we received the application. If your case has not been decided within this time, you will hear from us." },
                 )
