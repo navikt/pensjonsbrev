@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
+import no.nav.pensjon.brevbaker.api.model.DisplayText
+
 enum class AlderspensjonRegelverkType {
     AP1967,
     AP2011,
@@ -45,4 +47,13 @@ enum class MetaforceSivilstand {
     FELLES_BARN, FORELDER, GIFT, GLAD_EKT, GLAD_PART, PARTNER, SAMBOER,
     SAMBOER_1_5,
     SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
+}
+
+enum class BeloepEndring {
+    @DisplayText("Økning av beløpet")
+    ENDR_OKT,
+    @DisplayText("Reduksjon av beløpet")
+    ENDR_RED,
+    @DisplayText("Uendret beløp")
+    UENDRET
 }

@@ -7,6 +7,7 @@ import brev.auto.VedtakAldersovergang67AarGarantitilleggAuto
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.auto.VedtakEndringAFPEndretOpptjeningAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -15,6 +16,7 @@ object AlderTemplates : AllTemplates {
         InfoFyller67AarSaerskiltSats,
         InfoAldersovergangEps60AarAuto,
         InfoAldersovergangEps62AarAuto,
+        VedtakEndringAFPEndretOpptjeningAuto,
         VedtakAldersovergang67AarGarantitilleggAuto
     )
 
