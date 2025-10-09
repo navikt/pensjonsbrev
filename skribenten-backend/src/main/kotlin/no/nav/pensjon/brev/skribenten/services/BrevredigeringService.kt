@@ -290,7 +290,7 @@ class BrevredigeringService(
                 ) {
                     Ok(document.pdf)
                 } else {
-                    opprettPdf(brevredigering, pesysBrevdata)
+                    opprettPdf(brevredigering, pesysBrevdata, nyHash)
                 }
             }
         }
@@ -511,7 +511,7 @@ class BrevredigeringService(
     }
 
     private suspend fun opprettPdf(
-        brevredigering: Dto.Brevredigering, pesysData: BrevdataResponse.Data
+        brevredigering: Dto.Brevredigering, pesysData: BrevdataResponse.Data, brevdataHash: Hash
     ): ServiceResult<ByteArray> {
         return brevbakerService.renderPdf(
                 brevkode = brevredigering.info.brevkode,
@@ -530,7 +530,7 @@ class BrevredigeringService(
                         pdf = it.file
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
-                        this.brevdataHash = Hash.read(pesysData)
+                        this.brevdataHash = brevdataHash
                     }
                     Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
                         ?: Document.new(update).pdf
