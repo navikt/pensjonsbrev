@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
 import no.nav.pensjon.brev.api.model.maler.P1Dto
+import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.newText
@@ -43,12 +44,11 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
                 "Town[1]" to forsikrede.poststed?.value
                 "Post_code[1]" to forsikrede.postnummer?.value
                 "Country_code[1]" to forsikrede.landkode?.landkode
-                "Name_of_the_institution[0]" to "NAV"
-                // TODO trenger felt for å sette sakstype. Må også ha engelsk variant.
-                "sakstype" to mapOf(
-                    Language.Bokmal to sakstype.name,
-                    Language.English to sakstype.name,
-                ) // TODO denne er vel for enkel
+                "Name_of_the_institution[0]" to
+                    mapOf(
+                        LanguageCode.BOKMAL to SakstypeNavn.apply(sakstype, Language.Bokmal) + " til Nav",
+                        LanguageCode.ENGLISH to SakstypeNavn.apply(sakstype, Language.English) + " with Nav",
+                    )
             }
         }
 
