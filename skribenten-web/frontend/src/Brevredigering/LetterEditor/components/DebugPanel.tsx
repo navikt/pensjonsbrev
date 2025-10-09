@@ -3,7 +3,6 @@ import { Accordion, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
 import type { Dispatch } from "react";
 import React from "react";
 import { useEffect, useState } from "react";
-import { V } from "vitest/dist/chunks/reporters.d.BFLkQcL6";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
