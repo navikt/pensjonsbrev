@@ -44,13 +44,13 @@ export const internalRoutes = (server: Express) => {
       return;
     }
 
-    const level = request.statusCode === 403 || request.statusCode === 404 ? "WARN" : "ERROR";
-
     const body = request.body;
+    const level = body.status === 403 || body.status === 404 ? "WARN" : "ERROR";
+
     console.error(
       JSON.stringify({
         level: level,
-        statusCode: level == "ERROR" ? "500" : request.statusCode,
+        statusCode: body.status,
         timestamp: body.jsonContent.timestamp,
         message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
