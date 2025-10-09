@@ -118,7 +118,21 @@ describe("Actions.deleteSelection", () => {
     it("selects all text in letter, deletes everything but leaves an empty paragraph", () => {
       const result = Actions.deleteSelection(state, {
         start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
-        end: { blockIndex: 2, contentIndex: 2, cursorPosition: 11 },
+        end: { blockIndex: 2, contentIndex: 2, cursorPosition: 9 },
+      });
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      const block = result.redigertBrev.blocks[0];
+      expect(block.type).toBe("PARAGRAPH");
+      expect(block.content).toHaveLength(1);
+      expect(block.content[0].type).toBe(LITERAL);
+      expect(text(block.content[0] as LiteralValue)).toBe("");
+    });
+
+    it("selects all text in block that starts with variable, ends up with empty literal", () => {
+      const state = letter(paragraph([variable("hei"), literal(" på deg")]));
+      const result = Actions.deleteSelection(state, {
+        start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 1, cursorPosition: 7 },
       });
       expect(result.redigertBrev.blocks).toHaveLength(1);
       const block = result.redigertBrev.blocks[0];
