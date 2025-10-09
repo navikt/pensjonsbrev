@@ -169,8 +169,8 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     title2 {
                         text(
                             bokmal { +"Etterbetaling av beløpet" },
-                            nynorsk { +"" },
-                            english { +"" },
+                            nynorsk { +"Etterbetaling av beløpet" },
+                            english { +"Back payment of the amount" },
                         )
                     }
                     paragraph {
