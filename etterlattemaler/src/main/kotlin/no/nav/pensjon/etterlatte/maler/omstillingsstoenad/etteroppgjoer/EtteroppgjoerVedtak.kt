@@ -128,7 +128,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     text(
                         bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9 og omstillingsstønadsforskriften § 9." },
                         nynorsk { +"Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § 17-9 og omstillingsstønadsforskriften § 9." },
-                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations.." },
+                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations." },
                     )
                 }
 
