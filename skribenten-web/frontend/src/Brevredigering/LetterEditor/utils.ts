@@ -14,8 +14,8 @@ export enum Typography {
 }
 
 export const TypographyToText = {
-  [Typography.TITLE1]: "Overskrift (alt+1)",
-  [Typography.TITLE2]: "Underoverskrift (alt+2)",
+  [Typography.TITLE1]: "Overskrift 1 (alt+1)",
+  [Typography.TITLE2]: "Overskrift 2 (alt+2)",
   [Typography.PARAGRAPH]: "Normal (alt+3)",
 } as const;
 
