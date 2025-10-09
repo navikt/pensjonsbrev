@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
@@ -16,7 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto : AutobrevTemplate<AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR_AUTO
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),

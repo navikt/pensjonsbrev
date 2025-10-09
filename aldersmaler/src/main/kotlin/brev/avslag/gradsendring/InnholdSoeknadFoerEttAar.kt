@@ -1,8 +1,8 @@
-package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
+package brev.avslag.gradsendring
 
-
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.maler.fraser.common.Constants
+import brev.felles.Constants
+import brev.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -67,12 +67,12 @@ data class InnholdSoeknadFoerEttAar(
         paragraph {
             text(
                 bokmal { + "Dersom du er usikker på når alderspensjonen din ble innvilget eller endret sist, " +
-                        "kan du finne mer informasjon om dette i Din pensjon på ${Constants.DIN_PENSJON_URL}." },
+                        "kan du finne mer informasjon om dette i Din pensjon på ${DIN_PENSJON_URL}." },
                 nynorsk { + "Dersom du er usikker på når alderspensjonen din blei innvilga eller endra sist," +
-                        " kan du finne meir informasjon om dette i nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL}." },
+                        " kan du finne meir informasjon om dette i nettenesta Din pensjon på ${DIN_PENSJON_URL}." },
                 english { + "If you are not sure when your retirement pension was granted or last changed, you can" +
                         " find more information by logging on to the online service " + quoted("Din pensjon") +" at" +
-                        " ${Constants.DIN_PENSJON_URL}." },
+                        " ${DIN_PENSJON_URL}." },
             )
         }
     }

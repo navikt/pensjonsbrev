@@ -1,18 +1,16 @@
-package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
+package brev.avslag.gradsendring
 
-
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import brev.avslag.gradsendring.fraser.AvslagHjemler
+import brev.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.fraser.AvslagHjemler
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -34,13 +32,13 @@ data class InnholdLavOpptjening(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                         "Du har for lav pensjonsopptjening til at du kan ta ut " + uttaksgrad.format() +
                         " prosent pensjon fra " + virkFom.format() + ". Derfor har vi avslått søknaden din og uttaksgraden blir som før." },
-                nynorsk { + 
+                nynorsk { +
                         "Du har for låg pensjonsopptening til at du kan ta ut " + uttaksgrad.format() +
                         " prosent pensjon frå " + virkFom.format() + ". Derfor har vi avslått søknaden din." },
-                english { + 
+                english { +
                         "Your accumulated pension capital is not sufficient for you to draw a retirement pension at " + uttaksgrad.format() +
                         " percent from " + virkFom.format() + ". Therefore, we have declined your application." },
             )

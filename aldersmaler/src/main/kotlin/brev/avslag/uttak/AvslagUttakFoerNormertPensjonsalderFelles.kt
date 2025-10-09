@@ -1,13 +1,10 @@
 package no.nav.pensjon.brev.maler.alder
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import brev.felles.Constants
+import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.fraser.AvslagHjemler
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
-import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
