@@ -138,7 +138,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                         text(
                             bokmal { +"Hvordan skal du betale tilbake" },
                             nynorsk { +"Korleis du skal betale tilbake" },
-                            english { +"" },
+                            english { +"How to repay" },
                         )
                     }
                     paragraph {
