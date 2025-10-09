@@ -24,7 +24,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
 ) { data, felles ->
     with(data) {
 
-        side("p1-side1") {
+        side("P1-side1") {
             felt {
                 // innehaver
                 "Forenames[0]" to innehaver.fornavn
@@ -53,7 +53,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         }
 
         innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
-            side("p1-side2") {
+            side("P1-side2") {
                 felt {
                     add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon) }
                         .reduce { a, b -> a + b })
@@ -62,7 +62,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         }
 
         avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
-            side("p1-side3") {
+            side("P1-side3") {
                 felt {
                     add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
                         .reduce { a, b -> a + b })
@@ -70,7 +70,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
             }
         }
 
-        side("p1-side4") {
+        side("P1-side4") {
             felt {
                 // utfyllende institusjon
                 "Name[0]" to utfyllendeInstitusjon.navn
