@@ -355,6 +355,7 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY",
+        pin = null,
         saksnummer = null,
         land = null,
     )
@@ -364,6 +365,7 @@ private fun nay2(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY2",
+        pin = null,
         saksnummer = null,
         land = null,
     )
@@ -373,6 +375,7 @@ private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY 4",
+        pin = null,
         saksnummer = null,
         land = null,
     ),
