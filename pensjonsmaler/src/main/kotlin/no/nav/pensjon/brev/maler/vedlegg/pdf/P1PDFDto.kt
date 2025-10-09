@@ -151,7 +151,7 @@ private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdat
 private fun formaterValuta(beloep: Int?, valuta: String?, utbetalingsHyppighet: P1Dto.Utbetalingshyppighet?): Map<LanguageCode, String>? {
     return if (beloep != null && valuta != null) {
         val bokmalFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
-        val englishFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
+        val englishFormatter = NumberFormat.getNumberInstance(Language.English.locale())
         return mapOf(
             LanguageCode.BOKMAL to "${bokmalFormatter.format(beloep)} $valuta\n" +
                 when(utbetalingsHyppighet) {
