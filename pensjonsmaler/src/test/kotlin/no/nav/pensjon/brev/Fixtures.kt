@@ -59,6 +59,7 @@ object Fixtures {
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
             EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
+            EmptySaksbehandlerValg::class -> EmptySaksbehandlerValg as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
