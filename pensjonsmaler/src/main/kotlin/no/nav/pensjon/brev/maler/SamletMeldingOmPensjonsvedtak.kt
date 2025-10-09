@@ -37,7 +37,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
     override val template = createTemplate(
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Samlet melding om pensjonsvedtak",
+            displayTitle = "P1 med forsidebrev",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
