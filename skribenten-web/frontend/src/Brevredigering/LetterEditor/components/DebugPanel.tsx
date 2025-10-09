@@ -160,7 +160,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
         <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
       </ExpansionCard.Header>
       <ExpansionCard.Content>
-        <Accordion headingSize={"xsmall"} size={"small"}>
+        <Accordion size={"small"}>
           {block.content.map((c, index) => (
             <Content content={c} focus={focus} index={index} key={index} />
           ))}
@@ -208,7 +208,7 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
       return "--new line--";
     case "ITEM_LIST":
       return (
-        <Accordion headingSize={"xsmall"} size={"small"}>
+        <Accordion size={"small"}>
           {content.items.map((i, index) => (
             <ItemBody focus={focus} index={index} item={i} key={index} />
           ))}
@@ -252,7 +252,7 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
         </HStack>
       </Accordion.Header>
       <Accordion.Content>
-        <Accordion headingSize={"xsmall"} size={"small"}>
+        <Accordion size={"small"}>
           {item.content.map((c, index) => (
             <Content content={c} focus={itemContentFocus} index={index} key={index} />
           ))}
