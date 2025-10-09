@@ -112,7 +112,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     text(
                         bokmal { +"Ett rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
                         nynorsk { +"Eitt rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
-                        english { +"One court fee as of December 31st " + data.etteroppgjoersAar.format() + " is " + data.rettsgebyrBeloep.format() + "." }
+                        english { +"As of 31 December " + data.etteroppgjoersAar.format() + " a standard court fee is " + data.rettsgebyrBeloep.format() + "." }
                     )
                 }
 
