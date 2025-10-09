@@ -21,31 +21,30 @@ value class EditLetterHash(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
     companion object {
-        fun read(letter: Edit.Letter): EditLetterHash = fromBytes(WithEditLetterHash.hashBrev(letter))
+        fun read(letter: Edit.Letter): EditLetterHash = fromBytes(WithEditLetterHash.hash(letter))
         fun fromBytes(bytes: ByteArray) = EditLetterHash(Hex.encodeHexString(bytes))
         fun fromObject(obj: Any) = fromBytes(databaseObjectMapper.writeValueAsBytes(obj))
     }
 }
 
-class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<EditLetterHash>) {
+class WithEditLetterHash<T>(private val letter: Column<T>, private val hash: Column<EditLetterHash>) {
 
-    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: Edit.Letter) {
+    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
-            hash.setValue(thisRef, property, EditLetterHash.fromBytes(hashBrev(value)))
+            hash.setValue(thisRef, property, EditLetterHash.fromBytes(hash(value)))
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Edit.Letter {
+    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): T {
         return with(thisRef) {
             letter.getValue(thisRef, property)
         }
     }
 
     companion object {
-        fun hashBrev(brev: Edit.Letter): ByteArray =
-            DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(brev))
+        fun <T> hash(obj: T): ByteArray =
+            DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(obj))
                 .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
-
     }
 }
