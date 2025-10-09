@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.erNyttEtteroppgjoer
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.harMotregningIEOAret
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.harTjentOver80prosentAvOIFU
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.kanSoekeOmNyInntektsgrense
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.oppjustertInntektFoerUfoerhet
@@ -103,6 +104,15 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                         nynorsk { + " er korrekte, og melde frå til oss dersom noko er feil eller manglar." },
                         english { + ". Please review the calculations and inform us of any errors or missing information." },
                     )
+                }
+                showIf(harMotregningIEOAret) {
+                    paragraph {
+                        text(
+                            bokmal { + "Placeholder tekst ved motregning" },
+                            nynorsk { + "Placeholder tekst ved motregning" },
+                            english { + "Placeholder tekst ved motregning" }
+                        )
+                    }
                 }
                 paragraph {
                     text(
