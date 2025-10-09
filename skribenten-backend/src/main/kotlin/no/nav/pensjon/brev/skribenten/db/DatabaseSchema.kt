@@ -80,7 +80,7 @@ object BrevredigeringTable : LongIdTable() {
     val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
-    val redigertBrevKryptertHash: Column<EditLetterHash> = hashColumn("redigertBrevKryptertHash")
+    val redigertBrevKryptertHash: Column<Hash> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -133,8 +133,8 @@ object DocumentTable : LongIdTable() {
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-    val redigertBrevHash: Column<EditLetterHash> = hashColumn("redigertBrevHash")
-    val brevdataHash: Column<EditLetterHash?> = hashColumn("brevdataHash").nullable()
+    val redigertBrevHash: Column<Hash> = hashColumn("redigertBrevHash")
+    val brevdataHash: Column<Hash?> = hashColumn("brevdataHash").nullable()
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
@@ -111,7 +111,7 @@ object Api {
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash,
         val saksbehandlerValg: BrevbakerBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
@@ -121,7 +121,7 @@ object Api {
         val reservertAv: NavAnsatt,
         val timestamp: Instant,
         val expiresIn: Duration,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash,
     )
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
@@ -17,7 +17,7 @@ object Dto {
     data class Brevredigering(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash,
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
@@ -51,8 +51,8 @@ object Dto {
         val brevredigeringId: Long,
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
-        val redigertBrevHash: EditLetterHash,
-        val brevdataHash: EditLetterHash?,
+        val redigertBrevHash: Hash,
+        val brevdataHash: Hash?,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

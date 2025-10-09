@@ -280,7 +280,7 @@ class BrevredigeringService(
                 brevkode = brevredigering.info.brevkode,
                 avsenderEnhetsId = brevredigering.info.avsenderEnhetId
             ).then { pesysBrevdata ->
-                val nyHash = EditLetterHash.read(pesysBrevdata)
+                val nyHash = Hash.read(pesysBrevdata)
 
                 if (document != null && (
                             document.redigertBrevHash == brevredigering.redigertBrevHash
@@ -530,7 +530,7 @@ class BrevredigeringService(
                         pdf = it.file
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
-                        this.brevdataHash = EditLetterHash.read(pesysData)
+                        this.brevdataHash = Hash.read(pesysData)
                     }
                     Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
                         ?: Document.new(update).pdf

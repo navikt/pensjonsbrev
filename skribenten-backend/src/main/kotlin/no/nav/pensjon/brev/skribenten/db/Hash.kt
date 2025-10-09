@@ -9,29 +9,29 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.columnTransformer
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<EditLetterHash>) =
-    WithEditLetterHash(this, hash)
+fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash>) =
+    WithHash(this, hash)
 
-fun Table.hashColumn(name: String): Column<EditLetterHash> =
-    binary(name).transform(columnTransformer({ it.hexBytes }, { EditLetterHash.fromBytes(it) }))
+fun Table.hashColumn(name: String): Column<Hash> =
+    binary(name).transform(columnTransformer({ it.hexBytes }, { Hash.fromBytes(it) }))
 
 
 @JvmInline
-value class EditLetterHash(private val hex: String) {
+value class Hash(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
     companion object {
-        fun <T> read(obj: T): EditLetterHash = fromBytes(WithEditLetterHash.hash(obj))
-        fun fromBytes(bytes: ByteArray) = EditLetterHash(Hex.encodeHexString(bytes))
+        fun <T> read(obj: T): Hash = fromBytes(WithHash.hash(obj))
+        fun fromBytes(bytes: ByteArray) = Hash(Hex.encodeHexString(bytes))
     }
 }
 
-class WithEditLetterHash<T>(private val letter: Column<T>, private val hash: Column<EditLetterHash>) {
+class WithHash<T>(private val letter: Column<T>, private val hash: Column<Hash>) {
 
     operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
-            hash.setValue(thisRef, property, EditLetterHash.fromBytes(hash(value)))
+            hash.setValue(thisRef, property, Hash.fromBytes(hash(value)))
         }
     }
 
@@ -44,6 +44,6 @@ class WithEditLetterHash<T>(private val letter: Column<T>, private val hash: Col
     companion object {
         fun <T> hash(obj: T): ByteArray =
             DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(obj))
-                .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
+                .also { assert(it.size == 32) { "SHA3-256 hash of ${obj?.javaClass} was longer than 32 bytes: ${it.size}" } }
     }
 }
