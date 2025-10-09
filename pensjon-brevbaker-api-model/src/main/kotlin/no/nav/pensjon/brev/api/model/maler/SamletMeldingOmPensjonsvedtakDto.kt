@@ -121,6 +121,7 @@ data class P1Dto(
     data class Institusjon(
         val institusjonsid: String?,
         val institusjonsnavn: String?,
+        val pin: String?,
         val saksnummer: String?,
         val land: String?
     )

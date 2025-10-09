@@ -143,6 +143,7 @@ private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdat
         joinAndSeparateByNotNull(
             System.lineSeparator(),
             it.institusjonsnavn,
+            it.pin,
             it.saksnummer,
             vedtaksdato,
         )
