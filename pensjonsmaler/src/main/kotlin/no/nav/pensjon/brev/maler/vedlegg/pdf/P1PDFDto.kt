@@ -150,9 +150,10 @@ private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdat
 
 private fun formaterValuta(beloep: Int?, valuta: String?, utbetalingsHyppighet: P1Dto.Utbetalingshyppighet?): Map<LanguageCode, String>? {
     return if (beloep != null && valuta != null) {
-        val formatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
+        val bokmalFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
+        val englishFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
         return mapOf(
-            LanguageCode.BOKMAL to "${formatter.format(beloep)} $valuta\n" +
+            LanguageCode.BOKMAL to "${bokmalFormatter.format(beloep)} $valuta\n" +
                 when(utbetalingsHyppighet) {
                     P1Dto.Utbetalingshyppighet.Aarlig -> "Årlig"
                     P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Kvartalvis"
@@ -163,7 +164,7 @@ private fun formaterValuta(beloep: Int?, valuta: String?, utbetalingsHyppighet: 
                     P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Ukjent, se vedtak"
                     null -> ""
                 },
-            LanguageCode.ENGLISH to "$valuta ${formatter.format(beloep)}\n" +
+            LanguageCode.ENGLISH to "$valuta ${englishFormatter.format(beloep)}\n" +
                     when(utbetalingsHyppighet) {
                         P1Dto.Utbetalingshyppighet.Aarlig -> "Yearly"
                         P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Quarterly"
@@ -171,7 +172,7 @@ private fun formaterValuta(beloep: Int?, valuta: String?, utbetalingsHyppighet: 
                         P1Dto.Utbetalingshyppighet.Maaned13PerAar -> "Monthly (13/year)"
                         P1Dto.Utbetalingshyppighet.Maaned14PerAar -> "Monthly (14/year)"
                         P1Dto.Utbetalingshyppighet.Ukentlig -> "Weekly"
-                        P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Other"
+                        P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Unknown, see decision"
                         null -> ""
                     },
         )

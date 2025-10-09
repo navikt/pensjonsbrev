@@ -512,12 +512,7 @@ class BrevredigeringService(
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-                felles = pesysData.felles.medSignerendeSaksbehandlere(
-                    SignerendeSaksbehandlere(
-                        saksbehandler = brevredigering.redigertBrev.signatur.saksbehandlerNavn ?: "",
-                        attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: ""
-                    )
-                ),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -566,6 +561,16 @@ class BrevredigeringService(
                 ?: principal.fullName
         }
 }
+
+private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur): Felles =
+    signatur.saksbehandlerNavn?.let {
+        medSignerendeSaksbehandlere(
+            SignerendeSaksbehandlere(
+                saksbehandler = it,
+                attesterendeSaksbehandler = signatur.attesterendeSaksbehandlerNavn
+            )
+        )
+    }?: this
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
     redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
