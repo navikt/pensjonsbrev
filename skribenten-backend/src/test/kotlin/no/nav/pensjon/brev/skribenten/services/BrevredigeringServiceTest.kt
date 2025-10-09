@@ -713,6 +713,41 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `hentPdf rendrer ny pdf om pesysdata er endra`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertEquals("min andre pdf", second?.toString(Charsets.UTF_8))
+        }
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om dokumentdato er endra`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            penService.pesysBrevdata = brevdataResponseData.copy(felles = FellesFactory.lagFelles(
+                dokumentDato = LocalDate.now().plusDays(2),
+                saksnummer = sak1.saksId.toString()
+            ))
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertEquals("min andre pdf", second?.toString(Charsets.UTF_8))
+        }
+    }
+
+    @Test
     fun `hentPdf rendrer ikke ny pdf om den er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
         withPrincipal(saksbehandler1Principal) {

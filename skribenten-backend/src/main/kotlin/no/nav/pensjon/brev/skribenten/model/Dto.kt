@@ -52,6 +52,7 @@ object Dto {
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
         val redigertBrevHash: EditLetterHash,
+        val brevdataHash: EditLetterHash?,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -63,6 +64,7 @@ object Dto {
             if (dokumentDato != other.dokumentDato) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (redigertBrevHash != other.redigertBrevHash) return false
+            if (brevdataHash != other.brevdataHash) return false
 
             return true
         }
@@ -72,6 +74,7 @@ object Dto {
             result = 31 * result + dokumentDato.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + redigertBrevHash.hashCode()
+            result = 31 * result + brevdataHash.hashCode()
             return result
         }
     }

@@ -23,6 +23,7 @@ value class EditLetterHash(private val hex: String) {
     companion object {
         fun read(letter: Edit.Letter): EditLetterHash = fromBytes(WithEditLetterHash.hashBrev(letter))
         fun fromBytes(bytes: ByteArray) = EditLetterHash(Hex.encodeHexString(bytes))
+        fun fromObject(obj: Any) = fromBytes(databaseObjectMapper.writeValueAsBytes(obj))
     }
 }
 

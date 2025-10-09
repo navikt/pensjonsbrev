@@ -273,12 +273,25 @@ class BrevredigeringService(
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
-
         return brevredigering?.let {
-            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
-                Ok(document.pdf)
-            } else {
-                opprettPdf(brevredigering)
+            penService.hentPesysBrevdata(
+                saksId = brevredigering.info.saksId,
+                vedtaksId = brevredigering.info.vedtaksId,
+                brevkode = brevredigering.info.brevkode,
+                avsenderEnhetsId = brevredigering.info.avsenderEnhetId
+            ).then { pesysBrevdata ->
+                val nyHash = EditLetterHash.fromObject(pesysBrevdata)
+
+                if (document != null && (
+                            document.redigertBrevHash == brevredigering.redigertBrevHash
+                                    && document.dokumentDato.isEqual(LocalDate.now())
+                                    && nyHash == document.brevdataHash
+                        )
+                ) {
+                    Ok(document.pdf)
+                } else {
+                    opprettPdf(brevredigering, pesysBrevdata)
+                }
             }
         }
     }
@@ -497,14 +510,10 @@ class BrevredigeringService(
         }
     }
 
-    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<ByteArray> {
-        return penService.hentPesysBrevdata(
-            saksId = brevredigering.info.saksId,
-            vedtaksId = brevredigering.info.vedtaksId,
-            brevkode = brevredigering.info.brevkode,
-            avsenderEnhetsId = brevredigering.info.avsenderEnhetId
-        ).then { pesysData ->
-            brevbakerService.renderPdf(
+    private suspend fun opprettPdf(
+        brevredigering: Dto.Brevredigering, pesysData: BrevdataResponse.Data
+    ): ServiceResult<ByteArray> {
+        return brevbakerService.renderPdf(
                 brevkode = brevredigering.info.brevkode,
                 spraak = brevredigering.info.spraak,
                 brevdata = GeneriskRedigerbarBrevdata(
@@ -521,12 +530,12 @@ class BrevredigeringService(
                         pdf = it.file
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
+                        this.brevdataHash = EditLetterHash.fromObject(pesysData)
                     }
                     Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
                         ?: Document.new(update).pdf
                 }
             }
-        }
     }
 
     private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =
@@ -676,7 +685,8 @@ private fun Document.toDto(): Dto.Document =
         brevredigeringId = brevredigering.id.value,
         dokumentDato = dokumentDato,
         pdf = pdf,
-        redigertBrevHash = redigertBrevHash
+        redigertBrevHash = redigertBrevHash,
+        brevdataHash = brevdataHash
     )
 
 private fun Brevredigering.erReservasjonUtloept(): Boolean =
