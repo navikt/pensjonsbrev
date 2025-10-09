@@ -28,7 +28,7 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
             val merger = PDFMergerUtility()
 
             Loader.loadPDF(pdfCompilationOutput.bytes).use {
-                leggTilBlankPartallsideOgSaaLeggTilSide(it, target, merger)
+                merger.leggTilSide(target, it)
             }
 
             attachments.forEach {
@@ -47,10 +47,6 @@ internal object PDFVedleggAppenderImpl : PDFVedleggAppender {
     }
 }
 
-internal fun PDDocument.setValues(values: Map<String, String?>) = values.forEach { entry ->
-    documentCatalog?.acroForm?.fields?.firstOrNull { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
-}
-
 private fun leggTilBlankPartallsideOgSaaLeggTilSide(source: PDDocument, target: PDDocument, merger: PDFMergerUtility) {
     leggPaaBlankPartallsside(source, target)
     merger.leggTilSide(target, source)
@@ -62,8 +58,9 @@ private fun leggPaaBlankPartallsside(
 ) {
     if (originaltDokument.pages.count % 2 == 1) {
         target.addPage(PDPage())
-    }
+    } 
 }
 
 internal fun PDFMergerUtility.leggTilSide(destionation: PDDocument, source: PDDocument) =
     appendDocument(destionation, source).also { source.close() }
+

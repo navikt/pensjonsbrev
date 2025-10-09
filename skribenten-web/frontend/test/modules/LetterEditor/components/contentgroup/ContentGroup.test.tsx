@@ -37,13 +37,14 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+const undo = vi.fn();
+const redo = vi.fn();
+
 function setup() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState, setEditorState, selection: { inProgress: false } }}
-      >
+      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState, undo, redo }}>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
@@ -82,7 +83,8 @@ function setupComplex(stateOverride?: LetterEditorState) {
           error: false,
           editorState: stateOverride ?? complexEditorState,
           setEditorState,
-          selection: { inProgress: false },
+          undo,
+          redo,
         }}
       >
         {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
@@ -101,8 +103,10 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End} person");
     expect(setEditorState).toHaveBeenCalled();
+
+    const newText = content[0].text + " person";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + " person"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
   test("enter is not propagated as br-element", async () => {
@@ -112,8 +116,9 @@ describe("updateContent", () => {
 
     // The expectation is that the Enter key does not insert a line break
     // in the final text, so we expect only "asd" to be appended.
+    const newText = content[0].text + "asd";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
   test("space is not propagated as nbsp-entity", async () => {
@@ -121,8 +126,9 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}  asd");
 
+    const newText = content[0].text + "  asd";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "  asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
 });

@@ -18,6 +18,7 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                     eps = EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS.epsHarInntektOver1G,
                     aarligKontrollEPS = false,
                     feilutbetaling = false,
+                    etterbetaling = true
                 ),
             pesysData =
                 EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData(
@@ -40,7 +41,6 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                     saerskiltSatsErBrukt = false,
                     sivilstand = MetaforceSivilstand.GIFT,
                     beloepEndring = BeloepEndring.UENDRET,
-                    vedtakEtterbetaling = false,
                     maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
                     maanedligPensjonFoerSkattAP2025Dto =
                         MaanedligPensjonFoerSkattAP2025Dto(
