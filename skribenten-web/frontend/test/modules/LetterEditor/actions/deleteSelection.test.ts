@@ -2,7 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Cell, ItemList, Row, Table } from "~/types/brevbakerTypes";
+import type { Cell, ItemList, LiteralValue, Row, Table } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
 import { cell, item, itemList, letter, literal, paragraph, row, select, table, title1, variable } from "../utils";
@@ -113,6 +113,19 @@ describe("Actions.deleteSelection", () => {
       expect(block1.deletedContent).toContain(state.redigertBrev.blocks[0].content[1].id);
       expect(block1.deletedContent).toContain(state.redigertBrev.blocks[0].content[2].id);
       expect(block1.content[1]).toMatchObject({ editedText: "ste setning i " });
+    });
+
+    it("selects all text in letter, deletes everything but leaves an empty paragraph", () => {
+      const result = Actions.deleteSelection(state, {
+        start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 2, contentIndex: 2, cursorPosition: 11 },
+      });
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      const block = result.redigertBrev.blocks[0];
+      expect(block.type).toBe("PARAGRAPH");
+      expect(block.content).toHaveLength(1);
+      expect(block.content[0].type).toBe(LITERAL);
+      expect(text(block.content[0] as LiteralValue)).toBe("");
     });
   });
 

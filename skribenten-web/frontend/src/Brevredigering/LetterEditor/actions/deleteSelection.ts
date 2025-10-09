@@ -98,7 +98,7 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
 
   if (start.blockIndex < end.blockIndex) {
     // remove all blocks between start and end blocks
-    removeElements(start.blockIndex + 1, end.blockIndex - start.blockIndex - 1, {
+    const removedBlocks = removeElements(start.blockIndex + 1, end.blockIndex - start.blockIndex - 1, {
       content: redigertBrev.blocks,
       deletedContent: redigertBrev.deletedBlocks,
       id: null,
@@ -106,7 +106,12 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
 
     // remove content before endContent in endBlock
     removeElements(0, end.contentIndex, endBlock);
-    deleteInContentToOffset(endBlock, endContent, end);
+    deleteInContentToOffset(endBlock, endContent, {
+      ...end,
+      blockIndex: end.blockIndex - removedBlocks.length,
+      contentIndex: 0,
+    });
+    makeSureBlockIsValid(endBlock);
   }
 
   // Make sure we have a valid literalIndex
@@ -343,7 +348,11 @@ function deleteInContentAndRemoveRemainingInBlock<T extends ItemList | Table>(
     }
   }
 
-  // Make sure we don't end up with empty block
+  makeSureBlockIsValid(block);
+}
+
+function makeSureBlockIsValid(block: Draft<AnyBlock>) {
+  // Make sure we don't end up with a block without any content
   if (block.content.length === 0) {
     addElements([newLiteral()], 0, block.content, block.deletedContent);
   }
