@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 @Suppress("unused")
 data class VarselTilbakekrevingAvFeilutbetaltBeloepDto(
@@ -12,6 +13,7 @@ data class VarselTilbakekrevingAvFeilutbetaltBeloepDto(
 ) : RedigerbarBrevdata<VarselTilbakekrevingAvFeilutbetaltBeloepDto.SaksbehandlerValg, VarselTilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
 
     data class SaksbehandlerValg(
+        @DisplayText("Hvis aktuelt å ilegge rentetillegg")
         val hvisAktueltAaIleggeRentetillegg: Boolean
     ) : SaksbehandlerValgBrevdata
 

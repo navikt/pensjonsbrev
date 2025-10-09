@@ -22,9 +22,13 @@ data class VedtakEndringVedFlyttingMellomLandDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringVedFlyttingMellomLandDto.SaksbehandlerValg, VedtakEndringVedFlyttingMellomLandDto.PesysData> {
     data class SaksbehandlerValg(
+        @DisplayText("Innvandret")
         val innvandret: Boolean,
+        @DisplayText("Reduksjon tilbake i tid")
         val reduksjonTilbakeITid: Boolean,
+        @DisplayText("Endring i pensjon")
         val endringIPensjonen: Boolean,
+        @DisplayText("Etterbetaling")
         val etterbetaling: Boolean,
         @DisplayText("Relevant hvis innvandret")
         val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker,
