@@ -21,9 +21,8 @@ value class EditLetterHash(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
     companion object {
-        fun read(letter: Edit.Letter): EditLetterHash = fromBytes(WithEditLetterHash.hash(letter))
+        fun <T> read(obj: T): EditLetterHash = fromBytes(WithEditLetterHash.hash(obj))
         fun fromBytes(bytes: ByteArray) = EditLetterHash(Hex.encodeHexString(bytes))
-        fun fromObject(obj: Any) = fromBytes(databaseObjectMapper.writeValueAsBytes(obj))
     }
 }
 
