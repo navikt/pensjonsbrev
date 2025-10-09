@@ -15,13 +15,14 @@ describe("Actions.deleteSelection", () => {
       paragraph([literal("Første setning i "), variable("andre"), literal(" avsnitt.")]),
     );
 
-    it("start and end in same content does nothing", () => {
+    it("start and end in same content", () => {
       const result = Actions.deleteSelection(state, {
         start: { blockIndex: 0, contentIndex: 0, cursorPosition: 5 },
         end: { blockIndex: 0, contentIndex: 0, cursorPosition: 8 },
       });
-      expect(result).toBe(state);
-      expect(result).toEqual(state);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toMatchObject({
+        editedText: "Førstittel for ",
+      });
     });
 
     it("start and end in different content deletes everything between", () => {

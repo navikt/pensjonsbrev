@@ -50,7 +50,7 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
 
   // If selection is not valid, do nothing
   if (!isValidIndex(redigertBrev, selection.start) || !isValidIndex(redigertBrev, selection.end)) return;
-  // If selection starts and ends in the same content, do nothing
+  // Selection must end after it starts
   if (!isIndexAfter(selection.start, selection.end)) return;
 
   const start = { ...selection.start };

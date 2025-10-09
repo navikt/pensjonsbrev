@@ -167,27 +167,44 @@ export function isAtSameTableCell(first: TableCellIndex, second: TableCellIndex)
   );
 }
 
-export function isIndexAfter(first: LiteralIndex, after: LiteralIndex): boolean {
-  if (after.blockIndex !== first.blockIndex) {
-    return after.blockIndex > first.blockIndex;
-  } else if (after.contentIndex !== first.contentIndex) {
-    return after.contentIndex > first.contentIndex;
-  } else if (isItemContentIndex(after) && isItemContentIndex(first)) {
-    if (after.itemIndex !== first.itemIndex) {
-      return after.itemIndex > first.itemIndex;
+export function isIndexAfter(
+  first: LiteralIndex & { cursorPosition: number },
+  after: LiteralIndex & { cursorPosition: number },
+): boolean {
+  if (first.blockIndex === after.blockIndex) {
+    if (first.contentIndex === after.contentIndex) {
+      if (isItemContentIndex(first) && isItemContentIndex(after)) {
+        if (first.itemIndex === after.itemIndex) {
+          if (first.itemContentIndex === after.itemContentIndex) {
+            return first.cursorPosition < after.cursorPosition;
+          } else {
+            return first.itemContentIndex < after.itemContentIndex;
+          }
+        } else {
+          return first.itemIndex < after.itemIndex;
+        }
+      } else if (isTableCellIndex(first) && isTableCellIndex(after)) {
+        if (first.rowIndex === after.rowIndex) {
+          if (first.cellIndex === after.cellIndex) {
+            if (first.cellContentIndex === after.cellContentIndex) {
+              return first.cursorPosition < after.cursorPosition;
+            } else {
+              return first.cellContentIndex < after.cellContentIndex;
+            }
+          } else {
+            return first.cellIndex < after.cellIndex;
+          }
+        } else {
+          return first.rowIndex < after.rowIndex;
+        }
+      } else {
+        return first.cursorPosition < after.cursorPosition;
+      }
     } else {
-      return after.itemContentIndex > first.itemContentIndex;
-    }
-  } else if (isTableCellIndex(after) && isTableCellIndex(first)) {
-    if (after.rowIndex !== first.rowIndex) {
-      return after.rowIndex > first.rowIndex;
-    } else if (after.cellIndex !== first.cellIndex) {
-      return after.cellIndex > first.cellIndex;
-    } else {
-      return after.cellContentIndex > first.cellContentIndex;
+      return first.contentIndex < after.contentIndex;
     }
   } else {
-    return false;
+    return first.blockIndex < after.blockIndex;
   }
 }
 
