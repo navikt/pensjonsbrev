@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.maler.fraser.Felles
 import no.nav.pensjon.brev.maler.fraser.Felles.HarDuSporsmal
 import no.nav.pensjon.brev.maler.fraser.Felles.RettTilInnsynRefVedlegg
 import no.nav.pensjon.brev.maler.vedlegg.oversiktOverFeilutbetalinger
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -117,5 +118,6 @@ object UforeVedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeD
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto)
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
