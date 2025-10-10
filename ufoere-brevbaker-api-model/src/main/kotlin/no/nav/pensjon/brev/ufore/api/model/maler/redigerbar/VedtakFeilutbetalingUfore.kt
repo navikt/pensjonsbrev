@@ -4,46 +4,45 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
-data class TilbakekrevingAvFeilutbetaltBeloepDto(
+data class VedtakFeilutbetalingUforeDto(
     override val pesysData: PesysData, override val saksbehandlerValg: EmptyBrevdata
-) : RedigerbarBrevdata<EmptyBrevdata, TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
+) : RedigerbarBrevdata<EmptyBrevdata, VedtakFeilutbetalingUforeDto.PesysData> {
 
     data class PesysData(
-        val feilutbetaltTotalBeloep: Kroner,
-        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,
+        val feilutbetaltTotalBelop: Int,
+        val resultatAvVurderingenForTotalBelop: TilbakekrevingResultat,
         val sluttPeriodeForTilbakekreving: LocalDate,
         val startPeriodeForTilbakekreving: LocalDate,
-        val sumTilInnkrevingTotalBeloep: Kroner,
-        val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
+        val sumTilInnkrevingTotalBelop: Int,
+        val dineRettigheterOgMulighetTilAKlageDto: DineRettigheterOgMulighetTilAKlageDto,
         val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
     ) : BrevbakerBrevdata
 
     data class OversiktOverFeilutbetalingPEDto(
-        val bruttoTilbakekrevdTotalbeloep: Kroner,
-        val nettoUtenRenterTilbakekrevdTotalbeloep: Kroner,
-        val rentetilleggSomInnkrevesTotalbeloep: Kroner,
-        val resultatAvVurderingenForTotalbeloep: TilbakekrevingResultat,
-        val skattefradragSomInnkrevesTotalbeloep: Kroner,
-        val tilbakekrevingPerMaaned: List<Tilbakekreving>,
+        val bruttoTilbakekrevdTotalbelop: Int,
+        val nettoUtenRenterTilbakekrevdTotalbelop: Int,
+        val rentetilleggSomInnkrevesTotalbelop: Int,
+        val resultatAvVurderingenForTotalbelop: TilbakekrevingResultat,
+        val skattefradragSomInnkrevesTotalbelop: Int,
+        val tilbakekrevingPerManed: List<Tilbakekreving>,
     ) : BrevbakerBrevdata {
         data class Tilbakekreving(
-            val maanedOgAar: LocalDate,
-            val bruttobeloepTilbakekrevd: Kroner,
-            val feilutbetaltBeloep: Kroner,
-            val nettobeloepUtenRenterTilbakekrevd: Kroner,
+            val manedOgAr: LocalDate,
+            val bruttobelopTilbakekrevd: Int,
+            val feilutbetaltBelop: Int,
+            val nettobelopUtenRenterTilbakekrevd: Int,
             val resultatAvVurderingen: TilbakekrevingResultat,
-            val skattefradragSomInnkreves: Kroner,
+            val skattefradragSomInnkreves: Int,
             val ytelsenMedFeilutbetaling: KonteringType,
         )
     }
 
-    data class DineRettigheterOgMulighetTilAaKlageDto(
+    data class DineRettigheterOgMulighetTilAKlageDto(
         val sakstype: Sakstype,
-        val brukerUnder18Aar: Boolean?,
+        val brukerUnder18Ar: Boolean?,
     )
 
     enum class TilbakekrevingResultat {
