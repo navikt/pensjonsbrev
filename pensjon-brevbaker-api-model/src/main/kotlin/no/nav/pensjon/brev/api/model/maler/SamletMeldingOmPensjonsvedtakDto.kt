@@ -20,7 +20,6 @@ data class P1Dto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
-    val kravMottattDato: LocalDate?,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
@@ -44,7 +43,8 @@ data class P1Dto(
         val datoFoersteUtbetaling: LocalDate?,
         val bruttobeloep: Int?,
         val valuta: String?,
-        val utbetalingsHyppighet: String?,
+        val utbetalingsHyppighet: Utbetalingshyppighet?,
+        val vedtaksdato: String?,
         val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
         val vurderingsperiode: String?,
@@ -56,6 +56,7 @@ data class P1Dto(
         val pensjonstype: Pensjonstype?,
         val avslagsbegrunnelse: Avslagsbegrunnelse?,
         val vurderingsperiode: String?,
+        val vedtaksdato: String?,
         val adresseNyVurdering: List<Adresse>,
     )
 
@@ -98,6 +99,16 @@ data class P1Dto(
         AndreAarsaker(10, "other reasons")
     }
 
+    enum class Utbetalingshyppighet {
+        Aarlig,
+        Kvartalsvis,
+        Maaned12PerAar,
+        Maaned13PerAar,
+        Maaned14PerAar,
+        Ukentlig,
+        UkjentSeVedtak,
+    }
+
     data class Adresse(
         val adresselinje1: String?,
         val adresselinje2: String?,
@@ -110,6 +121,7 @@ data class P1Dto(
     data class Institusjon(
         val institusjonsid: String?,
         val institusjonsnavn: String?,
+        val pin: String?,
         val saksnummer: String?,
         val land: String?
     )

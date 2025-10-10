@@ -4,14 +4,15 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.TextElement
+import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import java.util.Objects
 
 interface PDFTemplate<out Lang : LanguageSupport, AttachmentData : PDFVedleggData> {
     val title: List<TextElement<Lang>>
-    fun template(data: AttachmentData): PDFVedlegg
+    fun template(data: AttachmentData, felles: Felles): PDFVedlegg
 
-    fun createVedlegg(scope: ExpressionScope<*>, data: Expression<AttachmentData>) = template(data.eval(scope))
+    fun createVedlegg(scope: ExpressionScope<*>, data: Expression<AttachmentData>) = template(data.eval(scope), scope.felles)
 }
 
 class IncludeAttachmentPDF<out Lang : LanguageSupport, AttachmentData : PDFVedleggData>(
@@ -31,10 +32,10 @@ class IncludeAttachmentPDF<out Lang : LanguageSupport, AttachmentData : PDFVedle
 
 fun <Lang : LanguageSupport, AttachmentData : PDFVedleggData> createAttachmentPDF(
     title: List<TextElement<Lang>>,
-    init: PDFVedlegg.(data: AttachmentData) -> Unit,
+    init: PDFVedlegg.(data: AttachmentData, felles: Felles) -> Unit,
 ): PDFTemplate<Lang, AttachmentData> =
     object : PDFTemplate<Lang, AttachmentData> {
         override val title = title
-        override fun template(data: AttachmentData): PDFVedlegg =
-            PDFVedlegg().apply { init(data) }
+        override fun template(data: AttachmentData, felles: Felles): PDFVedlegg =
+            PDFVedlegg().apply { init(data, felles) }
     }
