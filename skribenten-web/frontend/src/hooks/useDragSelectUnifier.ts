@@ -37,9 +37,31 @@ export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefOb
       });
     };
 
-    // Start unifying when selection actually begins inside the host(div)
-    const onSelectStart = (e: Event) => {
-      if (isInside(e.target as Node)) unify();
+    let pointerDownInside = false;
+    let dragStarted = false;
+    let pointerDownX = 0;
+    let pointerDownY = 0;
+
+    const maybeStartDrag = (clientX: number, clientY: number) => {
+      if (!pointerDownInside || dragStarted) return;
+      const dx = Math.abs(clientX - pointerDownX);
+      const dy = Math.abs(clientY - pointerDownY);
+      if (dx + dy < 3) return; // only unify after an actual drag
+      dragStarted = true;
+      unify();
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      pointerDownInside = isInside(event.target as Node);
+      dragStarted = false;
+      if (!pointerDownInside) return;
+      pointerDownX = event.clientX;
+      pointerDownY = event.clientY;
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!pointerDownInside) return;
+      maybeStartDrag(event.clientX, event.clientY);
     };
 
     // Fallback: if a non-collapsed selection appears inside host (Safari/touch),
@@ -52,7 +74,12 @@ export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefOb
       if (isInside(sel.anchorNode) || isInside(sel.focusNode)) unify();
     };
 
-    const onPointerUp = () => restore();
+    const onPointerUp = () => {
+      pointerDownInside = false;
+      dragStarted = false;
+      restore();
+    };
+
     const onPointerCancel = () => restore();
     const onWindowBlur = () => restore();
     const onVisibilityChange = () => {
@@ -63,9 +90,10 @@ export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefOb
     };
 
     // use capture to beat other listeners that might interfere
-    host.addEventListener("selectstart", onSelectStart, true);
     host.addEventListener("mouseleave", onMouseLeave, true);
     document.addEventListener("selectionchange", onSelectionChange);
+    host.addEventListener("pointerdown", onPointerDown, true);
+    host.addEventListener("pointermove", onPointerMove, true);
     document.addEventListener("pointerup", onPointerUp, true);
     document.addEventListener("pointercancel", onPointerCancel, true);
     document.addEventListener("visibilitychange", onVisibilityChange);
@@ -73,9 +101,10 @@ export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefOb
 
     return () => {
       restore();
-      host.removeEventListener("selectstart", onSelectStart, true);
       host.removeEventListener("mouseleave", onMouseLeave, true);
       document.removeEventListener("selectionchange", onSelectionChange);
+      host.removeEventListener("pointerdown", onPointerDown, true);
+      host.removeEventListener("pointermove", onPointerMove, true);
       document.removeEventListener("pointerup", onPointerUp, true);
       document.removeEventListener("pointercancel", onPointerCancel, true);
       document.removeEventListener("visibilitychange", onVisibilityChange);
