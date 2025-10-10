@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles
 import no.nav.pensjon.brev.maler.fraser.Felles.HarDuSporsmal
 import no.nav.pensjon.brev.maler.fraser.Felles.RettTilInnsynRefVedlegg
+import no.nav.pensjon.brev.maler.vedlegg.oversiktOverFeilutbetalinger
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -13,10 +14,12 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VEDTAK_FEILUTBETALING
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.TilbakekrevingResultat
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.PesysDataSelectors.feilutbetaltTotalBelop
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.PesysDataSelectors.resultatAvVurderingenForTotalBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.PesysDataSelectors.sluttPeriodeForTilbakekreving
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.PesysDataSelectors.startPeriodeForTilbakekreving
@@ -88,7 +91,8 @@ object UforeVedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeD
                 text(bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 22-15." })
             }
             paragraph {
-                text(bokmal { + "I vedlegget «OversiktOverFeilutbetalinger»" })
+                text(bokmal { + "I vedlegget " })
+                namedReference(oversiktOverFeilutbetalinger)
                 text(bokmal { + " finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake." })
             }
             title1 {
@@ -112,5 +116,6 @@ object UforeVedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeD
             includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
+        includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto)
     }
 }
