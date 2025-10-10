@@ -417,6 +417,16 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                             )
                         }
                     }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-8, 19-9 og 22-12." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-8, 19-9 og 22-12." },
+                            english {
+                                +"This decision was made pursuant to the provisions of §§ 19-8, 19-9 and 22-12 of the National Insurance Act."
+                            },
+                        )
+                    }
                 }
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
