@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 fun createEndringAvAlderspensjonGarantitilleggDto() =
     EndringAvAlderspensjonGarantitilleggDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData =
             EndringAvAlderspensjonGarantitilleggDto.PesysData(
                 alderspensjonVedVirk =

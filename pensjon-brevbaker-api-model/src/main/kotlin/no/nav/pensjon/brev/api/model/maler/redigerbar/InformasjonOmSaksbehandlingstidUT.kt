@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 
 @Suppress("unused")
 data class InformasjonOmSaksbehandlingstidUtDto(
@@ -11,5 +11,5 @@ data class InformasjonOmSaksbehandlingstidUtDto(
 ) : RedigerbarBrevdata<InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg, EmptyBrevdata> {
     data class SaksbehandlerValg(
         val forlengetSaksbehandlingstid: Boolean = false,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 }

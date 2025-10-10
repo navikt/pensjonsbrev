@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 
 @Suppress("unused")
 data class VarselTilbakekrevingAvFeilutbetaltBeloepDto(
@@ -12,7 +13,7 @@ data class VarselTilbakekrevingAvFeilutbetaltBeloepDto(
 
     data class SaksbehandlerValg(
         val hvisAktueltAaIleggeRentetillegg: Boolean
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(val sakstype: Sakstype) : BrevbakerBrevdata
 }

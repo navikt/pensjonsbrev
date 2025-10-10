@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
@@ -23,7 +23,7 @@ import java.time.Month
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
             sakstype = Sakstype.ALDER,
             vedlegg = createP1Dto()

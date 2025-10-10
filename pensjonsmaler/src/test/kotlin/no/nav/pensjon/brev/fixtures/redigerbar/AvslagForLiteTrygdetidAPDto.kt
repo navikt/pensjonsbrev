@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 fun createAvslagForLiteTrygdetidAPDto() =
     AvslagForLiteTrygdetidAPDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = AvslagForLiteTrygdetidAPDto.PesysData(
             avtaleland = "Avtaleland",
             bostedsland = "Bostedsland",
