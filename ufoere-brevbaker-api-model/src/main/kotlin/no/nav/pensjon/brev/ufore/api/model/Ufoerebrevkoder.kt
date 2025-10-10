@@ -33,6 +33,7 @@ object Ufoerebrevkoder {
         UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2,
         UT_AVSLAG_OKT_GRAD_SYKDOM,
         UT_AVSLAG_OKT_GRAD_MANGLENDE_DOK,
+        UT_VEDTAK_FEILUTBETALING
         ;
 
         override fun kode(): String = this.name
