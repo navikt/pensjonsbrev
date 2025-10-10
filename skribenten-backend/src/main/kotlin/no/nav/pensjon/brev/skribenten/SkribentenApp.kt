@@ -36,12 +36,23 @@ import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import org.slf4j.LoggerFactory
 import kotlin.apply
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
 fun main() {
+    try {
+        run()
+    } catch (e: Exception) {
+        logger.error(e.message, e)
+        throw e
+    }
+}
+
+private fun run() {
     val skribentenConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .resolveWith(
