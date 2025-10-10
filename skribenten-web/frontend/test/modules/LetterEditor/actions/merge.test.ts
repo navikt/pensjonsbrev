@@ -71,7 +71,7 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("id of next block is kept if the specified is empty", () => {
-        const state = letter(paragraph([]), paragraph([literal({ text: "p2" })]));
+        const state = letter(paragraph([literal("")]), paragraph([literal({ text: "p2" })]));
 
         const mergeId = { blockIndex: 0 };
         const result = Actions.merge(state, { ...mergeId, contentIndex: 0 }, MergeTarget.NEXT);
@@ -162,7 +162,7 @@ describe("LetterEditorActions.merge", () => {
       });
 
       test("id of previous block is kept if the specified is empty", () => {
-        const state = letter(paragraph([literal({ text: "p1" })]), paragraph([]));
+        const state = letter(paragraph([literal({ text: "p1" })]), paragraph([literal("")]));
         const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(select<AnyBlock>(result, { blockIndex: 0 }).id).toEqual(select<AnyBlock>(state, { blockIndex: 0 }).id);
       });
@@ -375,7 +375,7 @@ describe("LetterEditorActions.merge", () => {
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
 
-        const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.NEXT);
 
         expect(select<Item>(result, mergeId).content).toEqual([
           ...select<Item>(state, mergeId).content,
@@ -396,7 +396,7 @@ describe("LetterEditorActions.merge", () => {
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
 
-        const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 1 }, MergeTarget.NEXT);
 
         test("the adjoining literals are merged and the rest of the content is concatenated", () => {
           expect(select<Item>(result, mergeId).content).toHaveLength(3);
@@ -421,7 +421,7 @@ describe("LetterEditorActions.merge", () => {
           paragraph([itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "" }))] })]),
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
-        const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.NEXT);
 
         test("then the item stays as is and the next is removed", () => {
           expect(select<Item>(result, mergeId)).toBe(select<Item>(state, mergeId));
@@ -446,7 +446,7 @@ describe("LetterEditorActions.merge", () => {
           paragraph([itemList({ items: [item(literal({ text: "" })), item(literal({ text: "lit1" }))] })]),
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
-        const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.NEXT);
 
         test("then the current item is replaced with the next", () => {
           expect(select<Item>(result, mergeId)).toBe(
@@ -472,7 +472,7 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(
           paragraph([itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "lit2" }))] })]),
         );
-        const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
+        const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
 
         expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
@@ -482,7 +482,11 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(
           paragraph([itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "lit2" }))] })]),
         );
-        const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }, MergeTarget.PREVIOUS);
+        const result = Actions.merge(
+          state,
+          { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+          MergeTarget.PREVIOUS,
+        );
         expect(result).toBe(result);
       });
 
@@ -491,7 +495,7 @@ describe("LetterEditorActions.merge", () => {
           paragraph([itemList({ items: [item(variable("var1")), item(literal({ text: "lit1" }))] })]),
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
-        const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.PREVIOUS);
         expect(select<Item>(result, { ...mergeId, itemIndex: mergeId.itemIndex - 1 }).content).toEqual([
           ...select<Item>(state, { ...mergeId, itemIndex: mergeId.itemIndex - 1 }).content,
           ...select<Item>(state, mergeId).content,
@@ -511,7 +515,7 @@ describe("LetterEditorActions.merge", () => {
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
 
-        const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.PREVIOUS);
 
         const mergedId = { ...mergeId, itemIndex: mergeId.itemIndex - 1 };
         expect(select<Item>(result, mergedId).content).toHaveLength(3);
@@ -524,7 +528,7 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(
           paragraph([itemList({ items: [item(literal({ text: "" })), item(literal({ text: "lit1" }))] })]),
         );
-        const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
+        const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
 
         test("then the previous is removed", () => {
@@ -550,7 +554,7 @@ describe("LetterEditorActions.merge", () => {
           paragraph([itemList({ items: [item(literal({ text: "lit" })), item(literal({ text: "" }))] })]),
         );
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
-        const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
+        const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.PREVIOUS);
 
         test("then the current is removed", () => {
           expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
@@ -561,7 +565,11 @@ describe("LetterEditorActions.merge", () => {
         });
 
         test("then the focus is stolen to the end", () => {
-          const previousItem = select<Item>(state, { ...mergeId, itemIndex: mergeId.itemIndex - 1 });
+          const previousItem = select<Item>(state, {
+            ...mergeId,
+            itemIndex: mergeId.itemIndex - 1,
+            itemContentIndex: undefined,
+          });
           expect(result.focus).toEqual({
             blockIndex: mergeId.blockIndex,
             contentIndex: mergeId.contentIndex,

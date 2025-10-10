@@ -418,13 +418,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnclick = (e: React.MouseEvent) => {
-    e.preventDefault();
     if (!erFritekst) return;
-    handleWordSelect(e.target as HTMLSpanElement);
+    const selection = globalThis.getSelection();
+    const collapsed = !selection || selection.rangeCount === 0 || selection.getRangeAt(0).collapsed;
+    if (collapsed) handleWordSelect(e.target as HTMLSpanElement);
   };
 
   const handleOnFocus = (e: React.FocusEvent) => {
-    e.preventDefault();
     //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
     setEditorState((oldState) => ({
       ...oldState,
@@ -461,6 +461,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ${fontTypeOf(content) === FontType.BOLD && "font-weight: bold;"}
         ${fontTypeOf(content) === FontType.ITALIC && "font-style: italic;"}
       `}
+      data-literal-index={JSON.stringify(literalIndex)}
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {
@@ -475,6 +476,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
+        const selection = globalThis.getSelection();
+        const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
+
+        if (hasRange && (event.key === "Backspace" || event.key === "Delete")) {
+          return; // bubble to wrapper div and handle there
+        }
         const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
         const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
         const isRedo =
@@ -519,6 +526,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
 
           handleBackspace(event);
+          event.stopPropagation();
           return;
         }
 
@@ -528,9 +536,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "Enter") {
           handleEnter(event);
+          event.stopPropagation();
         }
         if (event.key === "Delete") {
           handleDelete(event);
+          event.stopPropagation();
         }
         if (event.key === "ArrowLeft") {
           handleArrowLeft(event);

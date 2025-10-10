@@ -30,11 +30,6 @@ export type LetterEditorState = {
   history: History;
 };
 
-export type SelectionState = {
-  inProgress: boolean;
-  current?: SelectionIndex;
-};
-
 export type SelectionIndex = {
   start: Focus & { cursorPosition: number };
   end: Focus & { cursorPosition: number };

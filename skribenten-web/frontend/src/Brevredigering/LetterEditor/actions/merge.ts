@@ -3,6 +3,7 @@ import type { Draft, WritableDraft } from "immer";
 import {
   addElements,
   getMergeIds,
+  isValidIndex,
   mergeLiteralsIfPossible,
   newLiteral,
   removeElements,
@@ -32,6 +33,11 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
 
 export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, target: MergeTarget) {
   if (literalIndex.blockIndex === TITLE_INDEX) {
+    return;
+  }
+  if (!isValidIndex(draft.redigertBrev, literalIndex)) {
+    // eslint-disable-next-line no-console
+    console.warn("Invalid index for merge", literalIndex);
     return;
   }
 

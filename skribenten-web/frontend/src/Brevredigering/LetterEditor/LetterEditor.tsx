@@ -4,10 +4,12 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { createContext, useCallback, useContext } from "react";
+import { useCallback } from "react";
+import { createContext, useContext, useRef } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { ContentGroup } from "./components/ContentGroup";
@@ -34,7 +36,10 @@ export const LetterEditor = ({
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(editorState, setEditorState);
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
+
+  const editableDivRef = useRef<HTMLDivElement>(null);
+  useDragSelectUnifier(editableDivRef, !freeze);
 
   const canUndo = editorState.history.entryPointer >= 0;
   const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
@@ -121,7 +126,7 @@ export const LetterEditor = ({
           >
             <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
           </Heading>
-          <div onKeyDown={editorKeyboardShortcuts}>
+          <div className="editor-surface" data-editor-root onKeyDown={editorKeyboardShortcuts} ref={editableDivRef}>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
