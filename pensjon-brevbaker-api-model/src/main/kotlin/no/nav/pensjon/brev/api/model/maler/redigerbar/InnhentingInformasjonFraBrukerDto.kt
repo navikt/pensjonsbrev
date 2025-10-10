@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 @Suppress("unused")
@@ -13,9 +13,13 @@ data class InnhentingInformasjonFraBrukerDto(
     data class SaksbehandlerValg(
         @DisplayText("Bosatt i EØS-land. SED-er/EØS-blanketter")
         val bosattIEoesLandSedErEoesBlanketter: Boolean,
+        @DisplayText("Inntektsopplysninger")
         val inntektsopplysninger: Boolean,
+        @DisplayText("Bankopplysninger")
         val bankopplysninger: Boolean,
+        @DisplayText("Amerikansk social security number")
         val amerikanskSocialSecurityNumber: Boolean,
+        @DisplayText("Registrering av sivilstand")
         val registreringAvSivilstand: Boolean,
         @DisplayText("Ektefelle/partner/samboer 60 år og inntekt under 1G")
         val eps60aarOgInntektUnder1g: Boolean,
@@ -31,5 +35,5 @@ data class InnhentingInformasjonFraBrukerDto(
         val manglendeOpptjening: Boolean,
         @DisplayText("Bo- og arbeidsperioder")
         val boOgArbeidsperioder: Boolean,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 }

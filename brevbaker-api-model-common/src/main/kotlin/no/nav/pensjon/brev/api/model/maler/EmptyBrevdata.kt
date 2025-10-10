@@ -4,7 +4,9 @@ package no.nav.pensjon.brev.api.model.maler
 
 data object EmptyBrevdata : BrevbakerBrevdata
 
-data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptyBrevdata, EmptyBrevdata> {
-    override val saksbehandlerValg = EmptyBrevdata
+data object EmptySaksbehandlerValg : SaksbehandlerValgBrevdata
+
+data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptySaksbehandlerValg, EmptyBrevdata> {
+    override val saksbehandlerValg = EmptySaksbehandlerValg
     override val pesysData = EmptyBrevdata
 }

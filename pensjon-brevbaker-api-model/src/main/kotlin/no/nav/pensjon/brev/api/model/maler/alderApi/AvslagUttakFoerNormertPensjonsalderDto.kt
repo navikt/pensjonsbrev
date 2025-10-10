@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016Dto.SaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
@@ -13,7 +13,7 @@ data class AvslagUttakFoerNormertPensjonsalderDto(
     data class SaksbehandlerValg(
         @DisplayText("Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år")
         val visInfoOmUttakFoer67: Boolean?
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 }
 
 data class AvslagUttakFoerNormertPensjonsalderAP2016Dto(
@@ -23,10 +23,10 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016Dto(
     data class SaksbehandlerValg(
         @DisplayText("Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år")
         val visInfoOmUttakFoer67: Boolean?
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 }
 
 data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
-) : RedigerbarBrevdata<EmptyBrevdata, AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto>
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto>

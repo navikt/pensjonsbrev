@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.EksportForbudKode
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
@@ -18,7 +19,7 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
     data class SaksbehandlerValg(
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val brukersBostedsland: String?,

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -26,7 +27,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val feilutbetaling: Boolean,
         @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean?,
-    ) : BrevbakerBrevdata {
+    ) : SaksbehandlerValgBrevdata {
         enum class Sivilstandsendringsaarsak {
             @DisplayText("Fraflytting")
             fraFlyttet,
