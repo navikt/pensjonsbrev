@@ -72,7 +72,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Du var over 26 år på uføretidspunktet og kan derfor ikke innvilges rettighet som ung ufør." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
             }
 
             includePhrase(RettTilAKlageKort)

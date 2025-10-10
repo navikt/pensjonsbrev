@@ -88,7 +88,7 @@ object UforeVedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeD
                 )
             }
             paragraph {
-                text(bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 22-15." })
+                text(bokmal { + "Vedtaket er gjort etter folketrygdloven § 22-15." })
             }
             paragraph {
                 text(bokmal { + "I vedlegget " })
