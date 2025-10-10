@@ -115,7 +115,7 @@ class Felles {
         }
     }
 
-    object RettTilInnsyn : OutlinePhrase<LangBokmal>() {
+    object RettTilInnsynRefVedlegg : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {
                 text(
@@ -125,6 +125,21 @@ class Felles {
             paragraph {
                 text(
                     bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram."}
+                )
+            }
+        }
+    }
+
+    object RettTilInnsyn : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Du har rett til innsyn" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via nav.no for å se dokumenter i saken din."}
                 )
             }
         }

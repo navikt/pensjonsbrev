@@ -3,6 +3,8 @@ package no.nav.pensjon.brev
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.maler.UforeVarselFeilutbetaling
+import no.nav.pensjon.brev.maler.UforeVedtakFeilutbetaling
 import no.nav.pensjon.brev.maler.uforeavslag.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -34,5 +36,7 @@ object UfoereTemplates : AllTemplates {
         UforegradAvslagHensiktsmessigArbTiltakI2,
         UforegradAvslagSykdom,
         UforegradAvslagManglendeDok,
+        UforeVarselFeilutbetaling,
+        UforeVedtakFeilutbetaling,
     )
 }
