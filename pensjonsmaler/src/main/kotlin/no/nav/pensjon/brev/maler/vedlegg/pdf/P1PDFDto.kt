@@ -140,22 +140,43 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
     )
 
-private fun formatInstitusjon(institusjoner: P1Dto.Institusjon, vedtaksdato: String?): String =
-    formatInstitusjon(listOf(institusjoner), vedtaksdato)
+private fun formatInstitusjon(institusjon: P1Dto.Institusjon, vedtaksdato: String?): Map<LanguageCode, String?> =
+    formatInstitusjon(listOf(institusjon), vedtaksdato)
 
-private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdato: String?): String =
-    institusjoner.joinToString(System.lineSeparator()) {
+private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdato: String?): Map<LanguageCode, String?> =
+    mapOf(
+        LanguageCode.BOKMAL to formatInstitusjon(institusjoner, vedtaksdato, LanguageCode.BOKMAL),
+        LanguageCode.ENGLISH to formatInstitusjon(institusjoner, vedtaksdato, LanguageCode.ENGLISH)
+    )
+
+private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdato: String?, languageCode: LanguageCode): String =
+    institusjoner.joinToString(System.lineSeparator()) { institusjon ->
         joinAndSeparateByNotNull(
             System.lineSeparator(),
-            it.institusjonsnavn,
-            it.pin,
-            it.saksnummer,
+            institusjon.institusjonsnavn,
+            institusjon.pin?.takeIf { it.isNotBlank() }?.let { "PIN: $it" },
+            institusjon.saksnummer?.takeIf { it.isNotBlank() }?.let {
+                if(languageCode == LanguageCode.BOKMAL) {
+                    "Saksnummer: $it"
+                } else {
+                    "Case number: $it"
+                }
+            },
             vedtaksdato?.let { dato ->
                 try {
-                    LocalDate.parse(dato).format(dateFormatter)
+                    val formattertDato = LocalDate.parse(dato).format(dateFormatter.withLocale(languageCode.locale()))
+                    if(languageCode == LanguageCode.BOKMAL) {
+                        "Dato: $formattertDato"
+                    } else {
+                        "Date: $formattertDato"
+                    }
                 } catch (e: Exception) {
                     logger.warn("Could not parse vedtaksdato: $dato", e)
-                    dato
+                    if(languageCode == LanguageCode.BOKMAL) {
+                        "Dato: $dato"
+                    } else {
+                        "Date: $dato"
+                    }
                 }
             },
         )
