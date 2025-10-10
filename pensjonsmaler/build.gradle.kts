@@ -22,7 +22,7 @@ dependencies {
     implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-
+    implementation(libs.bundles.logging)
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker")))
