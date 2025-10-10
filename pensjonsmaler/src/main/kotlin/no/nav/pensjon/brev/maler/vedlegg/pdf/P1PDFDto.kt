@@ -164,10 +164,11 @@ private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdat
             },
             vedtaksdato?.let { dato ->
                 try {
+                    val dato = LocalDate.parse(dato).format(dateFormatter.withLocale(languageCode.locale()))
                     if(languageCode == LanguageCode.BOKMAL) {
-                        "Dato: ${LocalDate.parse(dato).format(dateFormatter.withLocale(LanguageCode.BOKMAL.locale()))}"
+                        "Dato: $dato"
                     } else {
-                        "Date: ${LocalDate.parse(dato).format(dateFormatter.withLocale(LanguageCode.ENGLISH.locale()))}"
+                        "Date: $dato"
                     }
                 } catch (e: Exception) {
                     logger.warn("Could not parse vedtaksdato: $dato", e)
