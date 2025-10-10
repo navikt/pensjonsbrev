@@ -73,7 +73,7 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkåret, og vi avslår derfor søknaden din om endring av inntekten din før uførhet."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-9 og forskrift om uføretrygd fra folketrygden §§ 2-2." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-2." })
             }
 
             includePhrase(RettTilAKlageKort)

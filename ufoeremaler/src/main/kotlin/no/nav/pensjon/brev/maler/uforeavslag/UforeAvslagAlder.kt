@@ -81,7 +81,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-4." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-4." })
             }
 
             includePhrase(HvaSkjerNa)
