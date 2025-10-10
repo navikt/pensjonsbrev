@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.slf4j.LoggerFactory
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -105,6 +106,8 @@ private fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
 private fun LocalDate.formater(language: LanguageCode): String? =
     dateFormatter(language).format(this)
 
+private val logger = LoggerFactory.getLogger("P1PDFDto")
+
 private val dateFormatter =DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
 fun dateFormatter(languageCode: LanguageCode): DateTimeFormatter =
@@ -150,7 +153,8 @@ private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdat
             vedtaksdato?.let { dato ->
                 try {
                     LocalDate.parse(dato).format(dateFormatter)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    logger.warn("Could not parse vedtaksdato: $dato", e)
                     dato
                 }
             },
