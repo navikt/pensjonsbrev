@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.VARSEL
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -25,7 +26,7 @@ object UforeVarselFeilutbetaling : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
     override val kode = UT_VARSEL_FEILUTBETALING
-    override val kategori: TemplateDescription.Brevkategori = VARSEL
+    override val kategori: TemplateDescription.Brevkategori = FEILUTBETALING
     override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
     override val sakstyper: Set<Sakstype> = setOf(UFOREP)
 
