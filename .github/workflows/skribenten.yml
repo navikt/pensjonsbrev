@@ -102,3 +102,10 @@ jobs:
           "RESOURCE": "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
           "VARS": "skribenten-backend/.nais/prod.yaml"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [build-skribenten-backend]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: ././github/workflows/.pr-suksess.ym

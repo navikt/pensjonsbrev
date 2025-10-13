@@ -318,3 +318,10 @@ jobs:
           "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
           "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/prod.yaml"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [buildPdfbygger, buildBrevbaker, runIntegrationTests]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: ././github/workflows/.pr-suksess.yml
