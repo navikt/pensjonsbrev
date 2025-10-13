@@ -63,8 +63,6 @@ jobs:
     name: Generate SBOM, attest and sign image
     runs-on: ubuntu-latest
     needs: build-tjenestebuss-integrasjon
-    permissions:
-      id-token: "write"
     steps:
       - name: NAIS login
         uses: nais/login@v0
@@ -74,8 +72,6 @@ jobs:
       - name: Generate SBOM, attest and sign image
         id: attest-sign
         uses: nais/attest-sign@v1
-        env:
-          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           image_ref: ${{ needs.build-tjenestebuss-integrasjon.outputs.image }}@${{ needs.build-tjenestebuss-integrasjon.outputs.digest }}
 
