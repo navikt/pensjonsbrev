@@ -1,0 +1,39 @@
+name: pensjonsbrev-salsa
+description: "Salsa for pensjonsbrev"
+inputs:
+  digest:
+    description: "Digest of the image to deploy"
+    required: true
+  image:
+    description: "Image to deploy"
+    required: true
+  identity_provider:
+    description: "Workload Identity Provider"
+    required: true
+  project_id:
+    description: "Google Cloud project ID"
+    required: true
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: NAIS login
+        uses: nais/login@v0
+        id: login
+        with:
+          identity_provider: ${{ inputs.identity_provider }}
+          project_id: ${{ inputs.project_id }}
+          team: pensjonsbrev
+      - id: setup
+        shell: bash
+        run: |
+          IMAGE_WITH_TAG="${{ inputs.image }}"
+          IMAGE="${IMAGE_WITH_TAG%%:*}"
+          echo "IMAGE_WITH_DIGEST=${IMAGE}@${{ inputs.digest }}" >> $GITHUB_ENV
+      - name: Generate SBOM, attest and sign image
+        id: attest-sign
+        uses: nais/attest-sign@v1
+        with:
+          image_ref: ${{ env.IMAGE_WITH_DIGEST }}
