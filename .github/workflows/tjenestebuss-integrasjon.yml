@@ -70,8 +70,6 @@ jobs:
         uses: nais/login@v0
         id: login
         with:
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           team: pensjonsbrev
       - name: Generate SBOM, attest and sign image
         id: attest-sign
