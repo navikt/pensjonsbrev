@@ -42,7 +42,7 @@ object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(
                     bokmal { + "I forbindelse med behandlingen av saken din har vi bedt deg sende oss nødvendige opplysninger og dokumentasjon." },
-                    english { + "Regarding the processing of your benefit case, we have asked you to send us the necessary details and documentary evidence." },
+                    english { + "Regarding the processing of your case, we have asked you to send us the necessary details and documentary evidence." },
                 )
             }
             //[PE_IY_03_051_tekst]
