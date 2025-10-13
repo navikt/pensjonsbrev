@@ -25,9 +25,9 @@ jobs:
     name: "Build tjenestebuss-integrasjon backend"
     runs-on: "ubuntu-latest"
     permissions:
-      contents: "read"
+      contents: write
       packages: "read"
-      id-token: "write"
+      id-token: write
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       digest: ${{ steps.docker-push.outputs.digest }}
@@ -41,6 +41,8 @@ jobs:
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v5
       - name: "compile and run tests"
         run: |
           ./gradlew :tjenestebuss-integrasjon:build
@@ -57,6 +59,7 @@ jobs:
           pull: true
           docker_context: ./tjenestebuss-integrasjon
           dockerfile: tjenestebuss-integrasjon/Dockerfile
+          tag: ${{ env.GITHUB_REF_SLUG }}
           salsa: false
 
   salsa:
