@@ -17,12 +17,15 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VARSEL_FEILUTBETALING
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.SaksbehandlervalgSelectors.rentetillegg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object UforeVarselFeilutbetaling : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object UforeVarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
     override val kode = UT_VARSEL_FEILUTBETALING
@@ -46,11 +49,7 @@ object UforeVarselFeilutbetaling : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 val dato = fritekst("dato")
                 text(
-                    bokmal {
-                        +"Vi viser til vedtaket vårt " +fritekst("dato") + ". Du har fått " + fritekst("beløp")
-                        +" kroner for mye utbetalt i uføretrygd fra "
-                        +dato + " til og med " + dato + "."
-                    },
+                    bokmal {+"Vi viser til vedtaket vårt " +fritekst("dato") + ". Du har fått " + fritekst("beløp") + " kroner for mye utbetalt i uføretrygd fra " + dato + " til og med " + dato + "."},
                 )
             }
 
@@ -138,6 +137,14 @@ object UforeVarselFeilutbetaling : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(
                     bokmal { +"Dette går fram av folketrygdloven § 22-15." },
                 )
+            }
+
+            showIf(saksbehandlerValg.rentetillegg) {
+                paragraph {
+                    text(
+                        bokmal { +"Hvis du bevisst har gitt oss feil eller mangelfull informasjon eller opptrådt grovt uaktsomt, kan vi beregne et rentetillegg på ti prosent av beløpet vi krever tilbakebetalt. Dette går fram av folketrygdloven § 22-17a." },
+                    )
+                }
             }
 
             title1 {
