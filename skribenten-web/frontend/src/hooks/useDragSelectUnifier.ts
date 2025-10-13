@@ -5,9 +5,7 @@ import { useEffect } from "react";
 // It makes a group of individual editable spans behave like a single,
 // continuous block of text, but only during a drag-selection.
 
-export function useDragSelectUnifier<T extends HTMLElement>(hostRef: React.RefObject<T | null>, enabled = true) {
-  const host = hostRef.current;
-
+export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enabled = true) {
   useEffect(() => {
     if (!host || !enabled) return;
 

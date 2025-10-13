@@ -1,8 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback } from "react";
 
-import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
-
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
@@ -22,6 +20,7 @@ export const TypographyToText = {
 export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.defaultPrevented || event.repeat) return;
       if (event.altKey && event.code === "Digit1") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.TITLE1);
@@ -31,14 +30,6 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       } else if (event.altKey && event.code === "Digit3") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
-      } else if (event.key === "Backspace" || event.key === "Delete") {
-        const rootDiv = event.currentTarget as HTMLElement;
-        const selectionFocus = getSelectionFocus(rootDiv);
-        if (selectionFocus) {
-          event.preventDefault();
-          applyAction(Actions.deleteSelection, setEditorState, selectionFocus);
-          globalThis.getSelection()?.collapse(null);
-        }
       }
     },
     [setEditorState],

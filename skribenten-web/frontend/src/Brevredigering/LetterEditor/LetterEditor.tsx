@@ -4,14 +4,16 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { useCallback } from "react";
-import { createContext, useContext, useRef } from "react";
+import { useCallback, useState } from "react";
+import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
-import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
+import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
+import Actions from "./actions";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -38,8 +40,12 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
 
-  const editableDivRef = useRef<HTMLDivElement>(null);
-  useDragSelectUnifier(editableDivRef, !freeze);
+  const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
+  const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
+
+  useDragSelectUnifier(editorRoot, !freeze);
+
+  useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
 
   const canUndo = editorState.history.entryPointer >= 0;
   const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
@@ -126,7 +132,7 @@ export const LetterEditor = ({
           >
             <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
           </Heading>
-          <div className="editor-surface" data-editor-root onKeyDown={editorKeyboardShortcuts} ref={editableDivRef}>
+          <div className="editor-surface" data-editor-root onKeyDown={editorKeyboardShortcuts} ref={editorRootRef}>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
