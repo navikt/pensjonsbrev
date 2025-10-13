@@ -65,6 +65,7 @@ jobs:
   salsa:
     name: Generate SBOM, attest and sign image
     runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: build-skribenten-backend
     permissions:
       id-token: "write"
