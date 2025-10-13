@@ -29,7 +29,6 @@ jobs:
       id-token: "write"
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
-      digest: ${{ steps.docker-push.outputs.digest }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -60,24 +59,6 @@ jobs:
           pull: true
           docker_context: ./skribenten-backend
           dockerfile: skribenten-backend/Dockerfile
-          salsa: false
-
-  salsa:
-    name: Generate SBOM, attest and sign image
-    runs-on: ubuntu-latest
-    needs: build-skribenten-backend
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: ./actions/salsa
-        with:
-          digest: ${{ needs.build-skribenten-backend.outputs.digest }}
-          image: ${{ needs.build-skribenten-backend.outputs.image }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
@@ -85,7 +66,7 @@ jobs:
       contents: "read"
       id-token: "write"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: [ build-skribenten-backend ]
+    needs: "build-skribenten-backend"
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
@@ -107,7 +88,7 @@ jobs:
       contents: "read"
       id-token: "write"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [ build-skribenten-backend ]
+    needs: "build-skribenten-backend"
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
