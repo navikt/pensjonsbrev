@@ -100,10 +100,3 @@ jobs:
           RESOURCE: skribenten-web/bff/.nais/nais.yaml
           VAR: image=${{needs.build.outputs.image}}
           VARS: "skribenten-web/bff/.nais/bff-prod.yaml"
-
-  "klarTilMerge":
-    name: "Klar til merge"
-    needs: [build]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: ././github/workflows/.pr-suksess.ym
