@@ -74,7 +74,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                         "Du søkte om uføretrygd etter at du fylte 36 år og oppfyller derfor ikke dette vilkåret." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
             }
 
             includePhrase(RettTilAKlageKort)

@@ -73,7 +73,7 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDt
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-17." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-17." })
             }
 
             includePhrase(RettTilAKlageKort)
