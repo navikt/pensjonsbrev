@@ -49,7 +49,7 @@ jobs:
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
-#        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         with:
           team: pensjonsbrev
           image_suffix: tjenestebuss-integrasjon
@@ -62,6 +62,7 @@ jobs:
   salsa:
     name: Generate SBOM, attest and sign image
     runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: build-tjenestebuss-integrasjon
     permissions:
       id-token: "write"
