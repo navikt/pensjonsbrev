@@ -1,4 +1,5 @@
 import type { Draft } from "immer";
+import _ from "lodash";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -578,4 +579,39 @@ export function isValidIndex(letter: EditedLetter, index: LiteralIndex) {
   } else {
     return isTextContent(content) && isBlockContentIndex(index);
   }
+}
+
+/**
+ * Normalizes the order of deletedContent and deletedItems arrays by sorting them.
+ *
+ * This is necessary because the frontend and backend store deletion IDs in different orders:
+ * - Frontend tracks deletions in the order they occur
+ * - Backend processes and returns them in a different order.
+ *
+ * Without this normalization, identical content with differently ordered deletion arrays
+ * would be considered different, causing undo/redo history to be incorrectly cleared.
+ * see ManagedLetterEditorContextProvider.tsx for usage.
+ *
+ * Example:
+ * Frontend: deletedContent: [491536928, 1727594288, -830599486]
+ * Backend:  deletedContent: [1727594288, 491536928, -830599486]
+ * After normalization, both become: [-830599486, 491536928, 1727594288]
+ */
+export function normalizeDeletedArrays(obj: unknown): unknown {
+  if (_.isArray(obj)) {
+    return obj.map((item) => normalizeDeletedArrays(item));
+  }
+  if (_.isObject(obj) && obj !== null) {
+    const normalized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if ((key === "deletedContent" || key === "deletedItems") && _.isArray(value)) {
+        // Sort to normalize order differences between frontend and backend
+        normalized[key] = [...value].sort();
+      } else {
+        normalized[key] = normalizeDeletedArrays(value);
+      }
+    }
+    return normalized;
+  }
+  return obj;
 }
