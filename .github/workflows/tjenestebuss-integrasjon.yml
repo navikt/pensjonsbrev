@@ -56,6 +56,34 @@ jobs:
           pull: true
           docker_context: ./tjenestebuss-integrasjon
           dockerfile: tjenestebuss-integrasjon/Dockerfile
+          salsa: false
+
+  salsa:
+    name: Generate SBOM, attest and sign image
+    runs-on: ubuntu-latest
+    needs: build-tjenestebuss-integrasjon
+    permissions:
+      id-token: write
+    steps:
+      - name: NAIS login
+        uses: nais/login@v0
+        id: login
+        with:
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          team: pensjonsbrev
+      - name: Lag image-referanse med digest
+        run: |
+          IMAGE_WITH_TAG="${{ needs.build-tjenestebuss-integrasjon.outputs.image }}"
+          IMAGE="${IMAGE_WITH_TAG%%:*}"
+          echo "IMAGE_WITH_DIGEST=${IMAGE}@${{ needs.build-tjenestebuss-integrasjon.outputs.digest }}" >> $GITHUB_ENV
+      - name: Generate SBOM, attest and sign image
+        id: attest-sign
+        uses: nais/attest-sign@v1
+        env:
+          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          image_ref: ${{ env.IMAGE_WITH_DIGEST }}
 
   deploy-tjenestebuss-integrasjon-dev:
     name: "Deploy tjenestebuss-integrasjon to dev"
