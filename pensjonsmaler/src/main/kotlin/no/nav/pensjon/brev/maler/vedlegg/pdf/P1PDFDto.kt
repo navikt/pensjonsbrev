@@ -46,10 +46,10 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
                 "Post_code[1]" to forsikrede.postnummer?.value
                 "Country_code[1]" to forsikrede.landkode?.landkode
                 "Name_of_the_institution[0]" to
-                    mapOf(
-                        LanguageCode.BOKMAL to SakstypeNavn.apply(sakstype, Language.Bokmal) + " til Nav",
-                        LanguageCode.ENGLISH to SakstypeNavn.apply(sakstype, Language.English) + " with Nav",
-                    )
+                        mapOf(
+                            LanguageCode.BOKMAL to SakstypeNavn.apply(sakstype, Language.Bokmal) + " til Nav",
+                            LanguageCode.ENGLISH to SakstypeNavn.apply(sakstype, Language.English) + " with Nav",
+                        )
             }
         }
 
@@ -108,7 +108,7 @@ private fun LocalDate.formater(language: LanguageCode): String? =
 
 private val logger = LoggerFactory.getLogger("P1PDFDto")
 
-private val dateFormatter =DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
 fun dateFormatter(languageCode: LanguageCode): DateTimeFormatter =
     dateFormatter.withLocale(languageCode.locale())
@@ -133,30 +133,44 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         "Institution_awarding_the_pension[$radnummer]" to formatInstitusjon(pensjon.institusjon, pensjon.vedtaksdato),
         "Type_of_pension[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
         "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
-        "Gross_amount[$radnummer]" to formaterValuta(pensjon.bruttobeloep, pensjon.valuta, pensjon.utbetalingsHyppighet),
+        "Gross_amount[$radnummer]" to formaterValuta(
+            pensjon.bruttobeloep,
+            pensjon.valuta,
+            pensjon.utbetalingsHyppighet
+        ),
         "Pension_has_been_awarded[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]" },
         "Pension_has_been_reduced[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
-        "Review_period[${radnummer * 2}]" to pensjon.vurderingsperiode,
+        "Review_period[${radnummer * 2}]" to mapOf(
+            LanguageCode.BOKMAL to "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
+            LanguageCode.ENGLISH to "6 weeks from Summary of Pension Decisions is received.",
+        ),
         "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
     )
 
 private fun formatInstitusjon(institusjon: P1Dto.Institusjon, vedtaksdato: String?): Map<LanguageCode, String?> =
     formatInstitusjon(listOf(institusjon), vedtaksdato)
 
-private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdato: String?): Map<LanguageCode, String?> =
+private fun formatInstitusjon(
+    institusjoner: List<P1Dto.Institusjon>,
+    vedtaksdato: String?
+): Map<LanguageCode, String?> =
     mapOf(
         LanguageCode.BOKMAL to formatInstitusjon(institusjoner, vedtaksdato, LanguageCode.BOKMAL),
         LanguageCode.ENGLISH to formatInstitusjon(institusjoner, vedtaksdato, LanguageCode.ENGLISH)
     )
 
-private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdato: String?, languageCode: LanguageCode): String =
+private fun formatInstitusjon(
+    institusjoner: List<P1Dto.Institusjon>,
+    vedtaksdato: String?,
+    languageCode: LanguageCode
+): String =
     institusjoner.joinToString(System.lineSeparator()) { institusjon ->
         joinAndSeparateByNotNull(
             System.lineSeparator(),
             institusjon.institusjonsnavn,
             institusjon.pin?.takeIf { it.isNotBlank() }?.let { "PIN: $it" },
             institusjon.saksnummer?.takeIf { it.isNotBlank() }?.let {
-                if(languageCode == LanguageCode.BOKMAL) {
+                if (languageCode == LanguageCode.BOKMAL) {
                     "Saksnummer: $it"
                 } else {
                     "Case number: $it"
@@ -165,41 +179,46 @@ private fun formatInstitusjon(institusjoner: List<P1Dto.Institusjon>, vedtaksdat
             vedtaksdato?.let { dato ->
                 try {
                     val formattertDato = LocalDate.parse(dato).format(dateFormatter.withLocale(languageCode.locale()))
-                    if(languageCode == LanguageCode.BOKMAL) {
-                        "Dato: $formattertDato"
-                    } else {
-                        "Date: $formattertDato"
-                    }
+                    datoForVedtaketTekst(languageCode, formattertDato)
                 } catch (e: Exception) {
                     logger.warn("Could not parse vedtaksdato: $dato", e)
-                    if(languageCode == LanguageCode.BOKMAL) {
-                        "Dato: $dato"
-                    } else {
-                        "Date: $dato"
-                    }
+                    datoForVedtaketTekst(languageCode, dato)
                 }
             },
         )
     }
 
-private fun formaterValuta(beloep: Int?, valuta: String?, utbetalingsHyppighet: P1Dto.Utbetalingshyppighet?): Map<LanguageCode, String>? {
+private fun datoForVedtaketTekst(
+    languageCode: LanguageCode,
+    formattertDato: String?
+): String = if (languageCode == LanguageCode.BOKMAL) {
+    "Dato for vedtaket: $formattertDato"
+} else {
+    "Date of the decision: $formattertDato"
+}
+
+private fun formaterValuta(
+    beloep: Int?,
+    valuta: String?,
+    utbetalingsHyppighet: P1Dto.Utbetalingshyppighet?
+): Map<LanguageCode, String>? {
     return if (beloep != null && valuta != null) {
         val bokmalFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
         val englishFormatter = NumberFormat.getNumberInstance(Language.English.locale())
         return mapOf(
             LanguageCode.BOKMAL to "${bokmalFormatter.format(beloep)} $valuta\n" +
-                when(utbetalingsHyppighet) {
-                    P1Dto.Utbetalingshyppighet.Aarlig -> "Årlig"
-                    P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Kvartalvis"
-                    P1Dto.Utbetalingshyppighet.Maaned12PerAar -> "Månedlig (12 per år)"
-                    P1Dto.Utbetalingshyppighet.Maaned13PerAar -> "Månedlig (13 per år)"
-                    P1Dto.Utbetalingshyppighet.Maaned14PerAar -> "Månedlig (14 per år)"
-                    P1Dto.Utbetalingshyppighet.Ukentlig -> "Ukentlig"
-                    P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Ukjent, se vedtak"
-                    null -> ""
-                },
+                    when (utbetalingsHyppighet) {
+                        P1Dto.Utbetalingshyppighet.Aarlig -> "Årlig"
+                        P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Kvartalvis"
+                        P1Dto.Utbetalingshyppighet.Maaned12PerAar -> "Månedlig (12 per år)"
+                        P1Dto.Utbetalingshyppighet.Maaned13PerAar -> "Månedlig (13 per år)"
+                        P1Dto.Utbetalingshyppighet.Maaned14PerAar -> "Månedlig (14 per år)"
+                        P1Dto.Utbetalingshyppighet.Ukentlig -> "Ukentlig"
+                        P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Ukjent, se vedtak"
+                        null -> ""
+                    },
             LanguageCode.ENGLISH to "$valuta ${englishFormatter.format(beloep)}\n" +
-                    when(utbetalingsHyppighet) {
+                    when (utbetalingsHyppighet) {
                         P1Dto.Utbetalingshyppighet.Aarlig -> "Yearly"
                         P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Quarterly"
                         P1Dto.Utbetalingshyppighet.Maaned12PerAar -> "Monthly (12/year)"
@@ -215,7 +234,12 @@ private fun formaterValuta(beloep: Int?, valuta: String?, utbetalingsHyppighet: 
 
 
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
-    "Institution_rejecting_the_pension[$radnummer]" to pensjon.institusjon?.let { formatInstitusjon(it, pensjon.vedtaksdato)},
+    "Institution_rejecting_the_pension[$radnummer]" to pensjon.institusjon?.let {
+        formatInstitusjon(
+            it,
+            pensjon.vedtaksdato
+        )
+    },
     "Type_of_pension[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
     "Reasons_fro_the_rejection[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
     "Review_period[${radnummer * 2}]" to pensjon.vurderingsperiode,
