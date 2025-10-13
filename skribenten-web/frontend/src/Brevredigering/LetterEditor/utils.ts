@@ -11,9 +11,9 @@ export enum Typography {
   TITLE2 = "TITLE2",
 }
 
-const isMacOS = navigator.userAgent.includes("Mac OS X");
+export const isMac = globalThis.Cypress === undefined ? /Mac|iPod|iPad/.test(navigator.userAgent) : false;
 
-export const TypographyToText = isMacOS
+export const TypographyToText = isMac
   ? ({
       [Typography.TITLE1]: "Overskrift 1 (⌥+1)",
       [Typography.TITLE2]: "Overskrift 2 (⌥+2)",
