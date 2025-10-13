@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-tjenestebuss-integrasjon
     permissions:
-      id-token: write
+      id-token: "read"
     steps:
       - name: NAIS login
         uses: nais/login@v0
