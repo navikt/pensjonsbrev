@@ -128,10 +128,7 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
   draft.saveStatus = "DIRTY";
 }
 
-function shouldMergeAfterDeletetion(
-  indexAfterDeletion: Focus & { cursorPosition: number },
-  { start, end }: SelectionIndex,
-): boolean {
+function shouldMergeAfterDeletetion(indexAfterDeletion: Focus, { start, end }: SelectionIndex): boolean {
   if (start.blockIndex < end.blockIndex) {
     return true;
   } else if (isItemContentIndex(indexAfterDeletion) && start.contentIndex < end.contentIndex) {
