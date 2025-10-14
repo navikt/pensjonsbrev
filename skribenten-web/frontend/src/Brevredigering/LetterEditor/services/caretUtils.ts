@@ -2,7 +2,7 @@ import { inRange, minBy } from "lodash";
 
 import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
 import type { LiteralIndex, SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
-import { isTableCellIndex } from "~/Brevredigering/LetterEditor/model/utils";
+import { isTableCellIndex, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 
 type Coordinates = {
   x: number;
@@ -215,8 +215,6 @@ export function findOnLineAbove(element: Element) {
   return findOnLineAbove(previous);
 }
 
-const ZWSP = "\u200B";
-
 function closestLiteralEl(n: Node | null): HTMLElement | null {
   const el = (n && (n.nodeType === Node.ELEMENT_NODE ? (n as Element) : n.parentElement)) || null;
   return el ? el.closest<HTMLElement>("[data-literal-index]") : null;
@@ -224,7 +222,7 @@ function closestLiteralEl(n: Node | null): HTMLElement | null {
 
 function getTextLengthExcludingZWSP(el: HTMLElement): number {
   const text = el.textContent ?? "";
-  return text.startsWith(ZWSP) ? Math.max(0, text.length - 1) : text.length;
+  return text.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, text.length - 1) : text.length;
 }
 
 function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
@@ -248,8 +246,8 @@ function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset
   range.setEnd(container, offset);
   let len = range.toString().length;
   const txt = literalEl.textContent ?? "";
-  if (txt.startsWith(ZWSP)) len = Math.max(0, len - 1);
-  const max = txt.startsWith(ZWSP) ? Math.max(0, txt.length - 1) : txt.length;
+  if (txt.startsWith(ZERO_WIDTH_SPACE)) len = Math.max(0, len - 1);
+  const max = txt.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, txt.length - 1) : txt.length;
   return Math.min(Math.max(len, 0), max);
 }
 
