@@ -40,7 +40,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             displayTitle = "P1 med forsidebrev",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         title {

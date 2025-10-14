@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
@@ -49,7 +48,6 @@ class ProductionTemplatesTest {
             ProductionTemplates.hentRedigerbareMaler()
                 .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
                 .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
-                .filterNot { it.kode == Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK } // P1 er per nå et unntak
                 .map { it.javaClass.simpleName }
             ,
         )
