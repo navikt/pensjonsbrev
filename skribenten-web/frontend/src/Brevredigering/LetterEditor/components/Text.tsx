@@ -19,12 +19,11 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
 
   switch (content.type) {
     case NEW_LINE: {
-      return <br data-literal-index={JSON.stringify(literalIndex)} data-noneditable="1" />;
+      return <br data-literal-index={JSON.stringify(literalIndex)} />;
     }
     case VARIABLE: {
       return (
         <span
-          contentEditable={false}
           css={css`
             border-radius: 4px;
             border: ${isFocused ? "2px" : "1px"} solid ${isFocused ? "blue" : "var(--a-border-default)"};
@@ -38,7 +37,6 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             ${content.fontType === FontType.ITALIC && "font-style: italic;"}
           `}
           data-literal-index={JSON.stringify(literalIndex)}
-          data-noneditable="1"
           onClick={() => {
             setEditorState((oldState) => ({
               ...oldState,
