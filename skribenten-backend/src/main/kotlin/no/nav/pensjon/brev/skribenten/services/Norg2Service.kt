@@ -8,7 +8,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.CacheImplementation
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
@@ -17,7 +17,7 @@ interface Norg2Service {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(val config: Config) : Norg2Service {
+class Norg2ServiceHttp(val config: Config, val cache: CacheImplementation) : Norg2Service {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
     private val norgUrl = config.getString("url")
 
@@ -33,9 +33,8 @@ class Norg2ServiceHttp(val config: Config) : Norg2Service {
         install(CallIdFromContext)
     }
 
-    private val enhetCache = Cache<String, NavEnhet>()
     override suspend fun getEnhet(enhetId: String): NavEnhet? =
-        enhetCache.cached(enhetId) {
+        cache.cached(enhetId, NavEnhet::class.java) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             client.get("api/v1/enhet/$enhetId")
                 .toServiceResult<NavEnhet>()
