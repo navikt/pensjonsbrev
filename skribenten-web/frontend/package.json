@@ -67,6 +67,7 @@
     "eslint-plugin-testing-library": "7.11.0",
     "eslint-plugin-unicorn": "61.0.2",
     "globals": "16.4.0",
+    "happy-dom": "20.0.8",
     "jsdom": "27.0.0",
     "postcss-styled-syntax": "0.7.1",
     "prettier": "3.6.2",
