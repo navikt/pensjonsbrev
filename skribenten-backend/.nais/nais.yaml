@@ -65,6 +65,8 @@ spec:
           {{/each}}
         extra:
           - azp_name
+  valkey:
+    - instance: cache
 
   accessPolicy:
     outbound:
