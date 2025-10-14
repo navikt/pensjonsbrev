@@ -119,7 +119,8 @@ fun renderTestVedleggPdf(
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
-    pdfByggerService: PDFByggerService = laTeXCompilerService
+    pdfByggerService: PDFByggerService = laTeXCompilerService,
+    pdfVedleggAppender: PDFVedleggAppender? = null
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -141,9 +142,16 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                     ),
                     shouldRetry = false
                 )
-            }.bytes
+            }
         }
-        .also { writeTestPDF(pdfFileName, it, path) }
+        .let {
+            pdfVedleggAppender?.leggPaaVedlegg(
+                it,
+                this.template.pdfAttachments.map { a -> a.eval(this.toScope()) },
+                this.language.toCode()
+            ) ?: it
+        }
+        .also { writeTestPDF(pdfFileName, it.bytes, path) }
     return this
 }
 
