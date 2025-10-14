@@ -17,12 +17,11 @@ import io.ktor.http.Parameters
 import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.CacheImplementation
 import no.nav.pensjon.brev.skribenten.Expirable
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
-import kotlin.time.Duration.Companion.hours
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes(JsonSubTypes.Type(TokenResponse.OnBehalfOfToken::class), JsonSubTypes.Type(TokenResponse.ErrorResponse::class))
@@ -55,9 +54,8 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) : AuthService {
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cacheConfig: CacheImplementation) : AuthService {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val adCache = Cache<Pair<UserAccessToken, String>, TokenResponse>(ttl = 1.hours)
 
     private val client = HttpClient(engine) {
         install(ContentNegotiation) {
@@ -69,7 +67,10 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     }
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
-        return adCache.cached(Pair(principal.accessToken, scope)) {
+        val key = Pair(principal.accessToken, scope)
+        if (cacheConfig.hasValue(key)) {
+            return cacheConfig.get(key, TokenResponse.OnBehalfOfToken::class.java)!!
+        } else {
             val response = client.submitForm(
                 url = jwtConfig.tokenUri,
                 formParameters = Parameters.build {
@@ -84,11 +85,13 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
                 headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
             }
 
-            if (response.status.isSuccess()) {
-                response.body<TokenResponse.OnBehalfOfToken>()
+            return if (response.status.isSuccess()) {
+                response.body<TokenResponse.OnBehalfOfToken>().also {
+                    cacheConfig.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body())
+                }
             } else {
                 response.body<TokenResponse.ErrorResponse>()
             }
-        }!!
+        }
     }
 }
