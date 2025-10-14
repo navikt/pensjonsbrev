@@ -15,8 +15,12 @@ import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
-fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
-    val authService = AzureADService(authConfig)
+fun Application.configureRouting(
+    authConfig: JwtConfig,
+    skribentenConfig: Config,
+    cacheConfig: CacheImplementation<String, String>
+) {
+    val authService = AzureADService(authConfig, cacheConfig = cacheConfig)
     val servicesConfig = skribentenConfig.getConfig("services")
     initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopPreparing) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)

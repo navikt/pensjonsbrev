@@ -1,38 +1,40 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.server.config.ApplicationConfig
 import io.valkey.ConnectionPoolConfig
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.JedisPool
 import io.valkey.params.SetParams
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
-interface CacheImplementation<K: Any, V: Any> {
-    fun hasValue(key: K): Boolean
-    fun update(key: K, value: V, sekunder: Int)
-    fun delete(key: K)
+interface CacheImplementation {
+    fun <K> hasValue(key: K): Boolean
+    fun <K, T> get(key: K, clazz: Class<T>): T?
+    fun <K, V> update(key: K, value: V, sekunder: Int = 2000)
+    fun <K> delete(key: K)
 }
 
-class Valkey(config: ApplicationConfig, instanceName: String) : CacheImplementation<String, String> {
-    companion object {
-        private const val DEFAULT_TIMEOUT: Int = 2000
-        private const val DEFAULT_REDIRECTIONS: Int = 5
-    }
+class Valkey(config: ApplicationConfig, instanceName: String) : CacheImplementation {
+    private val objectMapper = databaseObjectMapper
 
     private val jedisPool = setupJedis(config, instanceName)
 
-    override fun hasValue(key: String) = jedisPool.resource.use {
-        it.get(key) != null
+    override fun <K> hasValue(key: K) = jedisPool.resource.use {
+        it.get(objectMapper.write(key)) != null
     }
 
-    override fun update(key: String, value: String, sekunder: Int) {
+    override fun <K, T> get(key: K, clazz: Class<T>): T? = jedisPool.resource.use { it.get(objectMapper.write(key))?.let { objectMapper.readValue(it, clazz) } }
+
+    override fun <K, V> update(key: K, value: V, sekunder: Int) {
         jedisPool.resource.use {
             it.set(
-                key,
-                value,
+                objectMapper.write(key),
+                objectMapper.write(value),
                 SetParams().apply {
                     ex(sekunder.toLong())
                     nx()
@@ -41,24 +43,29 @@ class Valkey(config: ApplicationConfig, instanceName: String) : CacheImplementat
         }
     }
 
-    override fun delete(key: String){
-        jedisPool.resource.use { it.del(key) }
+    override fun <K> delete(key: K){
+        jedisPool.resource.use { it.del(objectMapper.write(key)) }
     }
 }
 
-class InMemoryCache<K: Any, V: Any> : CacheImplementation<K, V> {
-    private val cache = ConcurrentHashMap<K, V>()
+class InMemoryCache : CacheImplementation {
+    private val objectMapper = databaseObjectMapper
+    private val cache = ConcurrentHashMap<String, String>()
 
-    override fun hasValue(key: K) = cache.get(key) != null
+    override fun <K> hasValue(key: K) = cache.get(objectMapper.write(key)) != null
 
-    override fun update(key: K, value: V, sekunder: Int) {
-        cache[key] = value
+    override fun <K, V> get(key: K, clazz: Class<V>) = cache.get(objectMapper.write(key))?.let { objectMapper.readValue(it, clazz) }
+
+    override fun <K, V> update(key: K, value: V, sekunder: Int) {
+        cache[objectMapper.write(key)] = objectMapper.write(value)
     }
 
-    override fun delete(key: K) {
-        cache.remove(key)
+    override fun <K> delete(key: K) {
+        cache.remove(objectMapper.write(key))
     }
 }
+
+private fun <V> ObjectMapper.write(value: V) = if (value is String) value else writeValueAsString(value)
 
 
 private fun setupJedis(config: ApplicationConfig, instanceName: String): JedisPool {
