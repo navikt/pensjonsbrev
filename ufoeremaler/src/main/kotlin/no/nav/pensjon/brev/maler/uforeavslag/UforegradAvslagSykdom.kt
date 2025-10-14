@@ -80,7 +80,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

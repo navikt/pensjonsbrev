@@ -105,7 +105,6 @@ object ProductionTemplates : AllTemplates {
         EndringAvAlderspensjonSivilstandSaerskiltSats,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
-        ForhaandsvarselVedTilbakekreving,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,
