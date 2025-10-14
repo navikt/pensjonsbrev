@@ -62,17 +62,11 @@ export function DebugPanel() {
             <VStack>
               <HStack gap={"4"}>
                 SELECTION START:
-                <span>
-                  <b>block :</b> {mappedSelection.start.blockIndex} <b>content :</b>{" "}
-                  {mappedSelection.start.contentIndex} <b>position :</b> {mappedSelection.start.cursorPosition}
-                </span>
+                <Focus focus={mappedSelection.start} />
               </HStack>
               <HStack gap={"4"}>
                 SELECTION END:
-                <span>
-                  <b>block :</b> {mappedSelection.end.blockIndex} <b>content :</b> {mappedSelection.end.contentIndex}{" "}
-                  <b>position :</b> {mappedSelection.end.cursorPosition}
-                </span>
+                <Focus focus={mappedSelection.end} />
               </HStack>
             </VStack>
           </>
@@ -80,12 +74,7 @@ export function DebugPanel() {
       </HStack>
       <HStack gap={"4"}>
         FOCUS:
-        {Object.entries(editorState.focus).map(([key, value]) => (
-          <div key={key}>
-            <b>{key}: </b>
-            <span>{value}</span>
-          </div>
-        ))}
+        <Focus focus={editorState.focus} />
       </HStack>
       <HStack gap={"4"}>
         FREEZE: <b css={css({ color: freeze ? "red" : "black" })}>{freeze.toString()}</b>
@@ -106,6 +95,19 @@ export function DebugPanel() {
     </div>
   );
 }
+
+const Focus = ({ focus }: { focus: Focus }) => {
+  return (
+    <>
+      {Object.entries(focus).map(([key, value]) => (
+        <div key={key}>
+          <b>{key.replaceAll("Index", "")}: </b>
+          <span>{value}</span>
+        </div>
+      ))}
+    </>
+  );
+};
 
 const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorState }) => {
   return (

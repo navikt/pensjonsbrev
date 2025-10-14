@@ -83,7 +83,11 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
         removeElements(start.contentIndex + startDeletionOffset, removeCount, startBlock);
 
         // remove in endContent up to cursor position
-        deleteInContentToOffset(startBlock, endContent, end);
+        deleteInContentToOffset(startBlock, endContent, {
+          ...end,
+          contentIndex: start.contentIndex + startDeletionOffset,
+        });
+        makeSureBlockIsValid(startBlock);
       }
     } else {
       // end is after start block so we remove everything after start in startBlock

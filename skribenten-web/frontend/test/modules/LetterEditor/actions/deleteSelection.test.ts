@@ -384,6 +384,18 @@ describe("Actions.deleteSelection", () => {
       expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
       expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: "ei", type: LITERAL });
     });
+
+    it("includes entire content of block that ends with list", () => {
+      const selection = {
+        start: { blockIndex: 1, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 1, contentIndex: 3, itemIndex: 2, itemContentIndex: 2, cursorPosition: 11 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      const block = result.redigertBrev.blocks[1];
+      expect(block.content).toHaveLength(1);
+      expect(block.content[0]).toMatchObject({ type: LITERAL });
+      expect(text(block.content[0] as LiteralValue)).toEqual("");
+    });
   });
 
   describe("selection in table", () => {
