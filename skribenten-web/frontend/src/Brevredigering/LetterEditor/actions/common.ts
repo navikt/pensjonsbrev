@@ -1,5 +1,4 @@
 import type { Draft } from "immer";
-import _ from "lodash";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -598,15 +597,15 @@ export function isValidIndex(letter: EditedLetter, index: LiteralIndex) {
  * After normalization, both become: [-830599486, 491536928, 1727594288]
  */
 export function normalizeDeletedArrays(obj: unknown): unknown {
-  if (_.isArray(obj)) {
+  if (Array.isArray(obj)) {
     return obj.map((item) => normalizeDeletedArrays(item));
   }
-  if (_.isObject(obj) && obj !== null) {
+  if (typeof obj === "object" && obj !== null) {
     const normalized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
-      if ((key === "deletedContent" || key === "deletedItems") && _.isArray(value)) {
+      if ((key === "deletedContent" || key === "deletedItems" || key === "deletedBlocks") && Array.isArray(value)) {
         // Sort to normalize order differences between frontend and backend
-        normalized[key] = [...value].sort();
+        normalized[key] = [...value].sort((a, b) => a - b);
       } else {
         normalized[key] = normalizeDeletedArrays(value);
       }
