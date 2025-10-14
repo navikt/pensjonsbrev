@@ -18,24 +18,19 @@ import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.CacheImplementation
-import no.nav.pensjon.brev.skribenten.Expirable
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes(JsonSubTypes.Type(TokenResponse.OnBehalfOfToken::class), JsonSubTypes.Type(TokenResponse.ErrorResponse::class))
-sealed class TokenResponse : Expirable {
+sealed class TokenResponse {
     data class OnBehalfOfToken(
         @JsonProperty("access_token") val accessToken: String,
         @JsonProperty("refresh_token") val refreshToken: String,
         @JsonProperty("token_type") val tokenType: String,
         @JsonProperty("scope") val scope: String,
         @JsonProperty("expires_in") val expiresIn: Long,
-    ) : TokenResponse() {
-        private val expiresAt = LocalDateTime.now().plusSeconds(expiresIn)
-        override fun isValid(): Boolean = LocalDateTime.now().isBefore(expiresAt.minusMinutes(5))
-    }
+    ) : TokenResponse()
 
     data class ErrorResponse(
         @JsonProperty("error") val error: String,
@@ -45,9 +40,7 @@ sealed class TokenResponse : Expirable {
         @JsonProperty("trace_id") val trace_id: String,
         @JsonProperty("correlation_id") val correlation_id: String,
         @JsonProperty("claims") val claims: String?,
-    ) : TokenResponse() {
-        override fun isValid() = false
-    }
+    ) : TokenResponse()
 }
 
 interface AuthService {
