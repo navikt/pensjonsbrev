@@ -1,6 +1,5 @@
 package brev.avslag.gradsendring
 
-import brev.felles.Constants
 import brev.felles.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.template.Expression

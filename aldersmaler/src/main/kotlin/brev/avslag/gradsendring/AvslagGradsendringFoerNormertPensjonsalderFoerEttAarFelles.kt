@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
 import brev.avslag.gradsendring.InnholdSoeknadFoerEttAar
 import brev.felles.HarDuSpoersmaal.Companion.alder
+import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
