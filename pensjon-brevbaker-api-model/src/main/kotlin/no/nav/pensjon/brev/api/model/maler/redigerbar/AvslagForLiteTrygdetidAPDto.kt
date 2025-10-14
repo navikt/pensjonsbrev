@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
@@ -13,8 +13,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 
 data class AvslagForLiteTrygdetidAPDto(
     override val pesysData: PesysData,
-    override val saksbehandlerValg: EmptyBrevdata,
-) : RedigerbarBrevdata<EmptyBrevdata, PesysData> {
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData> {
 
     data class PesysData(
         val avtaleland: String?,

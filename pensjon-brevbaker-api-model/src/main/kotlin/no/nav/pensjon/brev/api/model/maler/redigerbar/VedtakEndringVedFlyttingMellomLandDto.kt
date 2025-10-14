@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -27,7 +28,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val etterbetaling: Boolean,
         @DisplayText("Relevant hvis innvandret")
         val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val krav: Krav,

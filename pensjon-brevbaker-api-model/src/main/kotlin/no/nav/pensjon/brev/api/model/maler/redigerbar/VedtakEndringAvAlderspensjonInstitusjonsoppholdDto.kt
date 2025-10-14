@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -24,7 +25,7 @@ data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
         val hvisReduksjonTilbakeITid: Boolean,
         @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean?,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
