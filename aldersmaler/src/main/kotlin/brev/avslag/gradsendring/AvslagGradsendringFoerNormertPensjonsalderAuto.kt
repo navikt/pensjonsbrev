@@ -1,6 +1,7 @@
-package no.nav.pensjon.brev.maler.alder
+package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.avtaleland
@@ -14,15 +15,10 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -30,14 +26,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
-object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoerNormertPensjonsalderAutoDto> {
+object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoerNormertPensjonsalderAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AUTO
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon",
+            displayTitle = "Vedtak - avslag endring av uttaksgrad",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
@@ -45,15 +41,15 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
     ) {
         title {
             text(
-                bokmal { + "Nav har avslått søknaden din om alderspensjon fra " + virkFom.format() },
-                nynorsk { + "Nav har avslått søknaden din om alderspensjon frå " + virkFom.format() },
-                english { + "Nav has declined your application for retirement pension from " + virkFom.format() },
+                bokmal { + "Nav har avslått søknaden din om endring av alderspensjonen" },
+                nynorsk { + "Nav har avslått søknaden din om endring av alderspensjonen" },
+                english { + "Your application to change your retirement pension has been declined" },
             )
         }
 
         outline {
             includePhrase(
-                AvslagUttakFoerNormertPensjonsalderFelles(
+                AvslagGradsendringFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = afpBruktIBeregning,
                     normertPensjonsalder = normertPensjonsalder,
                     uttaksgrad = opplysningerBruktIBeregningen.uttaksgrad,
@@ -62,15 +58,17 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                     minstePensjonssats = minstePensjonssats,
                     totalPensjon = totalPensjon,
                     borINorge = borINorge,
-                    regelverkType = regelverkType,
                     harEOSLand = harEOSLand,
+                    regelverkType = regelverkType,
                     avtaleland = avtaleland,
-                    visInfoOmUttakFoer67 = false.expr(),
                 )
             )
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-        includeAttachment(opplysningerBruktIBeregningenAP2025Vedlegg, opplysningerBruktIBeregningen)
+        includeAttachment(
+            template = opplysningerBruktIBeregningenAP2025Vedlegg,
+            attachmentData = opplysningerBruktIBeregningen
+        )
     }
 }

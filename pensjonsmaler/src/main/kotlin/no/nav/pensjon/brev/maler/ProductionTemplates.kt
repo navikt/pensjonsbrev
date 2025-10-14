@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.*
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.*
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
@@ -42,11 +41,6 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         OmregningAlderUfore2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalder2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalderAuto,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
-        AvslagUttakFoerNormertPensjonsalderAP2016Auto,
-        AvslagUttakFoerNormertPensjonsalderAuto,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
@@ -86,13 +80,8 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
-        AvslagGradsendringFoerNormertPensjonsalder,
-        AvslagGradsendringFoerNormertPensjonsalderAP2016,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
         AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
-        AvslagUttakFoerNormertPensjonsalder,
-        AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
         BrukerTestBrev,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,

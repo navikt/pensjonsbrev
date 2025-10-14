@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.alderspensjon
+package brev.felles
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.template.Expression
