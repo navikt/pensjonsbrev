@@ -17,12 +17,19 @@ interface CacheImplementation {
     fun <K, T> get(key: K, clazz: Class<T>): T?
     fun <K, V> update(key: K, value: V, sekunder: Int = 2000)
     fun <K> delete(key: K)
+    suspend fun <K, V> cached(key: K, clazz: Class<V>, fetch: suspend (K) -> V?): V?
 }
 
 class Valkey(config: ApplicationConfig, instanceName: String) : CacheImplementation {
     private val objectMapper = databaseObjectMapper
 
     private val jedisPool = setupJedis(config, instanceName)
+
+    override suspend fun <K, V> cached(key: K, clazz: Class<V>, fetch: suspend (K) -> V?): V? = if (hasValue(key)) {
+        get(key, clazz)
+    } else {
+        fetch(key)?.also { update(key, it) }
+    }
 
     override fun <K> hasValue(key: K) = jedisPool.resource.use {
         it.get(objectMapper.write(key)) != null
@@ -62,6 +69,12 @@ class InMemoryCache : CacheImplementation {
 
     override fun <K> delete(key: K) {
         cache.remove(objectMapper.write(key))
+    }
+
+    override suspend fun <K, V> cached(key: K, clazz: Class<V>, fetch: suspend (K) -> V?): V? = if (hasValue(key)) {
+        get(key, clazz)
+    } else {
+        fetch(key)?.also { update(key, it) }
     }
 }
 
