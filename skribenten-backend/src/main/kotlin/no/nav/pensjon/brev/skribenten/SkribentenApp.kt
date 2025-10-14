@@ -152,6 +152,13 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
+    val cacheConfig = if (skribentenConfig.getBoolean("valkey.enabled")) {
+        Valkey(environment.config, skribentenConfig.getString("valkey.instanceName"))
+    } else {
+        log.warn("Valkey is disabled, this is not recommended for production")
+        InMemoryCache()
+    }
+
     val azureADConfig = skribentenConfig.requireAzureADConfig()
     install(Authentication) {
         skribentenJwt(azureADConfig)
