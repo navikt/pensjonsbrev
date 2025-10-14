@@ -61,12 +61,26 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
                 }
             }
         }
+        if (innvilgedePensjoner.isEmpty()) {
+            side("P1-side2") {
+                felt {
+
+                }
+            }
+        }
 
         avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("P1-side3") {
                 felt {
                     add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
                         .reduce { a, b -> a + b })
+                }
+            }
+        }
+        if (avslaattePensjoner.isEmpty()) {
+            side("P1-side3") {
+                felt {
+
                 }
             }
         }
