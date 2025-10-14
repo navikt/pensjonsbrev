@@ -49,6 +49,7 @@ class ProductionTemplatesTest {
             ProductionTemplates.hentRedigerbareMaler()
                 .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
                 .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
+                .filterNot { it.kode == Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK } // P1 er per nå et unntak
                 .map { it.javaClass.simpleName }
             ,
         )
