@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
 import brev.avslag.gradsendring.InnholdSoeknadFoerEttAar
 import brev.felles.HarDuSpoersmaal.Companion.alder
+import brev.felles.RettTilAAKlage
+import brev.felles.RettTilInnsyn
 import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.template.Expression
@@ -29,8 +31,8 @@ data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarFelles(
             )
         )
 
-        includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-        includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+        includePhrase(RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+        includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
         includePhrase(alder)
     }
 }

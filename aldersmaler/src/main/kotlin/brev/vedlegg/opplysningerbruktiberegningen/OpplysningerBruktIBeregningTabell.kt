@@ -32,7 +32,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
+        paragraph {/*
             val harTilleggspensjon = tilleggspensjonVedVirk.notNull()
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 showIf(
@@ -406,7 +406,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }
@@ -419,7 +419,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
     val krav: Expression<OpplysningerBruktIBeregningenAlderDto.Krav>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
+        paragraph {/*
             text(
                 bokmal { + "For den delen av pensjonen din som er beregnet etter nye regler (kapittel 20) har vi brukt disse opplysningene i beregningen vår:" },
                 nynorsk { + "For den delen av pensjonen din som er berekna etter nye reglar (kapittel 20), har vi brukt desse opplysningane i berekninga vår:" },
@@ -516,7 +516,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }
@@ -546,7 +546,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
     val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.BeregnetPensjonPerManedVedVirk>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
+        paragraph {/*
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 row {
                     //tabellBeholdningForForsteUttak_002
@@ -609,7 +609,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 
@@ -673,5 +673,4 @@ object DelingstallVed67Aar : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
             english { + "Life expectancy adjustment divisor at 67 years" }
         )
     }
-
 }

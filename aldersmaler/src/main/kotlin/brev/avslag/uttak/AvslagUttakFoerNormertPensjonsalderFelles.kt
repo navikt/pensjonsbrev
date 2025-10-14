@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.maler.alder
 
+import brev.avslag.gradsendring.fraser.AvslagHjemler
 import brev.felles.Constants
+import brev.felles.HarDuSpoersmaal
+import brev.felles.aarOgMaanederFormattert
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
@@ -303,7 +306,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             )
         }
 
-        includePhrase(Felles.HarDuSpoersmaal.alder)
+        includePhrase(HarDuSpoersmaal.alder)
 
     }
 }
