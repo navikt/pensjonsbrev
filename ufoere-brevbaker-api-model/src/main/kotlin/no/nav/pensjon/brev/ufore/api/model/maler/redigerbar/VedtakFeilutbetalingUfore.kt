@@ -2,14 +2,23 @@ package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.PesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.Saksbehandlervalg
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
-@Suppress("unused")
 data class VedtakFeilutbetalingUforeDto(
-    override val pesysData: PesysData, override val saksbehandlerValg: EmptyBrevdata
-) : RedigerbarBrevdata<EmptyBrevdata, VedtakFeilutbetalingUforeDto.PesysData> {
+    override val pesysData: PesysData, override val saksbehandlerValg: Saksbehandlervalg
+) : RedigerbarBrevdata<Saksbehandlervalg, PesysData> {
+
+    data class Saksbehandlervalg(
+        @DisplayText("Endret sivilstand")
+        val sivilstandEndret: Boolean,
+        @DisplayText("Reduksjon foreldelse")
+        val reduksjonForeldelse: Boolean,
+
+    ) : BrevbakerBrevdata
 
     data class PesysData(
         val feilutbetaltTotalBelop: Int,

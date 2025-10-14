@@ -29,6 +29,7 @@ jobs:
       id-token: "write"
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
+      digest: ${{ steps.docker-push.outputs.digest }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -59,6 +60,26 @@ jobs:
           pull: true
           docker_context: ./skribenten-backend
           dockerfile: skribenten-backend/Dockerfile
+          salsa: false
+
+  salsa:
+    name: Generate SBOM, attest and sign image
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: build-skribenten-backend
+    permissions:
+      id-token: "write"
+    steps:
+      - name: NAIS login
+        uses: nais/login@v0
+        id: login
+        with:
+          team: pensjonsbrev
+      - name: Generate SBOM, attest and sign image
+        id: attest-sign
+        uses: nais/attest-sign@v1
+        with:
+          image_ref: ${{ needs.build-skribenten-backend.outputs.image }}@${{ needs.build-skribenten-backend.outputs.digest }}
 
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
@@ -102,3 +123,13 @@ jobs:
           "RESOURCE": "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
           "VARS": "skribenten-backend/.nais/prod.yaml"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [build-skribenten-backend]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
