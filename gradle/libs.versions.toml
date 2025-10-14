@@ -22,6 +22,7 @@ pdfboxVersion = "3.0.5"
 postgresqlVersion = "42.7.8"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.1.0"
+valkeyVersion = "5.5.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
@@ -45,6 +46,7 @@ micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
+valkey = { module = "io.valkey:valkey-java", version.ref = "valkeyVersion" }
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
