@@ -98,3 +98,14 @@ jobs:
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
           "VAR": image=${{ needs.build-tjenestebuss-integrasjon.outputs.image }}
           "VARS": "tjenestebuss-integrasjon/.nais/prod.yaml"
+
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [build-tjenestebuss-integrasjon]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

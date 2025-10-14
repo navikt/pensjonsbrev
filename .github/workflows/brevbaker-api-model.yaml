@@ -178,3 +178,13 @@ jobs:
         run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :ufoere-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [release-common, release-pensjon, release-alder, release-ufoere]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

@@ -18,12 +18,11 @@ internal object VedleggAppender {
 
         sider.forEachIndexed { index, side ->
             lesInnPDF(side.filnavn, spraak).use { pdfSide ->
+                side.felt{ "Sidetall" to "${index + 1}/${sider.size}" }
                 val map: Map<String, String?> = side.felt
                     .flatMap { it.felt.entries }
                     .associate { it.key to it.value?.get(spraak) }
 
-                // TODO hvordan setter vi faktiske sidetallet? (er ikke en form)
-                //pdfSide.setValues(map + ("page" to "${index + 1}/${sider.size}"))
                 fillFields(pdfSide, map)
                 merger.leggTilSide(target, pdfSide)
             }

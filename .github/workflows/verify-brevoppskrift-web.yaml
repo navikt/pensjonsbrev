@@ -70,3 +70,13 @@ jobs:
       - name: Check for typescript errors
         working-directory: brevoppskrift-web/frontend
         run: npm run check-types
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [verify-bff, verify-frontend]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

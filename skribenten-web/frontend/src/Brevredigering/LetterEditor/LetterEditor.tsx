@@ -128,11 +128,28 @@ export const LetterEditor = ({
               letter-spacing: 0.45px;
             `}
             level="3"
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "none";
+            }}
+            onDragStart={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
             size="medium"
           >
             <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
           </Heading>
-          <div className="editor-surface" data-editor-root onKeyDown={editorKeyboardShortcuts} ref={editorRootRef}>
+          <div
+            className="editor-surface"
+            data-editor-root
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "none";
+            }}
+            onDragStart={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
+            onKeyDown={editorKeyboardShortcuts}
+            ref={editorRootRef}
+          >
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
                 <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
