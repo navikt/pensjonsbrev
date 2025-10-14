@@ -31,7 +31,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
 
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
     override val kategori = TemplateDescription.Brevkategori.SLUTTBEHANDLING
-    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
 
     override val template = createTemplate(
