@@ -163,7 +163,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     install(Authentication) {
         skribentenJwt(azureADConfig)
     }
-    configureRouting(azureADConfig, skribentenConfig)
+    configureRouting(azureADConfig, skribentenConfig, cacheConfig)
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
