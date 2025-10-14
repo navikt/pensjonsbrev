@@ -2,7 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Cell, ItemList, Row, Table } from "~/types/brevbakerTypes";
+import type { Cell, ItemList, LiteralValue, Row, Table } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
 import { cell, item, itemList, letter, literal, paragraph, row, select, table, title1, variable } from "../utils";
@@ -15,13 +15,14 @@ describe("Actions.deleteSelection", () => {
       paragraph([literal("Første setning i "), variable("andre"), literal(" avsnitt.")]),
     );
 
-    it("start and end in same content does nothing", () => {
+    it("start and end in same content", () => {
       const result = Actions.deleteSelection(state, {
         start: { blockIndex: 0, contentIndex: 0, cursorPosition: 5 },
         end: { blockIndex: 0, contentIndex: 0, cursorPosition: 8 },
       });
-      expect(result).toBe(state);
-      expect(result).toEqual(state);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toMatchObject({
+        editedText: "Førstittel for ",
+      });
     });
 
     it("start and end in different content deletes everything between", () => {
@@ -113,6 +114,33 @@ describe("Actions.deleteSelection", () => {
       expect(block1.deletedContent).toContain(state.redigertBrev.blocks[0].content[1].id);
       expect(block1.deletedContent).toContain(state.redigertBrev.blocks[0].content[2].id);
       expect(block1.content[1]).toMatchObject({ editedText: "ste setning i " });
+    });
+
+    it("selects all text in letter, deletes everything but leaves an empty paragraph", () => {
+      const result = Actions.deleteSelection(state, {
+        start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 2, contentIndex: 2, cursorPosition: 9 },
+      });
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      const block = result.redigertBrev.blocks[0];
+      expect(block.type).toBe("PARAGRAPH");
+      expect(block.content).toHaveLength(1);
+      expect(block.content[0].type).toBe(LITERAL);
+      expect(text(block.content[0] as LiteralValue)).toBe("");
+    });
+
+    it("selects all text in block that starts with variable, ends up with empty literal", () => {
+      const state = letter(paragraph([variable("hei"), literal(" på deg")]));
+      const result = Actions.deleteSelection(state, {
+        start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 1, cursorPosition: 7 },
+      });
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      const block = result.redigertBrev.blocks[0];
+      expect(block.type).toBe("PARAGRAPH");
+      expect(block.content).toHaveLength(1);
+      expect(block.content[0].type).toBe(LITERAL);
+      expect(text(block.content[0] as LiteralValue)).toBe("");
     });
   });
 
@@ -322,6 +350,51 @@ describe("Actions.deleteSelection", () => {
       expect(block.deletedContent).toContain(itemList1.id);
       expect(block.deletedContent).toContain(state.redigertBrev.blocks[0].content[4].id);
       expect(block.content[3]).toMatchObject({ editedText: "så etter første punktliste." });
+    });
+
+    it("starts and ends in same list and includes entire list at end of block, deletes entire list", () => {
+      const state = letter(paragraph([literal("første avsnitt"), itemList2]), paragraph([literal("hei")]));
+      const selection = {
+        start: { blockIndex: 0, contentIndex: 1, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 1, itemIndex: 2, itemContentIndex: 2, cursorPosition: 11 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(state.redigertBrev.blocks[0].content.length - 1);
+    });
+
+    it("includes entire list and it is the only content in block, deletes entire list but leaves a block with an empty literal ", () => {
+      const state = letter(paragraph([itemList2]), paragraph([literal("hei")]));
+      const selection = {
+        start: { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 2, cursorPosition: 11 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ text: "", type: LITERAL });
+    });
+
+    it("includes entire list that is the only content in block and ends in next block, deletes list and merges blocks", () => {
+      const state = letter(paragraph([itemList2]), paragraph([literal("hei")]));
+      const selection = {
+        start: { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 1, contentIndex: 0, cursorPosition: 1 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: "ei", type: LITERAL });
+    });
+
+    it("includes entire content of block that ends with list", () => {
+      const selection = {
+        start: { blockIndex: 1, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 1, contentIndex: 3, itemIndex: 2, itemContentIndex: 2, cursorPosition: 11 },
+      };
+      const result = Actions.deleteSelection(state, selection);
+      const block = result.redigertBrev.blocks[1];
+      expect(block.content).toHaveLength(1);
+      expect(block.content[0]).toMatchObject({ type: LITERAL });
+      expect(text(block.content[0] as LiteralValue)).toEqual("");
     });
   });
 

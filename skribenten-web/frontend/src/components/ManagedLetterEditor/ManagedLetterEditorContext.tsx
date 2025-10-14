@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useState } from "react";
 import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { BrevResponse } from "~/types/brev";
 
@@ -34,8 +35,8 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       setEditorState((previousState) => {
         if (previousState.saveStatus !== "DIRTY") {
           const keepHistory = _.isEqual(
-            nullsToUndefined(previousState.redigertBrev),
-            nullsToUndefined(response.redigertBrev),
+            normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
+            normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
           );
           return {
             ...previousState,
