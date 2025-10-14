@@ -69,7 +69,8 @@ data class MaanedligPensjonFoerSkattSaertillegg(
 
         //vedleggBelopST_002
         showIf(
-            brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
+            harSaertillegg
+                    and brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
                     and (
                     aldersEllerSykehjemInstOpphold
                             or erPaahelseInstitusjon
