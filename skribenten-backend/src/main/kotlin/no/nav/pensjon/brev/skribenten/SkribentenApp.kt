@@ -153,7 +153,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     }
 
     val cacheConfig = if (skribentenConfig.getBoolean("services.valkey.enabled")) {
-        Valkey(environment.config, skribentenConfig.getString("services.valkey.instanceName"))
+        Valkey(System.getenv(), skribentenConfig.getString("services.valkey.instanceName"))
     } else {
         log.warn("Valkey is disabled, this is not recommended for production")
         InMemoryCache()
