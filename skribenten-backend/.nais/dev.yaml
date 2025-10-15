@@ -143,4 +143,4 @@ env:
     value: "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
 
   - name: VALKEY_INSTANCE_NAME
-    value: {{valkey-name}}
+    value: "{{valkey-name}}"
