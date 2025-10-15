@@ -61,30 +61,32 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
         val key = Pair(principal.accessToken, scope)
-        if (cacheConfig.hasValue(key)) {
-            return cacheConfig.get(key, TokenResponse.OnBehalfOfToken::class.java)!!
-        } else {
-            val response = client.submitForm(
-                url = jwtConfig.tokenUri,
-                formParameters = Parameters.build {
-                    append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                    append("client_id", jwtConfig.clientId)
-                    append("client_secret", jwtConfig.clientSecret)
-                    append("assertion", principal.accessToken.token)
-                    append("scope", scope)
-                    append("requested_token_use", "on_behalf_of")
-                }
-            ) {
-                headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
-            }
+        val value = cacheConfig.get(key, TokenResponse.OnBehalfOfToken::class.java)
 
-            return if (response.status.isSuccess()) {
-                response.body<TokenResponse.OnBehalfOfToken>().also {
-                    cacheConfig.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body())
-                }
-            } else {
-                response.body<TokenResponse.ErrorResponse>()
+        if (value != null) {
+            return value
+        }
+
+        val response = client.submitForm(
+            url = jwtConfig.tokenUri,
+            formParameters = Parameters.build {
+                append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                append("client_id", jwtConfig.clientId)
+                append("client_secret", jwtConfig.clientSecret)
+                append("assertion", principal.accessToken.token)
+                append("scope", scope)
+                append("requested_token_use", "on_behalf_of")
             }
+        ) {
+            headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body<TokenResponse.OnBehalfOfToken>().also {
+                cacheConfig.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body())
+            }
+        } else {
+            response.body<TokenResponse.ErrorResponse>()
         }
     }
 }
