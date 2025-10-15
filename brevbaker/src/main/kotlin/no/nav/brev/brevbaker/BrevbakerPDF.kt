@@ -1,16 +1,16 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
+import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
-import no.nav.brev.brevbaker.template.render.Letter2Markup
-import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toCode
-import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
-internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
+internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, private val pdfVedleggAppender: PDFVedleggAppender) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev).let {
             pdfByggerService.producePDF(
@@ -18,8 +18,16 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
                     letterMarkup = it.letterMarkup,
                     attachments = it.attachments,
                     language = letter.language.toCode(),
-                    brevtype = letter.template.letterMetadata.brevtype
-                )
+                    brevtype = letter.template.letterMetadata.brevtype,
+                    pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
+                ),
+                shouldRetry = redigertBrev == null
+            )
+        }.let {
+            pdfVedleggAppender.leggPaaVedlegg(
+                it,
+                letter.template.pdfAttachments.map { a -> a.eval(letter.toScope()) },
+                letter.language.toCode()
             )
         }.let { pdf ->
             LetterResponse(

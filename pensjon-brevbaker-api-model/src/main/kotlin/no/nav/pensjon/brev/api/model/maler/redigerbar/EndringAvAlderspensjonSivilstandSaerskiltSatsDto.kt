@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -26,7 +27,9 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val aarligKontrollEPS: Boolean,
         @DisplayText("Hvis reduksjon tilbake i tid")
         val feilutbetaling: Boolean,
-    ) : BrevbakerBrevdata {
+        @DisplayText("Hvis etterbetaling")
+        val etterbetaling: Boolean?,
+    ) : SaksbehandlerValgBrevdata {
         enum class EPS {
             @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
             epsIkkeFylt62Aar,
@@ -58,7 +61,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
         val beloepEndring: BeloepEndring,
-        val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
@@ -74,7 +76,6 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
 
     data class BeregnetPensjonPerManedVedVirk(
         val grunnbelop: Kroner,  // beregnetPensjonPerManedVedVirk
-        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
         val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
     )
 }

@@ -1,14 +1,14 @@
 import { css } from "@emotion/react";
-import { Accordion, ExpansionCard, HStack } from "@navikt/ds-react";
+import { Accordion, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
 import type { Dispatch } from "react";
 import React from "react";
 import { useEffect, useState } from "react";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import type { Focus, LetterEditorState, SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { AnyBlock, Block, Content, Item } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
@@ -16,6 +16,8 @@ export function DebugPanel() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
   const [caretRect, setCaretRect] = useState<DOMRect>();
+
+  const [mappedSelection, setMappedSelection] = useState<SelectionIndex | null>(null);
 
   const mouseMoveEventListener = (event: MouseEvent) => {
     setMousePosition({ x: event.pageX, y: event.pageY });
@@ -26,13 +28,21 @@ export function DebugPanel() {
     setCaretRect(getCaretRect());
   };
 
+  const selectionChangeListener = () => {
+    const root = document.querySelector<HTMLElement>("[data-editor-root]");
+    const mapped = root ? getSelectionFocus(root) : undefined;
+    if (mapped) setMappedSelection(mapped);
+  };
+
   useEffect(() => {
     document.addEventListener("mousemove", mouseMoveEventListener);
     document.addEventListener("keyup", keyboardEventListener);
+    document.addEventListener("selectionchange", selectionChangeListener);
 
     return () => {
       document.removeEventListener("mousemove", mouseMoveEventListener);
       document.removeEventListener("keyup", keyboardEventListener);
+      document.removeEventListener("selectionchange", selectionChangeListener);
     };
   }, []);
 
@@ -47,16 +57,28 @@ export function DebugPanel() {
       `}
     >
       <HStack gap={"4"}>
-        FOCUS:
-        {Object.entries(editorState.focus).map(([key, value]) => (
-          <div key={key}>
-            <b>{key}: </b>
-            <span>{value}</span>
-          </div>
-        ))}
+        {mappedSelection ? (
+          <>
+            <VStack>
+              <HStack gap={"4"}>
+                SELECTION START:
+                <Focus focus={mappedSelection.start} />
+              </HStack>
+              <HStack gap={"4"}>
+                SELECTION END:
+                <Focus focus={mappedSelection.end} />
+              </HStack>
+            </VStack>
+          </>
+        ) : null}
       </HStack>
       <HStack gap={"4"}>
-        FREEZE: <b>{freeze.toString()}</b>
+        FOCUS:
+        <Focus focus={editorState.focus} />
+      </HStack>
+      <HStack gap={"4"}>
+        FREEZE: <b css={css({ color: freeze ? "red" : "black" })}>{freeze.toString()}</b>
+        SAVESTATUS: <b>{editorState.saveStatus}</b>
       </HStack>
       <HStack gap={"4"}>
         MOUSE:
@@ -73,6 +95,19 @@ export function DebugPanel() {
     </div>
   );
 }
+
+const Focus = ({ focus }: { focus: Focus }) => {
+  return (
+    <>
+      {Object.entries(focus).map(([key, value]) => (
+        <div key={key}>
+          <b>{key.replaceAll("Index", "")}: </b>
+          <span>{value}</span>
+        </div>
+      ))}
+    </>
+  );
+};
 
 const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorState }) => {
   return (
@@ -127,7 +162,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
         <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
       </ExpansionCard.Header>
       <ExpansionCard.Content>
-        <Accordion headingSize={"xsmall"} size={"small"}>
+        <Accordion size={"small"}>
           {block.content.map((c, index) => (
             <Content content={c} focus={focus} index={index} key={index} />
           ))}
@@ -175,7 +210,7 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
       return "--new line--";
     case "ITEM_LIST":
       return (
-        <Accordion headingSize={"xsmall"} size={"small"}>
+        <Accordion size={"small"}>
           {content.items.map((i, index) => (
             <ItemBody focus={focus} index={index} item={i} key={index} />
           ))}
@@ -219,7 +254,7 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
         </HStack>
       </Accordion.Header>
       <Accordion.Content>
-        <Accordion headingSize={"xsmall"} size={"small"}>
+        <Accordion size={"small"}>
           {item.content.map((c, index) => (
             <Content content={c} focus={itemContentFocus} index={index} key={index} />
           ))}

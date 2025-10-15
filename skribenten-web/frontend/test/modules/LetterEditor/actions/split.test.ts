@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
-import { isEmptyContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { isEmptyContent, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 import type { Content, Item, ItemList, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
@@ -357,7 +357,7 @@ describe("LetterEditorActions.split", () => {
             items: [
               item(literal({ text: "item1" })),
               asNew(item(literal({ text: "aa" }))),
-              asNew(item(literal({ text: "​" }))),
+              asNew(item(literal({ text: ZERO_WIDTH_SPACE }))),
             ],
           }),
         ]),

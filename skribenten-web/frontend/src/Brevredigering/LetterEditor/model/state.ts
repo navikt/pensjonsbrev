@@ -29,3 +29,8 @@ export type LetterEditorState = {
   focus: Focus;
   history: History;
 };
+
+export type SelectionIndex = {
+  start: Focus & { cursorPosition: number };
+  end: Focus & { cursorPosition: number };
+};

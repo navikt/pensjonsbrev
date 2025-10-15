@@ -52,6 +52,7 @@ jobs:
       id-token: "write"
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
+      digest: ${{ steps.docker-push.outputs.digest }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -86,6 +87,27 @@ jobs:
           pull: true
           docker_context: ./pensjon-brevbaker
           dockerfile: pensjon-brevbaker/Dockerfile
+          salsa: false
+
+  salsa-brevbygger:
+    name: Generate SBOM, attest and sign image
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: buildBrevbaker
+    permissions:
+      id-token: "write"
+    steps:
+      - name: NAIS login
+        uses: nais/login@v0
+        id: login
+        with:
+          team: pensjonsbrev
+      - name: Generate SBOM, attest and sign image
+        id: attest-sign
+        uses: nais/attest-sign@v1
+        with:
+          image_ref: ${{ needs.buildBrevbaker.outputs.image }}@${{ needs.buildBrevbaker.outputs.digest }}
+
   buildPdfbygger:
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
@@ -94,6 +116,7 @@ jobs:
       id-token: "write"
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
+      digest: ${{ steps.docker-push.outputs.digest }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -119,6 +142,7 @@ jobs:
           pull: true
           docker_context: ./pdf-bygger
           dockerfile: pdf-bygger/Dockerfile
+          salsa: false
       - name: "Publish container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
@@ -127,6 +151,25 @@ jobs:
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
           OUTPUT_IMAGE: ${{ steps.docker-push.outputs.image }}
+
+  salsa-pdfbygger:
+    name: Generate SBOM, attest and sign image
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: buildPdfbygger
+    permissions:
+      id-token: "write"
+    steps:
+      - name: NAIS login
+        uses: nais/login@v0
+        id: login
+        with:
+          team: pensjonsbrev
+      - name: Generate SBOM, attest and sign image
+        id: attest-sign
+        uses: nais/attest-sign@v1
+        with:
+          image_ref: ${{ needs.buildPdfbygger.outputs.image }}@${{ needs.buildPdfbygger.outputs.digest }}
 
   changes:
     runs-on: ubuntu-latest
@@ -185,7 +228,7 @@ jobs:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@1a128e49c0585bc0b8e38e541ac3b6e35a5bc727
+        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
@@ -216,7 +259,7 @@ jobs:
         uses: routsi/ImageMagick-action@v1.1.1
         with:
           command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
       - run: npm install --save-dev @percy/cli
@@ -318,3 +361,13 @@ jobs:
           "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
           "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/prod.yaml"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [buildBrevbaker, buildPdfbygger, runIntegrationTests]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

@@ -61,7 +61,7 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
             }.orShow {
                 paragraph {
                     text(
-                        bokmal { +"Vi viser til vårt forhåndsvarsel. av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjør av din omstillingsstønad. Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() + "."},
+                        bokmal { +"Vi viser til vårt forhåndsvarsel av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjør av din omstillingsstønad. Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() + "."},
                         nynorsk { +"Vi viser til førehandsvarselet av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjer av din omstillingsstønad. Omstillingsstønaden din er endra for " + data.etteroppgjoersAar.format() + "."},
                         english { +"We refer to our advance notice dated " + data.forhaandsvarselSendtDato.format() + " regarding the final settlement of your adjustment allowance. Your adjustment allowance will change for " + data.etteroppgjoersAar.format() + "."}
                     )

@@ -176,6 +176,7 @@ export type Adresse = {
   postnr: Nullable<string>;
   poststed: Nullable<string>;
   land: Nullable<string>;
+  erBrukersAdresse?: boolean;
 };
 
 export type HentSamhandlerAdresseRequestDto = {

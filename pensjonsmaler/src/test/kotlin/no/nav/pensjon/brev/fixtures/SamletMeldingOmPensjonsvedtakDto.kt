@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
@@ -23,7 +23,7 @@ import java.time.Month
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
             sakstype = Sakstype.ALDER,
             vedlegg = createP1Dto()
@@ -52,7 +52,6 @@ fun createP1Dto() = P1Dto(
             landkode = Landkode("NO"),
         ),
         sakstype = Sakstype.ALDER,
-        kravMottattDato = LocalDate.of(1983, Month.FEBRUARY, 2),
         innvilgedePensjoner = listOf(
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -70,6 +69,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -87,6 +89,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -104,6 +109,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -121,6 +129,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -138,6 +149,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -155,6 +169,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
 
             InnvilgetPensjon(
@@ -173,6 +190,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -190,6 +210,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -207,6 +230,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -224,6 +250,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -241,6 +270,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -258,6 +290,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -275,6 +310,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -292,6 +330,9 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "NOK",
+                vedtaksdato = "2020-01-01"
             ),
         ),
         avslaattePensjoner =
@@ -314,8 +355,9 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY",
+        pin = null,
         saksnummer = null,
-        land = null
+        land = null,
     )
 )
 
@@ -323,8 +365,9 @@ private fun nay2(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY2",
+        pin = null,
         saksnummer = null,
-        land = null
+        land = null,
     )
 )
 
@@ -332,8 +375,9 @@ private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY 4",
+        pin = null,
         saksnummer = null,
-        land = null
+        land = null,
     ),
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
@@ -345,5 +389,6 @@ private fun avslaattPensjon() = AvslaattPensjon(
         landkode = Landkode("FI"),
         postnummer = Postnummer("4321"),
         poststed = Poststed("Lillevik Østre")
-    ))
+    )),
+    vedtaksdato = "2020-01-01"
 )

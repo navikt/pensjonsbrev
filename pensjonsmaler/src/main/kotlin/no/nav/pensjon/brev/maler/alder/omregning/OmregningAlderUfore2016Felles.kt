@@ -62,18 +62,18 @@ data class OmregningAlderUfore2016Felles(
             text(
                 bokmal { + "Uføretrygden din opphører fra måneden etter at du fyller 67 år. Vi har derfor regnet den om til " + uttaksgrad.format()
                         + " prosent alderspensjon fra " + virkFom.format() },
-                nynorsk { + "Uføretrygden din opphører fra måneden etter at du fyller 67 år. Vi har derfor regnet den om til " + uttaksgrad.format()
-                        + " prosent alderspensjon fra " + virkFom.format() },
-                english { + "Uføretrygden din opphører fra måneden etter at du fyller 67 år. Vi har derfor regnet den om til " + uttaksgrad.format()
-                        + " prosent alderspensjon fra " + virkFom.format() }
+                nynorsk { + "Uføretrygda di opphøyrar frå månaden etter at du fyller 67 år. Vi har derfor rekna den om til " + uttaksgrad.format()
+                        + " prosent alderspensjon frå " + virkFom.format() },
+                english { + "Your disability pension will be terminated from the month after you turn 67. We have therefore converted it into " + uttaksgrad.format()
+                        + " percent retirement pension from " + virkFom.format() }
 
             )
         }
 
         paragraph {
             text(
-                bokmal { + "Du får " + totalPensjon.format() + " kvar månad før skatt frå " + virkFom.format() + " i alderspensjon fra folketrygden." },
-                nynorsk { + "Du får " + totalPensjon.format() + " hver måned før skatt fra " + virkFom.format() + " i alderspensjon frå folketrygda." },
+                bokmal { + "Du får " + totalPensjon.format() + " hver måned før skatt fra " + virkFom.format() + " i alderspensjon fra folketrygden." },
+                nynorsk { + "Du får " + totalPensjon.format() + " kvar månad før skatt frå " + virkFom.format() + " i alderspensjon frå folketrygda." },
                 english { + "You will receive " + totalPensjon.format() + " every month before tax from " + virkFom.format() + " as retirement pension from the National Insurance Scheme" }
 
             )

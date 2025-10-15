@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
+import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_RED
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -28,7 +28,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.inntektspensjon_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BrukerSelectors.fodselsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.GjenlevendetilleggKapittel19VedVirkSelectors.apKap19utenGJR
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.KravSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.KravSelectors.kravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.KravSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
@@ -44,6 +43,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.avdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
@@ -141,16 +141,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     )
                 }
             }
-            // nyBeregningGjtKap19Vedtak
-            showIf(virkDatoFomEtter2023 and kravInitiertAvNav and brukerFoedtEtter1944) {
-                paragraph {
-                    text(
-                        bokmal { + "Fra 2024 blir gjenlevenderetten skilt ut fra alderspensjonen din som et eget tillegg." },
-                        nynorsk { + "Frå 2024 blir attlevanderetten skild ut frå alderspensjonen som eit eige tillegg." },
-                        english { + "From 2024, the survivor’s right will be separated from your retirement pension as a separate supplement." }
-                    )
-                }
-            }
             // innvilgetGjRettAPAvdod_002
             showIf(pesysData.krav.kravInitiertAv.isOneOf(KravInitiertAv.VERGE, KravInitiertAv.BRUKER)) {
                 paragraph {
@@ -200,9 +190,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and brukerFoedtEtter1944 and not(virkDatoFomEtter2023)) {
                 paragraph {
                     text(
-                        bokmal { + "Fra januar 2024 er gjenlevenderett i alderspensjonen din skilt ut som et eget gjenlevendetillegg. Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv." },
-                        nynorsk { + "Frå januar 2024 er attlevanderett i alderspensjonen din skild ut som eit eige attlevandetillegg. Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv." },
-                        english { + "From January 2024, the survivor’s right in your retirement pension is separated out as a separate survivor’s supplement. The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between the retirement pension based on your own pension earnings and earnings from the deceased, and the retirement pension you have earned yourself." }
+                        bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv." },
+                        nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv." },
+                        english { + "The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between the retirement pension based on your own pension earnings and earnings from the deceased, and the retirement pension you have earned yourself." }
                     )
                 }
             }
@@ -244,9 +234,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     }
                     paragraph {
                         text(
-                            bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er fra 1. januar 2024 differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv." },
-                            nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er frå 1. januar 2024 skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv." },
-                            english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement, from 1 January 2024, is the difference between this retirement pension and the retirement pension you have earned yourself." }
+                            bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv." },
+                            nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv." },
+                            english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself." }
                         )
                     }
 
@@ -292,9 +282,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                     paragraph {
                         text(
-                            bokmal { + "Dette gjenlevendetillegget skal ikke lenger reguleres når pensjonene øker 1. mai hvert år." },
-                            nynorsk { + "Dette attlevandetillegget skal ikkje lenger regulerast når pensjonane aukar 1. mai kvart år." },
-                            english { + "This survivor’s supplement will no longer be adjusted when pensions increase from 1 May each year." }
+                            bokmal { + "Dette gjenlevendetillegget skal ikke reguleres når pensjonene øker 1. mai hvert år." },
+                            nynorsk { + "Dette attlevandetillegget skal ikkje regulerast når pensjonane aukar 1. mai kvart år." },
+                            english { + "This survivor’s supplement will not be adjusted when pensions increase from 1 May each year." }
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
@@ -338,6 +328,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // forklaringutfasingGjtKap20_001
+            // Denne er nok ikke relvant for noen lengre, men lar det stå for sikkerhets skyld.
             showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget) {
                 title1 {
                     text(
@@ -347,7 +338,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     )
                 }
                 paragraph {
-                    // TODO: Denne teksten framstår utdatert nå når 2024 er over.
                     text(
                         bokmal { + "Fra 2024 blir dette tillegget redusert med samme beløp som alderspensjonen din øker ved den årlige reguleringen. Tillegget vil dermed bli lavere, og etter hvert opphøre." },
                         nynorsk { + "Frå 2024 blir dette tillegget redusert med same beløp som alderspensjonen din aukar ved den årlege reguleringa. Tillegget vil dermed bli lågare, og etter kvart bli borte." },
@@ -718,7 +708,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
             // skattAPendring_001
             // Kjens litt unødig å sjekke på begge disse, men vi har begge
-            showIf(pesysData.alderspensjonVedVirk.harEndretPensjon or pesysData.ytelseskomponentInformasjon.beloepEndring.isOneOf(BeloepEndring.ENDR_OKT, BeloepEndring.ENDR_RED)) {
+            showIf(pesysData.alderspensjonVedVirk.harEndretPensjon or pesysData.ytelseskomponentInformasjon.beloepEndring.isOneOf(ENDR_OKT, ENDR_RED)) {
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
@@ -741,7 +731,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // etterbetalingAP_002
-            showIf(pesysData.krav.etterbetaling) {
+            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }
 

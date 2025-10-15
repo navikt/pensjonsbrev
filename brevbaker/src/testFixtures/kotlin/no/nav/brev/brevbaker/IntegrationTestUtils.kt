@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -118,7 +119,8 @@ fun renderTestVedleggPdf(
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
-    pdfByggerService: PDFByggerService = laTeXCompilerService
+    pdfByggerService: PDFByggerService = laTeXCompilerService,
+    pdfVedleggAppender: PDFVedleggAppender? = null
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -135,12 +137,21 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.letterMarkup,
                         it.attachments,
                         language.toCode(),
-                        template.letterMetadata.brevtype
-                    )
+                        template.letterMetadata.brevtype,
+                        Letter2Markup.renderPDFTitlesOnly(this@renderTestPDF.toScope(), this@renderTestPDF.template)
+                    ),
+                    shouldRetry = false
                 )
-            }.bytes
+            }
         }
-        .also { writeTestPDF(pdfFileName, it, path) }
+        .let {
+            pdfVedleggAppender?.leggPaaVedlegg(
+                it,
+                this.template.pdfAttachments.map { a -> a.eval(this.toScope()) },
+                this.language.toCode()
+            ) ?: it
+        }
+        .also { writeTestPDF(pdfFileName, it.bytes, path) }
     return this
 }
 

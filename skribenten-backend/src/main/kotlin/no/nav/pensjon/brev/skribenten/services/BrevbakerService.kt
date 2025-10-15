@@ -14,8 +14,10 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.utils.unwrapCancellationException
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import kotlinx.io.EOFException
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -61,7 +63,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService) : Brevbaker
         defaultRequest {
             url(brevbakerUrl)
         }
-        installRetry(logger, shouldNotRetry = { req -> req.method == HttpMethod.Post && req.url.segments.last() == "pdf" })
+        installRetry(logger, shouldNotRetry = { method, url, cause -> method == HttpMethod.Post && url.segments.last() == "pdf" && cause?.unwrapCancellationException() !is EOFException })
         engine {
             requestTimeout = 60.seconds.inWholeMilliseconds
         }

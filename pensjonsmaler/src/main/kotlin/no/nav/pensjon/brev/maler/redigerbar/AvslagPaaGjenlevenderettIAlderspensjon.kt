@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.avdoedNavn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.ekteskapUnderFemAar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harTrygdetid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.hjemmelAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.hjemmelEOES
@@ -239,26 +240,39 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGJRettAPGiftUnder5aarSøknad_001 / avslagGjRettAPVilkårGift5aarNav_001
-            paragraph {
-                text(
-                    bokmal { + "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn." },
-                    nynorsk { + "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn." },
-                    english { + "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children." }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Du og " + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
-                        "dato"
-                    ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. " },
-                    nynorsk { + "Du og " + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
-                        "dato"
-                    ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. " },
-                    english { + "You and " + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
-                        "dato"
-                    ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. " }
-                )
-                includePhrase(DerforHar(initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge, initiertAvNav = initiertAvNav))
+            showIf(saksbehandlerValg.ekteskapUnderFemAar) {
+                paragraph {
+                    text(
+                        bokmal { +"For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn." },
+                        nynorsk { +"For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn." },
+                        english { +"To have rights as a married person, you and the deceased must have been married for at least five years or have joint children." }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Du og " + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
+                                "dato"
+                            ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. "
+                        },
+                        nynorsk {
+                            +"Du og " + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
+                                "dato"
+                            ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. "
+                        },
+                        english {
+                            +"You and " + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
+                                "dato"
+                            ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. "
+                        }
+                    )
+                    includePhrase(
+                        DerforHar(
+                            initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
+                            initiertAvNav = initiertAvNav
+                        )
+                    )
+                }
             }
 
             showIf(saksbehandlerValg.samboerUtenFellesBarn) {

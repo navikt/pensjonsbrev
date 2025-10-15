@@ -27,11 +27,11 @@ const SelectTypography = () => {
   return (
     <Select
       data-cy="typography-select"
-      disabled={freeze}
+      disabled={freeze || editorState.focus.blockIndex < 0}
       hideLabel
       label="Tekst stil"
       onChange={(e) => {
-        applyAction(Actions.switchTypography, setEditorState, editorState.focus, e.target.value as Typography);
+        applyAction(Actions.switchTypography, setEditorState, e.target.value as Typography);
         //setter fokuset tilbake til editor etter valgt tekststil
         applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
       }}

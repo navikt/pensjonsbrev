@@ -8,13 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import {
-  getBrev,
-  getBrevReservasjon,
-  oppdaterBrev,
-  oppdaterSaksbehandlerValg,
-  tilbakestillBrev,
-} from "~/api/brev-queries";
+import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -232,11 +226,6 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
   });
 
-  const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
-    mutationFn: (valg) => oppdaterSaksbehandlerValg(brev.info.id, valg),
-    onSuccess: onSaveSuccess,
-  });
-
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) =>
       oppdaterBrev({
@@ -266,7 +255,10 @@ function RedigerBrev({
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
-        saksbehandlerValgMutation.mutate(form.getValues().saksbehandlerValg);
+        oppdaterBrevMutation.mutate({
+          redigertBrev: editorState.redigertBrev,
+          saksbehandlerValg: form.getValues().saksbehandlerValg,
+        });
       }
     });
   };
@@ -295,9 +287,9 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = saksbehandlerValgMutation.isPending || oppdaterBrevMutation.isPending;
+  const freeze = oppdaterBrevMutation.isPending;
 
-  const error = saksbehandlerValgMutation.isError || oppdaterBrevMutation.isError;
+  const error = oppdaterBrevMutation.isError;
 
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
@@ -424,7 +416,10 @@ enum BrevSidemenyTabs {
 
 // TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
 const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
+  const specificationFormElements = usePartitionedModelSpecification(
+    brev.info.brevkode,
+    brev.propertyUsage ?? undefined,
+  );
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
   const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];

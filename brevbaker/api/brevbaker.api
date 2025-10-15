@@ -4,7 +4,7 @@ public abstract interface class no/nav/brev/brevbaker/AllTemplates {
 }
 
 public final class no/nav/brev/brevbaker/Brevbaker {
-	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
+	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/brev/brevbaker/PDFVedleggAppender;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public final fun renderLetterMarkupWithDataUsage (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage;
@@ -46,14 +46,18 @@ public final class no/nav/brev/brevbaker/LatexTimeoutException : java/lang/Excep
 }
 
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
-	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
-	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static fun validateResponse (Lno/nav/brev/brevbaker/PDFByggerService;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class no/nav/brev/brevbaker/PDFVedleggAppender {
+	public abstract fun leggPaaVedlegg (Lno/nav/brev/brevbaker/PDFCompilationOutput;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Lno/nav/brev/brevbaker/PDFCompilationOutput;
 }
 
 public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup {

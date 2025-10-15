@@ -23,15 +23,17 @@ import {
   findOnLineBelow,
   focusAtOffset,
   getCaretRect,
+  getCharacterOffset,
   getCursorOffset,
   getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
+import { NEW_LINE, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import { isTableCellIndex } from "../model/utils";
+import { updateFocus } from "../actions/cursorPosition";
+import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
   exitTable,
@@ -47,6 +49,9 @@ import {
 const Y_COORD_SAFETY_MARGIN = 10;
 
 function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
+  if (literalIndex.blockIndex === TITLE_INDEX) {
+    return letter.title.text;
+  }
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
   if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
@@ -137,10 +142,21 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
   return false;
 };
 
-const ZERO_WIDTH_SPACE = "​";
+// True when a fritekst has a live selection covering its entire text;
+// used to avoid collapsing it to a caret so first key press removes placeholder.
+const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement): boolean => {
+  if (!isFritekst) return false;
+  const sel = globalThis.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  const r = sel.getRangeAt(0);
+  if (!element.contains(r.startContainer) || !element.contains(r.endContainer)) return false;
+  const fullText = element.textContent ?? "";
+  return r.startOffset === 0 && r.endOffset === fullText.length;
+};
+
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
-  const { freeze, editorState, setEditorState } = useEditor();
+  const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -148,22 +164,53 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
-  useEffect(() => {
-    if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
-      contentEditableReference.current.textContent = text;
-    }
-  }, [text]);
 
   useEffect(() => {
-    if (
-      !freeze &&
-      shouldBeFocused &&
-      contentEditableReference.current !== null &&
-      editorState.focus.cursorPosition !== undefined
-    ) {
-      focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
+    const element = contentEditableReference.current;
+    if (!element) return;
+
+    if (element.textContent !== text) {
+      element.textContent = text;
     }
-  }, [editorState.focus.cursorPosition, shouldBeFocused, freeze]);
+
+    if (!freeze && shouldBeFocused) {
+      // Preserve full selection for untouched fritekst placeholders (first key should replace it).
+      if (shouldPreserveFullSelection(erFritekst, element)) {
+        return;
+      }
+
+      // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
+      if (editorState.focus.cursorPosition === undefined) {
+        const selection = globalThis.getSelection();
+        if (
+          selection &&
+          selection.rangeCount > 0 &&
+          element.contains(selection.anchorNode) &&
+          element.contains(selection.focusNode)
+        ) {
+          // Do not set fallback or move caret yet.
+          return;
+        }
+
+        // No stored cursor yet and no valid selection, fall back to end of text.
+        const fallbackCursorPosition = text.length;
+        setEditorState((s) => ({
+          ...s,
+          focus: { ...s.focus, cursorPosition: fallbackCursorPosition },
+        }));
+        if (element.childNodes[0]) {
+          focusAtOffset(element.childNodes[0], fallbackCursorPosition);
+        }
+        return;
+      }
+
+      // Normal path once cursorPosition is known: clamp and restore.
+      const resolvedCursorPosition = Math.min(editorState.focus.cursorPosition, text.length);
+      if (element.childNodes[0]) {
+        focusAtOffset(element.childNodes[0], resolvedCursorPosition);
+      }
+    }
+  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -179,7 +226,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const cursorPosition = getCursorOffset();
     if (
       cursorPosition === 0 ||
-      (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
+      (contentEditableReference.current?.textContent?.startsWith(ZERO_WIDTH_SPACE) && cursorPosition === 1)
     ) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.PREVIOUS);
@@ -322,10 +369,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleTab = (event: React.KeyboardEvent<HTMLSpanElement>): boolean => {
     const { focus } = editorState;
-    const block = editorState.redigertBrev.blocks[focus.blockIndex];
-    const content = block.content[focus.contentIndex];
 
-    if (!isTableCellIndex(focus) || !isTable(content)) {
+    if (
+      !isTableCellIndex(focus) ||
+      !isTable(editorState.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex])
+    ) {
       return false;
     }
 
@@ -370,13 +418,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnclick = (e: React.MouseEvent) => {
-    e.preventDefault();
     if (!erFritekst) return;
-    handleWordSelect(e.target as HTMLSpanElement);
+    const selection = globalThis.getSelection();
+    const collapsed = !selection || selection.rangeCount === 0 || selection.getRangeAt(0).collapsed;
+    if (collapsed) handleWordSelect(e.target as HTMLSpanElement);
   };
 
   const handleOnFocus = (e: React.FocusEvent) => {
-    e.preventDefault();
     //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
     setEditorState((oldState) => ({
       ...oldState,
@@ -413,21 +461,72 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ${fontTypeOf(content) === FontType.BOLD && "font-weight: bold;"}
         ${fontTypeOf(content) === FontType.ITALIC && "font-style: italic;"}
       `}
+      data-literal-index={JSON.stringify(literalIndex)}
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {
+        const target = event.target as HTMLSpanElement;
+        const postEditCursorPosition = getCharacterOffset(target);
         applyAction(
           Actions.updateContentText,
           setEditorState,
           literalIndex,
           (event.target as HTMLSpanElement).textContent ?? "",
+          postEditCursorPosition,
         );
       }}
       onKeyDown={(event) => {
+        const selection = globalThis.getSelection();
+        const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
+
+        if (hasRange && (event.key === "Backspace" || event.key === "Delete")) {
+          return; // bubble to wrapper div and handle there
+        }
+        const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
+        const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
+        const isRedo =
+          (isMac ? event.metaKey : event.ctrlKey) && (event.key === "y" || (event.key === "z" && event.shiftKey));
+
+        if (isUndo) {
+          event.preventDefault();
+          event.stopPropagation();
+          undo();
+          return;
+        }
+        if (isRedo) {
+          event.preventDefault();
+          event.stopPropagation();
+          redo();
+          return;
+        }
+
+        const isEditingKey =
+          !event.ctrlKey &&
+          !event.altKey &&
+          !event.metaKey &&
+          (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete" || event.key === "Enter");
+
+        if (isEditingKey && contentEditableReference.current) {
+          const selection = globalThis.getSelection();
+          const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
+          // Store the caret position before a text-changing key
+          // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
+          if (
+            editorState.focus.cursorPosition !== preEditCursorPosition ||
+            !hasFocus(editorState.focus, literalIndex)
+          ) {
+            applyAction(updateFocus, setEditorState, {
+              ...literalIndex,
+              cursorPosition: selection?.isCollapsed ? preEditCursorPosition : undefined,
+            });
+          }
+        }
+
         if (event.key === "Backspace") {
           if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
 
           handleBackspace(event);
+          event.stopPropagation();
           return;
         }
 
@@ -437,9 +536,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "Enter") {
           handleEnter(event);
+          event.stopPropagation();
         }
         if (event.key === "Delete") {
           handleDelete(event);
+          event.stopPropagation();
         }
         if (event.key === "ArrowLeft") {
           handleArrowLeft(event);
