@@ -66,10 +66,7 @@ spec:
         extra:
           - azp_name
   valkey:
-    - instance: {{valkey.instance}}
-
-valkey:
-  instance: cache
+    - instance: {{valkey-instance-name}}
 
   accessPolicy:
     outbound:
@@ -104,8 +101,6 @@ valkey:
       - name: AD_GROUP_{{g.name}}
         value: {{g.id}}
     {{/each}}
-    - name: VALKEY_INSTANCE_NAME
-      value: {{valkey.instance}}
   envFrom:
     - secret: "{{ app-name }}-unleash-api-token"
     - secret: "krypteringsnoekkel"
