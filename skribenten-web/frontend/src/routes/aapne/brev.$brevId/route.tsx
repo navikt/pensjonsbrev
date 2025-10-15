@@ -1,6 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 
+import { getUserInfo } from "~/api/bff-endpoints";
 import { getBrevInfoQuery } from "~/api/brev-queries";
 import { ApiError } from "~/components/ApiError";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -23,6 +24,9 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
       throw error;
     }
 
+    const currentUser = await queryClient.ensureQueryData(getUserInfo);
+    const isOriginalCreator = currentUser.navident === brevInfo.opprettetAv.id;
+
     switch (brevInfo.status.type) {
       case "Kladd":
       case "UnderRedigering":
@@ -32,6 +36,13 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
         });
 
       case "Attestering": {
+        if (isOriginalCreator) {
+          throw redirect({
+            to: "/saksnummer/$saksId/brevbehandler",
+            params: { saksId: String(brevInfo.saksId) },
+            search: { brevId: brevIdNum },
+          });
+        }
         throw redirect({
           to: "/saksnummer/$saksId/attester/$brevId/redigering",
           params: { saksId: String(brevInfo.saksId), brevId: String(brevIdNum) },
