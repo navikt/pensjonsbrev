@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 fun Application.configureRouting(
     authConfig: JwtConfig,
     skribentenConfig: Config,
-    cacheConfig: CacheImplementation<String, String>
+    cacheConfig: CacheImplementation
 ) {
     val authService = AzureADService(authConfig, cacheConfig = cacheConfig)
     val servicesConfig = skribentenConfig.getConfig("services")
@@ -28,14 +28,14 @@ fun Application.configureRouting(
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
-    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService)
+    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cacheConfig)
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
-    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService)
+    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cacheConfig)
     val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
-    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService)
+    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cacheConfig)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"))
+    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cacheConfig)
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
