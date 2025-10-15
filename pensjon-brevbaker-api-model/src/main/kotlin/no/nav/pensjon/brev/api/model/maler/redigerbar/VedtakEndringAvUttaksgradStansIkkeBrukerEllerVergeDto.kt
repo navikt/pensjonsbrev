@@ -13,6 +13,7 @@ data class VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg, VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
     data class SaksbehandlerValg(
+        @DisplayText("Årsak")
         val aarsak: Aarsak
     ) : SaksbehandlerValgBrevdata {
         enum class Aarsak {
