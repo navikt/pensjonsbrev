@@ -51,8 +51,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
     return;
   }
 
-  const currentFontType = getCurrentActiveFontTypeAtCursor(draft);
-  if (currentFontType === fontType) {
+  if (fontType === getCurrentActiveFontTypeAtCursor(draft)) {
     fontType = FontType.PLAIN;
   }
 
