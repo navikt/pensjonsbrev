@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.server.config.ApplicationConfig
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.JedisPool
@@ -20,7 +19,7 @@ interface CacheImplementation {
         get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
 }
 
-class Valkey(config: ApplicationConfig, instanceName: String) : CacheImplementation {
+class Valkey(config: Map<String, String?>, instanceName: String) : CacheImplementation {
     private val objectMapper = databaseObjectMapper
 
     private val jedisPool = setupJedis(config, instanceName)
@@ -57,11 +56,11 @@ class InMemoryCache : CacheImplementation {
 private fun <V> ObjectMapper.write(value: V) = if (value is String) value else writeValueAsString(value)
 
 
-private fun setupJedis(config: ApplicationConfig, instanceName: String): JedisPool {
-    val host = config.getString("VALKEY_HOST_$instanceName")
-    val port = config.getString("VALKEY_PORT_$instanceName").toInt()
-    val username = config.getString("VALKEY_USERNAME_$instanceName")
-    val password = config.getString("VALKEY_PASSWORD_$instanceName")
+private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
+    val host = config["VALKEY_HOST_$instanceName"]!!
+    val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
+    val username = config["VALKEY_USERNAME_$instanceName"]!!
+    val password = config["VALKEY_PASSWORD_$instanceName"]!!
 
     return JedisPool(
         HostAndPort(host, port),
@@ -72,6 +71,3 @@ private fun setupJedis(config: ApplicationConfig, instanceName: String): JedisPo
             .build()
     )
 }
-
-private fun ApplicationConfig.getString(key: String) =
-    requireNotNull(propertyOrNull(key)?.getString()) { "Missing required config key: $key" }
