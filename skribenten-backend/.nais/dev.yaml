@@ -141,3 +141,6 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
+
+  - name: VALKEY_INSTANCE_NAME
+    value: {{valkey-instance-name}}
