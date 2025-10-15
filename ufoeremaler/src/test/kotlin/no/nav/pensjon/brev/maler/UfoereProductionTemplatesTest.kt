@@ -36,7 +36,7 @@ class UfoereProductionTemplatesTest {
     @Test
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
         UfoereTemplates.hentRedigerbareMaler().map { mal ->
-            val clazz = Class.forName(mal.template.letterDataType.qualifiedName)
+            val clazz = mal.template.letterDataType.java
             val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
             saksbehandlervalg.flatMap { it.members }.filter { it is KProperty<*> }.forEach { field ->
                 val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
