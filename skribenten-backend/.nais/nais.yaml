@@ -67,6 +67,7 @@ spec:
           - azp_name
   valkey:
     - instance: cache
+      access: readwrite
 
   accessPolicy:
     outbound:

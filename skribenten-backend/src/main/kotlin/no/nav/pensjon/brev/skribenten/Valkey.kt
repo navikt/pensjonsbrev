@@ -57,10 +57,10 @@ private fun <V> ObjectMapper.write(value: V) = if (value is String) value else w
 
 
 private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
-    val host = config["VALKEY_HOST_$instanceName"]
+    val host = config["VALKEY_HOST_$instanceName"]!!
     val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
-    val username = config["VALKEY_USERNAME_$instanceName"]
-    val password = config["VALKEY_PASSWORD_$instanceName"]
+    val username = config["VALKEY_USERNAME_$instanceName"]!!
+    val password = config["VALKEY_PASSWORD_$instanceName"]!!
 
     return JedisPool(
         HostAndPort(host, port),

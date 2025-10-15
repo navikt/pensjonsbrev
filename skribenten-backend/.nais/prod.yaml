@@ -127,4 +127,4 @@ env:
     value: "https://pensjon-skribenten.intern.nav.no"
 
   - name: VALKEY_INSTANCE_NAME
-    value: "cache"
+    value: "CACHE"
