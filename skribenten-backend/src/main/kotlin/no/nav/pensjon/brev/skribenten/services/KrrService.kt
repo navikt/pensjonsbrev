@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -18,8 +19,19 @@ import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AuthService, private val client: HttpClient = krrClientFactory(config, authService)): ServiceStatus {
+class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()): ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
+    private val client = HttpClient(engine) {
+        defaultRequest {
+            url(config.getString("url"))
+        }
+        install(ContentNegotiation) {
+            jackson {
+                registerModule(JavaTimeModule())
+            }
+        }
+        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
+    }
 
     @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -101,17 +113,4 @@ class KrrService(config: Config, authService: AuthService, private val client: H
         client.get("/internal/health/readiness")
             .toServiceResult<String>()
             .map { true }
-}
-
-// Denne er trekt ut for å kunne sette opp tester på denne klassa uten å måtte sette opp hele http-opplegget
-private fun krrClientFactory(config: Config, authService: AuthService): HttpClient = HttpClient(CIO) {
-    defaultRequest {
-        url(config.getString("url"))
-    }
-    install(ContentNegotiation) {
-        jackson {
-            registerModule(JavaTimeModule())
-        }
-    }
-    callIdAndOnBehalfOfClient(config.getString("scope"), authService)
 }
