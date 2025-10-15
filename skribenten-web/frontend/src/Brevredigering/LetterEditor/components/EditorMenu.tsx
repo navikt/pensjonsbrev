@@ -31,7 +31,7 @@ const SelectTypography = () => {
       hideLabel
       label="Tekst stil"
       onChange={(e) => {
-        applyAction(Actions.switchTypography, setEditorState, editorState.focus, e.target.value as Typography);
+        applyAction(Actions.switchTypography, setEditorState, e.target.value as Typography);
         //setter fokuset tilbake til editor etter valgt tekststil
         applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
       }}

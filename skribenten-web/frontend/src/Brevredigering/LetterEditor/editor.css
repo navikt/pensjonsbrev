@@ -1,35 +1,57 @@
 .editor {
-    margin-top: var(--a-spacing-6);
-    /*clamp: minimum, ideal, max */
-    padding: 0 clamp(1rem, 2vw, 4rem);
-    caret-color: green;
+  margin-top: var(--a-spacing-6);
+  /*clamp: minimum, ideal, max */
+  padding: 0 clamp(1rem, 2vw, 4rem);
+  caret-color: green;
 
-    [contenteditable] {
-
-        &:focus-within {
-            outline: none;
-        }
+  [contenteditable] {
+    &:focus-within {
+      outline: none;
     }
+  }
+}
+
+.editor-surface,
+.editor-surface * {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.editor-surface.is-drag-selecting [data-literal-index] {
+  caret-color: transparent;
+}
+
+.editor-surface.is-drag-selecting [data-literal-index]:where(:focus, :focus-visible) {
+  outline: 0;
+  box-shadow: none;
+}
+
+.editor-surface td [data-literal-index],
+.editor-surface th [data-literal-index] {
+  display: block;
+  width: 100%;
+  min-height: 1.4rem;
+  white-space: pre-wrap;
 }
 
 .PARAGRAPH {
-    font-size: 16.5px;
-    line-height: var(--a-font-line-height-heading-xsmall);
-    margin-bottom: 27px;
+  font-size: 16.5px;
+  line-height: var(--a-font-line-height-heading-xsmall);
+  margin-bottom: 27px;
 }
 
 .TITLE1 {
-    font-size: 19.5px;
-    letter-spacing: 0.375px;
-    line-height: var(--a-font-line-height-heading-xsmall);
-    font-weight: var(--a-font-weight-bold);
-    margin-bottom: var(--a-spacing-1-alt);
+  font-size: 19.5px;
+  letter-spacing: 0.375px;
+  line-height: var(--a-font-line-height-heading-xsmall);
+  font-weight: var(--a-font-weight-bold);
+  margin-bottom: var(--a-spacing-1-alt);
 }
 
 .TITLE2 {
-    font-size: 18px;
-    letter-spacing: 0.3px;
-    line-height: var(--a-font-line-height-heading-xsmall);
-    font-weight: var(--a-font-weight-bold);
-    margin-bottom: var(--a-spacing-1-alt);
+  font-size: 18px;
+  letter-spacing: 0.3px;
+  line-height: var(--a-font-line-height-heading-xsmall);
+  font-weight: var(--a-font-weight-bold);
+  margin-bottom: var(--a-spacing-1-alt);
 }

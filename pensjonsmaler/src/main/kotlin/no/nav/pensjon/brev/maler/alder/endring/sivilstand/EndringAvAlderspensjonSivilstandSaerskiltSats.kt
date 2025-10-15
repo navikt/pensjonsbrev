@@ -93,7 +93,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
 
         title {
             text(
-                bokmal { +"Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
+                bokmal { +"Vi har beregnet alderspensjonen din på nytt fra " + kravVirkDatoFom },
                 nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
                 english { +"We have recalculated your retirement pension from " + kravVirkDatoFom },
             )
@@ -339,6 +339,16 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                             english { + "19-8, 19-9 and 22-12 of the National Insurance Act." },
                         )
                     }
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-8, 19-9 og 22-12." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-8, 19-9 og 22-12." },
+                        english {
+                            +"This decision was made pursuant to the provisions of §§ 19-8, 19-9 and 22-12 of the National Insurance Act."
+                        },
+                    )
                 }
             }
 

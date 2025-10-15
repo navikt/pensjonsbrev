@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 
 @Suppress("unused")
@@ -11,7 +12,7 @@ data class VedtakOmFjerningAvOmsorgsopptjeningDto(
 ) : RedigerbarBrevdata<VedtakOmFjerningAvOmsorgsopptjeningDto.SaksbehandlerValg, VedtakOmFjerningAvOmsorgsopptjeningDto.PesysData> {
     data class SaksbehandlerValg(
         val aktuelleAar: String,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,

@@ -60,7 +60,7 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             paragraph {
                 text(
                     bokmal { +"Fradragsbeløpet er den delen av inntekten din som ikke tas med når vi beregner omstillingsstønaden i etteroppgjørsåret." },
-                    nynorsk { +"Frådragsbeløpet er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i etteroppgjørsåret." },
+                    nynorsk { +"Frådragsbeløpet er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i etteroppgjersåret." },
                     english { +"The deductible amount is the part of your income that is not included when we calculate the adjustment allowance in the income settlement year." },
                 )
             }

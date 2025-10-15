@@ -84,8 +84,7 @@ object OmstillingsstoenadFellesFraser {
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
-                            "fra den datoen du mottok vedtaket." },
+                    bokmal { +"Hvis du mener at vedtaket er feil, kan du sende inn en klage. Du må klage innen seks uker fra den dagen du mottok vedtaket. " },
                     nynorsk { +"Dersom du meiner at vedtaket er feil, kan du sende inn ei klage. Du må klage innan seks veker frå den dagen du fekk vedtaket." },
                     english { +"If you believe the decision is incorrect, you can submit an appeal. You must appeal within six weeks from the day you received the decision." }
                 )
