@@ -101,8 +101,8 @@ private val objectMapper = jacksonObjectMapper()
 
 fun <T> mockEngine(responseBody: T) = MockEngine {
     respond(
-        content = objectMapper.writeValueAsString(responseBody),
-        status = HttpStatusCode.OK,
+        content = responseBody?.let { objectMapper.writeValueAsString(it) } ?: "",
+        status = responseBody?.let { HttpStatusCode.OK } ?: HttpStatusCode.NotFound,
         headers = headersOf("Content-Type", "application/json")
     )
 }
