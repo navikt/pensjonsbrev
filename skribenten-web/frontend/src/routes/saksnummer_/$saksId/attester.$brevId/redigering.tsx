@@ -75,7 +75,7 @@ const VedtakWrapper = () => {
               navigate({
                 to: "/saksnummer/$saksId/brevbehandler",
                 params: { saksId },
-                search: { vedtaksId, enhetsId },
+                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
               })
             }
             reservasjon={err.response.data as ReservasjonResponse}
@@ -96,7 +96,7 @@ const VedtakWrapper = () => {
               navigate({
                 to: "/saksnummer/$saksId/brevbehandler",
                 params: { saksId },
-                search: { vedtaksId, enhetsId },
+                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
               })
             }
             reason={reason}
