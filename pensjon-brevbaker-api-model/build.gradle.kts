@@ -23,6 +23,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     api(libs.brevbaker.common)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation(kotlin("reflect"))
 }
 
 publishing {

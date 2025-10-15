@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
+import { useCallback } from "react";
 
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
@@ -10,26 +11,35 @@ export enum Typography {
   TITLE2 = "TITLE2",
 }
 
-export const TypographyToText = {
-  [Typography.TITLE1]: "Overskrift (alt/option+1)",
-  [Typography.TITLE2]: "Underoverskrift (alt/option+2)",
-  [Typography.PARAGRAPH]: "Normal (alt/option+3)",
-} as const;
+export const isMac = globalThis.Cypress === undefined ? /Mac|iPod|iPad/.test(navigator.userAgent) : false;
 
-export const useEditorKeyboardShortcuts = (
-  editorState: LetterEditorState,
-  setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
-) => {
-  return (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.altKey && event.code === "Digit1") {
-      event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE1);
-    } else if (event.altKey && event.code === "Digit2") {
-      event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE2);
-    } else if (event.altKey && event.code === "Digit3") {
-      event.preventDefault();
-      applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.PARAGRAPH);
-    }
-  };
+export const TypographyToText = isMac
+  ? ({
+      [Typography.TITLE1]: "Overskrift 1 (⌥+1)",
+      [Typography.TITLE2]: "Overskrift 2 (⌥+2)",
+      [Typography.PARAGRAPH]: "Normal (⌥+3)",
+    } as const)
+  : ({
+      [Typography.TITLE1]: "Overskrift 1 (Alt+1)",
+      [Typography.TITLE2]: "Overskrift 2 (Alt+2)",
+      [Typography.PARAGRAPH]: "Normal (Alt+3)",
+    } as const);
+
+export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
+  return useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.defaultPrevented || event.repeat) return;
+      if (event.altKey && event.code === "Digit1") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE1);
+      } else if (event.altKey && event.code === "Digit2") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
+      } else if (event.altKey && event.code === "Digit3") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+      }
+    },
+    [setEditorState],
+  );
 };

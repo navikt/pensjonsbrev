@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 fun createEksempelbrevRedigerbartDto() =
     EksempelRedigerbartDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = EksempelRedigerbartDto.PesysData(
             pensjonInnvilget = true,
             datoInnvilget = LocalDate.of(2020, 1, 1),

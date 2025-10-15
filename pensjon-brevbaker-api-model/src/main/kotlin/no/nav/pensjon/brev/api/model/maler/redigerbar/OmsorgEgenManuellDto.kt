@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Year
@@ -16,7 +17,7 @@ data class OmsorgEgenManuellDto(
         val aarEgenerklaringOmsorgspoeng: Year,
         @DisplayText("År innvilget omsorgspoeng")
         val aarInnvilgetOmsorgspoeng: Year,
-        ) : BrevbakerBrevdata
+        ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val returadresse: ReturAdresse,

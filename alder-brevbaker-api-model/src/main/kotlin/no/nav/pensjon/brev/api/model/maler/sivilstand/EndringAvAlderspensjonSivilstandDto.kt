@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OrienteringOmRettigheterOgPlikterDto
@@ -26,7 +27,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val feilutbetaling: Boolean,
         @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean?,
-    ) : BrevbakerBrevdata {
+    ) : SaksbehandlerValgBrevdata {
         enum class Sivilstandsendringsaarsak {
             @DisplayText("Fraflytting")
             fraFlyttet,

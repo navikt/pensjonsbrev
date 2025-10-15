@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.PesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.Saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -18,7 +19,7 @@ data class VedtakFeilutbetalingUforeDto(
         @DisplayText("Reduksjon foreldelse")
         val reduksjonForeldelse: Boolean,
 
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val feilutbetaltTotalBelop: Int,
