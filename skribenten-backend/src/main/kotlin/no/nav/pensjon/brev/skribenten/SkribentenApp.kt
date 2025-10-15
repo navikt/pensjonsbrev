@@ -59,6 +59,7 @@ private fun run() {
                 ConfigResolveOptions.defaults().setAllowUnresolved(true)
             ) // loads azuread secrets for local
             .resolveWith(ConfigFactory.load("unleash"))
+            .resolveWith(ConfigFactory.load("valkey"))
             .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
@@ -151,8 +152,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
-    val cacheConfig = if (skribentenConfig.getBoolean("valkey.enabled")) {
-        Valkey(environment.config, skribentenConfig.getString("valkey.instanceName"))
+    Thread.sleep(2000)
+
+    val cacheConfig = if (skribentenConfig.getBoolean("services.valkey.enabled")) {
+        Valkey(environment.config, skribentenConfig.getString("services.valkey.instanceName"))
     } else {
         log.warn("Valkey is disabled, this is not recommended for production")
         InMemoryCache()
