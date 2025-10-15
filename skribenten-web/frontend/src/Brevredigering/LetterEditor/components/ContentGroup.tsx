@@ -41,6 +41,7 @@ import {
   isAtLastTableCell,
   nextTableFocus,
 } from "../services/tableCaretUtils";
+import { isMac } from "../utils";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -482,7 +483,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         if (hasRange && (event.key === "Backspace" || event.key === "Delete")) {
           return; // bubble to wrapper div and handle there
         }
-        const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
         const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
         const isRedo =
           (isMac ? event.metaKey : event.ctrlKey) && (event.key === "y" || (event.key === "z" && event.shiftKey));
