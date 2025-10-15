@@ -15,7 +15,6 @@ import kotlin.time.Duration.Companion.minutes
 private val defaultTtl = 30.minutes
 
 interface CacheImplementation {
-    fun <K> hasValue(key: K): Boolean
     fun <K, T> get(key: K, clazz: Class<T>): T?
     fun <K, V> update(key: K, value: V, ttl: Duration = defaultTtl)
     suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V?
@@ -26,15 +25,8 @@ class Valkey(config: ApplicationConfig, instanceName: String) : CacheImplementat
 
     private val jedisPool = setupJedis(config, instanceName)
 
-    override suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration, fetch: suspend (K) -> V?): V? = if (hasValue(key)) {
-        get(key, clazz)
-    } else {
-        fetch(key)?.also { update(key, it, ttl) }
-    }
-
-    override fun <K> hasValue(key: K) = jedisPool.resource.use {
-        it.get(objectMapper.write(key)) != null
-    }
+    override suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration, fetch: suspend (K) -> V?): V? =
+        get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
 
     override fun <K, T> get(key: K, clazz: Class<T>): T? =
         jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }
@@ -57,8 +49,6 @@ class InMemoryCache : CacheImplementation {
     private val objectMapper = databaseObjectMapper
     private val cache = ConcurrentHashMap<String, String>()
 
-    override fun <K> hasValue(key: K) = cache.get(objectMapper.write(key)) != null
-
     override fun <K, V> get(key: K, clazz: Class<V>) =
         cache.get(objectMapper.write(key))?.let { objectMapper.readValue(it, clazz) }
 
@@ -66,11 +56,8 @@ class InMemoryCache : CacheImplementation {
         cache[objectMapper.write(key)] = objectMapper.write(value)
     }
 
-    override suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration, fetch: suspend (K) -> V?): V? = if (hasValue(key)) {
-        get(key, clazz)
-    } else {
-        fetch(key)?.also { update(key, it, ttl) }
-    }
+    override suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration, fetch: suspend (K) -> V?): V? =
+        get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
 }
 
 private fun <V> ObjectMapper.write(value: V) = if (value is String) value else writeValueAsString(value)
