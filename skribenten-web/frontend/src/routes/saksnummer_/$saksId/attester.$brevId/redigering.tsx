@@ -89,19 +89,21 @@ const VedtakWrapper = () => {
 
       if (err.response?.status === 403) {
         const axiosError = err as AxiosError & { forbidReason?: AttestForbiddenReason };
-        const reason = axiosError.forbidReason ?? parseAttest403(err.response.data as string | undefined);
-        return (
-          <AttestForbiddenModal
-            onClose={() =>
-              navigate({
-                to: "/saksnummer/$saksId/brevbehandler",
-                params: { saksId },
-                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
-              })
-            }
-            reason={reason}
-          />
-        );
+        const reason = axiosError.forbidReason;
+        if (reason) {
+          return (
+            <AttestForbiddenModal
+              onClose={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevbehandler",
+                  params: { saksId },
+                  search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                })
+              }
+              reason={reason}
+            />
+          );
+        }
       }
 
       return (
