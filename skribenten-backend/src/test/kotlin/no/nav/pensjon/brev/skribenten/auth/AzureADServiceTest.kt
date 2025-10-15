@@ -9,6 +9,7 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.InMemoryCache
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
@@ -74,5 +75,6 @@ class AzureADServiceTest {
         AzureADService(
             jwtConfig = jwtConfig,
             engine = MockEngine.invoke(handler),
+            cacheConfig = InMemoryCache()
         )
 }
