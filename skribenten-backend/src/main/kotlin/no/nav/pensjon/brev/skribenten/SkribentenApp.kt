@@ -153,8 +153,6 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
-    Thread.sleep(2000)
-
     val cacheConfig = if (skribentenConfig.getBoolean("services.valkey.enabled")) {
         Valkey(environment.config, skribentenConfig.getString("services.valkey.instanceName"))
     } else {
