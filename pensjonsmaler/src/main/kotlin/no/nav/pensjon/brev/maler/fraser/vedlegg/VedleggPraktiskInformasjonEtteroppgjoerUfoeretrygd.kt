@@ -200,7 +200,7 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
             text(
                 bokmal { + "Hvis du har fått feriepenger du mener kan holdes utenfor etteroppgjøret, må du kontakte oss. Du kan gi beskjed ved å skrive til oss eller ringe. Du får beskjed fra oss hvis endringen påvirker etteroppgjøret ditt." },
                 nynorsk { + "Viss du har fått feriepengar du meiner kan haldast utanfor etteroppgjeret, må du kontakte oss. Du kan gje beskjed ved å skrive til oss eller ringje. Du får beskjed frå oss dersom endringa påverkar etteroppgjeret ditt." },
-                english { + "If you have received holiday pay that you believe can be excluded from the final settlement, you must contact us. You can notify us by writing to us or calling. We will let you know if the change affects your final settlement." }
+                english { + "If you have received holiday pay that you believe can be excluded from the settlement, you must contact us. You can notify us by writing to us or calling. We will let you know if the change affects your settlement." }
             )
         }
         paragraph {
