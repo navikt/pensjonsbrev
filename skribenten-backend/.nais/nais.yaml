@@ -101,8 +101,6 @@ spec:
       - name: AD_GROUP_{{g.name}}
         value: {{g.id}}
     {{/each}}
-    - name: VALKEY_INSTANCE_NAME
-      value: {{valkey-instance-name}}
   envFrom:
     - secret: "{{ app-name }}-unleash-api-token"
     - secret: "krypteringsnoekkel"
