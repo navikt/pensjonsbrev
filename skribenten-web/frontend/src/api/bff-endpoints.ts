@@ -36,6 +36,6 @@ export type Feilmelding = {
   type: string;
   message: unknown;
   stack: unknown;
-  status: number;
+  status: number | undefined;
   jsonContent: unknown;
 };

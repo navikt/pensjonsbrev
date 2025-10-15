@@ -1,6 +1,6 @@
 import { loggFeil } from "~/api/bff-endpoints";
 
-export const logError = async (error: unknown, status: number) => {
+export const logError = async (error: unknown, status: number | undefined) => {
   if (error instanceof Error) {
     const data = {
       type: "error",

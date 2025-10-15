@@ -16,7 +16,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
       console.log(error);
       const originalStatus = error instanceof AxiosError ? error.status : undefined;
       // eslint-disable-next-line no-console
-      logError(error, originalStatus ?? 500).catch(() => console.error("Unable to log error message"));
+      logError(error, originalStatus).catch(() => console.error("Unable to log error message"));
     }
   }, [error]);
 
