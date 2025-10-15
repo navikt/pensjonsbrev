@@ -1,8 +1,7 @@
-
-import brev.vedlegg.VedleggHjelpFraAndreStatisk
-import brev.vedlegg.VedleggInnsynSakPensjonStatisk
-import brev.vedlegg.VedleggKlagePaaVedtaketStatisk
-import brev.vedlegg.VedleggVeiledningStatisk
+import brev.vedlegg.VedleggHjelpFraAndre
+import brev.vedlegg.VedleggInnsynSakPensjon
+import brev.vedlegg.VedleggKlagePaaVedtaket
+import brev.vedlegg.VedleggVeiledning
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -21,8 +20,8 @@ val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
         ),
         includeSakspart = false,
     ) {
-        includePhrase(VedleggVeiledningStatisk)
-        includePhrase(VedleggInnsynSakPensjonStatisk)
-        includePhrase(VedleggHjelpFraAndreStatisk)
-        includePhrase(VedleggKlagePaaVedtaketStatisk)
+        includePhrase(VedleggVeiledning)
+        includePhrase(VedleggInnsynSakPensjon)
+        includePhrase(VedleggHjelpFraAndre)
+        includePhrase(VedleggKlagePaaVedtaket)
     }
