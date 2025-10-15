@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.template
 
+import com.natpryce.hamkrest.Matcher
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
@@ -16,13 +19,13 @@ interface SaksbehandlerValgValidator {
     fun isAllowedNonNullable(propertyName: String): Boolean
 }
 
-private data class ValgMedOverstyrtValidator(val tillattNonNullable: String) : BrevbakerBrevdata {
+data class ValgMedOverstyrtValidator(val tillattNonNullable: String) : SaksbehandlerValgBrevdata {
     companion object : SaksbehandlerValgValidator {
         override fun isAllowedNonNullable(propertyName: String) = propertyName == "tillattNonNullable"
     }
 }
 
-private data class ValgUtenOverstyrtValidator(val ikkeTillattNonNullable: String) : BrevbakerBrevdata
+data class ValgUtenOverstyrtValidator(val ikkeTillattNonNullable: String) : SaksbehandlerValgBrevdata
 
 class RedigerbarTemplateSaksbehandlerValgTest {
 
@@ -33,9 +36,7 @@ class RedigerbarTemplateSaksbehandlerValgTest {
 
     @Test
     fun `standardvalidator krever at alle felter er nullable`() {
-        assertFailsWith<AssertionError> {
-            validateSaksbehandlerValg(ValgUtenOverstyrtValidator::class)
-        }
+        assertThat(validateSaksbehandlerValg(ValgUtenOverstyrtValidator::class), isEmpty.not())
     }
 
     @Test
@@ -43,13 +44,15 @@ class RedigerbarTemplateSaksbehandlerValgTest {
         val saksbehandlerValgName = RedigerbarBrevdata<*, *>::saksbehandlerValg.name
 
         val nonNullableTreff = ProductionTemplates.hentRedigerbareMaler().map { mal ->
+            val name = mal.kode.kode()
+
             val saksbehandlerValgProperty =
                 mal.template.letterDataType.declaredMemberProperties.first { it.name == saksbehandlerValgName }
 
             val saksbehandlerValgClass = saksbehandlerValgProperty.returnType.classifier as? KClass<*>
-                ?: error("Could not get KClass for saksbehandlerValg of template ${mal.template.name}")
+                ?: error("Could not get KClass for saksbehandlerValg of template $name")
 
-            mal.template.name to validateSaksbehandlerValg(saksbehandlerValgClass)
+            name to validateSaksbehandlerValg(saksbehandlerValgClass)
         }.filter { it.second.isNotEmpty() }
 
         assertThat(nonNullableTreff, isEmpty) {
@@ -72,7 +75,7 @@ class RedigerbarTemplateSaksbehandlerValgTest {
 
         return saksbehandlervalg.constructors.flatMap { constructor ->
             constructor.parameters.filter { parameter ->
-                !validator.isAllowedNonNullable(parameter.name!!) && !parameter.type.isMarkedNullable
+                validator.isAllowedNonNullable(parameter.name!!) || !parameter.type.isMarkedNullable
             }
         }.map { it.name!! }.toSet()
     }
