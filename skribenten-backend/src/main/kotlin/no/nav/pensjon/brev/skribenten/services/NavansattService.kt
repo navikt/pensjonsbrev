@@ -11,7 +11,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.CacheImplementation
+import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java
@@ -22,7 +22,7 @@ interface NavansattService {
     suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
 }
 
-class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: CacheImplementation) : NavansattService, ServiceStatus {
+class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
     private val navansattUrl = config.getString("url")

@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 fun Application.configureRouting(
     authConfig: JwtConfig,
     skribentenConfig: Config,
-    cacheConfig: CacheImplementation
+    cacheConfig: Cache
 ) {
     val authService = AzureADService(authConfig, cacheConfig = cacheConfig)
     val servicesConfig = skribentenConfig.getConfig("services")
