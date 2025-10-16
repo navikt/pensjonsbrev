@@ -22,7 +22,20 @@ private val fakeJwtPayload = object : Payload {
     override fun getNotBefore() = null
     override fun getIssuedAt() = null
     override fun getId() = null
-    override fun getClaim(name: String?) = null
+    override fun getClaim(name: String?) = object : Claim {
+        override fun isNull() = false
+        override fun isMissing() = false
+        override fun asBoolean() = false
+        override fun asInt() = 0
+        override fun asLong() = 0L
+        override fun asDouble() = 0.0
+        override fun asString() = name
+        override fun asDate() = null
+        override fun <T : Any?> asArray(clazz: Class<T?>?) = null
+        override fun <T : Any?> asList(clazz: Class<T?>?) = listOf<T>()
+        override fun asMap() = mapOf<String, Any>()
+        override fun <T : Any?> `as`(clazz: Class<T?>?) = null
+    }
     override fun getClaims() = mapOf<String?, Claim?>()
 }
 
