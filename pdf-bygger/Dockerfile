@@ -26,6 +26,7 @@ COPY containerFiles/fonts /usr/share/fonts
 RUN fc-cache /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
 COPY containerFiles/latex /app/pensjonsbrev_latex
 
+RUN mkdir -p /home/apprunner && chown -R apprunner:apprunner /home/apprunner
 USER apprunner
 COPY build/libs/pdf-bygger.jar /app/app.jar
 CMD ["java", "-jar", "/app/app.jar"]
