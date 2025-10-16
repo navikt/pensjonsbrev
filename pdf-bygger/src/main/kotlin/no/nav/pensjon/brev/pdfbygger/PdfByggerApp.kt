@@ -154,12 +154,12 @@ private suspend fun RoutingContext.handleResult(
     when (result) {
         is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
         is PDFCompilationResponse.Failure.Client -> {
-            logger.info("Client error: ${result.reason}")
+            logger.warn("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {
-                logger.info(result.output)
+                logger.warn(result.output)
             }
             if (result.error?.isNotBlank() == true) {
-                logger.info(result.error)
+                logger.warn(result.error)
             }
             call.respond(HttpStatusCode.BadRequest, result)
         }
