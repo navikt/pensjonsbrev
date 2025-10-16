@@ -459,9 +459,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.in
     }
 
     paragraph {
-        text(bokmal { +"Omstillingsstønaden reduseres med 45 prosent av beløpet som er over halvparten av grunnbeløpet.  Inntekten er fordelt på antall innvilgede måneder." },
-            nynorsk { +"Omstillingsstønaden blir redusert med 45 prosent av beløpet som er over halvparten av grunnbeløpet.  Inntekta er fordelt på antal månader som er innvilga." },
-            english { +"Adjustment allowance is reduced by 45 percent of the sum that exceeds half of the base amount (G). Income is distributed across the number of months the allowance is granted." }
+        text(bokmal { +"Omstillingsstønaden reduseres med 45 prosent av beløpet som er over halvparten av grunnbeløpet.  Inntekten er fordelt på antall innvilgede måneder. Inntekten som brukes til å redusere omstillingsstønad, rundes ned til nærmeste tusen kroner." },
+            nynorsk { +"Omstillingsstønaden blir redusert med 45 prosent av beløpet som er over halvparten av grunnbeløpet.  Inntekta er fordelt på antal månader som er innvilga. Inntekta som blir brukt til å redusere omstillingsstønad, blir runda ned til næraste tusen kroner." },
+            english { +"Adjustment allowance is reduced by 45 percent of the sum that exceeds half of the base amount (G). Income is distributed across the number of months the allowance is granted. The income used to reduce the adjustment allowance is rounded down to the nearest thousand." }
         )
     }
 
