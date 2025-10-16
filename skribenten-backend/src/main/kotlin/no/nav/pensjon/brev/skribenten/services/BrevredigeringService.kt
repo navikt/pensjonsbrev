@@ -186,11 +186,7 @@ class BrevredigeringService(
     private fun Brevredigering.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
         apply {
             redigertBrev = this@oppdaterMedAnnenMottakerNavn.redigertBrev
-                .updateEditedLetter(
-                    this@oppdaterMedAnnenMottakerNavn.redigertBrev
-                        .withAnnenMottaker(annenMottaker)
-                        .toMarkup()
-                )
+                .withAnnenMottaker(annenMottaker)
         }
     }
 
@@ -757,11 +753,3 @@ private fun Document.toDto(): Dto.Document =
 
 private fun Brevredigering.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true
-
-@OptIn(InterneDataklasser::class)
-private fun Edit.Letter.withAnnenMottaker(mottaker: String?) =
-    this.copy(
-        sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
-            annenMottakerNavn = mottaker
-        )
-    )
