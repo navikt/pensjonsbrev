@@ -20,8 +20,7 @@ interface Cache {
         get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
 }
 
-class Valkey(config: Map<String, String?>, instanceName: String) : Cache {
-    private val objectMapper = databaseObjectMapper
+class Valkey(config: Map<String, String?>, instanceName: String, private val objectMapper: ObjectMapper = databaseObjectMapper) : Cache {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val jedisPool = setupJedis(config, instanceName)
@@ -42,7 +41,6 @@ class Valkey(config: Map<String, String?>, instanceName: String) : Cache {
                     objectMapper.write(value),
                     SetParams().apply {
                         ex(ttl.inWholeSeconds)
-                        nx()
                     },
                 )
             }
@@ -65,7 +63,7 @@ class InMemoryCache : Cache {
     }
 }
 
-private fun <V> ObjectMapper.write(value: V) = if (value is String) value else writeValueAsString(value)
+private fun <V> ObjectMapper.write(value: V) = writeValueAsString(value)
 
 
 private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
@@ -73,11 +71,12 @@ private fun setupJedis(config: Map<String, String?>, instanceName: String): Jedi
     val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
     val username = config["VALKEY_USERNAME_$instanceName"]!!
     val password = config["VALKEY_PASSWORD_$instanceName"]!!
+    val ssl = config["VALKEY_SSL_$instanceName"]?.toBoolean() ?: true
 
     return JedisPool(
         HostAndPort(host, port),
         DefaultJedisClientConfig.builder()
-            .ssl(true)
+            .ssl(ssl)
             .user(username)
             .password(password)
             .build()
