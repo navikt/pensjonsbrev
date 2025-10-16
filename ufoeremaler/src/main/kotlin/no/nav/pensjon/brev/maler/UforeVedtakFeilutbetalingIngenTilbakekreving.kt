@@ -21,12 +21,12 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.f
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.sluttPeriodeForTilbakekreving
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.startPeriodeForTilbakekreving
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDtoSelectors.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object UforeVedtakFeilutbetalingIngenTilbakekreving : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
+object UforeVedtakFeilutbetalingIngenTilbakekreving : RedigerbarTemplate<VedtakFeilutbetalingUforeIngenTilbakekrevingDto> {
 
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
