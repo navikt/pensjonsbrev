@@ -10,7 +10,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.CacheImplementation
+import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
@@ -23,7 +23,7 @@ interface SamhandlerService {
     suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: CacheImplementation) : SamhandlerService, ServiceStatus {
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 

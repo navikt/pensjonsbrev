@@ -17,7 +17,7 @@ import io.ktor.http.Parameters
 import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.CacheImplementation
+import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 
@@ -47,7 +47,7 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cacheConfig: CacheImplementation) : AuthService {
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cacheConfig: Cache) : AuthService {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = HttpClient(engine) {

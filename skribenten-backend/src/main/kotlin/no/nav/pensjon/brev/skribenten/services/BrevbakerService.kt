@@ -25,7 +25,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.CacheImplementation
+import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
@@ -54,7 +54,7 @@ interface BrevbakerService {
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
 }
 
-class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: CacheImplementation) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
