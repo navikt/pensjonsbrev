@@ -6,6 +6,7 @@ import io.valkey.HostAndPort
 import io.valkey.JedisPool
 import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -21,22 +22,33 @@ interface CacheImplementation {
 
 class Valkey(config: Map<String, String?>, instanceName: String) : CacheImplementation {
     private val objectMapper = databaseObjectMapper
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     private val jedisPool = setupJedis(config, instanceName)
 
     override fun <K, V> get(key: K, clazz: Class<V>): V? =
-        jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }
+        try {
+            jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }
+        } catch (e: Exception) {
+            logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
+            null
+        }
 
     override fun <K, V> update(key: K, value: V, ttl: Duration) {
-        jedisPool.resource.use {
-            it.set(
-                objectMapper.write(key),
-                objectMapper.write(value),
-                SetParams().apply {
-                    ex(ttl.inWholeSeconds)
-                    nx()
-                },
-            )
+        try {
+            jedisPool.resource.use {
+                it.set(
+                    objectMapper.write(key),
+                    objectMapper.write(value),
+                    SetParams().apply {
+                        ex(ttl.inWholeSeconds)
+                        nx()
+                    },
+                )
+            }
+        } catch (e: Exception) {
+            logger.warn("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
+            return
         }
     }
 }
