@@ -1,6 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback } from "react";
 
+import { FontType } from "~/types/brevbakerTypes";
+
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
@@ -11,7 +13,7 @@ export enum Typography {
   TITLE2 = "TITLE2",
 }
 
-export const isMac = globalThis.Cypress === undefined ? /Mac|iPod|iPad/.test(navigator.userAgent) : false;
+export const isMac = !globalThis.Cypress ? /Mac|iPod|iPad/.test(navigator.userAgent) : false;
 
 export const TypographyToText = isMac
   ? ({
@@ -38,6 +40,35 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       } else if (event.altKey && event.code === "Digit3") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+      }
+
+      // Word-hurtigtaster (norsk)
+      // fet/bold        cmd-b (macos) | ctrl-f (windows) | ctrl-f (web)
+      // kursiv/italic   cmd-i (macos) | ctrl-i (windows) | ctrl-i (web)
+      // finn/søk/find   cmd-f (macos) | ctrl-b (windows) | ctrl-b (web)
+      // søk i Chrome    cmd-f (macos) | ctrl-f / F3 (windows)
+      // ref. Microsoft Support 2025-10-15
+      // https://support.microsoft.com/nb-no/office/hurtigtaster-i-word-95ef89dd-7142-4b50-afb2-f762f663ceb2
+      if (!isMac) {
+        if (event.ctrlKey) {
+          if (event.key === "f") {
+            event.preventDefault();
+            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+          } else if (event.key === "i") {
+            event.preventDefault();
+            applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+          }
+        }
+      } else {
+        if (event.metaKey) {
+          if (event.key === "b") {
+            event.preventDefault();
+            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+          } else if (event.key === "i") {
+            event.preventDefault();
+            applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+          }
+        }
       }
     },
     [setEditorState],

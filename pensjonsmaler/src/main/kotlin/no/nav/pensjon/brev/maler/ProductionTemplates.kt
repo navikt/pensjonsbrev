@@ -56,6 +56,7 @@ object ProductionTemplates : AllTemplates {
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
+        EndringAvAlderspensjonFordiDuFyller75AarAuto,
         EndringAvAlderspensjonSivilstandAuto,
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
