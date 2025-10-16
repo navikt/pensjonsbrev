@@ -106,6 +106,6 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
             }
             includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
-            includeAttachment(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlder)
+            includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlder)
         }
 }
