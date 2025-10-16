@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.EditModelValidator
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
@@ -44,6 +45,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
         }
 
         put<Edit.Letter>("/redigertBrev") { request ->
+            EditModelValidator.validate(request)
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             respond(
                 brevredigeringService.oppdaterBrev(
