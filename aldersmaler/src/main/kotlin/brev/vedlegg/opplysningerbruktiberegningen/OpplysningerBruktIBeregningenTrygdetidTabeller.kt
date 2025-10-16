@@ -1,11 +1,22 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder
 
 
+import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.maler.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
 import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
+import no.nav.pensjon.brev.api.model.maler.vedlegg.TrygdetidSelectors.fom
+import no.nav.pensjon.brev.api.model.maler.vedlegg.TrygdetidSelectors.land
+import no.nav.pensjon.brev.api.model.maler.vedlegg.TrygdetidSelectors.tom
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -23,13 +34,13 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     val trygdetidAvtaleland: Expression<List<Trygdetid>>,
     val skalSkjuleTrygdetidstabellerPgaAldersovergang: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {/*
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val regelverkstype = alderspensjonVedVirk.regelverkType
 
         showIf(
             not(skalSkjuleTrygdetidstabellerPgaAldersovergang) and
-                    ((trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(Beregningsmetode.FOLKETRYGD)
-                            and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(Beregningsmetode.FOLKETRYGD))
+                    ((trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(FOLKETRYGD)
+                            and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(FOLKETRYGD))
                             or beregningKap19VedVirk.redusertTrygdetid
                             or beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false)
                             )
@@ -119,7 +130,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                 )
             }
             includePhrase(UtenlandskTrygdetid(trygdetidAvtaleland))
-        }*/
+        }
     }
 
     object NorskTrygdetidInnledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -163,14 +174,14 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                         forEach(trygdetidNorge) { trygdetid ->
                             row {
                                 cell {
-                                    /*ifNotNull(trygdetid.fom) {
+                                    ifNotNull(trygdetid.fom) {
                                         eval(it.format(short = true))
-                                    }*/
+                                    }
                                 }
                                 cell {
-                                  /*  ifNotNull(trygdetid.tom) {
+                                    ifNotNull(trygdetid.tom) {
                                         eval(it.format(short = true))
-                                    }*/
+                                    }
                                 }
                             }
                         }
@@ -206,19 +217,19 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                     forEach(trygdetid) { trygdetid ->
                         row {
                             cell {
-                               /* ifNotNull(trygdetid.land) {
+                                ifNotNull(trygdetid.land) {
                                     eval(it)
-                                }*/
+                                }
                             }
                             cell {
-                              /*  ifNotNull(trygdetid.fom) {
+                                ifNotNull(trygdetid.fom) {
                                     eval(it.format(short = true))
-                                }*/
+                                }
                             }
                             cell {
-                            /*    ifNotNull(trygdetid.tom) {
+                               ifNotNull(trygdetid.tom) {
                                     eval(it.format(short = true))
-                                }*/
+                                }
                             }
                         }
                     }

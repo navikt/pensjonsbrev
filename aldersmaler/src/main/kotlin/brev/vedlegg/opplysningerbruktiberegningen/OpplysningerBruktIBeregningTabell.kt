@@ -5,13 +5,61 @@ import brev.felles.BroekText
 import brev.felles.GarantipensjonSatsTypeText
 import brev.felles.Ja
 import brev.felles.KronerText
+import no.nav.pensjon.brev.api.model.maler.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.skjermingstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.forholdstall67Soeker
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengAar
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengArTeller
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengarNevner
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.skjermingsgrad
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.uforegradVed67
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.KravSelectors.erForstegangsbehandling
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerProRata
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerTTEOS
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerProRata
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerTTEOS
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerProRata_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata_safe
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerTTEOS
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerTTEOS
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.poengAr
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.yrkesskadeUforegrad
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.sluttpoengtall
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.poengAre91
+import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.poengArf92
+
 import no.nav.pensjon.brev.felles.Vedtak
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -21,6 +69,7 @@ import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
+
 
 data class OpplysningerBruktIBeregningTabellKap19(
     val trygdetidsdetaljerKap19VedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.TrygdetidsdetaljerKap19VedVirk>,
@@ -32,7 +81,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {/*
+        paragraph {
             val harTilleggspensjon = tilleggspensjonVedVirk.notNull()
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 showIf(
@@ -406,7 +455,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 }
@@ -419,7 +468,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
     val krav: Expression<OpplysningerBruktIBeregningenAlderDto.Krav>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {/*
+        paragraph {
             text(
                 bokmal { + "For den delen av pensjonen din som er beregnet etter nye regler (kapittel 20) har vi brukt disse opplysningene i beregningen vår:" },
                 nynorsk { + "For den delen av pensjonen din som er berekna etter nye reglar (kapittel 20), har vi brukt desse opplysningane i berekninga vår:" },
@@ -516,7 +565,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 }
@@ -546,7 +595,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
     val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.BeregnetPensjonPerManedVedVirk>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {/*
+        paragraph {
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 row {
                     //tabellBeholdningForForsteUttak_002
@@ -609,7 +658,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 
