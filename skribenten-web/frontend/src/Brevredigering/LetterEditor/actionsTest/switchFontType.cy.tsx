@@ -102,6 +102,8 @@ describe("Switch font type ", () => {
           const selectedText = doc.getSelection()?.toString();
           expect(selectedText).to.eq("teste piltast");
         });
+
+        // with toolbar click
         cy.getDataCy("fonttype-bold").click();
         cy.contains("Er laget for").should("have.css", "font-weight", "400");
         cy.contains("teste piltast").should("have.css", "font-weight", "700");
@@ -124,6 +126,42 @@ describe("Switch font type ", () => {
         cy.contains(
           "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
         ).should("have.css", "font-weight", "400");
+
+        // with shortcut keys
+        cy.contains("teste piltast").then((el) => {
+          const element = el![0] as HTMLElement;
+          const range = document.createRange();
+          const selection = globalThis.getSelection()!;
+          selection.removeAllRanges();
+          range.setStart(element.firstChild!, 0);
+          range.setEnd(element.firstChild!, 13);
+          selection.addRange(range);
+          element.focus();
+        });
+        cy.contains("teste piltast").type("{ctrl}f");
+        cy.contains("Er laget for").should("have.css", "font-weight", "400");
+        cy.contains("teste piltast").should("have.css", "font-weight", "700");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("teste piltast").then((el) => {
+          const element = el![0] as HTMLElement;
+          const range = document.createRange();
+          const selection = globalThis.getSelection()!;
+          selection.removeAllRanges();
+          range.setStart(element.firstChild!, 0);
+          range.setEnd(element.firstChild!, 13);
+          selection.addRange(range);
+          element.focus();
+        });
+        cy.contains("teste piltast").type("{ctrl}f");
+        cy.contains("Er laget for").should("have.css", "font-weight", "400");
+        cy.contains("teste piltast").should("have.css", "font-weight", "400");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-weight", "400");
+
+        // integrity maintained
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
@@ -151,6 +189,8 @@ describe("Switch font type ", () => {
           const selectedText = doc.getSelection()?.toString();
           expect(selectedText).to.eq("teste piltast"); // Sanity check
         });
+
+        // with toolbar click
         cy.getDataCy("fonttype-italic").click();
         cy.contains("Er laget for").should("have.css", "font-style", "normal");
         cy.contains("teste piltast").should("have.css", "font-style", "italic");
@@ -173,6 +213,42 @@ describe("Switch font type ", () => {
         cy.contains(
           "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
         ).should("have.css", "font-style", "normal");
+
+        // with shortcut keys
+        cy.contains("teste piltast").then((el) => {
+          const element = el![0] as HTMLElement;
+          const range = document.createRange();
+          const selection = globalThis.getSelection()!;
+          selection.removeAllRanges();
+          range.setStart(element.firstChild!, 0);
+          range.setEnd(element.firstChild!, 13);
+          selection.addRange(range);
+          element.focus();
+        });
+        cy.contains("teste piltast").type("{ctrl}i");
+        cy.contains("Er laget for").should("have.css", "font-style", "normal");
+        cy.contains("teste piltast").should("have.css", "font-style", "italic");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("teste piltast").then((el) => {
+          const element = el![0] as HTMLElement;
+          const range = document.createRange();
+          const selection = globalThis.getSelection()!;
+          selection.removeAllRanges();
+          range.setStart(element.firstChild!, 0);
+          range.setEnd(element.firstChild!, 13);
+          selection.addRange(range);
+          element.focus();
+        });
+        cy.contains("teste piltast").type("{ctrl}i");
+        cy.contains("Er laget for").should("have.css", "font-style", "normal");
+        cy.contains("teste piltast").should("have.css", "font-style", "normal");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-style", "normal");
+
+        // integrity maintained
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
@@ -200,6 +276,8 @@ describe("Switch font type ", () => {
           const selectedText = doc.getSelection()?.toString();
           expect(selectedText).to.eq("teste piltast"); // Sanity check
         });
+
+        // with toolbar click
         cy.getDataCy("fonttype-bold").click();
         cy.contains("Er laget for").should("have.css", "font-weight", "400");
         cy.contains("teste piltast").should("have.css", "font-weight", "700");
@@ -222,6 +300,50 @@ describe("Switch font type ", () => {
           element.focus();
         });
         cy.getDataCy("fonttype-italic").click();
+        cy.contains("Er laget for").should("have.css", "font-weight", "400");
+        cy.contains("teste piltast").should("have.css", "font-weight", "400");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("Er laget for").should("have.css", "font-style", "normal");
+        cy.contains("teste piltast").should("have.css", "font-style", "italic");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-style", "normal");
+
+        // with shortcut keys
+        cy.contains("teste piltast").then((el) => {
+          const element = el![0] as HTMLElement;
+          const range = document.createRange();
+          const selection = globalThis.getSelection()!;
+          selection.removeAllRanges();
+          range.setStart(element.firstChild!, 0);
+          range.setEnd(element.firstChild!, 13);
+          selection.addRange(range);
+          element.focus();
+        });
+        cy.contains("teste piltast").type("{ctrl}f");
+        cy.contains("Er laget for").should("have.css", "font-weight", "400");
+        cy.contains("teste piltast").should("have.css", "font-weight", "700");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("Er laget for").should("have.css", "font-style", "normal");
+        cy.contains("teste piltast").should("have.css", "font-style", "normal");
+        cy.contains(
+          "opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("teste piltast").then((el) => {
+          const element = el![0] as HTMLElement;
+          const range = document.createRange();
+          const selection = globalThis.getSelection()!;
+          selection.removeAllRanges();
+          range.setStart(element.firstChild!, 0);
+          range.setEnd(element.firstChild!, 13);
+          selection.addRange(range);
+          element.focus();
+        });
+        cy.contains("teste piltast").type("{ctrl}i");
         cy.contains("Er laget for").should("have.css", "font-weight", "400");
         cy.contains("teste piltast").should("have.css", "font-weight", "400");
         cy.contains(
@@ -289,6 +411,19 @@ describe("Switch font type ", () => {
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
         ).should("have.css", "font-weight", "400");
         cy.contains("variable.").should("have.css", "font-weight", "400");
+
+        // with shortcut keys
+        cy.contains("variable.").type("{ctrl}f");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("variable.").should("have.css", "font-weight", "700");
+        cy.contains("variable.").type("{ctrl}f");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("variable.").should("have.css", "font-weight", "400");
+
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
@@ -319,6 +454,19 @@ describe("Switch font type ", () => {
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
         ).should("have.css", "font-style", "normal");
         cy.contains("variable.").should("have.css", "font-style", "normal");
+
+        // with shortcut keys
+        cy.contains("variable.").type("{ctrl}i");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("variable.").should("have.css", "font-style", "italic");
+        cy.contains("variable.").type("{ctrl}i");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("variable.").should("have.css", "font-style", "normal");
+
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
@@ -357,6 +505,37 @@ describe("Switch font type ", () => {
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
         ).should("have.css", "font-style", "normal");
         cy.contains("variable.").should("have.css", "font-style", "italic");
+
+        // with shortcut keys
+        cy.contains("variable.").type("{ctrl}f");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("variable.").should("have.css", "font-weight", "700");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("variable.").should("have.css", "font-style", "normal");
+        cy.contains("variable.").type("{ctrl}i");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("variable.").should("have.css", "font-weight", "400");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("variable.").should("have.css", "font-style", "italic");
+        cy.contains("variable.").type("{ctrl}i");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-weight", "400");
+        cy.contains("variable.").should("have.css", "font-weight", "400");
+        cy.contains(
+          "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
+        ).should("have.css", "font-style", "normal");
+        cy.contains("variable.").should("have.css", "font-style", "normal");
+
+        // integrity maintained
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
