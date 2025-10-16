@@ -13,14 +13,14 @@ import kotlin.time.Duration.Companion.minutes
 
 private val defaultTtl = 30.minutes
 
-interface CacheImplementation {
+interface Cache {
     fun <K, V> get(key: K, clazz: Class<V>): V?
     fun <K, V> update(key: K, value: V, ttl: Duration = defaultTtl)
     suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
         get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
 }
 
-class Valkey(config: Map<String, String?>, instanceName: String) : CacheImplementation {
+class Valkey(config: Map<String, String?>, instanceName: String) : Cache {
     private val objectMapper = databaseObjectMapper
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -53,7 +53,7 @@ class Valkey(config: Map<String, String?>, instanceName: String) : CacheImplemen
     }
 }
 
-class InMemoryCache : CacheImplementation {
+class InMemoryCache : Cache {
     private val objectMapper = databaseObjectMapper
     private val cache = ConcurrentHashMap<String, String>()
 
