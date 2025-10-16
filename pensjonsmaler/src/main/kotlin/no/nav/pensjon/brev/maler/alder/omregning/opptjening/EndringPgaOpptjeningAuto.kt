@@ -9,15 +9,21 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoS
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.beregnetPensjonPerMaanedVedVirk
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.erFoerstegangsbehandling
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.maanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.maanedligPensjonFoerSkattAP2025
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opptjeningType
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.antallAarEndretOpptjening
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -88,9 +94,16 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             includePhrase(AvsnittArbeidsinntekt(beregnetPensjonPerMaanedVedVirk.uttaksgrad, uforeKombinertMedAlder))
             includePhrase(AvsnittLesMerOmAlderspensjon())
             includePhrase(AvsnittMeldFraOmEndringer())
-            includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-            includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+
+        includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikter)
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkatt)
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder,opplysningerBruktIBeregningenAlder)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, opplysningerBruktIBeregningenAlderAP2025)
+        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregning)
     }
 }

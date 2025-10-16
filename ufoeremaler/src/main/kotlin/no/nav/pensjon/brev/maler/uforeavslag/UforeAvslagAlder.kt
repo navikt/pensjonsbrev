@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.uforeavslag
 
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
@@ -24,8 +23,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
-
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_ALDER
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
@@ -84,12 +81,12 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-4." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-4." })
             }
 
             includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

@@ -83,13 +83,12 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.opplysningerOmEtteroppgjoer(
     etteroppgjoersAar: Expression<Int>
 ) {
-
     showIf(erVedtak) {
         paragraph {
             text(
                 bokmal { +"Omstillingsstønaden din er nå beregnet på nytt for " + etteroppgjoersAar.format() +"." },
                 nynorsk { +"Vi har no gjort ei ny utrekning av omstillingsstønaden din for " + etteroppgjoersAar.format() +"." },
-                english { +"Your transitional benefit has now been recalculated for " + etteroppgjoersAar.format() +"." }
+                english { +"Your adjustment allowance has now been recalculated for " + etteroppgjoersAar.format() +"." }
             )
         }
         paragraph {

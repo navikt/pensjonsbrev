@@ -29,7 +29,7 @@ class BlockTilSlateKonvertererTest {
     fun `kan lese inn letter markup fra brevbakeren`() {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
         val letterMarkup = Brevbaker(object : PDFByggerService {
-            override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(ByteArray(0))
+            override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean) = PDFCompilationOutput(ByteArray(0))
         },
             object: PDFVedleggAppender {
                 override fun leggPaaVedlegg(

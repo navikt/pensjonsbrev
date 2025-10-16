@@ -65,7 +65,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         defaultRequest {
             url(penUrl)
         }
-        installRetry(logger, shouldNotRetry = { it.method != HttpMethod.Get } )
+        installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get } )
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())

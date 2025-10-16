@@ -91,16 +91,16 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             // alle
             paragraph {
                 text(
-                    bokmal { +"Hvis etteroppgjøret viser at for lite utbetalt er mindre enn 25 prosent av rettsgebyret vil du ikke få utbetalt differansen." },
-                    nynorsk { +"Dersom etteroppgjeret viser at for lite utbetalt er mindre enn 25 prosent av rettsgebyret, vil du ikkje få utbetalt differansen." },
-                    english { +"If the final settlement shows that the amount paid too little is less than 25 percent of a standard court fee, you will not be paid the difference." },
+                    bokmal { +"Hvis etteroppgjøret viser at for lite utbetalt stønad er mindre enn 25 prosent av rettsgebyret vil du ikke få utbetalt differansen." },
+                    nynorsk { +"Dersom etteroppgjeret viser at for lite utbetalt stønad er mindre enn 25 prosent av rettsgebyret, vil du ikkje få utbetalt differansen." },
+                    english { +"If the final settlement shows that the amount paid too little allowance is less than 25 percent of a standard court fee, you will not be paid the difference." },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis etteroppgjøret viser at for mye utbetalt er mindre enn ett rettsgebyr, vil du ikke få krav om tilbakebetaling." },
-                    nynorsk { +"Dersom etteroppgjeret viser at for mykje utbetalt er mindre enn eitt rettsgebyr, vil du ikkje få krav om tilbakebetaling." },
-                    english { +"If the final settlement shows that the amount overpaid is less than a standard court fee, you will not receive a demand for repayment." },
+                    bokmal { +"Hvis etteroppgjøret viser at for mye utbetalt stønad er mindre enn ett rettsgebyr, vil du ikke få krav om tilbakebetaling." },
+                    nynorsk { +"Dersom etteroppgjeret viser at for mykje utbetalt stønad er mindre enn eitt rettsgebyr, vil du ikkje få krav om tilbakebetaling." },
+                    english { +"If the final settlement shows that the amount overpaid allowance is less than a standard court fee, you will not receive a demand for repayment." },
                 )
             }
             paragraph {

@@ -1,5 +1,9 @@
 import { inRange, minBy } from "lodash";
 
+import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
+import type { LiteralIndex, SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
+import { isTableCellIndex, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
+
 type Coordinates = {
   x: number;
   y: number;
@@ -168,7 +172,7 @@ export function getCaretRect() {
 
 export function getRange() {
   const selection = globalThis.getSelection();
-  return selection?.getRangeAt(0);
+  return (selection?.rangeCount ?? 0) > 0 ? selection?.getRangeAt(0) : undefined;
 }
 
 export function findOnLineBelow(element: Element) {
@@ -210,3 +214,122 @@ export function findOnLineAbove(element: Element) {
 
   return findOnLineAbove(previous);
 }
+
+function closestLiteralEl(n: Node | null): HTMLElement | null {
+  const el = (n && (n.nodeType === Node.ELEMENT_NODE ? (n as Element) : n.parentElement)) || null;
+  return el ? el.closest<HTMLElement>("[data-literal-index]") : null;
+}
+
+function getTextLengthExcludingZWSP(el: HTMLElement): number {
+  const text = el.textContent ?? "";
+  return text.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, text.length - 1) : text.length;
+}
+
+function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
+  const dataLiteralIndex = el.getAttribute("data-literal-index");
+  if (!dataLiteralIndex) return undefined;
+  try {
+    const parsedLiteralIndex = JSON.parse(dataLiteralIndex);
+    return isBlockContentIndex(parsedLiteralIndex) ||
+      isItemContentIndex(parsedLiteralIndex) ||
+      isTableCellIndex(parsedLiteralIndex)
+      ? parsedLiteralIndex
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset: number): number {
+  const range = document.createRange();
+  range.setStart(literalEl, 0);
+  range.setEnd(container, offset);
+  let len = range.toString().length;
+  const txt = literalEl.textContent ?? "";
+  if (txt.startsWith(ZERO_WIDTH_SPACE)) len = Math.max(0, len - 1);
+  const max = txt.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, txt.length - 1) : txt.length;
+  return Math.min(Math.max(len, 0), max);
+}
+
+function rangeIntersectsNodeSafe(range: Range, node: Node): boolean {
+  try {
+    return range.intersectsNode(node);
+  } catch {
+    return false;
+  }
+}
+
+/* Selection => Model mapping (handles ELEMENT/TEXT nodes, nested tags, ZWSP)
+ * Map current DOM selection to model literalIndexes, with root-aware clamping.
+ */
+export function getSelectionFocus(root?: HTMLElement): SelectionFocus | undefined {
+  const selection = globalThis.getSelection();
+  if (!selection || selection.rangeCount === 0) return;
+
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) return;
+
+  const literalEls = root ? Array.from(root.querySelectorAll<HTMLElement>("[data-literal-index]")) : [];
+
+  let startEl = closestLiteralEl(range.startContainer);
+  let endEl = closestLiteralEl(range.endContainer);
+
+  if (!startEl && literalEls.length > 0) {
+    for (const el of literalEls) {
+      if (rangeIntersectsNodeSafe(range, el)) {
+        startEl = el;
+        break;
+      }
+    }
+  }
+  if (!endEl && literalEls.length > 0) {
+    for (let i = literalEls.length - 1; i >= 0; i -= 1) {
+      const el = literalEls[i];
+      if (rangeIntersectsNodeSafe(range, el)) {
+        endEl = el;
+        break;
+      }
+    }
+  }
+  if (!startEl || !endEl) return;
+
+  const startIdx = parseLiteralIndex(startEl);
+  const endIdx = parseLiteralIndex(endEl);
+  if (!startIdx || !endIdx) return;
+
+  const sIsDirect = startEl === closestLiteralEl(range.startContainer);
+  const eIsDirect = endEl === closestLiteralEl(range.endContainer);
+
+  const start = {
+    ...startIdx,
+    cursorPosition: sIsDirect ? charOffsetWithinLiteral(startEl, range.startContainer, range.startOffset) : 0,
+  };
+  const end = {
+    ...endIdx,
+    cursorPosition: eIsDirect
+      ? charOffsetWithinLiteral(endEl, range.endContainer, range.endOffset)
+      : getTextLengthExcludingZWSP(endEl),
+  };
+
+  if (startEl === endEl && start.cursorPosition === end.cursorPosition) return;
+  return { start, end };
+}
+/**
+ * Returns the start offset (in number of characters) of the current caret or selection inside the element.
+ * Used to capture/persist cursor position before key handling and after input (for undo/redo).
+ */
+export const getCharacterOffset = (element: Node): number => {
+  const selection = globalThis.getSelection();
+
+  if (selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+
+    if (range.startContainer && element.contains(range.startContainer)) {
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      return preCaretRange.toString().length;
+    }
+  }
+  return 0;
+};

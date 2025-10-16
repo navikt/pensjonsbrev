@@ -4,6 +4,7 @@ import io.ktor.http.*
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -19,14 +20,15 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 data class GeneriskRedigerbarBrevdata(
     override val pesysData: BrevbakerBrevdata,
-    override val saksbehandlerValg: BrevbakerBrevdata,
-) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
+    override val saksbehandlerValg: SaksbehandlerValgBrevdata,
+) : RedigerbarBrevdata<SaksbehandlerValgBrevdata, BrevbakerBrevdata>
 
 sealed class BrevredigeringException(override val message: String) : Exception() {
     class KanIkkeReservereBrevredigeringException(message: String, val response: Api.ReservasjonResponse) : BrevredigeringException(message)
@@ -274,7 +276,7 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
+            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
                 Ok(document.pdf)
             } else {
                 opprettPdf(brevredigering)
@@ -460,7 +462,7 @@ class BrevredigeringService(
         spraak: LanguageCode,
         saksId: Long,
         vedtaksId: Long?,
-        saksbehandlerValg: BrevbakerBrevdata,
+        saksbehandlerValg: SaksbehandlerValgBrevdata,
         avsenderEnhetsId: String?,
         signaturSignerende: String,
         signaturAttestant: String? = null,
@@ -511,7 +513,7 @@ class BrevredigeringService(
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
                 // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-                felles = pesysData.felles.medSignerendeSaksbehandlere(null),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -560,6 +562,16 @@ class BrevredigeringService(
                 ?: principal.fullName
         }
 }
+
+private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur): Felles =
+    signatur.saksbehandlerNavn?.let {
+        medSignerendeSaksbehandlere(
+            SignerendeSaksbehandlere(
+                saksbehandler = it,
+                attesterendeSaksbehandler = signatur.attesterendeSaksbehandlerNavn
+            )
+        )
+    }?: this
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
     redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")

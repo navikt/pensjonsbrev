@@ -5,8 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
-import no.nav.pensjon.brev.maler.adhoc.skjermingstillegg.AdhocSkjermingstilleggFeilBeroertBruker
-import no.nav.pensjon.brev.maler.adhoc.skjermingstillegg.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.maler.alder.*
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.*
 import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
@@ -24,9 +22,11 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.*
-import no.nav.pensjon.brev.maler.ufoereBrev.*
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.*
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.*
+import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
+import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
+import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
@@ -36,24 +36,15 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates : AllTemplates {
     private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
-        AdhocAFPInformasjonOekningToleransebeloep,
-        AdhocAlderspensjonFraFolketrygden,
-        AdhocAlderspensjonFraFolketrygden2,
-        AdhocAlderspensjonGjtOpprydding,
-        AdhocAlderspensjonGjtVarselBrev,
         AdhocFeilEtteroppgjoer2023,
         AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
-        AdhocSkjermingstilleggFeilBeroertBruker,
-        AdhocSkjermingstilleggFeilMottaker,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
-        AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
-        AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         OmregningAlderUfore2016Auto,
         AvslagGradsendringFoerNormertPensjonsalder2016Auto,
         AvslagGradsendringFoerNormertPensjonsalderAuto,
@@ -70,7 +61,6 @@ object ProductionTemplates : AllTemplates {
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
-        FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         InfoAldersovergang67AarAuto,
         InnvilgelseAvAlderspensjonAuto,
@@ -116,7 +106,6 @@ object ProductionTemplates : AllTemplates {
         EndringAvAlderspensjonSivilstandSaerskiltSats,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
-        ForhaandsvarselVedTilbakekreving,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,

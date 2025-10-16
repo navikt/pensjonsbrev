@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.uforeavslag
 
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
@@ -25,8 +24,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagDto> {
-
-    override val featureToggle = FeatureToggles.uforeAvslag.toggle
 
     override val kode = UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I1
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
@@ -55,7 +52,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagDto>
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt arbeidsrettede tiltak." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt hensiktsmessig arbeidsrettede tiltak." })
             }
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
@@ -93,7 +90,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagDto>
 
             includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

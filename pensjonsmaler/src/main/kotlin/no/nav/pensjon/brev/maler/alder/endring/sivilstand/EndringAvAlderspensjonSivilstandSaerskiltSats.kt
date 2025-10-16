@@ -25,9 +25,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.saerskiltSatsErBrukt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.eps
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandSaerskiltSatsDtoSelectors.saksbehandlerValg
@@ -87,14 +87,13 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
         val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
-        val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
         val grunnbelop = pesysData.beregnetPensjonPerManedVedVirk.grunnbelop
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
 
         title {
             text(
-                bokmal { +"Vi har beregnet alderspensjon din på nytt fra " + kravVirkDatoFom },
+                bokmal { +"Vi har beregnet alderspensjonen din på nytt fra " + kravVirkDatoFom },
                 nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + kravVirkDatoFom },
                 english { +"We have recalculated your retirement pension from " + kravVirkDatoFom },
             )
@@ -341,6 +340,16 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-8, 19-9 og 22-12." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-8, 19-9 og 22-12." },
+                        english {
+                            +"This decision was made pursuant to the provisions of §§ 19-8, 19-9 and 22-12 of the National Insurance Act."
+                        },
+                    )
+                }
             }
 
             // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
@@ -354,7 +363,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-            showIf(vedtakEtterbetaling) {
+            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
