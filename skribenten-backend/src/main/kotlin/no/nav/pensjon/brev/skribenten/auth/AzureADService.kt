@@ -47,7 +47,7 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cacheConfig: Cache) : AuthService {
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache) : AuthService {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = HttpClient(engine) {
@@ -61,7 +61,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
         val key = Pair(principal.navIdent, scope)
-        val value = cacheConfig.get(key, TokenResponse.OnBehalfOfToken::class.java)
+        val value = cache.get(key, TokenResponse.OnBehalfOfToken::class.java)
 
         if (value != null) {
             return value
@@ -83,7 +83,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
 
         return if (response.status.isSuccess()) {
             response.body<TokenResponse.OnBehalfOfToken>().also {
-                cacheConfig.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body())
+                cache.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body())
             }
         } else {
             response.body<TokenResponse.ErrorResponse>()
