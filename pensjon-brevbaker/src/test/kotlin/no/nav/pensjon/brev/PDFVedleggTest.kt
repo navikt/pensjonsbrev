@@ -83,7 +83,6 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
             institusjon = nay(),
             pensjonstype = Pensjonstype.Alder,
             datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-            bruttobeloep = 1000,
             bruttobeloepDesimal = "540.81",
             grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
             reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
