@@ -40,5 +40,6 @@ object UfoereTemplates : AllTemplates {
         UforeVarselFeilutbetaling,
         UforeVedtakFeilutbetaling,
         UforeVedtakFeilutbetalingIngenTilbakekreving,
+        UforeAvslagMedlemskap
     )
 }
