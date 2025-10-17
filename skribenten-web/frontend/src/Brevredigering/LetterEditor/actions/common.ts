@@ -656,6 +656,7 @@ export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
   return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
 }
 
+// !literal.editedText || literal.editedText.trim() === "" is a bit to naive, doent take into concideration merged literals etc.
 export function countUnfilledFritekstPlaceholders(letter: EditedLetter): number {
   return collectFritekstLiterals(letter).filter((literal) => !literal.editedText || literal.editedText.trim() === "")
     .length;

@@ -4,13 +4,14 @@ import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, V
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -213,8 +214,16 @@ function RedigerBrev({
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
+  const [showFritekstModal, setShowFritekstModal] = useState(false);
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+
+  const navigateToBrevbehandler = () =>
+    navigate({
+      to: "/saksnummer/$saksId/brevbehandler",
+      params: { saksId },
+      search: { brevId: brev.info.id, enhetsId, vedtaksId },
+    });
 
   const brevmal = useQuery({
     ...getSakContextQuery(saksId, vedtaksId),
@@ -277,6 +286,20 @@ function RedigerBrev({
     );
   };
 
+  const numberOfUnfilledFritekstPlaceholders = useCallback(
+    () => countUnfilledFritekstPlaceholders(editorState.redigertBrev),
+    [editorState.redigertBrev],
+  );
+
+  const guardedSubmit = form.handleSubmit((values) => {
+    const unfilled = numberOfUnfilledFritekstPlaceholders();
+    if (unfilled > 0) {
+      setShowFritekstModal(true);
+      return;
+    }
+    onSubmit(values, navigateToBrevbehandler);
+  });
+
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
@@ -310,16 +333,39 @@ function RedigerBrev({
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
         `}
-        onSubmit={form.handleSubmit((v) =>
-          onSubmit(v, () =>
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId },
-              search: { brevId: brev.info.id, enhetsId, vedtaksId },
-            }),
-          ),
-        )}
+        onSubmit={guardedSubmit}
       >
+        <Modal
+          header={{
+            heading: `Du må fylle ut ${numberOfUnfilledFritekstPlaceholders()} fritekstfelt før du går videre`,
+            closeButton: true,
+          }}
+          onClose={() => setShowFritekstModal(false)}
+          open={showFritekstModal}
+          width={600}
+        >
+          <Modal.Body>
+            <BodyLong>
+              Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut
+            </BodyLong>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => setShowFritekstModal(false)} type="button">
+              Bli her
+            </Button>
+            <Button
+              onClick={() => {
+                setShowFritekstModal(false);
+                onSubmit(form.getValues(), navigateToBrevbehandler);
+              }}
+              type="button"
+              variant="tertiary"
+            >
+              Fortsett til brevbehandler
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -397,7 +443,7 @@ function RedigerBrev({
             >
               Tilbake til brevvelger
             </Button>
-            <Button loading={oppdaterBrevMutation.isPending} size="small">
+            <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
               <HStack align={"center"} gap="2">
                 <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
               </HStack>
