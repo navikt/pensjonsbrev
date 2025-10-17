@@ -68,7 +68,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +"Vi kan også gjøre unntak dersom du har vært medlem av folketrygden i minst ett år umiddelbart før du setter fram krav om uføretrygd, og " })
+                text(bokmal { +"Eller dersom du har vært medlem av folketrygden i minst ett år umiddelbart før du setter fram krav om uføretrygd, og " })
                 list {
                     item {
                         text(bokmal { + "ble ufør før du fylte 26 år og da var medlem av trygden eller " })
@@ -79,7 +79,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +"Vi kan også gjøre unntak dersom du var medlem av folketrygden på uføretidspunktet, og: " })
+                text(bokmal { +"Eller dersom du var medlem av folketrygden på uføretidspunktet, og: " })
                 list {
                     item {
                         text(bokmal { + "har tjent opp rett til minst halvparten av minsteytelsen for uføretrygd. " })
