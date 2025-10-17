@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
 
 object Ufoerebrevkoder {
     enum class AutoBrev : Automatisk {
-
+        UT_ENDRET_PGA_INNTEKT_V2
         ;
         override fun kode(): String = this.name
     }
