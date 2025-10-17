@@ -365,5 +365,38 @@ fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
 
 
+object EditModelValidator {
 
+    fun validate(letter: Edit.Letter) = letter.blocks.forEach { validate(it) }
+
+    fun validate(block: Edit.Block) = when (block) {
+        is Edit.Block.Title1 -> {
+            require(block.content.joinToString { it.toMarkup().text.trim() }.isNotEmpty()) { "Kan ikke ha overskrift 1 uten innhold "}
+        }
+        is Edit.Block.Title2 -> {
+            require(block.content.joinToString { it.toMarkup().text.trim() }.isNotEmpty()) { "Kan ikke ha overskrift 2 uten innhold "}
+        }
+        is Edit.Block.Paragraph -> {
+            require(!harToEtterfoelgendeNewLine(block)) { "Kan ikke ha to etterfølgende blanke linjer" }
+        }
+    }
+
+    private fun harToEtterfoelgendeNewLine(block: Edit.Block.Paragraph) = block.content
+        .mapNotNull { it as? Edit.ParagraphContent.Text }
+        .mapIndexedNotNull { index, elem -> index.takeIf { elem is Edit.ParagraphContent.Text.NewLine } }
+        .any {
+            block.content
+                .mapNotNull { it as? Edit.ParagraphContent.Text }
+                .subList(it, block.content.lastIndex + 1)
+                .takeWhile { text -> text.erTom() }
+                .filter { text -> text is Edit.ParagraphContent.Text.NewLine }.size > 1
+        }
+
+    private fun Edit.ParagraphContent.Text.erTom() = when (this) {
+        is Edit.ParagraphContent.Text.NewLine -> true
+        is Edit.ParagraphContent.Text.Literal -> (editedText ?: text).trim().isEmpty()
+        is Edit.ParagraphContent.Text.Variable -> false // Dette er kanskje for enkelt
+    }
+
+}
 
