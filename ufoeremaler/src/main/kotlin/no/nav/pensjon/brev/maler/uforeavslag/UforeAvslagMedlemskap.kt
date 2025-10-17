@@ -88,7 +88,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             paragraph {
                 text(bokmal { +"Du flyttet til Norge " + fritekst("innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " +
-                        "Vi har fastsatt uføretidspunktet ditt til 1. mai 2015. Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
+                        "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
             }
             paragraph {
                 showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -96,7 +96,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { + "Fritekst med klargjøring av faktisk medlemsskap " })
+                text(bokmal { + fritekst("Fritekst med klargjøring av faktisk medlemsskap " ) })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, vi avslår derfor søknaden din om uføretrygd. Vedtaket er gjort etter folketrygdloven § 12-2. " })
