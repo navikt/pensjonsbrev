@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.feilutbetaling
 
 import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -34,7 +34,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetaling
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object UforeVedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
+object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
 
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 

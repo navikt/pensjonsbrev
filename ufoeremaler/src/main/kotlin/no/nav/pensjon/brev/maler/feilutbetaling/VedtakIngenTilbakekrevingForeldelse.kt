@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.feilutbetaling
 
 import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING_2
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.feilutbetaltTotalBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.sluttPeriodeForTilbakekreving
@@ -26,11 +26,11 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetaling
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object UforeVedtakFeilutbetalingIngenTilbakekreving : RedigerbarTemplate<VedtakFeilutbetalingUforeIngenTilbakekrevingDto> {
+object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbetalingUforeIngenTilbakekrevingDto> {
 
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
-    override val kode = UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING
+    override val kode = UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING_2
     override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -49,49 +49,49 @@ object UforeVedtakFeilutbetalingIngenTilbakekreving : RedigerbarTemplate<VedtakF
         val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
 
         title {
-            text(bokmal { + "Vi krever ikke tilbake pengene du har fått for mye i uføretrygd"})
+            text(bokmal { + "Vi krever ikke tilbake feilutbetalt uføretrygd"})
         }
         outline {
             paragraph {
-                text(bokmal { + "I vedtaket datert " + fritekst("dato") + " ble uføretrygden din endret på grunn av " + fritekst("årsak") + "." })
+                text(bokmal { + "Vi viser til forhåndsvarselet vårt " + fritekst("dato") + "." })
             }
             paragraph {
                 text(
-                    bokmal { + "Vi har vurdert om du har fått riktig utbetaling tidligere. Du har fått utbetalt for mye i perioden "
+                    bokmal { + "Du har fått utbetalt for mye uføretrygd i perioden "
                             + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format()
-                            + ". Det feilutbetalte beløpet er brutto " + feilutbetaltTotalBeloep.format(CurrencyFormat) + " kroner." },
+                            + ". Det feilutbetalte beløpet utgjør " + feilutbetaltTotalBeloep.format(CurrencyFormat) + " kroner inkludert skatt." },
                 )
             }
-            paragraph {
-                text (bokmal { + "Du har mottatt beløpet i god tro, og vi vurderer at du ikke kunne forstå at det var feil. "})
-            }
 
-            title1 { text(bokmal { + "Derfor krever vi ikke pengene tilbake" }) }
+            title1 { text(bokmal { + "Derfor krever vi ikke tilbake feilutbetalt uføretrygd" }) }
             paragraph {
                 text(
-                    bokmal { + "Nav har mottatt informasjon om " + fritekst("årsak") + ". Dette har ført til at du har fått utbetalt for mye i perioden "
+                    bokmal { + "Hele det feilutbetalte beløpet er foreldet. Vi krever derfor ikke tilbake uføretrygden som ble utbetalt i perioden "
                         + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + "." }
                 )
             }
+
+            title2 { text(bokmal {+ "Foreldelse"}) }
             paragraph {
-                text(bokmal {+ "Etter folketrygdloven § 22-15 kan Nav kreve tilbake feilutbetalinger hvis mottakeren forstod eller burde ha forstått at det var en feil. " +
-                        "Vi har vurdert om du kunne ha oppdaget feilen, basert på informasjon du har fått fra Nav."})
+                text(bokmal {+ "Etter foreldelsesloven §§ 2 og 3 foreldes et pengekrav som hovedregel etter tre år, regnet fra tidspunktet da feilutbetalingen fant sted." })
             }
             paragraph {
-                text(bokmal {+ "Vi mener at du mottok beløpet i god tro, og at du ikke hadde grunnlag for å forstå at utbetalingen var feil. " +
-                        "Vilkårene for tilbakekreving etter § 22-15 første ledd er derfor ikke oppfylt. " })
+                text(bokmal {+ "Den første feilutbetalingen ble gjort " + fritekst("dato") + ", og foreldelsesfristen for denne utbetalingen utløp " + fritekst("dato") + ". " +
+                        "Nav har vurdert at hele beløpet som ble feilutbetalt i perioden "
+                        + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + " er foreldet. " })
             }
             paragraph {
-                text(bokmal {+ "Etter § 22-15 femte ledd kan Nav kreve tilbake beløp som fortsatt er i behold når feilen oppdages. " +
-                        "Siden uføretrygd er en livsoppholdsytelse, antar vi at beløpet ikke er i behold. " +
-                        "Vilkårene for tilbakekreving etter femte ledd er derfor heller ikke oppfylt." })
+                text(bokmal {+ "Vi har også vurdert om unntaksregelen i foreldelsesloven § 10 kan benyttes. " +
+                        "Denne gir en tilleggsfrist på ett år dersom Nav ikke har hatt nødvendig kunnskap om kravet. " +
+                        "Nav fikk kunnskap om feilutbetalingen den " + fritekst("dato") + ", men det er ikke gjort fristavbrytende tiltak innen ett år etter dette. Unntaksregelen kan derfor ikke benyttes. " })
             }
             paragraph {
-                text(bokmal {+ "Konklusjon: Du trenger ikke betale tilbake beløpet du fikk for mye i perioden "
-                    + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + "." })
+                text(bokmal {+ "Hele det feilutbetalte beløpet er foreldet. Vi krever derfor ikke tilbake uføretrygden som ble utbetalt i perioden "
+                    + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + ". " +
+                        "Vi har ikke vurdert om vilkårene for tilbakekreving etter folketrygdloven § 22-15 første ledd er oppfylt, ettersom hele beløpet er foreldet.  " })
             }
             paragraph {
-                text(bokmal { + "Vedtaket er gjort etter folketrygdloven § 22-15 første og femte ledd. " })
+                text(bokmal { + "Vedtaket er gjort etter §§ 2, 3 og 10 i foreldelsesloven, og vi viser til folketrygdloven § 22-14, som fastslår at foreldelsesloven gjelder for ytelser etter folketrygdloven. " })
             }
 
             includePhrase(Felles.RettTilAKlageKort)
