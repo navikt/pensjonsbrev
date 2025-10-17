@@ -149,6 +149,7 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
         "Gross_amount[$radnummer]" to formaterValuta(
             pensjon.bruttobeloep,
+            pensjon.bruttobeloepDesimal,
             pensjon.valuta,
             pensjon.utbetalingsHyppighet
         ),
@@ -212,15 +213,16 @@ private fun datoForVedtaketTekst(
 }
 
 private fun formaterValuta(
-    beloep: Int?,
+    beloepInt: Int?,
+    beloepDesimal: String?,
     valuta: String?,
     utbetalingsHyppighet: P1Dto.Utbetalingshyppighet?
 ): Map<LanguageCode, String>? {
-    return if (beloep != null && valuta != null) {
+    return if ((beloepDesimal != null || beloepInt != null) && valuta != null) {
         val bokmalFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
         val englishFormatter = NumberFormat.getNumberInstance(Language.English.locale())
         return mapOf(
-            LanguageCode.BOKMAL to "${bokmalFormatter.format(beloep)} $valuta\n" +
+            LanguageCode.BOKMAL to "${beloepDesimal ?: bokmalFormatter.format(beloepInt)} $valuta\n" +
                     when (utbetalingsHyppighet) {
                         P1Dto.Utbetalingshyppighet.Aarlig -> "Årlig"
                         P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Kvartalvis"
@@ -231,7 +233,7 @@ private fun formaterValuta(
                         P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Ukjent, se vedtak"
                         null -> ""
                     },
-            LanguageCode.ENGLISH to "$valuta ${englishFormatter.format(beloep)}\n" +
+            LanguageCode.ENGLISH to "$valuta ${beloepDesimal ?: englishFormatter.format(beloepInt)}\n" +
                     when (utbetalingsHyppighet) {
                         P1Dto.Utbetalingshyppighet.Aarlig -> "Yearly"
                         P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Quarterly"
