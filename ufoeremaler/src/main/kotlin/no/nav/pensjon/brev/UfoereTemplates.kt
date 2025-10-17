@@ -41,6 +41,7 @@ object UfoereTemplates : AllTemplates {
         VarselFeilutbetaling,
         VedtakFeilutbetaling,
         VedtakIngenTilbakekreving,
-        VedtakIngenTilbakekrevingForeldelse
+        VedtakIngenTilbakekrevingForeldelse,
+        UforeAvslagMedlemskap
     )
 }

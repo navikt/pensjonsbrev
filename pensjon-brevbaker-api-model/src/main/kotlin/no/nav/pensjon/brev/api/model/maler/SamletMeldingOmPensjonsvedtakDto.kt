@@ -41,7 +41,7 @@ data class P1Dto(
         val institusjon: List<Institusjon>,
         val pensjonstype: Pensjonstype?,
         val datoFoersteUtbetaling: LocalDate?,
-        val bruttobeloep: Int?,
+        val bruttobeloepDesimal: String?,
         val valuta: String?,
         val utbetalingsHyppighet: Utbetalingshyppighet?,
         val vedtaksdato: String?,

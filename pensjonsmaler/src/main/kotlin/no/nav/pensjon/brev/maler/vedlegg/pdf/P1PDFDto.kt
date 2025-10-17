@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
-import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -148,7 +147,7 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         "Type_of_pension[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
         "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
         "Gross_amount[$radnummer]" to formaterValuta(
-            pensjon.bruttobeloep,
+            pensjon.bruttobeloepDesimal,
             pensjon.valuta,
             pensjon.utbetalingsHyppighet
         ),
@@ -212,15 +211,13 @@ private fun datoForVedtaketTekst(
 }
 
 private fun formaterValuta(
-    beloep: Int?,
+    beloepDesimal: String?,
     valuta: String?,
     utbetalingsHyppighet: P1Dto.Utbetalingshyppighet?
 ): Map<LanguageCode, String>? {
-    return if (beloep != null && valuta != null) {
-        val bokmalFormatter = NumberFormat.getNumberInstance(Language.Bokmal.locale())
-        val englishFormatter = NumberFormat.getNumberInstance(Language.English.locale())
+    return if (beloepDesimal != null && valuta != null) {
         return mapOf(
-            LanguageCode.BOKMAL to "${bokmalFormatter.format(beloep)} $valuta\n" +
+            LanguageCode.BOKMAL to "$beloepDesimal $valuta\n" +
                     when (utbetalingsHyppighet) {
                         P1Dto.Utbetalingshyppighet.Aarlig -> "Årlig"
                         P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Kvartalvis"
@@ -231,7 +228,7 @@ private fun formaterValuta(
                         P1Dto.Utbetalingshyppighet.UkjentSeVedtak -> "Ukjent, se vedtak"
                         null -> ""
                     },
-            LanguageCode.ENGLISH to "$valuta ${englishFormatter.format(beloep)}\n" +
+            LanguageCode.ENGLISH to "$valuta ${beloepDesimal}\n" +
                     when (utbetalingsHyppighet) {
                         P1Dto.Utbetalingshyppighet.Aarlig -> "Yearly"
                         P1Dto.Utbetalingshyppighet.Kvartalsvis -> "Quarterly"
