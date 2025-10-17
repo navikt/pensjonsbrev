@@ -111,6 +111,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                         "Du kan lese mer om supplerende stønad til uføre flyktninger på vår nettside nav.no. " })
             }
 
+            includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageKort)
             includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
