@@ -152,7 +152,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
-    val cacheConfig = if (skribentenConfig.getBoolean("services.valkey.enabled")) {
+    val cache = if (skribentenConfig.getBoolean("services.valkey.enabled")) {
         Valkey(System.getenv(), skribentenConfig.getString("services.valkey.instanceName"))
     } else {
         log.warn("Valkey is disabled, this is not recommended for production")
@@ -163,7 +163,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     install(Authentication) {
         skribentenJwt(azureADConfig)
     }
-    configureRouting(azureADConfig, skribentenConfig, cacheConfig)
+    configureRouting(azureADConfig, skribentenConfig, cache)
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
