@@ -1,47 +1,93 @@
 package no.nav.pensjon.brev.skribenten
 
-import kotlinx.coroutines.delay
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.AfterClass
 import org.junit.jupiter.api.Test
-import kotlin.time.Duration.Companion.milliseconds
+import org.junit.jupiter.api.assertNull
+import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.wait.strategy.Wait
+import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
+
+
+val valkeyContainer = GenericContainer("valkey/valkey:8.0.0")
 
 class CacheTest {
 
-    @Test
-    fun `cached vil hente ny verdi om den ikke er cached fra foer`(): Unit = runBlocking {
-        val cache = Cache<String, Int>()
-        assertEquals(9, cache.cached("aaa") { 9 })
+    val valkeyConfig: Map<String, String?>
+    val instanceName = "CACHE1"
+
+    init {
+        valkeyContainer.withExposedPorts(6379)
+        valkeyContainer.waitingFor(Wait.forListeningPort())
+        valkeyContainer.start()
+        valkeyConfig = mapOf(
+            "VALKEY_HOST_$instanceName" to valkeyContainer.host,
+            "VALKEY_PORT_$instanceName" to valkeyContainer.getMappedPort(6379).toString(),
+            "VALKEY_USERNAME_$instanceName" to "default",
+            "VALKEY_PASSWORD_$instanceName" to "",
+            "VALKEY_SSL_$instanceName" to "false",
+        )
     }
 
     @Test
-    fun `cached vil bruke eksisterende verdi`(): Unit = runBlocking {
-        val cache = Cache<String, Int>()
-        cache.cached("aaa") { 9 }
-
-        assertEquals(9, cache.cached("aaa") { -1 })
+    fun `henter verdi foerste gang, gjenbruker seinere`() {
+        val cache = Valkey(valkeyConfig, instanceName)
+        var counter = 0
+        runBlocking {
+            (1..10).forEach { _ ->
+                cache.cached("k", Int::class.java) {
+                    counter++
+                    123
+                }
+            }
+        }
+        assertEquals(1, counter)
+        assertEquals(123, cache.get("k", Int::class.java))
     }
 
     @Test
-    fun `cached vil hente ny verdi om eksisterende er utloept`(): Unit = runBlocking {
-        val cache = Cache<String, Int>(ttl = 50.milliseconds)
-        cache.cached("aaa") { 10 }
-        delay(100.milliseconds)
-
-        assertEquals(-1, cache.cached("aaa") { -1 })
+    fun `verdi som ikke er i cachen gir null for get`() {
+        assertNull(Valkey(valkeyConfig, instanceName).get("mangler", String::class.java))
     }
 
     @Test
-    fun `cached vil hente ny verdi ved expirable hvis tokenet er utgaatt selv om cache-innslaget ikke er utgaatt`() = runBlocking {
-        val cache = Cache<String, Expirable>(ttl = 10.minutes)
-        cache.cached("aaa") { DummyExpirable(false) }
-
-        assertEquals(DummyExpirable(true), cache.cached("aaa") { DummyExpirable(true) })
+    fun `kan oppdatere verdi som fins i cachen`() {
+        val cache = Valkey(valkeyConfig, instanceName)
+        val key = "k"
+        cache.update(key, "verdi1", 10.minutes)
+        val v1 = cache.get(key, String::class.java)
+        assertEquals("verdi1", v1)
+        cache.update(key, "verdi2")
+        assertEquals("verdi2", cache.get("k", String::class.java))
     }
-}
 
-private data class DummyExpirable(val valid: Boolean) : Expirable {
-    override fun isValid(): Boolean = valid
+    @Test
+    fun `returnerer null hvis exception i valkey-kall`() {
+        val objectMapper = object : ObjectMapper() {
+            override fun writeValueAsString(value: Any?): String? {
+                throw RuntimeException("test exception")
+            }
+        }
+        val cache = Valkey(valkeyConfig, instanceName, objectMapper)
+        runBlocking {
+            cache.cached("k", String::class.java) {
+                "v1"
+            }
+            assertNull(
+                cache.get("k", String::class.java)
+            )
+        }
+    }
+
+
+    companion object {
+        @JvmStatic
+        @AfterClass
+        fun stopValkey() {
+            valkeyContainer.stop()
+        }
+    }
 
 }

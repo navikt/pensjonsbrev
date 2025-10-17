@@ -23,7 +23,7 @@ interface SamhandlerService {
     suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -67,8 +67,7 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
-    private val samhandlerNavnCache = Cache<String, String>()
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached(idTSSEkstern, String::class.java) {
         hentSamhandler(idTSSEkstern).success?.navn
     }
 

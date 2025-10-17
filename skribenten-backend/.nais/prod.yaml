@@ -125,3 +125,6 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten.intern.nav.no"
+
+  - name: VALKEY_INSTANCE_NAME
+    value: "CACHE"

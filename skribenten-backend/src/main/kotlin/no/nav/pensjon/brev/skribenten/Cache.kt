@@ -1,51 +1,84 @@
 package no.nav.pensjon.brev.skribenten
 
-import kotlinx.coroutines.sync.Mutex
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.valkey.DefaultJedisClientConfig
+import io.valkey.HostAndPort
+import io.valkey.JedisPool
+import io.valkey.params.SetParams
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
-class Cache<K : Any, V : Any>(private val ttl: Duration = 10.minutes) {
-    private val timesource = TimeSource.Monotonic
-    private val cache = ConcurrentHashMap<K, Value<V>>()
-    private val cleanupLock = Mutex()
+private val defaultTtl = 30.minutes
 
-    private data class Value<V : Any>(val invalidAt: TimeMark, val value: V)
+interface Cache {
+    fun <K, V> get(key: K, clazz: Class<V>): V?
+    fun <K, V> update(key: K, value: V, ttl: Duration = defaultTtl)
+    suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
+        get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
+}
 
-    suspend fun getValue(key: K, fetch: suspend (K) -> V?): V? {
-        tryClearExpired()
+class Valkey(config: Map<String, String?>, instanceName: String, private val objectMapper: ObjectMapper = databaseObjectMapper) : Cache {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
-        return cache[key]
-            ?.takeIf { it.invalidAt.hasNotPassedNow() }
-            ?.value
-            ?.takeIf {
-                when (it) {
-                    is Expirable -> it.isValid()
-                    else -> true
-                }
+    private val jedisPool = setupJedis(config, instanceName)
+
+    override fun <K, V> get(key: K, clazz: Class<V>): V? =
+        try {
+            jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }
+        } catch (e: Exception) {
+            logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
+            null
+        }
+
+    override fun <K, V> update(key: K, value: V, ttl: Duration) {
+        try {
+            jedisPool.resource.use {
+                it.set(
+                    objectMapper.write(key),
+                    objectMapper.write(value),
+                    SetParams().apply {
+                        ex(ttl.inWholeSeconds)
+                    },
+                )
             }
-            ?: fetch(key)?.also { cache[key] = Value(timesource.markNow() + ttl, it) }
-    }
-
-    suspend fun cached(key: K, fetch: suspend (K) -> V?): V? =
-        getValue(key, fetch)
-
-    // Clear expired values from cache.
-    // Will only allow one actor to perform cleanup at any one time.
-    private fun tryClearExpired() {
-        if (cleanupLock.tryLock()) {
-            try {
-                cache.filter { it.value.invalidAt.hasPassedNow() }
-                    .forEach { cache.remove(it.key) }
-            } finally {
-                cleanupLock.unlock()
-            }
+        } catch (e: Exception) {
+            logger.warn("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
+            return
         }
     }
 }
 
-interface Expirable {
-    fun isValid(): Boolean
+class InMemoryCache : Cache {
+    private val objectMapper = databaseObjectMapper
+    private val cache = ConcurrentHashMap<String, String>()
+
+    override fun <K, V> get(key: K, clazz: Class<V>) =
+        cache[objectMapper.write(key)]?.let { objectMapper.readValue(it, clazz) }
+
+    override fun <K, V> update(key: K, value: V, ttl: Duration) {
+        cache[objectMapper.write(key)] = objectMapper.write(value)
+    }
+}
+
+private fun <V> ObjectMapper.write(value: V) = writeValueAsString(value)
+
+
+private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
+    val host = config["VALKEY_HOST_$instanceName"]!!
+    val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
+    val username = config["VALKEY_USERNAME_$instanceName"]!!
+    val password = config["VALKEY_PASSWORD_$instanceName"]!!
+    val ssl = config["VALKEY_SSL_$instanceName"]?.toBoolean() ?: true
+
+    return JedisPool(
+        HostAndPort(host, port),
+        DefaultJedisClientConfig.builder()
+            .ssl(ssl)
+            .user(username)
+            .password(password)
+            .build()
+    )
 }
