@@ -4,9 +4,11 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
@@ -15,9 +17,12 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.provider.Arguments
+import java.util.stream.Collectors
+import java.util.stream.IntStream
 import kotlin.collections.filterNot
 import kotlin.reflect.KProperty
 
@@ -146,6 +151,51 @@ abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<B
 
         malKoder.sorted().zipWithNext { a, b ->
             assert(a != b) { "Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev." }
+        }
+    }
+
+    @Test
+    fun `tittel paa under 50 tegn er OK for redigerbar`() {
+        val langTittel = IntStream.range(0, 15).mapToObj { "a" }.collect(Collectors.joining())
+        RedigerbarBrevkode(langTittel)
+    }
+    @Test
+    fun `tittel paa over 50 tegn feiler for redigerbar`() {
+        val langTittel = IntStream.range(0, 51).mapToObj { "b" }.collect(Collectors.joining())
+        assertThrows(IllegalArgumentException::class.java) { RedigerbarBrevkode(langTittel) }
+    }
+
+
+    @Test
+    fun `tittel paa under 50 tegn er OK for automatisk`() {
+        val langTittel = IntStream.range(0, 15).mapToObj { "c" }.collect(Collectors.joining())
+        AutomatiskBrevkode(langTittel)
+    }
+    @Test
+    fun `tittel paa over 50 tegn feiler for automatisk`() {
+        val langTittel = IntStream.range(0, 51).mapToObj { "d" }.collect(Collectors.joining())
+        assertThrows(IllegalArgumentException::class.java) { AutomatiskBrevkode(langTittel) }
+    }
+
+    @Test
+    fun `alle brevkoder skal være unike`(){
+        val redigerbareBrev = redigerbare.map { it.toString() }
+        val autobrev = auto.map { it.toString() }
+
+        assert(redigerbareBrev.intersect(autobrev.toSet()).isEmpty())
+    }
+
+    @Test
+    fun `ingen auto-koder har lengde over 50`() {
+        auto.filter { it.kode().length > 50 }.let {
+            assertTrue(it.isEmpty(), "Alle brevkoder må være under 50 lange for å kunne arkiveres. Disse feila: $it")
+        }
+    }
+
+    @Test
+    fun `ingen redigerbare koder har lengde over 50`() {
+        redigerbare.filter { it.kode().length > 50 }.let {
+            assertTrue(it.isEmpty(), "Alle brevkoder må være under 50 lange for å kunne arkiveres. Disse feila: $it")
         }
     }
 }
