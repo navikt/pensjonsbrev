@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.AlderTemplates
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
@@ -20,23 +21,28 @@ import kotlin.reflect.KProperty
 
 class AlderTemplatesTest {
 
+    val templates: AllTemplates = AlderTemplates
+
+    val auto = Aldersbrevkoder.AutoBrev.entries
+    val redigerbare = Aldersbrevkoder.Redigerbar.entries
+
     @Test
     fun `alle autobrev fins i templates`() {
-        val brukteKoder = AlderTemplates.hentAutobrevmaler().map { it.kode }
-        val ubrukteKoder = Aldersbrevkoder.AutoBrev.entries.filterNot { brukteKoder.contains(it) }
+        val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
+        val ubrukteKoder = auto.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
     @Test
     fun `alle redigerbare brev fins i templates`() {
-        val brukteKoder = AlderTemplates.hentRedigerbareMaler().map { it.kode }
-        val ubrukteKoder = Aldersbrevkoder.Redigerbar.entries.filterNot { brukteKoder.contains(it) }
+        val brukteKoder = templates.hentRedigerbareMaler().map { it.kode }
+        val ubrukteKoder = redigerbare.filterNot { brukteKoder.contains(it) }
         Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
 
     @Test
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
-        AlderTemplates.hentRedigerbareMaler().map { mal ->
+        templates.hentRedigerbareMaler().map { mal ->
             val clazz = mal.template.letterDataType.java
             val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
             saksbehandlervalg.flatMap { it.members }.filter { it is KProperty<*> }.forEach { field ->
@@ -48,7 +54,7 @@ class AlderTemplatesTest {
 
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
-        (AlderTemplates.hentAutobrevmaler() + AlderTemplates.hentRedigerbareMaler())
+        (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
             .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class)  }
             .forEach {
                 assertTrue(
@@ -63,7 +69,7 @@ class AlderTemplatesTest {
     fun `brev som er deklarert med brevtype vedtaksbrev skal ha brevkontekst vedtak`() {
         assertEquals(
             emptyList<String>(),
-            AlderTemplates.hentRedigerbareMaler()
+            templates.hentRedigerbareMaler()
                 .filter { it.template.letterMetadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
                 .filterNot { it.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK }
                 .map { it.javaClass.simpleName }
