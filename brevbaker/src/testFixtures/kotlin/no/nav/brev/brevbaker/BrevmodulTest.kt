@@ -29,7 +29,7 @@ import kotlin.reflect.KProperty
 
 abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<Brevkode.Automatisk>, val redigerbare: Collection<Brevkode.Redigerbart>) {
     @Test
-    fun `alle autobrev fins i templates`() {
+    open fun `alle autobrev fins i templates`() {
         val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
         val ubrukteKoder = auto.filterNot { brukteKoder.contains(it) }
         assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
@@ -140,7 +140,7 @@ abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<B
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 
-    private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
+    protected fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}"
 
 

@@ -3,59 +3,62 @@ package no.nav.pensjon.etterlatte
 import io.ktor.util.reflect.instanceOf
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
-import no.nav.brev.brevbaker.TestTags.MANUAL_TEST
+import no.nav.brev.brevbaker.TemplatesTest
+import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.jacksonObjectMapper
-import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
 
-private val objectMapper = jacksonObjectMapper()
+val filterForPDF = listOf<Brevkode<*>>()
 
-class TemplateResourceTest {
+class EtterlatteTemplatesTest : TemplatesTest(
+    templates = EtterlatteMaler,
+    auto = EtterlatteBrevKode.entries,
+    redigerbare = setOf()
+) {
 
-    @Tag(MANUAL_TEST)
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
-    @MethodSource("alleMalene")
-    fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-        etterlatteBrevKode: Brevkode.Automatisk,
-        fixtures: T,
-        spraak: Language,
-    ) {
-        val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
-
-        letter.renderTestPDF(filnavn(etterlatteBrevKode, spraak))
+    @Test
+    override fun `alle autobrev fins i templates`() {
+        val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
+        val ubrukteKoder = auto.filterNot { it == EtterlatteBrevKode.INGEN_REDIGERBAR_DEL }.filterNot { brukteKoder.contains(it) }
+        assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
+    @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
-    @MethodSource("alleMalene")
-    fun <T : Any> testHtml(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-        etterlatteBrevKode: Brevkode.Automatisk,
+    @MethodSource("filtrerteMaler")
+    override fun <T : Any> testPdf(
+        template: LetterTemplate<LanguageSupport, T>,
+        brevkode: Brevkode<*>,
         fixtures: T,
         spraak: Language,
-    ) {
-        LetterTestImpl(
-            template,
-            fixtures,
-            spraak,
-            Fixtures.felles,
-        ).renderTestHtml(filnavn(etterlatteBrevKode, spraak))
-    }
+    ) = renderPdf(template, brevkode, fixtures, spraak)
 
-    private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
-        "${brevkode.kode()}_${spraak.javaClass.simpleName}"
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
+    @MethodSource("alleMalene")
+    override fun <T : Any> testHtml(
+        template: LetterTemplate<LanguageSupport, T>,
+        brevkode: Brevkode<*>,
+        fixtures: T,
+        spraak: Language,
+    ) = renderHtml(template, brevkode, fixtures, spraak)
+
+
+    private val objectMapper = jacksonObjectMapper()
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
@@ -91,16 +94,13 @@ class TemplateResourceTest {
 
     companion object {
         @JvmStatic
-        fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English)
-            .flatMap { spraak ->
-                EtterlatteMaler.hentAutobrevmaler().map {
-                    Arguments.of(
-                        it.template,
-                        it.kode,
-                        Fixtures.create(it.template.letterDataType),
-                        spraak,
-                    )
-                }
-            }
+        fun filtrerteMaler(): List<Arguments> = finnMaler(filterForPDF)
+
+        @JvmStatic
+        fun alleMalene(): List<Arguments> = finnMaler(listOf())
+
+        @JvmStatic
+        fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> =
+            finnMaler(EtterlatteMaler, Fixtures, filter)
     }
 }
