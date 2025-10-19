@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,25 +18,25 @@ import kotlin.collections.filterNot
 import kotlin.collections.map
 import kotlin.reflect.KProperty
 
-class AlderTemplatesTest {
+class AlderTemplatesTest : TemplatesTest(
+    templates = AlderTemplates,
+    auto = Aldersbrevkoder.AutoBrev.entries,
+    redigerbare = Aldersbrevkoder.Redigerbar.entries,
+)
 
-    val templates: AllTemplates = AlderTemplates
-
-    val auto = Aldersbrevkoder.AutoBrev.entries
-    val redigerbare = Aldersbrevkoder.Redigerbar.entries
-
+abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<Brevkode.Automatisk>, val redigerbare: Collection<Brevkode.Redigerbart>) {
     @Test
     fun `alle autobrev fins i templates`() {
         val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
         val ubrukteKoder = auto.filterNot { brukteKoder.contains(it) }
-        Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
+        assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
     @Test
     fun `alle redigerbare brev fins i templates`() {
         val brukteKoder = templates.hentRedigerbareMaler().map { it.kode }
         val ubrukteKoder = redigerbare.filterNot { brukteKoder.contains(it) }
-        Assertions.assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
+        assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
 
     @Test
