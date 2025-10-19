@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -33,7 +32,6 @@ class UfoereProductionTemplatesTest : TemplatesTest(
         spraak: Language,
     ) = renderPdf(template, brevkode, fixtures, spraak)
 
-    @Disabled("Det er dto-er som ikke er støtta i Fixtures her")
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     override fun <T : Any> testHtml(
