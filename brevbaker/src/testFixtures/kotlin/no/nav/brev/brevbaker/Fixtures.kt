@@ -5,6 +5,11 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.LocalDate
+import kotlin.reflect.KClass
+
+interface LetterDataFactory {
+    fun <T : Any> create(letterDataType: KClass<T>): T
+}
 
 object Fixtures {
 
