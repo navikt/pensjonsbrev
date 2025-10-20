@@ -41,8 +41,8 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = try {
-        cache.cached("NavAnsattEnhetListe2-", ansattId, List::class.java.javaClass) {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> =
+        cache.cached("NavAnsattEnhetListe2-", ansattId, List::class.java) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
@@ -50,10 +50,6 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
             "Ingen treff",
             HttpStatusCode.ExpectationFailed
         )
-    } catch (e: Exception) {
-        logger.error("Feil ved henting av navansattenhet $ansattId", e)
-        ServiceResult.Error("Feil ved henting av navansattenhet $ansattId", HttpStatusCode.InternalServerError)
-    }
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
