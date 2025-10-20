@@ -32,7 +32,7 @@ import kotlin.reflect.KProperty
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-abstract class TemplatesTest(
+abstract class BrevmodulTest(
     val templates: AllTemplates,
     val auto: Collection<Brevkode.Automatisk>,
     val redigerbare: Collection<Brevkode.Redigerbart>,

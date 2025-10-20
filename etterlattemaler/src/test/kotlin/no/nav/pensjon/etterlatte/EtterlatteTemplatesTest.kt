@@ -3,7 +3,7 @@ package no.nav.pensjon.etterlatte
 import io.ktor.util.reflect.instanceOf
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
-import no.nav.brev.brevbaker.TemplatesTest
+import no.nav.brev.brevbaker.BrevmodulTest
 import no.nav.brev.brevbaker.jacksonObjectMapper
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.Language
@@ -22,7 +22,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class EtterlatteTemplatesTest : TemplatesTest(
+class EtterlatteTemplatesTest : BrevmodulTest(
     templates = EtterlatteMaler,
     auto = EtterlatteBrevKode.entries,
     redigerbare = setOf(),
