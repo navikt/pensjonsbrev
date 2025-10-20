@@ -37,10 +37,10 @@ class Valkey(
                 tryWithRetry { get(it, key) }
                     ?.let { k -> try {
                         objectMapper.readValue(k, clazz)
-                    } catch (e: Exception) {
-                        logger.warn("Fikk feilmelding ved forsøk på å lese ut $k som $clazz")
-                        logger.warn("Fikk feilmelding ved forsøk på å lese ut $k som $clazz, her er som string: ${objectMapper.readValue(k, String::class.java)}")
-                        throw e
+                    } catch (_: Exception) {
+                        logger.warn("Fikk feilmelding ved forsøk på å lese ut $k som $clazz. K contains \\ : ${k.contains("\\")} ")
+                        val uten = k.replace("\\", "")
+                        return@let objectMapper.readValue(uten, clazz)
                     }
                     }
             }
