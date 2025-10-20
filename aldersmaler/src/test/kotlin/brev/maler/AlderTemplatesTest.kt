@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.brev.brevbaker.BrevmodulTest
 import no.nav.pensjon.brev.AlderTemplates
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 
 class AlderTemplatesTest : BrevmodulTest(
     templates = AlderTemplates,
