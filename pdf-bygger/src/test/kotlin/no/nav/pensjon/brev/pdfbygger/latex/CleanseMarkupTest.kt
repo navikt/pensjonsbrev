@@ -43,7 +43,7 @@ class CleanseMarkupTest {
     }
 
     @Test
-    fun `to tomme titler etter hverandre blir til en tom tittel`() {
+    fun `to tomme titler etter hverandre blir fjernet`() {
         val markup = letterMarkup {
             outline {
                 title1 {
@@ -61,7 +61,7 @@ class CleanseMarkupTest {
     }
 
     @Test
-    fun `kun en tom paragraf paa rad beholdes`() {
+    fun `tomme paragraphs fjernes`() {
         val markup = letterMarkup {
             outline {
                 paragraph {
@@ -78,8 +78,8 @@ class CleanseMarkupTest {
             }
         }
         val cleansed = markup.clean()
-        assertThat(cleansed.blocks).hasSize(2)
-        assertThat(cleansed.blocks[1]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+        assertThat(cleansed.blocks).hasSize(1)
+        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
             assertThat(paragraph.content).anySatisfy {
                 if (it is LetterMarkup.ParagraphContent.Text) {
                     assertThat(it.text).isEqualTo("Innhold")
@@ -117,7 +117,7 @@ class CleanseMarkupTest {
     }
 
     @Test
-    fun bla() {
+    fun `newline kan ikke starte i en blokk`() {
         val cleansed = letterMarkup {
             outline {
                 paragraph {  }
@@ -127,11 +127,65 @@ class CleanseMarkupTest {
                 }
             }
         }.clean()
-        assertThat(cleansed.blocks).hasSize(2)
-        assertThat(cleansed.blocks[1]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+        assertThat(cleansed.blocks).hasSize(1)
+        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
             assertThat(paragraph.content).hasSize(1)
             assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
     }
 
+    @Test
+    fun `newline etter itemlist fjernes`() {
+        val cleansed = letterMarkup {
+            outline {
+                paragraph {
+                    text("Før list")
+                    list {
+                        item { text("Punkt 1") }
+                        item { text("Punkt 2") }
+                    }
+                    newLine()
+                    text("Innhold etter newLine")
+                }
+            }
+        }.clean()
+        assertThat(cleansed.blocks).hasSize(1)
+        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            assertThat(paragraph.content).hasSize(3)
+            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        }
+    }
+
+    @Test
+    fun `newline etter table fjernes`() {
+        val cleansed = letterMarkup {
+            outline {
+                paragraph {
+                    text("Før table")
+                    table(
+                        header = {
+                            column { text("Kolonne 1") }
+                            column { text("Kolonne 2") }
+                        }
+                    ) {
+                        row {
+                            cell { text("Celle 1") }
+                            cell { text("Celle 2") }
+                        }
+                        row {
+                            cell { text("Celle 3") }
+                            cell { text("Celle 4") }
+                        }
+                    }
+                    newLine()
+                    text("Innhold etter newLine")
+                }
+            }
+        }.clean()
+        assertThat(cleansed.blocks).hasSize(1)
+        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            assertThat(paragraph.content).hasSize(3)
+            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        }
+    }
 }

@@ -71,4 +71,43 @@ class ElementIntegrationTest {
             }
         }.renderTestPDF("elementTest paragraph med newline etter tom paragraph", pdfByggerService = laTeXCompilerService)
     }
+
+    @Test
+    fun `newline etter itemlist`() {
+        outlineTestTemplate<EmptyBrevdata> {
+            paragraph {
+                list {
+                    item { text(bokmal { +"Punkt 1" }) }
+                    item { text(bokmal { +"111" }) }
+                }
+                newline()
+                text(bokmal { +"Etter newline" })
+            }
+        }.renderTestPDF("elementTest kan ha newline etter itemlist", pdfByggerService = laTeXCompilerService)
+    }
+
+    @Test
+    fun `newline etter table`() {
+        outlineTestTemplate<EmptyBrevdata> {
+            paragraph {
+                table(
+                    header = {
+                        column { text(bokmal { +"Kolonne 1" }) }
+                        column { text(bokmal { +"Kolonne 2" }) }
+                    }
+                ) {
+                    row {
+                        cell { text(bokmal { +"Celle 1" }) }
+                        cell { text(bokmal { +"Celle 2" }) }
+                    }
+                    row {
+                        cell { text(bokmal { +"Celle 3" }) }
+                        cell { text(bokmal { +"Celle 4" }) }
+                    }
+                }
+                newline()
+                text(bokmal { +"Etter newline" })
+            }
+        }.renderTestPDF("elementTest kan ha newline etter table", pdfByggerService = laTeXCompilerService)
+    }
 }

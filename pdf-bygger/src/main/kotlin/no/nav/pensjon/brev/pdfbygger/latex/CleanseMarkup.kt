@@ -5,30 +5,27 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
-fun LetterMarkup.clean(): LetterMarkup = cleanMarkup(this)
+fun LetterMarkup.clean(): LetterMarkup =
+    cleanMarkup(this)
 
 @OptIn(InterneDataklasser::class)
-private fun cleanMarkup(markup: LetterMarkup): LetterMarkup = LetterMarkupImpl(
-    title = markup.title,
-    sakspart = markup.sakspart,
-    blocks = markup.blocks.mapNotNull { clean(it) }.removeSucceedingEmptyBlocks(),
-    signatur = markup.signatur
-)
+private fun cleanMarkup(markup: LetterMarkup): LetterMarkup =
+    LetterMarkupImpl(
+        title = markup.title,
+        sakspart = markup.sakspart,
+        blocks = markup.blocks.mapNotNull { clean(it) }.removeEmptyBlocks(),
+        signatur = markup.signatur
+    )
 
-private fun List<Block>.removeSucceedingEmptyBlocks(): List<Block> = fold(emptyList()) { acc, current ->
-    val prev = acc.lastOrNull()
-    if (prev != null && isEmpty(prev) && isEmpty(current)) {
-        acc
-    } else {
-        acc + current
-    }
-}
+private fun List<Block>.removeEmptyBlocks(): List<Block> =
+    filter { !isEmpty(it) }
 
-private fun isEmpty(block: Block): Boolean = when (block) {
-    is Block.Title1 -> block.content
-    is Block.Title2 -> block.content
-    is Block.Paragraph -> block.content
-}.all { isEmpty(it) }
+private fun isEmpty(block: Block): Boolean =
+    when (block) {
+        is Block.Title1 -> block.content
+        is Block.Title2 -> block.content
+        is Block.Paragraph -> block.content
+    }.all { isEmpty(it) }
 
 private fun isEmpty(content: LetterMarkup.ParagraphContent) =
     content is LetterMarkup.ParagraphContent.Text.NewLine || (content is LetterMarkup.ParagraphContent.Text && content.text.isBlank())
@@ -73,14 +70,9 @@ private fun List<LetterMarkup.ParagraphContent>.removeInvalidNewLines(): List<Le
     }
 
 private fun List<LetterMarkup.ParagraphContent>.endsWithLinebreakableContent(): Boolean =
-    if (isEmpty()) {
-        false
-    } else {
-        val lastBreakableContent = lastOrNull {
-            (it is LetterMarkup.ParagraphContent.Text.NewLine)
-                    || (it is LetterMarkup.ParagraphContent.Text && it.text.isNotBlank())
-                    || (it is LetterMarkup.ParagraphContent.ItemList)
-                    || (it is LetterMarkup.ParagraphContent.Table)
-        }
-        lastBreakableContent != null && lastBreakableContent !is LetterMarkup.ParagraphContent.Text.NewLine
+    dropLastWhile {
+        // Ignore trailing literal/variable texts that are blank
+        it is LetterMarkup.ParagraphContent.Text && it !is LetterMarkup.ParagraphContent.Text.NewLine && it.text.isBlank()
+    }.lastOrNull().let {
+        it is LetterMarkup.ParagraphContent.Text && it.text.isNotBlank()
     }
