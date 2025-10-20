@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 private val defaultTtl = 1.minutes
@@ -61,14 +60,14 @@ class Valkey(
             }
         }
 
-    private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(prefix + objectMapper.writeValueAsString(key))
+    private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(prefix +  "-" + objectMapper.writeValueAsString(key))
 
     override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
         try {
             jedisPool.resource.use {
                 tryWithRetry {
                     it.set(
-                        prefix + objectMapper.writeValueAsString(key),
+                        prefix + "-" + objectMapper.writeValueAsString(key),
                         objectMapper.writeValueAsString(value),
                         SetParams().apply {
                             ex(ttl.inWholeSeconds)

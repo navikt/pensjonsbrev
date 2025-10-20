@@ -59,7 +59,7 @@ class CacheTest {
     fun `kan oppdatere verdi som fins i cachen`() {
         val cache = Valkey(valkeyConfig, instanceName)
         val key = "k"
-        cache.update(key, "verdi1", 10.minutes)
+        cache.update("", key, "verdi1", 10.minutes)
         val v1 = cache.get("", key, String::class.java)
         assertEquals("verdi1", v1)
         cache.update("", key, "verdi2")
