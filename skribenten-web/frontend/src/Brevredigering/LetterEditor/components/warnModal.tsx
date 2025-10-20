@@ -4,6 +4,7 @@ import React from "react";
 export type WarnModalKind = "fritekst" | "requiredSaksbehandlerValg" | "both";
 
 // Used discriminated props so that only relevant props are required for each kind.
+// here in this case "count" is only relevant for "fritekst" and "both" kinds.
 type WarnModalProps =
   | {
       kind: "fritekst";
