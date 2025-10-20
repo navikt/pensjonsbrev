@@ -3,6 +3,8 @@ app-name: "skribenten-backend"
 database:
   auditlog: "on"
 
+valkeyinstance: "cache"
+
 ingresses:
   - "https://pensjon-skribenten-api.intern.nav.no"
 
@@ -125,6 +127,3 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten.intern.nav.no"
-
-  - name: VALKEY_INSTANCE_NAME
-    value: "CACHE"

@@ -23,7 +23,7 @@ interface Cache {
 class Valkey(config: Map<String, String?>, instanceName: String, private val objectMapper: ObjectMapper = databaseObjectMapper) : Cache {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val jedisPool = setupJedis(config, instanceName)
+    private val jedisPool = setupJedis(config, instanceName.uppercase())
 
     override fun <K, V> get(key: K, clazz: Class<V>): V? =
         try {
