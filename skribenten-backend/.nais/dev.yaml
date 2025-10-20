@@ -3,6 +3,8 @@ app-name: "skribenten-backend"
 database:
   auditlog: "off"
 
+valkeyinstance: "cache"
+
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 
@@ -39,7 +41,6 @@ inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: dev-gcp
-
   # PEN
   - application: pensjon-pen-q0
     namespace: pensjon-q0
@@ -139,6 +140,3 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
-
-  - name: VALKEY_INSTANCE_NAME
-    value: "CACHE"
