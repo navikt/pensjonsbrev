@@ -28,7 +28,7 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
     override fun <K, V> get(key: K, clazz: Class<V>): V? =
         try {
             logger.info("Henter verdi for {}", key)
-            jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }.also {
+            jedisPool.resource.use { it.get(objectMapper.writeValueAsString(key))?.let { k -> objectMapper.readValue(k, clazz) } }.also {
                 logger.info("Hentet verdi for {}: {}", key, it)
             } ?: logger.info("Fant ingen verdi for {}", key).let { null }
         } catch (e: Exception) {
@@ -41,8 +41,8 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
             logger.info("Oppdaterer verdi for {}", key)
             jedisPool.resource.use {
                 it.set(
-                    objectMapper.write(key),
-                    objectMapper.write(value),
+                    objectMapper.writeValueAsString(key),
+                    objectMapper.writeValueAsString(value),
                     SetParams().apply {
                         ex(ttl.inWholeSeconds)
                     },
@@ -60,15 +60,12 @@ class InMemoryCache : Cache {
     private val cache = ConcurrentHashMap<String, String>()
 
     override fun <K, V> get(key: K, clazz: Class<V>) =
-        cache[objectMapper.write(key)]?.let { objectMapper.readValue(it, clazz) }
+        cache[objectMapper.writeValueAsString(key)]?.let { objectMapper.readValue(it, clazz) }
 
     override fun <K, V> update(key: K, value: V, ttl: Duration) {
-        cache[objectMapper.write(key)] = objectMapper.write(value)
+        cache[objectMapper.writeValueAsString(key)] = objectMapper.writeValueAsString(value)
     }
 }
-
-private fun <V> ObjectMapper.write(value: V) = writeValueAsString(value)
-
 
 private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
     val host = config["VALKEY_HOST_$instanceName"]!!
