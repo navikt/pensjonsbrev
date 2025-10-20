@@ -37,7 +37,6 @@ class Valkey(
                 tryWithRetry { get(it, key) }
                     ?.let { k -> objectMapper.readValue(k, clazz) }
             }
-                ?: logger.info("Fant ingen verdi for {}", key).let { null }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
             null
@@ -58,7 +57,6 @@ class Valkey(
 
     override fun <K, V> update(key: K, value: V, ttl: Duration) {
         try {
-            logger.info("Oppdaterer verdi for {}", key)
             jedisPool.resource.use {
                 tryWithRetry {
                     it.set(
