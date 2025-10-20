@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.skribenten
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
+import io.valkey.Jedis
 import io.valkey.JedisPool
+import io.valkey.exceptions.JedisConnectionException
 import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
@@ -20,31 +22,53 @@ interface Cache {
         get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
 }
 
-class Valkey(config: Map<String, String?>, instanceName: String, private val objectMapper: ObjectMapper = databaseObjectMapper) : Cache {
+class Valkey(
+    config: Map<String, String?>,
+    instanceName: String,
+    private val objectMapper: ObjectMapper = databaseObjectMapper,
+) : Cache {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val jedisPool = setupJedis(config, instanceName.uppercase())
 
     override fun <K, V> get(key: K, clazz: Class<V>): V? =
         try {
-            jedisPool.resource.use { it.get(objectMapper.writeValueAsString(key))?.let { k -> objectMapper.readValue(k, clazz) } }
+            jedisPool.resource.use {
+                tryWithRetry { get(it, key) }
+                    ?.let { k -> objectMapper.readValue(k, clazz) }
+            }
                 ?: logger.info("Fant ingen verdi for {}", key).let { null }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
             null
         }
 
+    private fun <T> tryWithRetry(action: () -> T?): T? =
+        try {
+            action()
+        } catch (e: JedisConnectionException) {
+            try {
+                action()
+            } catch (e2: Exception) {
+                throw e2.also { it.addSuppressed(e) }
+            }
+        }
+
+    private fun <K> get(jedis: Jedis, key: K): String? = jedis.get(objectMapper.writeValueAsString(key))
+
     override fun <K, V> update(key: K, value: V, ttl: Duration) {
         try {
             logger.info("Oppdaterer verdi for {}", key)
             jedisPool.resource.use {
-                it.set(
-                    objectMapper.writeValueAsString(key),
-                    objectMapper.writeValueAsString(value),
-                    SetParams().apply {
-                        ex(ttl.inWholeSeconds)
-                    },
-                )
+                tryWithRetry {
+                    it.set(
+                        objectMapper.writeValueAsString(key),
+                        objectMapper.writeValueAsString(value),
+                        SetParams().apply {
+                            ex(ttl.inWholeSeconds)
+                        },
+                    )
+                }
             }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
