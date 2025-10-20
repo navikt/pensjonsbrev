@@ -85,7 +85,10 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
 
         return if (response.status.isSuccess()) {
             response.body<TokenResponse.OnBehalfOfToken>().also {
-                cache.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body(), ttl = it.expiresIn.seconds.minus(5.minutes))
+                val tokenTtl = it.expiresIn.seconds.minus(5.minutes)
+                if (tokenTtl.isPositive()) {
+                    cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>(key, response.body(), ttl = tokenTtl)
+                }
             }
         } else {
             response.body<TokenResponse.ErrorResponse>()
