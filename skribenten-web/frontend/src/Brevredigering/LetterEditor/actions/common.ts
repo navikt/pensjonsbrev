@@ -633,12 +633,14 @@ export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
         return (block.content ?? []).flatMap((content) => {
           if (isLiteral(content)) return [content];
           if (isItemList(content))
-            return content.items.flatMap((item) => (item.content ?? []).filter((literal) => isLiteral(literal)));
+            return content?.items.flatMap((item) => (item?.content ?? []).filter((literal) => isLiteral(literal)));
           if (isTable(content)) {
-            const body = content.rows.flatMap((row) =>
-              row.cells.flatMap((cell) => (cell.text ?? []).filter(isLiteral)),
+            const header = content.header?.colSpec?.flatMap((spec) =>
+              (spec.headerContent?.text ?? []).filter(isLiteral),
             );
-            const header = content.header.colSpec.flatMap((spec) => (spec.headerContent.text ?? []).filter(isLiteral));
+            const body = content.rows?.flatMap((row) =>
+              row.cells?.flatMap((cell) => (cell.text ?? []).filter(isLiteral)),
+            );
             return [...header, ...body];
           }
           return [];
@@ -656,8 +658,6 @@ export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
   return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
 }
 
-// !literal.editedText || literal.editedText.trim() === "" is a bit to naive, doent take into concideration merged literals etc.
-export function countUnfilledFritekstPlaceholders(letter: EditedLetter): number {
-  return collectFritekstLiterals(letter).filter((literal) => !literal.editedText || literal.editedText.trim() === "")
-    .length;
-}
+export const countUnfilledFritekstPlaceholders = (letter: EditedLetter): number => {
+  return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
+};
