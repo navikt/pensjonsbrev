@@ -19,7 +19,7 @@ import kotlin.jvm.java
 interface NavansattService {
     suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean>
     suspend fun hentNavansatt(ansattId: String): Navansatt?
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter>
+    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
 }
 
 class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
@@ -41,13 +41,12 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> = try {
-        cache.cached("NavAnsattEnhetListe", ansattId, NavAnsattEnheter::class.java.javaClass) {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = try {
+        cache.cached("NavAnsattEnhetListe", ansattId, List::class.java.javaClass) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
-                ?.let { NavAnsattEnheter(it) }
-        }?.let { ServiceResult.Ok(it as NavAnsattEnheter) } ?: ServiceResult.Error(
+        }?.let { ServiceResult.Ok(it as List<NAVAnsattEnhet>) } ?: ServiceResult.Error(
             "Ingen treff",
             HttpStatusCode.ExpectationFailed
         )
@@ -58,7 +57,6 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
-            .map { it.enheter }
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
