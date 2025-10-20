@@ -9,9 +9,9 @@ import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.hours
 
-private val defaultTtl = 30.minutes
+private val defaultTtl = 1.hours
 
 interface Cache {
     fun <K, V> get(key: K, clazz: Class<V>): V?
