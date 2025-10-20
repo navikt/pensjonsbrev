@@ -53,6 +53,26 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
             return
         }
     }
+
+    private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
+        logger.info("Validerer config for $instanceName")
+        config.entries.filter { it.key.contains("VALKEY_HOST") }.forEach { logger.info("${it.key}=${it.value}") }
+        config.entries.filter { it.key.contains("VALKEY_PORT") }.forEach { logger.info("${it.key}=${it.value}") }
+        val host = config["VALKEY_HOST_$instanceName"]!!
+        val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
+        val username = config["VALKEY_USERNAME_$instanceName"]!!
+        val password = config["VALKEY_PASSWORD_$instanceName"]!!
+        val ssl = config["VALKEY_SSL_$instanceName"]?.toBoolean() ?: true
+
+        return JedisPool(
+            HostAndPort(host, port),
+            DefaultJedisClientConfig.builder()
+                .ssl(ssl)
+                .user(username)
+                .password(password)
+                .build()
+        )
+    }
 }
 
 class InMemoryCache : Cache {
@@ -65,21 +85,4 @@ class InMemoryCache : Cache {
     override fun <K, V> update(key: K, value: V, ttl: Duration) {
         cache[objectMapper.writeValueAsString(key)] = objectMapper.writeValueAsString(value)
     }
-}
-
-private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
-    val host = config["VALKEY_HOST_$instanceName"]!!
-    val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
-    val username = config["VALKEY_USERNAME_$instanceName"]!!
-    val password = config["VALKEY_PASSWORD_$instanceName"]!!
-    val ssl = config["VALKEY_SSL_$instanceName"]?.toBoolean() ?: true
-
-    return JedisPool(
-        HostAndPort(host, port),
-        DefaultJedisClientConfig.builder()
-            .ssl(ssl)
-            .user(username)
-            .password(password)
-            .build()
-    )
 }
