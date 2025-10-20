@@ -74,7 +74,7 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 
-            includePhrase(RettTilAKlageKort)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
