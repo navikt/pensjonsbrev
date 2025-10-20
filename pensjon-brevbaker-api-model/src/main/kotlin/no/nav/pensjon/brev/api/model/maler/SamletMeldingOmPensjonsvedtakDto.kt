@@ -51,7 +51,7 @@ data class P1Dto(
     )
 
     data class AvslaattPensjon(
-        val institusjon: Institusjon?,
+        val institusjon: Institusjon? = null,
         val institusjoner: List<Institusjon>?,
         val pensjonstype: Pensjonstype?,
         val avslagsbegrunnelse: Avslagsbegrunnelse?,
