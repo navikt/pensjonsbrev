@@ -86,6 +86,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
         return if (response.status.isSuccess()) {
             response.body<TokenResponse.OnBehalfOfToken>().also {
                 val tokenTtl = it.expiresIn.seconds.minus(5.minutes)
+                logger.info("Got token for scope $scope, expires in ${tokenTtl.inWholeSeconds} seconds")
                 if (tokenTtl.isPositive()) {
                     cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>(key, response.body(), ttl = tokenTtl)
                 }
