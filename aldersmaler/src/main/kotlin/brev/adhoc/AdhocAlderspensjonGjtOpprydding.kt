@@ -5,10 +5,10 @@ import brev.felles.HarDuSpoersmaal
 import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
