@@ -34,7 +34,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
     }
 
     override suspend fun getEnhet(enhetId: String): NavEnhet? =
-        cache.cached(enhetId, NavEnhet::class.java) {
+        cache.cached("Norg2enhet-$enhetId", NavEnhet::class.java) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             client.get("api/v1/enhet/$enhetId")
                 .toServiceResult<NavEnhet>()

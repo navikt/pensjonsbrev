@@ -42,7 +42,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> =
-        cache.cached(ansattId, NavAnsattEnheter::class.java.javaClass) {
+        cache.cached("NavAnsattEnhetListe-$ansattId", NavAnsattEnheter::class.java.javaClass) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
@@ -55,7 +55,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? =
-        cache.cached(ansattId, Navansatt::class.java) {
+        cache.cached("Navansatt-$ansattId", Navansatt::class.java) {
             client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }
                 .resultOrNull()

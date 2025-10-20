@@ -62,7 +62,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     }
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
-        val key = Pair(principal.navIdent, scope)
+        val key = Pair("obo-$principal.navIdent", scope)
         val value = cache.get(key, TokenResponse.OnBehalfOfToken::class.java)
 
         if (value != null) {
