@@ -58,7 +58,6 @@ class SakspartBuilder {
     var gjelderNavn: String = "Navn Navnesen"
     var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer("12345678901")
     var annenMottakerNavn: String? = null
-    var vergeNavn: String? = null
     var saksnummer: String = "123"
     var dokumentDato: LocalDate = LocalDate.of(2025, 1, 1)
 
@@ -67,7 +66,6 @@ class SakspartBuilder {
             gjelderNavn = gjelderNavn,
             gjelderFoedselsnummer = gjelderFoedselsnummer,
             annenMottakerNavn = annenMottakerNavn,
-            vergeNavn = vergeNavn,
             saksnummer = saksnummer,
             dokumentDato = dokumentDato,
         )

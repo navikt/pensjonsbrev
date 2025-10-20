@@ -19,7 +19,6 @@ fun Felles.copy(
     avsenderEnhet: NavEnhet = this.avsenderEnhet,
     bruker: Bruker = this.bruker,
     annenMottaker: String? = this.annenMottakerNavn,
-    vergeNavn: String? = this.vergeNavn,
     signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
 ): Felles = FellesFactory.copy(
     dokumentDato = dokumentDato,
@@ -27,6 +26,5 @@ fun Felles.copy(
     avsenderEnhet = avsenderEnhet,
     bruker = bruker,
     annenMottaker = annenMottaker,
-    vergeNavn = vergeNavn,
     signerendeSaksbehandlere = signerendeSaksbehandlere
 )
