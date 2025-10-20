@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
+import no.nav.pensjon.brev.skribenten.services.NavAnsattEnheter
 import org.junit.AfterClass
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
@@ -79,6 +81,18 @@ class CacheTest {
                 cache.get("k", String::class.java)
             )
         }
+    }
+
+    @Test
+    fun `kan lese navenheter`() {
+        val key = "A12345"
+        val value = """{"enheter":[{"id":"1","navn":"Nav 1"},{"id":"2","navn":"Nav 2"},{"id":"3","navn":"Nav 3"}]}"""
+        val enheter = databaseObjectMapper.readValue(value, NavAnsattEnheter::class.java)
+        val cache = Valkey(valkeyConfig, instanceName)
+
+        cache.update(key, enheter)
+
+        assertEquals(enheter, cache.get(key, NavAnsattEnheter::class.java))
     }
 
 
