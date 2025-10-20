@@ -20,6 +20,8 @@ import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes(JsonSubTypes.Type(TokenResponse.OnBehalfOfToken::class), JsonSubTypes.Type(TokenResponse.ErrorResponse::class))
@@ -83,7 +85,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
 
         return if (response.status.isSuccess()) {
             response.body<TokenResponse.OnBehalfOfToken>().also {
-                cache.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body())
+                cache.update<Pair<*,*>, TokenResponse.OnBehalfOfToken>(key, response.body(), ttl = it.expiresIn.seconds.minus(5.minutes))
             }
         } else {
             response.body<TokenResponse.ErrorResponse>()
