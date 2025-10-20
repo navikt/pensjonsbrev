@@ -42,7 +42,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = try {
-        cache.cached("NavAnsattEnhetListe", ansattId, List::class.java.javaClass) {
+        cache.cached("NavAnsattEnhetListe2-", ansattId, List::class.java.javaClass) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()

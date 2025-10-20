@@ -12,8 +12,9 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
-private val defaultTtl = 1.hours
+private val defaultTtl = 1.minutes
 
 interface Cache {
     fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V?
