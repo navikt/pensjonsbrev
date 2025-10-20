@@ -38,6 +38,7 @@ class Valkey(
                     ?.let { k -> try {
                         objectMapper.readValue(k, clazz)
                     } catch (e: Exception) {
+                        logger.warn("Fikk feilmelding ved forsøk på å lese ut $k som $clazz")
                         logger.warn("Fikk feilmelding ved forsøk på å lese ut $k som $clazz, her er som string: ${objectMapper.readValue(k, String::class.java)}")
                         throw e
                     }
