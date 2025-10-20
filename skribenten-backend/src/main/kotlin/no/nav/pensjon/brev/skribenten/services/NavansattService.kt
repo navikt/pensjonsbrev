@@ -41,25 +41,36 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> =
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> = try {
         cache.cached("NavAnsattEnhetListe", ansattId, NavAnsattEnheter::class.java.javaClass) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
                 ?.let { NavAnsattEnheter(it) }
-        }?.let { ServiceResult.Ok(it as NavAnsattEnheter) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
+        }?.let { ServiceResult.Ok(it as NavAnsattEnheter) } ?: ServiceResult.Error(
+            "Ingen treff",
+            HttpStatusCode.ExpectationFailed
+        )
+    } catch (e: Exception) {
+        logger.error("Feil ved henting av navansattenhet $ansattId", e)
+        ServiceResult.Error("Feil ved henting av navansattenhet $ansattId", HttpStatusCode.InternalServerError)
+    }
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
             .map { it.enheter }
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
-    override suspend fun hentNavansatt(ansattId: String): Navansatt? =
+    override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
         cache.cached("Navansatt", ansattId, Navansatt::class.java) {
             client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }
                 .resultOrNull()
         }
+    } catch (e: Exception) {
+        logger.error("Feil ved henting av navansatt $ansattId", e)
+        throw e
+    }
 
     override val name = "Nav Ansatt"
 
