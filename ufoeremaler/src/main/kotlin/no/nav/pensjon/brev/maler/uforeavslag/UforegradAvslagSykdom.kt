@@ -69,7 +69,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { +
-                "Vi har vurdert at sykdom eller skade har bidratt til økning i din nedsatte funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
+                "Vi har vurdert at sykdom eller skade har bidratt til en økning i din nedsatte funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
                         "Før andre forhold er rettet kan vi ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
             }
             paragraph {
