@@ -19,7 +19,7 @@ import kotlin.jvm.java
 interface NavansattService {
     suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean>
     suspend fun hentNavansatt(ansattId: String): Navansatt?
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
+    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter>
 }
 
 class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
@@ -41,15 +41,17 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> =
-        cache.cached(ansattId, List::class.java.javaClass) {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> =
+        cache.cached(ansattId, NavAnsattEnheter::class.java.javaClass) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
-        }?.let { ServiceResult.Ok(it as List<NAVAnsattEnhet>) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
+                ?.let { NavAnsattEnheter(it) }
+        }?.let { ServiceResult.Ok(NavAnsattEnheter(it as List<NAVAnsattEnhet>)) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
+            .map { it.enheter }
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? =
@@ -65,6 +67,10 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         client.get("ping-authenticated").toServiceResult<String>().map { true }
 }
 
+
+data class NavAnsattEnheter(
+    val enheter: List<NAVAnsattEnhet>
+)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(
