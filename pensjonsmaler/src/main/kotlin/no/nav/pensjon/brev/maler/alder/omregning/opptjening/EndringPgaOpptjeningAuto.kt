@@ -27,12 +27,10 @@ import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Konvertert tidligere 120-brev fra Doksys
@@ -50,10 +48,10 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
         )
     ) {
         title {
-            textExpr(
-                Language.Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkFom.format(),
-                Language.Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkFom.format(),
-                Language.English to "We have recalculated your retirement pension from ".expr() + virkFom.format(),
+            text(
+                bokmal { +"Vi har beregnet alderspensjonen din på nytt fra " + virkFom.format() },
+                nynorsk { +"Vi har berekna alderspensjonen din på nytt frå " + virkFom.format() },
+                english { +"We have recalculated your retirement pension from " + virkFom.format() },
             )
         }
         outline {
