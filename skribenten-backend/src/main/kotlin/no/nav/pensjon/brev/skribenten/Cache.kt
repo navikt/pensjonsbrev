@@ -27,10 +27,8 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
 
     override fun <K, V> get(key: K, clazz: Class<V>): V? =
         try {
-            logger.info("Henter verdi for {}", key)
-            jedisPool.resource.use { it.get(objectMapper.writeValueAsString(key))?.let { k -> objectMapper.readValue(k, clazz) } }.also {
-                logger.info("Hentet verdi for {}: {}", key, it)
-            } ?: logger.info("Fant ingen verdi for {}", key).let { null }
+            jedisPool.resource.use { it.get(objectMapper.writeValueAsString(key))?.let { k -> objectMapper.readValue(k, clazz) } }
+                ?: logger.info("Fant ingen verdi for {}", key).let { null }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
             null
@@ -55,9 +53,6 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
     }
 
     private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
-        logger.info("Validerer config for $instanceName")
-        config.entries.filter { it.key.contains("VALKEY_HOST") }.forEach { logger.info("${it.key}=${it.value}") }
-        config.entries.filter { it.key.contains("VALKEY_PORT") }.forEach { logger.info("${it.key}=${it.value}") }
         val host = config["VALKEY_HOST_$instanceName"]!!
         val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
         val username = config["VALKEY_USERNAME_$instanceName"]!!
