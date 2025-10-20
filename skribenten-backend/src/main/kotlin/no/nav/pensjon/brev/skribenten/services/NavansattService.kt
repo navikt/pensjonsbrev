@@ -42,7 +42,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> =
-        cache.cached("NavAnsattEnhetListe2-", ansattId, List::class.java) {
+        cache.cached("NavAnsattEnhetListe", ansattId, List::class.java) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<HashMap<String, String>>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
@@ -72,11 +72,6 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("ping-authenticated").toServiceResult<String>().map { true }
 }
-
-
-data class NavAnsattEnheter(
-    val enheter: List<NAVAnsattEnhet>
-)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(

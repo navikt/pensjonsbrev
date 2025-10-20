@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
-private val defaultTtl = 1.minutes
+private val defaultTtl = 10.minutes
 
 interface Cache {
     fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V?
@@ -35,14 +35,7 @@ class Valkey(
         try {
             jedisPool.resource.use {
                 tryWithRetry { get(it, prefix, key) }
-                    ?.let { k -> try {
-                        objectMapper.readValue(k, clazz)
-                    } catch (_: Exception) {
-                        logger.warn("Fikk feilmelding ved forsøk på å lese ut $k som $clazz. K contains \\ : ${k.contains("\\")} ")
-                        val uten = k.replace("\\", "")
-                        return@let objectMapper.readValue(uten, clazz)
-                    }
-                    }
+                    ?.let { k -> objectMapper.readValue(k, clazz) }
             }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
@@ -60,14 +53,14 @@ class Valkey(
             }
         }
 
-    private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(prefix +  "-" + objectMapper.writeValueAsString(key))
+    private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(objectMapper.writeWithPrefix(prefix, key))
 
     override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
         try {
             jedisPool.resource.use {
                 tryWithRetry {
                     it.set(
-                        prefix + "-" + objectMapper.writeValueAsString(key),
+                        objectMapper.writeWithPrefix(prefix, key),
                         objectMapper.writeValueAsString(value),
                         SetParams().apply {
                             ex(ttl.inWholeSeconds)
@@ -80,6 +73,8 @@ class Valkey(
             return
         }
     }
+
+    private fun <T> ObjectMapper.writeWithPrefix(prefix: String, key: T): String = writeValueAsString(prefix + "-" + writeValueAsString(key))
 
     private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
         val host = config["VALKEY_HOST_$instanceName"]!!
