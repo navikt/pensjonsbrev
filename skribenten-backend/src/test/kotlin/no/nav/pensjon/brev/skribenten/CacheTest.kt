@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.services.NavAnsattEnheter
+import no.nav.pensjon.brev.skribenten.services.Navansatt
 import org.junit.AfterClass
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
@@ -39,19 +40,19 @@ class CacheTest {
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
-                cache.cached("k", Int::class.java) {
+                cache.cached("", "k", Int::class.java) {
                     counter++
                     123
                 }
             }
         }
         assertEquals(1, counter)
-        assertEquals(123, cache.get("k", Int::class.java))
+        assertEquals(123, cache.get("", "k", Int::class.java))
     }
 
     @Test
     fun `verdi som ikke er i cachen gir null for get`() {
-        assertNull(Valkey(valkeyConfig, instanceName).get("mangler", String::class.java))
+        assertNull(Valkey(valkeyConfig, instanceName).get("", "mangler", String::class.java))
     }
 
     @Test
@@ -59,26 +60,26 @@ class CacheTest {
         val cache = Valkey(valkeyConfig, instanceName)
         val key = "k"
         cache.update(key, "verdi1", 10.minutes)
-        val v1 = cache.get(key, String::class.java)
+        val v1 = cache.get("", key, String::class.java)
         assertEquals("verdi1", v1)
-        cache.update(key, "verdi2")
-        assertEquals("verdi2", cache.get("k", String::class.java))
+        cache.update("", key, "verdi2")
+        assertEquals("verdi2", cache.get("", "k", String::class.java))
     }
 
     @Test
     fun `returnerer null hvis exception i valkey-kall`() {
         val objectMapper = object : ObjectMapper() {
-            override fun writeValueAsString(value: Any?): String? {
+            override fun writeValueAsString(value: Any?): String {
                 throw RuntimeException("test exception")
             }
         }
         val cache = Valkey(valkeyConfig, instanceName, objectMapper)
         runBlocking {
-            cache.cached("k", String::class.java) {
+            cache.cached("prefix", "k", String::class.java) {
                 "v1"
             }
             assertNull(
-                cache.get("k", String::class.java)
+                cache.get("prefix", "k", String::class.java)
             )
         }
     }
@@ -90,9 +91,9 @@ class CacheTest {
         val enheter = databaseObjectMapper.readValue(value, NavAnsattEnheter::class.java)
         val cache = Valkey(valkeyConfig, instanceName)
 
-        cache.update(key, enheter)
+        cache.update("", key, enheter)
 
-        assertEquals(enheter, cache.get(key, NavAnsattEnheter::class.java))
+        assertEquals(enheter, cache.get("", key, NavAnsattEnheter::class.java))
     }
 
 

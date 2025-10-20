@@ -62,8 +62,8 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     }
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
-        val key = Pair("obo-$principal.navIdent", scope)
-        val value = cache.get(key, TokenResponse.OnBehalfOfToken::class.java)
+        val key = Pair(principal.navIdent, scope)
+        val value = cache.get("obo", key, TokenResponse.OnBehalfOfToken::class.java)
 
         if (value != null) {
             return value
@@ -88,7 +88,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
                 val tokenTtl = it.expiresIn.seconds.minus(5.minutes)
                 logger.info("Got token for scope $scope, expires in ${tokenTtl.inWholeSeconds} seconds")
                 if (tokenTtl.isPositive()) {
-                    cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>(key, response.body(), ttl = tokenTtl)
+                    cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>("obo", key, response.body(), ttl = tokenTtl)
                 }
             }
         } else {

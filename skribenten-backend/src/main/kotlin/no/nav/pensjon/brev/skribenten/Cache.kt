@@ -16,10 +16,10 @@ import kotlin.time.Duration.Companion.hours
 private val defaultTtl = 1.hours
 
 interface Cache {
-    fun <K, V> get(key: K, clazz: Class<V>): V?
-    fun <K, V> update(key: K, value: V, ttl: Duration = defaultTtl)
-    suspend fun <K, V> cached(key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
-        get(key, clazz) ?: fetch(key)?.also { update(key, it, ttl) }
+    fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V?
+    fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration = defaultTtl)
+    suspend fun <K, V> cached(prefix: String, key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
+        get(prefix, key, clazz) ?: fetch(key)?.also { update(prefix, key, it, ttl) }
 }
 
 class Valkey(
@@ -31,10 +31,10 @@ class Valkey(
 
     private val jedisPool = setupJedis(config, instanceName.uppercase())
 
-    override fun <K, V> get(key: K, clazz: Class<V>): V? =
+    override fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V? =
         try {
             jedisPool.resource.use {
-                tryWithRetry { get(it, key) }
+                tryWithRetry { get(it, prefix, key) }
                     ?.let { k -> try {
                         objectMapper.readValue(k, clazz)
                     } catch (_: Exception) {
@@ -60,14 +60,14 @@ class Valkey(
             }
         }
 
-    private fun <K> get(jedis: Jedis, key: K): String? = jedis.get(objectMapper.writeValueAsString(key))
+    private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(prefix + objectMapper.writeValueAsString(key))
 
-    override fun <K, V> update(key: K, value: V, ttl: Duration) {
+    override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
         try {
             jedisPool.resource.use {
                 tryWithRetry {
                     it.set(
-                        objectMapper.writeValueAsString(key),
+                        prefix + objectMapper.writeValueAsString(key),
                         objectMapper.writeValueAsString(value),
                         SetParams().apply {
                             ex(ttl.inWholeSeconds)
@@ -103,10 +103,10 @@ class InMemoryCache : Cache {
     private val objectMapper = databaseObjectMapper
     private val cache = ConcurrentHashMap<String, String>()
 
-    override fun <K, V> get(key: K, clazz: Class<V>) =
-        cache[objectMapper.writeValueAsString(key)]?.let { objectMapper.readValue(it, clazz) }
+    override fun <K, V> get(prefix: String, key: K, clazz: Class<V>) =
+        cache[prefix + objectMapper.writeValueAsString(key)]?.let { objectMapper.readValue(it, clazz) }
 
-    override fun <K, V> update(key: K, value: V, ttl: Duration) {
-        cache[objectMapper.writeValueAsString(key)] = objectMapper.writeValueAsString(value)
+    override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
+        cache[prefix + objectMapper.writeValueAsString(key)] = objectMapper.writeValueAsString(value)
     }
 }
