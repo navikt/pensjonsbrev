@@ -1296,15 +1296,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static synthetic fun oldText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun oldText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun oldText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static final fun text (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;)V
 	public static final fun text (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;)V
 	public static final fun text (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;)V
@@ -1314,15 +1305,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {
 	public static synthetic fun text$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun text$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun text$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/TextScope {
