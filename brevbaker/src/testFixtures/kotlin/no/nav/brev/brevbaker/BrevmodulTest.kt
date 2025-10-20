@@ -19,15 +19,26 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.collections.filterNot
 import kotlin.reflect.KProperty
 
 
-abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<Brevkode.Automatisk>, val redigerbare: Collection<Brevkode.Redigerbart>) {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+abstract class TemplatesTest(
+    val templates: AllTemplates,
+    val auto: Collection<Brevkode.Automatisk>,
+    val redigerbare: Collection<Brevkode.Redigerbart>,
+    val fixtures: LetterDataFactory,
+    val filterForPDF: List<Brevkode<*>>
+) {
     @Test
     open fun `alle autobrev fins i templates`() {
         val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
@@ -79,35 +90,26 @@ abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<B
         )
     }
 
-    companion object {
-        // Du som konsument må lage din egen jvmstatic-metode i testklassa di som kallar på denne med riktige argumenter
-        @JvmStatic
-        fun finnMaler(templates: AllTemplates, letterDataFactory: LetterDataFactory, filter: List<Brevkode<*>> = listOf()): List<Arguments> {
-            FeatureToggleSingleton.init(FeatureToggleDummy)
-            return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
-                (templates.hentAutobrevmaler() +
-                        templates.hentRedigerbareMaler()
-                        ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
-                    .map { Arguments.of(it.template, it.kode, letterDataFactory.create(it.template.letterDataType), spraak) }
-            }
+    @Suppress("unused") // Brukt i MethodSource
+    private fun filterPdf() = finnMaler(filterForPDF)
+
+    @Suppress("unused") // Brukt i MethodSource
+    protected fun alleMalene() = finnMaler(listOf())
+
+    protected fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> {
+        FeatureToggleSingleton.init(FeatureToggleDummy)
+        return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
+            (templates.hentAutobrevmaler() +
+                    templates.hentRedigerbareMaler()
+                    ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
+                .map { Arguments.of(it.template, it.kode, fixtures.create(it.template.letterDataType), spraak) }
         }
     }
 
-    abstract fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode<*>,
-        fixtures: T,
-        spraak: Language,
-    )
-
-    abstract fun <T : Any> testHtml(
-        template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode<*>,
-        fixtures: T,
-        spraak: Language,
-    )
-
-    protected fun <T: Any> renderPdf(
+    @Tag(TestTags.MANUAL_TEST)
+    @ParameterizedTest(name = "{1}, {3}")
+    @MethodSource("filterPdf")
+    fun <T : Any> testPdf(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
@@ -122,7 +124,9 @@ abstract class TemplatesTest(val templates: AllTemplates, val auto: Collection<B
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
 
-    protected fun <T : Any> renderHtml(
+    @ParameterizedTest(name = "{1}, {3}")
+    @MethodSource("alleMalene")
+    fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,

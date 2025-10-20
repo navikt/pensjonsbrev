@@ -4,7 +4,6 @@ import io.ktor.util.reflect.instanceOf
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TemplatesTest
-import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.jacksonObjectMapper
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.Language
@@ -15,20 +14,20 @@ import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
 
-val filterForPDF = listOf<Brevkode<*>>()
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EtterlatteTemplatesTest : TemplatesTest(
     templates = EtterlatteMaler,
     auto = EtterlatteBrevKode.entries,
-    redigerbare = setOf()
+    redigerbare = setOf(),
+    fixtures = Fixtures,
+    filterForPDF = listOf(),
 ) {
 
     @Test
@@ -37,26 +36,6 @@ class EtterlatteTemplatesTest : TemplatesTest(
         val ubrukteKoder = auto.filterNot { it == EtterlatteBrevKode.INGEN_REDIGERBAR_DEL }.filterNot { brukteKoder.contains(it) }
         assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
-
-    @Tag(TestTags.MANUAL_TEST)
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
-    @MethodSource("filtrerteMaler")
-    override fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode<*>,
-        fixtures: T,
-        spraak: Language,
-    ) = renderPdf(template, brevkode, fixtures, spraak)
-
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
-    @MethodSource("alleMalene")
-    override fun <T : Any> testHtml(
-        template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode<*>,
-        fixtures: T,
-        spraak: Language,
-    ) = renderHtml(template, brevkode, fixtures, spraak)
-
 
     private val objectMapper = jacksonObjectMapper()
 
@@ -90,17 +69,5 @@ class EtterlatteTemplatesTest : TemplatesTest(
                     .resolve((Paths.get("${filnavn(etterlatteBrevKode, spraak)}.json")))
                     .let { Files.writeString(it, objectMapper.writeValueAsString(json)) }
             }
-    }
-
-    companion object {
-        @JvmStatic
-        fun filtrerteMaler(): List<Arguments> = finnMaler(filterForPDF)
-
-        @JvmStatic
-        fun alleMalene(): List<Arguments> = finnMaler(listOf())
-
-        @JvmStatic
-        fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> =
-            finnMaler(EtterlatteMaler, Fixtures, filter)
     }
 }
