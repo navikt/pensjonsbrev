@@ -47,7 +47,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
                 ?.let { NavAnsattEnheter(it) }
-        }?.let { ServiceResult.Ok(NavAnsattEnheter(it as List<NAVAnsattEnhet>)) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
+        }?.let { ServiceResult.Ok(it as NavAnsattEnheter) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
