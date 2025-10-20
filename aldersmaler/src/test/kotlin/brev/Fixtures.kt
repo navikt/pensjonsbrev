@@ -2,12 +2,12 @@ package no.nav.pensjon.brev
 
 import brev.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps60AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps62AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.Ytelse
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.YtelseType
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps60AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps62AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.Ytelse
+import no.nav.pensjon.brev.model.alder.aldersovergang.YtelseType
 import no.nav.pensjon.brev.fixtures.alder.createAlderspensjonGjtOppryddingAutoDto
 import kotlin.reflect.KClass
 

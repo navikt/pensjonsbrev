@@ -2,7 +2,7 @@ package brev.adhoc
 
 import brev.felles.Constants
 import brev.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language

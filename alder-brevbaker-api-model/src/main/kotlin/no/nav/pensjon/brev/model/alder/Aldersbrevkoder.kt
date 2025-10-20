@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler
+package no.nav.pensjon.brev.model.alder
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart

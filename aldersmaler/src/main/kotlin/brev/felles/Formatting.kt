@@ -1,8 +1,8 @@
 package brev.felles
 
-import no.nav.pensjon.brev.api.model.maler.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
-import no.nav.pensjon.brev.api.model.maler.SivilstandAvdoed
+import no.nav.pensjon.brev.model.alder.BorMedSivilstand
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
+import no.nav.pensjon.brev.model.alder.SivilstandAvdoed
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
