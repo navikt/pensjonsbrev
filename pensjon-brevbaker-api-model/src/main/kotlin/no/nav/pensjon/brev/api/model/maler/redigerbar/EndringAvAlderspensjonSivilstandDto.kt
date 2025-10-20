@@ -41,7 +41,7 @@ data class EndringAvAlderspensjonSivilstandDto(
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-        val epsVedVirk: EpsVedVirk,
+        val epsVedVirk: EpsVedVirk?,
         val kravAarsak: KravArsakType,  //v3.Krav
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
