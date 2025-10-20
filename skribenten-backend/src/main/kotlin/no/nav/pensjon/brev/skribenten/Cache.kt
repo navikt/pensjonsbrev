@@ -27,7 +27,10 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
 
     override fun <K, V> get(key: K, clazz: Class<V>): V? =
         try {
-            jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }
+            logger.info("Henter verdi for {}", key)
+            jedisPool.resource.use { it.get(objectMapper.write(key))?.let { k -> objectMapper.readValue(k, clazz) } }.also {
+                logger.info("Hentet verdi for {}: {}", key, it)
+            } ?: logger.info("Fant ingen verdi for {}", key).let { null }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
             null
@@ -35,6 +38,7 @@ class Valkey(config: Map<String, String?>, instanceName: String, private val obj
 
     override fun <K, V> update(key: K, value: V, ttl: Duration) {
         try {
+            logger.info("Oppdaterer verdi for {}", key)
             jedisPool.resource.use {
                 it.set(
                     objectMapper.write(key),
