@@ -3,13 +3,12 @@ package no.nav.pensjon.brev.skribenten
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
-import no.nav.pensjon.brev.skribenten.services.NavAnsattEnheter
-import no.nav.pensjon.brev.skribenten.services.Navansatt
 import org.junit.AfterClass
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import kotlin.jvm.java
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 
@@ -87,13 +86,13 @@ class CacheTest {
     @Test
     fun `kan lese navenheter`() {
         val key = "A12345"
-        val value = """{"enheter":[{"id":"1","navn":"Nav 1"},{"id":"2","navn":"Nav 2"},{"id":"3","navn":"Nav 3"}]}"""
-        val enheter = databaseObjectMapper.readValue(value, NavAnsattEnheter::class.java)
+        val value = """[{"id":"1","navn":"Nav 1"},{"id":"2","navn":"Nav 2"},{"id":"3","navn":"Nav 3"}]"""
+        val enheter = databaseObjectMapper.readValue(value, List::class.java)
         val cache = Valkey(valkeyConfig, instanceName)
 
         cache.update("", key, enheter)
 
-        assertEquals(enheter, cache.get("", key, NavAnsattEnheter::class.java))
+        assertEquals(enheter, cache.get("", key, List::class.java))
     }
 
 
