@@ -28,7 +28,14 @@ private fun isEmpty(block: Block): Boolean =
     }.all { isEmpty(it) }
 
 private fun isEmpty(content: LetterMarkup.ParagraphContent) =
-    content is LetterMarkup.ParagraphContent.Text.NewLine || (content is LetterMarkup.ParagraphContent.Text && content.text.isBlank())
+    when (content) {
+        is LetterMarkup.ParagraphContent.Form,
+        is LetterMarkup.ParagraphContent.ItemList,
+        is LetterMarkup.ParagraphContent.Table -> false
+        is LetterMarkup.ParagraphContent.Text.NewLine -> true
+        is LetterMarkup.ParagraphContent.Text.Literal,
+        is LetterMarkup.ParagraphContent.Text.Variable -> content.text.isBlank()
+    }
 
 private fun clean(block: Block): Block? = when (block) {
     is Block.Title1 -> clean(block)
@@ -62,6 +69,7 @@ private fun clean(paragraph: Block.Paragraph): Block.Paragraph =
 
 private fun List<LetterMarkup.ParagraphContent>.removeInvalidNewLines(): List<LetterMarkup.ParagraphContent> =
     fold(emptyList()) { acc, content ->
+        // Keep all content except newlines that are at the start or after non-breakable content
         if (content !is LetterMarkup.ParagraphContent.Text.NewLine || acc.endsWithLinebreakableContent()) {
             acc + content
         } else {
