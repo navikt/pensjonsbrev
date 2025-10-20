@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
-import io.valkey.Jedis
 import io.valkey.JedisPool
 import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
@@ -33,15 +32,13 @@ class Valkey(
     override fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V? =
         try {
             jedisPool.resource.use {
-                retryOgPakkUt(times = 3) { get(it, prefix, key) }
+                retryOgPakkUt(times = 3) { it.get(objectMapper.writeWithPrefix(prefix, key)) }
                     ?.let { k -> objectMapper.readValue(k, clazz) }
             }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
             null
         }
-
-    private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(objectMapper.writeWithPrefix(prefix, key))
 
     override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
         try {
