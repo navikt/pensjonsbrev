@@ -4,8 +4,8 @@ import brev.felles.Constants.AFP_OFFENTLIG_URL
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.SEND_BESKJED_URL
 import brev.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk

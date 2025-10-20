@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler
+package no.nav.pensjon.brev.model.alder
 
 enum class AlderspensjonRegelverkType {
     AP1967,

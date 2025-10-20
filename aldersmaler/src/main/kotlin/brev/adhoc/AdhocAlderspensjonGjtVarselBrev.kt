@@ -9,7 +9,7 @@ import brev.felles.Constants.NAV_KONTAKTSENTER_OPEN_HOURS
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English

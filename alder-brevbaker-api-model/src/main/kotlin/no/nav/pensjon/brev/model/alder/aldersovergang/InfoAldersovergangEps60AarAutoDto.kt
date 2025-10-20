@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.aldersovergang
+package no.nav.pensjon.brev.model.alder.aldersovergang
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.adhoc
+package no.nav.pensjon.brev.model.alder.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
