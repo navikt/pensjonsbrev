@@ -43,9 +43,10 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> =
         cache.cached("NavAnsattEnhetListe2-", ansattId, List::class.java) {
-            client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
+            client.get("navansatt/$ansattId/enheter").toServiceResult<List<HashMap<String, String>>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
+                ?.map { NAVAnsattEnhet(it["id"]!!, it["navn"]!!) }
         }?.let { ServiceResult.Ok(it as List<NAVAnsattEnhet>) } ?: ServiceResult.Error(
             "Ingen treff",
             HttpStatusCode.ExpectationFailed
