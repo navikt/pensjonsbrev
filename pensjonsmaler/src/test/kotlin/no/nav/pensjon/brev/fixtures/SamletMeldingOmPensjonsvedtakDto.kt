@@ -379,6 +379,15 @@ private fun avslaattPensjon() = AvslaattPensjon(
         saksnummer = null,
         land = null,
     ),
+    institusjoner = listOf(
+        P1Dto.Institusjon(
+            institusjonsid = null,
+            institusjonsnavn = "NAY 4",
+            pin = null,
+            saksnummer = null,
+            land = null,
+        ),
+    ),
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "en måned",

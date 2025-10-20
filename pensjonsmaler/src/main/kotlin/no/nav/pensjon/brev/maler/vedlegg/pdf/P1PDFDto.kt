@@ -160,9 +160,6 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
     )
 
-private fun formatInstitusjon(institusjon: P1Dto.Institusjon, vedtaksdato: String?): Map<LanguageCode, String?> =
-    formatInstitusjon(listOf(institusjon), vedtaksdato)
-
 private fun formatInstitusjon(
     institusjoner: List<P1Dto.Institusjon>,
     vedtaksdato: String?
@@ -245,7 +242,8 @@ private fun formaterValuta(
 
 
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
-    "Institution_rejecting_the_pension[$radnummer]" to pensjon.institusjon?.let {
+    "Institution_rejecting_the_pension[$radnummer]" to
+            (pensjon.institusjoner ?: pensjon.institusjon?.let { listOf(it) })?.let {
         formatInstitusjon(
             it,
             pensjon.vedtaksdato
