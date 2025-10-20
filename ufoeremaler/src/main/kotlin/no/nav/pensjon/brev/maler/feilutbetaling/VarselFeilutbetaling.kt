@@ -1,13 +1,11 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.feilutbetaling
 
 import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.VARSEL
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.maler.fraser.Felles
 import no.nav.pensjon.brev.template.Language.*
@@ -25,7 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object UforeVarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
+object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
     override val kode = UT_VARSEL_FEILUTBETALING
