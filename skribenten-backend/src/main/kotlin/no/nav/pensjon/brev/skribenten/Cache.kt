@@ -5,7 +5,6 @@ import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.Jedis
 import io.valkey.JedisPool
-import io.valkey.exceptions.JedisConnectionException
 import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
@@ -34,7 +33,7 @@ class Valkey(
     override fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V? =
         try {
             jedisPool.resource.use {
-                tryWithRetry { get(it, prefix, key) }
+                retryOgPakkUt(times = 3) { get(it, prefix, key) }
                     ?.let { k -> objectMapper.readValue(k, clazz) }
             }
         } catch (e: Exception) {
@@ -42,23 +41,12 @@ class Valkey(
             null
         }
 
-    private fun <T> tryWithRetry(action: () -> T?): T? =
-        try {
-            action()
-        } catch (e: JedisConnectionException) {
-            try {
-                action()
-            } catch (e2: Exception) {
-                throw e2.also { it.addSuppressed(e) }
-            }
-        }
-
     private fun <K> get(jedis: Jedis, prefix: String, key: K): String? = jedis.get(objectMapper.writeWithPrefix(prefix, key))
 
     override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
         try {
             jedisPool.resource.use {
-                tryWithRetry {
+                retryOgPakkUt(times = 3) {
                     it.set(
                         objectMapper.writeWithPrefix(prefix, key),
                         objectMapper.writeValueAsString(value),
