@@ -47,7 +47,7 @@ sealed class TokenResponse {
 }
 
 interface AuthService {
-    suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse
+    suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
 class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache) : AuthService {
@@ -62,37 +62,24 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
         installRetry(logger, maxRetries = 2)
     }
 
-    override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
-        val key = Pair(principal.navIdent, scope)
-        val value = cache.get(Cacheomraade.AD, key, TokenResponse.OnBehalfOfToken::class.java)
-
-        if (value != null) {
-            return value
-        }
-
-        val response = client.submitForm(
-            url = jwtConfig.tokenUri,
-            formParameters = Parameters.build {
-                append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                append("client_id", jwtConfig.clientId)
-                append("client_secret", jwtConfig.clientSecret)
-                append("assertion", principal.accessToken.token)
-                append("scope", scope)
-                append("requested_token_use", "on_behalf_of")
-            }
-        ) {
-            headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
-        }
-
-        return if (response.status.isSuccess()) {
-            response.body<TokenResponse.OnBehalfOfToken>().also {
-                val tokenTtl = it.expiresIn.seconds.minus(5.minutes)
-                if (tokenTtl.isPositive()) {
-                    cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>(Cacheomraade.AD, key, response.body(), ttl = tokenTtl)
+    override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) =
+        cache.cached(Cacheomraade.AD, Pair(principal.navIdent, scope), TokenResponse.OnBehalfOfToken::class.java, { it.expiresIn.seconds.minus(5.minutes) }) {
+            val response = client.submitForm(
+                url = jwtConfig.tokenUri,
+                formParameters = Parameters.build {
+                    append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                    append("client_id", jwtConfig.clientId)
+                    append("client_secret", jwtConfig.clientSecret)
+                    append("assertion", principal.accessToken.token)
+                    append("scope", scope)
+                    append("requested_token_use", "on_behalf_of")
                 }
+            ) {
+                headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
             }
-        } else {
-            response.body<TokenResponse.ErrorResponse>()
-        }
-    }
+            if (!response.status.isSuccess()) {
+                throw AzureAdOnBehalfOfAuthorizationException(response.body<TokenResponse.ErrorResponse>())
+            }
+            response.body<TokenResponse.OnBehalfOfToken>()
+        }!!
 }

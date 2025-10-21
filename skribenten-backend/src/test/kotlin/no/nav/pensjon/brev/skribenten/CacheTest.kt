@@ -60,7 +60,7 @@ class CacheTest {
         val cache = Valkey(valkeyConfig)
         val key = "k"
         val omraade = Cacheomraade.NORG
-        cache.update(omraade, key, "verdi1", 10.minutes)
+        cache.update(omraade, key, "verdi1", { 10.minutes })
         val v1 = cache.get(omraade, key, String::class.java)
         assertEquals("verdi1", v1)
         cache.update(omraade, key, "verdi2")

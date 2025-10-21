@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.InMemoryCache
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 private val fakeJwtPayload = object : Payload {
     override fun getIssuer() = null
@@ -68,7 +69,7 @@ class AzureADServiceTest {
     }
 
     @Test
-    fun `getOnBehalfOfToken returns error`() {
+    fun `getOnBehalfOfToken throws error`() {
         val errorResponse = TokenResponse.ErrorResponse("an error", "a description", emptyList(), "123", "abc", "call", "abc")
 
         val service = createService {
@@ -80,7 +81,9 @@ class AzureADServiceTest {
         }
 
         runBlocking {
-            assertEquals(errorResponse, service.getOnBehalfOfToken(principal, "abc"))
+            assertThrows<AzureAdOnBehalfOfAuthorizationException> {
+                service.getOnBehalfOfToken(principal, "abc")
+            }
         }
     }
 
