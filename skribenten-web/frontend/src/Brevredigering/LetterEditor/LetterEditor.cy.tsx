@@ -195,7 +195,7 @@ describe("<LetterEditor />", () => {
             sakspart: {
               gjelderNavn: "Test Testeson",
               gjelderFoedselsnummer: "12345678910",
-              vergeNavn: "Vergio Vergburg",
+              annenMottakerNavn: "Vergio Vergburg",
               saksnummer: "1234",
               dokumentDato: "2024-03-15",
             },

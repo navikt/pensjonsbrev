@@ -44,7 +44,6 @@ data class LetterMarkupImpl(
     data class SakspartImpl(
         override val gjelderNavn: String,
         override val gjelderFoedselsnummer: Foedselsnummer,
-        override val vergeNavn: String?,
         override val annenMottakerNavn: String?,
         override val saksnummer: String,
         override val dokumentDato: LocalDate,

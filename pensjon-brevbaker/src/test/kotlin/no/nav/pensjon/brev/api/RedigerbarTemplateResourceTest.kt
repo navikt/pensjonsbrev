@@ -43,7 +43,6 @@ class RedigerbarTemplateResourceTest {
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "gjelder bruker",
                 gjelderFoedselsnummer = Foedselsnummer("123abc"),
-                vergeNavn = null,
                 annenMottakerNavn = null,
                 saksnummer = "001",
                 dokumentDato = LocalDate.now()
