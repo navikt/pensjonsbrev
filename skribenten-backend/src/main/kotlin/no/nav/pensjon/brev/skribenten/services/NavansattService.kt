@@ -45,10 +45,10 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> {
         val cached: NavAnsattEnheter? = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
-            client.get("navansatt/$ansattId/enheter").toServiceResult<List<Map<String, String>>>()
+            client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
-                ?.let { NavAnsattEnheter.from(it) }
+                ?.let { NavAnsattEnheter(it) }
         }
         return cached?.let { ServiceResult.Ok(it) }
             ?: ServiceResult.Error(
@@ -82,11 +82,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NavAnsattEnheter(
     val enheter: List<NAVAnsattEnhet>
-) {
-    companion object {
-        fun from(list: List<Map<String, String>>) = NavAnsattEnheter(enheter = list.map { map -> NAVAnsattEnhet(map["id"]!!, map["navn"]!!) })
-    }
-}
+)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(
