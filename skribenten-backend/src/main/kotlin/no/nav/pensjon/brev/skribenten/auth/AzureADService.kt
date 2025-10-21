@@ -18,6 +18,7 @@ import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -63,7 +64,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
         val key = Pair(principal.navIdent, scope)
-        val value = cache.get("obo", key, TokenResponse.OnBehalfOfToken::class.java)
+        val value = cache.get(Cacheomraade.AD, key, TokenResponse.OnBehalfOfToken::class.java)
 
         if (value != null) {
             return value
@@ -87,7 +88,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
             response.body<TokenResponse.OnBehalfOfToken>().also {
                 val tokenTtl = it.expiresIn.seconds.minus(5.minutes)
                 if (tokenTtl.isPositive()) {
-                    cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>("obo", key, response.body(), ttl = tokenTtl)
+                    cache.update<Pair<*, *>, TokenResponse.OnBehalfOfToken>(Cacheomraade.AD, key, response.body(), ttl = tokenTtl)
                 }
             }
         } else {

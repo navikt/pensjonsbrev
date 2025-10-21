@@ -39,30 +39,31 @@ class CacheTest {
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
-                cache.cached("", "k", Int::class.java) {
+                cache.cached(Cacheomraade.NORG, "k", Int::class.java) {
                     counter++
                     123
                 }
             }
         }
         assertEquals(1, counter)
-        assertEquals(123, cache.get("", "k", Int::class.java))
+        assertEquals(123, cache.get(Cacheomraade.NORG, "k", Int::class.java))
     }
 
     @Test
     fun `verdi som ikke er i cachen gir null for get`() {
-        assertNull(Valkey(valkeyConfig, instanceName).get("", "mangler", String::class.java))
+        assertNull(Valkey(valkeyConfig, instanceName).get(Cacheomraade.NORG, "mangler", String::class.java))
     }
 
     @Test
     fun `kan oppdatere verdi som fins i cachen`() {
         val cache = Valkey(valkeyConfig, instanceName)
         val key = "k"
-        cache.update("", key, "verdi1", 10.minutes)
-        val v1 = cache.get("", key, String::class.java)
+        val omraade = Cacheomraade.NORG
+        cache.update(omraade, key, "verdi1", 10.minutes)
+        val v1 = cache.get(omraade, key, String::class.java)
         assertEquals("verdi1", v1)
-        cache.update("", key, "verdi2")
-        assertEquals("verdi2", cache.get("", "k", String::class.java))
+        cache.update(omraade, key, "verdi2")
+        assertEquals("verdi2", cache.get(omraade, "k", String::class.java))
     }
 
     @Test
@@ -74,11 +75,11 @@ class CacheTest {
         }
         val cache = Valkey(valkeyConfig, instanceName, objectMapper)
         runBlocking {
-            cache.cached("prefix", "k", String::class.java) {
+            cache.cached(Cacheomraade.NORG, "k", String::class.java) {
                 "v1"
             }
             assertNull(
-                cache.get("prefix", "k", String::class.java)
+                cache.get(Cacheomraade.NORG, "k", String::class.java)
             )
         }
     }
@@ -90,9 +91,9 @@ class CacheTest {
         val enheter = databaseObjectMapper.readValue(value, List::class.java)
         val cache = Valkey(valkeyConfig, instanceName)
 
-        cache.update("", key, enheter)
+        cache.update(Cacheomraade.NAVANSATTENHET, key, enheter)
 
-        assertEquals(enheter, cache.get("", key, List::class.java))
+        assertEquals(enheter, cache.get(Cacheomraade.NAVANSATTENHET, key, List::class.java))
     }
 
 

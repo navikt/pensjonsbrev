@@ -11,6 +11,7 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
@@ -67,7 +68,7 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached("samhandlernavn", idTSSEkstern, String::class.java) {
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached(Cacheomraade.SAMHANDLER, idTSSEkstern, String::class.java) {
         hentSamhandler(idTSSEkstern).success?.navn
     }
 

@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
@@ -131,7 +132,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         }.toServiceResult()
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
-        cache.cached("RedigerbarBrevkode", brevkode, TemplateDescription.Redigerbar::class.java) {
+        cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode, TemplateDescription.Redigerbar::class.java) {
             client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
                 .resultOrNull()

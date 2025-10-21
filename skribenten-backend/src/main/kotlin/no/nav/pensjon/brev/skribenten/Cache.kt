@@ -14,10 +14,10 @@ import kotlin.time.Duration.Companion.minutes
 private val defaultTtl = 10.minutes
 
 interface Cache {
-    fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V?
-    fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration = defaultTtl)
-    suspend fun <K, V> cached(prefix: String, key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
-        get(prefix, key, clazz) ?: fetch(key)?.also { update(prefix, key, it, ttl) }
+    fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V?
+    fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration = defaultTtl)
+    suspend fun <K, V> cached(omraade: Cacheomraade, key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
+        get(omraade, key, clazz) ?: fetch(key)?.also { update(omraade, key, it, ttl) }
 }
 
 class Valkey(
@@ -29,10 +29,10 @@ class Valkey(
 
     private val jedisPool = setupJedis(config, instanceName.uppercase())
 
-    override fun <K, V> get(prefix: String, key: K, clazz: Class<V>): V? =
+    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V? =
         try {
             jedisPool.resource.use {
-                retryOgPakkUt(times = 3) { it.get(objectMapper.writeWithPrefix(prefix, key)) }
+                retryOgPakkUt(times = 3) { it.get(objectMapper.writeWithPrefix(omraade, key)) }
                     ?.let { k -> objectMapper.readValue(k, clazz) }
             }
         } catch (e: Exception) {
@@ -40,12 +40,12 @@ class Valkey(
             null
         }
 
-    override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
+    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3) {
                     it.set(
-                        objectMapper.writeWithPrefix(prefix, key),
+                        objectMapper.writeWithPrefix(omraade, key),
                         objectMapper.writeValueAsString(value),
                         SetParams().apply {
                             ex(ttl.inWholeSeconds)
@@ -58,8 +58,6 @@ class Valkey(
             return
         }
     }
-
-    private fun <T> ObjectMapper.writeWithPrefix(prefix: String, key: T): String = writeValueAsString(prefix + "-" + writeValueAsString(key))
 
     private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
         val host = config["VALKEY_HOST_$instanceName"]!!
@@ -83,10 +81,21 @@ class InMemoryCache : Cache {
     private val objectMapper = databaseObjectMapper
     private val cache = ConcurrentHashMap<String, String>()
 
-    override fun <K, V> get(prefix: String, key: K, clazz: Class<V>) =
-        cache[prefix + objectMapper.writeValueAsString(key)]?.let { objectMapper.readValue(it, clazz) }
+    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>) =
+        cache[objectMapper.writeWithPrefix(omraade, key)]?.let { objectMapper.readValue(it, clazz) }
 
-    override fun <K, V> update(prefix: String, key: K, value: V, ttl: Duration) {
-        cache[prefix + objectMapper.writeValueAsString(key)] = objectMapper.writeValueAsString(value)
+    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
+        cache[objectMapper.writeWithPrefix(omraade, key)] = objectMapper.writeValueAsString(value)
     }
+}
+
+private fun <T> ObjectMapper.writeWithPrefix(omraade: Cacheomraade, key: T): String = writeValueAsString(omraade.prefix + "-" + writeValueAsString(key))
+
+enum class Cacheomraade(val prefix: String) {
+    AD("AD"),
+    NAVANSATT("Navansatt"),
+    NAVANSATTENHET("NavAnsattEnhet"),
+    NORG("Norg"),
+    REDIGERBAR_MAL("Redigerbar"),
+    SAMHANDLER("Samhandler"),
 }

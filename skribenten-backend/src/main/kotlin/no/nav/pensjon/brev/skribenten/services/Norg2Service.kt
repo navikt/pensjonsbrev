@@ -9,6 +9,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
@@ -34,7 +35,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
     }
 
     override suspend fun getEnhet(enhetId: String): NavEnhet? =
-        cache.cached("Norg2enhet" , enhetId, NavEnhet::class.java) {
+        cache.cached(Cacheomraade.NORG , enhetId, NavEnhet::class.java) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             client.get("api/v1/enhet/$enhetId")
                 .toServiceResult<NavEnhet>()
