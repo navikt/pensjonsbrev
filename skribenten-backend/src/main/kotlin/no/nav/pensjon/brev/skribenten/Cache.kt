@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.typesafe.config.Config
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.JedisPool
@@ -26,13 +27,12 @@ suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, tt
     cached(omraade, key, V::class.java, ttl, fetch)
 
 class Valkey(
-    config: Map<String, String?>,
-    instanceName: String,
+    config: Config,
     private val objectMapper: ObjectMapper = databaseObjectMapper,
 ) : Cache {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val jedisPool = setupJedis(config, instanceName.uppercase())
+    private val jedisPool = setupJedis(config)
 
     override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V? =
         try {
@@ -64,12 +64,12 @@ class Valkey(
         }
     }
 
-    private fun setupJedis(config: Map<String, String?>, instanceName: String): JedisPool {
-        val host = config["VALKEY_HOST_$instanceName"]!!
-        val port = config["VALKEY_PORT_$instanceName"]!!.toInt()
-        val username = config["VALKEY_USERNAME_$instanceName"]!!
-        val password = config["VALKEY_PASSWORD_$instanceName"]!!
-        val ssl = config["VALKEY_SSL_$instanceName"]?.toBoolean() ?: true
+    private fun setupJedis(config: Config): JedisPool {
+        val host = config.getString("host")
+        val port = config.getString("port").toInt()
+        val username = config.getString("username")
+        val password = config.getString("password")
+        val ssl = config.getBoolean("ssl")
 
         return JedisPool(
             HostAndPort(host, port),

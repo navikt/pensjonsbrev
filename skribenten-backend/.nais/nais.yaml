@@ -66,7 +66,7 @@ spec:
         extra:
           - azp_name
   valkey:
-    - instance: "{{valkeyinstance}}"
+    - instance: "cache"
       access: readwrite
 
   accessPolicy:
@@ -94,8 +94,6 @@ spec:
     - {{url}}
     {{/each}}
   env:
-      - name: valkey_instance_name
-        value: "{{{valkeyinstance}}}"
     {{#each env as |e|}}
       - name: {{e.name}}
         value: "{{{e.value}}}"

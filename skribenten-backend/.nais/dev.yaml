@@ -3,8 +3,6 @@ app-name: "skribenten-backend"
 database:
   auditlog: "off"
 
-valkeyinstance: "cache"
-
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 

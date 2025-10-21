@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.junit.AfterClass
@@ -17,25 +19,24 @@ val valkeyContainer = GenericContainer("valkey/valkey:8.0.0")
 
 class CacheTest {
 
-    val valkeyConfig: Map<String, String?>
-    val instanceName = "CACHE1"
+    val valkeyConfig: Config
 
     init {
         valkeyContainer.withExposedPorts(6379)
         valkeyContainer.waitingFor(Wait.forListeningPort())
         valkeyContainer.start()
-        valkeyConfig = mapOf(
-            "VALKEY_HOST_$instanceName" to valkeyContainer.host,
-            "VALKEY_PORT_$instanceName" to valkeyContainer.getMappedPort(6379).toString(),
-            "VALKEY_USERNAME_$instanceName" to "default",
-            "VALKEY_PASSWORD_$instanceName" to "",
-            "VALKEY_SSL_$instanceName" to "false",
-        )
+        valkeyConfig = ConfigFactory.parseMap(mapOf(
+            "host" to valkeyContainer.host,
+            "port" to valkeyContainer.getMappedPort(6379).toString(),
+            "username" to "default",
+            "password" to "",
+            "ssl" to "false",
+        ))
     }
 
     @Test
     fun `henter verdi foerste gang, gjenbruker seinere`() {
-        val cache = Valkey(valkeyConfig, instanceName)
+        val cache = Valkey(valkeyConfig)
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
@@ -51,12 +52,12 @@ class CacheTest {
 
     @Test
     fun `verdi som ikke er i cachen gir null for get`() {
-        assertNull(Valkey(valkeyConfig, instanceName).get(Cacheomraade.NORG, "mangler", String::class.java))
+        assertNull(Valkey(valkeyConfig).get(Cacheomraade.NORG, "mangler", String::class.java))
     }
 
     @Test
     fun `kan oppdatere verdi som fins i cachen`() {
-        val cache = Valkey(valkeyConfig, instanceName)
+        val cache = Valkey(valkeyConfig)
         val key = "k"
         val omraade = Cacheomraade.NORG
         cache.update(omraade, key, "verdi1", 10.minutes)
@@ -73,7 +74,7 @@ class CacheTest {
                 throw RuntimeException("test exception")
             }
         }
-        val cache = Valkey(valkeyConfig, instanceName, objectMapper)
+        val cache = Valkey(valkeyConfig, objectMapper)
         runBlocking {
             cache.cached(Cacheomraade.NORG, "k") {
                 "v1"
@@ -89,7 +90,7 @@ class CacheTest {
         val key = "A12345"
         val value = """[{"id":"1","navn":"Nav 1"},{"id":"2","navn":"Nav 2"},{"id":"3","navn":"Nav 3"}]"""
         val enheter = databaseObjectMapper.readValue(value, List::class.java)
-        val cache = Valkey(valkeyConfig, instanceName)
+        val cache = Valkey(valkeyConfig)
 
         cache.update(Cacheomraade.NAVANSATTENHET, key, enheter)
 
