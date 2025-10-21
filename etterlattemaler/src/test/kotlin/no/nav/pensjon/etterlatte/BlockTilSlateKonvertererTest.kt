@@ -91,7 +91,6 @@ class BlockTilSlateKonvertererTest {
             gjelderFoedselsnummer = Foedselsnummer("1"),
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
-            vergeNavn = null,
             annenMottakerNavn = null,
         ),
         signatur = LetterMarkupImpl.SignaturImpl(
@@ -141,7 +140,6 @@ class BlockTilSlateKonvertererTest {
             gjelderFoedselsnummer = Foedselsnummer("1"),
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
-            vergeNavn = null,
             annenMottakerNavn = null,
         ),
         blocks = listOf(

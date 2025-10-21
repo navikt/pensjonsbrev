@@ -51,7 +51,7 @@ export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 export type Sakspart = {
   readonly gjelderNavn: string;
   readonly gjelderFoedselsnummer: string;
-  readonly vergeNavn?: string;
+  readonly annenMottakerNavn?: string;
   readonly saksnummer: string;
   // Formatert som 'yyyy-MM-dd'
   readonly dokumentDato: string;

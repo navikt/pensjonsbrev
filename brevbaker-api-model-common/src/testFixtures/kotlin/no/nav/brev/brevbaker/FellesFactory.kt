@@ -30,7 +30,6 @@ object FellesFactory {
         ),
         signerendeSaksbehandlere = signerendeSaksbehandlere,
         annenMottakerNavn = null,
-        vergeNavn = null,
     )
 
     val felles = lagFelles(
@@ -50,7 +49,6 @@ object FellesFactory {
         avsenderEnhet: NavEnhet,
         bruker: Bruker,
         annenMottaker: String?,
-        vergeNavn: String?,
         signerendeSaksbehandlere: SignerendeSaksbehandlere?,
     ): Felles = Felles(
         dokumentDato = dokumentDato,
@@ -58,7 +56,6 @@ object FellesFactory {
         avsenderEnhet = avsenderEnhet,
         bruker = bruker,
         annenMottakerNavn = annenMottaker,
-        vergeNavn = vergeNavn,
         signerendeSaksbehandlere = signerendeSaksbehandlere,
     )
 }
