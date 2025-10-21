@@ -306,6 +306,7 @@ function RedigerBrev({
           return false;
         }
       }
+      return false;
     });
   }, [form, specification, status]);
 
