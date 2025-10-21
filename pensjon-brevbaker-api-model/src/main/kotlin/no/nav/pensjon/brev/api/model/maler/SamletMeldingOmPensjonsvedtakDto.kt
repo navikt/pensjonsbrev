@@ -2,14 +2,20 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+) : RedigerbarBrevdata<SamletMeldingOmPensjonsvedtakDto.SaksbehandlerValg, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+    data class SaksbehandlerValg(
+        @DisplayText("Tøm radene fra EESSI/Rina")
+        val toemRaderFraEessi: Boolean? = false
+    ) : SaksbehandlerValgBrevdata
+
     data class PesysData(
         val sakstype: Sakstype,
         val vedlegg: P1Dto,
