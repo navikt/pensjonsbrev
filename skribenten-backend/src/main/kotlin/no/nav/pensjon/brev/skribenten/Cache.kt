@@ -16,9 +16,9 @@ import kotlin.time.TimeSource
 
 val defaultTtl = 10.minutes
 
-interface Cache {
-    fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V?
-    fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: (V) -> Duration = { defaultTtl })
+abstract class Cache {
+    protected abstract fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V?
+    protected abstract fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: (V) -> Duration = { defaultTtl })
     suspend fun <K, V> cached(omraade: Cacheomraade, key: K, clazz: Class<V>, ttl: (V) -> Duration = { defaultTtl }, fetch: suspend (K) -> V?): V? =
         get(omraade, key, clazz) ?: fetch(key)?.also {
             val timeToLive = ttl(it)
@@ -34,12 +34,12 @@ suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, no
 class Valkey(
     config: Config,
     private val objectMapper: ObjectMapper = databaseObjectMapper,
-) : Cache {
+) : Cache() {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val jedisPool = setupJedis(config)
 
-    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V? =
+    public override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V? =
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3) { it.get(objectMapper.writeWithPrefix(omraade, key)) }
@@ -50,7 +50,7 @@ class Valkey(
             null
         }
 
-    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: (V) -> Duration) {
+    public override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: (V) -> Duration) {
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3) {
@@ -87,7 +87,7 @@ class Valkey(
     }
 }
 
-class InMemoryCache : Cache {
+class InMemoryCache : Cache() {
     private val objectMapper = databaseObjectMapper
     private val timesource = TimeSource.Monotonic
     private val cache = ConcurrentHashMap<String, Value<String>>()
