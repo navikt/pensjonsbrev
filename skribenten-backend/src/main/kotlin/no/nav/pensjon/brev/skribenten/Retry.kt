@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
+import kotlin.coroutines.cancellation.CancellationException
+
 
 sealed class RetryResult<T> {
     data class Success<T>(
@@ -25,6 +27,7 @@ fun <T> retryOgPakkUt(times: Int, block: () -> T) = retryInner(times, emptyList(
 private fun <T> retryInner(times: Int, exceptions: List<Exception>, block: () -> T): RetryResult<T> = try {
     RetryResult.Success(block())
 } catch (ex: Exception) {
+    if (ex is CancellationException) throw ex
     if (times < 1) {
         RetryResult.Failure(exceptions + ex)
     } else {
