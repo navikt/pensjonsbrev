@@ -150,7 +150,7 @@ private data class TilbakekrevingerTabell(
                                     ytelsenMedFeilutbetaling = tilbakekreves.ytelsenMedFeilutbetaling
                                 )
                             )
-                            showIf(tilbakekreves.resultatAvVurderingen.notNull()) {
+                            ifNotNull(tilbakekreves.resultatAvVurderingen) { resultat ->
                                 text(
                                     bokmal { + " - " },
                                     nynorsk { + " - " },
@@ -158,7 +158,7 @@ private data class TilbakekrevingerTabell(
                                 )
                                 includePhrase(
                                     ResultatAvVurderingenTextMappingStorBokstav(
-                                        resultatAvVurderingen = tilbakekreves.resultatAvVurderingen
+                                        resultatAvVurderingen = resultat
                                     )
                                 )
                             }
