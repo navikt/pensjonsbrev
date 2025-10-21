@@ -4,7 +4,7 @@ import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, V
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -12,8 +12,10 @@ import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/a
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   SaksbehandlerValgModelEditor,
+  useModelSpecificationForm,
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
@@ -214,7 +216,9 @@ function RedigerBrev({
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
-  const [showFritekstModal, setShowFritekstModal] = useState(false);
+
+  const [warnOpen, setWarnOpen] = useState(false);
+  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
@@ -286,15 +290,56 @@ function RedigerBrev({
     );
   };
 
+  const { status, specification } = useModelSpecificationForm(brev.info.brevkode);
+
+  const hasMissingRequiredSaksbehandlerValg = useCallback((): boolean => {
+    if (status !== "success" || !specification) return false;
+
+    const values = form.getValues()?.saksbehandlerValg ?? {};
+
+    return Object.entries(specification).some(([key, fieldType]) => {
+      if (fieldType.type === "enum") {
+        const value = values[key];
+        if (value == null) {
+          return true;
+        } else if (Array.isArray(value)) {
+          return value.length === 0;
+        } else if (typeof value === "object") {
+          return Object.keys(value).length === 0;
+        } else if (typeof value === "string") {
+          return value.trim().length === 0;
+        } else {
+          return false;
+        }
+      }
+    });
+  }, [form, specification, status]);
+
   const numberOfUnfilledFritekstPlaceholders = useCallback(
     () => countUnfilledFritekstPlaceholders(editorState.redigertBrev),
     [editorState.redigertBrev],
   );
 
-  const guardedSubmit = form.handleSubmit((values) => {
+  const getWarn = (): { kind: WarnModalKind; count?: number } | null => {
     const unfilled = numberOfUnfilledFritekstPlaceholders();
-    if (unfilled > 0) {
-      setShowFritekstModal(true);
+    const missingRequired = hasMissingRequiredSaksbehandlerValg();
+
+    if (unfilled > 0 && missingRequired) {
+      return { kind: "both", count: unfilled };
+    } else if (unfilled > 0) {
+      return { kind: "fritekst", count: unfilled };
+    } else if (missingRequired) {
+      return { kind: "requiredSaksbehandlerValg" };
+    } else {
+      return null;
+    }
+  };
+
+  const guardedSubmit = form.handleSubmit((values) => {
+    const warning = getWarn();
+    if (warning) {
+      setWarn(warning);
+      setWarnOpen(true);
       return;
     }
     onSubmit(values, navigateToBrevbehandler);
@@ -335,37 +380,16 @@ function RedigerBrev({
         `}
         onSubmit={guardedSubmit}
       >
-        <Modal
-          header={{
-            heading: `Du må fylle ut ${numberOfUnfilledFritekstPlaceholders()} fritekstfelt før du går videre`,
-            closeButton: true,
+        <WarnModal
+          count={warn?.count ?? 0}
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => setWarnOpen(false)}
+          onFortsett={() => {
+            setWarnOpen(false);
+            onSubmit(form.getValues(), navigateToBrevbehandler);
           }}
-          onClose={() => setShowFritekstModal(false)}
-          open={showFritekstModal}
-          width={600}
-        >
-          <Modal.Body>
-            <BodyLong>
-              Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut
-            </BodyLong>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={() => setShowFritekstModal(false)} type="button">
-              Bli her
-            </Button>
-            <Button
-              onClick={() => {
-                setShowFritekstModal(false);
-                onSubmit(form.getValues(), navigateToBrevbehandler);
-              }}
-              type="button"
-              variant="tertiary"
-            >
-              Fortsett til brevbehandler
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
+          open={warnOpen}
+        />
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal

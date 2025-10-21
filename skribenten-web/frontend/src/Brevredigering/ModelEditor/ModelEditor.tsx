@@ -9,7 +9,7 @@ import type { FieldType, LetterModelSpecification, PropertyUsage } from "~/types
 import { FieldEditor } from "./components/ObjectEditor";
 import { isBooleanField, isFieldNullableOrBoolean } from "./components/utils";
 
-const useModelSpecificationForm = (brevkode: string) => {
+export const useModelSpecificationForm = (brevkode: string) => {
   const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
   const saksbehandlerValgType = brevKodeSpecification.specification
     ? findSaksbehandlerValgTypeName(brevKodeSpecification.specification)
