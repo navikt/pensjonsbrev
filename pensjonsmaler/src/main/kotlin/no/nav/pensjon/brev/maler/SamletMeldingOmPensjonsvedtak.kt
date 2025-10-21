@@ -3,11 +3,13 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.vedlegg
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.vedlegg.pdf.p1Vedlegg
 import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
 import no.nav.pensjon.brev.model.format
@@ -91,8 +93,8 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             }
         }
 
-        includeAttachment(p1Vedlegg, pesysData.vedlegg)
-        includeAttachment(informasjonOmP1Vedlegg, EmptyPDFVedleggData.expr())
+        includeAttachment(p1Vedlegg, pesysData.vedlegg, saksbehandlerValg = saksbehandlerValg)
+        includeAttachment(informasjonOmP1Vedlegg, EmptyPDFVedleggData.expr(), saksbehandlerValg = EmptySaksbehandlerValg.expr())
     }
 
 }

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -13,7 +14,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
-    val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf(),
+    val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *, *>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
@@ -36,11 +37,12 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
-    fun <AttachmentData : PDFVedleggData> includeAttachment(
-        template: PDFTemplate<Lang, AttachmentData>,
+    fun <AttachmentData : PDFVedleggData, SaksbehandlerValg: SaksbehandlerValgBrevdata> includeAttachment(
+        template: PDFTemplate<Lang, AttachmentData, SaksbehandlerValg>,
         attachmentData: Expression<AttachmentData>,
+        saksbehandlerValg: Expression<SaksbehandlerValg>,
     ) {
-        pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template, saksbehandlerValg))
     }
 
     fun includeAttachment(

@@ -16,7 +16,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
-    val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
+    val pdfAttachments: List<IncludeAttachmentPDF<Lang, *, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
     init {

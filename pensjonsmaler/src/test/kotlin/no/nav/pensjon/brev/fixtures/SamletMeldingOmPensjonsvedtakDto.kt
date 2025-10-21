@@ -23,7 +23,9 @@ import java.time.Month
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = SamletMeldingOmPensjonsvedtakDto.SaksbehandlerValg(
+            toemRaderFraEessi = true
+        ),
         pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
             sakstype = Sakstype.ALDER,
             vedlegg = createP1Dto()

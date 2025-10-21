@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
@@ -50,7 +49,7 @@ class PDFVedleggTest {
 
 fun createSamletMeldingOmPensjonsvedtakDto(innvilget: Int, avslag: Int) =
     SamletMeldingOmPensjonsvedtakDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = SamletMeldingOmPensjonsvedtakDto.SaksbehandlerValg(toemRaderFraEessi = false),
         pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
             sakstype = Sakstype.ALDER,
             vedlegg = createP1Dto(innvilget, avslag)

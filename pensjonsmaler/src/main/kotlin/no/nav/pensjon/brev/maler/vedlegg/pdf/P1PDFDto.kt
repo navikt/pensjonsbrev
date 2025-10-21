@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
 import no.nav.pensjon.brev.api.model.maler.P1Dto
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
@@ -15,14 +16,14 @@ import java.util.Locale
 
 private const val RADER_PER_SIDE = 5
 
-val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
+val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto, SamletMeldingOmPensjonsvedtakDto.SaksbehandlerValg>(
     title = listOf(
         newText(
             Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
             Language.English to "P1 – Summary of Pension Decisions"
         )
     )
-) { data, felles ->
+) { data, felles, saksbehandlerValg ->
     with(data) {
 
         side("P1-side1") {
@@ -55,8 +56,10 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("P1-side2") {
                 felt {
-                    add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon) }
-                        .reduce { a, b -> a + b })
+                    if (!saksbehandlerValg.toemRaderFraEessi) {
+                        add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon) }
+                            .reduce { a, b -> a + b })
+                    }
                 }
             }
         }
@@ -71,8 +74,10 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
         avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("P1-side3") {
                 felt {
-                    add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
-                        .reduce { a, b -> a + b })
+                    if (!saksbehandlerValg.toemRaderFraEessi) {
+                        add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
+                            .reduce { a, b -> a + b })
+                    }
                 }
             }
         }
