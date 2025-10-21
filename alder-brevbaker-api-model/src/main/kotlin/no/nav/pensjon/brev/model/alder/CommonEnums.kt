@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.model.alder
 
+import no.nav.pensjon.brevbaker.api.model.DisplayText
+
 enum class AlderspensjonRegelverkType {
     AP1967,
     AP2011,
@@ -45,4 +47,41 @@ enum class MetaforceSivilstand {
     FELLES_BARN, FORELDER, GIFT, GLAD_EKT, GLAD_PART, PARTNER, SAMBOER,
     SAMBOER_1_5,
     SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
+}
+
+enum class KravArsakType{
+    ALDERSOVERGANG,
+    ANNET, // Denne er catch-all for alle de andre typene som fins i pesys, men som ikke trengs her
+    ENDRET_OPPTJENING,
+    EPS_ENDRET_INNTEKT,
+    EPS_NY_YTELSE,
+    EPS_NY_YTELSE_UT,
+    EPS_OPPH_YTELSE_UT,
+    INNVANDRET,
+    INSTOPPHOLD,
+    SIVILSTANDSENDRING,
+    TILSTOT_ENDR_YTELSE,
+    TILSTOT_OPPHORT,
+    TILSTOT_DOD,
+    UTTAKSGRAD,
+    UTVANDRET,
+    VURDER_SERSKILT_SATS
+}
+
+enum class AlderspensjonBeregnetEtter {
+    EGEN,
+    AVDOD,
+}
+
+enum class BeloepEndring {
+    @DisplayText("Økning av beløpet")
+    ENDR_OKT,
+    @DisplayText("Reduksjon av beløpet")
+    ENDR_RED,
+    @DisplayText("Uendret beløp")
+    UENDRET
+}
+
+enum class GarantipensjonSatsType {
+    HOY, ORDINAER
 }
