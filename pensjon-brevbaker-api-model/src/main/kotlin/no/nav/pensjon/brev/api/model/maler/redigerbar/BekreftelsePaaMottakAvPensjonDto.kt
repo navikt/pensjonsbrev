@@ -10,8 +10,8 @@ data class BekreftelsePaaMottakAvPensjonDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, BekreftelsePaaMottakAvPensjonDto.PesysData> {
 
     data class PesysData(
-        val navn: String,
-        val foedselsnummer: Foedselsnummer,
-        val statsborgerskap: String,
+        val address: String,  //PE_PersonSak_PSstatsborger
+        val foedselsnummer: Foedselsnummer,  // PE_
+        val navn: String
     ) : BrevbakerBrevdata
 }
