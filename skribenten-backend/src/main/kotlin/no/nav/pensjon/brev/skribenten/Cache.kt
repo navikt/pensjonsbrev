@@ -20,7 +20,11 @@ interface Cache {
     fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V?
     fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration = defaultTtl)
     suspend fun <K, V> cached(omraade: Cacheomraade, key: K, clazz: Class<V>, ttl: Duration = defaultTtl, fetch: suspend (K) -> V?): V? =
-        get(omraade, key, clazz) ?: fetch(key)?.also { update(omraade, key, it, ttl) }
+        get(omraade, key, clazz) ?: fetch(key)?.also {
+            if (ttl.isPositive()) {
+                update(omraade, key, it, ttl)
+            }
+         }
 }
 
 suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, ttl: Duration = 10.minutes, noinline fetch: suspend (K) -> V?): V? =
