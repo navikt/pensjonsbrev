@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
@@ -156,6 +158,8 @@ object MottakerTable : IdTable<Long>() {
     val adresselinje2: Column<String?> = text("adresselinje2").nullable()
     val adresselinje3: Column<String?> = text("adresselinje3").nullable()
     val landkode: Column<String?> = varchar("landkode", 2).nullable()
+    val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
+        .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -171,6 +175,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2
     var adresselinje3 by MottakerTable.adresselinje3
+    var manueltAdressertTil by MottakerTable.manueltAdressertTil
     var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)

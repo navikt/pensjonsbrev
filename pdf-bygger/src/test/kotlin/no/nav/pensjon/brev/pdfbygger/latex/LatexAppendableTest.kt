@@ -1,19 +1,15 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
-import com.natpryce.hamkrest.and
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.endsWith
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.startsWith
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.assertj.core.api.Assertions.assertThat
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class LatexAppendableTest {
 
     private lateinit var output: StringBuilder
     private lateinit var appendable: LatexAppendable
 
-    @BeforeEach
+    @BeforeTest
     fun setup() {
         output = StringBuilder()
         appendable = LatexAppendable(output)
@@ -28,7 +24,7 @@ class LatexAppendableTest {
         val expected = "heisann dette er en test"
         appendable.append(expected)
 
-        assertThat(printedString(), equalTo(expected))
+        assertThat(printedString()).isEqualTo(expected)
     }
 
     @Test
@@ -36,28 +32,29 @@ class LatexAppendableTest {
         val expected = "heisann dette er en test"
         appendable.appendln(expected)
 
-        assertThat(printedString(), startsWith(expected) and endsWith("\n"))
+        assertThat(printedString()).startsWith(expected)
+        assertThat(printedString()).endsWith("\n")
     }
 
     @Test
     fun `print escapes latex meta characters`() {
         val expected = """heisann dette er _en test"""
         appendable.append(expected)
-        assertThat(printedString(), equalTo(expected.latexEscape()))
+        assertThat(printedString()).isEqualTo(expected.latexEscape())
     }
 
     @Test
     fun `println escapes latex meta characters`() {
         val expected = """heisann dette er _en test"""
         appendable.appendln(expected)
-        assertThat(printedString(), startsWith(expected.latexEscape()))
+        assertThat(printedString()).startsWith(expected.latexEscape())
     }
 
     @Test
     fun `printCmd prints as command`() {
         val cmd = "paragraph"
         appendable.appendCmd(cmd)
-        assertThat(printedString(), startsWith("""\$cmd"""))
+        assertThat(printedString()).startsWith("""\$cmd""")
     }
 
     @Test
@@ -66,13 +63,13 @@ class LatexAppendableTest {
         val arg1 = "mitt første argument"
         val arg2 = "mitt andre argument"
         appendable.appendCmd(cmd, arg1, arg2)
-        assertThat(printedString(), startsWith("""\$cmd{$arg1}{$arg2}"""))
+        assertThat(printedString()).startsWith("""\$cmd{$arg1}{$arg2}""")
     }
 
     @Test
     fun `printCmd ends with newline`() {
         appendable.appendCmd("paragraph")
-        assertThat(printedString(), endsWith("\n"))
+        assertThat(printedString()).endsWith("\n")
     }
 
     @Test
@@ -80,7 +77,7 @@ class LatexAppendableTest {
         val cmd = "paragraph"
         val arg = "min fine paragraf med _"
         appendable.appendCmd(cmd, arg)
-        assertThat(printedString(), startsWith("""\$cmd{${arg.latexEscape()}}"""))
+        assertThat(printedString()).startsWith("""\$cmd{${arg.latexEscape()}}""")
     }
 
     @Test
@@ -88,7 +85,7 @@ class LatexAppendableTest {
         val cmd = "paragraph"
         val arg = """\other{hei_sann}"""
         appendable.appendCmd(cmd, arg, escape = false)
-        assertThat(printedString(), startsWith("""\$cmd{$arg}"""))
+        assertThat(printedString()).startsWith("""\$cmd{$arg}""")
     }
 
     @Test
@@ -96,7 +93,7 @@ class LatexAppendableTest {
         val cmd = "mycommand"
         val body = """kroppen til vår cmd"""
         appendable.appendNewCmd(cmd, body)
-        assertThat(printedString(), startsWith("""\newcommand{\$cmd}{$body}"""))
+        assertThat(printedString()).startsWith("""\newcommand{\$cmd}{$body}""")
     }
 
     @Test
@@ -104,7 +101,7 @@ class LatexAppendableTest {
         val cmd = "mycommand"
         val body = """kroppen til vår cmd med _"""
         appendable.appendNewCmd(cmd, body)
-        assertThat(printedString(), startsWith("""\newcommand{\$cmd}{${body.latexEscape()}}"""))
+        assertThat(printedString()).startsWith("""\newcommand{\$cmd}{${body.latexEscape()}}""")
     }
 
     @Test
@@ -112,14 +109,14 @@ class LatexAppendableTest {
         val cmd = "mycommand"
         val body = """\othercmd{hei_sann}"""
         appendable.appendNewCmd(cmd, body, escape = false)
-        assertThat(printedString(), startsWith("""\newcommand{\$cmd}{${body}}"""))
+        assertThat(printedString()).startsWith("""\newcommand{\$cmd}{${body}}""")
     }
 
     @Test
     fun `printCmd with CommandBuilder prints as command`() {
         val cmd = "paragraph"
         appendable.appendCmd(cmd) { /* This empty block is important to test correct function */ }
-        assertThat(printedString(), startsWith("""\$cmd"""))
+        assertThat(printedString()).startsWith("""\$cmd""")
     }
 
 
@@ -132,13 +129,13 @@ class LatexAppendableTest {
             arg { append(arg1) }
             arg { append(arg2) }
         }
-        assertThat(printedString(), startsWith("""\$cmd{$arg1}{$arg2}"""))
+        assertThat(printedString()).startsWith("""\$cmd{$arg1}{$arg2}""")
     }
 
     @Test
     fun `printCmd with CommandBuilder ends with newline`() {
         appendable.appendCmd("paragraph") { arg { append("hei") } }
-        assertThat(printedString(), endsWith("\n"))
+        assertThat(printedString()).endsWith("\n")
     }
 
     @Test
@@ -147,7 +144,7 @@ class LatexAppendableTest {
         appendable.appendNewCmd(name) {
             appendln("heisann")
         }
-        assertThat(printedString(), startsWith("""\newcommand{\$name}"""))
+        assertThat(printedString()).startsWith("""\newcommand{\$name}""")
     }
 
     @Test
@@ -157,7 +154,7 @@ class LatexAppendableTest {
                 appendln("heisann")
             }
         }
-        assertThat(printedString().replace("\n", ""), endsWith("{heisann}"))
+        assertThat(printedString().replace("\n", "")).endsWith("{heisann}")
     }
 
     @Test
@@ -166,12 +163,12 @@ class LatexAppendableTest {
         appendable.appendNewCmd("mycmd") {
             appendCmd(invoke)
         }
-        assertThat(printedString().replace("\n", ""), endsWith("""{\$invoke}"""))
+        assertThat(printedString().replace("\n", "")).endsWith("""{\$invoke}""")
     }
 
     @Test
     fun `printCmd allows square brackets in argument`() {
         appendable.appendCmd("aCmd", "regularArg", "X[l]")
-        assertThat(printedString().replace("\n", ""), equalTo("""\aCmd{regularArg}{X[l]}"""))
+        assertThat(printedString().replace("\n", "")).isEqualTo("""\aCmd{regularArg}{X[l]}""")
     }
 }

@@ -197,25 +197,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // beregningAPGjtKap19_001
-            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
-                paragraph {
-                    text(
-                        bokmal { + "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter " + pesysData.avdod.navn + "." },
-                        nynorsk { + "Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter " + pesysData.avdod.navn + "." },
-                        english { + "You receive a survivor’s supplement in the retirement pension because you have pension rights after " + pesysData.avdod.navn + "." }
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv." },
-                        nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er skilnaden mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv." },
-                        english { + "The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself." }
-                    )
-                }
-            }
-
-
             showIf(kravInitiertAvNav
                     and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
                     and brukerFoedtEtter1944
@@ -225,6 +206,14 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 showIf(
                     pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
                 ) {
+                    paragraph {
+                        text(
+                            bokmal { + "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter " + pesysData.avdod.navn + "." },
+                            nynorsk { + "Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter " + pesysData.avdod.navn + "." },
+                            english { + "You receive a survivor’s supplement in the retirement pension because you have pension rights after " + pesysData.avdod.navn + "." }
+                        )
+                    }
+
                     title1 {
                         text(
                             bokmal { + "Slik blir gjenlevendetillegget ditt beregnet" },

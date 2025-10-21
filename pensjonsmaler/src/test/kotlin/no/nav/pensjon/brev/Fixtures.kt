@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev
 
+import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.*
@@ -33,7 +34,7 @@ import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brevbaker.api.model.Year
 import kotlin.reflect.KClass
 
-object Fixtures {
+object Fixtures : LetterDataFactory {
 
     val felles = no.nav.brev.brevbaker.Fixtures.felles
 
@@ -42,7 +43,7 @@ object Fixtures {
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> create(letterDataType: KClass<T>): T =
+    override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T

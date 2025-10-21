@@ -1,10 +1,10 @@
 package brev.aldersovergang
 
 import brev.felles.HarDuSpoersmaalAlder
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps60AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps60AarAutoDtoSelectors.ytelse
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.Ytelse
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps60AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps60AarAutoDtoSelectors.ytelse
+import no.nav.pensjon.brev.model.alder.aldersovergang.Ytelse
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate

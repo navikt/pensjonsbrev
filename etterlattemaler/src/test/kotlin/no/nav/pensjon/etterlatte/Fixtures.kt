@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte
 
+import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
@@ -104,14 +105,14 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartB
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO
 import kotlin.reflect.KClass
 
-object Fixtures {
+object Fixtures : LetterDataFactory {
 
     val felles = no.nav.brev.brevbaker.Fixtures.felles
 
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> create(letterDataType: KClass<T>): T =
+    override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
             BarnepensjonInnvilgelseRedigerbartUtfallDTO::class -> createBarnepensjonInnvilgelseRedigerbartUtfallDTO() as T

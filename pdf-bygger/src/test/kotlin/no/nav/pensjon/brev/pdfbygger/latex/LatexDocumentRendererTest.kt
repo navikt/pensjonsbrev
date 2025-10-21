@@ -1,22 +1,16 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.containsSubstring
-import com.natpryce.hamkrest.equalTo
-import io.ktor.util.debug.addToContextInDebugMode
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.pdfbygger.LetterMarkupBlocksBuilder
 import no.nav.pensjon.brev.pdfbygger.ParagraphBuilder
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
-import no.nav.pensjon.brev.pdfbygger.lipsums
 import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.assertj.core.api.Assertions.assertThat
 import kotlin.test.Test
 
 class LatexDocumentRendererTest {
@@ -112,7 +106,7 @@ class LatexDocumentRendererTest {
     }
 
     @Test
-    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
+    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`(): Unit = runBlocking {
         val pdfRequest = PDFRequest(
             letterMarkup = EksempelbrevRedigerbart.brev,
             attachments = listOf(EksempelbrevRedigerbart.vedlegg),
@@ -121,15 +115,8 @@ class LatexDocumentRendererTest {
         )
         val rendered = LatexDocumentRenderer.render(pdfRequest)
 
-        assertThat(
-            rendered.files.first { it.fileName == "letter.tex" }.content,
-            containsSubstring("Du har fått innvilget pensjon")
-        )
-
-        assertThat(
-            rendered.files.first { it.fileName == "attachment_0.tex" }.content,
-            containsSubstring("Test vedlegg")
-        )
+        assertThat(rendered.files.first { it.fileName == "letter.tex" }.content).contains("Du har fått innvilget pensjon")
+        assertThat(rendered.files.first { it.fileName == "attachment_0.tex" }.content).contains("Test vedlegg")
     }
 
     @Test
@@ -160,12 +147,7 @@ class LatexDocumentRendererTest {
 
         val rendered = LatexDocumentRenderer.render(pdfRequest)
 
-        assertThat(
-            rendered.files.first { it.fileName == "letter.tex" }.content,
-            !containsSubstring("textbf")
-        )
-
-
+        assertThat(rendered.files.first { it.fileName == "letter.tex" }.content).doesNotContain("textbf")
     }
 
     private fun assertNumberOfParagraphs(
@@ -193,7 +175,7 @@ class LatexDocumentRendererTest {
             )
         )
         val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
-        assertThat(tex.content.lines().count { it.contains(expectedText) }, equalTo(expectedOccurrences))
+        assertThat(tex.content.lines().count { it.contains(expectedText) }).isEqualTo(expectedOccurrences)
     }
 
 

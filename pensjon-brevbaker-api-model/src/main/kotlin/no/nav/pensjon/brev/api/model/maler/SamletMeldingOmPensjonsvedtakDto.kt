@@ -23,7 +23,6 @@ data class P1Dto(
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
-    val vedtaksdato: String? = null,
 ) : BrevbakerBrevdata, PDFVedleggData {
 
     data class P1Person(
@@ -41,7 +40,7 @@ data class P1Dto(
         val institusjon: List<Institusjon>,
         val pensjonstype: Pensjonstype?,
         val datoFoersteUtbetaling: LocalDate?,
-        val bruttobeloep: Int?,
+        val bruttobeloepDesimal: String?,
         val valuta: String?,
         val utbetalingsHyppighet: Utbetalingshyppighet?,
         val vedtaksdato: String?,
@@ -52,7 +51,8 @@ data class P1Dto(
     )
 
     data class AvslaattPensjon(
-        val institusjon: Institusjon?,
+        val institusjon: Institusjon? = null,
+        val institusjoner: List<Institusjon>?,
         val pensjonstype: Pensjonstype?,
         val avslagsbegrunnelse: Avslagsbegrunnelse?,
         val vurderingsperiode: String?,
