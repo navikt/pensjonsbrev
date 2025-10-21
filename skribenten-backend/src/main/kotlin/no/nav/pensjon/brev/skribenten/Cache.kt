@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 private val defaultTtl = 10.minutes
 
@@ -82,14 +84,22 @@ class Valkey(
 
 class InMemoryCache : Cache {
     private val objectMapper = databaseObjectMapper
-    private val cache = ConcurrentHashMap<String, String>()
+    private val timesource = TimeSource.Monotonic
+    private val cache = ConcurrentHashMap<String, Value<String>>()
 
-    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>) =
-        cache[objectMapper.writeWithPrefix(omraade, key)]?.let { objectMapper.readValue(it, clazz) }
+    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>): V? {
+        cache.filter { it.value.invalidAt.hasPassedNow() }.forEach { cache.remove(it.key) }
+
+        return cache[objectMapper.writeWithPrefix(omraade, key)]
+            ?.takeIf { it.invalidAt.hasNotPassedNow() }
+            ?.let { objectMapper.readValue(it.value, clazz) }
+    }
 
     override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
-        cache[objectMapper.writeWithPrefix(omraade, key)] = objectMapper.writeValueAsString(value)
+        cache[objectMapper.writeWithPrefix(omraade, key)] = Value(timesource.markNow() + ttl, objectMapper.writeValueAsString(value))
     }
+
+    private data class Value<V : Any>(val invalidAt: TimeMark, val value: V)
 }
 
 private fun <T> ObjectMapper.writeWithPrefix(omraade: Cacheomraade, key: T): String = writeValueAsString(omraade.prefix + "-" + writeValueAsString(key))
