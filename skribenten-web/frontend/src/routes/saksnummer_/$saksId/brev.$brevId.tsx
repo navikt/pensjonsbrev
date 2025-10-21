@@ -320,23 +320,23 @@ function RedigerBrev({
     [editorState.redigertBrev],
   );
 
-  const getWarn = (): { kind: WarnModalKind; count?: number } | null => {
+  const getWarning = (): { kind: WarnModalKind; count?: number } | null => {
     const unfilled = numberOfUnfilledFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
 
     if (unfilled > 0 && missingRequired) {
-      return { kind: "both", count: unfilled };
+      return { kind: "fritekstOgTekstValg", count: unfilled };
     } else if (unfilled > 0) {
       return { kind: "fritekst", count: unfilled };
     } else if (missingRequired) {
-      return { kind: "requiredSaksbehandlerValg" };
+      return { kind: "tekstValg" };
     } else {
       return null;
     }
   };
 
   const guardedSubmit = form.handleSubmit((values) => {
-    const warning = getWarn();
+    const warning = getWarning();
     if (warning) {
       setWarn(warning);
       setWarnOpen(true);

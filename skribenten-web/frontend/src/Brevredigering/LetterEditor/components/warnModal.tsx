@@ -1,11 +1,17 @@
 import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import React from "react";
 
-export type WarnModalKind = "fritekst" | "requiredSaksbehandlerValg" | "both";
+export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg";
 
 // Used discriminated props so that only relevant props are required for each kind.
 // here in this case "count" is only relevant for "fritekst" and "both" kinds.
 type WarnModalProps =
+  | {
+      kind: "tekstValg";
+      open: boolean;
+      onClose: () => void;
+      onFortsett: () => void;
+    }
   | {
       kind: "fritekst";
       count: number;
@@ -14,14 +20,8 @@ type WarnModalProps =
       onFortsett: () => void;
     }
   | {
-      kind: "both";
+      kind: "fritekstOgTekstValg";
       count: number;
-      open: boolean;
-      onClose: () => void;
-      onFortsett: () => void;
-    }
-  | {
-      kind: "requiredSaksbehandlerValg";
       open: boolean;
       onClose: () => void;
       onFortsett: () => void;
@@ -34,11 +34,11 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
   // Heading text
   const heading = (() => {
     switch (kind) {
-      case "requiredSaksbehandlerValg":
+      case "tekstValg":
         return "Du må velge tekst";
       case "fritekst":
         return `Du må fylle ut ${count} fritekstfelt`;
-      case "both":
+      case "fritekstOgTekstValg":
         return `Du må fylle ut ${count} fritekstfelt og velge tekst`;
       default:
         return "";
@@ -48,11 +48,11 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
   // Body text
   const body = (() => {
     switch (kind) {
-      case "requiredSaksbehandlerValg":
+      case "tekstValg":
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før du har valgt et obligatorisk tekstalternativ.";
       case "fritekst":
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut.";
-      case "both":
+      case "fritekstOgTekstValg":
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et obligatorisk tekstalternativ.";
     }
   })();
