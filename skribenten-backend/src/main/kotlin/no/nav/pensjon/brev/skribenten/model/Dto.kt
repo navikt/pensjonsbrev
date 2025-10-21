@@ -119,8 +119,6 @@ object Dto {
 
             fun utenlandskAdresse(
                 navn: String,
-                postnummer: String?,
-                poststed: String?,
                 adresselinje1: String,
                 adresselinje2: String?,
                 adresselinje3: String?,
@@ -129,8 +127,6 @@ object Dto {
             ) = Mottaker(
                 type = MottakerType.UTENLANDSK_ADRESSE,
                 navn = navn,
-                postnummer = postnummer,
-                poststed = poststed,
                 adresselinje1 = adresselinje1,
                 adresselinje2 = adresselinje2,
                 adresselinje3 = adresselinje3,
@@ -161,8 +157,6 @@ fun Api.OverstyrtMottaker.toDto() =
         )
         is Api.OverstyrtMottaker.UtenlandskAdresse -> utenlandskAdresse(
             navn = navn,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
@@ -190,8 +184,6 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
         utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
             navn = navn!!,
             landkode = landkode!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
