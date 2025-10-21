@@ -36,7 +36,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                         bruttobeloepTilbakekrevd = Kroner(2000),
                         feilutbetaltBeloep = Kroner(2000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
-                        resultatAvVurderingen = TilbakekrevingResultat.FULL_TILBAKEKREV,
+                        resultatAvVurderingen = null,
                         skattefradragSomInnkreves = Kroner(0),
                         ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
                     ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
