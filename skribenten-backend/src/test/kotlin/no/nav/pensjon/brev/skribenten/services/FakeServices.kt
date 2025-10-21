@@ -47,7 +47,7 @@ open class FakeNavansattService(
         )
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = notYetStubbed()
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String) = notYetStubbed()
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
