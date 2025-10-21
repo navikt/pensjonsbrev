@@ -39,7 +39,7 @@ class CacheTest {
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
-                cache.cached(Cacheomraade.NORG, "k", Int::class.java) {
+                cache.cached(Cacheomraade.NORG, "k") {
                     counter++
                     123
                 }
@@ -75,7 +75,7 @@ class CacheTest {
         }
         val cache = Valkey(valkeyConfig, instanceName, objectMapper)
         runBlocking {
-            cache.cached(Cacheomraade.NORG, "k", String::class.java) {
+            cache.cached(Cacheomraade.NORG, "k") {
                 "v1"
             }
             assertNull(

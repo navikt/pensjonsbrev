@@ -14,6 +14,7 @@ import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.cached
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
@@ -43,7 +44,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> {
-        val cached: NavAnsattEnheter? = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId, NavAnsattEnheter::class.java) {
+        val cached: NavAnsattEnheter? = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<Map<String, String>>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
@@ -62,7 +63,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
-        cache.cached(Cacheomraade.NAVANSATT, ansattId, Navansatt::class.java) {
+        cache.cached(Cacheomraade.NAVANSATT, ansattId) {
             client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }
                 .resultOrNull()

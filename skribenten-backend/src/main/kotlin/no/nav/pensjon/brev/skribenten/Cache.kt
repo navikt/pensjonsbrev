@@ -20,6 +20,9 @@ interface Cache {
         get(omraade, key, clazz) ?: fetch(key)?.also { update(omraade, key, it, ttl) }
 }
 
+suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, ttl: Duration = 10.minutes, noinline fetch: suspend (K) -> V?): V? =
+    cached(omraade, key, V::class.java, ttl, fetch)
+
 class Valkey(
     config: Map<String, String?>,
     instanceName: String,
