@@ -76,7 +76,7 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDt
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-17." })
             }
 
-            includePhrase(RettTilAKlageKort)
+            includePhrase(RettTilAKlageLang)
             includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }

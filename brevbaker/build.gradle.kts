@@ -40,6 +40,7 @@ dependencies {
     testFixturesImplementation(testFixtures(libs.brevbaker.common))
     testFixturesImplementation(testFixtures(project(":brevbaker-dsl")))
     testFixturesImplementation(libs.bundles.logging)
+    testFixturesImplementation(libs.bundles.junit)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
