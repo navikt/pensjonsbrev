@@ -56,7 +56,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto, SamletMeldingOmPen
         innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("P1-side2") {
                 felt {
-                    if (!saksbehandlerValg.toemRaderFraEessi) {
+                    if (saksbehandlerValg.toemRaderFraEessi != true) {
                         add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon) }
                             .reduce { a, b -> a + b })
                     }
@@ -74,7 +74,7 @@ val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto, SamletMeldingOmPen
         avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
             side("P1-side3") {
                 felt {
-                    if (!saksbehandlerValg.toemRaderFraEessi) {
+                    if (saksbehandlerValg.toemRaderFraEessi != true) {
                         add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
                             .reduce { a, b -> a + b })
                     }
