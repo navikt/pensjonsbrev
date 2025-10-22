@@ -18,35 +18,29 @@ import kotlin.time.TimeSource
 val defaultTtl = 10.minutes
 
 abstract class Cache(val objectMapper: ObjectMapper) {
-    protected abstract fun <K, V> get(
+    abstract fun <K, V> get(
         omraade: Cacheomraade,
         key: K,
         clazz: Class<V>,
         deserialize: (String) -> V,
     ): V?
-    protected abstract fun <K, V> update(
+    abstract fun <K, V> update(
         omraade: Cacheomraade,
         key: K,
         value: V,
         ttl: (V) -> Duration = { defaultTtl },
     )
-    suspend fun <K, V> cached(
-        omraade: Cacheomraade,
-        key: K, clazz: Class<V>,
-        ttl: (V) -> Duration = { defaultTtl },
-        deserialize: (String) -> V,
-        fetch: suspend (K) -> V?): V? =
-        get(omraade, key, clazz, deserialize) ?: fetch(key)?.also {
-            val timeToLive = ttl(it)
-            if (timeToLive.isPositive()) {
-                update(omraade, key,it, ttl)
-            }
-         }
 }
 
 suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, noinline ttl: (V) -> Duration = { defaultTtl },
-                                               noinline fetch: suspend (K) -> V?): V? =
-    cached(omraade, key, V::class.java, ttl, { objectMapper.readValue(it) }, fetch)
+                                               noinline fetch: suspend (K) -> V?): V? {
+    return get(omraade, key, V::class.java, { objectMapper.readValue(it) }) ?: fetch(key)?.also {
+        val timeToLive = ttl(it)
+        if (timeToLive.isPositive()) {
+            update(omraade, key,it, ttl)
+        }
+    }
+}
 
 class Valkey(
     config: Config,
