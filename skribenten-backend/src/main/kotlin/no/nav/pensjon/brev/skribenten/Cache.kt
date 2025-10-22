@@ -26,11 +26,14 @@ suspend inline fun <K, reified V> Cache.cached(
     omraade: Cacheomraade,
     key: K,
     noinline ttl: (V) -> Duration = { defaultTtl },
-    noinline fetch: suspend () -> V?,
-): V? {
+    noinline fetch: suspend () -> V,
+): V {
     val serializedKey = "${omraade.prefix}-${objectMapper.writeValueAsString(key)}"
     return read(serializedKey)?.let { objectMapper.readValue(it) }
-        ?: fetch()?.also {
+        ?: fetch().also {
+            if (it == null) {
+                return@also
+            }
             val timeToLive = ttl(it)
             if (timeToLive.isPositive()) {
                 update(
