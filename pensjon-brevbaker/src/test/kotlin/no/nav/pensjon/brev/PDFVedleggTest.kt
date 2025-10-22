@@ -97,7 +97,8 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
             )),
             utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
             valuta = "NOK",
-            vedtaksdato = "2020-01-01"
+            vedtaksdato = "2020-01-01",
+            erNorskRad = true,
         )
     },
     avslaattePensjoner =
