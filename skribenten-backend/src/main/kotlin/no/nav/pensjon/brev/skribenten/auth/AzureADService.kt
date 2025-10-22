@@ -19,6 +19,7 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
+import no.nav.pensjon.brev.skribenten.cached
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -63,7 +64,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     }
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) =
-        cache.cached(Cacheomraade.AD, Pair(principal.navIdent, scope), TokenResponse.OnBehalfOfToken::class.java, { it.expiresIn.seconds.minus(5.minutes) }) {
+        cache.cached(Cacheomraade.AD, Pair(principal.navIdent, scope), { it.expiresIn.seconds.minus(5.minutes) }) {
             val response = client.submitForm(
                 url = jwtConfig.tokenUri,
                 formParameters = Parameters.build {

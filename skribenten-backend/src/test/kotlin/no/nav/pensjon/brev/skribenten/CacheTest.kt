@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
@@ -47,12 +48,16 @@ class CacheTest {
             }
         }
         assertEquals(1, counter)
-        assertEquals(123, cache.get(Cacheomraade.NORG, "k", Int::class.java))
+        assertEquals(123, cache.get(Cacheomraade.NORG, "k", Int::class.java) { databaseObjectMapper.readValue((it)) })
     }
 
     @Test
     fun `verdi som ikke er i cachen gir null for get`() {
-        assertNull(Valkey(valkeyConfig).get(Cacheomraade.NORG, "mangler", String::class.java))
+        assertNull(Valkey(valkeyConfig).get(Cacheomraade.NORG, "mangler", String::class.java) {
+            databaseObjectMapper.readValue(
+                (it)
+            )
+        })
     }
 
     @Test
@@ -60,11 +65,11 @@ class CacheTest {
         val cache = Valkey(valkeyConfig)
         val key = "k"
         val omraade = Cacheomraade.NORG
-        cache.update(omraade, key, "verdi1", { 10.minutes })
-        val v1 = cache.get(omraade, key, String::class.java)
+        cache.update(omraade, key, "verdi1") { 10.minutes }
+        val v1 = cache.get(omraade, key, String::class.java) { databaseObjectMapper.readValue(it) }
         assertEquals("verdi1", v1)
         cache.update(omraade, key, "verdi2")
-        assertEquals("verdi2", cache.get(omraade, "k", String::class.java))
+        assertEquals("verdi2", cache.get(omraade, "k", String::class.java) { databaseObjectMapper.readValue(it) })
     }
 
     @Test
@@ -80,7 +85,7 @@ class CacheTest {
                 "v1"
             }
             assertNull(
-                cache.get(Cacheomraade.NORG, "k", String::class.java)
+                cache.get(Cacheomraade.NORG, "k", String::class.java, deserialize = { objectMapper.readValue(it, String::class.java)})
             )
         }
     }
@@ -94,7 +99,7 @@ class CacheTest {
 
         cache.update(Cacheomraade.NAVANSATTENHET, key, enheter)
 
-        assertEquals(enheter, cache.get(Cacheomraade.NAVANSATTENHET, key, List::class.java))
+        assertEquals(enheter, cache.get(Cacheomraade.NAVANSATTENHET, key, List::class.java, deserialize = { databaseObjectMapper.readValue(it)}))
     }
 
 

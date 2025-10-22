@@ -22,7 +22,7 @@ abstract class Cache(val objectMapper: ObjectMapper) {
         omraade: Cacheomraade,
         key: K,
         clazz: Class<V>,
-        deserialize: (String) -> V = { objectMapper.readValue(it, clazz) },
+        deserialize: (String) -> V,
     ): V?
     protected abstract fun <K, V> update(
         omraade: Cacheomraade,
@@ -34,7 +34,7 @@ abstract class Cache(val objectMapper: ObjectMapper) {
         omraade: Cacheomraade,
         key: K, clazz: Class<V>,
         ttl: (V) -> Duration = { defaultTtl },
-        deserialize: (String) -> V = { objectMapper.readValue(it, clazz) },
+        deserialize: (String) -> V,
         fetch: suspend (K) -> V?): V? =
         get(omraade, key, clazz, deserialize) ?: fetch(key)?.also {
             val timeToLive = ttl(it)
