@@ -32,9 +32,16 @@ export const internalRoutes = (server: Express) => {
   });
 
   const baseUrls = config.baseUrls;
-  server.get("/bff/internal/baseurls", (_, response) => {
+  server.get("/bff/internal/baseurls", (request, response) => {
+    let psak = baseUrls.psak;
+
+    const requestHost = request.hostname;
+    if (requestHost.endsWith("ansatt.dev.nav.no")) {
+      psak = psak.replace("intern.dev.nav.no", "ansatt.dev.nav.no");
+    }
+
     response.json({
-      psak: baseUrls.psak,
+      psak,
     });
   });
 
