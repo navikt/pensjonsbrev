@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
-import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
@@ -46,7 +45,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
-        val cached = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId, deserialize = { databaseObjectMapper.readValue(it, jacksonTypeRef<List<NAVAnsattEnhet>>()) }) {
+        val cached = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()

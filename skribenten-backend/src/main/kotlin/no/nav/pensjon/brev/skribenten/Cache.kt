@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
@@ -44,9 +45,8 @@ abstract class Cache(val objectMapper: ObjectMapper) {
 }
 
 suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, noinline ttl: (V) -> Duration = { defaultTtl },
-                                               noinline deserialize: (String) -> V = { objectMapper.readValue(it, V::class.java) },
                                                noinline fetch: suspend (K) -> V?): V? =
-    cached(omraade, key, V::class.java, ttl, deserialize, fetch)
+    cached(omraade, key, V::class.java, ttl, { objectMapper.readValue(it) }, fetch)
 
 class Valkey(
     config: Config,
