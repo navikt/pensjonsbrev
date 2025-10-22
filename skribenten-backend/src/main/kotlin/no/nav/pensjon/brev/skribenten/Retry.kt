@@ -3,13 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import kotlin.coroutines.cancellation.CancellationException
 
 
-fun <T> retryOgPakkUt(times: Int, block: () -> T) = retryInner(times, emptyList(), block).let {
-    if (it.isSuccess) {
-        return@let it.getOrNull()
-    } else {
-        throw it.exceptionOrNull()!!
-    }
-}
+fun <T> retryOgPakkUt(times: Int, block: () -> T) = retryInner(times, emptyList(), block).getOrThrow()
 
 private fun <T> retryInner(times: Int, exceptions: List<Exception>, block: () -> T): Result<T> = try {
     Result.success(block())
