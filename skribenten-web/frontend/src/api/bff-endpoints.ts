@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { CACHE_FOR } from "./cache";
 
-const BFF_BASE_URL = "/bff/internal";
+const BFF_BASE_URL = "/bff/api";
 
 export type BaseUrls = {
   psak: string;
