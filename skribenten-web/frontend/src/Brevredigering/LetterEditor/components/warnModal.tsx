@@ -4,7 +4,7 @@ import React from "react";
 export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg";
 
 // Used discriminated props so that only relevant props are required for each kind.
-// here in this case "count" is only relevant for "fritekst" and "both" kinds.
+// here in this case "count" is only relevant for "fritekst" and "fritekstOgTekstValg" kinds.
 type WarnModalProps =
   | {
       kind: "tekstValg";
@@ -28,6 +28,10 @@ type WarnModalProps =
     };
 
 export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFortsett, ...rest }) => {
+  // Early return so the modal unmounts when open is false
+  if (!open) {
+    return null;
+  }
   // normalize count when available
   const count = "count" in rest ? Math.max(0, rest.count) : undefined;
 
