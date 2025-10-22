@@ -1,5 +1,6 @@
+import { AxiosError } from "axios";
+
 import { loggFeil } from "~/api/bff-endpoints";
-import {AxiosError} from "axios";
 
 export const logError = async (error: unknown, status: number | undefined) => {
   if (error instanceof Error) {
