@@ -144,7 +144,7 @@ private fun List<ResultRow>.logInvalidRows(column: Column<String?>, maxSize: Int
     logger.info("Validating column ${column.name} with max length $maxSize")
     val invalidRowCount = count { it.doesNotFitRow(column, maxSize) }
     if(invalidRowCount > 0) {
-        logger.warn("Row value was too long for new limit! ${column.name}")
+        logger.warn("Row value was too long for new limit! colName:${column.name} count: $invalidRowCount")
     }
 }
 
