@@ -1281,8 +1281,6 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             mottaker = Dto.Mottaker.utenlandskAdresse(
                 navn = "a",
-                postnummer = "b",
-                poststed = "c",
                 adresselinje1 = "d",
                 adresselinje2 = "e",
                 adresselinje3 = "f",
@@ -1290,7 +1288,14 @@ class BrevredigeringServiceTest {
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
             )
         ).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"), Dto.Mottaker.ManueltAdressertTil.BRUKER)
+        val nyMottaker = Dto.Mottaker.utenlandskAdresse(
+            navn = "a",
+            adresselinje1 = "b",
+            adresselinje2 = "c",
+            adresselinje3 = "d",
+            landkode = Landkode("CY"),
+            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
+        )
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(

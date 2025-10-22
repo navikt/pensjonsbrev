@@ -7,10 +7,6 @@ import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.*
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.*
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstand
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstandAuto
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSats
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
@@ -57,7 +53,6 @@ object ProductionTemplates : AllTemplates {
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
         EndringAvAlderspensjonFordiDuFyller75AarAuto,
-        EndringAvAlderspensjonSivilstandAuto,
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
@@ -101,9 +96,6 @@ object ProductionTemplates : AllTemplates {
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
         BrukerTestBrev,
-        EndringAvAlderspensjonPgaGarantitillegg,
-        EndringAvAlderspensjonSivilstand,
-        EndringAvAlderspensjonSivilstandSaerskiltSats,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,

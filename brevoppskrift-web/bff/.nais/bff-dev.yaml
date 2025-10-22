@@ -2,6 +2,7 @@ app-name: "brevoppskrift-web"
 
 ingresses:
   - "https://pensjon-brevoppskrift.intern.dev.nav.no"
+  - "https://pensjon-brevoppskrift.ansatt.dev.nav.no"
 
 env:
   - name: NODE_ENV

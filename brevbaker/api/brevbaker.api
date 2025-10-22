@@ -127,10 +127,6 @@ public final class no/nav/pensjon/brevbaker/api/model/FellesSelectors {
 	public final fun getSignerendeSaksbehandlere (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getSignerendeSaksbehandlereSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
 	public final fun getSignerendeSaksbehandlere_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getVergeNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getVergeNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getVergeNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
-	public final fun getVergeNavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/FoedselsnummerSelectors {

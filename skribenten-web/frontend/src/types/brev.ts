@@ -117,8 +117,6 @@ export interface NorskAdresse {
 export interface UtenlandskAdresse {
   type: "UtenlandskAdresse";
   navn: string;
-  postnummer: Nullable<string>;
-  poststed: Nullable<string>;
   adresselinje1: string;
   adresselinje2: Nullable<string>;
   adresselinje3: Nullable<string>;
