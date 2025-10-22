@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import io.valkey.DefaultJedisClientConfig
@@ -10,7 +9,6 @@ import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.jvm.java
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.TimeMark
@@ -18,58 +16,51 @@ import kotlin.time.TimeSource
 
 val defaultTtl = 10.minutes
 
-abstract class Cache(val objectMapper: ObjectMapper) {
-    abstract fun <V> get(
-        key: String,
-        clazz: Class<V>,
-        deserialize: (String) -> V,
-    ): V?
-    abstract fun update(
-        key: String,
-        value: String,
-        ttl: Duration,
-    )
+abstract class Cache() {
+    val objectMapper = databaseObjectMapper
+    abstract fun read(key: String): String?
+    abstract fun update(key: String, value: String, ttl: Duration)
 }
 
-suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, noinline ttl: (V) -> Duration = { defaultTtl },
-                                               noinline fetch: suspend (K) -> V?): V? {
-    val serializeKey: (K) -> String = { objectMapper.writeValueAsString(omraade.prefix + "-" + objectMapper.writeValueAsString(key)) }
-    val serializeValue: (V) -> String = { objectMapper.writeValueAsString(it) }
-    val deserialize: (String) -> V = { objectMapper.readValue(it) }
-    return get(
-        serializeKey(key),
-        V::class.java,
-        deserialize,
-    ) ?: fetch(key)?.also {
-        val timeToLive = ttl(it)
-        if (timeToLive.isPositive()) {
-            update(
-                serializeKey(key),
-                serializeValue(it),
-                ttl(it),
-            )
+suspend inline fun <K, reified V> Cache.cached(
+    omraade: Cacheomraade,
+    key: K,
+    noinline ttl: (V) -> Duration = { defaultTtl },
+    noinline fetch: suspend (K) -> V?,
+): V? {
+    val serializeKey: (K) -> String =
+        { objectMapper.writeValueAsString(omraade.prefix + "-" + objectMapper.writeValueAsString(key)) }
+    return read(serializeKey(key))?.let { objectMapper.readValue(it) }
+        ?: fetch(key)?.also {
+            try {
+                val timeToLive = ttl(it)
+                if (timeToLive.isPositive()) {
+                    update(
+                        serializeKey(key),
+                        objectMapper.writeValueAsString(it),
+                        timeToLive,
+                    )
+                }
+            } catch (e: Exception) {
+                LoggerFactory.getLogger(Cache::class.java).warn("Failed to update cache for key $key", e)
+                return null
+            }
         }
-    }
 }
 
-class Valkey(
-    config: Config,
-    objectMapper: ObjectMapper = databaseObjectMapper,
-) : Cache(objectMapper) {
-    private val logger = LoggerFactory.getLogger(javaClass)
+class Valkey(config: Config) : Cache() {
+    private val logger = LoggerFactory.getLogger(Valkey::class.java)
 
     private val jedisPool = setupJedis(config)
 
-    override fun <V> get(key: String, clazz: Class<V>, deserialize: (String) -> V): V? =
-        try {
-            jedisPool.resource.use {
-                retryOgPakkUt(times = 3) { it.get(key) }
-                    ?.let { v -> deserialize(v) }
-            }
-        } catch (e: Exception) {
-            logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
-            null
+    override fun read(key: String): String? = try {
+        jedisPool.resource.use {
+            retryOgPakkUt(times = 3) { it.get(key) }
         }
+    } catch (e: Exception) {
+        logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
+        null
+    }
 
     override fun update(key: String, value: String, ttl: Duration) {
         try {
@@ -108,23 +99,23 @@ class Valkey(
     }
 }
 
-class InMemoryCache : Cache(databaseObjectMapper) {
+class InMemoryCache : Cache() {
     private val timesource = TimeSource.Monotonic
-    private val cache = ConcurrentHashMap<String, Value<String>>()
+    private val cache = ConcurrentHashMap<String, Value>()
 
-    override fun <V> get(key: String, clazz: Class<V>, deserialize: (String) -> V): V? {
+    override fun read(key: String): String? {
         cache.filter { it.value.invalidAt.hasPassedNow() }.forEach { cache.remove(it.key) }
 
         return cache[key]
             ?.takeIf { it.invalidAt.hasNotPassedNow() }
-            ?.let { deserialize(it.value) }
+            ?.value
     }
 
     override fun update(key: String, value: String, ttl: Duration) {
         cache[key] = Value(timesource.markNow() + ttl, value)
     }
 
-    private data class Value<V : Any>(val invalidAt: TimeMark, val value: V)
+    private data class Value(val invalidAt: TimeMark, val value: String)
 }
 
 enum class Cacheomraade(val prefix: String) {

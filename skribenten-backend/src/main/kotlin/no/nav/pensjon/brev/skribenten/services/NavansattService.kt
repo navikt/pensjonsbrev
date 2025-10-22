@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
