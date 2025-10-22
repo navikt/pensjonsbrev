@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
@@ -47,7 +46,7 @@ class CacheTest {
                 }
             }
         }
-        val key = databaseObjectMapper.writeValueAsString(Cacheomraade.NORG.prefix + "-" + databaseObjectMapper.writeValueAsString("k"))
+        val key = Cacheomraade.NORG.prefix + "-" + databaseObjectMapper.writeValueAsString("k")
         assertEquals(1, counter)
         assertEquals(123, cache.read(key)?.toInt())
     }
@@ -66,16 +65,6 @@ class CacheTest {
         assertEquals("verdi1", v1)
         cache.update(key, "verdi2", 10.minutes)
         assertEquals("verdi2", cache.read("k"))
-    }
-
-    @Test
-    fun `returnerer null hvis exception i valkey-kall`() {
-        val cache = Valkey(valkeyConfig)
-
-        runBlocking {
-            cache.cached(Cacheomraade.NORG, "k", ttl = { throw RuntimeException("test exception") }) { "v1" }
-            assertNull(cache.read("{NORG-k}"))
-        }
     }
 
     @Test

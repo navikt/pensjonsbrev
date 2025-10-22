@@ -26,24 +26,18 @@ suspend inline fun <K, reified V> Cache.cached(
     omraade: Cacheomraade,
     key: K,
     noinline ttl: (V) -> Duration = { defaultTtl },
-    noinline fetch: suspend (K) -> V?,
+    noinline fetch: suspend () -> V?,
 ): V? {
-    val serializeKey: (K) -> String =
-        { objectMapper.writeValueAsString(omraade.prefix + "-" + objectMapper.writeValueAsString(key)) }
-    return read(serializeKey(key))?.let { objectMapper.readValue(it) }
-        ?: fetch(key)?.also {
-            try {
-                val timeToLive = ttl(it)
-                if (timeToLive.isPositive()) {
-                    update(
-                        serializeKey(key),
-                        objectMapper.writeValueAsString(it),
-                        timeToLive,
-                    )
-                }
-            } catch (e: Exception) {
-                LoggerFactory.getLogger(Cache::class.java).warn("Failed to update cache for key $key", e)
-                return null
+    val serializedKey = "${omraade.prefix}-${objectMapper.writeValueAsString(key)}"
+    return read(serializedKey)?.let { objectMapper.readValue(it) }
+        ?: fetch()?.also {
+            val timeToLive = ttl(it)
+            if (timeToLive.isPositive()) {
+                update(
+                    serializedKey,
+                    objectMapper.writeValueAsString(it),
+                    timeToLive,
+                )
             }
         }
 }
@@ -77,7 +71,6 @@ class Valkey(config: Config) : Cache() {
             }
         } catch (e: Exception) {
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
-            return
         }
     }
 
