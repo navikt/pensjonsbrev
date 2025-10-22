@@ -22,6 +22,7 @@ abstract class Cache(val objectMapper: ObjectMapper) {
         omraade: Cacheomraade,
         key: K,
         clazz: Class<V>,
+        serialize: (K) -> String,
         deserialize: (String) -> V,
     ): V?
     abstract fun <K, V> update(
@@ -29,15 +30,29 @@ abstract class Cache(val objectMapper: ObjectMapper) {
         key: K,
         value: V,
         ttl: Duration,
+        serializeKey: (K) -> String,
+        serializeValue: (V) -> String,
     )
 }
 
 suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, noinline ttl: (V) -> Duration = { defaultTtl },
                                                noinline fetch: suspend (K) -> V?): V? {
-    return get(omraade, key, V::class.java, { objectMapper.readValue(it) }) ?: fetch(key)?.also {
+    return get(
+        omraade, key,
+        V::class.java,
+        { objectMapper.writeValueAsString(omraade.prefix + "-" + objectMapper.writeValueAsString(key)) },
+        { objectMapper.readValue(it) }
+    ) ?: fetch(key)?.also {
         val timeToLive = ttl(it)
         if (timeToLive.isPositive()) {
-            update(omraade, key, it, ttl(it))
+            update(
+                omraade,
+                key,
+                it,
+                ttl(it),
+                serializeKey = { objectMapper.writeValueAsString(omraade.prefix + "-" + objectMapper.writeValueAsString(key)) },
+                serializeValue = { objectMapper.writeValueAsString(it) },
+            )
         }
     }
 }
@@ -50,10 +65,16 @@ class Valkey(
 
     private val jedisPool = setupJedis(config)
 
-    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>, deserialize: (String) -> V): V? =
+    override fun <K, V> get(
+        omraade: Cacheomraade,
+        key: K,
+        clazz: Class<V>,
+        serialize: (K) -> String,
+        deserialize: (String) -> V
+    ): V? =
         try {
             jedisPool.resource.use {
-                retryOgPakkUt(times = 3) { it.get(objectMapper.writeWithPrefix(omraade, key)) }
+                retryOgPakkUt(times = 3) { it.get(serialize(key)) }
                     ?.let { v -> deserialize(v) }
             }
         } catch (e: Exception) {
@@ -61,13 +82,13 @@ class Valkey(
             null
         }
 
-    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
+    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration, serializeKey: (K) -> String, serializeValue: (V) -> String) {
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3) {
                     it.set(
-                        objectMapper.writeWithPrefix(omraade, key),
-                        objectMapper.writeValueAsString(value),
+                        serializeKey(key),
+                        serializeValue(value),
                         SetParams().apply {
                             ex(ttl.inWholeSeconds)
                         },
@@ -102,22 +123,33 @@ class InMemoryCache : Cache(databaseObjectMapper) {
     private val timesource = TimeSource.Monotonic
     private val cache = ConcurrentHashMap<String, Value<String>>()
 
-    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>, deserialize: (String) -> V): V? {
+    override fun <K, V> get(
+        omraade: Cacheomraade,
+        key: K,
+        clazz: Class<V>,
+        serialize: (K) -> String,
+        deserialize: (String) -> V
+    ): V? {
         cache.filter { it.value.invalidAt.hasPassedNow() }.forEach { cache.remove(it.key) }
 
-        return cache[objectMapper.writeWithPrefix(omraade, key)]
+        return cache[serialize(key)]
             ?.takeIf { it.invalidAt.hasNotPassedNow() }
             ?.let { deserialize(it.value) }
     }
 
-    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
-        cache[objectMapper.writeWithPrefix(omraade, key)] = Value(timesource.markNow() + ttl, objectMapper.writeValueAsString(value))
+    override fun <K, V> update(
+        omraade: Cacheomraade,
+        key: K,
+        value: V,
+        ttl: Duration,
+        serializeKey: (K) -> String,
+        serializeValue: (V) -> String
+    ) {
+        cache[serializeKey(key)] = Value(timesource.markNow() + ttl, serializeValue(value))
     }
 
     private data class Value<V : Any>(val invalidAt: TimeMark, val value: V)
 }
-
-private fun <T> ObjectMapper.writeWithPrefix(omraade: Cacheomraade, key: T): String = writeValueAsString(omraade.prefix + "-" + writeValueAsString(key))
 
 enum class Cacheomraade(val prefix: String) {
     AD("AD"),
