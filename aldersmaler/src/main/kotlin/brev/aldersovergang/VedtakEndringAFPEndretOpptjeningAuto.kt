@@ -1,12 +1,13 @@
-package no.nav.pensjon.brev.auto
+package brev.aldersovergang
 
 import brev.felles.HarDuSpoersmaal
 import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import brev.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkattAFP
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.model.alder.BeloepEndring
-import no.nav.pensjon.brev.model.alder.aldersovergang.AFPPrivateBeregningSelectors.totalPensjon
+import no.nav.pensjon.brev.model.alder.aldersovergang.AFPPrivatBeregningSelectors.totalPensjon
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningInfoSelectors.antallAarEndretOpptjening
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningInfoSelectors.endretOpptjeningsAar
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningInfoSelectors.sisteGyldigeOpptjeningsAar
@@ -16,6 +17,7 @@ import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOppt
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.afpPrivateBeregningVedVirk
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.belopEndring
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.endretOpptjening
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.maanedligPensjonFoerSkattAFP
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.opptjeningType
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
@@ -199,5 +201,10 @@ object VedtakEndringAFPEndretOpptjeningAuto :
                 includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
                 includePhrase(HarDuSpoersmaal.alder)
             }
+
+            includeAttachmentIfNotNull(
+                vedleggMaanedligPensjonFoerSkattAFP,
+                maanedligPensjonFoerSkattAFP,
+            )
         }
 }
