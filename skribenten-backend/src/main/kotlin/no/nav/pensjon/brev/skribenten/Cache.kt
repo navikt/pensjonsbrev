@@ -28,7 +28,7 @@ abstract class Cache(val objectMapper: ObjectMapper) {
         omraade: Cacheomraade,
         key: K,
         value: V,
-        ttl: (V) -> Duration = { defaultTtl },
+        ttl: Duration,
     )
 }
 
@@ -37,7 +37,7 @@ suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, no
     return get(omraade, key, V::class.java, { objectMapper.readValue(it) }) ?: fetch(key)?.also {
         val timeToLive = ttl(it)
         if (timeToLive.isPositive()) {
-            update(omraade, key,it, ttl)
+            update(omraade, key, it, ttl(it))
         }
     }
 }
@@ -50,12 +50,7 @@ class Valkey(
 
     private val jedisPool = setupJedis(config)
 
-    public override fun <K, V> get(
-        omraade: Cacheomraade,
-        key: K,
-        clazz: Class<V>,
-        deserialize: (String) -> V
-    ): V? =
+    override fun <K, V> get(omraade: Cacheomraade, key: K, clazz: Class<V>, deserialize: (String) -> V): V? =
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3) { it.get(objectMapper.writeWithPrefix(omraade, key)) }
@@ -66,7 +61,7 @@ class Valkey(
             null
         }
 
-    public override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: (V) -> Duration) {
+    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3) {
@@ -74,7 +69,7 @@ class Valkey(
                         objectMapper.writeWithPrefix(omraade, key),
                         objectMapper.writeValueAsString(value),
                         SetParams().apply {
-                            ex(ttl(value).inWholeSeconds)
+                            ex(ttl.inWholeSeconds)
                         },
                     )
                 }
@@ -115,8 +110,8 @@ class InMemoryCache : Cache(databaseObjectMapper) {
             ?.let { deserialize(it.value) }
     }
 
-    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: (V) -> Duration) {
-        cache[objectMapper.writeWithPrefix(omraade, key)] = Value(timesource.markNow() + ttl(value), objectMapper.writeValueAsString(value))
+    override fun <K, V> update(omraade: Cacheomraade, key: K, value: V, ttl: Duration) {
+        cache[objectMapper.writeWithPrefix(omraade, key)] = Value(timesource.markNow() + ttl, objectMapper.writeValueAsString(value))
     }
 
     private data class Value<V : Any>(val invalidAt: TimeMark, val value: V)

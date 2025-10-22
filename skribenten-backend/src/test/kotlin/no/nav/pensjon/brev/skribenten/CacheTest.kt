@@ -13,7 +13,6 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import kotlin.jvm.java
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.minutes
 
 
 val valkeyContainer = GenericContainer("valkey/valkey:8.0.0")
@@ -65,10 +64,10 @@ class CacheTest {
         val cache = Valkey(valkeyConfig)
         val key = "k"
         val omraade = Cacheomraade.NORG
-        cache.update(omraade, key, "verdi1") { 10.minutes }
+        cache.update(omraade, key, "verdi1", ttl(value))
         val v1 = cache.get(omraade, key, String::class.java) { databaseObjectMapper.readValue(it) }
         assertEquals("verdi1", v1)
-        cache.update(omraade, key, "verdi2")
+        cache.update(omraade, key, "verdi2", ttl(value))
         assertEquals("verdi2", cache.get(omraade, "k", String::class.java) { databaseObjectMapper.readValue(it) })
     }
 
@@ -97,7 +96,7 @@ class CacheTest {
         val enheter = databaseObjectMapper.readValue(value, List::class.java)
         val cache = Valkey(valkeyConfig)
 
-        cache.update(Cacheomraade.NAVANSATTENHET, key, enheter)
+        cache.update(Cacheomraade.NAVANSATTENHET, key, enheter, ttl(value))
 
         assertEquals(enheter, cache.get(Cacheomraade.NAVANSATTENHET, key, List::class.java, deserialize = { databaseObjectMapper.readValue(it)}))
     }
