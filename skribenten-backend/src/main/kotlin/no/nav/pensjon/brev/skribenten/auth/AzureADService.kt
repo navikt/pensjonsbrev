@@ -82,5 +82,5 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
                 throw AzureAdOnBehalfOfAuthorizationException(response.body<TokenResponse.ErrorResponse>())
             }
             response.body<TokenResponse.OnBehalfOfToken>()
-        }!!
+        } ?: throw IllegalStateException("Klarte ikke å hente AD-token for ${principal.navIdent}")
 }

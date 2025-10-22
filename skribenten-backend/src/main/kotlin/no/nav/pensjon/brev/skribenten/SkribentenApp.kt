@@ -59,7 +59,6 @@ private fun run() {
                 ConfigResolveOptions.defaults().setAllowUnresolved(true)
             ) // loads azuread secrets for local
             .resolveWith(ConfigFactory.load("unleash"))
-            .resolveWith(ConfigFactory.load("valkey"))
             .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
