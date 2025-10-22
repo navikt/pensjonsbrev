@@ -163,6 +163,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
                 // Sett opp evt. jobber her
+                job("ValiderMottakerLengde") {
+                    validerMottakerStoerrelser()
+                }
             }
         }
     }
