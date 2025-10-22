@@ -378,9 +378,13 @@ function RedigerBrev({
         <WarnModal
           count={warn?.count ?? 0}
           kind={warn?.kind ?? "fritekst"}
-          onClose={() => setWarnOpen(false)}
+          onClose={() => {
+            setWarnOpen(false);
+            setWarn(null);
+          }}
           onFortsett={() => {
             setWarnOpen(false);
+            setWarn(null);
             onSubmit(form.getValues(), navigateToBrevbehandler);
           }}
           open={warnOpen}
