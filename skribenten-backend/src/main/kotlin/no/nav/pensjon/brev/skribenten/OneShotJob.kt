@@ -3,12 +3,9 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
-import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -127,26 +124,3 @@ fun JobConfig.updateBrevredigeringJson() {
         }
     }
 }
-
-fun validerMottakerStoerrelser() {
-    transaction {
-        val alleMottakere: List<ResultRow> = MottakerTable.selectAll().toList()
-        alleMottakere.logInvalidRows(MottakerTable.navn, 128)
-        alleMottakere.logInvalidRows(MottakerTable.adresselinje1, 128)
-        alleMottakere.logInvalidRows(MottakerTable.adresselinje2, 128)
-        alleMottakere.logInvalidRows(MottakerTable.adresselinje3, 128)
-        alleMottakere.logInvalidRows(MottakerTable.postnummer, 4)
-        alleMottakere.logInvalidRows(MottakerTable.poststed, 50)
-    }
-}
-
-private fun List<ResultRow>.logInvalidRows(column: Column<String?>, maxSize: Int) {
-    logger.info("Validating column ${column.name} with max length $maxSize")
-    val invalidRowCount = count { it.doesNotFitRow(column, maxSize) }
-    if(invalidRowCount > 0) {
-        logger.warn("Row value was too long for new limit! colName:${column.name} count: $invalidRowCount")
-    }
-}
-
-private fun ResultRow.doesNotFitRow(column: Column<String?>, maxSize: Int): Boolean =
-    (this[column]?.length ?: 0) > maxSize
