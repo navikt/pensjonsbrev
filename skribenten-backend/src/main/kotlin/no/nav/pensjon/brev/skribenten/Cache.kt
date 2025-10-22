@@ -10,6 +10,7 @@ import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.jvm.java
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.TimeMark
@@ -18,11 +19,9 @@ import kotlin.time.TimeSource
 val defaultTtl = 10.minutes
 
 abstract class Cache(val objectMapper: ObjectMapper) {
-    abstract fun <K, V> get(
-        omraade: Cacheomraade,
-        key: K,
+    abstract fun <V> get(
+        key: String,
         clazz: Class<V>,
-        serialize: (K) -> String,
         deserialize: (String) -> V,
     ): V?
     abstract fun update(
@@ -38,10 +37,9 @@ suspend inline fun <K, reified V> Cache.cached(omraade: Cacheomraade, key: K, no
     val serializeValue: (V) -> String = { objectMapper.writeValueAsString(it) }
     val deserialize: (String) -> V = { objectMapper.readValue(it) }
     return get(
-        omraade, key,
+        serializeKey(key),
         V::class.java,
-        serializeKey,
-        deserialize
+        deserialize,
     ) ?: fetch(key)?.also {
         val timeToLive = ttl(it)
         if (timeToLive.isPositive()) {
@@ -62,16 +60,10 @@ class Valkey(
 
     private val jedisPool = setupJedis(config)
 
-    override fun <K, V> get(
-        omraade: Cacheomraade,
-        key: K,
-        clazz: Class<V>,
-        serialize: (K) -> String,
-        deserialize: (String) -> V
-    ): V? =
+    override fun <V> get(key: String, clazz: Class<V>, deserialize: (String) -> V): V? =
         try {
             jedisPool.resource.use {
-                retryOgPakkUt(times = 3) { it.get(serialize(key)) }
+                retryOgPakkUt(times = 3) { it.get(key) }
                     ?.let { v -> deserialize(v) }
             }
         } catch (e: Exception) {
@@ -120,16 +112,10 @@ class InMemoryCache : Cache(databaseObjectMapper) {
     private val timesource = TimeSource.Monotonic
     private val cache = ConcurrentHashMap<String, Value<String>>()
 
-    override fun <K, V> get(
-        omraade: Cacheomraade,
-        key: K,
-        clazz: Class<V>,
-        serialize: (K) -> String,
-        deserialize: (String) -> V
-    ): V? {
+    override fun <V> get(key: String, clazz: Class<V>, deserialize: (String) -> V): V? {
         cache.filter { it.value.invalidAt.hasPassedNow() }.forEach { cache.remove(it.key) }
 
-        return cache[serialize(key)]
+        return cache[key]
             ?.takeIf { it.invalidAt.hasNotPassedNow() }
             ?.let { deserialize(it.value) }
     }
