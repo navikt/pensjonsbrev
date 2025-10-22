@@ -22,8 +22,6 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
       : {
           type: "UtenlandskAdresse",
           navn: v.navn,
-          postnummer: v.postnr,
-          poststed: v.poststed,
           adresselinje1: v.linje1!,
           adresselinje2: v.linje2,
           adresselinje3: v.linje3,
