@@ -54,6 +54,7 @@ export const internalRoutes = (server: Express) => {
         timestamp: body.jsonContent.timestamp,
         message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
+        x_correlationId: body.requestId,
       }),
     );
     response.status(200).end();
