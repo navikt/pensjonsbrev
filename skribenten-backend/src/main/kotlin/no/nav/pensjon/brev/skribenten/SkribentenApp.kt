@@ -160,8 +160,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     monitor.subscribe(ServerReady) {
         async {
-            delay(5.minutes)
             oneShotJobs(skribentenConfig) {
+                job("ValiderMottakerLengde") {
+                    validerMottakerStoerrelser()
+                }
                 // Sett opp evt. jobber her
             }
         }
