@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -15,13 +16,14 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
 interface NavansattService {
     suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean>
     suspend fun hentNavansatt(ansattId: String): Navansatt?
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter>
+    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
 }
 
 class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
@@ -43,12 +45,11 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<NavAnsattEnheter> {
-        val cached: NavAnsattEnheter? = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
+        val cached = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId, deserialize = { databaseObjectMapper.readValue(it, jacksonTypeRef<List<NAVAnsattEnhet>>()) }) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
-                ?.let { NavAnsattEnheter(it) }
         }
         return cached?.let { ServiceResult.Ok(it) }
             ?: ServiceResult.Error(
@@ -59,7 +60,6 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
-            .map { it.enheter }
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
@@ -78,11 +78,6 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("ping-authenticated").toServiceResult<String>().map { true }
 }
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class NavAnsattEnheter(
-    val enheter: List<NAVAnsattEnhet>
-)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(

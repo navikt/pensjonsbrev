@@ -23,7 +23,7 @@ fun Route.meRoute(navansattService: NavansattService) {
             call.respond(favouritesRepository.getFavourites(principal().navIdent))
         }
         get("/enheter") {
-            respondWithResult(navansattService.hentNavAnsattEnhetListe(principal().navIdent.id).map { it.enheter })
+            respondWithResult(navansattService.hentNavAnsattEnhetListe(principal().navIdent.id))
         }
     }
 }
