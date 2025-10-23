@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
@@ -18,8 +19,8 @@ val defaultTtl = 10.minutes
 
 abstract class Cache() {
     val objectMapper = databaseObjectMapper
-    abstract fun read(key: String): String?
-    abstract fun update(key: String, value: String, ttl: Duration)
+    abstract suspend fun read(key: String): String?
+    abstract suspend fun update(key: String, value: String, ttl: Duration)
 }
 
 suspend inline fun <K, reified V> Cache.cached(
@@ -50,19 +51,19 @@ class Valkey(config: Config) : Cache() {
 
     private val jedisPool = setupJedis(config)
 
-    override fun read(key: String): String? = try {
+    override suspend fun read(key: String): String? = try {
         jedisPool.resource.use {
-            retryOgPakkUt(times = 3) { it.get(key) }
+            retryOgPakkUt(times = 3, ventetid = 50.milliseconds) { it.get(key) }
         }
     } catch (e: Exception) {
         logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
         null
     }
 
-    override fun update(key: String, value: String, ttl: Duration) {
+    override suspend fun update(key: String, value: String, ttl: Duration) {
         try {
             jedisPool.resource.use {
-                retryOgPakkUt(times = 3) {
+                retryOgPakkUt(times = 3, ventetid = 50.milliseconds) {
                     it.set(
                         key,
                         value,
@@ -99,7 +100,7 @@ class InMemoryCache : Cache() {
     private val timesource = TimeSource.Monotonic
     private val cache = ConcurrentHashMap<String, Value>()
 
-    override fun read(key: String): String? {
+    override suspend fun read(key: String): String? {
         cache.filter { it.value.invalidAt.hasPassedNow() }.forEach { cache.remove(it.key) }
 
         return cache[key]
@@ -107,7 +108,7 @@ class InMemoryCache : Cache() {
             ?.value
     }
 
-    override fun update(key: String, value: String, ttl: Duration) {
+    override suspend fun update(key: String, value: String, ttl: Duration) {
         cache[key] = Value(timesource.markNow() + ttl, value)
     }
 
