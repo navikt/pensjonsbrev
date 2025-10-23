@@ -454,8 +454,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.in
 
     paragraph {
         text(
-            bokmal { +"Vi har beregnet omstillingsstønaden din for " + etteroppgjoersAar.format() + " basert på en inntekt på " + grunnlagData.inntekt.format() + ". Dette tilsvarer din pensjonsgivende inntekt minus fradragsbeløpet." },
-            nynorsk { +"Vi har rekna ut omstillingsstønaden din for " + etteroppgjoersAar.format() + " med utgangspunkt i ei inntekt på " + grunnlagData.inntekt.format() + ". Dette svarer til den pensjonsgivande inntekta di minus frådragsbeløpet." },
+            bokmal { +"Vi har beregnet omstillingsstønaden din for " + etteroppgjoersAar.format() + " basert på en inntekt på " + grunnlagData.inntekt.format() + ". Dette tilsvarer din pensjonsgivende inntekt minus fratrekket." },
+            nynorsk { +"Vi har rekna ut omstillingsstønaden din for " + etteroppgjoersAar.format() + " med utgangspunkt i ei inntekt på " + grunnlagData.inntekt.format() + ". Dette svarer til den pensjonsgivande inntekta di minus fråtrekket." },
             english { +"We have calculated your adjustment allowance for " + etteroppgjoersAar.format() + " based on an income of " + grunnlagData.inntekt.format() + ". This corresponds to your pensionable income minus any deductions." },
         )
     }
