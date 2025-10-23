@@ -47,9 +47,12 @@ object Pen {
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
+        val navn: Navn,
         val sakType: SakType,
         val enhetId: String,
-    )
+    ) {
+        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+    }
 
     data class Avtaleland(val navn: String, val kode: String)
 

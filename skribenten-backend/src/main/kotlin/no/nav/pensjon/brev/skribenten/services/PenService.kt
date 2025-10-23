@@ -98,6 +98,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                             saksId = sak.result.saksId,
                             foedselsnr = sak.result.foedselsnr,
                             foedselsdato = sak.result.foedselsdato,
+                            navn = with(sak.result.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                             sakType = sak.result.sakType,
                             enhetId = sak.result.enhetId
                         )
@@ -200,9 +201,12 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
+        val navn: Navn,
         val sakType: Pen.SakType,
         val enhetId: String?,
-    )
+    ) {
+        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+    }
 }
 
 data class BrevdataResponse(val data: Data?, val error: String? = null) {
