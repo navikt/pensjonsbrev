@@ -160,7 +160,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 english { +"Before 1 January 2024" },
                 FontType.BOLD
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Nav gjør en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() + " barn som oppdras sammen." },
                 nynorsk { +"Nav gjer ei samla utrekning av pensjon for barn som blir oppdregne saman. For denne utrekninga har vi lagt til grunn at de er " + antallBarn.format() + " barn som blir oppdregne saman." },
@@ -181,7 +182,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 english { +"From 1 January 2024 (new rules)" },
                 FontType.BOLD
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Barnepensjonen per år utgjør en ganger folketrygdens grunnbeløp (G)." },
                 nynorsk { +"Barnepensjonen per år utgjer éin gong grunnbeløpet i folketrygda (G)." },
@@ -196,7 +198,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 english { +"Before 1 January 2024" },
                 FontType.BOLD
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Barnepensjonen per år utgjør 40 prosent av folketrygdens grunnbeløp (G)." },
                 nynorsk { +"Barnepensjonen per år utgjer 40 prosent av grunnbeløpet i folketrygda (G)." },
@@ -210,7 +213,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 english { +"From 1 January 2024 (new rules)" },
                 FontType.BOLD
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Barnepensjonen per år utgjør en ganger folketrygdens grunnbeløp (G)." },
                 nynorsk { +"Barnepensjonen per år utgjer éin gong grunnbeløpet i folketrygda (G)." },
@@ -885,7 +889,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"Before 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet ut fra at det er " + antallBarn.format() + " søsken som oppdras sammen, med 0,4 G til første barn, og 0,25 G til påfølgende barn. Beløpet fordeles likt på hvert barn, og blir ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Utrekninga av barnepensjonen tek utgangspunkt i at det er " + antallBarn.format() + " søsken som blir oppdregne saman, med 0,4 G til første barn, og 0,25 G til påfølgjande barn. Beløpet blir fordelt likt på kvart barn, og blir gonga med " + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -899,7 +904,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"From 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til " + barnepensjonssats() + " G gonga med " + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -914,7 +920,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"Before 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet til 0,4 G ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til 0,4 G gonga med " + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -928,7 +935,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"From 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til " + barnepensjonssats() + " G gonga med " + aarTrygdetid.format() + "/40 trygdetid, gonga med forholdstalet " + prorataBroek.formatBroek() + ". Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -945,7 +953,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"Before 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet ut fra at det er "  + antallBarn.format() + " søsken som oppdras sammen, med 0,4 G til første barn, og 0,25 G til påfølgende barn. Beløpet fordeles likt på hvert barn, og blir ganget med " + aarTrygdetid.format() + "/40 trygdetid.  Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Utrekninga av barnepensjonen tek utgangspunkt i at det er "  + antallBarn.format() + " søsken som blir oppdregne saman, med 0,4 G til første barn, og 0,25 G til påfølgjande barn. Beløpet blir fordelt likt på kvart barn, og blir gonga med " + aarTrygdetid.format() + "/40 trygdetid.  Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -959,7 +968,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"From 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med "  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til " + barnepensjonssats() + " G gonga med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -974,7 +984,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"Before 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet til 0,4 G ganget med "  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til 0,4 G gonga med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." },
@@ -988,7 +999,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     english { +"From 1 January 2024" },
                     FontType.BOLD
                 )
-                newline()
+            }
+            paragraph {
                 text(
                     bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med "  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til " + barnepensjonssats() + " G gonga med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." },

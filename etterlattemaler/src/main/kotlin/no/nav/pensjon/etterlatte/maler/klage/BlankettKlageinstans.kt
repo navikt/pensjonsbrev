@@ -167,7 +167,8 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
 ) {
     paragraph {
         text(bokmal { +punkt }, nynorsk { +punkt }, english { +punkt }, FontType.BOLD)
-        newline()
+    }
+    paragraph {
         text(bokmal { +svar }, nynorsk { +svar }, english { +svar })
     }
 }
@@ -178,7 +179,9 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
 ) {
     paragraph {
         text(bokmal { +tittel }, nynorsk { +tittel }, english { +tittel }, FontType.BOLD)
-        newline()
+    }
+
+    paragraph {
         showIf(oppfylt) {
             text(bokmal { +"Oppfylt" }, nynorsk { +"Oppfylt" }, english { +"Oppfylt" })
         } orShow {
@@ -202,10 +205,11 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
             english { +overskrift },
             FontType.BOLD
         )
-        newline()
-        forEach(linjer) { linje ->
+    }
+
+    forEach(linjer) { linje ->
+        paragraph {
             text(bokmal { +linje }, nynorsk { +linje }, english { +linje })
-            newline()
         }
     }
 }

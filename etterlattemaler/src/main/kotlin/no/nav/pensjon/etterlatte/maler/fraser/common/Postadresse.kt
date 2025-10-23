@@ -9,44 +9,51 @@ import no.nav.pensjon.brev.template.dsl.text
 fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, out Any>.postadresse(
     utland: Expression<Boolean>
 ) {
-    paragraph {
-        showIf(utland) {
+    showIf(utland) {
+        paragraph {
             text(
                 bokmal { +"Nav familie- og pensjonsytelser" },
                 nynorsk { +"Nav familie- og pensjonsytelser" },
                 english { +"Nav familie- og pensjonsytelser" }
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Postboks 6600 Etterstad" },
                 nynorsk { +"Postboks 6600 Etterstad" },
                 english { +"Postboks 6600 Etterstad" }
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"0607 Oslo" },
                 nynorsk { +"0607 Oslo" },
                 english { +"0607 Oslo" }
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Norge/Norway" },
                 nynorsk { +"Noreg/Norway" },
                 english { +"Norway" }
             )
-        }.orShow {
+        }
+    }.orShow {
+        paragraph {
             text(
                 bokmal { +"Nav skanning" },
                 nynorsk { +"Nav skanning" },
                 english { +"Nav skanning" }
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"Postboks 1400" },
                 nynorsk { +"Postboks 1400" },
                 english { +"Postboks 1400" }
             )
-            newline()
+        }
+        paragraph {
             text(
                 bokmal { +"0109 OSLO" },
                 nynorsk { +"0109 OSLO" },
@@ -54,5 +61,5 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
             )
         }
     }
-
 }
+
