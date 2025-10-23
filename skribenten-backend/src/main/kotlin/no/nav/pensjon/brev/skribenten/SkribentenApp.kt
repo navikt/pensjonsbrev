@@ -151,11 +151,19 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
+    val valkeyConfig = skribentenConfig.getConfig("valkey")
+    val cache = if (valkeyConfig.getBoolean("enabled")) {
+        Valkey(valkeyConfig)
+    } else {
+        log.warn("Valkey is disabled, this is not recommended for production")
+        InMemoryCache()
+    }
+
     val azureADConfig = skribentenConfig.requireAzureADConfig()
     install(Authentication) {
         skribentenJwt(azureADConfig)
     }
-    configureRouting(azureADConfig, skribentenConfig)
+    configureRouting(azureADConfig, skribentenConfig, cache)
     configureMetrics()
 
     monitor.subscribe(ServerReady) {

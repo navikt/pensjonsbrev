@@ -12,7 +12,9 @@ import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.cached
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
@@ -22,7 +24,7 @@ interface NavansattService {
     suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
 }
 
-class NavansattServiceHttp(config: Config, authService: AuthService) : NavansattService, ServiceStatus {
+class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
     private val navansattUrl = config.getString("url")
@@ -41,33 +43,39 @@ class NavansattServiceHttp(config: Config, authService: AuthService) : Navansatt
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    private val navenhetCache = Cache<String, List<NAVAnsattEnhet>>()
-
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> =
-        navenhetCache.cached(ansattId) {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
+        val cached = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
             client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
                 .resultOrNull()
-        }?.let { ServiceResult.Ok(it) } ?: ServiceResult.Error("Ingen treff", HttpStatusCode.ExpectationFailed)
+        }
+        return cached?.let { ServiceResult.Ok(it) }
+            ?: ServiceResult.Error(
+            "Ingen treff",
+            HttpStatusCode.ExpectationFailed
+        )
+    }
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
-    private val navansattCache = Cache<String, Navansatt>()
-    override suspend fun hentNavansatt(ansattId: String): Navansatt? =
-        navansattCache.cached(ansattId) {
+    override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
+        cache.cached(Cacheomraade.NAVANSATT, ansattId) {
             client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
                 .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }
                 .resultOrNull()
         }
+    } catch (e: Exception) {
+        logger.error("Feil ved henting av navansatt $ansattId", e)
+        throw e
+    }
 
     override val name = "Nav Ansatt"
 
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("ping-authenticated").toServiceResult<String>().map { true }
 }
-
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(

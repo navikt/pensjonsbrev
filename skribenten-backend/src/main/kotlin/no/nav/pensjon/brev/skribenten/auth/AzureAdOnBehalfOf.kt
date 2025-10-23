@@ -18,12 +18,6 @@ val AzureAdOnBehalfOf = createClientPlugin("PrincipalFromContext_AzureAdOnBehalf
 
     onRequest { request, _ ->
         val principal = PrincipalInContext.require()
-
-        when (val tokenResponse = authService.getOnBehalfOfToken(principal, scope)) {
-            is TokenResponse.ErrorResponse -> throw AzureAdOnBehalfOfAuthorizationException(tokenResponse)
-            is TokenResponse.OnBehalfOfToken -> request.apply {
-                bearerAuth(tokenResponse.accessToken)
-            }
-        }
+        request.apply { bearerAuth(authService.getOnBehalfOfToken(principal, scope).accessToken)}
     }
 }

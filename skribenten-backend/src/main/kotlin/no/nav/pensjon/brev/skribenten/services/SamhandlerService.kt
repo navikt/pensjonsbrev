@@ -11,7 +11,9 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.cached
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
@@ -23,7 +25,7 @@ interface SamhandlerService {
     suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -67,8 +69,7 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
-    private val samhandlerNavnCache = Cache<String, String>()
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached(Cacheomraade.SAMHANDLER, idTSSEkstern) {
         hentSamhandler(idTSSEkstern).success?.navn
     }
 
