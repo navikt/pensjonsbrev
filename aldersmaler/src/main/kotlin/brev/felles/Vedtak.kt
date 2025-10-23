@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.felles
+package brev.felles
 
 import brev.felles.Constants.DITT_NAV
 import no.nav.pensjon.brev.template.Expression
@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 import java.time.Month
+
 
 object Vedtak {
 
@@ -78,7 +79,7 @@ object Vedtak {
         }
     }
 
-    object TrygdetidText: PlainTextOnlyPhrase<LangBokmalNynorskEnglish>(){
+    object TrygdetidText: PlainTextOnlyPhrase<LangBokmalNynorskEnglish> (){
         override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(bokmal { + "Trygdetid" }, nynorsk { + "Trygdetid" }, english { + "Period of national insurance coverage" })
         }

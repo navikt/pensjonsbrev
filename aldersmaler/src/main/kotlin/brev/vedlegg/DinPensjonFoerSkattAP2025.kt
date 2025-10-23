@@ -1,11 +1,11 @@
-package no.nav.pensjon.brev.maler.vedlegg
+package brev.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonPerManedGjeldende
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonperManed
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.kravVirkFom
-import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonFlerePerioderInnledning
-import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap20
+import brev.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonFlerePerioderInnledning
+import brev.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap20
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonPerManedGjeldende
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonperManed
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.kravVirkFom
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment

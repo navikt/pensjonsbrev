@@ -1,22 +1,21 @@
 package brev.vedlegg.maanedligPensjonFoerSkatt
 
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskadeAvdod
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskadeAvdod
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabell
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
-
 
 private object TilleggspensjonenBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

@@ -1,9 +1,9 @@
 package brev.vedlegg
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.sakstype
+import no.nav.pensjon.brev.model.alder.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.model.alder.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.sakstype
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -23,32 +23,20 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 @TemplateModelHelpers
 val vedleggDineRettigheterOgMulighetTilAaKlage =
     createAttachment<LangBokmalNynorskEnglish, DineRettigheterOgMulighetTilAaKlageDto>(
-        title =
-            newText(
-                Bokmal to "Dine rettigheter og mulighet til å klage",
-                Nynorsk to "Rettane dine og høve til å klage",
-                English to "Your rights and how to appeal",
-            ),
-        includeSakspart = false,
+        title = newText(
+            Bokmal to "Dine rettigheter og mulighet til å klage",
+            Nynorsk to "Rettane dine og høve til å klage",
+            English to "Your rights and how to appeal",
+        ),
+        includeSakspart = false
     ) {
         includePhrase(VedleggVeiledning)
         showIf(sakstype.notEqualTo(Sakstype.UFOREP)) {
-            includePhrase(
-                VedleggInnsynSakPensjon(
-                    felles.avsenderEnhet.telefonnummer,
-                    nettside = felles.avsenderEnhet.nettside,
-                ),
-            )
+            includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer, nettside = felles.avsenderEnhet.nettside))
         }.orShow {
             includePhrase(VedleggInnsynSakUfoeretrygdPesysNoenDokumenter)
         }
-        showIf(
-            sakstype.equalTo(Sakstype.BARNEP) and
-                argument.brukerUnder18Aar_safe
-                    .ifNull(
-                        false,
-                    ).equalTo(true),
-        ) {
+        showIf(sakstype.equalTo(Sakstype.BARNEP) and argument.brukerUnder18Aar_safe.ifNull(false).equalTo(true)) {
             includePhrase(VedleggInnsynSakUnder18)
         }
         includePhrase(VedleggHjelpFraAndre)

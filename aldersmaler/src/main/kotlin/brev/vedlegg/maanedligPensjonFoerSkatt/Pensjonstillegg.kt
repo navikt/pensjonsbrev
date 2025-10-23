@@ -1,16 +1,16 @@
 package brev.vedlegg.maanedligPensjonFoerSkatt
 
 import brev.felles.bestemtForm
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.pensjonstillegg
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabell
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.pensjonstillegg
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

@@ -111,7 +111,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
             }
 
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

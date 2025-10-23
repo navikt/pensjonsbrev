@@ -112,7 +112,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     text(
                         bokmal { +"Ett rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
                         nynorsk { +"Eitt rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
-                        english { +"One court fee as of December 31st " + data.etteroppgjoersAar.format() + " is " + data.rettsgebyrBeloep.format() + "." }
+                        english { +"As of 31 December " + data.etteroppgjoersAar.format() + " a standard court fee is " + data.rettsgebyrBeloep.format() + "." }
                     )
                 }
 
@@ -128,7 +128,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     text(
                         bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9 og omstillingsstønadsforskriften § 9." },
                         nynorsk { +"Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § 17-9 og omstillingsstønadsforskriften § 9." },
-                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations.." },
+                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations." },
                     )
                 }
 
@@ -138,7 +138,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                         text(
                             bokmal { +"Hvordan skal du betale tilbake" },
                             nynorsk { +"Korleis du skal betale tilbake" },
-                            english { +"" },
+                            english { +"How to repay" },
                         )
                     }
                     paragraph {
@@ -169,8 +169,8 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     title2 {
                         text(
                             bokmal { +"Etterbetaling av beløpet" },
-                            nynorsk { +"" },
-                            english { +"" },
+                            nynorsk { +"Etterbetaling av beløpet" },
+                            english { +"Back payment of the amount" },
                         )
                     }
                     paragraph {

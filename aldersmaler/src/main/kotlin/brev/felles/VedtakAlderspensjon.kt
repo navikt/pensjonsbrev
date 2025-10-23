@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.alderspensjon
+package brev.felles
 
 import brev.felles.Constants.DIN_PENSJON_URL
 import brev.felles.Constants.SKATTEETATEN_PENSJONIST_URL

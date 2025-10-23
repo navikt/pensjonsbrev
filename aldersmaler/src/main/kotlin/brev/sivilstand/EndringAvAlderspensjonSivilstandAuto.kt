@@ -8,6 +8,8 @@ import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import brev.felles.UfoereAlder
 import brev.felles.Utbetalingsinformasjon
+import brev.felles.Vedtak
+import brev.felles.VedtakAlderspensjon
 import brev.sivilstand.fraser.BetydningForUtbetaling
 import brev.sivilstand.fraser.DuFaarAP
 import brev.sivilstand.fraser.EndringYtelseEPS
@@ -17,38 +19,36 @@ import brev.sivilstand.fraser.OpphoerYtelseEPS
 import brev.sivilstand.fraser.OpphoerYtelseEPSOver2G
 import brev.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import brev.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import brev.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.KravArsakType
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.EpsVedVirkSelectors.harInntektOver2G
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.epsVedVirk
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.kravAarsak
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.maanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonSivilstandAutoDtoSelectors.sivilstand
-import no.nav.pensjon.brev.felles.Vedtak
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.BeloepEndring
+import no.nav.pensjon.brev.model.alder.KravArsakType
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.EpsVedVirkSelectors.harInntektOver2G
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.beloepEndring
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.epsVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.kravAarsak
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.regelverkType
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -77,7 +77,7 @@ object EndringAvAlderspensjonSivilstandAuto :
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Vedtak - endring av alderspensjon (sivilstand)",
+                    displayTitle = "Vedtak - endring av alderspensjon",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,

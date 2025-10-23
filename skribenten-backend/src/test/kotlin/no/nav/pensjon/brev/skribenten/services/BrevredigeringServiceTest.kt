@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import no.nav.brev.Landkode
+import no.nav.brev.Landkoder
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -241,6 +242,7 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
+        samhandlerService = FakeSamhandlerService()
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
@@ -1262,7 +1264,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f")
+        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(
@@ -1276,8 +1278,19 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
-        val brev = opprettBrev().resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"))
+        val brev = opprettBrev(
+            mottaker = Dto.Mottaker.utenlandskAdresse(
+                navn = "a",
+                postnummer = "b",
+                poststed = "c",
+                adresselinje1 = "d",
+                adresselinje2 = "e",
+                adresselinje3 = "f",
+                landkode = Landkode("CY"),
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
+            )
+        ).resultOrNull()!!
+        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"), Dto.Mottaker.ManueltAdressertTil.BRUKER)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(

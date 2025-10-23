@@ -416,7 +416,10 @@ enum BrevSidemenyTabs {
 
 // TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
 const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
+  const specificationFormElements = usePartitionedModelSpecification(
+    brev.info.brevkode,
+    brev.propertyUsage ?? undefined,
+  );
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
   const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];

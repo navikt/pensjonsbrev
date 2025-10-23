@@ -1,7 +1,7 @@
 package brev.sivilstand.fraser
 
 import brev.felles.bestemtForm
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase

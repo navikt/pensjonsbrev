@@ -4,7 +4,7 @@ import brev.felles.Constants
 import brev.felles.Constants.PENSJON_ENDRING_URL
 import brev.felles.Constants.UTBETALINGSOVERSIKT_URL
 import brev.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*

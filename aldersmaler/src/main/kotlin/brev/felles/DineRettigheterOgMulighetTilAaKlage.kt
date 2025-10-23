@@ -1,4 +1,3 @@
-
 import brev.vedlegg.VedleggHjelpFraAndreStatisk
 import brev.vedlegg.VedleggInnsynSakPensjonStatisk
 import brev.vedlegg.VedleggKlagePaaVedtaketStatisk

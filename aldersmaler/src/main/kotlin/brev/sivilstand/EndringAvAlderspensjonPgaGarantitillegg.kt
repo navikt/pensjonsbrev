@@ -9,29 +9,28 @@ import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import brev.felles.UfoereAlder
 import brev.felles.Utbetalingsinformasjon
+import brev.felles.Vedtak
 import brev.sivilstand.fraser.DuFaarAP
 import brev.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import brev.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import brev.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDto
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.garantitillegg_safe
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.pesysData
-import no.nav.pensjon.brev.brev.FeatureToggles
-import no.nav.pensjon.brev.felles.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.garantitillegg_safe
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.pesysData
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -46,10 +45,8 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
-
-    override val featureToggle = FeatureToggles.endringAvAlderspensjonSivilstandGarantitillegg.toggle
-
+object EndringAvAlderspensjonPgaGarantitillegg :
+    RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -67,7 +64,8 @@ object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAld
                 ),
         ) {
             val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
-            val garantitillegg = pesysData.beregnetPensjonPerManedVedVirk.garantitillegg_safe.ifNull(then = Kroner(0))
+            val garantitillegg =
+                pesysData.beregnetPensjonPerManedVedVirk.garantitillegg_safe.ifNull(then = Kroner(0))
             val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
             val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
             val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
@@ -151,8 +149,8 @@ object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAld
                     includePhrase(
                         DuFaarAP(
                             pesysData.kravVirkDatoFom,
-                            pesysData.beregnetPensjonPerManedVedVirk.totalPensjon
-                        )
+                            pesysData.beregnetPensjonPerManedVedVirk.totalPensjon,
+                        ),
                     )
                 }
 

@@ -1,21 +1,21 @@
-package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
+package brev.vedlegg.maanedligPensjonFoerSkatt
 
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.AP1967
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand.*
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.saertillegg_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.AP1967
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand.*
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabell
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.saertillegg_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -68,7 +68,8 @@ data class MaanedligPensjonFoerSkattSaertillegg(
 
         //vedleggBelopST_002
         showIf(
-            brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
+            harSaertillegg
+                    and brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
                     and (
                     aldersEllerSykehjemInstOpphold
                             or erPaahelseInstitusjon

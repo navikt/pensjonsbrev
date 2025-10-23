@@ -1,10 +1,9 @@
 package brev.felles
 
-import no.nav.pensjon.brev.api.model.maler.GarantipensjonSatsType
+import no.nav.pensjon.brev.model.alder.GarantipensjonSatsType
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*

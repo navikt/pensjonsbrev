@@ -70,12 +70,12 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Vi har ikke mottatt disse dokumentene og avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 21-3 " +
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 21-3 " +
                 fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 
-            includePhrase(RettTilAKlageKort)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

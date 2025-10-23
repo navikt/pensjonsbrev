@@ -9,6 +9,8 @@ import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import brev.felles.UfoereAlder
 import brev.felles.Utbetalingsinformasjon
+import brev.felles.Vedtak
+import brev.felles.VedtakAlderspensjon
 import brev.felles.bestemtForm
 import brev.sivilstand.fraser.BetydningForUtbetaling
 import brev.sivilstand.fraser.DuFaarAP
@@ -19,57 +21,47 @@ import brev.sivilstand.fraser.OpphoerYtelseEPS
 import brev.sivilstand.fraser.OpphoerYtelseEPSOver2G
 import brev.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import brev.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import brev.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.EPS_ENDRET_INNTEKT
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.EPS_NY_YTELSE
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.EPS_NY_YTELSE_UT
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.EPS_OPPH_YTELSE_UT
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.INSTOPPHOLD
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.SIVILSTANDSENDRING
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.TILSTOT_ENDR_YTELSE
-import no.nav.pensjon.brev.api.model.maler.KravArsakType.TILSTOT_OPPHORT
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.borSammenMedBruker
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.harInntektOver2G
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.epsVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravAarsak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.sivilstandsendringsaarsak_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.brev.FeatureToggles
-import no.nav.pensjon.brev.felles.Vedtak
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.BeloepEndring
+import no.nav.pensjon.brev.model.alder.KravArsakType
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.borSammenMedBruker_safe
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.harInntektOver2G_safe
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad_safe
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarPensjon_safe
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beloepEndring
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.epsVedVirk
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravAarsak
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.sivilstandsendringsaarsak_safe
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -93,9 +85,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspensjonSivilstandDto> {
-
-    override val featureToggle = FeatureToggles.endringAvAlderspensjonSivilstand.toggle
-
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -116,25 +105,28 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             val alderspensjonVedVirk = pesysData.alderspensjonVedVirk
             val garantipensjonInnvilget = alderspensjonVedVirk.garantipensjonInnvilget
             val pensjonstilleggInnvilget = alderspensjonVedVirk.pensjonstilleggInnvilget
-            val minstenivaaIndividuellInnvilget = alderspensjonVedVirk.minstenivaaIndividuellInnvilget
-            val minstenivaaPensjonistParInnvilget = alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget
+            val minstenivaaIndividuellInnvilget =
+                alderspensjonVedVirk.minstenivaaIndividuellInnvilget
+            val minstenivaaPensjonistParInnvilget =
+                alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget
             val saertilleggInnvilget = alderspensjonVedVirk.saertilleggInnvilget
             val uforeKombinertMedAlder = alderspensjonVedVirk.ufoereKombinertMedAlder
             val uttaksgrad = alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
             val innvilgetFor67 = alderspensjonVedVirk.innvilgetFor67
 
             val epsVedVirk = pesysData.epsVedVirk
-            val harInntektOver2G = epsVedVirk.harInntektOver2G
-            val mottarPensjon = epsVedVirk.mottarPensjon
-            val borSammenMedBruker = epsVedVirk.borSammenMedBruker
-            val mottarOmstillingsstonad = epsVedVirk.mottarOmstillingsstonad
+            val harInntektOver2G = epsVedVirk.harInntektOver2G_safe.ifNull(false)
+            val mottarPensjon = epsVedVirk.mottarPensjon_safe.ifNull(false)
+            val borSammenMedBruker = epsVedVirk.borSammenMedBruker_safe.ifNull(false)
+            val mottarOmstillingsstonad = epsVedVirk.mottarOmstillingsstonad_safe.ifNull(false)
 
             val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
             val regelverkType = pesysData.regelverkType
             val kravArsakType = pesysData.kravAarsak
             val sivilstand = pesysData.sivilstand
 
-            val grunnpensjon = pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
+            val grunnpensjon =
+                pesysData.beregnetPensjonPerManedVedVirk.grunnpensjon.ifNull(then = Kroner(0))
 
             val epsNavn = fritekst("navn")
 
@@ -150,7 +142,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             outline {
                 includePhrase(Vedtak.Overskrift)
 
-                showIf(kravArsakType.isOneOf(SIVILSTANDSENDRING)) {
+                showIf(kravArsakType.isOneOf(KravArsakType.SIVILSTANDSENDRING)) {
                     showIf(sivilstand.isOneOf(MetaforceSivilstand.GIFT) and borSammenMedBruker) {
                         // endringSivilstandGiftUnder2G, endringSisvilstandGiftOver2G, endringSisvilstandGiftYtelse
                         paragraph {
@@ -163,7 +155,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 text(
                                     bokmal { +" som mottar pensjon, uføretrygd eller avtalefestet pensjon." },
                                     nynorsk { +" som får eigen pensjon, uføretrygd eller avtalefesta pensjon." },
-                                    english { +" who receives a pension, disability benefit or contractual early retirement pension (AFP)." })
+                                    english {
+                                        +" who receives a pension, disability benefit or contractual early retirement pension (AFP)."
+                                    },
+                                )
                             }.orShowIf(harInntektOver2G) {
                                 text(
                                     bokmal { +" som har en inntekt større enn to ganger grunnbeløpet." },
@@ -221,7 +216,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                     nynorsk { +"Sambuaren din får pensjon, uføretrygd eller avtalefesta pensjon." },
                                     english {
                                         +"Your cohabitant receives a pension, disability benefit or contractual" +
-                                                " early retirement pension (AFP)."
+                                            " early retirement pension (AFP)."
                                     },
                                 )
                             }
@@ -230,27 +225,27 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 text(
                                     bokmal {
                                         +"Samboeren din har en inntekt " +
-                                                ifElse(
-                                                    harInntektOver2G,
-                                                    ifTrue = "større",
-                                                    ifFalse = "mindre",
-                                                ) + " enn to ganger grunnbeløpet."
+                                            ifElse(
+                                                harInntektOver2G,
+                                                ifTrue = "større",
+                                                ifFalse = "mindre",
+                                            ) + " enn to ganger grunnbeløpet."
                                     },
                                     nynorsk {
                                         +"Sambuaren din har ei inntekt " +
-                                                ifElse(
-                                                    harInntektOver2G,
-                                                    ifTrue = "større",
-                                                    ifFalse = "mindre",
-                                                ) + " enn to gonger grunnbeløpet."
+                                            ifElse(
+                                                harInntektOver2G,
+                                                ifTrue = "større",
+                                                ifFalse = "mindre",
+                                            ) + " enn to gonger grunnbeløpet."
                                     },
                                     english {
                                         +"Your cohabitant has an income that " +
-                                                ifElse(
-                                                    harInntektOver2G,
-                                                    ifTrue = "exceeds",
-                                                    ifFalse = "is less than",
-                                                ) + " twice the national insurance basic amount."
+                                            ifElse(
+                                                harInntektOver2G,
+                                                ifTrue = "exceeds",
+                                                ifFalse = "is less than",
+                                            ) + " twice the national insurance basic amount."
                                     },
                                 )
                             }
@@ -269,41 +264,50 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // Radioknapper: Velg endring i EPS inntekt
                 // endringInntektOktEPS, endringInntektRedusertEPS
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(kravArsakType.isOneOf(EPS_ENDRET_INNTEKT)) {
+                showIf(kravArsakType.isOneOf(KravArsakType.EPS_ENDRET_INNTEKT)) {
                     paragraph {
                         text(
                             bokmal {
                                 +"Inntekten til " +
-                                        sivilstand.bestemtForm(storBokstav = false) + " din er " +
-                                        fritekst("økt/redusert") + "."
+                                    sivilstand.bestemtForm(storBokstav = false) + " din er " +
+                                    fritekst("økt/redusert") + "."
                             },
                             nynorsk {
                                 +"Inntekta til " + sivilstand.bestemtForm(storBokstav = false) + " din er " +
-                                        fritekst("auka/redusert") + "."
+                                    fritekst("auka/redusert") + "."
                             },
                             english {
                                 +"Your " + sivilstand.bestemtForm(storBokstav = false) + "'s income has " +
-                                        fritekst("increased/been reduced") + "."
+                                    fritekst("increased/been reduced") + "."
                             },
                         )
                     }
                 }
 
                 showIf(
-                    kravArsakType.isOneOf(EPS_NY_YTELSE, EPS_NY_YTELSE_UT)
-                            and not(mottarOmstillingsstonad),
+                    kravArsakType.isOneOf(
+                        KravArsakType.EPS_NY_YTELSE,
+                        KravArsakType.EPS_NY_YTELSE_UT,
+                    )
+                        and not(mottarOmstillingsstonad),
                 ) {
                     includePhrase(InnvilgetYtelseEPS(pesysData.sivilstand))
-                }.orShowIf(kravArsakType.isOneOf(TILSTOT_ENDR_YTELSE)) {
+                }.orShowIf(kravArsakType.isOneOf(KravArsakType.TILSTOT_ENDR_YTELSE)) {
                     includePhrase(EndringYtelseEPS(pesysData.sivilstand))
                 }.orShowIf(
-                    kravArsakType.isOneOf(EPS_OPPH_YTELSE_UT, TILSTOT_OPPHORT)
-                            and not(harInntektOver2G),
+                    kravArsakType.isOneOf(
+                        KravArsakType.EPS_OPPH_YTELSE_UT,
+                        KravArsakType.TILSTOT_OPPHORT,
+                    )
+                        and not(harInntektOver2G),
                 ) {
                     includePhrase(OpphoerYtelseEPS(pesysData.sivilstand))
                 }.orShowIf(
-                    kravArsakType.isOneOf(EPS_OPPH_YTELSE_UT, TILSTOT_OPPHORT)
-                            and not(mottarOmstillingsstonad),
+                    kravArsakType.isOneOf(
+                        KravArsakType.EPS_OPPH_YTELSE_UT,
+                        KravArsakType.TILSTOT_OPPHORT,
+                    )
+                        and not(mottarOmstillingsstonad),
                 ) {
                     // opphorOmstillingSambo
                     paragraph {
@@ -314,15 +318,27 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }.orShowIf(
-                    kravArsakType.isOneOf(EPS_OPPH_YTELSE_UT, TILSTOT_OPPHORT)
-                            and harInntektOver2G,
+                    kravArsakType.isOneOf(
+                        KravArsakType.EPS_OPPH_YTELSE_UT,
+                        KravArsakType.TILSTOT_OPPHORT,
+                    )
+                        and harInntektOver2G,
                 ) {
                     includePhrase(OpphoerYtelseEPSOver2G(pesysData.sivilstand))
                 }
 
                 // Radioknapper: Hva er årsaken til sivilstandsendringen?
-                showIf(kravArsakType.isOneOf(SIVILSTANDSENDRING) and not(borSammenMedBruker)) {
-                    showIf(saksbehandlerValg.sivilstandsendringsaarsak_safe.equalTo(Sivilstandsendringsaarsak.fraFlyttet)) {
+                showIf(
+                    kravArsakType.isOneOf(KravArsakType.SIVILSTANDSENDRING) and
+                        not(
+                            borSammenMedBruker,
+                        ),
+                ) {
+                    showIf(
+                        saksbehandlerValg.sivilstandsendringsaarsak_safe.equalTo(
+                            Sivilstandsendringsaarsak.fraFlyttet,
+                        ),
+                    ) {
                         // flyttetEPS
                         paragraph {
                             text(
@@ -331,41 +347,45 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 english { +"You and " + epsNavn + "no longer live together." },
                             )
                         }
-                    }.orShowIf(saksbehandlerValg.sivilstandsendringsaarsak_safe.equalTo(Sivilstandsendringsaarsak.giftBorIkkeSammen)) {
+                    }.orShowIf(
+                        saksbehandlerValg.sivilstandsendringsaarsak_safe.equalTo(
+                            Sivilstandsendringsaarsak.giftBorIkkeSammen,
+                        ),
+                    ) {
                         // endirngSivilstandGiftBorIkkeSammen
                         paragraph {
                             text(
                                 bokmal {
                                     +"Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din" +
-                                            " registrert bosatt på ulike adresser."
+                                        " registrert bosatt på ulike adresser."
                                 },
                                 nynorsk {
                                     +"Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din" +
-                                            " registrert busette på ulike adresser."
+                                        " registrert busette på ulike adresser."
                                 },
                                 english {
                                     +"You have gotten married. According to the national registry you" +
-                                            " and your spouse are listed at different residential addresses."
+                                        " and your spouse are listed at different residential addresses."
                                 },
                             )
                         }
                     }
                 }
                 // endringSykehjem, endringSykehjemEPS, endringSykkehjemBegge, endringInstitusjonEPS
-                showIf(kravArsakType.isOneOf(INSTOPPHOLD)) {
+                showIf(kravArsakType.isOneOf(KravArsakType.INSTOPPHOLD)) {
                     paragraph {
                         text(
                             bokmal {
                                 +fritekst("Du/Ektefellen/Partneren/Samboeren/Begge") + " din har flyttet på " +
-                                        fritekst("sykehjem/institusjon") + "."
+                                    fritekst("sykehjem/institusjon") + "."
                             },
                             nynorsk {
                                 +fritekst("Du/Ektefellen/Partnaren/Sambuaren/Begge") + " din har flytta på " +
-                                        fritekst("sjukeheim/institusjon ") + "."
+                                    fritekst("sjukeheim/institusjon ") + "."
                             },
                             english {
                                 +fritekst("You/Your spouse/partner/cohabitant have/has") + " moved into " +
-                                        fritekst("a nursing home/an institution") + "."
+                                    fritekst("a nursing home/an institution") + "."
                             },
                         )
                     }
@@ -373,12 +393,12 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
                 showIf(
                     regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP2025)
-                            or grunnpensjon.greaterThan(0)
+                        or grunnpensjon.greaterThan(0),
                 ) {
                     showIf(
                         (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget)
-                                and not(saertilleggInnvilget)
-                                and not(pensjonstilleggInnvilget),
+                            and not(saertilleggInnvilget)
+                            and not(pensjonstilleggInnvilget),
                     ) {
                         showIf(garantipensjonInnvilget) {
                             // omregningGP_GarantiPen_MNT
@@ -401,7 +421,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         }
                     }.orShowIf(
                         (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and pensjonstilleggInnvilget
-                                and not(saertilleggInnvilget),
+                            and not(saertilleggInnvilget),
                     ) {
                         // omregningGP_PenT_MNT
                         showIf(garantipensjonInnvilget) {
@@ -410,15 +430,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 text(
                                     bokmal {
                                         +"Derfor har vi beregnet grunnpensjonen, pensjonstillegget," +
-                                                " garantipensjonen og minstenivåtillegget ditt på nytt."
+                                            " garantipensjonen og minstenivåtillegget ditt på nytt."
                                     },
                                     nynorsk {
                                         +"Derfor har vi berekna grunnpensjonen, pensjonstillegget," +
-                                                " garantipensjonen og minstenivåtillegget ditt på nytt."
+                                            " garantipensjonen og minstenivåtillegget ditt på nytt."
                                     },
                                     english {
                                         +"We have therefore recalculated your basic pension," +
-                                                " supplementary pension, guaranteed pension and minimum pension supplement."
+                                            " supplementary pension, guaranteed pension and minimum pension supplement."
                                     },
                                 )
                             }
@@ -427,25 +447,25 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 text(
                                     bokmal {
                                         +"Derfor har vi beregnet grunnpensjonen, pensjonstillegget" +
-                                                " og minstenivåtillegget ditt på nytt."
+                                            " og minstenivåtillegget ditt på nytt."
                                     },
                                     nynorsk {
                                         +"Derfor har vi berekna grunnpensjonen, pensjonstillegget" +
-                                                " og minstenivåtillegget ditt på nytt."
+                                            " og minstenivåtillegget ditt på nytt."
                                     },
                                     english {
                                         +"We have therefore recalculated your basic pension," +
-                                                " supplementary pension and minimum pension supplement."
+                                            " supplementary pension and minimum pension supplement."
                                     },
                                 )
                             }
                         }
                     }.orShowIf(
                         not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget)
-                                and not(minstenivaaIndividuellInnvilget) and
-                                not(
-                                    pensjonstilleggInnvilget,
-                                ),
+                            and not(minstenivaaIndividuellInnvilget) and
+                            not(
+                                pensjonstilleggInnvilget,
+                            ),
                     ) {
                         showIf(garantipensjonInnvilget) {
                             // omregningGP_GarantiPen
@@ -468,9 +488,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         }
                     }.orShowIf(
                         pensjonstilleggInnvilget
-                                and not(saertilleggInnvilget)
-                                and not(minstenivaaPensjonistParInnvilget)
-                                and not(minstenivaaIndividuellInnvilget),
+                            and not(saertilleggInnvilget)
+                            and not(minstenivaaPensjonistParInnvilget)
+                            and not(minstenivaaIndividuellInnvilget),
                     ) {
                         showIf(garantipensjonInnvilget) {
                             // omregningGP_PenT_GarantiPen_MNT
@@ -484,7 +504,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                     },
                                     english {
                                         +"We have therefore recalculated your basic pension," +
-                                                " supplementary pension and guaranteed pension."
+                                            " supplementary pension and guaranteed pension."
                                     },
                                 )
                             }
@@ -504,7 +524,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     ) {
                         showIf(
                             not(minstenivaaPensjonistParInnvilget) and
-                                    not(minstenivaaIndividuellInnvilget)
+                                not(minstenivaaIndividuellInnvilget),
                         ) {
                             // omregningGPST
                             paragraph {
@@ -526,7 +546,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                     },
                                     english {
                                         +"We have therefore recalculated your basic pension, the" +
-                                                " special supplement and the minimum level supplement."
+                                            " special supplement and the minimum level supplement."
                                     },
                                 )
                             }
@@ -550,75 +570,76 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     includePhrase(
                         DuFaarAP(
                             pesysData.kravVirkDatoFom,
-                            pesysData.beregnetPensjonPerManedVedVirk.totalPensjon
-                        )
+                            pesysData.beregnetPensjonPerManedVedVirk.totalPensjon,
+                        ),
                     )
                 }
 
                 includePhrase(Utbetalingsinformasjon)
-                
+
                 showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
                     // hjemmelSivilstandAP2025
                     paragraph {
                         text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12." },
-                            english { +
-                            "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act." },
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                            english {
+                                +"This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                            },
                         )
                     }
                 }.orShow {
                     paragraph {
                         text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ " },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ " },
-                            english { + "This decision was made pursuant to the provisions of §§ " },
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ " },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ " },
+                            english { +"This decision was made pursuant to the provisions of §§ " },
                         )
                         showIf(sivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
                             text(
-                                bokmal { + "1-5, " },
-                                nynorsk { + "1-5, " },
-                                english { + "1-5, " },
+                                bokmal { +"1-5, " },
+                                nynorsk { +"1-5, " },
+                                english { +"1-5, " },
                             )
                         }
                         text(
-                            bokmal { + "3-2" },
-                            nynorsk { + "3-2" },
-                            english { + "3-2" },
+                            bokmal { +"3-2" },
+                            nynorsk { +"3-2" },
+                            english { +"3-2" },
                         )
 
                         showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
                             text(
-                                bokmal { + ", 3-3" },
-                                nynorsk { + ", 3-3" },
-                                english { + ", 3-3" },
+                                bokmal { +", 3-3" },
+                                nynorsk { +", 3-3" },
+                                english { +", 3-3" },
                             )
                         }
                         showIf(pensjonstilleggInnvilget or minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget) {
                             text(
-                                bokmal { + ", 19-8" },
-                                nynorsk { + ", 19-8" },
-                                english { + ", 19-8" },
+                                bokmal { +", 19-8" },
+                                nynorsk { +", 19-8" },
+                                english { +", 19-8" },
                             )
                         }
                         showIf(pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + ", 19-9" },
-                                nynorsk { + ", 19-9" },
-                                english { + ", 19-9" },
+                                bokmal { +", 19-9" },
+                                nynorsk { +", 19-9" },
+                                english { +", 19-9" },
                             )
                         }
                         showIf(garantipensjonInnvilget) {
                             text(
-                                bokmal { + ", 20-9" },
-                                nynorsk { + ", 20-9" },
-                                english { + ", 20-9" },
+                                bokmal { +", 20-9" },
+                                nynorsk { +", 20-9" },
+                                english { +", 20-9" },
                             )
                         }
                         text(
-                            bokmal { + " og 22-12." },
-                            nynorsk { + " og 22-12." },
-                            english { + " and 22-12." },
+                            bokmal { +" og 22-12." },
+                            nynorsk { +" og 22-12." },
+                            english { +" and 22-12." },
                         )
                     }
                 }
@@ -641,7 +662,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // Arbeidsinntekt og pensjon
                 showIf(
                     regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP1967) and
-                            kravArsakType.isNotAnyOf(INSTOPPHOLD)
+                        kravArsakType.isNotAnyOf(KravArsakType.INSTOPPHOLD),
                 ) {
                     includePhrase(
                         ArbeidsinntektOgAlderspensjon(

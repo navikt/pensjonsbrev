@@ -21,7 +21,7 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 internal object LatexDocumentRenderer {
 
     internal fun render(pdfRequest: PDFRequest): LatexDocument = render(
-        letter = pdfRequest.letterMarkup,
+        letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments,
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
@@ -125,7 +125,7 @@ internal object LatexDocumentRenderer {
         appendNewCmd("feltfoedselsnummerbruker", sakspart.gjelderFoedselsnummer.format())
         appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
         // TODO slett når all bruk er borte
-        val annenMottaker = (sakspart.annenMottakerNavn ?: sakspart.vergeNavn)?.also { appendNewCmd("feltannenmottakernavn", it) }
+        val annenMottaker = sakspart.annenMottakerNavn?.also { appendNewCmd("feltannenmottakernavn", it) }
 
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")

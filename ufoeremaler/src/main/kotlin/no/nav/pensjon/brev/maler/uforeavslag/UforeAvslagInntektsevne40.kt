@@ -95,12 +95,12 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-7." })
             }
 
             includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

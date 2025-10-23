@@ -1,16 +1,16 @@
 package brev.maler.sivilstand
 
-import brev.maler.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.sivilstand.EndringAvAlderspensjonGarantitilleggDto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import brev.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 fun createEndringAvAlderspensjonGarantitilleggDto() =
     EndringAvAlderspensjonGarantitilleggDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData =
             EndringAvAlderspensjonGarantitilleggDto.PesysData(
                 alderspensjonVedVirk =

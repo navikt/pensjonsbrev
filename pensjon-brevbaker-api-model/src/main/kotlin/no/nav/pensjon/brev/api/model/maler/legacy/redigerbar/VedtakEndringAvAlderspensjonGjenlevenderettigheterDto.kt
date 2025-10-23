@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
@@ -18,6 +19,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
+        @DisplayText("Omregnet til enslig i samme vedtak")
         val omregnetTilEnsligISammeVedtak: Boolean,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
         val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
@@ -25,7 +27,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val avdod: Avdod,

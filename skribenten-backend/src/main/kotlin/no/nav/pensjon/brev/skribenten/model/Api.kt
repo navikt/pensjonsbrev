@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -16,7 +18,7 @@ import java.time.Instant
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata
+    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, SaksbehandlerValgBrevdata
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
@@ -93,8 +95,9 @@ object Api {
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
-            val adresselinje3: String?
-        ) : OverstyrtMottaker()
+            val adresselinje3: String?,
+            val manueltAdressertTil: ManueltAdressertTil?,
+            ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
@@ -105,7 +108,8 @@ object Api {
             val adresselinje2: String?,
             val adresselinje3: String?,
             val landkode: Landkode,
-        ) : OverstyrtMottaker()
+            val manueltAdressertTil: ManueltAdressertTil?
+            ) : OverstyrtMottaker()
     }
 
     data class BrevResponse(

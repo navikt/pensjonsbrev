@@ -1,15 +1,7 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
+import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
@@ -132,7 +124,7 @@ import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brevbaker.api.model.Year
 import kotlin.reflect.KClass
 
-object Fixtures {
+object Fixtures : LetterDataFactory {
 
     val felles = no.nav.brev.brevbaker.Fixtures.felles
 
@@ -141,7 +133,7 @@ object Fixtures {
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> create(letterDataType: KClass<T>): T =
+    override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
             AvslagPaaGjenlevenderettIAlderspensjonDto::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
@@ -152,11 +144,13 @@ object Fixtures {
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
             EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
+            EmptySaksbehandlerValg::class -> EmptySaksbehandlerValg as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
             EndretUforetrygdPGAOpptjeningLegacyDto::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
             EndringPgaOpptjeningAutoDto::class -> createEndringPgaOpptjeningAutoDto() as T
+            EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvUttaksgradAutoDto::class -> createEndringAvUttaksgradAutoDto() as T
             EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
             FeilBelopInntekstendringsbrev::class -> EmptyBrevdata as T

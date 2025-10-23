@@ -150,17 +150,18 @@ private data class TilbakekrevingerTabell(
                                     ytelsenMedFeilutbetaling = tilbakekreves.ytelsenMedFeilutbetaling
                                 )
                             )
-                            text(
-                                bokmal { + " - " },
-                                nynorsk { + " - " },
-                                english { + " - " }
-                            )
-                            includePhrase(
-                                ResultatAvVurderingenTextMappingStorBokstav(
-                                    resultatAvVurderingen = tilbakekreves.resultatAvVurderingen
+                            ifNotNull(tilbakekreves.resultatAvVurderingen) { resultat ->
+                                text(
+                                    bokmal { + " - " },
+                                    nynorsk { + " - " },
+                                    english { + " - " }
                                 )
-                            )
-
+                                includePhrase(
+                                    ResultatAvVurderingenTextMappingStorBokstav(
+                                        resultatAvVurderingen = resultat
+                                    )
+                                )
+                            }
                         }
                         column(columnSpan = 1, RIGHT) {}
                     }

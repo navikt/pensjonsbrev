@@ -9,7 +9,6 @@ class Felles(
     val avsenderEnhet: NavEnhet,
     val bruker: Bruker,
     val annenMottakerNavn: String?,
-    val vergeNavn: String?,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
 ) {
     override fun equals(other: Any?): Boolean {
@@ -19,14 +18,13 @@ class Felles(
                 && avsenderEnhet == other.avsenderEnhet
                 && bruker == other.bruker
                 && annenMottakerNavn == other.annenMottakerNavn
-                && vergeNavn == other.vergeNavn
                 && signerendeSaksbehandlere == other.signerendeSaksbehandlere
     }
 
     override fun hashCode() = Objects.hash(dokumentDato, saksnummer, avsenderEnhet, bruker, annenMottakerNavn, signerendeSaksbehandlere)
 
     override fun toString() =
-        "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, annenMottakerNavn=$annenMottakerNavn, vergeNavn=$vergeNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
+        "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, annenMottakerNavn=$annenMottakerNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
 
     fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles =
         Felles(
@@ -36,7 +34,16 @@ class Felles(
             bruker = this.bruker,
             annenMottakerNavn = this.annenMottakerNavn,
             signerendeSaksbehandlere = signerendeSaksbehandlere,
-            vergeNavn = this.vergeNavn,
+        )
+
+    fun medAnnenMottakerNavn(annenMottakerNavn: String?): Felles =
+        Felles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            annenMottakerNavn = annenMottakerNavn,
+            signerendeSaksbehandlere = this.signerendeSaksbehandlere,
         )
 }
 
