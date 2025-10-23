@@ -161,6 +161,7 @@ class BrevredigeringServiceTest {
         1234L,
         "12345678910",
         LocalDate.now().minusYears(42),
+        Pen.SakSelection.Navn("a", "b", "c"),
         Pen.SakType.ALDER,
         "rabbit"
     )
