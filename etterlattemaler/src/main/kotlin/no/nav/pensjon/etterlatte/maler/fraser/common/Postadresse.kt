@@ -16,22 +16,19 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
                 nynorsk { +"Nav familie- og pensjonsytelser" },
                 english { +"Nav familie- og pensjonsytelser" }
             )
-        }
-        paragraph {
+            newline()
             text(
                 bokmal { +"Postboks 6600 Etterstad" },
                 nynorsk { +"Postboks 6600 Etterstad" },
                 english { +"Postboks 6600 Etterstad" }
             )
-        }
-        paragraph {
+            newline()
             text(
                 bokmal { +"0607 Oslo" },
                 nynorsk { +"0607 Oslo" },
                 english { +"0607 Oslo" }
             )
-        }
-        paragraph {
+            newline()
             text(
                 bokmal { +"Norge/Norway" },
                 nynorsk { +"Noreg/Norway" },
@@ -45,15 +42,13 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
                 nynorsk { +"Nav skanning" },
                 english { +"Nav skanning" }
             )
-        }
-        paragraph {
+            newline()
             text(
                 bokmal { +"Postboks 1400" },
                 nynorsk { +"Postboks 1400" },
                 english { +"Postboks 1400" }
             )
-        }
-        paragraph {
+            newline()
             text(
                 bokmal { +"0109 OSLO" },
                 nynorsk { +"0109 OSLO" },
