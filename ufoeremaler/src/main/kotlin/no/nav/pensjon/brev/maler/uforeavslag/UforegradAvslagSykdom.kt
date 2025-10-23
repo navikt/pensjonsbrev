@@ -64,7 +64,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {

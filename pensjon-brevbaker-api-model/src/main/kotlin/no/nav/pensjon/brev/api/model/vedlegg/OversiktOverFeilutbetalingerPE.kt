@@ -21,7 +21,7 @@ data class OversiktOverFeilutbetalingPEDto(
         val bruttobeloepTilbakekrevd: Kroner,  // bruttoTilbakekrevingManed
         val feilutbetaltBeloep: Kroner,  // feilutbetalingManed
         val nettobeloepUtenRenterTilbakekrevd: Kroner,  // nettoTilbakekrevingManedUtenRente
-        val resultatAvVurderingen: TilbakekrevingResultat,  // resultatManedType
+        val resultatAvVurderingen: TilbakekrevingResultat?,  // resultatManedType
         val skattefradragSomInnkreves: Kroner,  // skattManed
         val ytelsenMedFeilutbetaling: KonteringType,  // konteringManedType
     )

@@ -67,9 +67,8 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { +fritekst("Individuell vurdering") })
             }
 
 

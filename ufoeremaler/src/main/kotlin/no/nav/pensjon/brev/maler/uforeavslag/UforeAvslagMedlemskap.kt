@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -90,14 +91,16 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Du flyttet til Norge " + fritekst("innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " +
                         "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
             }
+
             paragraph {
                 showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
             paragraph {
-                text(bokmal { + fritekst("Fritekst med klargjøring av faktisk medlemsskap " ) })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
+
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, vi avslår derfor søknaden din om uføretrygd. Vedtaket er gjort etter folketrygdloven § 12-2. " })
             }

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigBehandling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -65,9 +66,8 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
-
 
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkåret, og vi avslår derfor søknaden din om endring av inntekten din før uførhet."})
