@@ -7,11 +7,11 @@ import { jwtDecode } from "jwt-decode";
 import config from "./config.js";
 
 export const internalRoutes = (server: Express) => {
-  server.get("/bff/internal/logout", (request, response) => {
+  server.get("/bff/api/logout", (request, response) => {
     response.redirect("/oauth2/logout");
   });
 
-  server.get("/bff/internal/userinfo", (request, response): void => {
+  server.get("/bff/api/userinfo", (request, response): void => {
     const token = getToken(request);
 
     if (!token) {
@@ -32,13 +32,20 @@ export const internalRoutes = (server: Express) => {
   });
 
   const baseUrls = config.baseUrls;
-  server.get("/bff/internal/baseurls", (_, response) => {
+  server.get("/bff/api/baseurls", (request, response) => {
+    let psak = baseUrls.psak;
+
+    const requestHost = request.hostname;
+    if (requestHost.endsWith("ansatt.dev.nav.no")) {
+      psak = psak.replace("intern.dev.nav.no", "ansatt.dev.nav.no");
+    }
+
     response.json({
-      psak: baseUrls.psak,
+      psak,
     });
   });
 
-  server.post("/bff/internal/logg", bodyParser.json(), cookieParser(), (request, response) => {
+  server.post("/bff/api/logg", bodyParser.json(), cookieParser(), (request, response) => {
     if (request.cookies["use-local-vite-server"] === "true") {
       response.status(200).end();
       return;
@@ -54,6 +61,7 @@ export const internalRoutes = (server: Express) => {
         timestamp: body.jsonContent.timestamp,
         message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
+        x_correlationId: body.requestId,
       }),
     );
     response.status(200).end();

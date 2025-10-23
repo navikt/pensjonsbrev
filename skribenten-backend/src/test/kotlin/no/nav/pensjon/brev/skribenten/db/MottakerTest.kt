@@ -108,7 +108,6 @@ class MottakerTest {
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
                     gjelderFoedselsnummer = Foedselsnummer("c"),
-                    vergeNavn = null,
                     annenMottakerNavn = null,
                     saksnummer = "d",
                     dokumentDato = LocalDate.now(),

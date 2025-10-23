@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import { loggFeil } from "~/api/bff-endpoints";
 
 export const logError = async (error: unknown, status: number | undefined) => {
@@ -7,6 +9,7 @@ export const logError = async (error: unknown, status: number | undefined) => {
       message: error.message,
       stack: error.stack,
       status: status,
+      requestId: error instanceof AxiosError ? error.response?.headers["x-request-id"] : undefined,
       jsonContent: {
         url: globalThis.location.href,
         userAgent: globalThis.navigator.userAgent,

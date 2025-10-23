@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.DineRettigheterOgMul
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.TilbakekrevingResultat
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
@@ -29,7 +28,6 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
-            UforeAvslagDto::class -> lagUforeAvslagDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
@@ -37,17 +35,6 @@ object Fixtures : LetterDataFactory {
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
-
-    private fun lagUforeAvslagDto() = UforeAvslagDto(
-        pesysData = UforeAvslagDto.UforeAvslagPendata(
-            kravMottattDato = LocalDate.now(),
-            vurdering = "Vurdering 1"
-        ),
-        saksbehandlerValg = UforeAvslagDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            brukVurderingFraVilkarsvedtak = true
-        )
-    )
 
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(

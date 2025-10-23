@@ -153,10 +153,14 @@ private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
         ),
         "Pension_has_been_awarded[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]" },
         "Pension_has_been_reduced[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
-        "Review_period[${radnummer * 2}]" to mapOf(
-            LanguageCode.BOKMAL to "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
-            LanguageCode.ENGLISH to "6 weeks from Summary of Pension Decisions is received.",
-        ),
+        "Review_period[${radnummer * 2}]" to if (pensjon.erNorskRad ?: false) {
+            mapOf(
+                LanguageCode.BOKMAL to "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
+                LanguageCode.ENGLISH to "6 weeks from Summary of Pension Decisions is received.",
+            )
+        } else {
+            pensjon.vurderingsperiode
+        },
         "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
     )
 
