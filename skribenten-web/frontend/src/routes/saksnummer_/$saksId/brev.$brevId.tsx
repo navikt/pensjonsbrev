@@ -4,18 +4,16 @@ import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, V
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   SaksbehandlerValgModelEditor,
-  useModelSpecificationForm,
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
@@ -25,6 +23,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -265,6 +264,12 @@ function RedigerBrev({
     defaultValues: defaultValuesModelEditor,
   });
 
+  const { getWarning } = useBrevEditorWarnings({
+    brevkode: brev.info.brevkode,
+    form,
+    redigertBrev: editorState.redigertBrev,
+  });
+
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
@@ -288,46 +293,6 @@ function RedigerBrev({
         },
       },
     );
-  };
-
-  const { status, specification } = useModelSpecificationForm(brev.info.brevkode);
-
-  const hasMissingRequiredSaksbehandlerValg = useCallback((): boolean => {
-    if (status !== "success" || !specification) return false;
-
-    const values = form.getValues()?.saksbehandlerValg ?? {};
-
-    return Object.entries(specification).some(([key, fieldType]) => {
-      if (fieldType.type === "enum") {
-        const value = values[key];
-        if (value == null || (typeof value === "string" && value.trim().length === 0)) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-      return false;
-    });
-  }, [form, specification, status]);
-
-  const numberOfUnfilledFritekstPlaceholders = useCallback(
-    () => countUnfilledFritekstPlaceholders(editorState.redigertBrev),
-    [editorState.redigertBrev],
-  );
-
-  const getWarning = (): { kind: WarnModalKind; count?: number } | null => {
-    const unfilled = numberOfUnfilledFritekstPlaceholders();
-    const missingRequired = hasMissingRequiredSaksbehandlerValg();
-
-    if (unfilled > 0 && missingRequired) {
-      return { kind: "fritekstOgTekstValg", count: unfilled };
-    } else if (unfilled > 0) {
-      return { kind: "fritekst", count: unfilled };
-    } else if (missingRequired) {
-      return { kind: "tekstValg" };
-    } else {
-      return null;
-    }
   };
 
   const guardedSubmit = form.handleSubmit((values) => {
