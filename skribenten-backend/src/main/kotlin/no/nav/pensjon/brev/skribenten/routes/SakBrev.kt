@@ -38,8 +38,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             ).onOk { brev ->
                 call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
             }.onError { message, statusCode ->
-                logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
+                if (statusCode == HttpStatusCode.BadRequest) {
+                    logger.warn("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
+                    call.respond(HttpStatusCode.BadRequest, message)
+                } else {
+                    logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
+                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
+                }
             }
         }
 
