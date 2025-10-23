@@ -5,8 +5,6 @@ import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaMottakAvPensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaMottakAvPensjonDtoSelectors.PesysDataSelectors.address
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaMottakAvPensjonDtoSelectors.PesysDataSelectors.foedselsnummer
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaMottakAvPensjonDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaMottakAvPensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.model.format
@@ -52,16 +50,9 @@ object BekreftelsePaaMottakAvPensjon : RedigerbarTemplate<BekreftelsePaaMottakAv
         outline {
             paragraph {
                 text(
-                    bokmal { +"Vi bekrefter at " + pesysData.navn + " født " + pesysData.foedselsnummer.format() + ", bosatt på: " },
-                    nynorsk { +"Vi stadfestar at " + pesysData.navn + " fødd " + pesysData.foedselsnummer.format() + ", busett på:"},
-                    english { +"We hereby confirm that " + pesysData.navn + " born " + pesysData.foedselsnummer.format() + ", resident at:" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +pesysData.address },
-                    nynorsk { +pesysData.address },
-                    english { +pesysData.address }
+                    bokmal { +"Vi bekrefter at " + pesysData.navn + " født " + pesysData + ", bosatt på: " },
+                    nynorsk { +"Vi stadfestar at " + pesysData.navn + " fødd " + pesysData.foedselsdato.format() + ", busett på:"},
+                    english { +"We hereby confirm that " + pesysData.navn + " born " + pesysData.foedselsdato.format() + ", resident at:" },
                 )
             }
             paragraph {
