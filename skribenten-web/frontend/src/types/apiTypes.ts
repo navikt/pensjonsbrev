@@ -4,6 +4,7 @@ import type {
   Søketype,
 } from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottakerUtils";
 
+import type { ManueltAdressertTil } from "./brev";
 import type { Nullable } from "./Nullable";
 
 export type SakDto = {
@@ -176,7 +177,7 @@ export type Adresse = {
   postnr: Nullable<string>;
   poststed: Nullable<string>;
   land: Nullable<string>;
-  erBrukersAdresse?: boolean;
+  manueltAdressertTil: ManueltAdressertTil;
 };
 
 export type HentSamhandlerAdresseRequestDto = {

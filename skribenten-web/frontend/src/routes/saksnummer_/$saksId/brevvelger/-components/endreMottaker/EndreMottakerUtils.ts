@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
+import { ManueltAdressertTil } from "~/types/brev";
 
 export enum Søketype {
   DIREKTE_OPPSLAG = "DIREKTE_OPPSLAG",
@@ -95,11 +96,15 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
    */
   adresse: z
     .object({
-      erBrukersAdresse: z.boolean().optional(),
       navn: z.string().min(1, "Obligatorisk"),
       linje1: z.string(),
       linje2: z.string(),
       linje3: z.string(),
+      manueltAdressertTil: z.enum([
+        ManueltAdressertTil.BRUKER,
+        ManueltAdressertTil.ANNEN,
+        ManueltAdressertTil.IKKE_RELEVANT,
+      ]),
       postnr: z
         .string()
         .trim()
@@ -131,11 +136,15 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
 
 const leggTilManuellAdresseTabNotSelectedSchema = z.object({
   adresse: z.object({
-    erBrukersAdresse: z.boolean(),
     navn: z.string(),
     linje1: z.string(),
     linje2: z.string(),
     linje3: z.string(),
+    manueltAdressertTil: z.enum([
+      ManueltAdressertTil.BRUKER,
+      ManueltAdressertTil.ANNEN,
+      ManueltAdressertTil.IKKE_RELEVANT,
+    ]),
     postnr: z.string().nullable(),
     poststed: z.string().nullable(),
     land: z.string(),
