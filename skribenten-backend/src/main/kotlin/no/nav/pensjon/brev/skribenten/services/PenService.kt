@@ -166,7 +166,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     vedtaksId?.let{ parameters.append("vedtaksId", it.toString()) }
                 }
             }
-        }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
+        }.toServiceResult<BrevdataResponse>(::handlePenErrorBrevdataResponse)
             .then {
                 if (it.error != null) {
                     ServiceResult.Error(it.error, HttpStatusCode.InternalServerError)
@@ -176,6 +176,17 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
                 }
             }
+
+
+    private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
+        val error = response.body<BrevdataResponse>().error
+        return if (response.status == HttpStatusCode.InternalServerError) {
+            logger.error("En feil oppstod i kall til PEN: $error")
+            ServiceResult.Error("Ukjent feil oppstod i kall til PEN", HttpStatusCode.InternalServerError)
+        } else {
+            ServiceResult.Error(error ?: "Ukjent feil oppstod i kall til PEN", response.status)
+        }
+    }
 
     override suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
