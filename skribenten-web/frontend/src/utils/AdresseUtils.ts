@@ -18,6 +18,7 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
           adresselinje1: v.linje1,
           adresselinje2: v.linje2,
           adresselinje3: v.linje3,
+          manueltAdressertTil: v.manueltAdressertTil,
         }
       : {
           type: "UtenlandskAdresse",
@@ -26,6 +27,7 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
           adresselinje2: v.linje2,
           adresselinje3: v.linje3,
           landkode: v.land!,
+          manueltAdressertTil: v.manueltAdressertTil,
         };
   }
 };
