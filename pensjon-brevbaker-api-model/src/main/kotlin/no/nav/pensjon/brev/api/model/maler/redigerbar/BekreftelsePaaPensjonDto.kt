@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import java.time.LocalDate
 
-data class BekreftelsePaaMottakAvPensjonDto(
+data class BekreftelsePaaPensjonDto(
     override val pesysData: PesysData, override val saksbehandlerValg: EmptySaksbehandlerValg
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, BekreftelsePaaMottakAvPensjonDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, BekreftelsePaaPensjonDto.PesysData> {
 
     data class PesysData(
         val foedselsdato: LocalDate,  // PE_PersonSak_PSfødselsdato

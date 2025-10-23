@@ -95,7 +95,7 @@ object ProductionTemplates : AllTemplates {
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
-        BekreftelsePaaMottakAvPensjon,
+        BekreftelsePaaPensjon,
         BrukerTestBrev,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,

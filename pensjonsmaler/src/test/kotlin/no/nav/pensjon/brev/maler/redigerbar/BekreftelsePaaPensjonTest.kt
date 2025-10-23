@@ -5,31 +5,31 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaMottakAvPensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
-class BekreftelsePaaMottakAvPensjonTest {
+class BekreftelsePaaPensjonTest {
 
     @Test
     fun testPdf() {
         LetterTestImpl(
-            BekreftelsePaaMottakAvPensjon.template,
-            Fixtures.create<BekreftelsePaaMottakAvPensjonDto>(),
+            BekreftelsePaaPensjon.template,
+            Fixtures.create<BekreftelsePaaPensjonDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF(BekreftelsePaaMottakAvPensjon.kode.name)
+        ).renderTestPDF(BekreftelsePaaPensjon.kode.name)
     }
 
     @Test
     fun testHtml() {
         LetterTestImpl(
-            BekreftelsePaaMottakAvPensjon.template,
-            Fixtures.create<BekreftelsePaaMottakAvPensjonDto>(),
+            BekreftelsePaaPensjon.template,
+            Fixtures.create<BekreftelsePaaPensjonDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestHtml(BekreftelsePaaMottakAvPensjon.kode.name)
+        ).renderTestHtml(BekreftelsePaaPensjon.kode.name)
     }
 }
