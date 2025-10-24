@@ -8,6 +8,9 @@ on:
       - .github/workflows/verify-skribenten-web.yaml
       - skribenten-web/**
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     uses: ./.github/workflows/.verify-frontend.yaml
