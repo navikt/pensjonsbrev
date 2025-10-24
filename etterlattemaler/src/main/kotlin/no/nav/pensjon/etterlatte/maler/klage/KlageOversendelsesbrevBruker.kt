@@ -159,10 +159,9 @@ fun sakUrl(sakType: Expression<SakType>): Expression<String> {
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterTekstlinjer(
     linjer: Expression<List<String>>
 ) {
-    paragraph {
-        forEach(linjer) { linje ->
+    forEach(linjer) { linje ->
+        paragraph {
             text(bokmal { +linje }, nynorsk { +linje }, english { +linje })
-            newline()
         }
     }
 }
