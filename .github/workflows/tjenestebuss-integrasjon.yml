@@ -20,6 +20,11 @@ on:
 env:
   JavaDistribution: "temurin"
   JavaVersion: 21
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build-tjenestebuss-integrasjon:
     name: "Build tjenestebuss-integrasjon backend"

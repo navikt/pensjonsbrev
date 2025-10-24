@@ -12,6 +12,10 @@ defaults:
   run:
     working-directory: skribenten-web
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     name: build

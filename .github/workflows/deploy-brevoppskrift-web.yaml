@@ -12,6 +12,10 @@ defaults:
   run:
     working-directory: brevoppskrift-web
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     name: build

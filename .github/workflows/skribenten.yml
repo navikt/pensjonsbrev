@@ -20,6 +20,11 @@ on:
 env:
   JavaDistribution: "temurin"
   JavaVersion: 21
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build-skribenten-backend:
     name: "Build skribenten backend"
