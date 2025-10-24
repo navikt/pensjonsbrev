@@ -85,39 +85,23 @@ jobs:
 
   deploy-dev:
     name: Deploy app to dev
-    permissions:
-      contents: read
-      id-token: write
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
     needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Deploy to DEV
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: skribenten-web/bff/.nais/nais.yaml
-          VAR: image=${{needs.build.outputs.image}}
-          VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
+    with:
+      image: ${{needs.build.outputs.image}}
+      cluster: "dev-gcp"
+      resource: "skribenten-web/bff/.nais/nais.yaml"
+      vars: "skribenten-web/bff/.nais/bff-dev.yaml"
 
   deploy-prod:
     name: Deploy app to prod
-    permissions:
-      contents: read
-      id-token: write
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
     if: github.ref == 'refs/heads/main'
     needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Deploy to PROD
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: skribenten-web/bff/.nais/nais.yaml
-          VAR: image=${{needs.build.outputs.image}}
-          VARS: "skribenten-web/bff/.nais/bff-prod.yaml"
+    with:
+      cluster: prod-gcp
+      resource: skribenten-web/bff/.nais/nais.yaml
+      image: ${{needs.build.outputs.image}}
+      vars: "skribenten-web/bff/.nais/bff-prod.yaml"

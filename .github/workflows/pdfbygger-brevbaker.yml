@@ -278,89 +278,53 @@ jobs:
           issue-number: ${{ github.event.number }}
           body-path: percy-build-url
 
-  "deployBrevbakerToDev":
+  deployBrevbakerToDev:
     name: "Deploy brevbaker to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    secrets: inherit
     needs: [runIntegrationTests, buildBrevbaker]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:brevbaker"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.buildBrevbaker.outputs.image }}
-          "VARS": "pensjon-brevbaker/.nais/dev.yaml"
+    with:
+      cluster: "dev-gcp"
+      resource: "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      image: ${{needs.buildBrevbaker.outputs.image}}
+      vars: "pensjon-brevbaker/.nais/dev.yaml"
 
-  "deployPdfByggerToDev":
+  deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:pdf-bygger"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
-          "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
-          "VARS": "pdf-bygger/.nais/dev.yaml"
+    with:
+      cluster: "dev-gcp"
+      resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
+      image: ${{needs.buildPdfbygger.outputs.image}}
+      vars: "pdf-bygger/.nais/dev.yaml"
 
-  "deployBrevbakerToProduction":
+  deployBrevbakerToProduction:
     name: "Deploy brevbaker to production"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    secrets: inherit
     needs: [runIntegrationTests, buildBrevbaker]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:brevbaker"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.buildBrevbaker.outputs.image }}
-          "VARS": "pensjon-brevbaker/.nais/prod.yaml"
+    with:
+      cluster: "prod-gcp"
+      resource: "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      image: ${{needs.buildBrevbaker.outputs.image}}
+      vars: "pensjon-brevbaker/.nais/prod.yaml"
 
-  "deployPdfByggerToProduction":
-    name: "Deploy pdf-bygger to production"
-    permissions:
-      contents: "read"
-      id-token: "write"
+  deployPdfByggerToProd:
+    name: "Deploy pdf-bygger to dev"
+    uses: ./.github/workflows/.deploy.yaml
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:pdf-bygger"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
-          "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
-          "VARS": "pdf-bygger/.nais/prod.yaml"
+    with:
+      cluster: "prod-gcp"
+      resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
+      image: ${{needs.buildPdfbygger.outputs.image}}
+      vars: "pdf-bygger/.nais/prod.yaml"
 
   "klarTilMerge":
     name: "Klar til merge"

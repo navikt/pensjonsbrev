@@ -83,46 +83,27 @@ jobs:
 
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: "build-skribenten-backend"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy Skribenten backend to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:skribenten-backend"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-dev-q2.yaml,skribenten-backend/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
-          "VARS": "skribenten-backend/.nais/dev.yaml"
-
+    secrets: inherit
+    needs: build-skribenten-backend
+    with:
+      cluster: "dev-gcp"
+      resource: "skribenten-backend/.nais/unleash-api-token-dev-q2.yaml,skribenten-backend/.nais/nais.yaml"
+      image: ${{needs.build-skribenten-backend.outputs.image}}
+      vars: "skribenten-backend/.nais/dev.yaml"
 
   deploy-skribenten-backend-prod:
     name: "Deploy skribenten-backend to prod"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: "build-skribenten-backend"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy Skribenten backend to prod"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:skribenten-backend"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
-          "VARS": "skribenten-backend/.nais/prod.yaml"
+    secrets: inherit
+    needs: build-skribenten-backend
+    with:
+      cluster: "prod-gcp"
+      resource: "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
+      image: ${{needs.build-skribenten-backend.outputs.image}}
+      vars: "skribenten-backend/.nais/prod.yaml"
 
   "klarTilMerge":
     name: "Klar til merge"

@@ -1,0 +1,40 @@
+name: .deploy.yaml
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'Image to deploy'
+        required: true
+        type: string
+      resource:
+        description: 'Resources to deploy to dev'
+        required: true
+        type: string
+      vars:
+        description: 'Variables to deploy to dev'
+        required: true
+        type: string
+      cluster:
+        description: 'Cluster to deploy to'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy app
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Deploy to ${{ inputs.cluster }}
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.resource }}
+          VAR: image=${{ inputs.image }}
+          VARS: ${{ inputs.vars }}

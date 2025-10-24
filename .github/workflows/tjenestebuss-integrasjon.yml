@@ -78,48 +78,30 @@ jobs:
         with:
           image_ref: ${{ needs.build-tjenestebuss-integrasjon.outputs.image }}@${{ needs.build-tjenestebuss-integrasjon.outputs.digest }}
 
+
   deploy-tjenestebuss-integrasjon-dev:
     name: "Deploy tjenestebuss-integrasjon to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: "build-tjenestebuss-integrasjon"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy tjenestebus-integrasjon backend to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-fss:tjenestebuss-integrasjon"
-          "CLUSTER": "dev-fss"
-          "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-tjenestebuss-integrasjon.outputs.image }}
-          "VARS": "tjenestebuss-integrasjon/.nais/dev-q2.yaml"
+    secrets: inherit
+    needs: build-tjenestebuss-integrasjon
+    with:
+      cluster: "dev-fss"
+      resource: "tjenestebuss-integrasjon/.nais/nais.yaml"
+      image: ${{needs.build-tjenestebuss-integrasjon.outputs.image}}
+      vars: "tjenestebuss-integrasjon/.nais/dev-q2.yaml"
 
   deploy-tjenestebuss-integrasjon-prod:
     name: "Deploy tjenestebuss-integrasjon to prod"
-    permissions:
-      contents: "read"
-      id-token: "write"
+    uses: ./.github/workflows/.deploy.yaml
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: "build-tjenestebuss-integrasjon"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy tjenestebus-integrasjon backend to prod"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-fss:tjenestebuss-integrasjon"
-          "CLUSTER": "prod-fss"
-          "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-tjenestebuss-integrasjon.outputs.image }}
-          "VARS": "tjenestebuss-integrasjon/.nais/prod.yaml"
-
+    secrets: inherit
+    needs: build-tjenestebuss-integrasjon
+    with:
+      cluster: "prod-fss"
+      resource: "tjenestebuss-integrasjon/.nais/nais.yaml"
+      image: ${{needs.build-tjenestebuss-integrasjon.outputs.image}}
+      vars: "tjenestebuss-integrasjon/.nais/prod.yaml"
 
   "klarTilMerge":
     name: "Klar til merge"
