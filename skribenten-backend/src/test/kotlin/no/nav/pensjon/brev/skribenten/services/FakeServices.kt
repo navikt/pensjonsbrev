@@ -142,7 +142,6 @@ open class PenServiceStub : PenService {
 
 
 open class PdlServiceStub : PdlService {
-    override suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> = notYetStubbed()
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = notYetStubbed()
 }
 
