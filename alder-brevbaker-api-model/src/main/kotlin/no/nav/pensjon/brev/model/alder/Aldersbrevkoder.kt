@@ -20,6 +20,7 @@ object Aldersbrevkoder {
         PE_AP_ADHOC_2025_VARSELBREV_GJT_KAP_20,
         PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND_AUTO,
         VEDTAK_ALDERSOVERGANG_67_AAR_GARANTITILLEGG_AUTO,
+        VEDTAK_ENDRING_AV_AFP_ENDRET_OPPTJENING_AUTO,
         ;
 
         override fun kode(): String = this.name

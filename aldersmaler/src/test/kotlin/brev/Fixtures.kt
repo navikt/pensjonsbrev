@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import brev.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
+import brev.maler.aldersovergang.createVedtakEndringAFPEndretOpptjeningAutoDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonGarantitilleggDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandAutoDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandDto
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAuto
 import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps60AarAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps62AarAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.Ytelse
 import no.nav.pensjon.brev.model.alder.aldersovergang.YtelseType
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantitilleggDto
@@ -19,6 +21,7 @@ import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
 import kotlin.reflect.KClass
+
 
 object Fixtures : LetterDataFactory {
     val felles = no.nav.brev.brevbaker.Fixtures.felles
@@ -38,6 +41,7 @@ object Fixtures : LetterDataFactory {
             InfoAldersovergangEps60AarAutoDto::class -> InfoAldersovergangEps60AarAutoDto(ytelse = Ytelse.ALDER) as T
             InfoAldersovergangEps62AarAutoDto::class -> InfoAldersovergangEps62AarAutoDto(ytelse = YtelseType.ALDER) as T
             VedtakAldersovergang67AarGarantitilleggAutoDto::class -> createVedtakAldersovergang67AarGarantitilleggAutoDto() as T
+            VedtakEndringAFPEndretOpptjeningAutoDto::class -> createVedtakEndringAFPEndretOpptjeningAutoDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
