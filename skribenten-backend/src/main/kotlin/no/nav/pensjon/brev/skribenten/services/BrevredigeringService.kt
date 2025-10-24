@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -313,7 +312,11 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
+            // TODO: Midlertidig workaround for å tvinge fram henting av P1-data alltid
+            if (brevredigering.info.brevkode.kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK") {
+                opprettPdf(brevredigering)
+            }
+            else if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
                 Ok(document.pdf)
             } else {
                 opprettPdf(brevredigering)
