@@ -83,6 +83,9 @@ jobs:
       packages: "write"
       id-token: "write"
     steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: "Publish container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
