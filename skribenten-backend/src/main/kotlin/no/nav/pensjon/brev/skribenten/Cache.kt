@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
+import io.ktor.utils.io.CancellationException
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.JedisPool
@@ -56,6 +57,7 @@ class Valkey(config: Config) : Cache() {
             retryOgPakkUt(times = 3, ventetid = 50.milliseconds) { it.get(key) }
         }
     } catch (e: Exception) {
+        if (e is CancellationException) throw e
         logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
         null
     }
@@ -74,6 +76,7 @@ class Valkey(config: Config) : Cache() {
                 }
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             logger.warn("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
         }
     }
