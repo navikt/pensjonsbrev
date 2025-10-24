@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.http.*
-import no.nav.brev.InterneDataklasser
+import io.ktor.http.HttpStatusCode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -9,14 +8,41 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.letter.*
-import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
+import no.nav.pensjon.brev.skribenten.db.Brevredigering
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.Document
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.Mottaker
+import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.klarTilSending
+import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.letter.toMarkup
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.model.toPen
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.AlleredeAttestertException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.ArkivertBrevException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevIkkeKlartTilSendingException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevLaastForRedigeringException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.HarIkkeAttestantrolleException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeAttestereEgetBrevException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeReservereBrevredigeringException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.VedtaksbrevKreverVedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
@@ -313,7 +339,11 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
+            // Midlertidig workaround for å tvinge fram henting av P1-data alltid
+            if (brevredigering.info.brevkode.kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK") {
+                opprettPdf(brevredigering)
+            }
+            else if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
                 Ok(document.pdf)
             } else {
                 opprettPdf(brevredigering)
