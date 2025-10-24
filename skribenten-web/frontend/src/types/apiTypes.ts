@@ -11,7 +11,9 @@ export type SakDto = {
   readonly saksId: number;
   readonly foedselsnr: string;
   readonly foedselsdato: [number, number, number];
+  readonly navn: { readonly fornavn: string; readonly mellomnavn: string | null; readonly etternavn: string };
   readonly sakType: SakType;
+  readonly enhetId: string;
 };
 
 export type SakContextDto = {

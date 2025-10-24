@@ -1,20 +1,17 @@
 import { css } from "@emotion/react";
 import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { z } from "zod";
 
 import {
   getFavoritterQuery,
   getKontaktAdresseQuery,
-  getNavnQuery,
   getPreferredLanguageQuery,
   getSakContextQuery,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
-import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { BrevInfoKlarTilAttesteringProvider } from "./kvittering/-components/KlarTilAttesteringContext";
@@ -75,7 +72,6 @@ function SakLayout() {
 
 function Subheader({ sak }: { sak: SakDto }) {
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const hentNavnQuery = useQuery(getNavnQuery(sak.saksId.toString()));
 
   return (
     <div
@@ -113,13 +109,9 @@ function Subheader({ sak }: { sak: SakDto }) {
           <BodyShort size="small">
             {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
           </BodyShort>
-          {queryFold({
-            query: hentNavnQuery,
-            initial: () => null,
-            pending: () => <BodyShort size="small">Henter navn...</BodyShort>,
-            error: () => <BodyShort size="small">Feil ved henting av navn</BodyShort>,
-            success: (navn) => <BodyShort size="small">{navn}</BodyShort>,
-          })}
+          <BodyShort size="small">
+            {sak.navn.etternavn}, {sak.navn.fornavn} {sak.navn.mellomnavn}
+          </BodyShort>
         </HStack>
         <HStack>
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>

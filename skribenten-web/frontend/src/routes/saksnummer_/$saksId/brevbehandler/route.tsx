@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavnQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
@@ -24,7 +24,6 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
     const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
-    context.queryClient.prefetchQuery(getNavnQuery(saksId));
     return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   component: Brevbehandler,

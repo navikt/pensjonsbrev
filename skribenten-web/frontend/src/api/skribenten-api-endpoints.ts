@@ -97,11 +97,6 @@ export const getSakContextQuery = (saksId: string, vedtaksId: string | undefined
   staleTime: 5000,
 });
 
-export const getNavnQuery = (saksId: string) => ({
-  queryKey: navnKeys.saksId(saksId),
-  queryFn: async () => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
-});
-
 export const getPreferredLanguageQuery = (saksId: string) => ({
   queryKey: preferredLanguageKeys.saksId(saksId),
   queryFn: async () =>
