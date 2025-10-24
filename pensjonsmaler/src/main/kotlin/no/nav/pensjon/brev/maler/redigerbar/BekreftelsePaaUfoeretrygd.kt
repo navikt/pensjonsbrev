@@ -1,13 +1,8 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.foedselsdato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.navn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.PesysDataSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.PesysDataSelectors.navn
@@ -61,13 +56,13 @@ object BekreftelsePaaUfoeretrygd : RedigerbarTemplate<BekreftelsePaaUfoeretrygdD
                 )
                 text(
                     bokmal { +", mottar uføretrygd fra folketrygden med en uføregrad på " + fritekst("uføregrad") + " prosent." },
-                    nynorsk { +", få ei månadleg pensjon på " + fritekst("beløp") + " kroner." },
-                    english { +", has a " + fritekst("uføregrad") + "% work incapacity and is receiving disability benefit from the National Insurance Scheme. " }
+                    nynorsk { +", mottar uføretrygd frå folketrygda med ein uføregrad på " + fritekst("uføregrad") + " prosent." },
+                    english { +", has a " + fritekst("uføregrad") + " percent work incapacity and is receiving disability benefit from the National Insurance Scheme." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Størrelsen på uføretrygden " + fritekst("beløp") + " kroner per måned." },
+                    bokmal { +"Størrelsen på uføretrygden er " + fritekst("beløp") + " kroner per måned." },
                     nynorsk { +"Storleiken på uføretrygda er " + fritekst("beløp") + " kroner per månad." },
                     english { + "The gross monthly amount of the benefit is NOK " + fritekst("beløp") + "."},
                 )
