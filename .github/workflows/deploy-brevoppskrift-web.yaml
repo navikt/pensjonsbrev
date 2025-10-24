@@ -69,22 +69,12 @@ jobs:
       digest: ${{ steps.docker-build-push.outputs.digest }}
 
   salsa:
-    name: Generate SBOM, attest and sign image
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/.salsa.yaml
     needs: build
-    permissions:
-      id-token: "write"
-    steps:
-      - name: NAIS login
-        uses: nais/login@v0
-        id: login
-        with:
-          team: pensjonsbrev
-      - name: Generate SBOM, attest and sign image
-        id: attest-sign
-        uses: nais/attest-sign@v1
-        with:
-          image_ref: ${{ needs.build.outputs.image }}@${{ needs.build.outputs.digest }}
+    secrets: inherit
+    with:
+      digest: ${{ needs.build.outputs.digest }}
+      image: ${{ needs.build.outputs.image }}
 
   deploy-dev:
     name: Deploy app to dev
