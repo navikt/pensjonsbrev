@@ -312,7 +312,7 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            // Midlertidig workaround for å tvinge fram henting av P1-data alltid
+            // TODO: Midlertidig workaround for å tvinge fram henting av P1-data alltid
             if (brevredigering.info.brevkode.kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK") {
                 opprettPdf(brevredigering)
             }
