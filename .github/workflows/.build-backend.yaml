@@ -19,6 +19,11 @@ on:
         description: "Build image?"
         required: true
         type: boolean
+      uploadJar:
+        description: "Upload jar?"
+        required: false
+        type: boolean
+        default: false
     outputs:
       image:
         description: "Image name"
@@ -80,7 +85,8 @@ jobs:
           dockerfile: ${{ inputs.path }}/Dockerfile
           salsa: false
       - name: "Upload jar"
+        if: ${{ inputs.uploadJar }}
         uses: actions/upload-artifact@v4
         with:
-          name: jar
+          name: ${{inputs.path}}-jar
           path: ${{ inputs.path }}/build/libs/

@@ -89,7 +89,7 @@ jobs:
       - name: Download jar
         uses: actions/download-artifact@v5
         with:
-          name: jar
+          name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
       - name: "Publish container image to ghcr.io"
         run: |
