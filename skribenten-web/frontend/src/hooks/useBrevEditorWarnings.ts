@@ -1,16 +1,20 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import type { UseFormReturn } from "react-hook-form";
 
 import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
 import type { WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
-import { useModelSpecificationForm } from "~/Brevredigering/ModelEditor/ModelEditor";
+import {
+  extractRelevantSaksbehandlerValgFields,
+  useModelSpecificationForm,
+} from "~/Brevredigering/ModelEditor/ModelEditor";
 import type { SaksbehandlerValg } from "~/types/brev";
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import type { EditedLetter, PropertyUsage } from "~/types/brevbakerTypes";
 
 interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }> {
   brevkode: string;
   form: UseFormReturn<FormSchema>;
   redigertBrev: EditedLetter;
+  propertyUsage?: PropertyUsage[];
 }
 
 type WarningResult = { kind: WarnModalKind; count?: number } | null;
@@ -19,22 +23,37 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
   brevkode,
   form,
   redigertBrev,
+  propertyUsage,
 }: UseBrevEditorWarningsParams<FormSchema>) {
-  const { status, specification } = useModelSpecificationForm(brevkode);
+  const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
+
+  const relevantFields = useMemo(
+    () => extractRelevantSaksbehandlerValgFields(propertyUsage ?? [], saksbehandlerValgType),
+    [propertyUsage, saksbehandlerValgType],
+  );
+
+  const filteredSpecification = useMemo(() => {
+    if (!specification) return undefined;
+
+    if (relevantFields.size === 0) return specification;
+
+    return Object.fromEntries(Object.entries(specification).filter(([key]) => relevantFields.has(key)));
+  }, [specification, relevantFields]);
 
   const hasMissingRequiredSaksbehandlerValg = useCallback((): boolean => {
-    if (status !== "success" || !specification) return false;
+    if (status !== "success" || !filteredSpecification) return false;
 
     const values = form.getValues()?.saksbehandlerValg ?? {};
 
-    return Object.entries(specification).some(([key, fieldType]) => {
-      if (fieldType.type === "enum") {
-        const value = values[key];
-        return value == null || (typeof value === "string" && value.trim().length === 0);
-      }
-      return false;
+    return Object.entries(filteredSpecification).some(([key, fieldType]) => {
+      if (fieldType.type !== "enum") return false;
+
+      if (!(key in values)) return false;
+
+      const value = values[key];
+      return value == null || (typeof value === "string" && value.trim().length === 0);
     });
-  }, [form, specification, status]);
+  }, [form, filteredSpecification, status]);
 
   const numberOfUnfilledFritekstPlaceholders = useCallback(
     () => countUnfilledFritekstPlaceholders(redigertBrev),

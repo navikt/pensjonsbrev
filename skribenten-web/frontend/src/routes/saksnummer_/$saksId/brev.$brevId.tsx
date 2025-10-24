@@ -268,6 +268,7 @@ function RedigerBrev({
     brevkode: brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
+    propertyUsage: brev.propertyUsage ?? [],
   });
 
   const onTekstValgAndOverstyringChange = () => {
