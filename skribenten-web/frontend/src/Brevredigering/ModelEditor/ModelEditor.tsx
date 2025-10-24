@@ -9,11 +9,13 @@ import type { FieldType, LetterModelSpecification, PropertyUsage } from "~/types
 import { FieldEditor } from "./components/ObjectEditor";
 import { isBooleanField, isFieldNullableOrBoolean } from "./components/utils";
 
-const useModelSpecificationForm = (brevkode: string) => {
+export const useModelSpecificationForm = (brevkode: string) => {
   const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
+
   const saksbehandlerValgType = brevKodeSpecification.specification
     ? findSaksbehandlerValgTypeName(brevKodeSpecification.specification)
     : undefined;
+
   const saksbehandlerValgSpecification = useModelSpecification(brevkode, (s) =>
     saksbehandlerValgType ? s.types[saksbehandlerValgType] : undefined,
   );
@@ -66,7 +68,6 @@ export const usePartitionedModelSpecification = (brevkode: string, propertyUsage
   const [optionalFields, requiredFields] = filteredSpecification
     ? partition(Object.entries(filteredSpecification), (spec) => isFieldNullableOrBoolean(spec[1]))
     : [[], []];
-
   return { status, optionalFields, requiredFields, error };
 };
 
