@@ -8,94 +8,14 @@ name: "deploy: skribenten-web"
       - skribenten-web/**
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: skribenten-web
-
 permissions:
   contents: read
   id-token: write
 
 jobs:
   build:
-    name: build
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
-
-      - name: Install frontend
-        working-directory: skribenten-web/frontend
-        run: npm install
-
-      - name: Build frontend
-        working-directory: skribenten-web/frontend
-        run: npm run build
-
-      - name: Copy frontend dist into public directory of bff
-        working-directory: skribenten-web/frontend
-        run: cp -r dist/ ../bff/public
-
-      - name: Install bff dependencies
-        working-directory: skribenten-web/bff
-        run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: Build bff
-        working-directory: skribenten-web/bff
-        run: npm run build
-
-      - name: Build and push Docker container
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
-        with:
-          team: pensjonsbrev
-          image_suffix: skribenten-web
-          docker_context: skribenten-web/bff
-          dockerfile: skribenten-web/bff/Dockerfile
-          salsa: false
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-      digest: ${{ steps.docker-build-push.outputs.digest }}
-
-
-  salsa:
-    uses: ./.github/workflows/.salsa.yaml
-    needs: build
+    uses: ./.github/workflows/.build-frontend.yaml
     secrets: inherit
     with:
-      digest: ${{ needs.build.outputs.digest }}
-      image: ${{ needs.build.outputs.image }}
-
-  deploy-dev:
-    name: Deploy app to dev
-    uses: ./.github/workflows/.deploy.yaml
-    secrets: inherit
-    needs: build
-    with:
-      image: ${{needs.build.outputs.image}}
-      cluster: "dev-gcp"
-      resource: "skribenten-web/bff/.nais/nais.yaml"
-      vars: "skribenten-web/bff/.nais/bff-dev.yaml"
-
-  deploy-prod:
-    name: Deploy app to prod
-    uses: ./.github/workflows/.deploy.yaml
-    secrets: inherit
-    if: github.ref == 'refs/heads/main'
-    needs: build
-    with:
-      cluster: prod-gcp
-      resource: skribenten-web/bff/.nais/nais.yaml
-      image: ${{needs.build.outputs.image}}
-      vars: "skribenten-web/bff/.nais/bff-prod.yaml"
+      workingDir: skribenten-web
+      canDeployProd: true
