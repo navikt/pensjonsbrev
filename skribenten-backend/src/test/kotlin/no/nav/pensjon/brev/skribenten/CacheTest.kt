@@ -48,16 +48,21 @@ class CacheTest {
         }
         val key = Cacheomraade.NORG.prefix + "-" + databaseObjectMapper.writeValueAsString("k")
         assertEquals(1, counter)
-        assertEquals(123, cache.read(key)?.toInt())
+        runBlocking {
+            assertEquals(123, cache.read(key)?.toInt())
+        }
     }
 
     @Test
     fun `verdi som ikke er i cachen gir null for get`() {
-        assertNull(Valkey(valkeyConfig).read("mangler"))
+        runBlocking {
+            assertNull(Valkey(valkeyConfig).read("mangler"))
+        }
     }
 
     @Test
     fun `kan oppdatere verdi som fins i cachen`() {
+        runBlocking {
         val cache = Valkey(valkeyConfig)
         val key = "k"
         cache.update(key, "verdi1", 10.minutes)
@@ -65,20 +70,23 @@ class CacheTest {
         assertEquals("verdi1", v1)
         cache.update(key, "verdi2", 10.minutes)
         assertEquals("verdi2", cache.read("k"))
+            }
     }
 
     @Test
     fun `kan lese navenheter`() {
-        val key = "A12345"
-        val value = """[{"id":"1","navn":"Nav 1"},{"id":"2","navn":"Nav 2"},{"id":"3","navn":"Nav 3"}]"""
-        val cache = Valkey(valkeyConfig)
+        runBlocking {
+            val key = "A12345"
+            val value = """[{"id":"1","navn":"Nav 1"},{"id":"2","navn":"Nav 2"},{"id":"3","navn":"Nav 3"}]"""
+            val cache = Valkey(valkeyConfig)
 
-        cache.update(key, value, 10.minutes)
+            cache.update(key, value, 10.minutes)
 
-        assertEquals(
-            value,
-            cache.read(key)
-        )
+            assertEquals(
+                value,
+                cache.read(key)
+            )
+        }
     }
 
 
