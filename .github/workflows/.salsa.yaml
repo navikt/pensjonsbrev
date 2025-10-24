@@ -1,0 +1,32 @@
+name: .salsa.yaml
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'Image to analyze'
+        required: true
+        type: string
+      digest:
+        description: 'Digest of image to analyze'
+        required: true
+        type: string
+
+jobs:
+  salsa:
+    name: Generate SBOM, attest and sign image
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    permissions:
+      id-token: "write"
+    steps:
+      - name: NAIS login
+        uses: nais/login@v0
+        id: login
+        with:
+          team: pensjonsbrev
+      - name: Generate SBOM, attest and sign image
+        id: attest-sign
+        uses: nais/attest-sign@v1
+        with:
+          image_ref: ${{ inputs.image }}@${{ inputs.digest }}
