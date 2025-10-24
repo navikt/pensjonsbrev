@@ -195,17 +195,17 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
     overskrift: String,
     linjer: Expression<List<String>>
 ) {
-    title2 {
+    paragraph {
         text(
             bokmal { +overskrift },
             nynorsk { +overskrift },
             english { +overskrift },
+            FontType.BOLD
         )
-    }
-
-    forEach(linjer) { linje ->
-        paragraph {
+        newline()
+        forEach(linjer) { linje ->
             text(bokmal { +linje }, nynorsk { +linje }, english { +linje })
+            newline()
         }
     }
 }
