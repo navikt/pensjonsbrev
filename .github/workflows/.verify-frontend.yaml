@@ -83,6 +83,7 @@ jobs:
           component: true
 
       - name: Run tests
+        if: ${{ inputs.cypress }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run test
 
