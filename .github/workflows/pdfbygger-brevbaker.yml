@@ -74,6 +74,7 @@ jobs:
       path: pdf-bygger
       publishToMavenLocal: false
       buildImage: true
+      uploadJar: true
 
   pushPdfByggerToGithubRegistry:
     name: "Push pdf-bygger to github registry"
