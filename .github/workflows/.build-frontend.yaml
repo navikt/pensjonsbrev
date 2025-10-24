@@ -12,11 +12,6 @@ on:
         required: true
         type: boolean
 
-
-defaults:
-  run:
-    working-directory: ${{ inputs.workingDir }}
-
 jobs:
   build:
     name: build
