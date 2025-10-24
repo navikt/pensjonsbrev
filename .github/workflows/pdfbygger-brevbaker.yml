@@ -219,7 +219,6 @@ jobs:
   deployBrevbakerToDev:
     name: "Deploy brevbaker to dev"
     uses: ./.github/workflows/.deploy.yaml
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     secrets: inherit
     needs: [runIntegrationTests, buildBrevbaker]
     with:
@@ -231,7 +230,6 @@ jobs:
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
     uses: ./.github/workflows/.deploy.yaml
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
     with:
@@ -243,7 +241,6 @@ jobs:
   deployBrevbakerToProduction:
     name: "Deploy brevbaker to production"
     uses: ./.github/workflows/.deploy.yaml
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     secrets: inherit
     needs: [runIntegrationTests, buildBrevbaker]
     with:
@@ -255,7 +252,6 @@ jobs:
   deployPdfByggerToProd:
     name: "Deploy pdf-bygger to dev"
     uses: ./.github/workflows/.deploy.yaml
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
     with:

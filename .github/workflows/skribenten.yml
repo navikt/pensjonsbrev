@@ -44,7 +44,6 @@ jobs:
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
     uses: ./.github/workflows/.deploy.yaml
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     secrets: inherit
     needs: build-skribenten-backend
     with:
@@ -56,7 +55,6 @@ jobs:
   deploy-skribenten-backend-prod:
     name: "Deploy skribenten-backend to prod"
     uses: ./.github/workflows/.deploy.yaml
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     secrets: inherit
     needs: build-skribenten-backend
     with:

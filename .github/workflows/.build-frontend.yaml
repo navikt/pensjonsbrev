@@ -77,7 +77,6 @@ jobs:
     name: Deploy app to dev
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: build
     with:
       image: ${{needs.build.outputs.image}}
@@ -89,7 +88,7 @@ jobs:
     name: Deploy app to prod
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
-    if: ${{ inputs.canDeployProd && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ inputs.canDeployProd }}
     needs: build
     with:
       cluster: prod-gcp
