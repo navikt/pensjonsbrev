@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -20,7 +21,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =
-        if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyBrevdata, EmptyRedigerbarBrevdata)) {
+        if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyBrevdata, EmptyRedigerbarBrevdata, EmptyVedlegg)) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
             throw TemplateModelSpecificationError("Cannot create specification of class without primary constructor: ${from.qualifiedName}")
@@ -99,7 +100,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 "java.time.LocalDate" ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayedText)
 
-                "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
+                "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata", "no.nav.pensjon.brev.api.model.maler.EmptyVedlegg" -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname, displayText = displayedText)
                 }
