@@ -25,10 +25,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
-    fun includeAttachment(template: AttachmentTemplate<Lang, EmptyVedlegg>) {
-        attachments.add(IncludeAttachment(EmptyVedlegg.expr(), template, true.expr()))
-    }
-
     fun <AttachmentData : Vedlegg> includeAttachment(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData>,
