@@ -178,6 +178,14 @@ abstract class BrevmodulTest(
         clazzName: String,
     ) {
         createVedleggTestTemplate(template, fixtures.expr(), languages(spraak))
+            .let {
+                LetterTestImpl(
+                    it,
+                    fixtures,
+                    spraak,
+                    Fixtures.felles,
+                ).renderTestHtml("vedlegg/${clazzName}_$spraak")
+            }
     }
 
     protected fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
