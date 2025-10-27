@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
+import no.nav.pensjon.brev.api.model.maler.Vedlegg
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -62,7 +63,7 @@ data class BarnepensjonRevurderingDTO(
     val harUtbetaling: Boolean,
     val innholdForhaandsvarsel: List<Element>,
     val kunNyttRegelverk: Boolean,
-) : FerdigstillingBrevDTO
+) : Vedlegg, FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {

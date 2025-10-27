@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer
 
+import no.nav.pensjon.brev.api.model.maler.Vedlegg
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -36,7 +37,7 @@ data class BarnepensjonOpphoerDTO(
     val bosattUtland: Boolean,
     val virkningsdato: LocalDate,
     val feilutbetaling: FeilutbetalingType
-) : FerdigstillingBrevDTO
+) : Vedlegg, FerdigstillingBrevDTO
 @TemplateModelHelpers
 object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER
