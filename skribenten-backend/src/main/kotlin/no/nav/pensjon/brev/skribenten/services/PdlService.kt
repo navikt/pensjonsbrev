@@ -168,7 +168,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             logger.warn("Got multiple errors from PDL, only first is included in response.")
         }
         filter { it.extensions?.code != PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found }
-            .forEach { logger.info("${it.message}: {}", it.extensions) }
+            .forEach { logger.warn("${it.message}: {}", it.extensions) }
     }
 
     override val name = "PDL"

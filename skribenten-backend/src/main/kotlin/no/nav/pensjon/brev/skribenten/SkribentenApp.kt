@@ -96,27 +96,27 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
-            call.application.log.info("Bad request, kunne ikke deserialisere json")
+            call.application.log.warn("Bad request, kunne ikke deserialisere json")
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
         }
         exception<UnauthorizedException> { call, cause ->
-            call.application.log.info(cause.message, cause)
+            call.application.log.warn(cause.message, cause)
             call.respond(HttpStatusCode.Unauthorized, cause.msg)
         }
         exception<BadRequestException> { call, cause ->
             if (cause.cause is JsonConvertException) {
-                call.application.log.info(cause.message, cause)
+                call.application.log.warn(cause.message, cause)
                 call.respond(
                     HttpStatusCode.BadRequest,
                     cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
                 )
             } else {
-                call.application.log.info("Bad request, men ikke knytta til deserialisering")
+                call.application.log.warn("Bad request, men ikke knytta til deserialisering")
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
         exception<BrevredigeringException> { call, cause ->
-            call.application.log.info(cause.message, cause)
+            call.application.log.warn(cause.message, cause)
             when (cause) {
                 is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
