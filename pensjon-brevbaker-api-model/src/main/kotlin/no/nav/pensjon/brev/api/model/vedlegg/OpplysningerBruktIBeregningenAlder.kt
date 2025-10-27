@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Vedlegg
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -27,7 +27,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val krav: Krav,
     val poengrekkeVedVirk: PoengrekkeVedVirk,
     val skalSkjuleTrygdetidstabellerPgaAldersovergang: Boolean,
-) : BrevbakerBrevdata {
+) : Vedlegg {
 
     data class PoengrekkeVedVirk(
         val inneholderOmsorgspoeng: Boolean,
