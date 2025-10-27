@@ -5,15 +5,23 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -27,7 +35,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Collectors
 import java.util.stream.IntStream
-import kotlin.collections.filterNot
 import kotlin.reflect.KProperty
 
 
@@ -91,24 +98,42 @@ abstract class BrevmodulTest(
     }
 
     @Suppress("unused") // Brukt i MethodSource
-    private fun filterPdf() = finnMaler(filterForPDF)
+    private fun filtrerPdf() = finnMaler( { filterForPDF.isEmpty() || filterForPDF.contains(it.kode) })
 
     @Suppress("unused") // Brukt i MethodSource
-    protected fun alleMalene() = finnMaler(listOf())
-
-    protected fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> {
-        FeatureToggleSingleton.init(FeatureToggleDummy)
-        return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
-            (templates.hentAutobrevmaler() +
-                    templates.hentRedigerbareMaler()
-                    ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
-                .map { Arguments.of(it.template, it.kode, fixtures.create(it.template.letterDataType), spraak) }
+    private fun filtrerVedlegg() = (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
+        .map { it.template }
+        .flatMap { template ->
+            template.language.all().flatMap { spraak ->
+                template.attachments.map { vedlegg ->
+                    val dto =
+                        (((vedlegg.data as? Expression.UnaryInvoke<*, *>)?.operation as? UnaryOperation.Select<*, *>)?.selector?.propertyType)?.let {
+                            Class.forName(it.removeSuffix("?"))
+                        }
+                    dto?.let { Arguments.of(vedlegg.template, fixtures.create(dto.kotlin), spraak, dto.simpleName) }
+                }
+            }
         }
+        .filterNotNull()
+        .distinctBy { it.get()[2].toString() + it.get()[3] }
+
+
+    @Suppress("unused") // Brukt i MethodSource
+    protected fun alleMalene() = finnMaler({ true })
+
+    protected fun finnMaler(shouldInclude: (BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>) -> Boolean = { true }): List<Arguments> {
+        FeatureToggleSingleton.init(FeatureToggleDummy)
+        return listOf(Language.Nynorsk, Language.Bokmal, Language.English)
+            .flatMap { spraak ->
+                (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
+                    .filter { shouldInclude(it) }
+                    .map { Arguments.of(it.template, it.kode, fixtures.create(it.template.letterDataType), spraak) }
+            }
     }
 
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
-    @MethodSource("filterPdf")
+    @MethodSource("filtrerPdf")
     fun <T : Any> testPdf(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
@@ -142,6 +167,17 @@ abstract class BrevmodulTest(
             spraak,
             Fixtures.felles,
         ).renderTestHtml(filnavn(brevkode, spraak))
+    }
+
+    @ParameterizedTest(name = "{3}, {2}")
+    @MethodSource("filtrerVedlegg")
+    fun <T : VedleggData> testVedlegg(
+        template: AttachmentTemplate<LanguageSupport, T>,
+        fixtures: T,
+        spraak: Language,
+        clazzName: String,
+    ) {
+        createVedleggTestTemplate(template, fixtures.expr(), languages(spraak))
     }
 
     protected fun filnavn(brevkode: Brevkode<*>, spraak: Language) =

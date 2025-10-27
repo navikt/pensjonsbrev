@@ -28,6 +28,7 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
+            OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
