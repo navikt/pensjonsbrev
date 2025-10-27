@@ -34,6 +34,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.Vedlegg
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -182,7 +183,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
     return this
 }
 
-fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
+fun <AttachmentData : Vedlegg, Lang : LanguageSupport> createVedleggTestTemplate(
     template: AttachmentTemplate<Lang, AttachmentData>,
     attachmentData: Expression<AttachmentData>,
     languages: Lang,
