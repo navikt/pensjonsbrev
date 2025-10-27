@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.*
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.*
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
