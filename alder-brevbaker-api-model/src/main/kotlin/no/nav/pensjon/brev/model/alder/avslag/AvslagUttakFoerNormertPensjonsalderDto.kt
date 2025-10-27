@@ -1,9 +1,9 @@
-package no.nav.pensjon.brev.api.model.maler.alderApi
+package no.nav.pensjon.brev.model.alder.avslag
 
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016Dto.SaksbehandlerValg
+import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalderAP2016Dto.SaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 data class AvslagUttakFoerNormertPensjonsalderDto(

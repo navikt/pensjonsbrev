@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
 import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDtoSelectors.regelverkType
+import no.nav.pensjon.brev.model.alder.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate

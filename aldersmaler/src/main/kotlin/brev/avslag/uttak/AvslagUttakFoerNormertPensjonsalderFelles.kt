@@ -4,10 +4,10 @@ import brev.avslag.gradsendring.fraser.AvslagHjemler
 import brev.felles.Constants
 import brev.felles.HarDuSpoersmaal
 import brev.felles.aarOgMaanederFormattert
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
+import no.nav.pensjon.brev.model.alder.avslag.NormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

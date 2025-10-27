@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
+import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalderDto
 
 fun createAvslagUttakFoerNormertPensjonsalderDto() =
     AvslagUttakFoerNormertPensjonsalderDto(

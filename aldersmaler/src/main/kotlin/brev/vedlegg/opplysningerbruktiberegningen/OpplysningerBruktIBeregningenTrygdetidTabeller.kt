@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenal
 
 import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.maler.Beregningsmetode.*
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid

@@ -6,7 +6,7 @@ import brev.felles.GarantipensjonSatsTypeText
 import brev.felles.Ja
 import brev.felles.KronerText
 import no.nav.pensjon.brev.api.model.maler.Beregningsmetode.*
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.skjermingstilleggInnvilget

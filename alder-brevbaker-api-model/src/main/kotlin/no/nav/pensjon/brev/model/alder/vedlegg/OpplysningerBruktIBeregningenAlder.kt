@@ -1,9 +1,11 @@
-package no.nav.pensjon.brev.api.model.maler.vedlegg
+package no.nav.pensjon.brev.model.alder.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.Beregningsmetode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.maler.vedlegg.Pensjonspoeng
+import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.Beregningsmetode
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 

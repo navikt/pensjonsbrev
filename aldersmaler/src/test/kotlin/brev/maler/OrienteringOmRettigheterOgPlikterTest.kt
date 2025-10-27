@@ -11,9 +11,9 @@ import no.nav.pensjon.brev.api.model.Sakstype.AFP
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.Sakstype.BARNEP
 import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
-import no.nav.pensjon.brev.api.model.maler.Institusjon
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.model.alder.Institusjon
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
+import no.nav.pensjon.brev.model.alder.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages

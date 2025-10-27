@@ -1,38 +1,38 @@
 package brev.vedlegg.opplysningerbruktiberegningen
 
 import brev.felles.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.api.model.maler.Beregningsmetode.*
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDto
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BrukerSelectors.foedselsdato
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetSomEnsligPgaInstitusjon
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap20VedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.bruker
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.epsVedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.inngangOgEksportVurdering
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.krav
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.poengrekkeVedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.skalSkjuleTrygdetidstabellerPgaAldersovergang
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidAvtaleland
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidEOS
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
-import no.nav.pensjon.brev.api.model.maler.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BrukerSelectors.foedselsdato
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng_safe
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetSomEnsligPgaInstitusjon
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap20VedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.bruker
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.epsVedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.inngangOgEksportVurdering
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.krav
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.poengrekkeVedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.skalSkjuleTrygdetidstabellerPgaAldersovergang
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidAvtaleland
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidEOS
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
+import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.model.alder.Beregningsmetode
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -176,7 +176,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
 
             showIf(
                 regelverkstype.isOneOf(AP2011)
-                        and trygdetidsdetaljerKap19VedVirk.beregningsmetode.equalTo(FOLKETRYGD)
+                        and trygdetidsdetaljerKap19VedVirk.beregningsmetode.equalTo(Beregningsmetode.FOLKETRYGD)
                         and beregnetPensjonPerManedVedVirk.tilleggspensjon.isNull()
             ) {
                 includePhrase(PensjonsopptjeningenDinTittel)

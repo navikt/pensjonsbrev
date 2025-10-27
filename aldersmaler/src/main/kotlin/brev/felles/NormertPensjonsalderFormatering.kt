@@ -1,6 +1,6 @@
 package brev.felles
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
+import no.nav.pensjon.brev.model.alder.avslag.NormertPensjonsalder
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*

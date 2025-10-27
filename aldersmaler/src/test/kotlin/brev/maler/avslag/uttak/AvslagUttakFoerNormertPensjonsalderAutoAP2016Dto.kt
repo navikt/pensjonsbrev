@@ -1,6 +1,12 @@
 package no.nav.pensjon.brev.fixtures.alder
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.*
+import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDto
+import no.nav.pensjon.brev.model.alder.avslag.NormertPensjonsalder
+import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningen
+import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenKap19
+import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenKap20
+import no.nav.pensjon.brev.model.alder.avslag.TrygdeperiodeNorge
+import no.nav.pensjon.brev.model.alder.avslag.TrygdeperiodeUtland
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate

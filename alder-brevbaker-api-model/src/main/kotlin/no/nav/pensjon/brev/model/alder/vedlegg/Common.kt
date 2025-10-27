@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.PoengTallsType
+import no.nav.pensjon.brev.model.alder.PoengTallsType
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 

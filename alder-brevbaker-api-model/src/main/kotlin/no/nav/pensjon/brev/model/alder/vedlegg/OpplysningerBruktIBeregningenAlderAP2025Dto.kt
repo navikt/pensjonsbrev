@@ -1,8 +1,8 @@
-package no.nav.pensjon.brev.api.model.maler.vedlegg
+package no.nav.pensjon.brev.model.alder.vedlegg
 
-
-import no.nav.pensjon.brev.api.model.maler.GarantipensjonSatsType
-import no.nav.pensjon.brev.api.model.maler.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
+import no.nav.pensjon.brev.model.alder.GarantipensjonSatsType
+import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 

@@ -85,3 +85,20 @@ enum class BeloepEndring {
 enum class GarantipensjonSatsType {
     HOY, ORDINAER
 }
+
+enum class Beregningsmetode {
+    AUSTRALIA,
+    CANADA,
+    CHILE,
+    EOS,
+    FOLKETRYGD,
+    INDIA,
+    ISRAEL,
+    NORDISK,
+    PRORATA,
+    SOR_KOREA,
+    SVEITS,
+    USA
+}
+
+enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }

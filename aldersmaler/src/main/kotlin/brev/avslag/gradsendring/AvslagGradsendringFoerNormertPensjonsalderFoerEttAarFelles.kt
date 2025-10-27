@@ -5,10 +5,9 @@ import brev.felles.HarDuSpoersmaal.Companion.alder
 import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
