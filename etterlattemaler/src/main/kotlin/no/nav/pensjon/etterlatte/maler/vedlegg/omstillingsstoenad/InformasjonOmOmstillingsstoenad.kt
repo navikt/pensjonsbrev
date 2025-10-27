@@ -1,14 +1,13 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
+import no.nav.pensjon.brev.api.model.maler.Vedlegg
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
@@ -19,7 +18,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmO
 data class InformasjonOmOmstillingsstoenadData(
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-)
+) : Vedlegg
 
 fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
     return createAttachment(

@@ -230,12 +230,12 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             }
 
             includeAttachment(beregningsVedlegg, data.beregningsVedleggData)
-            includeAttachment(dineRettigheterOgPlikter, innhold)
+            includeAttachment(dineRettigheterOgPlikter)
 
             // Nasjonal
-            includeAttachment(klageOgAnke(bosattUtland = false, tilbakekreving = true), innhold, data.bosattUtland.not())
+            includeAttachment(klageOgAnke(bosattUtland = false, tilbakekreving = true), data.bosattUtland.not())
 
             // Bosatt utland
-            includeAttachment(klageOgAnke(bosattUtland = true, tilbakekreving = true), innhold, data.bosattUtland)
+            includeAttachment(klageOgAnke(bosattUtland = true, tilbakekreving = true), data.bosattUtland)
         }
 }

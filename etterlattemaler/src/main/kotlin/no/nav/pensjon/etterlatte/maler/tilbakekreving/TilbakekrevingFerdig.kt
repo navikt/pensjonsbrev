@@ -160,18 +160,16 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
 
         }
 
-        includeAttachment(tilbakekrevingVedlegg, data.tilbakekreving)
+        includeAttachment(tilbakekrevingVedlegg, attachmentData = data.tilbakekreving)
 
         // Nasjonal
         includeAttachment(
             klageOgAnke(bosattUtland = false, tilbakekreving = true),
-            innhold,
             data.bosattUtland.not().and(data.doedsbo.not())
         )
         // Bosatt utland
         includeAttachment(
             klageOgAnke(bosattUtland = true, tilbakekreving = true),
-            innhold,
             data.bosattUtland.and(data.doedsbo.not())
         )
     }

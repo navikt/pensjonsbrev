@@ -147,7 +147,7 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 
-            includeAttachment(dineRettigheterOgPlikter, innhold)
+            includeAttachment(dineRettigheterOgPlikter)
             includeAttachment(
                 forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering,
                 this.argument,
