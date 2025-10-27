@@ -32,6 +32,7 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/skribenten-backend/sak/**", { statusCode: 404 }).as("sakNotFound");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456", { fixture: "sak.json" }).as("sak");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456?vedtaksId=*", { fixture: "sak.json" }).as("sak");
+  cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [] }).as("sakBrev");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/adresse", { fixture: "adresse.json" }).as("adresse");
   cy.intercept("GET", "/bff/skribenten-backend/kodeverk/avtaleland", { fixture: "avtaleland.json" }).as("avtaleland");
   cy.intercept("GET", "/bff/skribenten-backend/me/enheter", { fixture: "enheter.json" }).as("enheter");
