@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -72,13 +73,13 @@ fun renderTestPdfOutline(
     testName: String,
     felles: Felles? = null,
     brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-    attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
+    attachments: List<AttachmentTemplate<LangBokmal, EmptyVedlegg>> = emptyList(),
     title: String? = null,
     pdfByggerService: PDFByggerService = laTeXCompilerService,
-    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedlegg>.() -> Unit,
 ) {
     val template = createTemplate(
-        EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
+        EmptyVedlegg::class, languages(Bokmal), LetterMetadata(
             testName,
             false,
             LetterMetadata.Distribusjonstype.VEDTAK,
@@ -102,9 +103,9 @@ fun renderTestVedleggPdf(
     outputFolder: String,
     felles: Felles? = null,
     pdfByggerService: PDFByggerService = laTeXCompilerService,
-    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedlegg>.() -> Unit,
 ) {
-    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment(
+    val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedlegg> = createAttachment(
         title = newText(
             Bokmal to (title ?: testName)
         ),

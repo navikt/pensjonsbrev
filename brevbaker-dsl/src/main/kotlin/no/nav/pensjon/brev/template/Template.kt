@@ -25,11 +25,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
-    fun includeAttachment(template: AttachmentTemplate<Lang, EmptyBrevdata>) {
-        attachments.add(IncludeAttachment(EmptyBrevdata.expr(), template, true.expr()))
-    }
-
-    @JvmName("includeAttachmentEV")
     fun includeAttachment(template: AttachmentTemplate<Lang, EmptyVedlegg>) {
         attachments.add(IncludeAttachment(EmptyVedlegg.expr(), template, true.expr()))
     }
