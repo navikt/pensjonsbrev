@@ -10,7 +10,8 @@ private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util",
 private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
     "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
     "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
-    "no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg"
+    "no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg",
+    "no.nav.pensjon.brev.api.model.maler.EmptyVedlegg"
 )
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
