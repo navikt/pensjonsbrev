@@ -44,19 +44,11 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
     }
 
-    @JvmName("includeAttachmentPredicateEV")
     fun includeAttachment(
         template: AttachmentTemplate<Lang, EmptyVedlegg>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
         attachments.add(IncludeAttachment(EmptyVedlegg.expr(), template, predicate))
-    }
-
-    fun includeAttachment(
-        template: AttachmentTemplate<Lang, Unit>,
-        predicate: Expression<Boolean> = true.expr(),
-    ) {
-        attachments.add(IncludeAttachment(Unit.expr(), template, predicate))
     }
 
     fun <AttachmentData : Any> includeAttachmentIfNotNull(
