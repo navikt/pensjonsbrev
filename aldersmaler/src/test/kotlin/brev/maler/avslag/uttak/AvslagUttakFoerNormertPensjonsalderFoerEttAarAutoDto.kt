@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.alder.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
 
 fun createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() =

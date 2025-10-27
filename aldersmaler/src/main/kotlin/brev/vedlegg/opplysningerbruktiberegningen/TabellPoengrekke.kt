@@ -1,6 +1,6 @@
 package brev.vedlegg.opplysningerbruktiberegningen
 
-import no.nav.pensjon.brev.api.model.maler.PoengTallsType
+import no.nav.pensjon.brev.model.alder.PoengTallsType
 import no.nav.pensjon.brev.api.model.maler.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.arstall
 import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.bruktIBeregningen
