@@ -11,4 +11,4 @@ data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptySaksbehandlerValg,
     override val pesysData = EmptyBrevdata
 }
 
-data object EmptyVedlegg : Vedlegg
+data object EmptyVedleggData : VedleggData

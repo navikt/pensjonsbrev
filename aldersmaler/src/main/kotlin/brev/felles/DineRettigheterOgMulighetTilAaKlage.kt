@@ -2,7 +2,7 @@ import brev.vedlegg.VedleggHjelpFraAndreStatisk
 import brev.vedlegg.VedleggInnsynSakPensjonStatisk
 import brev.vedlegg.VedleggKlagePaaVedtaketStatisk
 import brev.vedlegg.VedleggVeiledningStatisk
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 
 @TemplateModelHelpers
 val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
-    createAttachment<LangBokmalNynorskEnglish, EmptyVedlegg>(
+    createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
         title = newText(
             Bokmal to "Dine rettigheter og mulighet til å klage",
             Nynorsk to "Rettane dine og høve til å klage",

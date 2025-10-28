@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.Vedlegg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -23,7 +23,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
     val harKravaarsakEndringInntekt: Boolean,
-) : Vedlegg {
+) : VedleggData {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
         val inntektVedSkadetidspunkt: Kroner,

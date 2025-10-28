@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.api.model.maler.Vedlegg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Year
@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.Year
 data class OmsorgEgenManuellDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
-) : Vedlegg, RedigerbarBrevdata<OmsorgEgenManuellDto.SaksbehandlerValg, OmsorgEgenManuellDto.PesysData> {
+) : VedleggData, RedigerbarBrevdata<OmsorgEgenManuellDto.SaksbehandlerValg, OmsorgEgenManuellDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("År egenerklæring omsorgspoeng")
         val aarEgenerklaringOmsorgspoeng: Year,

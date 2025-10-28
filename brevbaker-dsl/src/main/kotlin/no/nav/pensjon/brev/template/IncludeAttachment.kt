@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.maler.Vedlegg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import java.util.Objects
 
-fun <Lang : LanguageSupport, LetterData : Vedlegg> createAttachment(
+fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
     title: TextElement<Lang>,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
@@ -15,7 +15,7 @@ fun <Lang : LanguageSupport, LetterData : Vedlegg> createAttachment(
     includeSakspart
 )
 
-fun <Lang : LanguageSupport, LetterData : Vedlegg> createAttachment(
+fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
     title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
@@ -25,7 +25,7 @@ fun <Lang : LanguageSupport, LetterData : Vedlegg> createAttachment(
     includeSakspart
 )
 
-class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Vedlegg> internal constructor(
+class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggData> internal constructor(
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = Expression.Literal(true),
@@ -38,7 +38,7 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Vedlegg> in
     override fun toString() = "IncludeAttachment(data=$data, template=$template, predicate=$predicate)"
 }
 
-class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Vedlegg> internal constructor(
+class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggData> internal constructor(
     val title: List<TextElement<Lang>>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,

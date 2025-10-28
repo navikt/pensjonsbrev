@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -19,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 fun klageOgAnke(
 	bosattUtland: Boolean,
 	tilbakekreving: Boolean = false,
-): AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedlegg> {
+): AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> {
 	return createAttachment(
 		title = newText(
 			Bokmal to "Informasjon om klage og anke",
@@ -40,7 +40,7 @@ fun klageOgAnke(
 	}
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.duKanFaaDekketUtgifter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.duKanFaaDekketUtgifter() {
     title2 {
         text(
             bokmal { +"Du kan få dekket utgifter" },
@@ -71,7 +71,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.duKanFaaDek
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.hvaMaaKlagenInneholde(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.hvaMaaKlagenInneholde(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -145,7 +145,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.hvaMaaKlage
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.hvordanSendeKlage(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.hvordanSendeKlage(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -184,7 +184,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.hvordanSend
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.klagePaaVedtaket() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.klagePaaVedtaket() {
     title2 {
         text(
             bokmal { +"Klage på vedtaket - folketrygdloven § 21-12" },
@@ -211,7 +211,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.klagePaaVed
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.hjelpFraAndre() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.hjelpFraAndre() {
     title2 {
         text(
             bokmal { +"Hjelp fra andre - forvaltningsloven § 12" },
@@ -237,7 +237,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.hjelpFraAnd
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.veiledning() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.veiledning() {
     title2 {
         text(
             bokmal { +"Veiledning fra Nav - forvaltningsloven § 11" },
@@ -260,7 +260,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.veiledning(
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.tilbakekreving() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.tilbakekreving() {
 	title2 {
 		text(
 			bokmal { +"Tilbakekreving" },

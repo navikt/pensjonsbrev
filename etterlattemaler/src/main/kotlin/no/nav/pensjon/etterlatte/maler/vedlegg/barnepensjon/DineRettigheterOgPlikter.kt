@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -50,7 +50,7 @@ val dineRettigheterOgPlikterNasjonal = createAttachment(
     klagePaaVedtaketFolketrygdloven2112(false.expr())
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.meldFraOmEndringer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.meldFraOmEndringer() {
     title2 {
         text(
             bokmal { +"Meld fra om endringer" },
@@ -110,7 +110,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedlegg>.meldFraOmEn
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.veiledningFraNavForvaltningsloven11() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
             bokmal { +"Veiledning fra Nav - forvaltningsloven § 11" },
@@ -133,7 +133,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.duHarRettTilInnsynISakenDin() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.duHarRettTilInnsynISakenDin() {
     title2 {
         text(
             bokmal { +"Du har rett til innsyn i saken din - forvaltningsloven § 18 " },
@@ -150,7 +150,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.klagePaaVedtaketFolketrygdloven2112(bosattUtland: Expression<Boolean>) {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.klagePaaVedtaketFolketrygdloven2112(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             bokmal { +"Klage på vedtaket - folketrygdloven § 21-12" },

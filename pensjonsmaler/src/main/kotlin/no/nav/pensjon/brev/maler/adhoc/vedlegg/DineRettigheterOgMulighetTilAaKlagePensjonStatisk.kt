@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.adhoc.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 
 @TemplateModelHelpers
 val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
-    createAttachment<LangBokmalNynorskEnglish, EmptyVedlegg>(
+    createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
         title = newText(
             Bokmal to "Dine rettigheter og mulighet til å klage",
             Nynorsk to "Rettane dine og høve til å klage",

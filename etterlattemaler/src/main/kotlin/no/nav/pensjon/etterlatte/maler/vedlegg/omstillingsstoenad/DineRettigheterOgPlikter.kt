@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -29,7 +29,7 @@ val dineRettigheterOgPlikter = createAttachment(
     duHarRettTilInnsynISakenDin()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.meldFraOmEndringer() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.meldFraOmEndringer() {
     title2 {
         text(
             bokmal { +"Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
@@ -121,7 +121,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.feilutbetaling() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.feilutbetaling() {
     title2 {
         text(
             bokmal { +"Feilutbetaling av stønad folketrygdloven § 22-15 og § 22-16" },
@@ -146,7 +146,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.straffeansvar() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.straffeansvar() {
     title2 {
         text(
             bokmal { +"Straffeansvar – folketrygdloven § 25-12" },
@@ -166,7 +166,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.veiledningFraNavForvaltningsloven11() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
             bokmal { +"Veiledning fra Nav - forvaltningsloven § 11" },
@@ -189,7 +189,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.duHarRettTilInnsynISakenDin() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.duHarRettTilInnsynISakenDin() {
     title2 {
         text(
             bokmal { +"Du har rett til innsyn i saken din - forvaltningsloven § 18 " },

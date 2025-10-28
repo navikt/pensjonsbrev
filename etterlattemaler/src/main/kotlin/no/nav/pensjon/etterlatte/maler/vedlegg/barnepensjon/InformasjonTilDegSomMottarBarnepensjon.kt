@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -43,7 +43,7 @@ val informasjonTilDegSomMottarBarnepensjonUtland = createAttachment(
     utbetalingAvBarnepensjonUtland()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.informasjon() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.informasjon() {
     paragraph {
         text(
             bokmal { +"Du kan logge deg inn på våre nettsider for å se utbetalinger, brev eller lignende. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon. Skal du sende oss noe per post må du bruke adressen" },
@@ -53,7 +53,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.endringAvKontonummerNasjonal() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.endringAvKontonummerNasjonal() {
     title2 {
         text(
             bokmal { +"Skal du endre kontonummer?" },
@@ -77,7 +77,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.endringAvKontonummerUtland() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.endringAvKontonummerUtland() {
     title2 {
         text(
             bokmal { +"Skal du endre kontonummer?" },
@@ -101,7 +101,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>.utbetalingAvBarnepensjonUtland() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.utbetalingAvBarnepensjonUtland() {
     title2 {
         text(
             bokmal { +"Utbetaling av barnepensjon" },

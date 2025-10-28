@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.example
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.Vedlegg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
@@ -391,7 +391,7 @@ data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextO
         )
 }
 
-data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : Vedlegg
+data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : VedleggData
 
 @TemplateModelHelpers
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(

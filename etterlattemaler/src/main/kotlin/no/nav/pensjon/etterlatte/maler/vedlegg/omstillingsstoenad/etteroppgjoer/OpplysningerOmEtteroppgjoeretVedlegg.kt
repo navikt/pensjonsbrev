@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
 
-import no.nav.pensjon.brev.api.model.maler.Vedlegg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Element
@@ -47,7 +47,7 @@ data class BeregningsVedleggData(
     val utbetalingData : EtteroppgjoerUtbetalingDTO,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
     val erVedtak: Boolean = false
-) : Vedlegg, BrevDTO
+) : VedleggData, BrevDTO
 
 data class EtteroppgjoerGrunnlagDTO(
     val fom: YearMonth,

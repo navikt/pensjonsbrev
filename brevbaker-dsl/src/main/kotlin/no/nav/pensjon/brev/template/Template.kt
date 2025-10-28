@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
-import no.nav.pensjon.brev.api.model.maler.Vedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -25,7 +25,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
-    fun <AttachmentData : Vedlegg> includeAttachment(
+    fun <AttachmentData : VedleggData> includeAttachment(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
@@ -41,13 +41,13 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun includeAttachment(
-        template: AttachmentTemplate<Lang, EmptyVedlegg>,
+        template: AttachmentTemplate<Lang, EmptyVedleggData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(EmptyVedlegg.expr(), template, predicate))
+        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
     }
 
-    fun <AttachmentData : Vedlegg> includeAttachmentIfNotNull(
+    fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData?>,
     ) {

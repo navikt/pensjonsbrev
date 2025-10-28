@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -17,7 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 
 
 @TemplateModelHelpers
-val vedleggGjpDineRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglish, EmptyVedlegg>(
+val vedleggGjpDineRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Rettane og pliktene dine",

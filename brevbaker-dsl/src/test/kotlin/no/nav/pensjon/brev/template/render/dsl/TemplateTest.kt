@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.brev.brevbaker.createTemplate
-import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -57,7 +57,7 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds attachment`() {
-        val attachment = createAttachment<LangBokmalNynorskEnglish, EmptyVedlegg>(
+        val attachment = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
             title = newText(
                 Language.Bokmal to "asdf",
                 Language.Nynorsk to "asdf",
@@ -79,7 +79,7 @@ class TemplateTest {
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
-            includeAttachment(attachment, Expression.Literal(EmptyVedlegg))
+            includeAttachment(attachment, Expression.Literal(EmptyVedleggData))
         }
 
         assertEquals(
@@ -90,7 +90,7 @@ class TemplateTest {
                 outline = emptyList(),
                 attachments = listOf(
                     IncludeAttachment(
-                        Expression.Literal(EmptyVedlegg),
+                        Expression.Literal(EmptyVedleggData),
                         attachment
                     )
                 ),
