@@ -77,10 +77,6 @@ fun Route.sakRoute(
                 }
             }
         }
-        get("/navn") {
-            val sak = call.attributes[SakKey]
-            respondWithResult(pdlService.hentNavn(sak.foedselsnr, sak.sakType.behandlingsnummer))
-        }
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
