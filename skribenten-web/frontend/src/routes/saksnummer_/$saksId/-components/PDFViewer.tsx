@@ -78,13 +78,15 @@ const PDFViewer = (properties: {
     >
       <PDFViewerTopBar
         brevId={properties.brevId}
-        currentPageNumber={currentPageNumber}
         sakId={properties.sakId}
-        scale={scale}
-        setCurrentPageNumber={setCurrentPageNumber}
-        setScale={setScale}
-        totalNumberOfPages={totalNumberOfPages}
         utenSlettKnapp={properties.utenSlettKnapp}
+        viewerControls={{
+          currentPageNumber,
+          setCurrentPageNumber,
+          totalNumberOfPages,
+          scale,
+          setScale,
+        }}
       />
       <div
         css={css`

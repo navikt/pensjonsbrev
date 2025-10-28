@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Alert, Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -5,6 +6,7 @@ import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import PDFViewer from "../../-components/PDFViewer";
+import PDFViewerTopBar from "../../-components/PDFViewerTopBar";
 
 const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
   const hentPdfQuery = useQuery({
@@ -21,7 +23,28 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
         <Label>Henter brev...</Label>
       </VStack>
     ),
-    error: (error) => <Alert variant="error">{error.message}</Alert>,
+    error: () => (
+      <>
+        <PDFViewerTopBar brevId={properties.brevId} sakId={properties.saksId} utenSlettKnapp={false} />
+        <Alert
+          css={css`
+            border-left: none;
+            border-right: none;
+          `}
+          fullWidth
+          variant="error"
+        >
+          <div
+            css={css`
+              font-weight: 600;
+            `}
+          >
+            Klarte ikke åpne pdf.
+          </div>
+          <div>Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys.</div>
+        </Alert>
+      </>
+    ),
     success: (pdf) =>
       pdf === null ? (
         <VStack align="center">Fant ikke PDF for brev med id {properties.brevId}</VStack>
