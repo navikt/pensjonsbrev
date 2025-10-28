@@ -15,11 +15,11 @@ on:
         description: "Changes"
         required: true
         type: string
-      isCommon:
-        description: "Is common"
+      dependsOnCommon:
+        description: "Depends on common"
         required: false
         type: boolean
-        default: false
+        default: true
 
 env:
   JavaDistribution: "temurin"
@@ -42,7 +42,7 @@ jobs:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
       - name: "publish common to Maven local"
-        if: ${{ !inputs.isCommon }}
+        if: ${{ inputs.dependsOnCommon }}
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
       - name: "compile and run tests"

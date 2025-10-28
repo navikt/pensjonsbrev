@@ -59,7 +59,7 @@ jobs:
       path: 'brevbaker-api-model-common'
       release-common-result: 'success'
       changes: ${{ needs.changes.outputs.common }}
-      isCommon: true
+      dependsOnCommon: false
 
   "release-pensjon":
     name: "pensjon-brevbaker-api-model"
