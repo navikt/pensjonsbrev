@@ -1,39 +1,37 @@
-package no.nav.pensjon.brev.maler.redigerbar
+package brev.stans
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.EksportForbudKode.FLYKT_ALDER
-import no.nav.pensjon.brev.api.model.EksportForbudKode.UFOR25_ALDER
-import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
+import brev.felles.FeilutbetalingAP
+import brev.felles.HarDuSpoersmaal
+import brev.felles.RettTilAAKlage
+import brev.felles.RettTilInnsyn
+import brev.felles.Skatteplikt
+import brev.felles.Vedtak
+import brev.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import brev.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
+import brev.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKodeAvdoed_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdoed
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskap
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20AarTrygdetidKap20Avdoed
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20ArTrygdetid
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.model.alder.EksportForbudKode
+import no.nav.pensjon.brev.model.alder.InformasjonOmMedlemskap
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKodeAvdoed_safe
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdoed
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskap
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20AarTrygdetidKap20Avdoed
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20ArTrygdetid
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.regelverkType
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.pesysData
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -50,19 +48,15 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //MF_000128 / AP_STANS_FLYTT_MAN
-
 @TemplateModelHelpers
 object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakStansAlderspensjonFlyttingMellomLandDto> {
-
-    override val featureToggle = FeatureToggles.vedtakStansFlyttingMellomLand.toggle
-
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND
+    override val kode = Aldersbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk, English),
+        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - stans av alderspensjon ved flytting mellom land",
             isSensitiv = false,
@@ -99,7 +93,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     english { + "." },
                 )
             }
-            showIf(pesysData.eksportForbudKode_safe.equalTo(UFOR25_ALDER)) {
+            showIf(pesysData.eksportForbudKode_safe.equalTo(EksportForbudKode.UFOR25_ALDER)) {
                 // eksportUngUforStans
                 paragraph {
                     text(
@@ -111,8 +105,8 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                             + "you have to live in Norway. We are therefore stopping your retirement pension." },
                     )
                 }
-            }.orShowIf(pesysData.eksportForbudKode_safe.equalTo(FLYKT_ALDER) or
-                    pesysData.eksportForbudKodeAvdoed_safe.equalTo(FLYKT_ALDER)) {
+            }.orShowIf(pesysData.eksportForbudKode_safe.equalTo(EksportForbudKode.FLYKT_ALDER) or
+                    pesysData.eksportForbudKodeAvdoed_safe.equalTo(EksportForbudKode.FLYKT_ALDER)) {
                 // eksportFlyktningStans
                 paragraph {
                     text(
@@ -228,9 +222,9 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             }
             includePhrase(Skatteplikt)
 
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+            includePhrase(RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlage)
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
