@@ -47,7 +47,7 @@ fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shoul
                     || actualCause is ConnectTimeoutException
                     || actualCause is IOException
             if (!doRetry) {
-                logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                logger.error("Won't retry for exception for ${req.method} for ${req.url}: ${actualCause.message}", actualCause)
             }
             doRetry
         }
