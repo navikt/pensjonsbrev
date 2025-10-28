@@ -1,3 +1,12 @@
+public final class no/nav/brev/BrevExceptionDto {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMelding ()Ljava/lang/String;
+	public final fun getTittel ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
 }
 
