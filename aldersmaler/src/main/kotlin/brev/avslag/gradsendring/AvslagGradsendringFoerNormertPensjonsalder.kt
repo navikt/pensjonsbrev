@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalde
 import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalderDtoSelectors.pesysData
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenSelectors.uttaksgrad
-import no.nav.pensjon.brev.brev.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFelles
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
@@ -31,8 +30,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderDto> {
-
-    override val featureToggle = FeatureToggles.apAvslagGradsendringNormertPensjonsalder.toggle
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER
 

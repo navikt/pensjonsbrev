@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalde
 import no.nav.pensjon.brev.model.alder.avslag.AvslagUttakFoerNormertPensjonsalderAP2016DtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenSelectors.uttaksgrad
-import no.nav.pensjon.brev.brev.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -36,8 +35,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderAP2016Dto> {
-
-    override val featureToggle = FeatureToggles.apAvslagNormertPensjonsalderAP2016.toggle
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016
 
