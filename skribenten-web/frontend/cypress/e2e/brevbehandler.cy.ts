@@ -213,6 +213,7 @@ describe("Brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([klarBrev, brevSomSendesSomLokalPrint]);
     });
+    cy.reload();
 
     cy.contains("Send 2 ferdigstilte brev").click();
     cy.contains("Vil du ferdigstille, og sende disse brevene?").should("be.visible");
