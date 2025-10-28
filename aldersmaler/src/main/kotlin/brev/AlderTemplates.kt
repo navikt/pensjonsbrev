@@ -1,15 +1,7 @@
 package no.nav.pensjon.brev
 
-import brev.adhoc.AdhocAFPInformasjonOekningToleransebeloep
-import brev.adhoc.AdhocAlderspensjonFraFolketrygden
-import brev.adhoc.AdhocAlderspensjonFraFolketrygden2
-import brev.adhoc.AdhocAlderspensjonGjtOpprydding
-import brev.adhoc.AdhocAlderspensjonGjtVarselBrev
-import brev.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
-import brev.adhoc.AdhocSkjermingstilleggFeilMottaker
-import brev.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
-import brev.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
-import brev.adhoc.FeilUtsendingAvGjenlevenderett
+import brev.adhoc.*
+import brev.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAuto
 import brev.aldersovergang.InfoAldersovergangEps60AarAuto
 import brev.aldersovergang.InfoAldersovergangEps62AarAuto
 import brev.aldersovergang.InfoFyller67AarSaerskiltSats
@@ -54,6 +46,7 @@ object AlderTemplates : AllTemplates {
             AvslagUttakFoerNormertPensjonsalderAP2016Auto,
             AvslagUttakFoerNormertPensjonsalderAuto,
             EndringAvAlderspensjonSivilstandAuto,
+            EndringAvAlderspensjonFordiDuFyller75AarAuto,
             FeilUtsendingAvGjenlevenderett,
             InfoAldersovergangEps60AarAuto,
             InfoAldersovergangEps62AarAuto,
