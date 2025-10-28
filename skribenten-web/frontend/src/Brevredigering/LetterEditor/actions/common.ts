@@ -25,13 +25,21 @@ import type {
   Row,
   Table,
   TextContent,
-  TITLE1,
   Title1Block,
-  TITLE2,
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
+import {
+  FontType,
+  ITEM_LIST,
+  LITERAL,
+  NEW_LINE,
+  PARAGRAPH,
+  TABLE,
+  TITLE1,
+  TITLE2,
+  VARIABLE,
+} from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type {
@@ -614,3 +622,42 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
   }
   return obj;
 }
+
+export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
+  const blockLiterals = letter.blocks.flatMap((block) => {
+    switch (block.type) {
+      case TITLE1:
+      case TITLE2:
+        return (block.content ?? []).filter((content) => isLiteral(content));
+      case PARAGRAPH:
+        return (block.content ?? []).flatMap((content) => {
+          if (isLiteral(content)) return [content];
+          if (isItemList(content))
+            return content?.items.flatMap((item) => (item?.content ?? []).filter((literal) => isLiteral(literal)));
+          if (isTable(content)) {
+            const header = content.header?.colSpec?.flatMap((spec) =>
+              (spec.headerContent?.text ?? []).filter(isLiteral),
+            );
+            const body = content.rows?.flatMap((row) =>
+              row.cells?.flatMap((cell) => (cell.text ?? []).filter(isLiteral)),
+            );
+            return [...header, ...body];
+          }
+          return [];
+        });
+      default:
+        return [];
+    }
+  });
+  const topTitleLiterals = (letter.title?.text ?? []).filter(isLiteral);
+
+  return [...topTitleLiterals, ...blockLiterals];
+}
+
+export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
+  return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
+}
+
+export const countUnfilledFritekstPlaceholders = (letter: EditedLetter): number => {
+  return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
+};

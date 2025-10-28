@@ -2,8 +2,9 @@ import { css } from "@emotion/react";
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { getKontaktAdresseQuery, getNavnQuery, hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
+import { getKontaktAdresseQuery, hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -75,11 +76,11 @@ const MottakerAdresseOppsummering = (properties: {
 };
 
 const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: KontaktAdresseResponse }) => {
-  const { data: navn } = useQuery(getNavnQuery(properties.saksId));
+  const navn = useSakGjelderNavnFormatert(properties);
 
   return (
     <div>
-      <BodyShort size="small">{navn ? humanizeName(navn) : undefined}</BodyShort>
+      <BodyShort size="small">{navn}</BodyShort>
       <VStack gap="0">
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">

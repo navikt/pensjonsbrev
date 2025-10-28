@@ -9,8 +9,8 @@ import no.nav.pensjon.brev.template.dsl.text
 fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, out Any>.postadresse(
     utland: Expression<Boolean>
 ) {
-    paragraph {
-        showIf(utland) {
+    showIf(utland) {
+        paragraph {
             text(
                 bokmal { +"Nav familie- og pensjonsytelser" },
                 nynorsk { +"Nav familie- og pensjonsytelser" },
@@ -34,7 +34,9 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
                 nynorsk { +"Noreg/Norway" },
                 english { +"Norway" }
             )
-        }.orShow {
+        }
+    }.orShow {
+        paragraph {
             text(
                 bokmal { +"Nav skanning" },
                 nynorsk { +"Nav skanning" },
@@ -54,5 +56,5 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
             )
         }
     }
-
 }
+

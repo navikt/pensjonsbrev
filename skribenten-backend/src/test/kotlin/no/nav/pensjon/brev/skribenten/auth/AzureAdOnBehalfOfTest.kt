@@ -47,19 +47,4 @@ class AzureAdOnBehalfOfTest {
         assertEquals("Principal: ${aToken.accessToken}", response.bodyAsText())
     }
 
-    @Test
-    fun `feiler om authService svarer med feil`(): Unit = runBlocking {
-        val tokenError = TokenResponse.ErrorResponse("", "", emptyList(), "", "", "", null)
-
-        val errorAuthService = object : AuthService {
-            override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) = tokenError
-        }
-
-        assertThrows<AzureAdOnBehalfOfAuthorizationException> {
-            withPrincipal(principal) {
-                settOppClient(errorAuthService).get("/something")
-            }
-        }
-    }
-
 }

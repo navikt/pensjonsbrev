@@ -39,6 +39,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.pensjonsgivendeInntektHeleAaret
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
 import java.time.YearMonth
 
@@ -58,7 +59,8 @@ data class EtteroppgjoerGrunnlagDTO(
     val naeringsinntekt: Kroner,
     val afp: Kroner,
     val utlandsinntekt: Kroner,
-    val inntekt: Kroner
+    val inntekt: Kroner,
+    val pensjonsgivendeInntektHeleAaret: Kroner
 )
 
 @TemplateModelHelpers
@@ -341,9 +343,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
 
     title2 {
         text(
-            bokmal { +"Din pensjonsgivende inntekt i innvilget periode" },
-            nynorsk { +"Den pensjonsgivande inntekta di i innvilga periode" },
-            english { +"Your pensionable income during the period you were granted adjustment allowance" },
+            bokmal { +"Din pensjonsgivende inntekt i " + etteroppgjoersAar.format() },
+            nynorsk { +"Den pensjonsgivande inntekta di i " + etteroppgjoersAar.format() },
+            english { +"Your pensionable income in " + etteroppgjoersAar.format() },
         )
     }
 
@@ -356,9 +358,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
     ) {
         paragraph {
             text(
-                bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:" },
-                nynorsk { +"Ifølgje opplysningar frå Skatteetaten og a-ordninga hadde du ei pensjonsgivande inntekt på " + grunnlag.inntekt.format() + " inkludert skatt i " + etteroppgjoersAar.format()+ ".  Inntekta fordeler seg slik:" },
-                english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + grunnlag.inntekt.format() + " including tax, according to information obtained from the Tax Administration and A-scheme. This is distributed as follows: " },
+                bokmal { +"I " + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt totalt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " inkludert skatt, ifølge opplysninger fra Skatteetaten og a-ordningen. For den innvilgede perioden er pensjonsgivende inntekt beregnet til " + grunnlag.inntekt.format() + ", fordelt slik: " },
+                nynorsk { +"I " + etteroppgjoersAar.format() + " var den pensjonsgivande inntekta di totalt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " inkludert skatt, ifølgje opplysningar frå Skatteetaten og a-ordninga. For den innvilga perioden er pensjonsgivande inntekt utrekna til " + grunnlag.inntekt.format() + ". Inntekta fordeler seg slik: " },
+                english { +"In " + etteroppgjoersAar.format() + ", your pensionable income was a total of " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " including tax, according to information from the Norwegian Tax Administration and the A-scheme. For the approved period, your pensionable income is calculated to be " + grunnlag.inntekt.format() + ", distributed as follows: " },
             )
         }
 
@@ -452,8 +454,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.in
 
     paragraph {
         text(
-            bokmal { +"Vi har beregnet omstillingsstønaden din for " + etteroppgjoersAar.format() + " basert på en inntekt på " + grunnlagData.inntekt.format() + ". Dette tilsvarer din pensjonsgivende inntekt minus fradragsbeløpet." },
-            nynorsk { +"Vi har rekna ut omstillingsstønaden din for " + etteroppgjoersAar.format() + " med utgangspunkt i ei inntekt på " + grunnlagData.inntekt.format() + ". Dette svarer til den pensjonsgivande inntekta di minus frådragsbeløpet." },
+            bokmal { +"Vi har beregnet omstillingsstønaden din for " + etteroppgjoersAar.format() + " basert på en inntekt på " + grunnlagData.inntekt.format() + ". Dette tilsvarer din pensjonsgivende inntekt minus fratrekket." },
+            nynorsk { +"Vi har rekna ut omstillingsstønaden din for " + etteroppgjoersAar.format() + " med utgangspunkt i ei inntekt på " + grunnlagData.inntekt.format() + ". Dette svarer til den pensjonsgivande inntekta di minus fråtrekket." },
             english { +"We have calculated your adjustment allowance for " + etteroppgjoersAar.format() + " based on an income of " + grunnlagData.inntekt.format() + ". This corresponds to your pensionable income minus any deductions." },
         )
     }
