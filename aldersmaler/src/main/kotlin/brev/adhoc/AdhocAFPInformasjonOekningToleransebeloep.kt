@@ -3,7 +3,7 @@ package brev.adhoc
 import brev.felles.Constants.AFP_OFFENTLIG_URL
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.SEND_BESKJED_URL
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -96,7 +96,7 @@ object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyBrevdat
                 )
             }
 
-            includePhrase(HarDuSpoersmaal(AFP_OFFENTLIG_URL, NAV_KONTAKTSENTER_TELEFON_PENSJON))
+            includePhrase(HarDuSpoersmaalAlder)
         }
     }
 }

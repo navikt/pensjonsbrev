@@ -1,7 +1,7 @@
 package brev.sivilstand
 
 import brev.felles.ArbeidsinntektOgAlderspensjon
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import brev.felles.InformasjonOmAlderspensjon
 import brev.felles.MeldeFraOmEndringer
 import brev.felles.RettTilAAKlage
@@ -392,9 +392,9 @@ object EndringAvAlderspensjonSivilstandAuto :
 
                 includePhrase(InformasjonOmAlderspensjon)
                 includePhrase(MeldeFraOmEndringer)
-                includePhrase(RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaal.alder)
+                includePhrase(HarDuSpoersmaalAlder)
             }
 
             includeAttachment(
