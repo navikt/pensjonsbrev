@@ -70,7 +70,7 @@ jobs:
         if: ${{ !inputs.publishToMavenLocal }}
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :${{ inputs.path }}:build
+          ./gradlew :${{ inputs.path }}:buildNeeded
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Build and publish container image to GAR"
