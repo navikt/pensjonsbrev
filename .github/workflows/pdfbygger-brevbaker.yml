@@ -58,7 +58,7 @@ jobs:
       publishToMavenLocal: true
       buildImage: true
 
-  salsa-brevbygger:
+  salsa-brevbaker:
     uses: ./.github/workflows/.salsa.yaml
     needs: buildBrevbaker
     secrets: inherit
