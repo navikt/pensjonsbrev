@@ -46,7 +46,6 @@ object ProductionTemplates : AllTemplates {
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
-        EndringAvAlderspensjonFordiDuFyller75AarAuto,
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
@@ -113,7 +112,6 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
-        VedtakStansAlderspensjonFlyttingMellomLand,
     )
 
     override fun hentAutobrevmaler() = autobrev
