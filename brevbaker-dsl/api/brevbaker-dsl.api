@@ -1283,7 +1283,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
-	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V

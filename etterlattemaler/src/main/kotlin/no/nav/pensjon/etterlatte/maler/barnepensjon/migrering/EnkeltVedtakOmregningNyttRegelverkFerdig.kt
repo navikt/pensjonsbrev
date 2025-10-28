@@ -64,28 +64,24 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         // Vedlegg under 18 år
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
-            innhold,
             erUnder18Aar.and(erBosattUtlandet.not())
         )
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
-            innhold,
             erUnder18Aar.and(erBosattUtlandet)
         )
 
         // Vedlegg over 18 år
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonNasjonal,
-            innhold,
             erUnder18Aar.not().and(erBosattUtlandet.not())
         )
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonUtland,
-            innhold,
             erUnder18Aar.not().and(erBosattUtlandet)
         )
 
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, erBosattUtlandet)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, erBosattUtlandet.not())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland, erBosattUtlandet)
+        includeAttachment(dineRettigheterOgPlikterNasjonal,erBosattUtlandet.not())
     }
 }
