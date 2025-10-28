@@ -165,9 +165,9 @@ sealed class Expression<out Out> : StableHash {
         override fun hashCode() = Objects.hash(first, second, operation)
     }
 
-//    final override fun toString(): String {
-//        throw PreventToStringForExpressionException()
-//    }
+    final override fun toString(): String {
+        throw PreventToStringForExpressionException()
+    }
 }
 
 typealias StringExpression = Expression<String>
