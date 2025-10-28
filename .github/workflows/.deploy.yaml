@@ -8,11 +8,11 @@ on:
         required: true
         type: string
       resource:
-        description: 'Resources to deploy to dev'
+        description: 'Resources to deploy'
         required: true
         type: string
       vars:
-        description: 'Variables to deploy to dev'
+        description: 'Variables to deploy'
         required: true
         type: string
       cluster:
