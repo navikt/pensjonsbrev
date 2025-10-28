@@ -71,8 +71,6 @@ class ExternalAPIService(
 
         MottakerType.UTENLANDSK_ADRESSE -> ExternalAPI.OverstyrtMottaker.UtenlandskAdresse(
             navn = navn!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,

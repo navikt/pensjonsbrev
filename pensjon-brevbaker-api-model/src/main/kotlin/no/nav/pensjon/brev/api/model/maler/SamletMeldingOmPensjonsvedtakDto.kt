@@ -48,6 +48,7 @@ data class P1Dto(
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
         val vurderingsperiode: String?,
         val adresseNyVurdering: List<Adresse>,
+        val erNorskRad: Boolean?
     )
 
     data class AvslaattPensjon(

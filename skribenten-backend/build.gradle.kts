@@ -97,6 +97,9 @@ dependencies {
     implementation(libs.bundles.metrics)
     implementation(libs.ktor.server.caching.headers.jvm)
 
+    // Caching
+    implementation(libs.valkey)
+
     // Test
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host)

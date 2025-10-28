@@ -98,6 +98,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                             saksId = sak.result.saksId,
                             foedselsnr = sak.result.foedselsnr,
                             foedselsdato = sak.result.foedselsdato,
+                            navn = with(sak.result.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                             sakType = sak.result.sakType,
                             enhetId = sak.result.enhetId
                         )
@@ -166,7 +167,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     vedtaksId?.let{ parameters.append("vedtaksId", it.toString()) }
                 }
             }
-        }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
+        }.toServiceResult<BrevdataResponse>(::handlePenErrorBrevdataResponse)
             .then {
                 if (it.error != null) {
                     ServiceResult.Error(it.error, HttpStatusCode.InternalServerError)
@@ -176,6 +177,17 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
                 }
             }
+
+
+    private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
+        val error = response.body<BrevdataResponse>().error
+        return if (response.status == HttpStatusCode.InternalServerError) {
+            logger.error("En feil oppstod i kall til PEN: $error")
+            ServiceResult.Error("Ukjent feil oppstod i kall til PEN", HttpStatusCode.InternalServerError)
+        } else {
+            ServiceResult.Error(error ?: "Ukjent feil oppstod i kall til PEN", response.status)
+        }
+    }
 
     override suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
@@ -200,9 +212,12 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
+        val navn: Navn,
         val sakType: Pen.SakType,
         val enhetId: String?,
-    )
+    ) {
+        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+    }
 }
 
 data class BrevdataResponse(val data: Data?, val error: String? = null) {

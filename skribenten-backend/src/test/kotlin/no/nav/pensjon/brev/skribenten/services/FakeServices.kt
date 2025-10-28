@@ -47,7 +47,7 @@ open class FakeNavansattService(
         )
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = notYetStubbed()
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String) = notYetStubbed()
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
@@ -142,7 +142,6 @@ open class PenServiceStub : PenService {
 
 
 open class PdlServiceStub : PdlService {
-    override suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> = notYetStubbed()
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = notYetStubbed()
 }
 
