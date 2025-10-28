@@ -41,7 +41,7 @@ jobs:
       image: ${{ needs.build-skribenten-backend.outputs.image }}
 
   deploy-skribenten-backend-dev:
-    name: "Deploy skribenten-backend to dev"
+    name: "Deploy to dev"
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
     needs: build-skribenten-backend
@@ -52,7 +52,7 @@ jobs:
       vars: "skribenten-backend/.nais/dev.yaml"
 
   deploy-skribenten-backend-prod:
-    name: "Deploy skribenten-backend to prod"
+    name: "Deploy to prod"
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
     needs: build-skribenten-backend

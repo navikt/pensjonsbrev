@@ -41,7 +41,7 @@ jobs:
       image: ${{ needs.build-tjenestebuss-integrasjon.outputs.image }}
 
   deploy-tjenestebuss-integrasjon-dev:
-    name: "Deploy tjenestebuss-integrasjon to dev"
+    name: "Deploy to dev"
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
     needs: build-tjenestebuss-integrasjon
@@ -52,7 +52,7 @@ jobs:
       vars: "tjenestebuss-integrasjon/.nais/dev-q2.yaml"
 
   deploy-tjenestebuss-integrasjon-prod:
-    name: "Deploy tjenestebuss-integrasjon to prod"
+    name: "Deploy to prod"
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
     needs: build-tjenestebuss-integrasjon
