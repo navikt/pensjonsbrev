@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedlegg
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -15,7 +16,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>(
+val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment<LangBokmalNynorskEnglish, EmptyVedlegg>(
     title = newText(
         Bokmal to "Informasjon til deg som handler på vegne av barnet",
         Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
@@ -29,7 +30,7 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment<Langu
 }
 
 @TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedlegg>(
+val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment<LangBokmalNynorskEnglish, EmptyVedlegg>(
     title = newText(
         Bokmal to "Informasjon til deg som handler på vegne av barnet",
         Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
