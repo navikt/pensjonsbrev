@@ -182,12 +182,11 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
     private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
         val body = response.body<BrevdataResponse>()
-        val error = body.feil?.let { it.tittel + ": " + it.melding } ?: body.error
         return if (response.status == HttpStatusCode.InternalServerError) {
-            logger.error("En feil oppstod i kall til PEN: $error")
-            ServiceResult.Error("Ukjent feil oppstod i kall til PEN", HttpStatusCode.InternalServerError)
+            logger.error("En feil oppstod i kall til PEN: ${body.feil?.let { it.tittel + ": " + it.melding } ?: body.error}")
+            ServiceResult.Error("Ukjent feil oppstod i kall til PEN",  HttpStatusCode.InternalServerError, body.feil?.tittel)
         } else {
-            ServiceResult.Error(error ?: "Ukjent feil oppstod i kall til PEN", response.status)
+            ServiceResult.Error(body.feil?.melding ?: body.error ?: "Ukjent feil oppstod i kall til PEN", response.status, body.feil?.tittel)
         }
     }
 
