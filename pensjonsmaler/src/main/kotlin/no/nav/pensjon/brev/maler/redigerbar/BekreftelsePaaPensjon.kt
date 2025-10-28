@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
+import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
@@ -17,6 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Erstatte PE_IY_03_bekreftelse_på_pensjon_uføretrygd_169-174
@@ -28,8 +30,7 @@ object BekreftelsePaaPensjon : RedigerbarTemplate<BekreftelsePaaPensjonDto> {
     override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_PENSJON
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper: Set<Sakstype> = setOf(ALDER)
-
+    override val sakstyper: Set<Sakstype> = pensjon
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
