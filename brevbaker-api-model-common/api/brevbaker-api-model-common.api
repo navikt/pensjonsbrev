@@ -216,8 +216,8 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/EmptyVedlegg : no/nav/pensjon/brev/api/model/maler/Vedlegg {
-	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyVedlegg;
+public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyVedleggData;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -246,7 +246,7 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/Vedlegg : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
