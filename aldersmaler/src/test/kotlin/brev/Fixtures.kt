@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev
 
+import brev.maler.aldersovergang.createEndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import brev.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonGarantitilleggDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandAutoDto
@@ -31,6 +32,7 @@ import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsal
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderAP2016Dto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
 import kotlin.reflect.KClass
 
@@ -59,6 +61,7 @@ object Fixtures : LetterDataFactory {
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
+            EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             VedtakStansAlderspensjonFlyttingMellomLandDto::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

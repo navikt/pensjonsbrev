@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import brev.adhoc.*
+import brev.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAuto
 import brev.aldersovergang.InfoAldersovergangEps60AarAuto
 import brev.aldersovergang.InfoAldersovergangEps62AarAuto
 import brev.aldersovergang.InfoFyller67AarSaerskiltSats
@@ -47,6 +48,7 @@ object AlderTemplates : AllTemplates {
         AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         EndringAvAlderspensjonSivilstandAuto,
+        EndringAvAlderspensjonFordiDuFyller75AarAuto,
         FeilUtsendingAvGjenlevenderett,
     )
 
