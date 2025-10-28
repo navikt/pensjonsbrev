@@ -18,4 +18,4 @@ jobs:
     secrets: inherit
     with:
       workingDir: skribenten-web
-      canDeployProd: true
+      deployToProd: true

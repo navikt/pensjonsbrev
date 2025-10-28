@@ -7,8 +7,8 @@ on:
         description: 'Working directory'
         required: true
         type: string
-      canDeployProd:
-        description: 'Can deploy to prod?'
+      deployToProd:
+        description: 'Deploy to prod?'
         required: true
         type: boolean
 
@@ -88,7 +88,7 @@ jobs:
     name: Deploy app to prod
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
-    if: ${{ inputs.canDeployProd }}
+    if: ${{ inputs.deployToProd }}
     needs: build
     with:
       cluster: prod-gcp
