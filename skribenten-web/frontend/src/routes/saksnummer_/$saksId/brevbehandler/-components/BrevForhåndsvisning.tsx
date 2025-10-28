@@ -39,7 +39,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
               font-weight: 600;
             `}
           >
-            Klarte ikke åpne pdf.
+            Klarte ikke åpne pdf
           </div>
           <div>Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys.</div>
         </Alert>
