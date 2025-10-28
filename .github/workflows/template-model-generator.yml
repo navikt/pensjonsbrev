@@ -21,5 +21,4 @@ jobs:
     with:
       image_suffix: ''
       path: 'template-model-generator'
-      publishToMavenLocal: false
       buildImage: false

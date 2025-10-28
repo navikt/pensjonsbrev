@@ -55,7 +55,7 @@ jobs:
     with:
       image_suffix: brevbaker
       path: pensjon-brevbaker
-      publishToMavenLocal: true
+      modulesToBuild: ':brevbaker-api-model-common:publishToMavenLocal :pensjon-brevbaker-api-model:publishToMavenLocal :alder-brevbaker-api-model:publishToMavenLocal :ufoere-brevbaker-api-model:publishToMavenLocal'
       buildImage: true
 
   salsa-brevbaker:
@@ -72,7 +72,6 @@ jobs:
     with:
       image_suffix: pdf-bygger
       path: pdf-bygger
-      publishToMavenLocal: false
       buildImage: true
       uploadJar: true
 

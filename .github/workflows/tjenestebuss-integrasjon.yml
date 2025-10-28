@@ -30,7 +30,6 @@ jobs:
     with:
       image_suffix: 'tjenestebuss-integrasjon'
       path: 'tjenestebuss-integrasjon'
-      publishToMavenLocal: false
       buildImage: true
 
   salsa:

@@ -11,10 +11,11 @@ on:
         description: "Path to build"
         required: true
         type: string
-      publishToMavenLocal:
-        description: "Publish models to maven local?"
-        required: true
-        type: boolean
+      modulesToBuild:
+        description: "Modules to build"
+        required: false
+        type: string
+        default: ":brevbaker-api-model-common:publishToMavenLocal"
       buildImage:
         description: "Build image?"
         required: true
@@ -56,20 +57,9 @@ jobs:
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
-      - name: "compile and run tests with publishing"
-        if: ${{ inputs.publishToMavenLocal }}
-        run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal 
-          ./gradlew :${{ inputs.path }}:buildNeeded
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "compile and run tests"
-        if: ${{ !inputs.publishToMavenLocal }}
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew ${{ inputs.modulesToBuild }}
           ./gradlew :${{ inputs.path }}:buildNeeded
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
