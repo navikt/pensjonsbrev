@@ -42,7 +42,7 @@ fun Route.sakRoute(
             } else {
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
-            call.respond(Api.SakContext(sak, brevmetadata))
+            call.respond(Api.SakContext(sak, brevmetadata, brevmetadata.map { it.id }))
         }
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->

@@ -130,7 +130,8 @@ object Api {
 
     data class SakContext(
         val sak: Pen.SakSelection,
-        val brevMetadata: List<Brevmal>
+        val brevMetadata: List<Brevmal>,
+        val brevmalKoder: List<String>,
     )
 
     data class Brevmal(
