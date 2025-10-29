@@ -116,28 +116,24 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
         // Vedlegg under 18 år
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
-            innhold,
             brukerUnder18Aar.and(bosattUtland.not())
         )
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
-            innhold,
             brukerUnder18Aar.and(bosattUtland)
         )
 
         // Vedlegg over 18 år
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonNasjonal,
-            innhold,
             brukerUnder18Aar.not().and(bosattUtland.not())
         )
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonUtland,
-            innhold,
             brukerUnder18Aar.not().and(bosattUtland)
         )
 
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland, bosattUtland)
+        includeAttachment(dineRettigheterOgPlikterNasjonal, bosattUtland.not())
     }
 }

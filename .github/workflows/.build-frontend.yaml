@@ -1,0 +1,97 @@
+name: .build-frontend.yaml
+
+on:
+  workflow_call:
+    inputs:
+      workingDir:
+        description: 'Working directory'
+        required: true
+        type: string
+      deployToProd:
+        description: 'Deploy to prod?'
+        required: true
+        type: boolean
+
+jobs:
+  build:
+    name: build
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+
+      - name: Install frontend
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npm run build
+
+      - name: Copy frontend dist into public directory of bff
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: cp -r dist/ ../bff/public
+
+      - name: Install bff dependencies
+        working-directory: ${{ inputs.workingDir }}/bff
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Build bff
+        working-directory: ${{ inputs.workingDir }}/bff
+        run: npm run build
+
+      - name: Build and push Docker container
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: pensjonsbrev
+          image_suffix: ${{ inputs.workingDir }}
+          docker_context: ${{ inputs.workingDir }}/bff
+          dockerfile: ${{ inputs.workingDir }}/bff/Dockerfile
+          salsa: false
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+      digest: ${{ steps.docker-build-push.outputs.digest }}
+
+
+  salsa:
+    uses: ./.github/workflows/.salsa.yaml
+    needs: build
+    secrets: inherit
+    with:
+      digest: ${{ needs.build.outputs.digest }}
+      image: ${{ needs.build.outputs.image }}
+
+  deploy-dev:
+    name: Deploy app to dev
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: build
+    with:
+      image: ${{needs.build.outputs.image}}
+      cluster: "dev-gcp"
+      resource: "${{ inputs.workingDir }}/bff/.nais/nais.yaml"
+      vars: "${{ inputs.workingDir }}/bff/.nais/bff-dev.yaml"
+
+  deploy-prod:
+    name: Deploy app to prod
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    if: ${{ inputs.deployToProd }}
+    needs: build
+    with:
+      cluster: prod-gcp
+      resource: ${{ inputs.workingDir }}/bff/.nais/nais.yaml
+      image: ${{needs.build.outputs.image}}
+      vars: "${{ inputs.workingDir }}/bff/.nais/bff-prod.yaml"

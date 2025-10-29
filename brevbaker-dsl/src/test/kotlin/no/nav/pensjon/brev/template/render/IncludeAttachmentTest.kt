@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangNynorsk
@@ -14,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.IncludeAttachmentTestSelectors.NullDataSelectors.test
 import no.nav.pensjon.brev.template.render.dsl.SomeDto
 import no.nav.pensjon.brev.template.render.dsl.testLetterMetadata
 import org.junit.jupiter.api.Nested
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 class IncludeAttachmentTest {
     @Test
     fun `attachment is included in template`() {
-        val testVedlegg = createAttachment<LangNynorsk, Unit>(
+        val testVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
             title = newText(
                 Nynorsk to "Test vedlegg",
             ),
@@ -40,7 +40,7 @@ class IncludeAttachmentTest {
             language = languages(Nynorsk),
             outline = emptyList(),
             attachments = listOf(
-                IncludeAttachment(Unit.expr(), testVedlegg, false.expr())
+                IncludeAttachment(EmptyVedleggData.expr(), testVedlegg, false.expr())
             ),
             letterMetadata = testLetterMetadata
         )
@@ -52,17 +52,19 @@ class IncludeAttachmentTest {
         ) {
             title { text(nynorsk { +"tittel" }) }
             outline {}
-            includeAttachment(testVedlegg, Unit.expr(), false.expr())
+            includeAttachment(testVedlegg, EmptyVedleggData.expr(), false.expr())
         }
 
         assertThat(actual, equalTo(expected))
     }
 
-    data class NullData(val test: String?)
+    data class NullData(val testVedleggData: VedleggData?)
+
+    data class VedleggData(val test: String?) : no.nav.pensjon.brev.api.model.maler.VedleggData
 
     @Nested
     inner class IncludeIfNotNull{
-        private val testVedlegg = createAttachment<LangNynorsk, String>(
+        private val testVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
             title = newText(
                 Nynorsk to "Test vedlegg",
             ),
@@ -80,12 +82,12 @@ class IncludeAttachmentTest {
         ) {
             title { text(nynorsk { +"tittel" }) }
             outline {}
-            includeAttachmentIfNotNull(testVedlegg, test)
+            includeAttachmentIfNotNull(testVedlegg, EmptyVedleggData.expr())
         }
 
         @Test
         fun `attachment is included with notnull condition`() {
-            val selector: Expression<String?> = Expression.FromScope.Argument<NullData>().test
+            val selector: Expression<EmptyVedleggData?> = EmptyVedleggData.expr()
 
 
             @Suppress("UNCHECKED_CAST")
@@ -95,7 +97,7 @@ class IncludeAttachmentTest {
                 language = languages(Nynorsk),
                 outline = emptyList(),
                 attachments = listOf(
-                    IncludeAttachment(selector as Expression<String>, testVedlegg, selector.notNull())
+                    IncludeAttachment(selector as Expression<EmptyVedleggData>, testVedlegg, selector.notNull())
                 ), letterMetadata = testLetterMetadata
             )
             assertThat(testTemplate, equalTo(expected))
