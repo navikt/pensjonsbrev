@@ -77,16 +77,15 @@ class BrevmalService(
     private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
         withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevakerMaler() }
-            val legacy = async { brevmetadataService.getAllBrev() }
-            val eblanketter = async {
-                if (includeEblanketter) brevmetadataService.getEblanketter() else emptyList()
+            val legacy = async {
+                brevmetadataService.getAllBrev().asSequence()
+                    .filter { includeEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             }
 
             // NB: setter sakstype til GENRL for legacy brev her siden vi ikke har sakstype info når vi henter alle maler,
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
-                    legacy.await().asSequence().map { LetterMetadata.Legacy(it, Sakstype.GENRL) } +
-                    eblanketter.await().asSequence().map { LetterMetadata.Legacy(it, Sakstype.GENRL) }
+                    legacy.await().map { LetterMetadata.Legacy(it, Sakstype.GENRL) }
         }.filter { it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
