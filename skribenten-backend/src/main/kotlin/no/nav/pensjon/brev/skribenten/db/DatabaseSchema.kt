@@ -202,7 +202,10 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) =
         validate()
     })
         .also { konfigurerFlyway(it) }
-        .also { Database.connect(it) }
+        .also { Database.connect(it, databaseConfig = DatabaseConfig {
+            defaultMinRetryDelay = 50L
+            defaultMaxRetryDelay = 500L
+        }) }
 
 private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()
