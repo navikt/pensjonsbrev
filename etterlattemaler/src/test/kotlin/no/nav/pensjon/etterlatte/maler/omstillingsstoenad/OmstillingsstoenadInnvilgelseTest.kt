@@ -30,39 +30,6 @@ class OmstillingsstoenadInnvilgelseTest {
         assertEquals(true, dto.omsRettUtenTidsbegrensning)
     }
 
-    private fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = OmstillingsstoenadBeregning(
-        innhold = listOf(),
-        virkningsdato = LocalDate.now(),
-        beregningsperioder = listOf(),
-        sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
-            datoFOM = LocalDate.of(2024, 2, 1),
-            datoTOM = null,
-            inntekt = Kroner(100000),
-            oppgittInntekt = Kroner(600000),
-            fratrekkInnAar = Kroner(100000),
-            innvilgaMaaneder = 12,
-            grunnbeloep = Kroner(118000),
-            utbetaltBeloep = Kroner(5000),
-            ytelseFoerAvkorting = Kroner(22000),
-            restanse = Kroner(1000),
-            trygdetid = 40,
-            sanksjon = false,
-            institusjon = false,
-        ),
-        sisteBeregningsperiodeNesteAar = null,
-        trygdetid = Trygdetid(
-            beregnetTrygdetidAar = 40,
-            prorataBroek = null,
-            beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-            mindreEnnFireFemtedelerAvOpptjeningstiden = true,
-            navnAvdoed = "Elvis Presley",
-            trygdetidsperioder = emptyList(),
-        ),
-        oppphoersdato = LocalDate.now(),
-        opphoerNesteAar = false,
-        erYrkesskade = false
-    )
 
     @Test
     fun `omsRettUtenTidsbegrensning overstyrer lavEllerIngenInntekt`() {
@@ -84,3 +51,38 @@ class OmstillingsstoenadInnvilgelseTest {
     }
     
 }
+
+
+fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = OmstillingsstoenadBeregning(
+    innhold = listOf(),
+    virkningsdato = LocalDate.now(),
+    beregningsperioder = listOf(),
+    sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
+        datoFOM = LocalDate.of(2024, 2, 1),
+        datoTOM = null,
+        inntekt = Kroner(100000),
+        oppgittInntekt = Kroner(600000),
+        fratrekkInnAar = Kroner(100000),
+        innvilgaMaaneder = 12,
+        grunnbeloep = Kroner(118000),
+        utbetaltBeloep = Kroner(5000),
+        ytelseFoerAvkorting = Kroner(22000),
+        restanse = Kroner(1000),
+        trygdetid = 40,
+        sanksjon = false,
+        institusjon = false,
+    ),
+    sisteBeregningsperiodeNesteAar = null,
+    trygdetid = Trygdetid(
+        beregnetTrygdetidAar = 40,
+        prorataBroek = null,
+        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+        mindreEnnFireFemtedelerAvOpptjeningstiden = true,
+        navnAvdoed = "Elvis Presley",
+        trygdetidsperioder = emptyList(),
+    ),
+    oppphoersdato = LocalDate.now(),
+    opphoerNesteAar = false,
+    erYrkesskade = false
+)

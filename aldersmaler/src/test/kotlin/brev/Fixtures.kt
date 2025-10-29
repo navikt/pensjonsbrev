@@ -5,9 +5,12 @@ import brev.maler.sivilstand.createEndringAvAlderspensjonGarantitilleggDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandAutoDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandSaerskiltSatsDto
+import brev.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.fixtures.alder.createAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.maler.vedlegg.createMaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps60AarAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps62AarAutoDto
@@ -18,6 +21,9 @@ import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantit
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
@@ -37,6 +43,9 @@ object Fixtures : LetterDataFactory {
             EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
             InfoAldersovergangEps60AarAutoDto::class -> InfoAldersovergangEps60AarAutoDto(ytelse = Ytelse.ALDER) as T
             InfoAldersovergangEps62AarAutoDto::class -> InfoAldersovergangEps62AarAutoDto(ytelse = YtelseType.ALDER) as T
+            MaanedligPensjonFoerSkattAP2025Dto::class -> createMaanedligPensjonFoerSkattAP2025Dto() as T
+            MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
+            OrienteringOmRettigheterOgPlikterDto::class -> createOrienteringOmRettigheterOgPlikterDto() as T
             VedtakAldersovergang67AarGarantitilleggAutoDto::class -> createVedtakAldersovergang67AarGarantitilleggAutoDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")

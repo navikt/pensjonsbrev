@@ -15,51 +15,53 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
         virkFom = LocalDate.of(2025, 2, 1),
         totalPensjon = Kroner(200000),
         afpBruktIBeregning = true,
-        opplysningerBruktIBeregningen = OpplysningerBruktIBeregningen(
-            uttaksgrad = 100,
-            trygdetid = 40,
-            pensjonsbeholdning = Kroner(1200000),
-            delingstallVedUttak = 12.0,
-            delingstallVedNormertPensjonsalder = 10.0,
-            normertPensjonsalder = NormertPensjonsalder(
-                aar = 67,
-                maaneder = 2
-            ),
-            sisteOpptjeningsAar = 2024,
-            virkFom = LocalDate.of(2025, 2, 1),
-            prorataBruktIBeregningen = true,
-            trygdeperioderNorge = listOf(
-                TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now()),
-                TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now())
-            ),
-            trygdeperioderUtland = listOf(
-                TrygdeperiodeUtland(
-                    land = "Sverige",
-                    fom = LocalDate.now(),
-                    tom = LocalDate.now()
-                ), TrygdeperiodeUtland(land = "Danmark", fom = LocalDate.now(), tom = LocalDate.now())
-            ),
-            kravAarsak = null,
-            opplysningerKap19 = OpplysningerBruktIBeregningenKap19(
-                forholdstallVed67 = 10.0,
-                forholdstall = 5.0,
-                poengAarE91 = 10,
-                poengAarF92 = 10,
-                innvilgetTillegspensjon = true,
-                poengAar = 4,
-                sluttpoengTall = 1.86,
-                redusertTrygdetidKap19 = true,
-                avslattKap19 = false,
-                fodselsAar = Year(1990),
-                andelGammeltRegelverk = 6,
-                andelNyttRegelverk = 4,
-                trygdetidKap19 = 35
-            ),
-            opplysningerKap20 = OpplysningerBruktIBeregningenKap20(
-                redusertTrygdetidKap20 = false
-            )
-        ),
+        opplysningerBruktIBeregningen = createOpplysningerBruktIBeregningen(),
         borINorge = false,
         harEOSLand = false,
         avtaleland = "Danmark",
     )
+
+fun createOpplysningerBruktIBeregningen(): OpplysningerBruktIBeregningen = OpplysningerBruktIBeregningen(
+    uttaksgrad = 100,
+    trygdetid = 40,
+    pensjonsbeholdning = Kroner(1200000),
+    delingstallVedUttak = 12.0,
+    delingstallVedNormertPensjonsalder = 10.0,
+    normertPensjonsalder = NormertPensjonsalder(
+        aar = 67,
+        maaneder = 2
+    ),
+    sisteOpptjeningsAar = 2024,
+    virkFom = LocalDate.of(2025, 2, 1),
+    prorataBruktIBeregningen = true,
+    trygdeperioderNorge = listOf(
+        TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now()),
+        TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now())
+    ),
+    trygdeperioderUtland = listOf(
+        TrygdeperiodeUtland(
+            land = "Sverige",
+            fom = LocalDate.now(),
+            tom = LocalDate.now()
+        ), TrygdeperiodeUtland(land = "Danmark", fom = LocalDate.now(), tom = LocalDate.now())
+    ),
+    kravAarsak = null,
+    opplysningerKap19 = OpplysningerBruktIBeregningenKap19(
+        forholdstallVed67 = 10.0,
+        forholdstall = 5.0,
+        poengAarE91 = 10,
+        poengAarF92 = 10,
+        innvilgetTillegspensjon = true,
+        poengAar = 4,
+        sluttpoengTall = 1.86,
+        redusertTrygdetidKap19 = true,
+        avslattKap19 = false,
+        fodselsAar = Year(1990),
+        andelGammeltRegelverk = 6,
+        andelNyttRegelverk = 4,
+        trygdetidKap19 = 35
+    ),
+    opplysningerKap20 = OpplysningerBruktIBeregningenKap20(
+        redusertTrygdetidKap20 = false
+    )
+)
