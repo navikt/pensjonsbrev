@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -9,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Erstatte PE_IY_03_bekreftelse_på_pensjon_uføretrygd_169-174
@@ -26,6 +25,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object BekreftelsePaaPensjon : RedigerbarTemplate<BekreftelsePaaPensjonDto> {
+
+    override val featureToggle = FeatureToggles.bekreftelsePaaPensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_PENSJON
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV

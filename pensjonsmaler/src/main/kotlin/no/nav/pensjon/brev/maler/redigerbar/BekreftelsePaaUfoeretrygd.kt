@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.PesysDataSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -24,7 +25,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object BekreftelsePaaUfoeretrygd : RedigerbarTemplate<BekreftelsePaaUfoeretrygdDto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_UFOERETRYGD
+    override val featureToggle = FeatureToggles.bekreftelsePaaUfoeretrygd.toggle
+
+    override val kode = Pesysbrevkoder.Redigerbar.UT_BEKREFTELSE_PAA_UFOERETRYGD
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP)
@@ -51,8 +54,8 @@ object BekreftelsePaaUfoeretrygd : RedigerbarTemplate<BekreftelsePaaUfoeretrygdD
             paragraph {
                 text(
                     bokmal { +"Vi bekrefter at " + pesysData.navn + ", født " + pesysData.foedselsdato.format() },
-                    nynorsk { +"Vi stadfestar herved at " + pesysData.navn + ", fødd " + pesysData.foedselsdato.format() },
-                    english { +"We hereby confirm that " + pesysData.navn + ", born on " + pesysData.foedselsdato.format() }
+                    nynorsk { +"Vi stadfestar at " + pesysData.navn + ", fødd " + pesysData.foedselsdato.format() },
+                    english { +"We confirm that " + pesysData.navn + ", born on " + pesysData.foedselsdato.format() }
                 )
                 text(
                     bokmal { +", får uføretrygd fra folketrygden med en uføregrad på " + fritekst("uføregrad") + " prosent." },

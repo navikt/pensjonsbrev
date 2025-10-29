@@ -28,7 +28,7 @@ class BekreftelsePaaPensjonTest {
         LetterTestImpl(
             BekreftelsePaaPensjon.template,
             Fixtures.create<BekreftelsePaaPensjonDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.fellesAuto
         ).renderTestHtml(BekreftelsePaaPensjon.kode.name)
     }

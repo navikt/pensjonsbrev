@@ -18,7 +18,7 @@ class BekreftelsePaaUfoeretrygdTest {
         LetterTestImpl(
             BekreftelsePaaUfoeretrygd.template,
             Fixtures.create<BekreftelsePaaUfoeretrygdDto>(),
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.felles
         ).renderTestPDF(BekreftelsePaaUfoeretrygd.kode.name)
     }
