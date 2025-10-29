@@ -52,14 +52,14 @@ object BekreftelsePaaPensjon : RedigerbarTemplate<BekreftelsePaaPensjonDto> {
         outline {
             paragraph {
                 text(
-                    bokmal { +"Vi bekrefter herved at " + pesysData.navn + ", født " + pesysData.foedselsdato.format() },
-                    nynorsk { +"Vi stadfestar herved at " + pesysData.navn + ", fødd " + pesysData.foedselsdato.format() },
-                    english { +"We hereby confirm that " + pesysData.navn + ", born on " + pesysData.foedselsdato.format() }
+                    bokmal { +"Vi bekrefter at " + pesysData.navn + ", født " + pesysData.foedselsdato.format() },
+                    nynorsk { +"Vi stadfestar at " + pesysData.navn + ", fødd " + pesysData.foedselsdato.format() },
+                    english { +"We confirm that " + pesysData.navn + ", born on " + pesysData.foedselsdato.format() }
                 )
                 text(
-                    bokmal { +", mottar en månedlig pensjon på " + fritekst("beløp") + " kroner." },
-                    nynorsk { +", få ei månadleg pensjon på " + fritekst("beløp") + " kroner." },
-                    english { +", receives a monthly pension of NOK " + fritekst("beløp") + "." }
+                    bokmal { +", får en månedlig pensjon før skatt på " + fritekst("beløp") + " kroner." },
+                    nynorsk { +", får ei månadleg pensjon før skatt på " + fritekst("beløp") + " kroner." },
+                    english { +", receives a monthly pension before tax of NOK " + fritekst("beløp") + "." }
                 )
 
             }

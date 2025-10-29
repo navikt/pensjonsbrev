@@ -50,21 +50,21 @@ object BekreftelsePaaUfoeretrygd : RedigerbarTemplate<BekreftelsePaaUfoeretrygdD
         outline {
             paragraph {
                 text(
-                    bokmal { +"Vi bekrefter herved at " + pesysData.navn + ", født " + pesysData.foedselsdato.format() },
+                    bokmal { +"Vi bekrefter at " + pesysData.navn + ", født " + pesysData.foedselsdato.format() },
                     nynorsk { +"Vi stadfestar herved at " + pesysData.navn + ", fødd " + pesysData.foedselsdato.format() },
                     english { +"We hereby confirm that " + pesysData.navn + ", born on " + pesysData.foedselsdato.format() }
                 )
                 text(
-                    bokmal { +", mottar uføretrygd fra folketrygden med en uføregrad på " + fritekst("uføregrad") + " prosent." },
-                    nynorsk { +", mottar uføretrygd frå folketrygda med ein uføregrad på " + fritekst("uføregrad") + " prosent." },
+                    bokmal { +", får uføretrygd fra folketrygden med en uføregrad på " + fritekst("uføregrad") + " prosent." },
+                    nynorsk { +", får uføretrygd frå folketrygda med ein uføregrad på " + fritekst("uføregrad") + " prosent." },
                     english { +", has a " + fritekst("uføregrad") + " percent work incapacity and is receiving disability benefit from the National Insurance Scheme." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Størrelsen på uføretrygden er " + fritekst("beløp") + " kroner per måned." },
-                    nynorsk { +"Storleiken på uføretrygda er " + fritekst("beløp") + " kroner per månad." },
-                    english { + "The gross monthly amount of the benefit is NOK " + fritekst("beløp") + "."},
+                    bokmal { +"Uføretrygden er " + fritekst("beløp") + " kroner per måned før skatt." },
+                    nynorsk { +"Uføretrygda er " + fritekst("beløp") + " kroner per månad før skatt." },
+                    english { + "The benefit amounts to NOK " + fritekst("beløp") + " per month before tax."},
                 )
             }
         }
