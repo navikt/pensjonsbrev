@@ -731,8 +731,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -761,8 +759,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -788,8 +784,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -812,7 +806,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan distribuere vedtaksbrev som er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
         brevbakerService.renderPdfKall.clear()
 
         val brev = opprettBrev(

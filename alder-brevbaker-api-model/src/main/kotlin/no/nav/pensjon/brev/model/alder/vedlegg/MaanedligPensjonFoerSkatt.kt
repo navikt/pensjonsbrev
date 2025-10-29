@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattTabell.AlderspensjonPerManed
@@ -19,7 +19,7 @@ data class MaanedligPensjonFoerSkattDto(
     val bruker: Bruker,
     val krav: Krav,
     val alderspensjonPerManed: List<AlderspensjonPerManed>,
-) : BrevbakerBrevdata {
+) : VedleggData {
 
     data class Krav(
         val virkDatoFom: LocalDate,

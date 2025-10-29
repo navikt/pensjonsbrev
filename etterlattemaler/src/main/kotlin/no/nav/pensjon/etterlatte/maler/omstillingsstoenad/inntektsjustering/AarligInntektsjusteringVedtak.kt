@@ -147,6 +147,6 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 tidligereFamiliepleier.not(),
             )
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
-            includeAttachment(dineRettigheterOgPlikter, beregning)
+            includeAttachment(dineRettigheterOgPlikter)
         }
     }

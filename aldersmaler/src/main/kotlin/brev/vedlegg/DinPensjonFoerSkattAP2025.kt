@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 
+
 // V00010 i metaforce
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkattAp2025 =
