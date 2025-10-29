@@ -1,0 +1,19 @@
+name: "Klar til merge"
+on:
+  pull_request:
+    paths:
+      - "CODEOWNERS"
+      - "docs"
+      - "fetch-secrets.sh"
+      - "LICENCE.md"
+      - "README.md"
+
+jobs:
+  klarTilMerge:
+    name: "Klar til merge"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
