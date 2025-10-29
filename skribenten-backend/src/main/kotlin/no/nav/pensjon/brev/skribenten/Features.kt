@@ -14,7 +14,7 @@ data class UnleashToggle(val name: String) {
 }
 
 object Features {
-    val attestant = UnleashToggle("attestant")
+//    val exampleToggle = UnleashToggle("exampleToggle")
 
     private var unleash: Unleash? = null
     private val overrides = mutableMapOf<String, Boolean>()
