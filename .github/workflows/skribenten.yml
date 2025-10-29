@@ -17,112 +17,50 @@ on:
       - "gradle/libs.versions.toml"
       - "skribenten-backend/**"
       - ".github/workflows/skribenten.yml"
-env:
-  JavaDistribution: "temurin"
-  JavaVersion: 21
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
 jobs:
   build-skribenten-backend:
-    name: "Build skribenten backend"
-    runs-on: "ubuntu-latest"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    outputs:
-      image: ${{ steps.docker-push.outputs.image }}
-      digest: ${{ steps.docker-push.outputs.digest }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: gradle/actions/wrapper-validation@v4
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v5
-        with:
-          "distribution": ${{ env.JavaDistribution }}
-          "java-version": ${{ env.JavaVersion }}
-      - name: "compile and run tests"
-        run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal 
-          ./gradlew :skribenten-backend:build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@v0
-        id: docker-push
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-        with:
-          team: pensjonsbrev
-          image_suffix: skribenten-backend
-          push_image: true
-          pull: true
-          docker_context: ./skribenten-backend
-          dockerfile: skribenten-backend/Dockerfile
-          salsa: false
+    uses: ./.github/workflows/.build-backend.yaml
+    secrets: inherit
+    with:
+      image_suffix: skribenten-backend
+      path: skribenten-backend
+      buildImage: true
 
   salsa:
-    name: Generate SBOM, attest and sign image
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/.salsa.yaml
     needs: build-skribenten-backend
-    permissions:
-      id-token: "write"
-    steps:
-      - name: NAIS login
-        uses: nais/login@v0
-        id: login
-        with:
-          team: pensjonsbrev
-      - name: Generate SBOM, attest and sign image
-        id: attest-sign
-        uses: nais/attest-sign@v1
-        with:
-          image_ref: ${{ needs.build-skribenten-backend.outputs.image }}@${{ needs.build-skribenten-backend.outputs.digest }}
+    secrets: inherit
+    with:
+      digest: ${{ needs.build-skribenten-backend.outputs.digest }}
+      image: ${{ needs.build-skribenten-backend.outputs.image }}
 
   deploy-skribenten-backend-dev:
-    name: "Deploy skribenten-backend to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: "build-skribenten-backend"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy Skribenten backend to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:skribenten-backend"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-dev-q2.yaml,skribenten-backend/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
-          "VARS": "skribenten-backend/.nais/dev.yaml"
-
+    name: "Deploy to dev"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: build-skribenten-backend
+    with:
+      cluster: "dev-gcp"
+      resource: "skribenten-backend/.nais/unleash-api-token-dev-q2.yaml,skribenten-backend/.nais/nais.yaml"
+      image: ${{needs.build-skribenten-backend.outputs.image}}
+      vars: "skribenten-backend/.nais/dev.yaml"
 
   deploy-skribenten-backend-prod:
-    name: "Deploy skribenten-backend to prod"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: "build-skribenten-backend"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy Skribenten backend to prod"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:skribenten-backend"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
-          "VAR": image=${{ needs.build-skribenten-backend.outputs.image }}
-          "VARS": "skribenten-backend/.nais/prod.yaml"
+    name: "Deploy to prod"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: build-skribenten-backend
+    with:
+      cluster: "prod-gcp"
+      resource: "skribenten-backend/.nais/unleash-api-token-prod.yaml,skribenten-backend/.nais/nais.yaml"
+      image: ${{needs.build-skribenten-backend.outputs.image}}
+      vars: "skribenten-backend/.nais/prod.yaml"
 
   "klarTilMerge":
     name: "Klar til merge"

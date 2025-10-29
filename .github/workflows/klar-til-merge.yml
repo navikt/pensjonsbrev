@@ -1,0 +1,24 @@
+name: "Klar til merge"
+# Før merge av ein pull request på GitHub har vi krav om at klar til merge-jobben har kjørt.
+# Denne blir trigga på slutten av de vanlige byggejobbene våre, men noen filer har ikke byggejobber knytta til seg
+# Typisk dokumentasjon og codeowners.
+# Denne byggejobben er ein workaround for å få grønt bygg på endringer kun i disse filene.
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/klar-til-merge.yml"
+      - "CODEOWNERS"
+      - "docs"
+      - "fetch-secrets.sh"
+      - "LICENCE.md"
+      - "README.md"
+
+jobs:
+  klarTilMerge:
+    name: "Klar til merge"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

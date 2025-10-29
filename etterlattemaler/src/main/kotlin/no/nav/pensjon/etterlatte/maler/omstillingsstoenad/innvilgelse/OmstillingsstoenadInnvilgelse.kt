@@ -124,6 +124,6 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 
-            includeAttachment(dineRettigheterOgPlikter, beregning)
+            includeAttachment(dineRettigheterOgPlikter)
         }
 }
