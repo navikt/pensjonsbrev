@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Alert, Label, Loader, VStack } from "@navikt/ds-react";
+import { Alert, BodyLong, Heading, Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
@@ -34,14 +34,8 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
           fullWidth
           variant="error"
         >
-          <div
-            css={css`
-              font-weight: 600;
-            `}
-          >
-            Klarte ikke åpne pdf
-          </div>
-          <div>Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys.</div>
+          <Heading size="xsmall">Klarte ikke åpne pdf</Heading>
+          <BodyLong>Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys.</BodyLong>
         </Alert>
       </>
     ),
