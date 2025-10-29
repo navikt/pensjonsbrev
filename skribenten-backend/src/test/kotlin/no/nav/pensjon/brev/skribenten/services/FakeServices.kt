@@ -65,6 +65,8 @@ open class FakeBrevmetadataService(
     val brevmaler: List<BrevdataDto> = listOf(),
     val maler: Map<String, BrevdataDto> = mapOf(),
 ) : BrevmetadataService {
+    override suspend fun getAllBrev(): List<BrevdataDto> = brevmaler + eblanketter
+
     override suspend fun getBrevmalerForSakstype(sakstype: Sakstype) = brevmaler
 
     override suspend fun getEblanketter() = eblanketter

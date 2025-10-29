@@ -67,7 +67,7 @@ fun Application.configureRouting(
             )
 
             landRoute()
-            brevmal(brevbakerService)
+            brevmal(brevbakerService, brevmalService)
             kodeverkRoute(penService)
             sakRoute(
                 dto2ApiService,
