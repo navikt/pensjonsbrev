@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.fraser.vedlegg.EttersendeDokumentasjon
 import no.nav.pensjon.brev.maler.fraser.vedlegg.InnledningPraktiskInformasjon
 import no.nav.pensjon.brev.maler.fraser.vedlegg.InntekterSomKanHoldesUtenforEtteroppgjoeret
@@ -15,7 +16,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 
 @TemplateModelHelpers
 val vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd =
-    createAttachment<LangBokmalNynorskEnglish, Unit>(
+    createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
         title = newText(
             Bokmal to "Praktisk informasjon om etteroppgjøret",
             Nynorsk to "Praktisk informasjon om etteroppgjeret",
