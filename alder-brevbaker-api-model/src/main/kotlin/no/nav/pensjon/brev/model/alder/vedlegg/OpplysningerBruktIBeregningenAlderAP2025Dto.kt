@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.model.alder.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
 import no.nav.pensjon.brev.model.alder.GarantipensjonSatsType
 import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
@@ -20,7 +21,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     val trygdetidEOS: List<Trygdetid>,
     val trygdetidAvtaleland: List<Trygdetid>,
     val pensjonsopptjeningKap20VedVirk: PensjonsopptjeningKap20VedVirk,
-) {
+) : VedleggData {
 
     data class PensjonsopptjeningKap20VedVirk(
         val harOmsorgsopptjeningFOM2010: Boolean,

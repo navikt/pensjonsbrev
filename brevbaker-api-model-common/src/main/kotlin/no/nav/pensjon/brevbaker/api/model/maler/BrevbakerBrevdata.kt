@@ -11,3 +11,5 @@ interface RedigerbarBrevdata<SaksbehandlerValg : SaksbehandlerValgBrevdata, Pesy
 }
 
 interface SaksbehandlerValgBrevdata : BrevbakerBrevdata
+
+interface VedleggData : BrevbakerBrevdata

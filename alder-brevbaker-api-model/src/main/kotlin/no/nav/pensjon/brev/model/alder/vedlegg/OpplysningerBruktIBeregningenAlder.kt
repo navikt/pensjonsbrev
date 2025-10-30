@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
@@ -29,7 +29,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val krav: Krav,
     val poengrekkeVedVirk: PoengrekkeVedVirk,
     val skalSkjuleTrygdetidstabellerPgaAldersovergang: Boolean,
-) : BrevbakerBrevdata {
+) : VedleggData {
 
     data class PoengrekkeVedVirk(
         val inneholderOmsorgspoeng: Boolean,
