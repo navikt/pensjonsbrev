@@ -24,9 +24,9 @@ object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "${Constants.KLAGE_URL}." },
             )
             text(
-                bokmal { +"Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
-                nynorsk { +"Du får vite meir om korleis du klagar i vedlegget om rettar." },
-                english { +"You will find more information on how to appeal in the appendix about your rights." },
+                bokmal { +" Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
+                nynorsk { +" Du får vite meir om korleis du klagar i vedlegget om rettar." },
+                english { +" You will find more information on how to appeal in the appendix about your rights." },
             )
         }
     }
