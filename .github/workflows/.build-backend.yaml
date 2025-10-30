@@ -11,11 +11,10 @@ on:
         description: "Path to build"
         required: true
         type: string
-      modulesToBuild:
+      extraModulesToBuild:
         description: "Modules to build"
         required: false
         type: string
-        default: ":brevbaker-api-model-common:publishToMavenLocal"
       buildImage:
         description: "Build image?"
         required: true
@@ -57,9 +56,13 @@ jobs:
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
-      - name: "compile and run tests"
+      - name: "publish common to Maven local"
         run: |
-          ./gradlew ${{ inputs.modulesToBuild }}
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+      - name: "compile and run tests"
+        if: ${{ inputs.extraModulesToBuild != '' }}
+        run: |
+          ./gradlew ${{ inputs.extraModulesToBuild }}
           ./gradlew :${{ inputs.path }}:buildNeeded
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
