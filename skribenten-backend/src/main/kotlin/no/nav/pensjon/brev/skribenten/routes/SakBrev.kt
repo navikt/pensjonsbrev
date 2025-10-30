@@ -6,6 +6,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -37,10 +38,10 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 mottaker = request.mottaker?.toDto(),
             ).onOk { brev ->
                 call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
-            }.onError { message, statusCode ->
+            }.onError { message, statusCode, tittel ->
                 if (statusCode == HttpStatusCode.BadRequest) {
                     logger.warn("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                    call.respond(HttpStatusCode.BadRequest, message)
+                    call.respond(HttpStatusCode.BadRequest, BrevExceptionDto(tittel ?: "", message))
                 } else {
                     logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")

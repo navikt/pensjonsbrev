@@ -18,6 +18,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.jackson.jackson
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -180,12 +181,12 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
 
     private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
-        val error = response.body<BrevdataResponse>().error
+        val body = response.body<BrevdataResponse>()
         return if (response.status == HttpStatusCode.InternalServerError) {
-            logger.error("En feil oppstod i kall til PEN: $error")
-            ServiceResult.Error("Ukjent feil oppstod i kall til PEN", HttpStatusCode.InternalServerError)
+            logger.error("En feil oppstod i kall til PEN: ${body.feil?.let { it.tittel + ": " + it.melding } ?: body.error}")
+            ServiceResult.Error("Ukjent feil oppstod i kall til PEN",  HttpStatusCode.InternalServerError, body.feil?.tittel)
         } else {
-            ServiceResult.Error(error ?: "Ukjent feil oppstod i kall til PEN", response.status)
+            ServiceResult.Error(body.feil?.melding ?: body.error ?: "Ukjent feil oppstod i kall til PEN", response.status, body.feil?.tittel)
         }
     }
 
@@ -220,6 +221,6 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
     }
 }
 
-data class BrevdataResponse(val data: Data?, val error: String? = null) {
+data class BrevdataResponse(val data: Data?, val error: String? = null, val feil: BrevExceptionDto? = null) {
     data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
 }
