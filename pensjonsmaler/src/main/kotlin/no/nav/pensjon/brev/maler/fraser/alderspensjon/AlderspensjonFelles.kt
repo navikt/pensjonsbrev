@@ -231,7 +231,7 @@ data class ArbeidsinntektOgAlderspensjon(
                         "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." },
                 )
             }
-        }.orShowIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
+        }.orShowIf(uttaksgrad.lessThan(100)) {
             // nyOpptjeningGradertAP
             paragraph {
                 text(
