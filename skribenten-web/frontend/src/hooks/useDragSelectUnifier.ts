@@ -13,6 +13,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     // Mark the host(div) as "unified" and remove contentEditable from all children
     const unify = () => {
+      if (!host.isConnected) return;
       if (host.dataset.unified === "1") return;
       host.dataset.unified = "1";
       host.classList.add("is-drag-selecting");
@@ -25,6 +26,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     // Restore contentEditable attributes to original values
     const restore = () => {
+      if (!host.isConnected) return;
       if (host.dataset.unified !== "1") return;
       host.classList.remove("is-drag-selecting");
       delete host.dataset.unified;
