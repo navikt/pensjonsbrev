@@ -2,7 +2,7 @@ package brev.sivilstand
 
 import brev.felles.ArbeidsinntektOgAlderspensjon
 import brev.felles.FeilutbetalingAP
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import brev.felles.InformasjonOmAlderspensjon
 import brev.felles.MeldeFraOmEndringer
 import brev.felles.RettTilAAKlage
@@ -675,9 +675,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
                 includePhrase(InformasjonOmAlderspensjon)
                 includePhrase(MeldeFraOmEndringer)
-                includePhrase(RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaal.alder)
+                includePhrase(HarDuSpoersmaalAlder)
             }
             includeAttachment(
                 vedleggOrienteringOmRettigheterOgPlikter,

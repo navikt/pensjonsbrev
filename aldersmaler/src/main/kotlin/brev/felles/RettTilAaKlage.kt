@@ -1,15 +1,11 @@
 package brev.felles
 
-import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 
-data class RettTilAAKlage(
-    val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -20,15 +16,17 @@ data class RettTilAAKlage(
         }
         paragraph {
             text(
-                bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget " },
-                nynorsk { +"Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget " },
-                english { +"If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment " },
+                bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. Du finner skjema og informasjon på " +
+                        "${Constants.KLAGE_URL}." },
+                nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. Du finn skjema og informasjon på " +
+                        "${Constants.KLAGE_URL}." },
+                english { +"If you think the decision is wrong, you may appeal the decision within six weeks from the date you received the decision. You can find the form and more information at " +
+                        "${Constants.KLAGE_URL}." },
             )
-            namedReference(vedlegg)
             text(
-                bokmal { +" får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}." },
-                nynorsk { +" får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}." },
-                english { +", you can find out more about how to proceed. You will find forms and information at $${Constants.KLAGE_URL}." },
+                bokmal { +" Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
+                nynorsk { +" Du får vite meir om korleis du klagar i vedlegget om rettar." },
+                english { +" You will find more information on how to appeal in the appendix about your rights." },
             )
         }
     }
