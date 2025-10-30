@@ -59,10 +59,12 @@ jobs:
       - name: "publish common to Maven local"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-      - name: "compile and run tests"
+      - name: "publish extra modules to Maven local"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |
           ./gradlew ${{ inputs.extraModulesToBuild }}
+      - name: "compile and run tests"
+        run: |
           ./gradlew :${{ inputs.path }}:buildNeeded
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
