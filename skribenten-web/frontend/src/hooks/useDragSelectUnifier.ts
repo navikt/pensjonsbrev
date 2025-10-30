@@ -83,12 +83,8 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     const onVisibilityChange = () => {
       if (document.visibilityState === "hidden") restore();
     };
-    const onMouseLeave = (e: MouseEvent) => {
-      if (e.target === host) restore();
-    };
 
     // use capture to beat other listeners that might interfere
-    host.addEventListener("mouseleave", onMouseLeave, true);
     document.addEventListener("selectionchange", onSelectionChange);
     host.addEventListener("pointerdown", onPointerDown, true);
     host.addEventListener("pointermove", onPointerMove, true);
@@ -99,7 +95,6 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     return () => {
       restore();
-      host.removeEventListener("mouseleave", onMouseLeave, true);
       document.removeEventListener("selectionchange", onSelectionChange);
       host.removeEventListener("pointerdown", onPointerDown, true);
       host.removeEventListener("pointermove", onPointerMove, true);
