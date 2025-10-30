@@ -90,6 +90,7 @@ function Brevmal({
         <BrevmalForDoksys
           defaultValues={defaultValues}
           displayLanguages={displayLanguages}
+          key={templateId}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
@@ -103,6 +104,7 @@ function Brevmal({
         <BrevmalForExstream
           defaultValues={defaultValues}
           displayLanguages={displayLanguages}
+          key={templateId}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
@@ -116,6 +118,7 @@ function Brevmal({
         <BrevmalBrevbaker
           defaultValues={defaultValues}
           displayLanguages={displayLanguages}
+          key={templateId}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
