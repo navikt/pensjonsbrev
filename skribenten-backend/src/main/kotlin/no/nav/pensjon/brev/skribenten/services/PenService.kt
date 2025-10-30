@@ -170,9 +170,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             }
         }.toServiceResult<BrevdataResponse>(::handlePenErrorBrevdataResponse)
             .then {
-                if (it.error != null) {
-                    ServiceResult.Error(it.error, HttpStatusCode.InternalServerError)
-                } else if (it.data != null) {
+                if (it.data != null) {
                     ServiceResult.Ok(it.data)
                 } else {
                     ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
@@ -183,10 +181,10 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
     private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
         val body = response.body<BrevdataResponse>()
         return if (response.status == HttpStatusCode.InternalServerError) {
-            logger.error("En feil oppstod i kall til PEN: ${body.feil?.let { it.tittel + ": " + it.melding } ?: body.error}")
+            logger.error("En feil oppstod i kall til PEN: ${body.feil?.let { "${it.tittel}: ${it.melding}" }}")
             ServiceResult.Error("Ukjent feil oppstod i kall til PEN",  HttpStatusCode.InternalServerError, body.feil?.tittel)
         } else {
-            ServiceResult.Error(body.feil?.melding ?: body.error ?: "Ukjent feil oppstod i kall til PEN", response.status, body.feil?.tittel)
+            ServiceResult.Error(body.feil?.melding ?: "Ukjent feil oppstod i kall til PEN", response.status, body.feil?.tittel)
         }
     }
 
@@ -221,6 +219,6 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
     }
 }
 
-data class BrevdataResponse(val data: Data?, val error: String? = null, val feil: BrevExceptionDto? = null) {
+data class BrevdataResponse(val data: Data?, val feil: BrevExceptionDto? = null) {
     data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
 }
