@@ -85,3 +85,4 @@ jobs:
         with:
           name: ${{inputs.path}}-jar
           path: ${{ inputs.path }}/build/libs/
+          if-no-files-found: 'error'
