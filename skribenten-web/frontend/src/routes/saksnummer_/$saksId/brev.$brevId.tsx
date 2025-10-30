@@ -8,8 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getBrev, getBrevmetadataQuery, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
@@ -229,8 +228,8 @@ function RedigerBrev({
     });
 
   const brevmal = useQuery({
-    ...getSakContextQuery(saksId, vedtaksId),
-    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
+    ...getBrevmetadataQuery,
+    select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
   const showDebug = useSearch({

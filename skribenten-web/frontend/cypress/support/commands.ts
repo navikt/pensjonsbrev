@@ -50,6 +50,7 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/skribenten-backend/brevmal/*/modelSpecification", (req) =>
     req.reply({ types: {}, letterModelTypeName: null }),
   );
+  cy.intercept("GET", "/bff/skribenten-backend/brevmal", { fixture: "brevmetadata.json" }).as("brevmaler");
   cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
     fixture: "brevreservasjon.json",
   }).as("reservasjon");

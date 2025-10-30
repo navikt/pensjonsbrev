@@ -3,6 +3,7 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
+import type { LetterMetadata } from "~/types/apiTypes";
 import type {
   BrevInfo,
   BrevResponse,
@@ -11,6 +12,15 @@ import type {
   ReservasjonResponse,
 } from "~/types/brev";
 import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
+
+export const brevmetadataKeys = {
+  all: ["BREVMETADATA"] as const,
+};
+
+export const getBrevmetadataQuery = {
+  queryKey: brevmetadataKeys.all,
+  queryFn: async () => (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/brevmal`)).data,
+};
 
 export const brevmalKeys = {
   all: ["BREVMAL"] as const,
