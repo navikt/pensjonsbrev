@@ -103,7 +103,7 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
                     text(bokmal { +"Hvis du ikke sender inn opplysninger, forutsetter vi at ektefellen/partneren/samboeren din har full trygdetid i Norge." })
                 }
 
-                includePhrase(HarDuSpoersmaalAlder())
+                includePhrase(HarDuSpoersmaalAlder)
             }
         }
 }
