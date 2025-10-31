@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.model.alder.BeloepEndring
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningType
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -13,7 +13,7 @@ data class MaanedligPensjonFoerSkattAFPDto(
     val afpPrivatBeregningListe: AFPPrivatBeregingListe,
     val opptjeningType: OpptjeningType,
     val belopEndring: BeloepEndring,
-) : BrevbakerBrevdata {
+) : VedleggData {
     data class AFPPrivatBeregning(
         val datoFom: LocalDate,
         val datoTil: LocalDate?,

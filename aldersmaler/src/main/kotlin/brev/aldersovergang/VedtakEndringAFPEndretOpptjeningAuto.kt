@@ -1,6 +1,6 @@
 package brev.aldersovergang
 
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import brev.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -197,11 +197,9 @@ object VedtakEndringAFPEndretOpptjeningAuto :
                     )
                 }
 
-                // TODO - etterbetaling
-
-                includePhrase(RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaal.alder)
+                includePhrase(HarDuSpoersmaalAlder)
             }
 
             includeAttachmentIfNotNull(
