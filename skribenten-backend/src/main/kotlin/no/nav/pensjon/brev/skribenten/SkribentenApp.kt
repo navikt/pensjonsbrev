@@ -89,7 +89,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             !ignorePaths.contains(it.request.path())
         }
         mdc("x_userId") { call ->
-            call.authentication.principal<JwtUserPrincipal>()?.navIdent?.id
+            call.principal<JwtUserPrincipal>()?.navIdent?.id
         }
     }
     install(CallId) {
