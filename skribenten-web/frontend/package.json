@@ -14,9 +14,10 @@
     "test": "vitest --config ./vite.config.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "lint-and-check-types": "npm run check-types && npm run lint && npm run stylelint",
+    "prepare": "cd ../.. && husky skribenten-web/frontend/.husky",
     "stylelint": "stylelint '**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
-    "lint-and-check-types": "npm run check-types && npm run lint && npm run stylelint",
     "tsc:watch": "tsc --watch"
   },
   "dependencies": {
@@ -69,7 +70,9 @@
     "eslint-plugin-unicorn": "61.0.2",
     "globals": "16.4.0",
     "happy-dom": "20.0.8",
+    "husky": "9.1.7",
     "jsdom": "27.0.0",
+    "lint-staged": "16.2.6",
     "postcss-styled-syntax": "0.7.1",
     "prettier": "3.6.2",
     "stylelint": "16.24.0",
