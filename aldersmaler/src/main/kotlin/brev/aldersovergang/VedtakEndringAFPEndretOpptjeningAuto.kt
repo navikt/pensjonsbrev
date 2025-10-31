@@ -68,30 +68,32 @@ object VedtakEndringAFPEndretOpptjeningAuto :
                 }
 
                 showIf(opptjeningType.equalTo(OpptjeningType.TILVEKST)) {
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Skatteoppgjøret for " +
-                                    endretOpptjening.sisteGyldigeOpptjeningsAar.format() +
-                                    " er klart. " +
-                                    "Derfor har vi tatt med pensjonsopptjeningen for dette året, " +
-                                    "når vi har beregnet den avtalefestede pensjonen din på nytt."
-                            },
-                            nynorsk {
-                                +"Skatteoppgjeret for " +
-                                    endretOpptjening.sisteGyldigeOpptjeningsAar.format() +
-                                    " er klart. " +
-                                    "Derfor har vi tatt med pensjonsoppteninga for dette året " +
-                                    "og berekna den avtalefesta pensjonen din på nytt."
-                            },
-                            english {
-                                +"The tax settlement for " +
-                                    endretOpptjening.sisteGyldigeOpptjeningsAar.format() +
-                                    " has been completed. " +
-                                    "Therefore, we have included this year’s pension earnings " +
-                                    "and recalculated your AFP."
-                            },
-                        )
+                    ifNotNull(endretOpptjening.sisteGyldigeOpptjeningsAar) {
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Skatteoppgjøret for " +
+                                        it.format() +
+                                        " er klart. " +
+                                        "Derfor har vi tatt med pensjonsopptjeningen for dette året, " +
+                                        "når vi har beregnet den avtalefestede pensjonen din på nytt."
+                                },
+                                nynorsk {
+                                    +"Skatteoppgjeret for " +
+                                        it.format() +
+                                        " er klart. " +
+                                        "Derfor har vi tatt med pensjonsoppteninga for dette året " +
+                                        "og berekna den avtalefesta pensjonen din på nytt."
+                                },
+                                english {
+                                    +"The tax settlement for " +
+                                        it.format() +
+                                        " has been completed. " +
+                                        "Therefore, we have included this year’s pension earnings " +
+                                        "and recalculated your AFP."
+                                },
+                            )
+                        }
                     }
 
                     paragraph {
