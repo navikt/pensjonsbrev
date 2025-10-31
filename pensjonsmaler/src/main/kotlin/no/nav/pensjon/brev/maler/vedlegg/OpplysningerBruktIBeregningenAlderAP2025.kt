@@ -129,33 +129,35 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             //vedleggBeregnPensjonsbeholdningOgTrygdetid_001
             title1 {
                 text(
-                    bokmal { + "Pensjonsbeholdning" },
-                    nynorsk { + "Pensjonsbehaldning" },
-                    english { + "Accumulated pension capital" },
+                    bokmal { +"Pensjonsbeholdning" },
+                    nynorsk { +"Pensjonsbehaldning" },
+                    english { +"Accumulated pension capital" },
                 )
-                showIf(redusertTrygdetid) {
+                showIf(garantipensjonInnvilget or redusertTrygdetid) {
                     text(
-                        bokmal { + " og trygdetid" },
-                        nynorsk { + " og trygdetid" },
-                        english { + " and Norwegian national insurance coverage" },
+                        bokmal { +" og trygdetid" },
+                        nynorsk { +" og trygdetid" },
+                        english { +" and Norwegian national insurance coverage" },
                     )
                 }
             }
             paragraph {
                 text(
-                    bokmal { + "Pensjonsbeholdningen ved uttaket er summen av all pensjonsopptjening fra tidligere år. Du kan tjene opp inntektspensjon fra og med det året du fyller 17. Den årlige pensjonsopptjeningen din er 18,1 prosent av samlet opptjeningsgrunnlag opp til 7,1 av folketrygdens gjennomsnittlige grunnbeløp (G) for dette året. Pensjonsbeholdningen er regulert hvert år fram til du begynner å ta ut alderspensjon." },
-                    nynorsk { + "Pensjonsbehaldninga ved uttaket er summen av all pensjonsopptening frå tidlegare år. Du kan tene opp inntektspensjon frå og med det året du fyller 17. Den årlege pensjonsoppteninga di utgjer 18,1 prosent av samla opptjeningsgrunnlag opp til 7,1 av det gjennomsnittleg grunnbeløpet i folketrygda for dette året. Pensjonsbehaldninga er regulert kvart år fram til du byrjar å ta ut alderspensjon." },
-                    english { + "The accumulated pension capital is the sum of all pension accruals from previous years. You can earn income pension starting from the year you turn 17. Your annual pension accrual amounts to 18.1 percent of the total earnings basis up to 7.1 times the average National Insurance basic amount (G). The accumulated pension capital is adjusted annually until you begin to receive retirement pension." },
+                    bokmal { +"Pensjonsbeholdningen ved uttaket er summen av all pensjonsopptjening fra tidligere år. Du kan tjene opp inntektspensjon fra og med det året du fyller 17. Den årlige pensjonsopptjeningen din er 18,1 prosent av samlet opptjeningsgrunnlag opp til 7,1 av folketrygdens gjennomsnittlige grunnbeløp (G) for dette året. Pensjonsbeholdningen er regulert hvert år fram til du begynner å ta ut alderspensjon." },
+                    nynorsk { +"Pensjonsbehaldninga ved uttaket er summen av all pensjonsopptening frå tidlegare år. Du kan tene opp inntektspensjon frå og med det året du fyller 17. Den årlege pensjonsoppteninga di utgjer 18,1 prosent av samla opptjeningsgrunnlag opp til 7,1 av det gjennomsnittleg grunnbeløpet i folketrygda for dette året. Pensjonsbehaldninga er regulert kvart år fram til du byrjar å ta ut alderspensjon." },
+                    english { +"The accumulated pension capital is the sum of all pension accruals from previous years. You can earn income pension starting from the year you turn 17. Your annual pension accrual amounts to 18.1 percent of the total earnings basis up to 7.1 times the average National Insurance basic amount (G). The accumulated pension capital is adjusted annually until you begin to receive retirement pension." },
                 )
             }
 
-            //vedleggBeregnTrygdetidKap20_001
-            paragraph {
-                text(
-                    bokmal { + "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge fra fylte 16 år til og med det året du fyller 66 år. Trygdetid har betydning for beregning av garantipensjon. Full trygdetid er 40 år." },
-                    nynorsk { + "Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg frå fylte 16 år til og med det året du fyller 66 år. Trygdetid har betydning for berekninga av garantipensjon. Full trygdetid er 40 år." },
-                    english { + "National insurance coverage refers to the periods during which you have been a member of the Norwegian National Insurance Scheme. As a general rule, these periods include the time you have lived or worked in Norway from the age of 16 until the year you turn 66. The period of national insurance coverage is relevant for calculating the guaranteed pension, full coverage requires 40 years." },
-                )
+            showIf(garantipensjonInnvilget or redusertTrygdetid) {
+                //vedleggBeregnTrygdetidKap20_001
+                paragraph {
+                    text(
+                        bokmal { +"Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge fra fylte 16 år til og med det året du fyller 66 år. Trygdetid har betydning for beregning av garantipensjon. Full trygdetid er 40 år." },
+                        nynorsk { +"Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg frå fylte 16 år til og med det året du fyller 66 år. Trygdetid har betydning for berekninga av garantipensjon. Full trygdetid er 40 år." },
+                        english { +"National insurance coverage refers to the periods during which you have been a member of the Norwegian National Insurance Scheme. As a general rule, these periods include the time you have lived or worked in Norway from the age of 16 until the year you turn 66. The period of national insurance coverage is relevant for calculating the guaranteed pension, full coverage requires 40 years." },
+                    )
+                }
             }
         }
 
