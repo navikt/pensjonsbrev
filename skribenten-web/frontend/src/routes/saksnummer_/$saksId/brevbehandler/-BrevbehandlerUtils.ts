@@ -35,7 +35,7 @@ export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker
 
 const sorteringsRekkefølge = { Arkivert: 1, Kladd: 2, UnderRedigering: 3, Klar: 4, Attestering: 5 };
 
-export const sortBrevmeny = (brev: BrevInfo[]): BrevInfo[] =>
+export const sortBrevvelger = (brev: BrevInfo[]): BrevInfo[] =>
   brev.toSorted((a, b) => {
     if (sorteringsRekkefølge[a.status.type] !== sorteringsRekkefølge[b.status.type]) {
       return sorteringsRekkefølge[a.status.type] - sorteringsRekkefølge[b.status.type];
