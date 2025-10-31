@@ -6,12 +6,12 @@ describe("Brevvelger spec", () => {
 
   it("Søk med saksnummer", () => {
     cy.visit("/");
-    cy.contains("Brevmeny").should("not.exist");
+    cy.contains("Brevvelger").should("not.exist");
     cy.contains("Saksnummer").click();
     cy.focused().type("123{enter}");
     cy.contains("Finner ikke saksnummer").should("exist");
     cy.focused().type("456{enter}");
-    cy.contains("Brevmeny");
+    cy.contains("Brevvelger");
   });
 
   it("Søk etter brevmal", () => {

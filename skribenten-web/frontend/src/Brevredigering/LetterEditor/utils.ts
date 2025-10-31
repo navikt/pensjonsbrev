@@ -57,6 +57,9 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
           } else if (event.key === "i") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+          } else if (event.key === "u") {
+            // block ctrl-u from applying underline
+            event.preventDefault();
           }
         }
       } else {
@@ -67,6 +70,9 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
           } else if (event.key === "i") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+          } else if (event.key === "u") {
+            // block cmd-u from applying underline
+            event.preventDefault();
           }
         }
       }

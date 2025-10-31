@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
 
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -40,7 +41,7 @@ data class OmstillingsstoenadRevurderingDTO(
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
     val erInnvilgelsesaar: Boolean
-): FerdigstillingBrevDTO {
+): VedleggData, FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
 
@@ -147,7 +148,7 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 
-            includeAttachment(dineRettigheterOgPlikter, innhold)
+            includeAttachment(dineRettigheterOgPlikter)
             includeAttachment(
                 forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering,
                 this.argument,

@@ -56,9 +56,9 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), bosattUtland)
     }
 }

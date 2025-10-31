@@ -27,6 +27,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.JwtUserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
@@ -86,6 +87,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
         filter {
             !ignorePaths.contains(it.request.path())
+        }
+        mdc("x_userId") { call ->
+            call.principal<JwtUserPrincipal>()?.navIdent?.id
         }
     }
     install(CallId) {
@@ -151,11 +155,19 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
+    val valkeyConfig = skribentenConfig.getConfig("valkey")
+    val cache = if (valkeyConfig.getBoolean("enabled")) {
+        Valkey(valkeyConfig)
+    } else {
+        log.warn("Valkey is disabled, this is not recommended for production")
+        InMemoryCache()
+    }
+
     val azureADConfig = skribentenConfig.requireAzureADConfig()
     install(Authentication) {
         skribentenJwt(azureADConfig)
     }
-    configureRouting(azureADConfig, skribentenConfig)
+    configureRouting(azureADConfig, skribentenConfig, cache)
     configureMetrics()
 
     monitor.subscribe(ServerReady) {

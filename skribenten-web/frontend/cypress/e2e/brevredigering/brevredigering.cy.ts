@@ -60,6 +60,7 @@ describe("Brevredigering", () => {
     cy.contains("Land").click().type("{selectall}{backspace}").type("Mars");
     cy.contains("Underskrift").click().type("{selectall}{backspace}").type("Det nye saksbehandlernavnet");
     cy.contains("Fortsett").click();
+    cy.contains("Fortsett til brevbehandler").should("be.visible").click();
 
     cy.wait("@lagreBrev", { timeout: 20000 }).should((req) => {
       expect(req.response?.statusCode).to.equal(200);

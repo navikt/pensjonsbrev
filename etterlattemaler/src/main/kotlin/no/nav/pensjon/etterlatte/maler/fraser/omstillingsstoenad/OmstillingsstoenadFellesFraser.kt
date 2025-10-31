@@ -2,22 +2,15 @@ package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.bosattUtland
 
 object OmstillingsstoenadFellesFraser {
 
@@ -72,6 +65,29 @@ object OmstillingsstoenadFellesFraser {
             }
         }
     }
+
+    object MeldFraOmEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    bokmal { +"Her kan du melde fra og lese mer" },
+                    nynorsk { +"Her kan du melde frå og lese meir" },
+                    english { +"You can report information and read more" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du finner mer informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}. " +
+                            "Du kan melde fra om opplysninger og sende dokumentasjon om etteroppgjøret på ${Constants.OMS_MELD_INN_ENDRING_URL}." },
+                    nynorsk { +"Du finn meir informasjon om etteroppgjer på ${Constants.OMS_ETTEROPPGJOER_URL}. " +
+                            "Meld frå til oss ved å fylle ut endringsskjemaet eller ettersende dokumentasjon om etteroppgjeret på ${Constants.OMS_MELD_INN_ENDRING_URL}." },
+                    english { +"You can find more information about the final settlement of adjustment allowance at ${Constants.OMS_ETTEROPPGJOER_URL}. " +
+                            " You can report information and submit documentation related to the final settlement at ${Constants.OMS_MELD_INN_ENDRING_URL}." },
+                )
+            }
+        }
+    }
+
 
     object DuHarRettTilAaKlage  : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

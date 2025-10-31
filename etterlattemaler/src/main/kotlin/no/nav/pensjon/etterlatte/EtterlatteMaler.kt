@@ -31,7 +31,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarsel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigstilling
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnhold
-import no.nav.pensjon.etterlatte.maler.klage.BlankettKlageinstans
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelsesbrevBruker
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstid
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold
@@ -129,7 +128,6 @@ object EtterlatteMaler : AllTemplates {
             // Klage
             AvvistKlageInnhold,
             AvvistKlageFerdigstilling,
-            BlankettKlageinstans,
             KlageOversendelsesbrevBruker,
             KlageSaksbehandlingstid,
 

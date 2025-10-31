@@ -2,6 +2,7 @@ app-name: "skribenten-web"
 
 ingresses:
   - "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
+  - "https://pensjon-skribenten-web-q2.ansatt.dev.nav.no"
 
 env:
   - name: NODE_ENV
@@ -15,7 +16,7 @@ env:
   - name: SKRIBENTEN_API_SCOPE
     value: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
   - name: PSAK_BASE_URL
-    value: "https://pensjon-psak-q2.dev.adeo.no"
+    value: "https://pensjon-psak-q2.intern.dev.nav.no"
 
 groups:
   - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER

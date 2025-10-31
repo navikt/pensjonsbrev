@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -313,7 +312,11 @@ class BrevredigeringService(
         }
 
         return brevredigering?.let {
-            if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
+            // TODO: Midlertidig workaround for å tvinge fram henting av P1-data alltid
+            if (brevredigering.info.brevkode.kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK") {
+                opprettPdf(brevredigering)
+            }
+            else if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
                 Ok(document.pdf)
             } else {
                 opprettPdf(brevredigering)
@@ -407,8 +410,8 @@ class BrevredigeringService(
         } else null
     }
 
-    private suspend fun validerVedtaksbrevAttestert(brev: Dto.Brevredigering, brevtype: LetterMetadata.Brevtype) {
-        if (Features.attestant.isEnabled() && brevtype == LetterMetadata.Brevtype.VEDTAKSBREV && brev.info.attestertAv == null) {
+    private fun validerVedtaksbrevAttestert(brev: Dto.Brevredigering, brevtype: LetterMetadata.Brevtype) {
+        if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV && brev.info.attestertAv == null) {
             throw BrevIkkeKlartTilSendingException("Brev med id ${brev.info.id} er ikke attestert.")
         }
     }
@@ -733,8 +736,6 @@ private fun Mottaker.toDto(): Dto.Mottaker =
 
         MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
             navn = navn!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,

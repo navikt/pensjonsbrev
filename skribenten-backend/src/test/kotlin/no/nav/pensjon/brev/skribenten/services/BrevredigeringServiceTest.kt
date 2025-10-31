@@ -161,6 +161,7 @@ class BrevredigeringServiceTest {
         1234L,
         "12345678910",
         LocalDate.now().minusYears(42),
+        Pen.SakSelection.Navn("a", "b", "c"),
         Pen.SakType.ALDER,
         "rabbit"
     )
@@ -730,8 +731,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -760,8 +759,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -787,8 +784,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -811,7 +806,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan distribuere vedtaksbrev som er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
         brevbakerService.renderPdfKall.clear()
 
         val brev = opprettBrev(
@@ -1281,8 +1275,6 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             mottaker = Dto.Mottaker.utenlandskAdresse(
                 navn = "a",
-                postnummer = "b",
-                poststed = "c",
                 adresselinje1 = "d",
                 adresselinje2 = "e",
                 adresselinje3 = "f",
@@ -1290,7 +1282,14 @@ class BrevredigeringServiceTest {
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
             )
         ).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"), Dto.Mottaker.ManueltAdressertTil.BRUKER)
+        val nyMottaker = Dto.Mottaker.utenlandskAdresse(
+            navn = "a",
+            adresselinje1 = "b",
+            adresselinje2 = "c",
+            adresselinje3 = "d",
+            landkode = Landkode("CY"),
+            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
+        )
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(

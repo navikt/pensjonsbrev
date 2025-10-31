@@ -40,7 +40,10 @@ class BrevmalServiceTest {
 
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
-    private fun lagBrevmalService(service: PenService = object : PenServiceStub() {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    private fun lagBrevmalService(
+        service: PenService = PenServiceStub(),
+        brevmetadataService: BrevmetadataService = FakeBrevmetadataService()
+    ): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",

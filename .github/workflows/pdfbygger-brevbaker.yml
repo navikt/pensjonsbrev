@@ -43,106 +43,54 @@ env:
   JavaDistribution: "temurin"
   JavaVersion: 21
 
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
 jobs:
   buildBrevbaker:
-    name: "build brevbaker"
-    runs-on: "ubuntu-latest"
-    permissions:
-      packages: "write"
-      id-token: "write"
-    outputs:
-      image: ${{ steps.docker-push.outputs.image }}
-      digest: ${{ steps.docker-push.outputs.digest }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: gradle/actions/wrapper-validation@v4
-      - name: "Setup Gradle"
-        uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v5
-        with:
-          "distribution": ${{ env.JavaDistribution }}
-          "java-version": ${{ env.JavaVersion }}
+    uses: ./.github/workflows/.build-backend.yaml
+    secrets: inherit
+    with:
+      image_suffix: brevbaker
+      path: pensjon-brevbaker
+      extraModulesToBuild: ':pensjon-brevbaker-api-model:publishToMavenLocal :alder-brevbaker-api-model:publishToMavenLocal :ufoere-brevbaker-api-model:publishToMavenLocal'
+      buildImage: true
 
-      - name: "compile and run tests"
-        run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :pensjon-brevbaker:buildNeeded
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@v0
-        env:
-          TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
-        id: docker-push
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-        with:
-          team: pensjonsbrev
-          image_suffix: brevbaker
-          push_image: true
-          pull: true
-          docker_context: ./pensjon-brevbaker
-          dockerfile: pensjon-brevbaker/Dockerfile
-          salsa: false
-
-  salsa-brevbygger:
-    name: Generate SBOM, attest and sign image
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+  salsa-brevbaker:
+    uses: ./.github/workflows/.salsa.yaml
     needs: buildBrevbaker
-    permissions:
-      id-token: "write"
-    steps:
-      - name: NAIS login
-        uses: nais/login@v0
-        id: login
-        with:
-          team: pensjonsbrev
-      - name: Generate SBOM, attest and sign image
-        id: attest-sign
-        uses: nais/attest-sign@v1
-        with:
-          image_ref: ${{ needs.buildBrevbaker.outputs.image }}@${{ needs.buildBrevbaker.outputs.digest }}
+    secrets: inherit
+    with:
+      digest: ${{ needs.buildBrevbaker.outputs.digest }}
+      image: ${{ needs.buildBrevbaker.outputs.image }}
 
   buildPdfbygger:
-    name: "build pdfbygger"
-    runs-on: "ubuntu-latest"
+    uses: ./.github/workflows/.build-backend.yaml
+    secrets: inherit
+    with:
+      image_suffix: pdf-bygger
+      path: pdf-bygger
+      buildImage: true
+      uploadJar: true
+
+  pushPdfByggerToGithubRegistry:
+    name: "Push pdf-bygger to github registry"
+    needs: buildPdfbygger
+    runs-on: ubuntu-latest
     permissions:
       packages: "write"
       id-token: "write"
-    outputs:
-      image: ${{ steps.docker-push.outputs.image }}
-      digest: ${{ steps.docker-push.outputs.digest }}
     steps:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: gradle/actions/wrapper-validation@v4
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v5
+      - name: Download jar
+        uses: actions/download-artifact@v5
         with:
-          "distribution": ${{ env.JavaDistribution }}
-          "java-version": ${{ env.JavaVersion }}
-      - name: "compile and run tests"
-        run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :pdf-bygger:build
-      - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@v0
-        id: docker-push
-        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-        with:
-          team: pensjonsbrev
-          image_suffix: pdf-bygger
-          push_image: true
-          pull: true
-          docker_context: ./pdf-bygger
-          dockerfile: pdf-bygger/Dockerfile
-          salsa: false
+          name: pdf-bygger-jar
+          path: pdf-bygger/build/libs/
       - name: "Publish container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
@@ -150,26 +98,15 @@ jobs:
           docker push ${IMAGE_PDF_BYGGER}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          OUTPUT_IMAGE: ${{ steps.docker-push.outputs.image }}
+          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
 
   salsa-pdfbygger:
-    name: Generate SBOM, attest and sign image
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/.salsa.yaml
     needs: buildPdfbygger
-    permissions:
-      id-token: "write"
-    steps:
-      - name: NAIS login
-        uses: nais/login@v0
-        id: login
-        with:
-          team: pensjonsbrev
-      - name: Generate SBOM, attest and sign image
-        id: attest-sign
-        uses: nais/attest-sign@v1
-        with:
-          image_ref: ${{ needs.buildPdfbygger.outputs.image }}@${{ needs.buildPdfbygger.outputs.digest }}
+    secrets: inherit
+    with:
+      digest: ${{ needs.buildPdfbygger.outputs.digest }}
+      image: ${{ needs.buildPdfbygger.outputs.image }}
 
   changes:
     runs-on: ubuntu-latest
@@ -191,7 +128,7 @@ jobs:
 
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ buildPdfbygger, changes ]
+    needs: [ pushPdfByggerToGithubRegistry, changes ]
     services:
       pdf-bygger:
         env:
@@ -278,89 +215,49 @@ jobs:
           issue-number: ${{ github.event.number }}
           body-path: percy-build-url
 
-  "deployBrevbakerToDev":
+  deployBrevbakerToDev:
     name: "Deploy brevbaker to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
     needs: [runIntegrationTests, buildBrevbaker]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:brevbaker"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.buildBrevbaker.outputs.image }}
-          "VARS": "pensjon-brevbaker/.nais/dev.yaml"
+    with:
+      cluster: "dev-gcp"
+      resource: "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      image: ${{needs.buildBrevbaker.outputs.image}}
+      vars: "pensjon-brevbaker/.nais/dev.yaml"
 
-  "deployPdfByggerToDev":
+  deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "dev-gcp:pdf-bygger"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
-          "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
-          "VARS": "pdf-bygger/.nais/dev.yaml"
+    with:
+      cluster: "dev-gcp"
+      resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
+      image: ${{needs.buildPdfbygger.outputs.image}}
+      vars: "pdf-bygger/.nais/dev.yaml"
 
-  "deployBrevbakerToProduction":
+  deployBrevbakerToProduction:
     name: "Deploy brevbaker to production"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
     needs: [runIntegrationTests, buildBrevbaker]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:brevbaker"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ needs.buildBrevbaker.outputs.image }}
-          "VARS": "pensjon-brevbaker/.nais/prod.yaml"
+    with:
+      cluster: "prod-gcp"
+      resource: "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      image: ${{needs.buildBrevbaker.outputs.image}}
+      vars: "pensjon-brevbaker/.nais/prod.yaml"
 
-  "deployPdfByggerToProduction":
-    name: "Deploy pdf-bygger to production"
-    permissions:
-      contents: "read"
-      id-token: "write"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  deployPdfByggerToProd:
+    name: "Deploy pdf-bygger to dev"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
-        env:
-          "ENVIRONMENT": "prod-gcp:pdf-bygger"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
-          "VAR": image=${{ needs.buildPdfbygger.outputs.image }}
-          "VARS": "pdf-bygger/.nais/prod.yaml"
+    with:
+      cluster: "prod-gcp"
+      resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
+      image: ${{needs.buildPdfbygger.outputs.image}}
+      vars: "pdf-bygger/.nais/prod.yaml"
 
   "klarTilMerge":
     name: "Klar til merge"

@@ -8,116 +8,14 @@ name: "deploy: skribenten-web"
       - skribenten-web/**
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: skribenten-web
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build:
-    name: build
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
-
-      - name: Install frontend
-        working-directory: skribenten-web/frontend
-        run: npm install
-
-      - name: Build frontend
-        working-directory: skribenten-web/frontend
-        run: npm run build
-
-      - name: Copy frontend dist into public directory of bff
-        working-directory: skribenten-web/frontend
-        run: cp -r dist/ ../bff/public
-
-      - name: Install bff dependencies
-        working-directory: skribenten-web/bff
-        run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: Build bff
-        working-directory: skribenten-web/bff
-        run: npm run build
-
-      - name: Build and push Docker container
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
-        with:
-          team: pensjonsbrev
-          image_suffix: skribenten-web
-          docker_context: skribenten-web/bff
-          dockerfile: skribenten-web/bff/Dockerfile
-          salsa: false
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-      digest: ${{ steps.docker-build-push.outputs.digest }}
-
-
-  salsa:
-    name: Generate SBOM, attest and sign image
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: "write"
-    steps:
-      - name: NAIS login
-        uses: nais/login@v0
-        id: login
-        with:
-          team: pensjonsbrev
-      - name: Generate SBOM, attest and sign image
-        id: attest-sign
-        uses: nais/attest-sign@v1
-        with:
-          image_ref: ${{ needs.build.outputs.image }}@${{ needs.build.outputs.digest }}
-
-  deploy-dev:
-    name: Deploy app to dev
-    permissions:
-      contents: read
-      id-token: write
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Deploy to DEV
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: skribenten-web/bff/.nais/nais.yaml
-          VAR: image=${{needs.build.outputs.image}}
-          VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
-
-  deploy-prod:
-    name: Deploy app to prod
-    permissions:
-      contents: read
-      id-token: write
-    if: github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Deploy to PROD
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: skribenten-web/bff/.nais/nais.yaml
-          VAR: image=${{needs.build.outputs.image}}
-          VARS: "skribenten-web/bff/.nais/bff-prod.yaml"
+    uses: ./.github/workflows/.build-frontend.yaml
+    secrets: inherit
+    with:
+      workingDir: skribenten-web
+      deployToProd: true

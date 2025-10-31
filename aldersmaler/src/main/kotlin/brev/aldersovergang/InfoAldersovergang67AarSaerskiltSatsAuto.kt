@@ -112,7 +112,7 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
                     text(bokmal { +"Alderspensjonen din blir vurdert på nytt etter vi har mottatt dokumentasjonen." })
                 }
 
-                includePhrase(HarDuSpoersmaalAlder())
+                includePhrase(HarDuSpoersmaalAlder)
             }
         }
 }

@@ -42,7 +42,7 @@ fun Route.sakRoute(
             } else {
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
-            call.respond(Api.SakContext(sak, brevmetadata))
+            call.respond(Api.SakContext(sak, brevmetadata.map { it.id }))
         }
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
@@ -76,10 +76,6 @@ fun Route.sakRoute(
                     )
                 }
             }
-        }
-        get("/navn") {
-            val sak = call.attributes[SakKey]
-            respondWithResult(pdlService.hentNavn(sak.foedselsnr, sak.sakType.behandlingsnummer))
         }
 
         get("/adresse") {

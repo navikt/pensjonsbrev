@@ -6,7 +6,7 @@ assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.181"
 commonsCodecVersion = "1.19.0"
-commonVersion = "2.7.0"
+commonVersion = "2.9.0"
 exposedVersion = "0.61.0"
 flywayVersion = "11.13.2"
 hamkrestVersion = "1.8.0.1"
@@ -22,6 +22,7 @@ pdfboxVersion = "3.0.5"
 postgresqlVersion = "42.7.8"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.1.0"
+valkeyVersion = "5.5.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
@@ -45,6 +46,7 @@ micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
+valkey = { module = "io.valkey:valkey-java", version.ref = "valkeyVersion" }
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
