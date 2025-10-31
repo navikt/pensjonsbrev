@@ -31,7 +31,7 @@ import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
-import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrevvelger } from "../-BrevbehandlerUtils";
+import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
@@ -75,7 +75,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
 
   return (
     <Accordion>
-      {sortBrevvelger(properties.brev).map((brev) => (
+      {sortBrev(properties.brev).map((brev) => (
         <BrevItem
           brev={brev}
           key={brev.id}
