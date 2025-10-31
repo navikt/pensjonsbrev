@@ -32,17 +32,17 @@ import java.time.Month
 
 class PDFVedleggTest {
 
-    @Tag(TestTags.MANUAL_TEST)
+    @Tag(TestTags.INTEGRATION_TEST)
     @Test
     fun testPdf() {
         val template = SamletMeldingOmPensjonsvedtak.template
         val brevkode = SamletMeldingOmPensjonsvedtak.kode
-        val spraak = Language.Bokmal
+        val spraak = Language.English
         if (!template.language.supports(spraak)) {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 1, avslag = 6), spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6), spraak, Fixtures.felles)
 
         letter.renderTestPDF("${brevkode.kode()}_${spraak.javaClass.simpleName}", pdfVedleggAppender = PDFVedleggAppenderImpl)
     }
@@ -59,7 +59,7 @@ fun createSamletMeldingOmPensjonsvedtakDto(innvilget: Int, avslag: Int) =
 
 fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
     innehaver = P1Person(
-        fornavn = "Peder",
+        fornavn = "PederĀ",
         etternavn = "Ås",
         etternavnVedFoedsel = "Aas",
         foedselsdato = null,
