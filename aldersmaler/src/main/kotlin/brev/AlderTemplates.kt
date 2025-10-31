@@ -1,10 +1,20 @@
 package no.nav.pensjon.brev
 
-import brev.adhoc.*
+import brev.adhoc.AdhocAFPInformasjonOekningToleransebeloep
+import brev.adhoc.AdhocAlderspensjonFraFolketrygden
+import brev.adhoc.AdhocAlderspensjonFraFolketrygden2
+import brev.adhoc.AdhocAlderspensjonGjtOpprydding
+import brev.adhoc.AdhocAlderspensjonGjtVarselBrev
+import brev.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
+import brev.adhoc.AdhocSkjermingstilleggFeilMottaker
+import brev.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
+import brev.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
+import brev.adhoc.FeilUtsendingAvGjenlevenderett
 import brev.aldersovergang.InfoAldersovergangEps60AarAuto
 import brev.aldersovergang.InfoAldersovergangEps62AarAuto
 import brev.aldersovergang.InfoFyller67AarSaerskiltSats
 import brev.aldersovergang.VedtakAldersovergang67AarGarantitilleggAuto
+import brev.aldersovergang.VedtakEndringAFPEndretOpptjeningAuto
 import brev.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import brev.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import brev.sivilstand.EndringAvAlderspensjonSivilstand
@@ -26,37 +36,40 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object AlderTemplates : AllTemplates {
-    override fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
-        AvslagGradsendringFoerNormertPensjonsalderAuto,
-        AvslagGradsendringFoerNormertPensjonsalder2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
-        AvslagUttakFoerNormertPensjonsalderAP2016Auto,
-        AvslagUttakFoerNormertPensjonsalderAuto,
-        InfoFyller67AarSaerskiltSats,
-        InfoAldersovergangEps60AarAuto,
-        InfoAldersovergangEps62AarAuto,
-        VedtakAldersovergang67AarGarantitilleggAuto,
-        AdhocAFPInformasjonOekningToleransebeloep,
-        AdhocAlderspensjonFraFolketrygden,
-        AdhocAlderspensjonFraFolketrygden2,
-        AdhocAlderspensjonGjtOpprydding,
-        AdhocAlderspensjonGjtVarselBrev,
-        AdhocSkjermingstilleggFeilBeroertBruker,
-        AdhocSkjermingstilleggFeilMottaker,
-        AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
-        AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
-        EndringAvAlderspensjonSivilstandAuto,
-        FeilUtsendingAvGjenlevenderett,
-    )
+    override fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>> =
+        setOf(
+            AdhocAFPInformasjonOekningToleransebeloep,
+            AdhocAlderspensjonFraFolketrygden,
+            AdhocAlderspensjonFraFolketrygden2,
+            AdhocAlderspensjonGjtOpprydding,
+            AdhocAlderspensjonGjtVarselBrev,
+            AdhocSkjermingstilleggFeilBeroertBruker,
+            AdhocSkjermingstilleggFeilMottaker,
+            AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
+            AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+            AvslagGradsendringFoerNormertPensjonsalder2016Auto,
+            AvslagGradsendringFoerNormertPensjonsalderAuto,
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
+            AvslagUttakFoerNormertPensjonsalderAP2016Auto,
+            AvslagUttakFoerNormertPensjonsalderAuto,
+            EndringAvAlderspensjonSivilstandAuto,
+            FeilUtsendingAvGjenlevenderett,
+            InfoAldersovergangEps60AarAuto,
+            InfoAldersovergangEps62AarAuto,
+            InfoFyller67AarSaerskiltSats,
+            VedtakAldersovergang67AarGarantitilleggAuto,
+            VedtakEndringAFPEndretOpptjeningAuto,
+        )
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
-        AvslagGradsendringFoerNormertPensjonsalder,
-        AvslagGradsendringFoerNormertPensjonsalderAP2016,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
-        AvslagUttakFoerNormertPensjonsalder,
-        AvslagUttakFoerNormertPensjonsalderAP2016,
-        EndringAvAlderspensjonPgaGarantitillegg,
-        EndringAvAlderspensjonSivilstand,
-        EndringAvAlderspensjonSivilstandSaerskiltSats,
-    )
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
+        setOf(
+            AvslagGradsendringFoerNormertPensjonsalder,
+            AvslagGradsendringFoerNormertPensjonsalderAP2016,
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+            AvslagUttakFoerNormertPensjonsalder,
+            AvslagUttakFoerNormertPensjonsalderAP2016,
+            EndringAvAlderspensjonPgaGarantitillegg,
+            EndringAvAlderspensjonSivilstand,
+            EndringAvAlderspensjonSivilstandSaerskiltSats,
+        )
 }
