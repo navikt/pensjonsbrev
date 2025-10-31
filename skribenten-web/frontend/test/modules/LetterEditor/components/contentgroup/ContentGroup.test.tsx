@@ -1,3 +1,9 @@
+// jsdom sammenklapper eventuelle tekstmarkeringer umiddelbart etter avfyring av
+// fokus-hendelse, som gjør at vår programmatiske markering av fritekstfelt i
+// fokus-hendelsen ikke blir stående i den påfølgende klikk-hendelsen:
+// https://github.com/jsdom/jsdom/blob/adb999a12912f2f5ceb49fde6b1c9f7051968dc8/lib/jsdom/living/nodes/HTMLOrSVGElement-impl.js#L73
+// happy-dom gjør ikke "collapse()" etter avfyring av "focus" og oppfører seg
+// derfor likt som i nettleseren, derfor bruker vi happy-dom i denne testen:
 // @vitest-environment happy-dom
 
 import { render, screen } from "@testing-library/react";

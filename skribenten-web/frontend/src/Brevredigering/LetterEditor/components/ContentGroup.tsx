@@ -163,7 +163,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
   const erFritekst =
-    content.tags.includes(ElementTags.FRITEKST) && (content.editedText === null || content.editedText === undefined);
+    content.tags.includes(ElementTags.FRITEKST) &&
+    (content.editedText === null || content.editedText === undefined || content.editedText === content.text);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -296,7 +297,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
    *  - skal tast alltid flytte posisjon
    */
   const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    if (contentEditableReference.current === null) return;
+    if (contentEditableReference.current === null || event.shiftKey) return;
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
@@ -334,7 +335,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined) {
+    if (element === null || caretCoordinates === undefined || event.shiftKey) {
       return;
     }
 
@@ -354,7 +355,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined) {
+    if (element === null || caretCoordinates === undefined || event.shiftKey) {
       return;
     }
 

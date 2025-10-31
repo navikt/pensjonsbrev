@@ -67,6 +67,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
         !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Control", "Alt", "Meta", "CapsLock"].includes(event.key)
       ) {
         selectingByKeys = false;
+        restore();
       }
     };
 
@@ -89,7 +90,10 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     const onSelectionChange = () => {
       const selection = document.getSelection?.();
       if (!selection || selection.rangeCount === 0) return;
-      if (selection.isCollapsed) return;
+      if (selection.isCollapsed) {
+        restore();
+        return;
+      }
       if (!dragStarted && !selectingByKeys) return;
       if (isInside(selection.anchorNode) || isInside(selection.focusNode)) {
         unify();
