@@ -27,6 +27,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.JwtUserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
@@ -86,6 +87,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
         filter {
             !ignorePaths.contains(it.request.path())
+        }
+        mdc("x_userId") { call ->
+            call.principal<JwtUserPrincipal>()?.navIdent?.id
         }
     }
     install(CallId) {

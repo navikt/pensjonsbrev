@@ -50,7 +50,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd med ung ufør fordel" })
+                text(bokmal { +"Derfor får du ikke rettigheter som ung ufør" })
             }
             paragraph {
                 text(bokmal { +"Uføretidspunktet ditt er fastsatt til etter at du fylte 26 år." })
