@@ -274,7 +274,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             includePhrase(ReguleringAvAlderspensjon)
             includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
 
-            includePhrase(ArbeidsinntektOgAlderspensjon(innvilgetFor67, uttaksgrad, uforeKombinertMedAlder))
+            includePhrase(ArbeidsinntektOgAlderspensjon(uttaksgrad, uforeKombinertMedAlder))
 
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)

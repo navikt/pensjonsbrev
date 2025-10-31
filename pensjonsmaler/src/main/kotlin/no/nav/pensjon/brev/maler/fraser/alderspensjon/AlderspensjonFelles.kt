@@ -253,7 +253,6 @@ object ArbeidsinntektOgAlderspensjonKort : OutlinePhrase<LangBokmalNynorskEnglis
 }
 
 data class ArbeidsinntektOgAlderspensjon(
-    val innvilgetFor67: Expression<Boolean>,
     val uttaksgrad: Expression<Int>,
     val uforeKombinertMedAlder: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -297,9 +296,7 @@ data class ArbeidsinntektOgAlderspensjon(
                 )
             }
         }
-        showIf(innvilgetFor67) {
-            includePhrase(UfoereAlder.UfoereKombinertMedAlder(uforeKombinertMedAlder))
-        }
+        includePhrase(UfoereAlder.UfoereKombinertMedAlder(uforeKombinertMedAlder))
     }
 }
 

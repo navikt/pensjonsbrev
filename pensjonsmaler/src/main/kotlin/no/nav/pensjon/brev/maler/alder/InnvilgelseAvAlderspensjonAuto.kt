@@ -247,7 +247,6 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                 includePhrase(InnvilgelseAPUttakEndr(alderspensjonVedVirk.uforeKombinertMedAlder))
                 includePhrase(
                     ArbeidsinntektOgAlderspensjon(
-                        innvilgetFor67 = alderspensjonVedVirk.innvilgetFor67,
                         uttaksgrad = alderspensjonVedVirk.uttaksgrad,
                         uforeKombinertMedAlder = alderspensjonVedVirk.uforeKombinertMedAlder
                     )

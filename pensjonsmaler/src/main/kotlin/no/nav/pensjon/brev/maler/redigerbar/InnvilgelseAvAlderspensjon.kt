@@ -472,11 +472,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
 
-            includePhrase(
-                ArbeidsinntektOgAlderspensjon(
-                    innvilgetFor67, uttaksgrad, uforeKombinertMedAlder
-                )
-            )
+            includePhrase(ArbeidsinntektOgAlderspensjon(uttaksgrad, uforeKombinertMedAlder))
 
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
