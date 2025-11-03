@@ -65,7 +65,7 @@ jobs:
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
+        uses: cypress-io/github-action@e65cba2e7319696fc0fdc4d5a319b737aec4ba1c
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -75,7 +75,7 @@ jobs:
 
       - name: Cypress run component tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
+        uses: cypress-io/github-action@e65cba2e7319696fc0fdc4d5a319b737aec4ba1c
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
