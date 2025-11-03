@@ -249,7 +249,7 @@ jobs:
       vars: "pensjon-brevbaker/.nais/prod.yaml"
 
   deployPdfByggerToProd:
-    name: "Deploy pdf-bygger to dev"
+    name: "Deploy pdf-bygger to prod"
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
