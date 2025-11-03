@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import java.nio.file.Path
 import java.util.Objects
 
 @PDFVedleggMarker
