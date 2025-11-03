@@ -121,3 +121,14 @@ jobs:
         with:
           sarif_file: sarif-results/javascript.sarif
           category: "/language:javascript"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [analyze-java, analyze-javascript]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
