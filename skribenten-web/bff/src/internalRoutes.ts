@@ -52,7 +52,7 @@ export const internalRoutes = (server: Express) => {
     }
 
     const body = request.body;
-    const level = body.status === 403 || body.status === 404 ? "WARN" : "ERROR";
+    const level = [401, 403, 404].includes(body.status) ? "WARN" : "ERROR";
 
     console.error(
       JSON.stringify({
