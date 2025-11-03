@@ -10,7 +10,7 @@ import java.time.LocalDate
 data class MaanedligPensjonFoerSkattAFPDto(
     val afpPrivatBeregningGjeldende: AFPPrivatBeregning,
     val krav: Krav,
-    val afpPrivatBeregningListe: AFPPrivatBeregingListe,
+    val afpPrivatBeregningListen: AFPPrivatBeregingListen,
     val opptjeningType: OpptjeningType,
     val belopEndring: BeloepEndring,
 ) : VedleggData {
@@ -27,8 +27,8 @@ data class MaanedligPensjonFoerSkattAFPDto(
         val virkDatoFom: LocalDate,
     )
 
-    data class AFPPrivatBeregingListe(
+    data class AFPPrivatBeregingListen(
         val antallBeregningsperioder: Int,
-        val afpPrivatBeregingListe: List<AFPPrivatBeregning>,
+        val afpPrivatBeregingListen: List<AFPPrivatBeregning>,
     )
 }

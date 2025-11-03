@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningInfoSelectors.si
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.afpPrivatBeregningGjeldende
-import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.afpPrivateBeregningVedVirk
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.afpPrivatBeregningVedVirk
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.belopEndring
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.endretOpptjening
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDtoSelectors.maanedligPensjonFoerSkattAFP
@@ -99,15 +99,15 @@ object VedtakEndringAFPEndretOpptjeningAuto :
                     paragraph {
                         text(
                             bokmal {
-                                +"Fra " + virkFom.format() + " får du " + afpPrivateBeregningVedVirk.totalPensjon.format() +
+                                +"Fra " + virkFom.format() + " får du " + afpPrivatBeregningVedVirk.totalPensjon.format() +
                                     " kroner fær skatt i AFP."
                             },
                             nynorsk {
-                                +"Frå " + virkFom.format() + " får du " + afpPrivateBeregningVedVirk.totalPensjon.format() +
+                                +"Frå " + virkFom.format() + " får du " + afpPrivatBeregningVedVirk.totalPensjon.format() +
                                     " kroner fær skatt i AFP."
                             },
                             english {
-                                +"From " + virkFom.format() + " you will receive NOK " + afpPrivateBeregningVedVirk.totalPensjon.format() +
+                                +"From " + virkFom.format() + " you will receive NOK " + afpPrivatBeregningVedVirk.totalPensjon.format() +
                                     " before tax as AFP."
                             },
                         )

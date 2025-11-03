@@ -10,7 +10,7 @@ data class VedtakEndringAFPEndretOpptjeningAutoDto(
     val virkFom: LocalDate,
     val opptjeningType: OpptjeningType,
     val belopEndring: BeloepEndring,
-    val afpPrivateBeregningVedVirk: AFPPrivatBeregning,
+    val afpPrivatBeregningVedVirk: AFPPrivatBeregning,
     val afpPrivatBeregningGjeldende: AFPPrivatBeregning,
     val endretOpptjening: OpptjeningInfo,
     val maanedligPensjonFoerSkattAFP: MaanedligPensjonFoerSkattAFPDto?,

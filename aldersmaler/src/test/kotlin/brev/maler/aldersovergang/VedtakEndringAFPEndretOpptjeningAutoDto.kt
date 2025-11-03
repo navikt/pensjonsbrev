@@ -14,7 +14,7 @@ fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptj
         virkFom = LocalDate.of(2024, 7, 1),
         opptjeningType = OpptjeningType.KORRIGERING,
         belopEndring = BeloepEndring.ENDR_OKT,
-        afpPrivateBeregningVedVirk = AFPPrivatBeregning(totalPensjon = Kroner(5678)),
+        afpPrivatBeregningVedVirk = AFPPrivatBeregning(totalPensjon = Kroner(5678)),
         afpPrivatBeregningGjeldende = AFPPrivatBeregning(totalPensjon = Kroner(5678)),
         endretOpptjening =
             OpptjeningInfo(
@@ -37,10 +37,10 @@ fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptj
                     MaanedligPensjonFoerSkattAFPDto.Krav(
                         virkDatoFom = LocalDate.of(2024, 7, 1),
                     ),
-                afpPrivatBeregningListe =
-                    MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListe(
+                afpPrivatBeregningListen =
+                    MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListen(
                         antallBeregningsperioder = 2,
-                        afpPrivatBeregingListe =
+                        afpPrivatBeregingListen =
                             listOf(
                                 MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
                                     datoFom = LocalDate.of(2023, 6, 1),

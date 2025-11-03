@@ -4,8 +4,8 @@ import brev.felles.KronerText
 import no.nav.pensjon.brev.model.alder.BeloepEndring
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDto
-import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListeSelectors.afpPrivatBeregingListe
-import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListeSelectors.antallBeregningsperioder
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListenSelectors.afpPrivatBeregingListen
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListenSelectors.antallBeregningsperioder
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.afpLivsvarigNetto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.datoFom
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.datoTil
@@ -32,7 +32,7 @@ import java.time.LocalDate
 data class TabellMaanedligPensjonAFP(
     val opptjeningType: Expression<OpptjeningType>,
     val beloepEndring: Expression<BeloepEndring>,
-    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListe>,
+    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListen>,
     val afpPrivatBeregningGjeldende: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -52,10 +52,10 @@ data class TabellMaanedligPensjonAFP(
 }
 
 data class TabellDinMaanedligAFP(
-    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListe>,
+    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListen>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        forEach(afpPrivatBeregning.afpPrivatBeregingListe) { beregning ->
+        forEach(afpPrivatBeregning.afpPrivatBeregingListen) { beregning ->
 
             title2 {
                 includePhrase(
@@ -144,6 +144,7 @@ data class TabellInnhold(
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
+
                     text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
