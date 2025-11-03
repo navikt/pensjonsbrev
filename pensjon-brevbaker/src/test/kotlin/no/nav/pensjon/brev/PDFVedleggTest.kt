@@ -37,7 +37,7 @@ class PDFVedleggTest {
     fun testPdf() {
         val template = SamletMeldingOmPensjonsvedtak.template
         val brevkode = SamletMeldingOmPensjonsvedtak.kode
-        val spraak = Language.English
+        val spraak = Language.Bokmal
         if (!template.language.supports(spraak)) {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return

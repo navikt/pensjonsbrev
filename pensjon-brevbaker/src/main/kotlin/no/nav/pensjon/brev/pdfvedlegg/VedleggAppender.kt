@@ -33,7 +33,7 @@ internal object VedleggAppender {
             val font = PDType0Font.load(target, javaClass.getResource("/fonts/SourceSans3-Regular.ttf")!!.openStream(), false)
             val acroForm = target.documentCatalog.acroForm
 
-            acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("F0"), font) }
+            acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("SourceSans3Embedded"), font) }
             val feltVerdier: Map<String, String?> = sider.flatMapIndexed { index, side ->
                 val pagePrefix = pagePrefix(index)
                 side.felt { "Sidetall" to "${index + 1}/${sider.size}" }
@@ -42,10 +42,10 @@ internal object VedleggAppender {
                     .map { pagePrefix + it.key to it.value?.get(spraak) }
             }.associate { it.first to it.second }
 
+            target.documentCatalog.acroForm.needAppearances = false
+
             fillFields(target, feltVerdier)
         }
-
-
         return target
     }
 
@@ -71,17 +71,27 @@ internal object VedleggAppender {
             ?.forEach { fillFields(it, feltVerdier) }
 
     private fun fillFields(field: PDField, feltVerdier: Map<String, String?>) {
+        when (field) {
+            is PDTextField -> {
+                field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "SourceSans3Embedded")
+            }
+
+            is PDComboBox -> {
+                field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "SourceSans3Embedded")
+            }
+        }
+
         if (feltVerdier.containsKey(field.partialName)) {
             val feltVerdi = feltVerdier[field.partialName]
             if (feltVerdi != null) {
                 when (field) {
                     is PDTextField -> {
-                        field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "F0")
+                        field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "SourceSans3Embedded")
                         field.value = feltVerdi
                     }
 
                     is PDComboBox -> {
-                        field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "F0")
+                        field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "SourceSans3Embedded")
                         field.setValue(feltVerdi)
                     }
                 }
