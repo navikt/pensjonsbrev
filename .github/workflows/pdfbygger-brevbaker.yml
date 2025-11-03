@@ -15,6 +15,7 @@ on:
       - "ufoeremaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
   push:
@@ -33,6 +34,7 @@ on:
       - "ufoeremaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
   # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
