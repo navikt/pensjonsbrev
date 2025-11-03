@@ -85,15 +85,8 @@ internal object VedleggAppender {
             val feltVerdi = feltVerdier[field.partialName]
             if (feltVerdi != null) {
                 when (field) {
-                    is PDTextField -> {
-                        field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "SourceSans3Embedded")
-                        field.value = feltVerdi
-                    }
-
-                    is PDComboBox -> {
-                        field.defaultAppearance = field.defaultAppearance.replaceFirst("SourceSans3-Regular", "SourceSans3Embedded")
-                        field.setValue(feltVerdi)
-                    }
+                    is PDTextField -> field.value = feltVerdi
+                    is PDComboBox -> field.setValue(feltVerdi)
                 }
             }
 

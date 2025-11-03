@@ -88,12 +88,12 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
             reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
             vurderingsperiode = "tjue år",
             adresseNyVurdering = listOf(Adresse(
-                adresselinje1 = "Lillevik Torgvei 1",
+                adresselinje1 = "Lillevik Torgvei $it",
                 adresselinje2 = null,
                 adresselinje3 = null,
                 landkode = Landkode("FI"),
                 postnummer = Postnummer("4321"),
-                poststed = Poststed("Lillevik Østre")
+                poststed = Poststed("Lillevik Østre ")
             )),
             utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
             valuta = "NOK",
@@ -102,7 +102,7 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         )
     },
     avslaattePensjoner =
-        (0..<avslag).map { avslaattPensjon() },
+        (0..<avslag).map { avslaattPensjon(it) },
     utfyllendeInstitusjon = UtfyllendeInstitusjon(
         navn = "NFP",
         adresselinje = "Lilleviksgrenda",
@@ -127,7 +127,7 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
     )
 )
 
-private fun avslaattPensjon() = AvslaattPensjon(
+private fun avslaattPensjon(i: Int) = AvslaattPensjon(
     institusjon = P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY 4",
@@ -148,7 +148,7 @@ private fun avslaattPensjon() = AvslaattPensjon(
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "en måned",
     adresseNyVurdering = listOf(Adresse(
-        adresselinje1 = "Lillevik Torgvei 1",
+        adresselinje1 = "Lillevik Torgvei $i",
         adresselinje2 = null,
         adresselinje3 = null,
         landkode = Landkode("FI"),
