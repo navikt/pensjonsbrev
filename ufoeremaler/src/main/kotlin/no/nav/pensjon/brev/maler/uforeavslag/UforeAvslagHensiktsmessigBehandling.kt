@@ -53,6 +53,29 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
             }
+            paragraph {
+                text(bokmal { +"Å ha gjennomført «all hensiktsmessig behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskere og kommer i arbeid, skal være forsøkt." })
+            }
+            paragraph {
+                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom; " })
+                list {
+                    item {
+                        text(
+                            bokmal { +"du er i behandling" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er henvist til behandling" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er anbefalt behandling" },
+                        )
+                    }
+                }
+            }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
@@ -65,8 +88,8 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
 
             paragraph {
                 text(bokmal {
-                    +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
-                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du ikke har fått " +
+                    +"Vi kan ikke utelukke at behandling kan bedre din funksjons- og inntektsevnen. " +
+                            "Samlet sett vurderer vi det som hensiktsmessig at du forsøker behandling. Fordi du ikke har fått " +
                             "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
                 })
             }
