@@ -7,6 +7,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "template-model-generator/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/template-model-generator.yml"
 
 permissions:
