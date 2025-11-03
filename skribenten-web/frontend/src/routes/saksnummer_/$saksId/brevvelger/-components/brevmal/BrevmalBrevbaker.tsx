@@ -144,6 +144,13 @@ const BrevmalBrevbaker = (props: {
     }
   }, [enhetsId, form]);
 
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    form.handleSubmit((values) => {
+      opprettBrevMutation.mutate(values);
+    })(event);
+  };
+
   const { setOnFormSubmitClick } = props;
   useEffect(() => {
     if (harEksisterendeKladd) {
@@ -182,7 +189,7 @@ const BrevmalBrevbaker = (props: {
       <LetterTemplateHeading letterTemplate={props.letterTemplate} />
       <Divider />
       <FormProvider {...form}>
-        <BrevmalFormWrapper formRef={formRef} onSubmit={form.handleSubmit((v) => opprettBrevMutation.mutate(v))}>
+        <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
           <VStack
             css={css`
               flex: 1;
