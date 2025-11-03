@@ -51,17 +51,11 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDt
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
             }
-            paragraph {
-                text(bokmal { + "Du har ingen registrert eller godkjent yrkesskade eller yrkessykdom." })
-            }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +pesysData.vurdering })
                 }
-            }
-            paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
