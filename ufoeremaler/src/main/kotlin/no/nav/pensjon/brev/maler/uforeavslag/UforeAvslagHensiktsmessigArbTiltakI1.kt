@@ -53,6 +53,29 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt hensiktsmessig arbeidsrettede tiltak." })
             }
+            paragraph {
+                text(bokmal { +"Å ha gjennomført «alle hensiktsmessige tiltak» betyr at alle tiltak som kan bidra til at du kommer i arbeid, skal være forsøkt. " })
+            }
+            paragraph {
+                text(bokmal { +"Som hovedregel vil vi vurderer at alle hensiktsmessig tiltak ikke er gjennomført dersom; " })
+                list {
+                    item {
+                        text(
+                            bokmal { +"du er i tiltak" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er henvist til tiltak" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er anbefalt tiltak" },
+                        )
+                    }
+                }
+            }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
