@@ -5,6 +5,7 @@ on:
     branches:
       - "main"
     paths:
+      - .github/workflows/.verify-frontend.yaml
       - .github/workflows/verify-skribenten-web.yaml
       - skribenten-web/**
 
