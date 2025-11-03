@@ -89,7 +89,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Download jar
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
@@ -190,7 +190,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Download visuals
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: visuals
           path: pensjon-brevbaker/build/test_visual/
