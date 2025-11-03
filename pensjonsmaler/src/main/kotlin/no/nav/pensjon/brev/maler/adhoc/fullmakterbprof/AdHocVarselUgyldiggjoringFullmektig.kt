@@ -1,0 +1,125 @@
+package no.nav.pensjon.brev.maler.adhoc.fullmakterbprof
+
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
+import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDtoSelectors.navnFullmaktsgiver
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
+@TemplateModelHelpers
+object AdHocVarselUgyldiggjoringFullmektig : AutobrevTemplate<FullmektigBprofAutoDto> {
+    override val kode = Pesysbrevkoder.AutoBrev.GEN_ADHOC_INFOBREV_BPROF_FULLMEKTIG
+    override val template: LetterTemplate<*, FullmektigBprofAutoDto> = createTemplate(
+        languages = languages(Bokmal),
+        letterDataType = FullmektigBprofAutoDto::class,
+        letterMetadata = LetterMetadata(
+            displayTitle = "Informasjon om fullmakter for pensjon eller uføretrygd",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+
+            )
+    ) {
+        title {
+
+            text(
+                bokmal { +"Du må endre fullmakten for pensjon eller uføretrygd hos Nav" },
+            )
+        }
+
+        outline {
+            paragraph {
+                text(
+                    bokmal { +"Nav får ny løsning for digitale fullmakter. Det betyr at gamle fullmakter blir slettet <dato>." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Vi har registrert at du har digital fullmakt for " + navnFullmaktsgiver + ". En fullmakt gir deg rett til å logge inn og bruke Navs digitale løsninger på vegne av den som har gitt fullmakten." })
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis du ikke trenger fullmakten lenger, trenger du ikke å gjøre noe." }
+                )
+            }
+
+            title2 {
+                text(
+                    bokmal { +"Dette må du gjøre for å beholde fullmakten" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis du har fått fullmakt til å handle på vegne av en annen:" }
+                )
+            }
+
+            paragraph {
+                list {
+                    item {
+                        text(
+                            bokmal { +"Be personen som har gitt deg fullmakten om å lage den på nytt." }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Personen må lage fullmakten på <URL>." }
+                        )
+                    }
+                }
+            }
+
+
+            paragraph {
+                text(
+                    bokmal { +"Den som har gitt fullmakten, har også fått beskjed.\n" }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Hvis du har gitt noen en fullmakt for å handle på vegne av deg:" }
+                )
+            }
+
+            paragraph {
+                list {
+                    item {
+                        text(
+                            bokmal { +"Logg inn på nav.no/<SNARVEI_URL> og gi fullmakten på nytt." }
+                        )
+                    }
+                }
+            }
+
+
+            paragraph {
+                text(
+                    bokmal { +"Vi beklager ulempen!" }
+                )
+            }
+
+            title2 {
+                text(
+                    bokmal { +"Har du spørsmål?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"På nav.no/kontakt kan du chatte eller skrive til oss." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du kan ringe oss på telefon <telefonnummer> hverdager 09.00–15.00." }
+                )
+            }
+
+        }
+    }
+}
