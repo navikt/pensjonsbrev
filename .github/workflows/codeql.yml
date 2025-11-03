@@ -47,7 +47,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Assemble (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g" --no-build-cache
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Assemble
+        if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
