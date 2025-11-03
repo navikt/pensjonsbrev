@@ -31,7 +31,6 @@ dependencies {
     testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
 
-    testImplementation(testFixtures(libs.brevbaker.common))
     testFixturesImplementation(libs.brevbaker.common)
 }
 
