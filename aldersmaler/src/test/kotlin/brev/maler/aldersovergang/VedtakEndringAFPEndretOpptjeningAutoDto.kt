@@ -37,10 +37,10 @@ fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptj
                     MaanedligPensjonFoerSkattAFPDto.Krav(
                         virkDatoFom = LocalDate.of(2024, 7, 1),
                     ),
-                afpPrivatBeregningListen =
-                    MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListen(
+                afpPrivatBeregningListe =
+                    MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregningListe(
                         antallBeregningsperioder = 2,
-                        afpPrivatBeregingListen =
+                        afpPrivatBeregningListe =
                             listOf(
                                 MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
                                     datoFom = LocalDate.of(2023, 6, 1),

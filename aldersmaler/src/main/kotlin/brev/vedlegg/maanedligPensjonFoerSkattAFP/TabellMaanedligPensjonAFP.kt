@@ -4,8 +4,8 @@ import brev.felles.KronerText
 import no.nav.pensjon.brev.model.alder.BeloepEndring
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDto
-import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListenSelectors.afpPrivatBeregingListen
-import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListenSelectors.antallBeregningsperioder
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningListeSelectors.afpPrivatBeregningListe
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningListeSelectors.antallBeregningsperioder
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.afpLivsvarigNetto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.datoFom
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.datoTil
@@ -32,7 +32,7 @@ import java.time.LocalDate
 data class TabellMaanedligPensjonAFP(
     val opptjeningType: Expression<OpptjeningType>,
     val beloepEndring: Expression<BeloepEndring>,
-    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListen>,
+    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregningListe>,
     val afpPrivatBeregningGjeldende: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -52,10 +52,10 @@ data class TabellMaanedligPensjonAFP(
 }
 
 data class TabellDinMaanedligAFP(
-    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregingListen>,
+    val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregningListe>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        forEach(afpPrivatBeregning.afpPrivatBeregingListen) { beregning ->
+        forEach(afpPrivatBeregning.afpPrivatBeregningListe) { beregning ->
 
             title2 {
                 includePhrase(

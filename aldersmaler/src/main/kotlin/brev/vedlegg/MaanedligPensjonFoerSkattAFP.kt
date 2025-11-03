@@ -5,13 +5,13 @@ import brev.vedlegg.maanedligPensjonFoerSkattAFP.TabellMaanedligPensjonAFP
 import no.nav.pensjon.brev.model.alder.BeloepEndring
 import no.nav.pensjon.brev.model.alder.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDto
-import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregingListenSelectors.antallBeregningsperioder
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningListeSelectors.antallBeregningsperioder
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.afpLivsvarigNetto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.komptilleggNetto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.kronetilleggNetto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.KravSelectors.virkDatoFom
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.afpPrivatBeregningGjeldende
-import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.afpPrivatBeregningListen
+import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.afpPrivatBeregningListe
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.belopEndring
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.krav
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.opptjeningType
@@ -48,7 +48,7 @@ val vedleggMaanedligPensjonFoerSkattAFP =
                 TabellMaanedligPensjonAFP(
                     opptjeningType = opptjeningType,
                     beloepEndring = belopEndring,
-                    afpPrivatBeregning = afpPrivatBeregningListen,
+                    afpPrivatBeregning = afpPrivatBeregningListe,
                     afpPrivatBeregningGjeldende = afpPrivatBeregningGjeldende,
                 ),
             )
@@ -115,7 +115,7 @@ val vedleggMaanedligPensjonFoerSkattAFP =
                 }
             }
 
-            showIf(afpPrivatBeregningListen.antallBeregningsperioder.greaterThan(1)) {
+            showIf(afpPrivatBeregningListe.antallBeregningsperioder.greaterThan(1)) {
                 showIf(
                     (
                         opptjeningType.equalTo(OpptjeningType.KORRIGERING)
@@ -134,7 +134,7 @@ val vedleggMaanedligPensjonFoerSkattAFP =
                         )
                     }
 
-                    includePhrase(TabellDinMaanedligAFP(afpPrivatBeregningListen))
+                    includePhrase(TabellDinMaanedligAFP(afpPrivatBeregningListe))
                 }
             }
         },
