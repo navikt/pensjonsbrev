@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
 
 object Pesysbrevkoder {
     enum class AutoBrev : Automatisk {
+        GEN_ADHOC_INFOBREV_BPROF_FULLMAKTSGIVER,
+        GEN_ADHOC_INFOBREV_BPROF_FULLMEKTIG,
         GJP_VARSEL_FORLENGELSE_60_61,
         GJP_VARSEL_FORLENGELSE_60_61_UTLAND,
         GJP_VARSEL_FORLENGELSE_62_70,
