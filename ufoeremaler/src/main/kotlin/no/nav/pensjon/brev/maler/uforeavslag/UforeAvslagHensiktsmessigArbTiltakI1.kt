@@ -57,7 +57,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
                 text(bokmal { +"Å ha gjennomført «alle hensiktsmessige tiltak» betyr at alle tiltak som kan bidra til at du kommer i arbeid, skal være forsøkt. " })
             }
             paragraph {
-                text(bokmal { +"Som hovedregel vil vi vurderer at alle hensiktsmessig tiltak ikke er gjennomført dersom; " })
+                text(bokmal { +"Som hovedregel vil vi vurdere at alle hensiktsmessig tiltak ikke er gjennomført dersom; " })
                 list {
                     item {
                         text(
