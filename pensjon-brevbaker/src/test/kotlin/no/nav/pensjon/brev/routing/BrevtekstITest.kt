@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.routing
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import no.nav.brev.brevbaker.Fixtures.felles
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
