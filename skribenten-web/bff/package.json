@@ -13,7 +13,7 @@
   "author": "Nav",
   "license": "MIT",
   "dependencies": {
-    "@navikt/oasis": "^3.8.0",
+    "@navikt/oasis": "^4.1.0",
     "@navikt/vite-mode": "0.13.6",
     "cookie-parser": "^1.4.7",
     "express": "5.1.0",
@@ -24,8 +24,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.36.0",
-    "@types/cookie-parser": "^1.4.9",
-    "@types/express": "5.0.3",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "5.0.5",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
     "@typescript-eslint/eslint-plugin": "8.45.0",
