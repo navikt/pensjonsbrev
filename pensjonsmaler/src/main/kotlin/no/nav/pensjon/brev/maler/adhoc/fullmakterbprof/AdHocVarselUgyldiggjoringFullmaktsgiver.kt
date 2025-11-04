@@ -3,14 +3,17 @@ package no.nav.pensjon.brev.maler.adhoc.fullmakterbprof
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDtoSelectors.navnFullmektig
-import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDtoSelectors.navnFullmaktsgiver
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 
 @TemplateModelHelpers
 object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<FullmaktsgiverBprofAutoDto> {
@@ -23,12 +26,10 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-
         )
     ) {
 
         title {
-
             text(
                 bokmal { +"Du må endre fullmakten for pensjon eller uføretrygd hos Nav" },
             )
@@ -42,7 +43,7 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har registrert at du har gitt digital fullmakt til" + navnFullmektig + ".En fullmakt gir den som har fått fullmakten rett til å logge inn og bruke Navs digitale løsninger på vegne av deg." }
+                    bokmal { +"Vi har registrert at du har gitt digital fullmakt til " + navnFullmektig + ". En fullmakt gir den som har fått fullmakten rett til å logge inn og bruke Navs digitale løsninger på vegne av deg." }
                 )
             }
             paragraph {
@@ -65,7 +66,7 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
                 list {
                     item {
                         text(
-                            bokmal { +"Logg inn på nav.no/<SNARVEI_URL> og gi fullmakten på nytt." }
+                            bokmal { +"Logg inn på nav.no/fullmakt og gi fullmakten på nytt." }
                         )
                     }
                 }
@@ -84,7 +85,7 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
                     }
                     item {
                         text(
-                            bokmal { +"Personen må lage fullmakten på <URL>." }
+                            bokmal { +"Personen må lage fullmakten på nav.no/fullmakt." }
                         )
                     }
                 }
@@ -107,7 +108,7 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan ringe oss på telefon <telefonnummer> hverdager 09.00–15.00." }
+                    bokmal { +"Du kan ringe oss på telefon " + felles.avsenderEnhet.telefonnummer.format() + " hverdager kl.$NAV_KONTAKTSENTER_AAPNINGSTID." }
                 )
             }
 
