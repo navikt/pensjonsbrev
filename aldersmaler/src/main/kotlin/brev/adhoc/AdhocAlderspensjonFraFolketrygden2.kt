@@ -1,9 +1,8 @@
 package brev.adhoc
 
-import brev.felles.Constants
 import brev.felles.Constants.PENSJON_ENDRING_URL
 import brev.felles.Constants.UTBETALINGSOVERSIKT_URL
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -118,12 +117,7 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
                     english { +"If you have changes in your family situation or you plan to live abroad, this may influence your benefits. You are obliged to notify Nav as soon as you are aware of any of these changes. You can find out what you are required to report at $PENSJON_ENDRING_URL." },
                 )
             }
-            includePhrase(
-                HarDuSpoersmaal(
-                    Constants.REGULERING_ALDERSPENSJON_URL,
-                    Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
-                )
-            )
+            includePhrase(HarDuSpoersmaalAlder)
 
         }
     }

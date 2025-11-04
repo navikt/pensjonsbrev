@@ -107,27 +107,17 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
                     }
                     item {
                         text(
-                            bokmal { +"hvor mye du har fått feilutbetalt" },
+                            bokmal { +"om du har gitt riktig informasjon til Nav" },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"hvor lang tid det har gått siden utbetalingen" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om Nav helt eller delvis er skyld i feilutbetalingen" },
+                            bokmal { +"om du har gitt all nødvendig informasjon til Nav i rett tid" },
                         )
                     }
                 }
                 text(
                     bokmal { +"Selv om det er Nav som er skyld i feilutbetalingen, kan vi kreve at du betaler tilbake hele eller deler av beløpet." },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du forsto eller burde forstått at du fikk utbetalt feil beløp, skal Nav kreve tilbake hele beløpet." },
                 )
             }
 

@@ -1,7 +1,6 @@
 package brev.adhoc
 
-import brev.felles.Constants
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
@@ -131,9 +130,9 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtO
                 )
             }
 
-            includePhrase(RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(RettTilAAKlage)
             includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-            includePhrase(HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
+            includePhrase(HarDuSpoersmaalAlder)
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)

@@ -13,6 +13,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     // Mark the host(div) as "unified" and remove contentEditable from all children
     const unify = () => {
+      if (!host.isConnected) return;
       if (host.dataset.unified === "1") return;
       host.dataset.unified = "1";
       host.classList.add("is-drag-selecting");
@@ -25,6 +26,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     // Restore contentEditable attributes to original values
     const restore = () => {
+      if (!host.isConnected) return;
       if (host.dataset.unified !== "1") return;
       host.classList.remove("is-drag-selecting");
       delete host.dataset.unified;
@@ -37,6 +39,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     let pointerDownInside = false;
     let dragStarted = false;
+    let selectingByKeys = false;
     let pointerDownX = 0;
     let pointerDownY = 0;
 
@@ -46,9 +49,29 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       const dy = Math.abs(clientY - pointerDownY);
       if (dx + dy < 3) return; // only unify after an actual drag
       dragStarted = true;
+      // For å starte en ny drag-select i fritekstfelt som har fått fokus -> helmarkert
+      getSelection()?.getRangeAt(0)?.collapse();
       unify();
     };
 
+    // selection by keyboard?
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Shift") {
+        selectingByKeys = true;
+      }
+    };
+
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (
+        selectingByKeys &&
+        !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Control", "Alt", "Meta", "CapsLock"].includes(event.key)
+      ) {
+        selectingByKeys = false;
+        restore();
+      }
+    };
+
+    // selection by mouse?
     const onPointerDown = (event: PointerEvent) => {
       pointerDownInside = isInside(event.target as Node);
       dragStarted = false;
@@ -65,11 +88,16 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     // Fallback: if a non-collapsed selection appears inside host (Safari/touch),
     // ensure we're unified.
     const onSelectionChange = () => {
-      const sel = document.getSelection?.();
-      if (!sel || sel.rangeCount === 0) return;
-      const collapsed = sel.isCollapsed || sel.type === "Caret";
-      if (collapsed) return;
-      if (isInside(sel.anchorNode) || isInside(sel.focusNode)) unify();
+      const selection = document.getSelection?.();
+      if (!selection || selection.rangeCount === 0) return;
+      if (selection.isCollapsed) {
+        restore();
+        return;
+      }
+      if (!dragStarted && !selectingByKeys) return;
+      if (isInside(selection.anchorNode) || isInside(selection.focusNode)) {
+        unify();
+      }
     };
 
     const onPointerUp = () => {
@@ -83,15 +111,13 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     const onVisibilityChange = () => {
       if (document.visibilityState === "hidden") restore();
     };
-    const onMouseLeave = (e: MouseEvent) => {
-      if (e.target === host) restore();
-    };
 
     // use capture to beat other listeners that might interfere
-    host.addEventListener("mouseleave", onMouseLeave, true);
     document.addEventListener("selectionchange", onSelectionChange);
     host.addEventListener("pointerdown", onPointerDown, true);
     host.addEventListener("pointermove", onPointerMove, true);
+    host.addEventListener("keydown", onKeyDown, true);
+    host.addEventListener("keyup", onKeyUp, true);
     document.addEventListener("pointerup", onPointerUp, true);
     document.addEventListener("pointercancel", onPointerCancel, true);
     document.addEventListener("visibilitychange", onVisibilityChange);
@@ -99,10 +125,11 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     return () => {
       restore();
-      host.removeEventListener("mouseleave", onMouseLeave, true);
       document.removeEventListener("selectionchange", onSelectionChange);
       host.removeEventListener("pointerdown", onPointerDown, true);
       host.removeEventListener("pointermove", onPointerMove, true);
+      host.removeEventListener("keydown", onKeyDown, true);
+      host.removeEventListener("keyup", onKeyUp, true);
       document.removeEventListener("pointerup", onPointerUp, true);
       document.removeEventListener("pointercancel", onPointerCancel, true);
       document.removeEventListener("visibilitychange", onVisibilityChange);

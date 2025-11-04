@@ -39,7 +39,7 @@ jobs:
     - name: Print working directory for test
       run: "pwd"
     - name: Upload generated site
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: site
         path: "${{ github.workspace }}/build"

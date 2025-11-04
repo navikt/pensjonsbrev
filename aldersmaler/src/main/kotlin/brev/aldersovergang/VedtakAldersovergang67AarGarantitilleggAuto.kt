@@ -162,7 +162,7 @@ object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAlde
                 //includePhrase(RettTilAAKlage(vedlegg = brev.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
                 //includePhrase(RettTilInnsyn(vedlegg = brev.felles.rettTilInnsyn))
 
-                includePhrase(HarDuSpoersmaalAlder())
+                includePhrase(HarDuSpoersmaalAlder)
             }
         }
 }

@@ -132,8 +132,8 @@ const BrevvelgerMainContent = (props: {
         `}
         gap="6"
       >
-        <Heading level="5" size="small">
-          Brevmeny
+        <Heading level="1" size="small">
+          Brevvelger
         </Heading>
         <Brevmaler
           alleSaksbrev={props.alleSaksbrevQuery}

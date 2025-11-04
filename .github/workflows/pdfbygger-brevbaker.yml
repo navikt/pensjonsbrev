@@ -15,6 +15,7 @@ on:
       - "ufoeremaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
   push:
@@ -33,6 +34,7 @@ on:
       - "ufoeremaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
   # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
@@ -87,7 +89,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Download jar
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
@@ -149,7 +151,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - uses: actions/setup-java@v5
         with:
           "distribution": ${{ env.JavaDistribution }}
@@ -172,7 +174,7 @@ jobs:
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
       - name: Upload images
         if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: visuals
           path: pensjon-brevbaker/build/test_visual/
@@ -188,7 +190,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Download visuals
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: visuals
           path: pensjon-brevbaker/build/test_visual/
@@ -196,7 +198,7 @@ jobs:
         uses: routsi/ImageMagick-action@v1.1.1
         with:
           command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
       - run: npm install --save-dev @percy/cli
@@ -209,7 +211,7 @@ jobs:
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Comment percy review link
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
         with:
           issue-number: ${{ github.event.number }}
@@ -249,7 +251,7 @@ jobs:
       vars: "pensjon-brevbaker/.nais/prod.yaml"
 
   deployPdfByggerToProd:
-    name: "Deploy pdf-bygger to dev"
+    name: "Deploy pdf-bygger to prod"
     uses: ./.github/workflows/.deploy.yaml
     secrets: inherit
     needs: [runIntegrationTests, buildPdfbygger]
