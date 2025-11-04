@@ -93,7 +93,7 @@ fun renderTestPdfOutline(
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }
     }
-    val letter = LetterImpl(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
+    val letter = LetterImpl(template, Unit, Bokmal, felles ?: FellesFactory.fellesAuto)
     letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
 }
 
@@ -218,7 +218,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
+fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = FellesFactory.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
     LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 val bokmalTittel = newText(Bokmal to "test brev")

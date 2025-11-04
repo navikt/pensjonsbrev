@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev
 
-import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
@@ -42,7 +42,7 @@ class PDFVedleggTest {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6), spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6), spraak, FellesFactory.felles)
 
         letter.renderTestPDF("${brevkode.kode()}_${spraak.javaClass.simpleName}", pdfVedleggAppender = PDFVedleggAppenderImpl)
     }

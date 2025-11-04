@@ -12,11 +12,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.BREVBAKER_URL
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Tag
@@ -81,7 +80,7 @@ class ApplicationITest {
                 BestillBrevRequest(
                     kode = LetterExample.kode,
                     letterData = EmptyBrevdata,
-                    felles = Fixtures.fellesAuto,
+                    felles = FellesFactory.fellesAuto,
                     language = LanguageCode.BOKMAL
                 )
             )

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
@@ -20,7 +20,7 @@ class LetterExampleTest {
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            FellesFactory.fellesAuto
         ).renderTestPDF("EKSEMPELBREV_BOKMAL", pdfByggerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0))
     }
 }

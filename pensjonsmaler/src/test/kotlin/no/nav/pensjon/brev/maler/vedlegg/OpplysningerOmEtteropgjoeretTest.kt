@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
@@ -107,7 +107,7 @@ class OpplysningerOmEtteropgjoeretTest {
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
+            FellesFactory.fellesAuto
         ).renderTestPDF("OpplysningerOmEtteroppgjoeret")
 
     }

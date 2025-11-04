@@ -3,15 +3,12 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import no.nav.brev.Landkode
-import no.nav.brev.Landkoder
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
@@ -167,9 +164,26 @@ class BrevredigeringServiceTest {
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = FellesFactory.lagFelles(
+        felles = Felles(
             dokumentDato = LocalDate.now(),
-            saksnummer = sak1.saksId.toString()
+            saksnummer = sak1.saksId.toString(),
+            avsenderEnhet =
+                NavEnhet(
+                    nettside = "nav.no",
+                    navn = "Nav Familie- og pensjonsytelser Porsgrunn",
+                    telefonnummer = Telefonnummer("55553334"),
+                ),
+            bruker = Bruker(
+                fornavn = "Test",
+                mellomnavn = "\"bruker\"",
+                etternavn = "Testerson",
+                foedselsnummer = Foedselsnummer("01019878910"),
+            ),
+            signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                saksbehandler = "Ole Saksbehandler",
+                attesterendeSaksbehandler = "Per Attesterende"
+            ),
+            annenMottakerNavn = null,
         ),
         brevdata = Api.GeneriskBrevdata()
     )
