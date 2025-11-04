@@ -50,11 +50,11 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) <> "oppfylt"   AND (PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_klage" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_anke" )  ) THEN      INCLUDE ENDIF
             showIf(
-                (FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).notEqualTo(
-                    "oppfylt"
-                ) and (pe.vedtaksdata_kravhode_kravarsaktype()
-                    .notEqualTo("omgj_etter_klage") and pe.vedtaksdata_kravhode_kravarsaktype()
-                    .notEqualTo("omgj_etter_anke")))
+                (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).notEqualTo(
+                    "oppfylt")
+                and (pe.vedtaksdata_kravhode_kravarsaktype()
+                    .notEqualTo("omgj_etter_klage")) and (pe.vedtaksdata_kravhode_kravarsaktype()
+                    .notEqualTo("omgj_etter_anke"))
             ) {
                 //[TBU1107EN, TBU1107, TBU1107NN]
 
@@ -82,7 +82,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) = "oppfylt"  AND (PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_klage" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_anke")) THEN      INCLUDE ENDIF
             showIf(
-                (FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo(
+                ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo(
                     "oppfylt"
                 ) and (pe.vedtaksdata_kravhode_kravarsaktype()
                     .notEqualTo("omgj_etter_klage") and pe.vedtaksdata_kravhode_kravarsaktype()
@@ -96,19 +96,19 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " prosent uføretrygd med rettighet som ung ufør fra " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         },
                                 nynorsk {
                             +"Vi har innvilga søknaden din om uføretrygd, som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " prosent uføretrygd med rett som ung ufør frå " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         },
                                 english {
                             +"We have granted your application for disability benefit, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " percent disability benefit with rights as a young disabled person from " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         }
                     )
                 }
@@ -116,7 +116,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
             //IF (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) <> "oppfylt" AND (PE_Vedtaksdata_Kravhode_KravArsakType = "omgj_etter_klage" OR PE_Vedtaksdata_Kravhode_KravArsakType = "omgj_etter_anke")) THEN INCLUDE ENDIF
             showIf(
-                (FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).notEqualTo(
+                ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).notEqualTo(
                     "oppfylt"
                 ) and (pe.vedtaksdata_kravhode_kravarsaktype()
                     .equalTo("omgj_etter_klage") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("omgj_etter_anke")))
@@ -128,18 +128,18 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         bokmal {
                             +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Du har fått medhold i klagen din, og du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ".",
+                                .format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + "."
                         },
                                 nynorsk {
                             +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Du har fått medhald i klaga di, og du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " prosent uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ".",
+                                .format() + " prosent uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + "."
                         },
                                 english {
                             +"We have granted your application for disability benefit, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Your appeal has been successful and you will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " per cent disability benefit from " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         }
                     )
                 }
@@ -147,7 +147,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
             //IF (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) = "oppfylt" AND (PE_Vedtaksdata_Kravhode_KravArsakType ="omgj_etter_klage" OR PE_Vedtaksdata_Kravhode_KravArsakType = "omgj_etter_anke")) THEN     INCLUDE ENDIF
             showIf(
-                (FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo(
+                ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo(
                     "oppfylt"
                 ) and (pe.vedtaksdata_kravhode_kravarsaktype()
                     .equalTo("omgj_etter_klage") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("omgj_etter_anke")))
@@ -160,19 +160,19 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Du har fått medhold i klagen din, og du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " prosent uføretrygd med rettighet som ung ufør fra " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         },
                                 nynorsk {
                             +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Du har fått medhald i klaga din, og du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " prosent uføretrygd med rett som ung ufør frå " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         },
                                 english {
                             +"We have granted your application for disability benefit, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
                                 .format() + ". Your appeal has been successful, and you will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " per cent disability benefit with rights as a young disabled person from " + pe.vedtaksdata_virkningfom()
-                                .format() + ".",
+                                .format() + "."
                         }
                     )
                 }
@@ -187,17 +187,17 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         bokmal {
                             +"Vi viser til vedtak fra <FRITEKST: vedtaksdato> om foreløpig avslag på søknaden din om uføretrygd. Vi har innvilget søknaden din ut fra opplysninger vi har fått fra <FRITEKST: land>. Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " prosent uføretrygd fra " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()
-                                .format() + ".",
+                                .format() + "."
                         },
                                 nynorsk {
                             +"Vi viser til vedtak frå <FRITEKST: Vedtaksdato> om førebels avslag på søknaden din om uføretrygd. Vi har innvilga søknaden din ut ifrå opplysningar vi har fått frå <FRITEKST: Land>. Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " prosent uføretrygd frå " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()
-                                .format() + ".",
+                                .format() + "."
                         },
                                 english {
                             +"We refer to the decision from <FRITEKST: Vedtaksdato> regarding provisional rejection of your application for disability benefit. We have granted your application based on information we have received from <FRITEKST: Land>. You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                                 .format() + " per cent disability benefit from " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()
-                                .format() + ".",
+                                .format() + "."
                         }
                     )
                 }
