@@ -144,15 +144,15 @@ fun joinAndSeparateByNotNull(separator: String, vararg value: String?) =
 private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
         "Institution_awarding_the_pension[$radnummer]" to formatInstitusjon(pensjon.institusjon, pensjon.vedtaksdato),
-        "Type_of_pension[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
+        "Pensjonstype[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
         "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
         "Gross_amount[$radnummer]" to formaterValuta(
             pensjon.bruttobeloepDesimal,
             pensjon.valuta,
             pensjon.utbetalingsHyppighet
         ),
-        "Pension_has_been_awarded[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]" },
-        "Pension_has_been_reduced[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
+        "PensjonInnvilget[$radnummer]" to pensjon.grunnlagInnvilget?.nummer?.let { "[$it]" },
+        "PensjonRedusert[$radnummer]" to pensjon.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
         "Review_period[${radnummer * 2}]" to if (pensjon.erNorskRad ?: false) {
             mapOf(
                 LanguageCode.BOKMAL to "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
@@ -253,8 +253,8 @@ private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = ma
             pensjon.vedtaksdato
         )
     },
-    "Type_of_pension[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
-    "Reasons_fro_the_rejection[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
+    "Pensjonstype[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
+    "GrunnlagAvslag[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
     "Review_period[${radnummer * 2}]" to pensjon.vurderingsperiode,
     "Where_to_adress_the_request[$radnummer]" to pensjon.adresseNyVurdering.formater(),
 )
