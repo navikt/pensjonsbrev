@@ -635,7 +635,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.garantipensjon(garantipen
                 text(
                     bokmal { + "Garantipensjon" },
                     nynorsk { + "Garantipensjon" },
-                    english { + "Pension guarantee" },
+                    english { + "Guaranteed pension" },
                 )
             }
             cell { includePhrase(KronerText(it)) }

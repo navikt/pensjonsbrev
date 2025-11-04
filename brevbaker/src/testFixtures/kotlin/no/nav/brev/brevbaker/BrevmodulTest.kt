@@ -119,7 +119,7 @@ abstract class BrevmodulTest(
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
@@ -140,7 +140,7 @@ abstract class BrevmodulTest(
             template,
             fixtures,
             spraak,
-            Fixtures.felles,
+            FellesFactory.felles,
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 

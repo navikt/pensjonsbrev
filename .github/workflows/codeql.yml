@@ -5,6 +5,11 @@ on:
   schedule:
     # At 05:30 on every day-of-week from Monday through Friday.
     - cron: "30 5 * * 1-5"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - .github/workflows/codeql.yml
 
 env:
   JavaDistribution: "temurin"
@@ -40,9 +45,16 @@ jobs:
           java-version: ${{ env.JavaVersion }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Assemble (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g" --no-build-cache
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Assemble
+        if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -109,3 +121,14 @@ jobs:
         with:
           sarif_file: sarif-results/javascript.sarif
           category: "/language:javascript"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [analyze-java, analyze-javascript]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

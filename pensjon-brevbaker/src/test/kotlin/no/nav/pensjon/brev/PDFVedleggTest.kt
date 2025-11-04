@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev
 
-import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
@@ -32,7 +32,7 @@ import java.time.Month
 
 class PDFVedleggTest {
 
-    @Tag(TestTags.MANUAL_TEST)
+    @Tag(TestTags.INTEGRATION_TEST)
     @Test
     fun testPdf() {
         val template = SamletMeldingOmPensjonsvedtak.template
@@ -42,7 +42,7 @@ class PDFVedleggTest {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 1, avslag = 6), spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6), spraak, FellesFactory.felles)
 
         letter.renderTestPDF("${brevkode.kode()}_${spraak.javaClass.simpleName}", pdfVedleggAppender = PDFVedleggAppenderImpl)
     }
@@ -59,7 +59,7 @@ fun createSamletMeldingOmPensjonsvedtakDto(innvilget: Int, avslag: Int) =
 
 fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
     innehaver = P1Person(
-        fornavn = "Peder",
+        fornavn = "PederĀ",
         etternavn = "Ås",
         etternavnVedFoedsel = "Aas",
         foedselsdato = null,
@@ -88,12 +88,12 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
             reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
             vurderingsperiode = "tjue år",
             adresseNyVurdering = listOf(Adresse(
-                adresselinje1 = "Lillevik Torgvei 1",
+                adresselinje1 = "Lillevik Torgvei $it",
                 adresselinje2 = null,
                 adresselinje3 = null,
                 landkode = Landkode("FI"),
                 postnummer = Postnummer("4321"),
-                poststed = Poststed("Lillevik Østre")
+                poststed = Poststed("Lillevik Østre ")
             )),
             utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
             valuta = "NOK",
@@ -102,7 +102,7 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         )
     },
     avslaattePensjoner =
-        (0..<avslag).map { avslaattPensjon() },
+        (0..<avslag).map { avslaattPensjon(it) },
     utfyllendeInstitusjon = UtfyllendeInstitusjon(
         navn = "NFP",
         adresselinje = "Lilleviksgrenda",
@@ -127,7 +127,7 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
     )
 )
 
-private fun avslaattPensjon() = AvslaattPensjon(
+private fun avslaattPensjon(i: Int) = AvslaattPensjon(
     institusjon = P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY 4",
@@ -148,7 +148,7 @@ private fun avslaattPensjon() = AvslaattPensjon(
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "en måned",
     adresseNyVurdering = listOf(Adresse(
-        adresselinje1 = "Lillevik Torgvei 1",
+        adresselinje1 = "Lillevik Torgvei $i",
         adresselinje2 = null,
         adresselinje3 = null,
         landkode = Landkode("FI"),
