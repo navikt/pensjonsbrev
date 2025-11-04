@@ -23,7 +23,7 @@ data class AFPPrivatBeregning(
 data class OpptjeningInfo(
     val sisteGyldigeOpptjeningsAar: Int?,
     val antallAarEndretOpptjening: Int,
-    val endretOpptjeningsAar: Set<Int>,
+    val endretOpptjeningsAar: List<Int>,
 )
 
 enum class OpptjeningType {

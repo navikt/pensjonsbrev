@@ -20,7 +20,7 @@ fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptj
             OpptjeningInfo(
                 sisteGyldigeOpptjeningsAar = 2022,
                 antallAarEndretOpptjening = 2,
-                endretOpptjeningsAar = setOf(2021, 2022),
+                endretOpptjeningsAar = listOf(2023, 2020, 2021),
             ),
         maanedligPensjonFoerSkattAFP =
             MaanedligPensjonFoerSkattAFPDto(
