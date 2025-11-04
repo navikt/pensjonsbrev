@@ -32,7 +32,6 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(
         pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
-            vurdering = "Vurdering 1"
         ), EmptySaksbehandlerValg
     )
 

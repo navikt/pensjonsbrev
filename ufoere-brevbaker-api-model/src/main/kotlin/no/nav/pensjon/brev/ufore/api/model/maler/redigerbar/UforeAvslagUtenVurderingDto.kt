@@ -12,6 +12,5 @@ data class UforeAvslagUtenVurderingDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
-        val vurdering: String
     ) : BrevbakerBrevdata
 }
