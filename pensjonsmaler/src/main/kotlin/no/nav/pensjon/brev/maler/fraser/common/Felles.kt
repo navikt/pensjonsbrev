@@ -20,8 +20,6 @@ import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 object Felles {
     /**
@@ -172,30 +170,6 @@ object Felles {
     }
 
     fun Expression<Bruker>.fulltNavn(): Expression<String> = UnaryOperation.BrukerFulltNavn(this)
-
-    object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { + felles.avsenderEnhet.navn },
-                    nynorsk { + felles.avsenderEnhet.navn },
-                    english { + felles.avsenderEnhet.navn },
-                )
-                newline()
-                text(
-                    bokmal { + "Postboks 6600 Etterstad" },
-                    nynorsk { + "Postboks 6600 Etterstad" },
-                    english { + "Postboks 6600 Etterstad" },
-                )
-                newline()
-                text(
-                    bokmal { + "0607 Oslo" },
-                    nynorsk { + "0607 Oslo" },
-                    english { + "0607 Oslo, Norway" },
-                )
-            }
-        }
-    }
 
     object MeldeFraEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
