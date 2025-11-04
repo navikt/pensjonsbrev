@@ -100,7 +100,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
 
                 includePhrase(EndringKanHaBetydningForSkatt)
                 includePhrase(MeldFraOmEndringer2)
-                includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(Felles.RettTilAAKlage)
                 includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }

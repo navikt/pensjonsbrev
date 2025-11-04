@@ -154,7 +154,7 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
