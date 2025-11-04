@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
@@ -56,7 +56,7 @@ class PensjonLatexITest {
                 }
             }
         }
-        LetterImpl(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
+        LetterImpl(template, brevData, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -126,7 +126,7 @@ class PensjonLatexITest {
                 }
             }
 
-            LetterImpl(testTemplate, brevData, Bokmal, Fixtures.felles)
+            LetterImpl(testTemplate, brevData, Bokmal, FellesFactory.felles)
                 .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
 
             return true

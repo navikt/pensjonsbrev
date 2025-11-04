@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -11,9 +11,7 @@ import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
 
-    val felles = Fixtures.felles
-
-    val fellesAuto = Fixtures.fellesAuto
+    val felles = FellesFactory.felles
 
     inline fun <reified T : Any> create(): T = create(T::class)
 
