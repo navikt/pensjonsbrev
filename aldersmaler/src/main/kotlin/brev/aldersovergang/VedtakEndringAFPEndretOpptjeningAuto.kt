@@ -100,11 +100,11 @@ object VedtakEndringAFPEndretOpptjeningAuto :
                         text(
                             bokmal {
                                 +"Fra " + virkFom.format() + " får du " + afpPrivatBeregningVedVirk.totalPensjon.format() +
-                                    " kroner fær skatt i AFP."
+                                    " kroner før skatt i AFP."
                             },
                             nynorsk {
                                 +"Frå " + virkFom.format() + " får du " + afpPrivatBeregningVedVirk.totalPensjon.format() +
-                                    " kroner fær skatt i AFP."
+                                    " kroner før skatt i AFP."
                             },
                             english {
                                 +"From " + virkFom.format() + " you will receive NOK " + afpPrivatBeregningVedVirk.totalPensjon.format() +

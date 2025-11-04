@@ -134,9 +134,9 @@ import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
 
-    val felles = no.nav.brev.brevbaker.Fixtures.felles
+    val felles = no.nav.brev.brevbaker.FellesFactory.felles
 
-    val fellesAuto = no.nav.brev.brevbaker.Fixtures.fellesAuto
+    val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
 
     inline fun <reified T : Any> create(): T = create(T::class)
 

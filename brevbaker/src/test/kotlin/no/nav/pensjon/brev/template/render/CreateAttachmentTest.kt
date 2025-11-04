@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.VedleggData
@@ -52,7 +52,7 @@ class CreateAttachmentTest {
         }
 
         val tittel =
-            Letter2Markup.render(LetterImpl(testTemplate, LittInnhold("testtekst", 10), Nynorsk, Fixtures.felles)).attachments
+            Letter2Markup.render(LetterImpl(testTemplate, LittInnhold("testtekst", 10), Nynorsk, FellesFactory.felles)).attachments
                 .first()
                 .title
         assertEquals(4, tittel.size)
