@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.model
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.brev.brevbaker.FellesFactory
 import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.FellesFactory
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
