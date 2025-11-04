@@ -57,7 +57,12 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
             paragraph {
                 text(bokmal { +"For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig " +
                         "og varig sykdom eller skade, som er klart dokumentert. " +
-                        "Dersom du har vært mer enn 50 prosent yrkesaktiv etter at du fylte 26 år, må du ha søkt om uføretrygd før du fyller 36 år." })
+                        "Dersom du har vært mer enn 50 prosent yrkesaktiv etter at du fylte 26 år, må vi vurdere om dette tyder på en reell inntektsevne utover 50 prosent. " +
+                        "Dersom søknad om uføretrygd er fremsatt før man er 36 år, skal det være en lavere terskel for å anse noe som et mislykket arbeidsforsøk." })
+            }
+            paragraph {
+                text(bokmal {+"Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
+                        "Du søkte om uføretrygd etter at du fylte 36 år og vi vurderer at din yrkesaktivitet etter 26 år ikke kan anses som et mislykket arbeidsforsøk."})
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -70,8 +75,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { +"Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
-                        "Du søkte om uføretrygd etter at du fylte 36 år og oppfyller derfor ikke dette vilkåret." })
+                text(bokmal { +"Vi viser til at uføretidspunktet er satt til etter 26 år og du fyller derfor ikke vilkårene for beregning som ung ufør." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
