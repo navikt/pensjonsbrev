@@ -1,2 +1,11 @@
+#!/bin/sh
 cd skribenten-web/frontend
+
+# Check if node_modules exists, if not, skip linting with a warning
+if [ ! -d "node_modules" ]; then
+  echo "⚠️ Skipping pre-commit checks in skribenten-web/frontend (node_modules missing)"
+  echo "💡To enable pre-commit checks, run 'npm install' in skribenten-web/frontend"
+  exit 0
+fi
+
 npx lint-staged
