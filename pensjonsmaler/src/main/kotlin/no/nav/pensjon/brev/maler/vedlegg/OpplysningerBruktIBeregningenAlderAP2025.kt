@@ -129,17 +129,10 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             //vedleggBeregnPensjonsbeholdningOgTrygdetid_001
             title1 {
                 text(
-                    bokmal { + "Pensjonsbeholdning" },
-                    nynorsk { + "Pensjonsbehaldning" },
-                    english { + "Accumulated pension capital" },
+                    bokmal { + "Pensjonsbeholdning og trygdetid" },
+                    nynorsk { + "Pensjonsbehaldning og trygdetid" },
+                    english { + "Accumulated pension capital and Norwegian national insurance coverage" },
                 )
-                showIf(redusertTrygdetid) {
-                    text(
-                        bokmal { + " og trygdetid" },
-                        nynorsk { + " og trygdetid" },
-                        english { + " and Norwegian national insurance coverage" },
-                    )
-                }
             }
             paragraph {
                 text(
