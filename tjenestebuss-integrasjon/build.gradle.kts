@@ -15,7 +15,7 @@ application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
-val cxfVersion = "3.6.3"
+val cxfVersion = "4.1.3"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
@@ -33,9 +33,8 @@ dependencies {
 
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
-	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	@Suppress("GradlePackageUpdate")
-	implementation("com.sun.xml.messaging.saaj:saaj-impl:1.5.1") // needs to be correct version for apache cxf to function
+	implementation("com.sun.xml.messaging.saaj:saaj-impl:3.0.4") // needs to be correct version for apache cxf to function
 
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
@@ -49,8 +48,8 @@ dependencies {
 	testImplementation(libs.kotlin.test.junit)
 	testImplementation(platform(libs.junit.bom))
 	testImplementation(libs.ktor.server.test.host)
-	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
-	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.4")
+    testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
 	testImplementation(libs.hamkrest)
 }
 

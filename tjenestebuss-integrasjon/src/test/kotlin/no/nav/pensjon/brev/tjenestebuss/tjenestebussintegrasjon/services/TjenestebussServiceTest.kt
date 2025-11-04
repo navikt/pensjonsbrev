@@ -5,6 +5,10 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.greaterThan
 import com.natpryce.hamkrest.has
 import com.natpryce.hamkrest.hasElement
+import jakarta.jws.WebService
+import jakarta.xml.ws.handler.Handler
+import jakarta.xml.ws.handler.MessageContext
+import jakarta.xml.ws.handler.soap.SOAPMessageContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ClientFactory
@@ -13,10 +17,6 @@ import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean
 import java.util.*
-import javax.jws.WebService
-import javax.xml.ws.handler.Handler
-import javax.xml.ws.handler.MessageContext
-import javax.xml.ws.handler.soap.SOAPMessageContext
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
