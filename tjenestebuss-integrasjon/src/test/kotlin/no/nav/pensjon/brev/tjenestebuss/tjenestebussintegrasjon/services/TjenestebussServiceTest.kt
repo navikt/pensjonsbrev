@@ -17,15 +17,15 @@ import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.util.*
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TjenestebussServiceTest {
 
     private val callIdReceiver = CallIdReceiver()
@@ -39,7 +39,7 @@ class TjenestebussServiceTest {
 
     private val service = HelloWorldService()
 
-    @AfterEach
+    @AfterAll
     fun stopServer() {
         server.stop()
     }
