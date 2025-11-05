@@ -9,24 +9,24 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.columnTransformer
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash>) =
+fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash<Edit.Letter>>) =
     WithHash(this, hash)
 
-fun Table.hashColumn(name: String): Column<Hash> =
-    binary(name).transform(columnTransformer({ it.hexBytes }, { Hash.fromBytes(it) }))
+fun <T> Table.hashColumn(name: String): Column<Hash<T>> =
+    binary(name).transform(columnTransformer(Hash<T>::hexBytes, Hash.Companion::fromBytes))
 
 
 @JvmInline
-value class Hash(private val hex: String) {
+value class Hash<T>(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
     companion object {
-        fun <T> read(obj: T): Hash = fromBytes(WithHash.hash(obj))
-        fun fromBytes(bytes: ByteArray) = Hash(Hex.encodeHexString(bytes))
+        fun <T> read(obj: T): Hash<T> = fromBytes(WithHash.hash(obj))
+        fun <T> fromBytes(bytes: ByteArray): Hash<T> = Hash(Hex.encodeHexString(bytes))
     }
 }
 
-class WithHash<T>(private val letter: Column<T>, private val hash: Column<Hash>) {
+class WithHash<T>(private val letter: Column<T>, private val hash: Column<Hash<T>>) {
 
     operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
         with(thisRef) {

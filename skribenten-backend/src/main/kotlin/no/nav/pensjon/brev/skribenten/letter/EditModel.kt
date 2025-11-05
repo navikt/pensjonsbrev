@@ -3,11 +3,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -173,60 +168,6 @@ object Edit {
         }
     }
 
-    object JacksonModule : SimpleModule() {
-        class DeserializationException(msg: String) : Exception(msg)
-
-        // object JacksonModule krever denne.
-        @Suppress("unused")
-        private fun readResolve(): Any = JacksonModule
-
-        init {
-            addDeserializer(Block::class.java, blockDeserializer())
-            addDeserializer(ParagraphContent::class.java, paragraphContentDeserializer())
-            addDeserializer(ParagraphContent.Text::class.java, textContentDeserializer())
-        }
-
-
-        private fun blockDeserializer() = object : StdDeserializer<Block>(Block::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Block {
-                val node = p.codec.readTree<JsonNode>(p)
-                val type = when (Block.Type.valueOf(node.get("type").textValue())) {
-                    Block.Type.TITLE1 -> Block.Title1::class.java
-                    Block.Type.TITLE2 -> Block.Title2::class.java
-                    Block.Type.PARAGRAPH -> Block.Paragraph::class.java
-                }
-                return p.codec.treeToValue(node, type)
-            }
-        }
-
-        private fun paragraphContentDeserializer() = object : StdDeserializer<ParagraphContent>(ParagraphContent::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ParagraphContent {
-                val node = p.codec.readTree<JsonNode>(p)
-                val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    ParagraphContent.Type.ITEM_LIST -> ParagraphContent.ItemList::class.java
-                    ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
-                    ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
-                    ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
-                    ParagraphContent.Type.TABLE -> ParagraphContent.Table::class.java
-                }
-                return p.codec.treeToValue(node, type)
-            }
-        }
-
-        private fun textContentDeserializer() = object : StdDeserializer<ParagraphContent.Text>(ParagraphContent.Text::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ParagraphContent.Text {
-                val node = p.codec.readTree<JsonNode>(p)
-                val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("ITEM_LIST is not allowed in a text-only block.")
-                    ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
-                    ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
-                    ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
-                    ParagraphContent.Type.TABLE -> throw DeserializationException("TABLE is not allowed in a text-only block.")
-                }
-                return p.codec.treeToValue(node, type)
-            }
-        }
-    }
 }
 
 fun LetterMarkup.toEdit(): Edit.Letter =

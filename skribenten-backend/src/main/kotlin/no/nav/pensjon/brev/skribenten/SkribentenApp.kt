@@ -31,11 +31,12 @@ import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
 import kotlin.apply
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -162,11 +163,13 @@ fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
         jackson {
             registerModule(JavaTimeModule())
-            registerModule(Edit.JacksonModule)
-            registerModule(BrevkodeModule)
-            registerModule(LetterMarkupModule)
+            registerModule(EditLetterJacksonModule)
+            registerModule(BrevkodeJacksonModule)
+            registerModule(LetterMarkupJacksonModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
+        // midlertidig løsning frem til frontend er oppdatert til å bruke application/json
+        register(ContentType.Application.Pdf, PdfResponseConverter)
     }
 }

@@ -599,7 +599,7 @@ class BrevredigeringServiceTest {
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
             }
-        ).isEqualTo(stagetPDF)
+        ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
@@ -686,8 +686,8 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
+            val response = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(response?.resultOrNull()).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
         }
     }
 
@@ -706,9 +706,8 @@ class BrevredigeringServiceTest {
 
             stagePdf("min andre pdf".encodeToByteArray())
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
-                ?.toString(Charsets.UTF_8)
 
-            assertEquals("min andre pdf", pdf)
+            assertThat(pdf).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
         }
     }
 
@@ -724,7 +723,34 @@ class BrevredigeringServiceTest {
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             assertThat(first).isNotEqualTo(second)
-            assertEquals("min andre pdf", second?.toString(Charsets.UTF_8))
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+        }
+    }
+
+    @Test
+    fun `hentPdf informerer om at rendretBrev er endret pga pesysdata`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            brevbakerService.renderMarkupResultat = {
+                val signatur = it.signerendeSaksbehandlere
+                ServiceResult.Ok(
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"), LiteralImpl(99, "new text"))))
+                        .medSignatur(
+                            saksbehandler = signatur?.saksbehandler,
+                            attestant = signatur?.attesterendeSaksbehandler
+                        )
+                )
+            }
+            penService.pesysBrevdata =
+                brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
         }
     }
 
@@ -733,7 +759,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             stagePdf("min andre pdf".encodeToByteArray())
             penService.pesysBrevdata = brevdataResponseData.copy(felles = FellesFactory.lagFelles(
@@ -742,8 +768,7 @@ class BrevredigeringServiceTest {
             ))
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
-            assertThat(first).isNotEqualTo(second)
-            assertEquals("min andre pdf", second?.toString(Charsets.UTF_8))
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
         }
     }
 

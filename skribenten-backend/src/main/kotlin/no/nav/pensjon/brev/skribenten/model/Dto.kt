@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
+import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
@@ -17,7 +18,7 @@ object Dto {
     data class Brevredigering(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: Hash,
+        val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
@@ -51,8 +52,8 @@ object Dto {
         val brevredigeringId: Long,
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
-        val redigertBrevHash: Hash,
-        val brevdataHash: Hash?,
+        val redigertBrevHash: Hash<Edit.Letter>,
+        val brevdataHash: Hash<BrevdataResponse.Data>?,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

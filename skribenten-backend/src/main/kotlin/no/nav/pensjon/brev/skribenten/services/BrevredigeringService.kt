@@ -269,7 +269,7 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
+    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<Api.PdfResponse>? {
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
@@ -280,17 +280,35 @@ class BrevredigeringService(
                 brevkode = brevredigering.info.brevkode,
                 avsenderEnhetsId = brevredigering.info.avsenderEnhetId
             ).then { pesysBrevdata ->
-                val nyHash = Hash.read(pesysBrevdata)
+                val nyBrevdataHash = Hash.read(pesysBrevdata)
 
-                if (document != null && (
-                            document.redigertBrevHash == brevredigering.redigertBrevHash
-                                    && document.dokumentDato.isEqual(LocalDate.now())
-                                    && nyHash == document.brevdataHash
-                        )
-                ) {
-                    Ok(document.pdf)
+                // dokumentDato er en del av pesysBrevdata.felles, så vi trenger ikke sjekke den eksplisitt her
+                if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
+                    Ok(Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false))
                 } else {
-                    opprettPdf(brevredigering, pesysBrevdata, nyHash)
+                    // render markup to check if letterMarkup has changed due to changed brevdata
+                    val rendretBrevErEndret = brevbakerService.renderMarkup(
+                        brevkode = brevredigering.info.brevkode,
+                        spraak = brevredigering.info.spraak,
+                        brevdata = GeneriskRedigerbarBrevdata(
+                            pesysData = pesysBrevdata.brevdata,
+                            saksbehandlerValg = brevredigering.saksbehandlerValg,
+                        ),
+                        felles = pesysBrevdata.felles.medSignerendeSaksbehandlere(
+                            brevredigering.redigertBrev.signatur.saksbehandlerNavn?.let {
+                                SignerendeSaksbehandlere(
+                                    saksbehandler = it,
+                                    attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn
+                                )
+                            }
+                        )
+                    ).map {
+                        brevredigering.redigertBrev.updateEditedLetter(it.markup) != brevredigering.redigertBrev
+                    }.resultOrNull()
+
+                    opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash).map {
+                        Api.PdfResponse(pdf = it, rendretBrevErEndret = rendretBrevErEndret ?: false)
+                    }
                 }
             }
         }
@@ -511,7 +529,9 @@ class BrevredigeringService(
     }
 
     private suspend fun opprettPdf(
-        brevredigering: Dto.Brevredigering, pesysData: BrevdataResponse.Data, brevdataHash: Hash
+        brevredigering: Dto.Brevredigering,
+        pesysData: BrevdataResponse.Data,
+        brevdataHash: Hash<BrevdataResponse.Data>,
     ): ServiceResult<ByteArray> {
         return brevbakerService.renderPdf(
                 brevkode = brevredigering.info.brevkode,
