@@ -16,9 +16,10 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.Tj
 import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.test.AfterTest
-import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -38,7 +39,7 @@ class TjenestebussServiceTest {
 
     private val service = HelloWorldService()
 
-    @AfterTest
+    @AfterEach
     fun stopServer() {
         server.stop()
     }

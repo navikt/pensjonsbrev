@@ -44,9 +44,7 @@ dependencies {
 	implementation(libs.bundles.metrics)
 
 	// Test
-	testImplementation(libs.junit.jupiter)
-	testImplementation(libs.kotlin.test.junit)
-	testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit)
 	testImplementation(libs.ktor.server.test.host)
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.4")
     testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
@@ -74,6 +72,9 @@ tasks {
 	compileTestJava {
 		targetCompatibility = javaTarget
 	}
+    test {
+        useJUnitPlatform()
+    }
     build {
         dependsOn(installDist)
     }
