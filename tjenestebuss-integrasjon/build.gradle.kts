@@ -53,21 +53,6 @@ dependencies {
 	testImplementation(libs.hamkrest)
 }
 
-repositories {
-	maven {
-		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-		metadataSources {
-			artifact() //Look directly for artifact
-		}
-		content {
-			includeGroup("no.nav.pensjon.pesys-esb-wsclient")
-		}
-	}
-	maven {
-		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-	}
-}
-
 sourceSets {
 	main {
 		resources {
@@ -79,7 +64,6 @@ sourceSets {
 kotlin {
 	compilerOptions {
 		jvmTarget.set(JvmTarget.fromTarget(javaTarget))
-		freeCompilerArgs.add("-Xjsr305=strict")
 	}
 }
 
