@@ -9,6 +9,21 @@ import { FAILURE_TYPES } from "~/types/apiTypes";
 import feedbackUrl from "~/utils/feedbackUrl";
 import { logError } from "~/utils/logger";
 
+interface FunctionalErrorPayload {
+  tittel?: string;
+  melding?: string;
+}
+
+function isFunctionalError(error: AxiosError<unknown>): error is AxiosError<FunctionalErrorPayload> {
+  const data = error.response?.data;
+  return (
+    error.response?.status === 422 &&
+    data !== null &&
+    typeof data === "object" &&
+    ("tittel" in data || "melding" in data)
+  );
+}
+
 export function ApiError({ error, title }: { error: unknown; title: string }) {
   useEffect(() => {
     if (error) {
@@ -21,6 +36,39 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
   }, [error]);
 
   if (error instanceof AxiosError) {
+    if (isFunctionalError(error)) {
+      const response = error.response;
+      if (!response) return null;
+      const { tittel, melding } = response.data;
+
+      return (
+        <Alert
+          css={css`
+            align-self: center;
+            width: 100%;
+            max-width: 512px;
+          `}
+          data-cy="functional-error-alert"
+          size="small"
+          variant="error"
+        >
+          <Heading level="2" size="small">
+            {tittel ?? title}
+          </Heading>
+          {melding && (
+            <div
+              css={css`
+                margin-top: 4px;
+                white-space: pre-line;
+              `}
+            >
+              {melding}
+            </div>
+          )}
+        </Alert>
+      );
+    }
+
     const correlationId = error.response?.headers["x-request-id"];
     return (
       <Alert
