@@ -15,6 +15,8 @@ private fun dateFormatter(short: Boolean): LocalizedFormatter<LocalDate> =
 
 fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
 
+fun Expression<LocalDate>.formatMonth(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
+
 @JvmName("formatYearMonth")
 fun Expression<YearMonth>.formatYearMonth(): Expression<String> = this.format(LocalizedFormatter.YearMonthFormatter)
 

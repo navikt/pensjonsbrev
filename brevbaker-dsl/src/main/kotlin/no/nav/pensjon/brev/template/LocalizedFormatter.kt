@@ -34,6 +34,14 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
     }
 
+    object MontFormatter : LocalizedFormatter<LocalDate>() {
+        override fun apply(first: LocalDate, second: Language): String {
+            return first.format(DateTimeFormatter.ofPattern("MMMM", second.locale()))
+        }
+
+        override fun stableHashCode(): Int =  StableHash.of("MaanedFormatter").hashCode()
+    }
+
     object YearMonthFormatter : LocalizedFormatter<YearMonth>() {
         override fun apply(first: YearMonth, second: Language): String {
             return MonthYearFormatter.apply(first.atDay(1), second)
