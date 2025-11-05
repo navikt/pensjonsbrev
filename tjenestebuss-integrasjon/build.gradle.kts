@@ -68,7 +68,8 @@ sourceSets {
 kotlin {
 	compilerOptions {
 		jvmTarget.set(JvmTarget.fromTarget(javaTarget))
-	}
+        freeCompilerArgs.add("-Xjsr305=strict")
+    }
 }
 
 tasks {
