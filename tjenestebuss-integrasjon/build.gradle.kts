@@ -11,6 +11,12 @@ plugins {
 group = "no.nav.pensjon.brev.tjenestebuss"
 version = "0.0.1"
 
+repositories {
+    maven {
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
+    }
+}
+
 application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
