@@ -67,7 +67,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", renderTextsToString(letter.title))
+        appendCmd("Title", renderTextsToString(letter.title), escape = false) // allerede escapet i renderTexts
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -271,7 +271,7 @@ internal object LatexDocumentRenderer {
             appendCmd(
                 "begin", "letterTable", columnHeadersLatexString(columnSpec),
                 titleTextOrNull(previous)?.let { "\\tabletitle $it" } ?: ""
-                , escape = false
+                , escape = false // allerede escapet over.
             )
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
 
