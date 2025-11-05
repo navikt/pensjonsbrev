@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -21,7 +20,7 @@ fun createEndringAvUttaksgradAutoDto() = EndringAvUttaksgradAutoDto(
     harFlereBeregningsperioder = true,
     kravVirkDatoFom = LocalDate.of(2025, 1, 1),
     regelverkType = AlderspensjonRegelverkType.AP2016,
-    dineRettigheterOgMulighetTilAaKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
+    orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
     maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
         beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
             inntektspensjon = Kroner(1000),
@@ -36,5 +35,4 @@ fun createEndringAvUttaksgradAutoDto() = EndringAvUttaksgradAutoDto(
     ),
     maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
     opplysningerBruktIBeregningenEndretUttaksgradDto = createOpplysningerBruktIBeregningenEndretUttaksgradDto(),
-    orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
 )
