@@ -15,6 +15,7 @@ application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
+// Før du oppdaterer cxf-versjonen, sjekk readme-fila for denne modulen.
 val cxfVersion = "4.1.3"
 val tjenestespesifikasjonerVersion = "1.2024.10.21-13.17-04e1c7bb6f55"
 dependencies {
