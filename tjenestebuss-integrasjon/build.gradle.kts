@@ -16,7 +16,7 @@ application {
 }
 
 val cxfVersion = "4.1.3"
-val tjenestespesifikasjonerVersion = "1.858e92e"
+val tjenestespesifikasjonerVersion = "1.2024.10.21-13.17-04e1c7bb6f55"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.ktor.server.callId)
@@ -31,10 +31,10 @@ dependencies {
 	implementation(libs.ktor.client.content.negotiation)
 	implementation(libs.bundles.logging)
 
-	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
-
-	@Suppress("GradlePackageUpdate")
-	implementation("com.sun.xml.messaging.saaj:saaj-impl:3.0.4") // needs to be correct version for apache cxf to function
+	implementation("no.nav.tjenestespesifikasjoner.pensjon:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion") {
+        exclude("com.sun.xml.ws", "jaxws-ri")
+        exclude("com.sun.xml.bind", "jaxb-core")
+    }
 
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
