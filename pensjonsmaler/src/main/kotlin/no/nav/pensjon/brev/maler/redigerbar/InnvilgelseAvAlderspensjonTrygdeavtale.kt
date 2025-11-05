@@ -278,7 +278,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
 
             showIf(borIAvtaleland) { includePhrase(RettTilKlageUtland) }
 

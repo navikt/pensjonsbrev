@@ -7,9 +7,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
@@ -17,16 +14,12 @@ import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 object Felles {
     /**
@@ -112,32 +105,31 @@ object Felles {
 
     // TBU2213, TBU1100, RettTilKlagePesys_001
     // TBU2452NN, TBU2452EN, TBU2452
-    data class RettTilAAKlage(
-        val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    bokmal { + "Du har rett til å klage" },
-                    nynorsk { + "Du har rett til å klage" },
-                    english { + "You have the right of appeal" },
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                    english { +"You have the right of appeal" },
                 )
             }
             paragraph {
                 text(
-                    bokmal { + 
-                        "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget " },
-                    nynorsk { + 
-                        "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget " },
-                    english { + 
-                        "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment " },
+                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                    nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har komme fram til deg. Du finn skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                    english { +"If you think the decision is wrong, you may appeal the decision within six weeks from the date the decision was delivered to you. You can find the form and more information at " +
+                            "${Constants.KLAGE_URL}." },
                 )
-                namedReference(vedlegg)
+            }
+
+            paragraph {
                 text(
-                    bokmal { + " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}." },
-                    nynorsk { + " får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}." },
-                    english { + 
-                        ", you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}." },
+                    bokmal { +"Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
+                    nynorsk { +"Du får vite meir om korleis du klagar i vedlegget om rettar." },
+                    english { +"You will find more information on how to appeal in the appendix about your rights." },
                 )
             }
         }
@@ -178,30 +170,6 @@ object Felles {
     }
 
     fun Expression<Bruker>.fulltNavn(): Expression<String> = UnaryOperation.BrukerFulltNavn(this)
-
-    object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { + felles.avsenderEnhet.navn },
-                    nynorsk { + felles.avsenderEnhet.navn },
-                    english { + felles.avsenderEnhet.navn },
-                )
-                newline()
-                text(
-                    bokmal { + "Postboks 6600 Etterstad" },
-                    nynorsk { + "Postboks 6600 Etterstad" },
-                    english { + "Postboks 6600 Etterstad" },
-                )
-                newline()
-                text(
-                    bokmal { + "0607 Oslo" },
-                    nynorsk { + "0607 Oslo" },
-                    english { + "0607 Oslo, Norway" },
-                )
-            }
-        }
-    }
 
     object MeldeFraEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

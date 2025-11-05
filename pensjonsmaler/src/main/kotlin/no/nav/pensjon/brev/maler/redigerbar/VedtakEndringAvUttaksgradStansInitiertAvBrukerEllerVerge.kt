@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -111,28 +110,7 @@ object VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge :
                 )
             }
 
-            //TODO: Denne bør bruke Felles.DuHarRettTilAaKlage, men formuleringa er per nå litt ulik
-            title1 {
-                text(
-                    bokmal { + "Du har rett til å klage" },
-                    nynorsk { + "Du har rett til å klage" },
-                    english { + "You have the right to appeal" }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du fikk vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}." },
-                    nynorsk { + "Om du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. Klaga skal vera skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}." },
-                    english { + "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. Your appeal must be made in writing. You will find a form you can use and more information about appeals at ${Constants.KLAGE_URL}." }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "I vedlegget får du vite mer om hvordan du går fram." },
-                    nynorsk { + "I vedlegget får du vite meir om korleis du går fram." },
-                    english { + "The attachment includes information on how to proceed." }
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
 

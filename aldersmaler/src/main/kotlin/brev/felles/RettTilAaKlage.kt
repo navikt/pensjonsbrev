@@ -16,17 +16,20 @@ object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. Du finner skjema og informasjon på " +
+                bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
                         "${Constants.KLAGE_URL}." },
-                nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. Du finn skjema og informasjon på " +
+                nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har komme fram til deg. Du finn skjema og informasjon på " +
                         "${Constants.KLAGE_URL}." },
-                english { +"If you think the decision is wrong, you may appeal the decision within six weeks from the date you received the decision. You can find the form and more information at " +
+                english { +"If you think the decision is wrong, you may appeal the decision within six weeks from the date the decision was delivered to you. You can find the form and more information at " +
                         "${Constants.KLAGE_URL}." },
             )
+        }
+
+        paragraph {
             text(
-                bokmal { +" Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
-                nynorsk { +" Du får vite meir om korleis du klagar i vedlegget om rettar." },
-                english { +" You will find more information on how to appeal in the appendix about your rights." },
+                bokmal { +"Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
+                nynorsk { +"Du får vite meir om korleis du klagar i vedlegget om rettar." },
+                english { +"You will find more information on how to appeal in the appendix about your rights." },
             )
         }
     }

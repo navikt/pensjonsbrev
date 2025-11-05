@@ -750,7 +750,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

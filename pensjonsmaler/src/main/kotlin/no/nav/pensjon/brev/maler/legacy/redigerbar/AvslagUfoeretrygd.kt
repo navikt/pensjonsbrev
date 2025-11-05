@@ -1734,7 +1734,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 }
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }

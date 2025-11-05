@@ -480,7 +480,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
 
             showIf(borIAvtaleland) { includePhrase(RettTilKlageUtland) }
 
