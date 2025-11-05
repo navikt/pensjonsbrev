@@ -7,9 +7,9 @@ import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, SamletMeldingOmPensjonsvedtakDto.PesysData> {
     data class PesysData(
         val sakstype: Sakstype,
         val vedlegg: P1Dto,
@@ -20,11 +20,9 @@ data class P1Dto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
-    val kravMottattDato: LocalDate?,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
-    val vedtaksdato: String? = null,
 ) : BrevbakerBrevdata, PDFVedleggData {
 
     data class P1Person(
@@ -42,20 +40,24 @@ data class P1Dto(
         val institusjon: List<Institusjon>,
         val pensjonstype: Pensjonstype?,
         val datoFoersteUtbetaling: LocalDate?,
-        val bruttobeloep: Int?,
+        val bruttobeloepDesimal: String?,
         val valuta: String?,
-        val utbetalingsHyppighet: String?,
+        val utbetalingsHyppighet: Utbetalingshyppighet?,
+        val vedtaksdato: String?,
         val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
         val vurderingsperiode: String?,
         val adresseNyVurdering: List<Adresse>,
+        val erNorskRad: Boolean?
     )
 
     data class AvslaattPensjon(
-        val institusjon: Institusjon?,
+        val institusjon: Institusjon? = null,
+        val institusjoner: List<Institusjon>?,
         val pensjonstype: Pensjonstype?,
         val avslagsbegrunnelse: Avslagsbegrunnelse?,
         val vurderingsperiode: String?,
+        val vedtaksdato: String?,
         val adresseNyVurdering: List<Adresse>,
     )
 
@@ -98,6 +100,16 @@ data class P1Dto(
         AndreAarsaker(10, "other reasons")
     }
 
+    enum class Utbetalingshyppighet {
+        Aarlig,
+        Kvartalsvis,
+        Maaned12PerAar,
+        Maaned13PerAar,
+        Maaned14PerAar,
+        Ukentlig,
+        UkjentSeVedtak,
+    }
+
     data class Adresse(
         val adresselinje1: String?,
         val adresselinje2: String?,
@@ -110,6 +122,7 @@ data class P1Dto(
     data class Institusjon(
         val institusjonsid: String?,
         val institusjonsnavn: String?,
+        val pin: String?,
         val saksnummer: String?,
         val land: String?
     )

@@ -18,6 +18,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.jackson.jackson
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -65,7 +66,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         defaultRequest {
             url(penUrl)
         }
-        installRetry(logger, shouldNotRetry = { method,_ -> method != HttpMethod.Get } )
+        installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get } )
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
@@ -98,6 +99,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                             saksId = sak.result.saksId,
                             foedselsnr = sak.result.foedselsnr,
                             foedselsdato = sak.result.foedselsdato,
+                            navn = with(sak.result.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                             sakType = sak.result.sakType,
                             enhetId = sak.result.enhetId
                         )
@@ -166,16 +168,25 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     vedtaksId?.let{ parameters.append("vedtaksId", it.toString()) }
                 }
             }
-        }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
+        }.toServiceResult<BrevdataResponse>(::handlePenErrorBrevdataResponse)
             .then {
-                if (it.error != null) {
-                    ServiceResult.Error(it.error, HttpStatusCode.InternalServerError)
-                } else if (it.data != null) {
+                if (it.data != null) {
                     ServiceResult.Ok(it.data)
                 } else {
                     ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
                 }
             }
+
+
+    private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
+        val body = response.body<BrevdataResponse>()
+        return if (response.status == HttpStatusCode.InternalServerError) {
+            logger.error("En feil oppstod i kall til PEN: ${body.feil?.let { "${it.tittel}: ${it.melding}" }}")
+            ServiceResult.Error("Ukjent feil oppstod i kall til PEN",  HttpStatusCode.InternalServerError, body.feil?.tittel)
+        } else {
+            ServiceResult.Error(body.feil?.melding ?: "Ukjent feil oppstod i kall til PEN", response.status, body.feil?.tittel)
+        }
+    }
 
     override suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
@@ -200,11 +211,14 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
+        val navn: Navn,
         val sakType: Pen.SakType,
         val enhetId: String?,
-    )
+    ) {
+        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+    }
 }
 
-data class BrevdataResponse(val data: Data?, val error: String? = null) {
+data class BrevdataResponse(val data: Data?, val feil: BrevExceptionDto? = null) {
     data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
 }

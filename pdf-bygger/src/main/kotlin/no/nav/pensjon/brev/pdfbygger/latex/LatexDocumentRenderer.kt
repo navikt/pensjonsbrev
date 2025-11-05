@@ -21,7 +21,7 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 internal object LatexDocumentRenderer {
 
     internal fun render(pdfRequest: PDFRequest): LatexDocument = render(
-        letter = pdfRequest.letterMarkup,
+        letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments,
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
@@ -67,7 +67,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", renderTextsToString(letter.title))
+        appendCmd("Title", renderTextsToString(letter.title), escape = false) // allerede escapet i renderTexts
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -125,7 +125,7 @@ internal object LatexDocumentRenderer {
         appendNewCmd("feltfoedselsnummerbruker", sakspart.gjelderFoedselsnummer.format())
         appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
         // TODO slett når all bruk er borte
-        val annenMottaker = (sakspart.annenMottakerNavn ?: sakspart.vergeNavn)?.also { appendNewCmd("feltannenmottakernavn", it) }
+        val annenMottaker = sakspart.annenMottakerNavn?.also { appendNewCmd("feltannenmottakernavn", it) }
 
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")
@@ -271,7 +271,7 @@ internal object LatexDocumentRenderer {
             appendCmd(
                 "begin", "letterTable", columnHeadersLatexString(columnSpec),
                 titleTextOrNull(previous)?.let { "\\tabletitle $it" } ?: ""
-                , escape = false
+                , escape = false // allerede escapet over.
             )
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
 

@@ -39,7 +39,6 @@ inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: dev-gcp
-
   # PEN
   - application: pensjon-pen-q0
     namespace: pensjon-q0

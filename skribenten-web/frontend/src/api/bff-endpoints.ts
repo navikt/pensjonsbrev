@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { CACHE_FOR } from "./cache";
 
-const BFF_BASE_URL = "/bff/internal";
+const BFF_BASE_URL = "/bff/api";
 
 export type BaseUrls = {
   psak: string;
@@ -36,5 +36,7 @@ export type Feilmelding = {
   type: string;
   message: unknown;
   stack: unknown;
+  requestId?: string;
+  status: number | undefined;
   jsonContent: unknown;
 };

@@ -12,18 +12,17 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagDto> {
+object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
     override val kode = UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -60,39 +59,8 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
-                paragraph {
-                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
-                }
-            }.orShow {
-                paragraph {
-                    text(bokmal { +
-                    "Som en del av oppfølgingen er det forsøkt tiltak, blant annet ved " +
-                            fritekst("navn på tiltaksarrangør") +
-                            " i perioden " + fritekst("dato") +
-                            ". Sluttrapporten, referat fra dialogmøte og/eller uttalelse fra arbeidsgiver konkluderer med " +
-                            fritekst("kort oppsummering av vurdering") + "."
-                    })
-                }
-
-                paragraph {
-                    text(bokmal { +
-                    "Du har utdanning som " + fritekst("utdanning") +
-                            ", og har tidligere arbeidet som " + fritekst("yrke") +
-                            ". Fastlegen/behandlende lege vurderer " + fritekst("vurdering") +
-                            ", mens rådgivende lege i Nav vurderer " + fritekst("vurdering") +
-                            ". Det lokale Nav-kontoret har konkludert med " + fritekst("konklusjon") +
-                            ". Vi har ut fra sakens opplysninger vurdert at du har gjennomført hensiktsmessig behandling."
-                    })
-                }
-
-                paragraph {
-                    text(bokmal { +
-                    "Sett i sammenheng med " + fritekst("X (f.eks. utdanning, arbeidserfaring, alder)") +
-                            " og funksjonsnedsettelsen, vurderer vi at flere arbeidsrettede tiltak er hensiktsmessig" +
-                            " for å bedre og/eller avklare din inntektsevne."
-                    })
-                }
+            paragraph {
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
@@ -111,7 +79,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
             }
 
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

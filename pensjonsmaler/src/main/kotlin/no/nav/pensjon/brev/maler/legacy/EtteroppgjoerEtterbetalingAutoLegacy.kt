@@ -184,7 +184,7 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
             includePhrase(TBU3309_Generated(pe))
             includePhrase(TBU2366_Generated)
             includePhrase(TBU2278_Generated(pe))
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.HarDuSpoersmaal(Constants.ETTEROPPGJOR_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
         includeAttachment(opplysningerOmETteroppgjoeretUTLegacy, pe, pe.inkludervedleggopplysningerometteroppgjoeret())

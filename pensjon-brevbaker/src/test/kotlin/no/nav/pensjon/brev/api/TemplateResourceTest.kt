@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api
 import io.ktor.http.ContentType
 import io.ktor.http.withCharset
 import kotlinx.coroutines.runBlocking
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
@@ -37,7 +37,7 @@ class TemplateResourceTest {
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,
         createLetterExampleDto(),
-        Fixtures.fellesAuto,
+        FellesFactory.fellesAuto,
         LanguageCode.BOKMAL
     )
 

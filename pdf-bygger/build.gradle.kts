@@ -49,7 +49,7 @@ dependencies {
     }
 
     testImplementation(libs.kotlin.test.junit)
-    testImplementation(libs.hamkrest)
+    testImplementation(libs.assertJ)
     testImplementation(libs.ktor.server.test.host)
 }
 

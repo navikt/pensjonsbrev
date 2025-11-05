@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforegradAvslagHensiktsmessigBehandling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
@@ -71,9 +72,8 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                     text(bokmal { + pesysData.vurdering })
                 }
             }
-
             paragraph {
-                text(bokmal { +fritekst("Konkret begrunnelse der det er nødvendig") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
@@ -99,7 +99,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
 
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

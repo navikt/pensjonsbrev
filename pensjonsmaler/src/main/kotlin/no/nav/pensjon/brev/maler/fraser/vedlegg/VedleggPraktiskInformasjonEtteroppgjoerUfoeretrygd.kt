@@ -198,6 +198,13 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
         }
         paragraph {
             text(
+                bokmal { + "Hvis du har fått feriepenger du mener kan holdes utenfor etteroppgjøret, må du kontakte oss. Du kan gi beskjed ved å skrive til oss eller ringe. Du får beskjed fra oss hvis endringen påvirker etteroppgjøret ditt." },
+                nynorsk { + "Viss du har fått feriepengar du meiner kan haldast utanfor etteroppgjeret, må du kontakte oss. Du kan gje beskjed ved å skrive til oss eller ringje. Du får beskjed frå oss dersom endringa påverkar etteroppgjeret ditt." },
+                english { + "If you have received holiday pay that you believe can be excluded from the settlement, you must contact us. You can notify us by writing to us or calling. We will let you know if the change affects your settlement." }
+            )
+        }
+        paragraph {
+            text(
                 bokmal { + "Du trenger ikke å klage på vedtaket hvis du kun skal be om at inntekt skal holdes utenfor etteroppgjøret." },
                 nynorsk { + "Du treng ikkje å klage på vedtaket dersom du berre skal be om at inntekt blir halden utanfor etteroppgjeret." },
                 english { + "You do not need to appeal against the decision if you are only requesting that income be excluded from the settlement." }

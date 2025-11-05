@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -18,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 fun klageOgAnke(
 	bosattUtland: Boolean,
 	tilbakekreving: Boolean = false,
-): AttachmentTemplate<LangBokmalNynorskEnglish, Any> {
+): AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> {
 	return createAttachment(
 		title = newText(
 			Bokmal to "Informasjon om klage og anke",
@@ -39,7 +40,7 @@ fun klageOgAnke(
 	}
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.duKanFaaDekketUtgifter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.duKanFaaDekketUtgifter() {
     title2 {
         text(
             bokmal { +"Du kan få dekket utgifter" },
@@ -70,7 +71,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.duKanFaaDekketUtgift
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInneholde(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.hvaMaaKlagenInneholde(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -126,25 +127,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInnehold
             }
         }
     }
-    paragraph {
-        text(
-            bokmal { +"Nav kan hjelpe deg med å skrive ned klagen. Trenger du hjelp, er du velkommen til å " +
-                    "ringe oss på telefon " },
-            nynorsk { +"Nav kan hjelpe deg med å skrive ned klaga. Viss du treng hjelp, " +
-                    "må du gjerne ringje oss på telefon " },
-            english { +"The Nav office can help you with the wording of your appeal. " +
-                    "If you need help, you are welcome to call us by phone " }
-        )
-        kontakttelefonPensjon(bosattUtland)
-        text(
-            bokmal { +"." },
-            nynorsk { +"." },
-            english { +"." }
-        )
-    }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanSendeKlage(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.hvordanSendeKlage(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -156,17 +141,24 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanSendeKlage(
     }
     paragraph {
         text(
-            bokmal { +"Klagen må være skriftlig og inneholde ditt navn, fødselsnummer og adresse. " +
+            bokmal { +"Du kan sende klagen skriftlig eller ringe til Nav på telefon " },
+            nynorsk { +"Du kan sende klaga skriftleg eller ringje til Nav på telefon " },
+            english { +"You can send the complaint in writing or call Nav at " }
+        )
+        kontakttelefonPensjon(bosattUtland)
+        text(
+            bokmal { +". for å få hjelp til å skrive klagen. Du kan også ta kontakt med Nav-kontoret ditt for å få hjelp. " +
                     "Du kan benytte skjemaet som du finner på ${Constants.KLAGE_URL}. Klagen kan sendes via " +
-                    "innlogging på nettsiden vår, ${Constants.NAV_URL}, eller sendes til oss i posten til " },
-            nynorsk { +"Du må setje fram klaga skriftleg og oppgi namn, fødselsnummer og adresse. " +
-                    "Bruk gjerne skjemaet du finn på ${Constants.KLAGE_URL}. " +
-                    "Du kan logge på og sende klaga via nettsida vår, ${Constants.NAV_URL}, " +
-                    "eller du kan sende ho per post til " },
-            english { +"The appeal must be made in writing and contain your name, national identity number and address. " +
-                    "You can use the form that you will find online: ${Constants.Engelsk.KLAGE_URL}. " +
-                    "The appeal can be submitted by logging in to our website (${Constants.NAV_URL}) " +
-                    "or sending it to us by conventional mail to  " }
+                    "innlogging på nettsiden vår, ${Constants.NAV_URL}. Klagen kan skrives ut og sendes til oss " +
+                    "i posten. Husk å skrive under. Bruk denne adressen dersom du sender klagen i posten:" },
+            nynorsk { +" for å få hjelp til å skrive klaga. Du kan òg ta kontakt " +
+                    "med Nav-kontoret ditt for å få hjelp. Du kan bruke skjemaet som du finn på ${Constants.KLAGE_URL}. " +
+                    "Klaga kan sendast via innlogging på nettsida vår, ${Constants.NAV_URL}. Klaga kan skrivast ut og " +
+                    "sendast til oss i posten. Hugs å skrive under. Bruk denne adressa dersom du sender klaga i posten: " },
+            english { +" to get help with writing the complaint. You can also contact your local Nav office for assistance. " +
+                    "You can use the form found at ${Constants.KLAGE_URL}. The complaint can be submitted by logging in " +
+                    "to our website, ${Constants.NAV_URL}. The complaint can also be printed and sent to us by mail. " +
+                    "Remember to sign it. Use this address if you send the complaint by post: " }
         )
     }
     postadresse(bosattUtland)
@@ -183,7 +175,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanSendeKlage(
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.klagePaaVedtaket() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.klagePaaVedtaket() {
     title2 {
         text(
             bokmal { +"Klage på vedtaket - folketrygdloven § 21-12" },
@@ -210,7 +202,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.klagePaaVedtaket() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hjelpFraAndre() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.hjelpFraAndre() {
     title2 {
         text(
             bokmal { +"Hjelp fra andre - forvaltningsloven § 12" },
@@ -236,7 +228,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hjelpFraAndre() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.veiledning() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.veiledning() {
     title2 {
         text(
             bokmal { +"Veiledning fra Nav - forvaltningsloven § 11" },
@@ -259,7 +251,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.veiledning() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.tilbakekreving() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.tilbakekreving() {
 	title2 {
 		text(
 			bokmal { +"Tilbakekreving" },

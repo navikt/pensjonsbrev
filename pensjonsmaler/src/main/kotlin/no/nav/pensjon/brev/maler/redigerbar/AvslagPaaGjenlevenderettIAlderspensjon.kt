@@ -460,7 +460,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

@@ -27,14 +27,14 @@ export const SakspartView = ({
         ${wrapperStyles}
       `}
     >
-      {sakspart.vergeNavn && (
+      {sakspart.annenMottakerNavn && (
         <>
-          <span>Verge:</span>
-          <span>{sakspart.vergeNavn}</span>
+          <span>Mottaker:</span>
+          <span>{sakspart.annenMottakerNavn}</span>
           <span />
         </>
       )}
-      {sakspart.vergeNavn ? <span>Saken gjelder:</span> : <span>Navn:</span>}
+      {sakspart.annenMottakerNavn ? <span>Saken gjelder:</span> : <span>Navn:</span>}
       <span>{sakspart.gjelderNavn}</span>
       <span />
       <span>Fødselsnummer:</span>
@@ -43,7 +43,7 @@ export const SakspartView = ({
       <span>Saksnummer:</span>
       <span>{sakspart.saksnummer}</span>
       <span css={css({ alignSelf: "end", textWrap: "nowrap" })}>
-        {dokumentDato &&
+        {!isNaN(dokumentDato) &&
           intlFormat(
             dokumentDato,
             { year: "numeric", month: "long", day: "numeric" },

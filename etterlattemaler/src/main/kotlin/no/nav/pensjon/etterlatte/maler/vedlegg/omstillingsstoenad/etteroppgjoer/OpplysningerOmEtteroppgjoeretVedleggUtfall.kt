@@ -52,15 +52,15 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
         outline {
             title2 {
                 text(
-                    bokmal { +"Beløp trukket fra din pensjonsgivende inntekt - fradragsbeløp" },
-                    nynorsk { +"Beløp som er trekt frå den pensjonsgivande inntekta di - frådragsbeløpet" },
-                    english { +"Amounts deducted from your pensionable income - deductible amount" },
+                    bokmal { +"Beløp trukket fra din pensjonsgivende inntekt" },
+                    nynorsk { +"Beløp som er trekt frå den pensjonsgivande inntekta di" },
+                    english { +"Amounts deducted from your pensionable income" },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Fradragsbeløpet er den delen av inntekten din som ikke tas med når vi beregner omstillingsstønaden i etteroppgjørsåret." },
-                    nynorsk { +"Frådragsbeløpet er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i etteroppgjørsåret." },
+                    bokmal { +"Fratrekket er den delen av inntekten din som ikke tas med når vi beregner omstillingsstønaden i etteroppgjørsåret." },
+                    nynorsk { +"Fråtrekket er den delen av inntekta di som ikkje blir teken med når vi reknar ut omstillingsstønaden i etteroppgjersåret." },
                     english { +"The deductible amount is the part of your income that is not included when we calculate the adjustment allowance in the income settlement year." },
                 )
             }

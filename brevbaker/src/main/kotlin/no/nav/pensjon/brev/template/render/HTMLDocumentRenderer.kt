@@ -282,7 +282,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
-                val annenMottakerNavn = felles.annenMottakerNavn ?: felles.vergeNavn
+                val annenMottakerNavn = felles.annenMottakerNavn
                 val navnPrefix =
                     if (annenMottakerNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
 

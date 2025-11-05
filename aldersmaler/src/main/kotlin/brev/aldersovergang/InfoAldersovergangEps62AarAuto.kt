@@ -2,10 +2,10 @@ package brev.aldersovergang
 
 import brev.felles.Constants
 import brev.felles.HarDuSpoersmaalAlder
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps62AarAutoDtoSelectors.ytelse
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.InfoAldersovergangEps62AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.aldersovergang.YtelseType
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps62AarAutoDtoSelectors.ytelse
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps62AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.YtelseType
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -103,7 +103,7 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
                     text(bokmal { +"Hvis du ikke sender inn opplysninger, forutsetter vi at ektefellen/partneren/samboeren din har full trygdetid i Norge." })
                 }
 
-                includePhrase(HarDuSpoersmaalAlder())
+                includePhrase(HarDuSpoersmaalAlder)
             }
         }
 }

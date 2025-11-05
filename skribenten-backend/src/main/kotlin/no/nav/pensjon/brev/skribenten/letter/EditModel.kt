@@ -15,7 +15,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 
 object Edit {
-    data class Letter(val title: Title, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>)
+    data class Letter(val title: Title, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>) {
+        fun withAnnenMottaker(mottaker: String?) =
+            this.copy(
+                sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
+                    annenMottakerNavn = mottaker
+                )
+            )
+    }
 
     interface Identifiable {
         val id: Int?

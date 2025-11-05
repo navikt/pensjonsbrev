@@ -106,11 +106,9 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
@@ -182,10 +180,10 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
 
         title {
-            textExpr(
-                Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
-                Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
-                English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
+            text(
+                bokmal { +"Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon" },
+                nynorsk { +"Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon" },
+                english { +"We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension" }
             )
         }
 
@@ -195,26 +193,26 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             showIf(gjenlevendetilleggKap19Innvilget) {
                 //  beloepApOgGjtvedVirkMedDato_001, beloepApOgGjvedVirkMedDato_002
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt fra ".expr() +
-                                kravVirkDatoFom + ".",
-                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt frå ".expr() +
-                                kravVirkDatoFom + ".",
-                        English to "You will receive ".expr() + totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
-                                kravVirkDatoFom + "."
+                    text(
+                        bokmal { +"Du får ".expr() + totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt fra ".expr() +
+                                    kravVirkDatoFom + "." },
+                        nynorsk { +"Du får ".expr() + totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt frå ".expr() +
+                                    kravVirkDatoFom + "." },
+                        english { +"You will receive ".expr() + totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
+                                kravVirkDatoFom + "." }
                     )
                     showIf(not(gjenlevendetilleggInnvilget)) {
-                        textExpr(
-                            Bokmal to " Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format() + ".",
-                            Nynorsk to " Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + ".",
-                            English to " Of this, the survivor’s supplement is ".expr() + gjenlevendetilleggKap19.format() + "."
+                        text(
+                            bokmal { +" Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format() + "." },
+                            nynorsk { +" Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + "."},
+                            english { +" Of this, the survivor’s supplement is ".expr() + gjenlevendetilleggKap19.format() + "." }
                         )
                     }
                     showIf(uforeKombinertMedAlder) {
                         text(
-                            Bokmal to " Dette er i tillegg til uføretrygden din.",
-                            Nynorsk to " Dette er i tillegg til uføretrygda di.",
-                            English to " This is in addition to your disability benefit."
+                            bokmal { +" Dette er i tillegg til uføretrygden din." },
+                            nynorsk { +" Dette er i tillegg til uføretrygda di." },
+                            english { +" This is in addition to your disability benefit." }
                         )
                     }
                 }
@@ -222,24 +220,24 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(not(gjenlevendetilleggInnvilget) and not(gjenlevendetilleggKap19Innvilget)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom,
-                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom,
-                        English to "You will receive ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom
+                    text(
+                        bokmal { +"Du får ".expr() + totalPensjon.format() + " hver måned før skatt fra ".expr() + kravVirkDatoFom },
+                        nynorsk { +"Du får ".expr() + totalPensjon.format() + " kvar månad før skatt frå ".expr() + kravVirkDatoFom },
+                        english { +"You will receive ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom }
                     )
                     showIf(uforeKombinertMedAlder and innvilgetFor67) {
                         // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
                         text(
-                            Bokmal to ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                            Nynorsk to ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                            English to ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                            bokmal {  +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
+                            nynorsk { +". Du får alderspensjon frå folketrygda ved sida av uføretrygda di." },
+                            english { +". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit." }
                         )
                     }.orShow {
                         // innvilgelseAPInnledn -> Ingen løpende uføretrygd og ingen gjenlevendetillegg
                         text(
-                            Bokmal to " i alderspensjon fra folketrygden.",
-                            Nynorsk to " i alderspensjon frå folketrygda.",
-                            English to " as retirement pension from the National Insurance Scheme."
+                            bokmal { +" i alderspensjon fra folketrygden." },
+                            nynorsk { +" i alderspensjon frå folketrygda." },
+                            english { +" as retirement pension from the National Insurance Scheme." }
                         )
                     }
                 }
@@ -249,9 +247,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 // invilgelseAPVirkfom
                 paragraph {
                     text(
-                        Bokmal to "Vi kan tidligst innvilge søknaden din fra og med måneden etter at du søkte. Dette går frem av folketrygdloven § 22-13.",
-                        Nynorsk to "Vi kan tidlegast innvilge søknaden din månaden etter at du søkte. Dette går fram av folketrygdlova § 22-13.",
-                        English to "We can at the earliest grant your application the month after you applied. This is in accordance with the regulations of § 22-13 of the National Insurance Act."
+                        bokmal { +"Vi kan tidligst innvilge søknaden din fra og med måneden etter at du søkte. Dette går frem av folketrygdloven § 22-13." },
+                        nynorsk { +"Vi kan tidlegast innvilge søknaden din månaden etter at du søkte. Dette går fram av folketrygdlova § 22-13." },
+                        english { +"We can at the earliest grant your application the month after you applied. This is in accordance with the regulations of § 22-13 of the National Insurance Act." }
                     )
                 }
             }
@@ -267,10 +265,10 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 ) {
                     paragraph {
-                        textExpr(
-                            Bokmal to "I beregningen vår har vi tatt utgangspunkt i pensjonsrettigheter du har etter ".expr() + avdodNavn + ". Dette gir deg en høyere pensjon enn om vi bare hadde tatt utgangspunkt i din egen opptjening.",
-                            Nynorsk to "I beregninga vår har vi teke utgangspunkt i pensjonsrettar du har etter ".expr() + avdodNavn + ". Dette gir deg ein høgare pensjon enn om vi berre hadde teke utgangspunkt i di eiga opptening.",
-                            English to "We have based the calculation on the pension rights you have after ".expr() + avdodNavn + ". This gives you a higher pension than if we had only based the calculation on your own earnings."
+                        text(
+                            bokmal { +"I beregningen vår har vi tatt utgangspunkt i pensjonsrettigheter du har etter ".expr() + avdodNavn + ". Dette gir deg en høyere pensjon enn om vi bare hadde tatt utgangspunkt i din egen opptjening." },
+                            nynorsk { +"I beregninga vår har vi teke utgangspunkt i pensjonsrettar du har etter ".expr() + avdodNavn + ". Dette gir deg ein høgare pensjon enn om vi berre hadde teke utgangspunkt i di eiga opptening." },
+                            english { +"We have based the calculation on the pension rights you have after ".expr() + avdodNavn + ". This gives you a higher pension than if we had only based the calculation on your own earnings." }
                         )
                     }
                 }
@@ -278,13 +276,13 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 showIf(gjenlevendetilleggKap19Innvilget) {
                     // beregningAPGjtKap19
                     paragraph {
-                        textExpr(
-                            Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr()
-                                    + avdodNavn + ".",
-                            Nynorsk to "Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter ".expr()
-                                    + avdodNavn + ".",
-                            English to "You receive a survivor’s supplement in retirement pension because you have pension rights after ".expr()
-                                    + avdodNavn + "."
+                        text(
+                            bokmal { +"Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr()
+                                    + avdodNavn + "." },
+                            nynorsk { +"Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter ".expr()
+                                    + avdodNavn + "." },
+                            english { +"You receive a survivor’s supplement in retirement pension because you have pension rights after ".expr()
+                                    + avdodNavn + "." }
                         )
                     }
                 }
@@ -292,40 +290,40 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     // beregningAPGjtOpptj
                     paragraph {
                         text(
-                            Bokmal to "Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
-                            Nynorsk to "Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
-                            English to "The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
+                            bokmal { +"Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv." },
+                            nynorsk { +"Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv." },
+                            english { +"The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself." }
                         )
                     }
                 }
 
-                showIf(regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025) and not(gjenlevenderettAnvendt) and not(gjenlevendetilleggKap19Innvilget) and not(gjenlevendetilleggInnvilget)) {
+                showIf(
+                    regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025) and not(gjenlevenderettAnvendt) and not(
+                        gjenlevendetilleggKap19Innvilget
+                    ) and not(gjenlevendetilleggInnvilget)
+                ) {
                     // beregningAPGjRettOpptjEgen_002
                     title1 {
                         text(
-                            Bokmal to "Gjenlevenderett i alderspensjon",
-                            Nynorsk to "Attlevenderett i alderspensjon",
-                            English to "Survivor's rights in retirement pension"
+                            bokmal { +"Gjenlevenderett i alderspensjon" },
+                            nynorsk { +"Attlevenderett i alderspensjon" },
+                            english { +"Survivor's rights in retirement pension" }
                         )
                     }
                     paragraph {
-                        textExpr(
-                            Bokmal to "I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter ".expr()
-                                    + avdodNavn + ".",
-                            Nynorsk to "I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter ".expr()
-                                    + avdodNavn + ".",
-                            English to "We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after ".expr()
-                                    + avdodNavn + "."
+                        text(
+                            bokmal { +"I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter ".expr()
+                                    + avdodNavn + "." },
+                            nynorsk { +"I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter ".expr()
+                                    + avdodNavn + "." },
+                            english { +"We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after ".expr()
+                                    + avdodNavn + "." }
                         )
                     }
                 }
             }
 
-            showIf(privatAFPErBrukt) {
-                includePhrase(
-                    AfpPrivatErBrukt(uttaksgrad)
-                )
-            }
+            showIf(privatAFPErBrukt) { includePhrase(AfpPrivatErBrukt(uttaksgrad)) }
 
             showIf(afpPrivatResultatFellesKontoret) { includePhrase(SoktAFPPrivatInfo) }
 
@@ -335,13 +333,13 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             ) {
                 // innvilgelseAPUnder20aar
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du har ikke vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du bor i ".expr()
-                                + faktiskBostedsland + ".",
-                        Nynorsk to "Du har ikkje vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du bur i ".expr()
-                                + faktiskBostedsland + ".",
-                        English to "You have not been a member of the National Insurance Scheme for at least 20 years. You are therefore not eligible for a full retirement pension while living in ".expr()
-                                + faktiskBostedsland + "."
+                    text(
+                        bokmal { +"Du har ikke vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du bor i ".expr()
+                                + faktiskBostedsland + "." },
+                        nynorsk { +"Du har ikkje vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du bur i ".expr()
+                                + faktiskBostedsland + "." },
+                        english { +"You have not been a member of the National Insurance Scheme for at least 20 years. You are therefore not eligible for a full retirement pension while living in ".expr()
+                                + faktiskBostedsland + "." }
                     )
                 }
             }
@@ -352,13 +350,13 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             ) {
                 // innvilgelseAPUnder20aarAvdod
                 paragraph {
-                    textExpr(
-                        Bokmal to "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du når du bor i ".expr()
-                                + faktiskBostedsland + ".",
-                        Nynorsk to "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du bur i ".expr()
-                                + faktiskBostedsland + ".",
-                        English to "Neither you nor the deceased have been a member of the National Insurance Scheme for at least 20 years. You are therefore not eligible for a full retirement pension while living in ".expr()
-                                + faktiskBostedsland + "."
+                    text(
+                        bokmal { +"Verken du eller avdøde har vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du når du bor i ".expr()
+                                + faktiskBostedsland + "." },
+                        nynorsk { +"Verken du eller avdøde har vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du bur i ".expr()
+                                + faktiskBostedsland + "." },
+                        english { +"Neither you nor the deceased have been a member of the National Insurance Scheme for at least 20 years. You are therefore not eligible for a full retirement pension while living in ".expr()
+                                + faktiskBostedsland + "." }
                     )
                 }
             }
@@ -366,9 +364,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             showIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
                 paragraph {
                     text(
-                        Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
-                        Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
-                        English to "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
+                        bokmal { +"Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
+                        nynorsk { +"Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden." },
+                        english { +"You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
                     )
                 }
             }
@@ -376,22 +374,22 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             showIf(eksportTrygdeavtaleEOS or eksportTrygdeavtaleAvtaleland) {
                 // hvisFlyttetBosattEØS / hvisFlyttetBosattAvtaleland
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland + ". Hvis du skal flytte til et ".expr() + ifElse(
+                    text(
+                        bokmal { +"Vi forutsetter at du bor i ".expr() + faktiskBostedsland + ". Hvis du skal flytte til et ".expr() + ifElse(
                             eksportTrygdeavtaleEOS,
                             ifTrue = "land utenfor EØS-området",
                             ifFalse = "annet land"
-                        ) + ", må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
-                        Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland + ". Dersom du skal flytte til eit ".expr() + ifElse(
+                        ) + ", må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon." },
+                        nynorsk { +"Vi føreset at du bur i ".expr() + faktiskBostedsland + ". Dersom du skal flytte til eit ".expr() + ifElse(
                             eksportTrygdeavtaleEOS,
                             ifTrue = "land utanfor EØS-området",
                             ifFalse = "anna land"
-                        ) + ", må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
-                        English to "We presume that you live in ".expr() + faktiskBostedsland + ". If you are moving to ".expr() + ifElse(
+                        ) + ", må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon." },
+                        english { +"We presume that you live in ".expr() + faktiskBostedsland + ". If you are moving to ".expr() + ifElse(
                             eksportTrygdeavtaleEOS,
                             ifTrue = "a country outside the EEA region",
                             ifFalse = "another country"
-                        ) + ", it is important that you contact Nav. We will then reassess your eligibility for retirement pension."
+                        ) + ", it is important that you contact Nav. We will then reassess your eligibility for retirement pension." }
                     )
                 }
             }
@@ -426,15 +424,19 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             title1 {
                 text(
-                    Bokmal to "Andre utbetalinger",
-                    Nynorsk to "Andre utbetalingar",
-                    English to "Other payments"
+                    bokmal { +"Andre utbetalinger" },
+                    nynorsk { +"Andre utbetalingar" },
+                    english { +"Other payments" }
                 )
             }
             includePhrase(Utbetalingsinformasjon)
             includePhrase(ReguleringAvAlderspensjon)
 
-            showIf(gjenlevendetilleggKap19Innvilget and gjenlevendetilleggKap19.greaterThan(0)) { includePhrase(ReguleringAvGjenlevendetillegg) }
+            showIf(gjenlevendetilleggKap19Innvilget and gjenlevendetilleggKap19.greaterThan(0)) {
+                includePhrase(
+                    ReguleringAvGjenlevendetillegg
+                )
+            }
 
             showIf(uttaksgrad.equalTo(100) and borINorge and not(fullTrygdetid) and not(innvilgetFor67)) {
                 includePhrase(SupplerendeStoenadAP)
@@ -449,16 +451,16 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }.orShow {
                 title1 {
                     text(
-                        Bokmal to "Skatteregler for deg som bor i utlandet",
-                        Nynorsk to "Skattereglar for deg som bur i utlandet",
-                        English to "Tax rules for people who live abroad"
+                        bokmal { +"Skatteregler for deg som bor i utlandet" },
+                        nynorsk { +"Skattereglar for deg som bur i utlandet" },
+                        english { +"Tax rules for people who live abroad" }
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du må i utgangspunktet betale kildeskatt til Norge når du bor i utlandet. Vi trekker derfor 15 prosent i skatt av pensjonen din.",
-                        Nynorsk to "Du må i utgangspunktet betale kjeldeskatt til Noreg når du bur i utlandet. Vi trekkjer derfor 15 prosent i skatt av pensjonen din.",
-                        English to "As a general rule you have to pay withholding tax when you live abroad. We therefor deduct 15 percent tax from your pension."
+                        bokmal { +"Du må i utgangspunktet betale kildeskatt til Norge når du bor i utlandet. Vi trekker derfor 15 prosent i skatt av pensjonen din." },
+                        nynorsk { +"Du må i utgangspunktet betale kjeldeskatt til Noreg når du bur i utlandet. Vi trekkjer derfor 15 prosent i skatt av pensjonen din." },
+                        english { +"As a general rule you have to pay withholding tax when you live abroad. We therefor deduct 15 percent tax from your pension." }
                     )
                 }
                 includePhrase(Skatteplikt)
@@ -478,11 +480,11 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilAAKlage)
 
             showIf(borIAvtaleland) { includePhrase(RettTilKlageUtland) }
 
-            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)

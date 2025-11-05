@@ -14,7 +14,7 @@ class TextOnlyScopeTest {
     @Test
     fun `no-data includePhrase adds phrase elements`() {
         val phrase = object : TextOnlyPhrase<LangBokmal>() {
-            override fun TextOnlyScope<LangBokmal, Unit>.template() = text(Bokmal to "hei")
+            override fun TextOnlyScope<LangBokmal, Unit>.template() = text(bokmal { +"hei" })
         }
 
         val actual = TextOnlyScope<LangBokmal, Unit>().apply { includePhrase(phrase) }

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.VARSEL
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloepDto
@@ -27,7 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTI
 
 @TemplateModelHelpers
 object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilbakekrevingAvFeilutbetaltBeloepDto> {
-    override val kategori: TemplateDescription.Brevkategori = VARSEL
+    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
     override val sakstyper: Set<Sakstype> = setOf(FAM_PL, AFP, BARNEP, GJENLEV, ALDER, GENRL, AFP_PRIVAT)
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP
@@ -147,23 +146,16 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                     }
                     item {
                         text(
-                            bokmal { +"hvor mye du har fått feilutbetalt" },
-                            nynorsk { +"kor mykje du har fått feilutbetalt" },
-                            english { +"How much you were overpaid" },
+                            bokmal { +"om du har gitt riktig informasjon til Nav" },
+                            nynorsk { +"om du har gitt rett informasjon til Nav" },
+                            english { +"Whether you have provided Nav with correct information" },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"hvor lang tid det har gått siden utbetalingen" },
-                            nynorsk { +"kor lang tid det har gått sidan utbetalinga" },
-                            english { +"How much time has passed since the payment" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om Nav helt eller delvis er skyld i feilutbetalingen" },
-                            nynorsk { +"om Nav heilt eller delvis er skyld i feilutbetalinga" },
-                            english { +"Whether Nav is fully or partly responsible for the overpayment" },
+                            bokmal { +"om du har gitt all nødvendig informasjon til Nav i rett tid" },
+                            nynorsk { +"om du har gitt all nødvendig informasjon til Nav i rett tid" },
+                            english { +"Whether you have provided Nav with all the necessary information within the prescribed deadlines" },
                         )
                     }
                 }
@@ -171,13 +163,6 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                     bokmal { +"Selv om det er Nav som er skyld i feilutbetalingen, kan vi kreve at du betaler tilbake hele eller deler av beløpet." },
                     nynorsk { +"Sjølv om det er Nav som er skyld i feilutbetalinga, kan vi krevje at du betaler tilbake heile eller delar av beløpet." },
                     english { +"Even if Nav is responsible for the overpayment, we may still require you to repay all or part of the amount." },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du forsto eller burde forstått at du fikk utbetalt feil beløp, skal Nav kreve tilbake hele beløpet." },
-                    nynorsk { +"Om du forstod eller burde ha forstått at du fekk utbetalt feil beløp, skal Nav krevje tilbake heile beløpet." },
-                    english { +"If you understood or should have understood that you received the wrong amount, Nav must require repayment of the full amount." },
                 )
             }
 

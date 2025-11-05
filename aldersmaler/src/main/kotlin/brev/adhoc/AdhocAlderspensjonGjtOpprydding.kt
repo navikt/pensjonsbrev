@@ -1,14 +1,13 @@
 package brev.adhoc
 
-import brev.felles.Constants
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import brev.felles.RettTilAAKlage
 import brev.felles.RettTilInnsyn
 import dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
+import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -131,9 +130,9 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtO
                 )
             }
 
-            includePhrase(RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(RettTilAAKlage)
             includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-            includePhrase(HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
+            includePhrase(HarDuSpoersmaalAlder)
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)

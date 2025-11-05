@@ -1283,7 +1283,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
-	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
@@ -1296,15 +1295,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun oldText (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static synthetic fun oldText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun oldText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun oldText$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static final fun text (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;)V
 	public static final fun text (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;)V
 	public static final fun text (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;)V
@@ -1314,15 +1304,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {
 	public static synthetic fun text$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun text$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public static synthetic fun text$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static final fun textExpr (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
-	public static synthetic fun textExpr$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/TextScope {
@@ -1625,7 +1606,7 @@ public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
 public abstract interface class no/nav/pensjon/brev/template/vedlegg/PDFTemplate {
 	public fun createVedlegg (Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 	public abstract fun getTitle ()Ljava/util/List;
-	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;Lno/nav/pensjon/brevbaker/api/model/Felles;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate$DefaultImpls {
@@ -1633,7 +1614,7 @@ public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate$DefaultImpls
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplateKt {
-	public static final fun createAttachmentPDF (Ljava/util/List;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
+	public static final fun createAttachmentPDF (Ljava/util/List;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {

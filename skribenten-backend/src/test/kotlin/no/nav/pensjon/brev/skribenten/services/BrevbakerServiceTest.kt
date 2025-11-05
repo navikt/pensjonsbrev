@@ -26,7 +26,6 @@ class BrevbakerServiceTest {
         sakspart = SakspartImpl(
             gjelderNavn = "about name",
             gjelderFoedselsnummer = Foedselsnummer("12345678910"),
-            vergeNavn = null,
             annenMottakerNavn = null,
             saksnummer = "12345",
             dokumentDato = LocalDate.now(),

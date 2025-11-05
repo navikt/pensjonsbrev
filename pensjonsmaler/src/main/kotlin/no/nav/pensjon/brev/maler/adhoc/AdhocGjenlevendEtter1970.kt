@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKla
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ARBEID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSE_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -188,26 +187,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                     english { + "You are obligated to notify Nav as soon as you are aware of any of these changes." }
                 )
             }
-            title1 {
-                text(
-                    bokmal { + "Du har rett til å klage" },
-                    nynorsk { + "Du har rett til å klage" },
-                    english { + "You have the right of appeal" }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. "
-                            + "Klagen skal være skriftlig. Du finner skjema og informasjon på $KLAGE_URL. "
-                            + "I vedlegget får du vite mer om hvordan du går fram." },
-                    nynorsk { + "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. "
-                            + "Klaga skal vera skriftleg. Du finn skjema og informasjon på $KLAGE_URL. "
-                            + "I vedlegget får du vite meir om korleis du går fram.\n" },
-                    english { + "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. "
-                            + "In the attachment “Your rights and how to appeal”, you can find out more about how to proceed. "
-                            + "You will find forms and information at $KLAGE_URL." }
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
             includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }

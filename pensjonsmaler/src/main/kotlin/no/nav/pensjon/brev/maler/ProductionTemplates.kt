@@ -4,13 +4,10 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.*
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.*
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstand
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstandAuto
-import no.nav.pensjon.brev.maler.alder.endring.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSats
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
@@ -36,6 +33,8 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates : AllTemplates {
     private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
+        AdHocVarselUgyldiggjoringFullmaktsgiver,
+        AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
         AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
@@ -46,17 +45,12 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         OmregningAlderUfore2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalder2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalderAuto,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
-        AvslagUttakFoerNormertPensjonsalderAP2016Auto,
-        AvslagUttakFoerNormertPensjonsalderAuto,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
-        EndringAvAlderspensjonSivilstandAuto,
+        EndringAvAlderspensjonFordiDuFyller75AarAuto,
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
@@ -91,21 +85,12 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
-        AvslagGradsendringFoerNormertPensjonsalder,
-        AvslagGradsendringFoerNormertPensjonsalderAP2016,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
         AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
-        AvslagUttakFoerNormertPensjonsalder,
-        AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
         BrukerTestBrev,
-        EndringAvAlderspensjonPgaGarantitillegg,
-        EndringAvAlderspensjonSivilstand,
-        EndringAvAlderspensjonSivilstandSaerskiltSats,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
-        ForhaandsvarselVedTilbakekreving,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,

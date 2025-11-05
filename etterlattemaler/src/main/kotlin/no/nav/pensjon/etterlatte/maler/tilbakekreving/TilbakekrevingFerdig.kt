@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -57,7 +58,7 @@ data class TilbakekrevingDTO(
     val helTilbakekreving: Boolean,
     val perioder: List<TilbakekrevingPeriode>,
     val summer: TilbakekrevingBeloeper
-)
+) : VedleggData
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
@@ -160,18 +161,16 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
 
         }
 
-        includeAttachment(tilbakekrevingVedlegg, data.tilbakekreving)
+        includeAttachment(tilbakekrevingVedlegg, attachmentData = data.tilbakekreving)
 
         // Nasjonal
         includeAttachment(
             klageOgAnke(bosattUtland = false, tilbakekreving = true),
-            innhold,
             data.bosattUtland.not().and(data.doedsbo.not())
         )
         // Bosatt utland
         includeAttachment(
             klageOgAnke(bosattUtland = true, tilbakekreving = true),
-            innhold,
             data.bosattUtland.and(data.doedsbo.not())
         )
     }

@@ -1,10 +1,22 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Button,
+  Checkbox,
+  Heading,
+  HStack,
+  Link,
+  TextField,
+  UNSAFE_Combobox,
+  VStack,
+} from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
+import { ManueltAdressertTil } from "~/types/brev";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -35,19 +47,22 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           </Link>
         </Alert>
 
-        {/* <Controller
+        <Controller
           control={properties.control}
-          name="manuellAdresse.adresse.erBrukersAdresse"
+          name="manuellAdresse.adresse.manueltAdressertTil"
           render={({ field }) => (
             <Checkbox
               {...field}
-              description="Kryss av hvis brevet skal til bruker, men til en annen adresse"
+              description="Brevet skal til en annen mottaker enn bruker"
+              onChange={(event) =>
+                field.onChange(event.target.checked ? ManueltAdressertTil.ANNEN : ManueltAdressertTil.BRUKER)
+              }
               size="small"
             >
-              Brukers adresse
+              Annen mottaker
             </Checkbox>
           )}
-        /> */}
+        />
 
         <Controller
           control={properties.control}

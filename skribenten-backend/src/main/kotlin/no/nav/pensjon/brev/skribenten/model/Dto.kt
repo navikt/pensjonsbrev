@@ -91,14 +91,24 @@ object Dto {
         val adresselinje2: String? = null,
         val adresselinje3: String? = null,
         val landkode: Landkode? = null,
+        val manueltAdressertTil: ManueltAdressertTil,
     ) {
         companion object {
             fun samhandler(tssId: String) = Mottaker(
                 type = MottakerType.SAMHANDLER,
                 tssId = tssId,
+                manueltAdressertTil = ManueltAdressertTil.IKKE_RELEVANT
             )
 
-            fun norskAdresse(navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) =
+            fun norskAdresse(
+                navn: String,
+                postnummer: String,
+                poststed: String,
+                adresselinje1: String?,
+                adresselinje2: String?,
+                adresselinje3: String?,
+                manueltAdressertTil: ManueltAdressertTil
+            ) =
                 Mottaker(
                     type = MottakerType.NORSK_ADRESSE,
                     navn = navn,
@@ -107,26 +117,32 @@ object Dto {
                     adresselinje1 = adresselinje1,
                     adresselinje2 = adresselinje2,
                     adresselinje3 = adresselinje3,
+                    manueltAdressertTil = manueltAdressertTil,
+
                 )
 
             fun utenlandskAdresse(
                 navn: String,
-                postnummer: String?,
-                poststed: String?,
                 adresselinje1: String,
                 adresselinje2: String?,
                 adresselinje3: String?,
                 landkode: Landkode,
+                manueltAdressertTil: ManueltAdressertTil,
             ) = Mottaker(
                 type = MottakerType.UTENLANDSK_ADRESSE,
                 navn = navn,
-                postnummer = postnummer,
-                poststed = poststed,
                 adresselinje1 = adresselinje1,
                 adresselinje2 = adresselinje2,
                 adresselinje3 = adresselinje3,
                 landkode = landkode,
+                manueltAdressertTil = manueltAdressertTil,
             )
+        }
+
+        enum class ManueltAdressertTil{
+            BRUKER,
+            ANNEN,
+            IKKE_RELEVANT
         }
     }
 }
@@ -141,15 +157,15 @@ fun Api.OverstyrtMottaker.toDto() =
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
+            manueltAdressertTil = manueltAdressertTil?: Dto.Mottaker.ManueltAdressertTil.BRUKER,
         )
         is Api.OverstyrtMottaker.UtenlandskAdresse -> utenlandskAdresse(
             navn = navn,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
             landkode = landkode,
+            manueltAdressertTil = manueltAdressertTil?: Dto.Mottaker.ManueltAdressertTil.BRUKER,
         )
     }
 
@@ -172,8 +188,6 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
         utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
             navn = navn!!,
             landkode = landkode!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,

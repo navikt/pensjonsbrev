@@ -1,27 +1,28 @@
 [versions]
-kotlinVersion = "2.2.20"
-kotlinKspVersion = "2.2.20-2.0.3"
-ktorVersion = "3.3.0"
+kotlinVersion = "2.2.21"
+kotlinKspVersion = "2.3.0"
+ktorVersion = "3.3.1"
 assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
-classGraphVersion = "4.8.181"
+classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.19.0"
-commonVersion = "2.4.0"
+commonVersion = "2.10.0"
 exposedVersion = "0.61.0"
-flywayVersion = "11.13.2"
+flywayVersion = "11.15.0"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "7.0.2"
-jacksonJsr310Version = "2.20.0"
-jupiterVersion = "6.0.0"
+jacksonJsr310Version = "2.20.1"
+jupiterVersion = "6.0.1"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
-logbackVersion = "1.5.19"
-logstashVersion = "8.1"
-micrometerVersion = "1.15.4"
-pdfboxVersion = "3.0.5"
+logbackVersion = "1.5.20"
+logstashVersion = "9.0"
+micrometerVersion = "1.15.5"
+pdfboxVersion = "3.0.6"
 postgresqlVersion = "42.7.8"
 testcontainersPostgresqlVersion = "1.21.3"
-unleashVersion = "11.1.0"
+unleashVersion = "11.1.1"
+valkeyVersion = "5.5.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
@@ -45,6 +46,7 @@ micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
+valkey = { module = "io.valkey:valkey-java", version.ref = "valkeyVersion" }
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
@@ -89,7 +91,7 @@ assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" 
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.0" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}
 

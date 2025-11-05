@@ -235,7 +235,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                     includePhrase(MeldFraOmEndringer2)
                 }
 
-                includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(Felles.RettTilAAKlage)
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }

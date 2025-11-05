@@ -25,7 +25,7 @@ fun HttpClientConfig<*>.callIdAndOnBehalfOfClient(scope: String, authService: Au
     }
 }
 
-fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((method: HttpMethod, url: Url) -> Boolean) = { _,_ -> false } ) {
+fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((method: HttpMethod, url: Url, cause: Throwable?) -> Boolean) = { _,_,_ -> false } ) {
     install(HttpRequestRetry) {
         delayMillis {
             minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
@@ -33,13 +33,13 @@ fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shoul
         retryIf(maxRetries) { req, res ->
             when {
                 res.status.isSuccess() -> false
-                shouldNotRetry(req.method, req.url) -> false
+                shouldNotRetry(req.method, req.url, null) -> false
                 res.status in setOf(HttpStatusCode.GatewayTimeout, HttpStatusCode.RequestTimeout, HttpStatusCode.BadGateway) -> true
                 else -> false
             }
         }
         retryOnExceptionIf { req, cause ->
-            if (shouldNotRetry(req.method, req.url.build())) {
+            if (shouldNotRetry(req.method, req.url.build(), cause)) {
                 return@retryOnExceptionIf false
             }
             val actualCause = cause.unwrapCancellationException()
@@ -47,7 +47,7 @@ fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shoul
                     || actualCause is ConnectTimeoutException
                     || actualCause is IOException
             if (!doRetry) {
-                logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                logger.error("Won't retry for exception for ${req.method} for ${req.url}: ${actualCause.message}", actualCause)
             }
             doRetry
         }

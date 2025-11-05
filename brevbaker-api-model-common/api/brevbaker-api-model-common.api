@@ -1,3 +1,12 @@
+public final class no/nav/brev/BrevExceptionDto {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMelding ()Ljava/lang/String;
+	public final fun getTittel ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
 }
 
@@ -203,15 +212,29 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata :
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
 	public fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
-	public synthetic fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
+	public fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg;
+	public synthetic fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg : no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyVedleggData;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart {
@@ -227,6 +250,12 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
@@ -283,8 +312,8 @@ public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/n
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
-	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)V
-	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)V
+	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
 	public final fun getAvsenderEnhet ()Lno/nav/pensjon/brevbaker/api/model/NavEnhet;
@@ -292,8 +321,8 @@ public final class no/nav/pensjon/brevbaker/api/model/Felles {
 	public final fun getDokumentDato ()Ljava/time/LocalDate;
 	public final fun getSaksnummer ()Ljava/lang/String;
 	public final fun getSignerendeSaksbehandlere ()Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;
-	public final fun getVergeNavn ()Ljava/lang/String;
 	public fun hashCode ()I
+	public final fun medAnnenMottakerNavn (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun medSignerendeSaksbehandlere (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public fun toString ()Ljava/lang/String;
 }
@@ -545,7 +574,6 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 	public abstract fun getGjelderFoedselsnummer-0fes7jg ()Ljava/lang/String;
 	public abstract fun getGjelderNavn ()Ljava/lang/String;
 	public abstract fun getSaksnummer ()Ljava/lang/String;
-	public abstract fun getVergeNavn ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur {

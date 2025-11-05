@@ -8,9 +8,9 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getBrev, getBrevmetadataQuery, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -22,6 +22,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -214,11 +215,21 @@ function RedigerBrev({
   const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
+  const [warnOpen, setWarnOpen] = useState(false);
+  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
+  const navigateToBrevbehandler = () =>
+    navigate({
+      to: "/saksnummer/$saksId/brevbehandler",
+      params: { saksId },
+      search: { brevId: brev.info.id, enhetsId, vedtaksId },
+    });
+
   const brevmal = useQuery({
-    ...getSakContextQuery(saksId, vedtaksId),
-    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
+    ...getBrevmetadataQuery,
+    select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
   const showDebug = useSearch({
@@ -252,6 +263,13 @@ function RedigerBrev({
     defaultValues: defaultValuesModelEditor,
   });
 
+  const { getWarning } = useBrevEditorWarnings({
+    brevkode: brev.info.brevkode,
+    form,
+    redigertBrev: editorState.redigertBrev,
+    propertyUsage: brev.propertyUsage ?? [],
+  });
+
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
@@ -276,6 +294,16 @@ function RedigerBrev({
       },
     );
   };
+
+  const guardedSubmit = form.handleSubmit((values) => {
+    const warning = getWarning();
+    if (warning) {
+      setWarn(warning);
+      setWarnOpen(true);
+      return;
+    }
+    onSubmit(values, navigateToBrevbehandler);
+  });
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
@@ -310,16 +338,22 @@ function RedigerBrev({
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
         `}
-        onSubmit={form.handleSubmit((v) =>
-          onSubmit(v, () =>
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId },
-              search: { brevId: brev.info.id, enhetsId, vedtaksId },
-            }),
-          ),
-        )}
+        onSubmit={guardedSubmit}
       >
+        <WarnModal
+          count={warn?.count ?? 0}
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => {
+            setWarnOpen(false);
+            setWarn(null);
+          }}
+          onFortsett={() => {
+            setWarnOpen(false);
+            setWarn(null);
+            onSubmit(form.getValues(), navigateToBrevbehandler);
+          }}
+          open={warnOpen}
+        />
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -397,7 +431,7 @@ function RedigerBrev({
             >
               Tilbake til brevvelger
             </Button>
-            <Button loading={oppdaterBrevMutation.isPending} size="small">
+            <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
               <HStack align={"center"} gap="2">
                 <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
               </HStack>
@@ -416,7 +450,10 @@ enum BrevSidemenyTabs {
 
 // TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
 const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
+  const specificationFormElements = usePartitionedModelSpecification(
+    brev.info.brevkode,
+    brev.propertyUsage ?? undefined,
+  );
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
   const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];

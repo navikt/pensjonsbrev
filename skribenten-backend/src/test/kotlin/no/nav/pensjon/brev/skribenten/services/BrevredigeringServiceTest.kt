@@ -3,14 +3,12 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import no.nav.brev.Landkode
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
@@ -160,14 +158,32 @@ class BrevredigeringServiceTest {
         1234L,
         "12345678910",
         LocalDate.now().minusYears(42),
+        Pen.SakSelection.Navn("a", "b", "c"),
         Pen.SakType.ALDER,
         "rabbit"
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = FellesFactory.lagFelles(
+        felles = Felles(
             dokumentDato = LocalDate.now(),
-            saksnummer = sak1.saksId.toString()
+            saksnummer = sak1.saksId.toString(),
+            avsenderEnhet =
+                NavEnhet(
+                    nettside = "nav.no",
+                    navn = "Nav Familie- og pensjonsytelser Porsgrunn",
+                    telefonnummer = Telefonnummer("55553334"),
+                ),
+            bruker = Bruker(
+                fornavn = "Test",
+                mellomnavn = "\"bruker\"",
+                etternavn = "Testerson",
+                foedselsnummer = Foedselsnummer("01019878910"),
+            ),
+            signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                saksbehandler = "Ole Saksbehandler",
+                attesterendeSaksbehandler = "Per Attesterende"
+            ),
+            annenMottakerNavn = null,
         ),
         brevdata = Api.GeneriskBrevdata()
     )
@@ -241,6 +257,7 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
+        samhandlerService = FakeSamhandlerService()
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
@@ -788,8 +805,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -818,8 +833,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -845,8 +858,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -869,7 +880,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan distribuere vedtaksbrev som er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
         brevbakerService.renderPdfKall.clear()
 
         val brev = opprettBrev(
@@ -1322,7 +1332,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f")
+        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(
@@ -1336,8 +1346,24 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
-        val brev = opprettBrev().resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse("a", "b", "c", "d", "e", "f", Landkode("CY"))
+        val brev = opprettBrev(
+            mottaker = Dto.Mottaker.utenlandskAdresse(
+                navn = "a",
+                adresselinje1 = "d",
+                adresselinje2 = "e",
+                adresselinje3 = "f",
+                landkode = Landkode("CY"),
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
+            )
+        ).resultOrNull()!!
+        val nyMottaker = Dto.Mottaker.utenlandskAdresse(
+            navn = "a",
+            adresselinje1 = "b",
+            adresselinje2 = "c",
+            adresselinje3 = "d",
+            landkode = Landkode("CY"),
+            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
+        )
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(

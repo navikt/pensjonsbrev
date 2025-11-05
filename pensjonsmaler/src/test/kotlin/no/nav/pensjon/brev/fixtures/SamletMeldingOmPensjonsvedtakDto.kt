@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
@@ -23,7 +23,7 @@ import java.time.Month
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
             sakstype = Sakstype.ALDER,
             vedlegg = createP1Dto()
@@ -52,13 +52,12 @@ fun createP1Dto() = P1Dto(
             landkode = Landkode("NO"),
         ),
         sakstype = Sakstype.ALDER,
-        kravMottattDato = LocalDate.of(1983, Month.FEBRUARY, 2),
         innvilgedePensjoner = listOf(
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
@@ -70,14 +69,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -89,14 +90,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
@@ -108,14 +111,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -127,14 +132,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = true,
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
@@ -146,14 +153,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -165,15 +174,17 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
 
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode =  "tjue år",
@@ -185,14 +196,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -204,14 +217,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "tjue år",
@@ -223,14 +238,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -242,14 +259,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode =  "tjue år",
@@ -261,14 +280,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -280,14 +301,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-                bruttobeloep = 1000,
+                bruttobeloepDesimal = "1000.00",
                 grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode =  "tjue år",
@@ -299,14 +322,16 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4321"),
                     poststed = Poststed("Lillevik Østre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
-                bruttobeloep = 2000,
+                bruttobeloepDesimal = "2000",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
                 reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "ett år og to dager",
@@ -318,8 +343,10 @@ fun createP1Dto() = P1Dto(
                     postnummer = Postnummer("4324"),
                     poststed = Poststed("Lillevik Vestre")
                 )),
-                utbetalingsHyppighet = "maaned_13_per_aar",
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
             ),
         ),
         avslaattePensjoner =
@@ -342,8 +369,9 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY",
+        pin = null,
         saksnummer = null,
-        land = null
+        land = null,
     )
 )
 
@@ -351,8 +379,9 @@ private fun nay2(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY2",
+        pin = null,
         saksnummer = null,
-        land = null
+        land = null,
     )
 )
 
@@ -360,8 +389,18 @@ private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = P1Dto.Institusjon(
         institusjonsid = null,
         institusjonsnavn = "NAY 4",
+        pin = null,
         saksnummer = null,
-        land = null
+        land = null,
+    ),
+    institusjoner = listOf(
+        P1Dto.Institusjon(
+            institusjonsid = null,
+            institusjonsnavn = "NAY 4",
+            pin = null,
+            saksnummer = null,
+            land = null,
+        ),
     ),
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
@@ -373,5 +412,6 @@ private fun avslaattPensjon() = AvslaattPensjon(
         landkode = Landkode("FI"),
         postnummer = Postnummer("4321"),
         poststed = Poststed("Lillevik Østre")
-    ))
+    )),
+    vedtaksdato = "2020-01-01"
 )

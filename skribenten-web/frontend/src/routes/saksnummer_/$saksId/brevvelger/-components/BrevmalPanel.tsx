@@ -10,14 +10,15 @@ const BrevmalPanel = (props: {
   saksId: string;
   templateId?: string;
   brevId?: number;
-  letterTemplates: LetterMetadata[];
+  brevmetadata: Record<string, LetterMetadata>;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
   enhetsId: string;
   onAddFavorittSuccess?: (templateId: string) => void;
 }) => {
+  const visPanel = (props.templateId && props.brevmetadata[props.templateId]) || props.brevId;
   return (
     <>
-      {(props.templateId || props.brevId) && (
+      {visPanel && (
         <div
           css={css`
             display: flex;
@@ -30,7 +31,7 @@ const BrevmalPanel = (props: {
           {props.templateId ? (
             <TemplateLoader
               enhetsId={props.enhetsId}
-              letterTemplate={props.letterTemplates.find((template) => template.id === props.templateId)!}
+              letterTemplate={props.brevmetadata[props.templateId]}
               onAddFavorittSuccess={props.onAddFavorittSuccess}
               saksId={props.saksId}
               setOnFormSubmitClick={props.setOnFormSubmitClick}
@@ -38,9 +39,9 @@ const BrevmalPanel = (props: {
             />
           ) : (
             <BrevmalBrevbakerKladd
-              //linje 18 garanterer at vi ikke får undefined
+              //visPanel garanterer at vi ikke får undefined
               brevId={props.brevId!}
-              letterTemplates={props.letterTemplates}
+              brevmetadata={props.brevmetadata}
               saksId={props.saksId.toString()}
               setOnFormSubmitClick={props.setOnFormSubmitClick}
             />

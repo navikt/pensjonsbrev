@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -45,6 +46,7 @@ class MottakerTest {
             Mottaker.new(brevredigering.id.value) {
                 type = MottakerType.SAMHANDLER
                 tssId = "12345"
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
@@ -60,10 +62,12 @@ class MottakerTest {
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = "12345"
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = "123456"
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
         }
@@ -76,6 +80,7 @@ class MottakerTest {
             Mottaker.new(brevredigeringId) {
                 type = MottakerType.SAMHANDLER
                 tssId = "12345"
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         transaction { Brevredigering[brevredigeringId].mottaker?.tssId = "abc" }
@@ -103,7 +108,6 @@ class MottakerTest {
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
                     gjelderFoedselsnummer = Foedselsnummer("c"),
-                    vergeNavn = null,
                     annenMottakerNavn = null,
                     saksnummer = "d",
                     dokumentDato = LocalDate.now(),

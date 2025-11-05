@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
@@ -153,13 +155,15 @@ object MottakerTable : IdTable<Long>() {
     override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
-    val navn: Column<String?> = varchar("navn", 50).nullable()
-    val postnummer: Column<String?> = varchar("postnummer", 50).nullable()
-    val poststed: Column<String?> = text("poststed").nullable()
-    val adresselinje1: Column<String?> = text("adresselinje1").nullable()
-    val adresselinje2: Column<String?> = text("adresselinje2").nullable()
-    val adresselinje3: Column<String?> = text("adresselinje3").nullable()
+    val navn: Column<String?> = varchar("navn", 128).nullable()
+    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val poststed: Column<String?> = varchar("poststed", 50).nullable()
+    val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
+    val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
+    val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
     val landkode: Column<String?> = varchar("landkode", 2).nullable()
+    val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
+        .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -175,6 +179,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2
     var adresselinje3 by MottakerTable.adresselinje3
+    var manueltAdressertTil by MottakerTable.manueltAdressertTil
     var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)

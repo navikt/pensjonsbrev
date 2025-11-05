@@ -24,7 +24,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
@@ -75,15 +75,35 @@ const VedtakWrapper = () => {
               navigate({
                 to: "/saksnummer/$saksId/brevbehandler",
                 params: { saksId },
-                search: { vedtaksId, enhetsId },
+                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
               })
             }
             reservasjon={err.response.data as ReservasjonResponse}
           />
         );
       }
+
       if (err.response?.status === 409) {
         return <ArkivertBrev saksId={saksId} />;
+      }
+
+      if (err.response?.status === 403) {
+        const axiosError = err as AxiosError & { forbidReason?: AttestForbiddenReason };
+        const reason = axiosError.forbidReason;
+        if (reason) {
+          return (
+            <AttestForbiddenModal
+              onClose={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevbehandler",
+                  params: { saksId },
+                  search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                })
+              }
+              reason={reason}
+            />
+          );
+        }
       }
 
       return (

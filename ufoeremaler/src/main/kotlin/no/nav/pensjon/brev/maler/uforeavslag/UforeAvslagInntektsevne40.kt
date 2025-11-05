@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
@@ -70,9 +71,8 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     text(bokmal { + pesysData.vurdering })
                 }
             }
-
             paragraph {
-                text(bokmal { +fritekst("Konkret begrunnelse der det er nødvendig") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
@@ -95,12 +95,12 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-7." })
             }
 
             includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -48,7 +49,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd med ung ufør fordel" })
+                text(bokmal { +"Derfor får du ikke rettigheter som ung ufør" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden fordi vi ikke har dokumentasjon som viser at du hadde en varig og alvorlig sykdom før fylte 26 år." })
@@ -71,7 +72,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { + "I vurderingen har vi lagt vekt på: " + fritekst("Sett inn konkret argument med kilde og dato")})
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
@@ -81,11 +82,11 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om rettighet som ung uføre." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-13 tredje ledd." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
             }
 
-            includePhrase(RettTilAKlageKort)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

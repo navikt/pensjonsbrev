@@ -11,6 +11,7 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { finnSamhandler } from "~/api/skribenten-api-endpoints";
 import type { Adresse, FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
+import { ManueltAdressertTil } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
@@ -156,11 +157,11 @@ export const EndreMottakerModal = (properties: {
 
   const defaultManuellAdresse: ManuellAdresseUtfyllingFormData = {
     adresse: {
-      erBrukersAdresse: false,
       navn: "",
       linje1: "",
       linje2: "",
       linje3: "",
+      manueltAdressertTil: ManueltAdressertTil.BRUKER,
       postnr: null,
       poststed: null,
       //default value skal være norge. Siden vi henter alle landkodene i backend, hardkoder vi norges verdi.

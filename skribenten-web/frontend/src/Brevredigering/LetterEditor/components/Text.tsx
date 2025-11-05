@@ -19,7 +19,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
 
   switch (content.type) {
     case NEW_LINE: {
-      return <br />;
+      return <br data-literal-index={JSON.stringify(literalIndex)} />;
     }
     case VARIABLE: {
       return (
@@ -36,6 +36,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             ${content.fontType === FontType.BOLD && "font-weight: bold;"}
             ${content.fontType === FontType.ITALIC && "font-style: italic;"}
           `}
+          data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
             setEditorState((oldState) => ({
               ...oldState,

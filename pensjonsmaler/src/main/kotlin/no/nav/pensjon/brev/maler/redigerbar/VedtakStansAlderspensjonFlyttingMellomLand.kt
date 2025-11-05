@@ -228,7 +228,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             }
             includePhrase(Skatteplikt)
 
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

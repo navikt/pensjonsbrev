@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton

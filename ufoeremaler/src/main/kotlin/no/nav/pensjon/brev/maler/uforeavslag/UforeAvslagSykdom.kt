@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -63,9 +64,9 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-                paragraph {
-                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
-                }
+            paragraph {
+                text(bokmal { + fritekst("Individuell vurdering") })
+            }
 
             paragraph {
                 text(bokmal { +
@@ -81,7 +82,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

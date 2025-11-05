@@ -1,13 +1,12 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
-import com.natpryce.hamkrest.*
-import com.natpryce.hamkrest.assertion.assertThat
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Failure
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Success
 import no.nav.pensjon.brev.pdfbygger.getScriptPath
 import no.nav.pensjon.brev.template.render.DocumentFile
+import org.assertj.core.api.Assertions.assertThat
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
@@ -27,8 +26,8 @@ class LatexServiceTest {
     fun `producePDF compiles two times`() {
         assertResult<Success>(producePdf("simpleCompile.sh")) { result ->
             val compiledOutput = result.decodePlaintext().lines().filter { it.isNotBlank() }
-            assertThat(compiledOutput, hasSize(equalTo(2)))
-            assertThat(compiledOutput, allElements(equalTo("kompilerer letter.tex")))
+            assertThat(compiledOutput).hasSize(2)
+            assertThat(compiledOutput).allMatch { it == "kompilerer letter.tex" }
         }
     }
 
@@ -51,14 +50,14 @@ class LatexServiceTest {
     @Test
     fun `producePDF times out when first execution exceeds timout`() {
         assertResult<Failure.Timeout>(producePdf("neverEndingCompile.sh", timeout = 10.milliseconds)) {
-            assertThat(it.reason, containsSubstring(10.milliseconds.toString()))
+            assertThat(it.reason).contains(10.milliseconds.toString())
         }
     }
 
     @Test
     fun `producePDF times out when subsequent executions exceeds timeout`() {
         assertResult<Failure.Timeout>(producePdf("100msCompile.sh", timeout = 150.milliseconds)) {
-            assertThat(it.reason, containsSubstring(150.milliseconds.toString()))
+            assertThat(it.reason).contains(150.milliseconds.toString())
         }
     }
 
@@ -102,7 +101,9 @@ class LatexServiceTest {
             )
         ) {
             val compiledOutput = it.decodePlaintext().lines()
-            assertThat(compiledOutput, hasSize(equalTo(2)) and hasElement("file 1") and hasElement("file 2"))
+            assertThat(compiledOutput).hasSize(2)
+                .contains("file 1")
+                .contains("file 2")
         }
     }
 
@@ -119,7 +120,7 @@ class LatexServiceTest {
         )
         runBlocking {
             assertResult<Failure.Server>(service.producePDF(emptyList())) {
-                assertThat(it.reason, containsSubstring("Compilation process execution failed"))
+                assertThat(it.reason).contains("Compilation process execution failed")
             }
         }
     }
@@ -163,9 +164,9 @@ class LatexServiceTest {
             val timedOut = results.filterIsInstance<Failure.QueueTimeout>()
 
             // Because of two runs per compilation we expect each to take ~200ms, and queue wait timeout is less, thus ~2 successes
-            assertThat(success, hasSize(isWithin(1..3)))
+            assertThat(success).hasSizeBetween(1, 3)
             // The rest we expect to be timeout
-            assertThat(timedOut, hasSize(equalTo(results.size - success.size)))
+            assertThat(timedOut).hasSize(results.size - success.size)
         }
     }
 
@@ -198,9 +199,9 @@ class LatexServiceTest {
                 compilationQueueWait,
                 "Expected queued compilation to be cancelled by LatexService, but was cancelled by timeout in test"
             )
-            assertThat(compilationQueueWait, isWithin(50L..100L))
+            assertThat(compilationQueueWait).isBetween(50L, 100L)
             assertResult<Failure.QueueTimeout>(result) {
-                assertThat(it.reason, containsSubstring("queue wait timed out"))
+                assertThat(it.reason).contains("queue wait timed out")
             }
         }
     }
@@ -230,7 +231,7 @@ class LatexServiceTest {
                 compilationTime,
                 "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test"
             )
-            assertThat(compilationTime, isWithin(200L..1000L))
+            assertThat(compilationTime).isBetween(200L, 1000L)
             assertResult<Success>(result)
 
             blockingCompilation.cancel()
@@ -256,7 +257,7 @@ class LatexServiceTest {
                 measureTimeMillis { requests.awaitAll() }
             }
             assertNotNull(compilationTime, "Test timed out")
-            assertThat(compilationTime, isWithin(1L..2000L))
+            assertThat(compilationTime).isBetween(1L, 2000L)
         }
 
     }

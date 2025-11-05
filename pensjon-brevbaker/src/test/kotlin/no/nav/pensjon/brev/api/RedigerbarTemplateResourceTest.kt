@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -36,14 +36,13 @@ class RedigerbarTemplateResourceTest {
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
-        Fixtures.felles,
+        FellesFactory.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
             title = listOf(LiteralImpl(1, "redigert markup")),
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "gjelder bruker",
                 gjelderFoedselsnummer = Foedselsnummer("123abc"),
-                vergeNavn = null,
                 annenMottakerNavn = null,
                 saksnummer = "001",
                 dokumentDato = LocalDate.now()

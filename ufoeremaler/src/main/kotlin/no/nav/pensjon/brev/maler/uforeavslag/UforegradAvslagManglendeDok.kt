@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforegradAvslagHensiktsmessigBehandling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -62,19 +63,19 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
                 text(bokmal { + "Vi har ikke mottatt disse dokumentene og avslår derfor søknaden din om økt uføregrad." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 21-3 " +
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 21-3 " +
                 fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 
-            includePhrase(RettTilAKlageKort)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilAKlageLang)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

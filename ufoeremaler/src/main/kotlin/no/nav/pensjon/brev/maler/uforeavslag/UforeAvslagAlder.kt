@@ -67,9 +67,8 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { +fritekst("Individuell vurdering") })
             }
 
 
@@ -81,12 +80,12 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-4." })
+                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-4." })
             }
 
             includePhrase(HvaSkjerNa)
             includePhrase(RettTilAKlageLang)
-            includePhrase(RettTilInnsyn)
+            includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
