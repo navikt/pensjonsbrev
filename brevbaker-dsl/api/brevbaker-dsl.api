@@ -747,6 +747,20 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$IntFormat : n
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatter : no/nav/pensjon/brev/template/LocalizedFormatter {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatter;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/time/Month;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatterShort : no/nav/pensjon/brev/template/LocalizedFormatter {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatterShort;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/time/Month;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
 public final class no/nav/pensjon/brev/template/LocalizedFormatter$MonthYearFormatter : no/nav/pensjon/brev/template/LocalizedFormatter {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$MonthYearFormatter;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -1410,6 +1424,8 @@ public final class no/nav/pensjon/brev/template/dsl/expression/CollectionKt {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
+	public static final fun format (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun format$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatLocalDate (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun formatLocalDate$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatLocalDateNullable (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
