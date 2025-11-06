@@ -63,12 +63,13 @@ describe("LetterEditorActions.paste", () => {
         test("avsnitt med titler", () => {
           const idx = { blockIndex: 0, contentIndex: 0 };
           const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 0, clipboard);
 
           expect(result.redigertBrev.blocks).toMatchObject([
             newTitle({ type: "TITLE1", content: [newLiteral({ editedText: "T1" })] }),
             newTitle({ type: "TITLE2", content: [newLiteral({ editedText: "T2" })] }),
+            newTitle({ type: "TITLE3", content: [newLiteral({ editedText: "T3" })] }),
             newParagraph({ content: [newLiteral({ editedText: "P1" })] }),
             state.redigertBrev.blocks[0],
           ]);
@@ -79,13 +80,14 @@ describe("LetterEditorActions.paste", () => {
             paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }),
             newParagraph({ content: [newLiteral({ editedText: "" })] }),
           );
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 0, clipboard);
 
           expect(result.redigertBrev.blocks).toMatchObject([
             state.redigertBrev.blocks[0],
             newTitle({ type: "TITLE1", content: [newLiteral({ editedText: "T1" })] }),
             newTitle({ type: "TITLE2", content: [newLiteral({ editedText: "T2" })] }),
+            newTitle({ type: "TITLE3", content: [newLiteral({ editedText: "T3" })] }),
             newParagraph({ content: [newLiteral({ editedText: "P1" })] }),
             newParagraph({ content: [newLiteral({ editedText: "" })] }),
           ]);
@@ -606,12 +608,13 @@ describe("LetterEditorActions.paste", () => {
         test("avsnitt med titler", () => {
           const idx = { blockIndex: 0, contentIndex: 0 };
           const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 7, clipboard);
 
           expect(result.redigertBrev.blocks).toMatchObject([
             paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min", editedText: "TekstenT1" })] }),
             newTitle({ type: "TITLE2", content: [newLiteral({ editedText: "T2" })] }),
+            newTitle({ type: "TITLE3", content: [newLiteral({ editedText: "T3" })] }),
             newParagraph({ content: [newLiteral({ editedText: "P1" })] }),
             newParagraph({ content: [newLiteral({ editedText: " min" })] }),
           ]);
@@ -1196,12 +1199,13 @@ describe("LetterEditorActions.paste", () => {
         test("avsnitt med titler", () => {
           const idx = { blockIndex: 0, contentIndex: 0 };
           const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 11, clipboard);
 
           expect(result.redigertBrev.blocks).toMatchObject([
             paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min", editedText: "Teksten minT1" })] }),
             newTitle({ type: "TITLE2", content: [newLiteral({ editedText: "T2" })] }),
+            newTitle({ type: "TITLE2", content: [newLiteral({ editedText: "T3" })] }),
             newParagraph({ content: [newLiteral({ editedText: "P1" })] }),
             newParagraph({ content: [newLiteral({ editedText: "" })] }),
           ]);
@@ -1766,7 +1770,7 @@ describe("LetterEditorActions.paste", () => {
               content: [theItemList],
             }),
           );
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 0, clipboard);
 
           // Parent structure and number of items
@@ -1781,6 +1785,7 @@ describe("LetterEditorActions.paste", () => {
                 items: [
                   newItem({ content: [newLiteral({ editedText: "T1" })] }),
                   newItem({ content: [newLiteral({ editedText: "T2" })] }),
+                  newItem({ content: [newLiteral({ editedText: "T3" })] }),
                   newItem({ content: [newLiteral({ editedText: "P1" })] }),
                   ...theItemList.items,
                 ],
@@ -2260,7 +2265,7 @@ describe("LetterEditorActions.paste", () => {
               content: [theItemList],
             }),
           );
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 7, clipboard);
 
           // Parent structure and number of blocks
@@ -2285,6 +2290,7 @@ describe("LetterEditorActions.paste", () => {
                     ],
                   }),
                   newItem({ content: [newLiteral({ editedText: "T2" })] }),
+                  newItem({ content: [newLiteral({ editedText: "T3" })] }),
                   newItem({ content: [newLiteral({ editedText: "P1" })] }),
                   newItem({ content: [newLiteral({ editedText: " min" })] }),
                 ],
@@ -2973,7 +2979,7 @@ describe("LetterEditorActions.paste", () => {
               content: [theItemList],
             }),
           );
-          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><h2>T3</h2><p>P1</p>" });
           const result = Actions.paste(state, idx, 11, clipboard);
 
           // Parent structure and number of blocks
@@ -2998,6 +3004,7 @@ describe("LetterEditorActions.paste", () => {
                     ],
                   }),
                   newItem({ content: [newLiteral({ editedText: "T2" })] }),
+                  newItem({ content: [newLiteral({ editedText: "T3" })] }),
                   newItem({ content: [newLiteral({ editedText: "P1" })] }),
                   newItem({ content: [newLiteral({ editedText: "" })] }),
                 ],
