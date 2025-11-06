@@ -165,6 +165,16 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
 function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
+      // TODO se hvordan det ser ut
+      return (
+        <Heading size="medium" spacing>
+          {content.text.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </Heading>
+      );
+    }
+    case ElementType.TITLE2: {
       return (
         <Heading size="small" spacing>
           {content.text.map((cocs, index) => (
@@ -173,7 +183,7 @@ function ContentComponent({ content }: { content: Element }) {
         </Heading>
       );
     }
-    case ElementType.TITLE2: {
+    case ElementType.TITLE3: {
       return (
         <Heading size="xsmall" spacing>
           {content.text.map((cocs, index) => (

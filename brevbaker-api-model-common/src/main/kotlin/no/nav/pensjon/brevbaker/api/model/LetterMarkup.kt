@@ -45,7 +45,7 @@ interface LetterMarkup {
         val editable: Boolean
 
         enum class Type {
-            TITLE1, TITLE2, PARAGRAPH,
+            TITLE1, TITLE2, TITLE3, PARAGRAPH,
         }
 
         interface Title1 : Block {
@@ -55,6 +55,12 @@ interface LetterMarkup {
         }
 
         interface Title2 : Block {
+            val content: List<ParagraphContent.Text>
+            override val type: Type
+                get() = Type.TITLE2
+        }
+
+        interface Title3 : Block {
             val content: List<ParagraphContent.Text>
             override val type: Type
                 get() = Type.TITLE2

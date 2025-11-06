@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title1Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title2Impl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title3Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -17,6 +19,7 @@ import java.time.LocalDate
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title3 as E_Title3
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table as E_Table
@@ -728,6 +731,12 @@ class UpdateRenderedLetterTest {
                     LiteralImpl(32, "3lit2"),
                 )
             ),
+            Title3Impl(
+                4, true, listOf(
+                    LiteralImpl(41, "4lit1"),
+                    LiteralImpl(42, "4lit2"),
+                )
+            )
         )
         val edited = editedLetter(
             E_Paragraph(
@@ -748,6 +757,12 @@ class UpdateRenderedLetterTest {
                 ),
                 deletedContent = setOf(32)
             ),
+            E_Title3(
+                3, true, listOf(
+                    E_Literal(41, "4lit1", E_FontType.PLAIN),
+                ),
+                deletedContent = setOf(42)
+            )
         )
 
         assertEquals(edited, edited.updateEditedLetter(next))

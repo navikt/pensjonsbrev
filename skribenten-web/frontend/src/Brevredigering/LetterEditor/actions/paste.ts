@@ -352,6 +352,10 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         insertBlock(draft, "TITLE2", el.content);
         break;
       }
+      case "H3": {
+        insertBlock(draft, "TITLE3", el.content);
+        break;
+      }
       case "P": {
         insertBlock(draft, "PARAGRAPH", el.content);
         break;
@@ -368,7 +372,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
   });
 }
 
-function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "PARAGRAPH", content: Text[]) {
+function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH", content: Text[]) {
   const focusedBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
   const blockContent = focusedBlock?.content[draft.focus.contentIndex];
 
@@ -512,6 +516,12 @@ interface Title2Element {
   type: "H2";
   content: Text[];
 }
+
+interface Title3Element {
+  type: "H3";
+  content: Text[];
+}
+
 interface TableCell {
   content: Text[];
 }
@@ -526,7 +536,7 @@ interface Table {
   headerCells?: TableCell[];
 }
 
-type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Table;
+type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Title3Element | Table;
 
 /** Return clipboard HTML or plain text, sanitised through DOMPurify. */
 function getCleanClipboardMarkup(dt: DataTransfer): string {
@@ -653,7 +663,7 @@ function traverseTable(element: Element, font: FontType): Table {
   };
 }
 
-function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
+function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2" | "H3", font: FontType): TraversedElement[] {
   if (element.children.length === 0) {
     const sanitizedText = cleansePastedText(element.textContent ?? "");
     // allowed with empty list items
@@ -665,8 +675,9 @@ function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", fon
           return [child];
         }
         case "P":
-        case "H2":
         case "H1":
+        case "H2":
+        case "H3":
         case "ITEM": {
           return child.content;
         }

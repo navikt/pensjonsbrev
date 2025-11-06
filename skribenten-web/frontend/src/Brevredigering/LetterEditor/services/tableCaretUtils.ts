@@ -1,8 +1,8 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { Cell, ParagraphBlock, Row, Title1Block, Title2Block } from "~/types/brevbakerTypes";
-import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+import type { Cell, ParagraphBlock, Row, Title1Block, Title2Block, Title3Block } from "~/types/brevbakerTypes";
+import { PARAGRAPH, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
 
 import { addElements, isTable, newLiteral, newRow, removeElements } from "../actions/common";
 import type { Focus, LetterEditorState } from "../model/state";
@@ -84,8 +84,8 @@ export function isAtLastTableCell(state: LetterEditorState): boolean {
   return f.rowIndex === lastRowIndex && f.cellIndex === lastColIndex;
 }
 
-function insertBlankLiteralIfEmptyBlock(block: ParagraphBlock | Title1Block | Title2Block, contentIndex: number) {
-  if (block.type === PARAGRAPH || block.type === TITLE1 || block.type === TITLE2) {
+function insertBlankLiteralIfEmptyBlock(block: ParagraphBlock | Title1Block | Title2Block | Title3Block, contentIndex: number) {
+  if (block.type === PARAGRAPH || block.type === TITLE1 || block.type === TITLE2 || block.type === TITLE3) {
     addElements([newLiteral({ editedText: "" })], contentIndex, block.content, block.deletedContent);
     return true;
   }

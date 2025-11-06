@@ -11,6 +11,7 @@ export enum Typography {
   PARAGRAPH = "PARAGRAPH",
   TITLE1 = "TITLE1",
   TITLE2 = "TITLE2",
+  TITLE3 = "TITLE3",
 }
 
 export const isMac = !globalThis.Cypress ? /Mac|iPod|iPad/.test(navigator.userAgent) : false;
@@ -19,12 +20,14 @@ export const TypographyToText = isMac
   ? ({
       [Typography.TITLE1]: "Overskrift 1 (⌥+1)",
       [Typography.TITLE2]: "Overskrift 2 (⌥+2)",
-      [Typography.PARAGRAPH]: "Normal (⌥+3)",
+      [Typography.TITLE3]: "Overskrift 2 (⌥+3)",
+      [Typography.PARAGRAPH]: "Normal (⌥+4)",
     } as const)
   : ({
       [Typography.TITLE1]: "Overskrift 1 (Alt+1)",
       [Typography.TITLE2]: "Overskrift 2 (Alt+2)",
-      [Typography.PARAGRAPH]: "Normal (Alt+3)",
+      [Typography.TITLE3]: "Overskrift 2 (Alt+3)",
+      [Typography.PARAGRAPH]: "Normal (Alt+4)",
     } as const);
 
 export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
@@ -38,6 +41,9 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
       } else if (event.altKey && event.code === "Digit3") {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE3);
+      } else if (event.altKey && event.code === "Digit4") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
       }

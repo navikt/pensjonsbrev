@@ -61,6 +61,12 @@
 \newcommand{\titletwotextsize}{12pt}
 \newcommand{\titletwotextspacing}{10pt}
 
+% title 2
+\newfontfamily\titlethreefont[LetterSpace=2.2]{Source Sans 3 Bold}
+\newcommand{\titlethree}{\titlethreefont \fontsize{\titlethreetextsize}{\titlethreetextspacing} \fontseries{bf} \selectfont}
+\newcommand{\titlethreetextsize}{11pt}
+\newcommand{\titlethreetextspacing}{10pt}
+
 % paragraph spacing
 \setlength{\parindent}{0em}                 % indentations before first line in paragraph
 \setlength{\parskip}{16pt}                  % space between paragraphs

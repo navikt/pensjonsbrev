@@ -123,6 +123,7 @@ class LatexVisualITest {
             }
             title1 { text(bokmal { +"Title 1" }) }
             title2 { text(bokmal { +"Title 2" }) }
+            title3 { text(bokmal { +"Title 3" }) }
         }
     }
 
@@ -393,12 +394,12 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
-        title2 { text(bokmal { +"Second title" }) }
-    }
-
     private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle1() {
         title1 { text(bokmal { +"First title" }) }
+    }
+
+    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
+        title2 { text(bokmal { +"Second title" }) }
     }
 
     enum class ElementType(val description: String) {

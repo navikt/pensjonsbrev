@@ -109,6 +109,7 @@ private fun finnTekst(block: Block): List<String> = when (block) {
     is Paragraph -> finnTekstForParagraph(block)
     is Title1 -> block.content.map { it.text }
     is Title2 -> block.content.map { it.text }
+    is Title3 -> block.content.map { it.text }
 }
 
 private fun finnTekstForParagraph(paragraph: Paragraph): List<String> = paragraph.content.flatMap {

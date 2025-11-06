@@ -41,6 +41,14 @@ internal object BlockTilSlateKonverterer {
                     ),
                 )
 
+            LetterMarkup.Block.Type.TITLE3 ->
+                listOf(
+                    Element(
+                        type = ElementType.HEADING_FOUR,
+                        children = (block as LetterMarkup.Block.Title3).content.map { konverterLiteralOgVariable(it) },
+                    ),
+                )
+
             // Hvis en paragraf fra brevbakeren inneholder lister, vil disse splittes ut og legges inn som en
             // Element-node i stedet for en InnerElement-node siden redigering av dette ikke støttes i slate-editoren.
             // De øvrige InnerElementene vil bli slått sammen og lagt til som egne Element-noder.
