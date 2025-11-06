@@ -49,7 +49,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             max-width: 512px;
           `}
           data-cy="functional-error-alert"
-          size="small"
+          size="medium"
           variant="error"
         >
           <Heading level="2" size="small">
@@ -59,7 +59,6 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             <div
               css={css`
                 margin-top: 4px;
-                white-space: pre-line;
               `}
             >
               {melding}
