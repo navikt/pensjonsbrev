@@ -780,7 +780,8 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
       case "ITEM":
       case "P":
       case "H1":
-      case "H2": {
+      case "H2":
+      case "H3": {
         return traversedElement.content;
       }
       case "TABLE": {
