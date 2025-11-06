@@ -2,7 +2,6 @@
   margin-top: var(--a-spacing-6);
   /*clamp: minimum, ideal, max */
   padding: 0 clamp(1rem, 2vw, 4rem);
-  caret-color: green;
 
   [contenteditable] {
     &:focus-within {
