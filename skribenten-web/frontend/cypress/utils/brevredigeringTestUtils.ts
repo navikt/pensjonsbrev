@@ -233,7 +233,6 @@ export const nyTitle3Block = (args: {
   deletedContent: [],
 });
 
-
 export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Content[] }): ParagraphBlock =>
   newParagraph({
     id: args.id,

@@ -173,7 +173,6 @@ export type Title3Block = Block & {
   readonly content: TextContent[];
 };
 
-
 export const TITLE_INDEX = -1;
 export type Title = {
   readonly text: TextContent[];

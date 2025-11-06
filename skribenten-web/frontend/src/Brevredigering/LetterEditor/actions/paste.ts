@@ -372,7 +372,11 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
   });
 }
 
-function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH", content: Text[]) {
+function insertBlock(
+  draft: Draft<LetterEditorState>,
+  type: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH",
+  content: Text[],
+) {
   const focusedBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
   const blockContent = focusedBlock?.content[draft.focus.contentIndex];
 
@@ -612,6 +616,7 @@ function traverseTable(element: Element, font: FontType): Table {
           return child.content;
         case "H1":
         case "H2":
+        case "H3":
         case "TABLE":
           return [];
         default:
@@ -663,7 +668,11 @@ function traverseTable(element: Element, font: FontType): Table {
   };
 }
 
-function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2" | "H3", font: FontType): TraversedElement[] {
+function traverseTextContainer(
+  element: Element,
+  type: "ITEM" | "H1" | "H2" | "H3",
+  font: FontType,
+): TraversedElement[] {
   if (element.children.length === 0) {
     const sanitizedText = cleansePastedText(element.textContent ?? "");
     // allowed with empty list items
@@ -739,6 +748,10 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
       return traverseTextContainer(element, "H2", font);
     }
 
+    case "H3": {
+      return traverseTextContainer(element, "H3", font);
+    }
+
     case "TABLE": {
       return [traverseTable(element, font)];
     }
@@ -792,7 +805,7 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
   });
 }
 
-type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element;
+type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element | Title3Element;
 
 function traverseParagraphChildren(paragraph: Element, font: FontType): ParagraphChild[] {
   const result: ParagraphChild[] = [];
@@ -815,6 +828,7 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
       case "ITEM":
       case "H1":
       case "H2":
+      case "H3":
       case "P":
         flushBuffer();
         result.push(node);

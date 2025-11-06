@@ -115,7 +115,11 @@ export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
 }
 
 function updateElementsWithPossiblyMergedLiterals(
-  block: WritableDraft<Title1Block> | WritableDraft<Title2Block> | WritableDraft<Title3Block> | WritableDraft<ParagraphBlock>,
+  block:
+    | WritableDraft<Title1Block>
+    | WritableDraft<Title2Block>
+    | WritableDraft<Title3Block>
+    | WritableDraft<ParagraphBlock>,
   contentIndex: number,
   firstLiteral: WritableDraft<LiteralValue>,
   secondLiteral: WritableDraft<LiteralValue>,

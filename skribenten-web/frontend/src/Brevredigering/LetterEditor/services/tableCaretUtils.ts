@@ -84,7 +84,10 @@ export function isAtLastTableCell(state: LetterEditorState): boolean {
   return f.rowIndex === lastRowIndex && f.cellIndex === lastColIndex;
 }
 
-function insertBlankLiteralIfEmptyBlock(block: ParagraphBlock | Title1Block | Title2Block | Title3Block, contentIndex: number) {
+function insertBlankLiteralIfEmptyBlock(
+  block: ParagraphBlock | Title1Block | Title2Block | Title3Block,
+  contentIndex: number,
+) {
   if (block.type === PARAGRAPH || block.type === TITLE1 || block.type === TITLE2 || block.type === TITLE3) {
     addElements([newLiteral({ editedText: "" })], contentIndex, block.content, block.deletedContent);
     return true;

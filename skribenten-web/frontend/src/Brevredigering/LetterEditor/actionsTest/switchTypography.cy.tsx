@@ -52,10 +52,10 @@ describe("Typography", () => {
         cy.getDataCy("typography-select").contains("Overskrift 1 (Alt+1)").should("be.selected");
         cy.getDataCy("typography-select").select("Normal (Alt+4)");
         cy.getDataCy("typography-select").contains("Normal (Alt+4)").should("be.selected");
-        cy.get('.PARAGRAPH:contains("Dette er en title1 block")').should("be.visible")
+        cy.get('.PARAGRAPH:contains("Dette er en title1 block")').should("be.visible");
         cy.getDataCy("typography-select").select("Overskrift 1 (Alt+1)");
         cy.getDataCy("typography-select").contains("Overskrift 1 (Alt+1)").should("be.selected");
-        cy.get('.TITLE1:contains("Dette er en title1 block")').should("be.visible")
+        cy.get('.TITLE1:contains("Dette er en title1 block")').should("be.visible");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
@@ -71,10 +71,10 @@ describe("Typography", () => {
         cy.getDataCy("typography-select").contains("Overskrift 1 (Alt+1)").should("be.selected");
         cy.contains("title1").type("{alt}4");
         cy.getDataCy("typography-select").contains("Normal (Alt+4)").should("be.selected");
-        cy.get('.PARAGRAPH:contains("Dette er en title1 block")').should("be.visible")
+        cy.get('.PARAGRAPH:contains("Dette er en title1 block")').should("be.visible");
         cy.contains("title1").type("{alt}1");
         cy.getDataCy("typography-select").contains("Overskrift 1 (Alt+1)").should("be.selected");
-        cy.get('.TITLE1:contains("Dette er en title1 block")').should("be.visible")
+        cy.get('.TITLE1:contains("Dette er en title1 block")').should("be.visible");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
@@ -92,10 +92,10 @@ describe("Typography", () => {
         cy.getDataCy("typography-select").contains("Overskrift 2 (Alt+2)");
         cy.getDataCy("typography-select").select("Normal (Alt+4)");
         cy.getDataCy("typography-select").contains("Normal (Alt+4)").should("be.selected");
-        cy.get('.PARAGRAPH:contains("Dette er en title2 block")').should("be.visible")
+        cy.get('.PARAGRAPH:contains("Dette er en title2 block")').should("be.visible");
         cy.getDataCy("typography-select").select("Overskrift 2 (Alt+2)");
         cy.getDataCy("typography-select").contains("Overskrift 2 (Alt+2)").should("be.selected");
-        cy.get('.TITLE2:contains("Dette er en title2 block")').should("be.visible")
+        cy.get('.TITLE2:contains("Dette er en title2 block")').should("be.visible");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
@@ -192,10 +192,10 @@ describe("Typography", () => {
         cy.getDataCy("typography-select").contains("Normal (Alt+4)").should("be.selected");
         cy.contains("paragraph").type("{alt}1");
         cy.getDataCy("typography-select").contains("Overskrift 1 (Alt+1)").should("be.selected");
-        cy.get('.TITLE1:contains("Dette er en paragraph block")').should("be.visible")
+        cy.get('.TITLE1:contains("Dette er en paragraph block")').should("be.visible");
         cy.contains("paragraph").type("{alt}4");
         cy.getDataCy("typography-select").contains("Normal (Alt+4)").should("be.selected");
-        cy.get('.PARAGRAPH:contains("Dette er en paragraph block")').should("be.visible")
+        cy.get('.PARAGRAPH:contains("Dette er en paragraph block")').should("be.visible");
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
