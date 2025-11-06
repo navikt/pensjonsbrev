@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
@@ -17,7 +16,6 @@ data class EndringAvUttaksgradAutoDto(
     val harFlereBeregningsperioder: Boolean,  // v1.BeregnetPensjonPerManed
     val kravVirkDatoFom: LocalDate,  // v3.Krav
     val regelverkType: AlderspensjonRegelverkType,
-    val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?,

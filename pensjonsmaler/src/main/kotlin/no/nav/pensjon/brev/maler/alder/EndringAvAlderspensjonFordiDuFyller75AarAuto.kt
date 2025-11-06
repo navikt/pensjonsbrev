@@ -1,12 +1,13 @@
 package no.nav.pensjon.brev.maler.alder
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
@@ -18,19 +19,18 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype
 
@@ -67,7 +67,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(DuFaarHverMaaned(totalPensjon))
                 includePhrase(Utbetalingsinformasjon)
 
-                showIf(maanedligPensjonFoerSkattDto.notNull()) {includePhrase(Felles.FlereBeregningsperioder) }
+                showIf(maanedligPensjonFoerSkattDto.notNull()) { includePhrase(Felles.FlereBeregningsperioder) }
 
                 // begrunnAP75
                 paragraph {
@@ -104,7 +104,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
-            includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)
+            includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
             includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlder)
         }

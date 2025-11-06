@@ -11,12 +11,19 @@ plugins {
 group = "no.nav.pensjon.brev.tjenestebuss"
 version = "0.0.1"
 
+repositories {
+    maven {
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
+    }
+}
+
 application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
-val cxfVersion = "3.6.3"
-val tjenestespesifikasjonerVersion = "1.858e92e"
+// Før du oppdaterer cxf-versjonen, sjekk readme-fila for denne modulen.
+val cxfVersion = "4.1.3"
+val tjenestespesifikasjonerVersion = "1.2024.10.21-13.17-04e1c7bb6f55"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.ktor.server.callId)
@@ -31,11 +38,10 @@ dependencies {
 	implementation(libs.ktor.client.content.negotiation)
 	implementation(libs.bundles.logging)
 
-	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
-
-	implementation("javax.xml.ws:jaxws-api:2.3.1")
-	@Suppress("GradlePackageUpdate")
-	implementation("com.sun.xml.messaging.saaj:saaj-impl:1.5.1") // needs to be correct version for apache cxf to function
+	implementation("no.nav.tjenestespesifikasjoner.pensjon:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion") {
+        exclude("com.sun.xml.ws", "jaxws-ri")
+        exclude("com.sun.xml.bind", "jaxb-core")
+    }
 
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
@@ -45,28 +51,10 @@ dependencies {
 	implementation(libs.bundles.metrics)
 
 	// Test
-	testImplementation(libs.junit.jupiter)
-	testImplementation(libs.kotlin.test.junit)
-	testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit)
 	testImplementation(libs.ktor.server.test.host)
-	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
-	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
+    testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
 	testImplementation(libs.hamkrest)
-}
-
-repositories {
-	maven {
-		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-		metadataSources {
-			artifact() //Look directly for artifact
-		}
-		content {
-			includeGroup("no.nav.pensjon.pesys-esb-wsclient")
-		}
-	}
-	maven {
-		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-	}
 }
 
 sourceSets {
@@ -80,8 +68,8 @@ sourceSets {
 kotlin {
 	compilerOptions {
 		jvmTarget.set(JvmTarget.fromTarget(javaTarget))
-		freeCompilerArgs.add("-Xjsr305=strict")
-	}
+        freeCompilerArgs.add("-Xjsr305=strict")
+    }
 }
 
 tasks {
@@ -91,6 +79,9 @@ tasks {
 	compileTestJava {
 		targetCompatibility = javaTarget
 	}
+    test {
+        useJUnitPlatform()
+    }
     build {
         dependsOn(installDist)
     }

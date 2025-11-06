@@ -5,6 +5,10 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.greaterThan
 import com.natpryce.hamkrest.has
 import com.natpryce.hamkrest.hasElement
+import jakarta.jws.WebService
+import jakarta.xml.ws.handler.Handler
+import jakarta.xml.ws.handler.MessageContext
+import jakarta.xml.ws.handler.soap.SOAPMessageContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ClientFactory
@@ -12,19 +16,16 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.Tj
 import org.apache.cxf.feature.Feature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.util.*
-import javax.jws.WebService
-import javax.xml.ws.handler.Handler
-import javax.xml.ws.handler.MessageContext
-import javax.xml.ws.handler.soap.SOAPMessageContext
-import kotlin.test.AfterTest
-import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TjenestebussServiceTest {
 
     private val callIdReceiver = CallIdReceiver()
@@ -38,7 +39,7 @@ class TjenestebussServiceTest {
 
     private val service = HelloWorldService()
 
-    @AfterTest
+    @AfterAll
     fun stopServer() {
         server.stop()
     }
