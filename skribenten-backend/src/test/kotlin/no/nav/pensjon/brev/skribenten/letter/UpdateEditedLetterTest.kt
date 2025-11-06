@@ -758,7 +758,7 @@ class UpdateRenderedLetterTest {
                 deletedContent = setOf(32)
             ),
             E_Title3(
-                3, true, listOf(
+                4, true, listOf(
                     E_Literal(41, "4lit1", E_FontType.PLAIN),
                 ),
                 deletedContent = setOf(42)
