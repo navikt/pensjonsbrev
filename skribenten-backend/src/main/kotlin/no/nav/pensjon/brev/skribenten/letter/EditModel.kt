@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.skribenten.letter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.ElementTags
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
@@ -13,13 +14,24 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Signatur
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
+import java.time.LocalDate
 
 object Edit {
     data class Letter(val title: Title, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>) {
-        fun withAnnenMottaker(mottaker: String?) =
-            this.copy(
-                sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
-                    annenMottakerNavn = mottaker
+        fun withSakspart(
+            gjelderNavn: String = sakspart.gjelderNavn,
+            gjelderFoedselsnummer: Foedselsnummer = sakspart.gjelderFoedselsnummer,
+            annenMottakerNavn: String? = sakspart.annenMottakerNavn,
+            saksnummer: String = sakspart.saksnummer,
+            dokumentDato: LocalDate = sakspart.dokumentDato,
+        ) =
+            copy(
+                sakspart = LetterMarkupImpl.SakspartImpl(
+                    gjelderNavn = gjelderNavn,
+                    gjelderFoedselsnummer = gjelderFoedselsnummer,
+                    annenMottakerNavn = annenMottakerNavn,
+                    saksnummer = saksnummer,
+                    dokumentDato = dokumentDato,
                 )
             )
     }

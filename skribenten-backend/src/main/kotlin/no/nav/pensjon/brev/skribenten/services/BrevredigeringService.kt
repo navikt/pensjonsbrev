@@ -181,10 +181,7 @@ class BrevredigeringService(
         }
 
     private fun Brevredigering.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
-        apply {
-            redigertBrev = this@oppdaterMedAnnenMottakerNavn.redigertBrev
-                .withAnnenMottaker(annenMottaker)
-        }
+        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottaker)
     }
 
     private suspend fun Dto.Mottaker.fetchNavn(): String? =
@@ -333,7 +330,8 @@ class BrevredigeringService(
                             .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
                             .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
                     ).map {
-                        brevredigering.redigertBrev.updateEditedLetter(it.markup) != brevredigering.redigertBrev
+                        // sjekker kun blocks her fordi det er eneste situasjonen hvor vi ønsker å informere bruker om å se over endringer
+                        brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
                     }.resultOrNull()
 
                     opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash).map {
@@ -588,7 +586,7 @@ class BrevredigeringService(
                 felles = pesysData.felles
                     .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
                     .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
-                redigertBrev = brevredigering.redigertBrev.toMarkup()
+                redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
             ).map {
                 transaction {
                     val update: Document.() -> Unit = {
