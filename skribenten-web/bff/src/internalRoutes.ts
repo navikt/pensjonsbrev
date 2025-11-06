@@ -45,14 +45,18 @@ export const internalRoutes = (server: Express) => {
     });
   });
 
-  function findLogLevel(status: number | undefined): String {
+  function findLogLevel(status: number | undefined): string {
     switch (status) {
-      case undefined: return "ERROR";
+      case undefined:
+        return "ERROR";
       case 401:
       case 403:
-      case 404: return "WARN";
-      case 422: return "DEBUG";
-      default: return "ERROR";
+      case 404:
+        return "WARN";
+      case 422:
+        return "DEBUG";
+      default:
+        return "ERROR";
     }
   }
 
