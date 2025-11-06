@@ -9,6 +9,10 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.assertj.core.api.AbstractAssert
 import java.time.LocalDate
 import java.util.function.Consumer
@@ -48,3 +52,19 @@ data class EksempelRedigerbartDto(
         val pensjonBeloep: Int?,
     ) : BrevbakerBrevdata
 }
+
+fun Felles.copy(
+    dokumentDato: LocalDate = this.dokumentDato,
+    saksnummer: String = this.saksnummer,
+    avsenderEnhet: NavEnhet = this.avsenderEnhet,
+    bruker: Bruker = this.bruker,
+    annenMottakerNavn: String? = this.annenMottakerNavn,
+    signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
+) = Felles(
+    dokumentDato = dokumentDato,
+    saksnummer = saksnummer,
+    avsenderEnhet = avsenderEnhet,
+    bruker = bruker,
+    annenMottakerNavn = annenMottakerNavn,
+    signerendeSaksbehandlere = signerendeSaksbehandlere,
+)

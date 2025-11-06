@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
@@ -779,9 +780,9 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             stagePdf("min andre pdf".encodeToByteArray())
-            penService.pesysBrevdata = brevdataResponseData.copy(felles = FellesFactory.lagFelles(
+            penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.copy(
                 dokumentDato = LocalDate.now().plusDays(2),
-                saksnummer = sak1.saksId.toString()
+                saksnummer = sak1.saksId.toString(),
             ))
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 

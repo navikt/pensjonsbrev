@@ -138,7 +138,7 @@ object DocumentTable : LongIdTable() {
     val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
-    val brevdataHash: Column<Hash<BrevdataResponse.Data>?> = hashColumn<BrevdataResponse.Data>("brevdataHash").nullable()
+    val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {

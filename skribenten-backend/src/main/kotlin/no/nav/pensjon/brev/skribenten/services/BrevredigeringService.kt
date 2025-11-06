@@ -329,14 +329,9 @@ class BrevredigeringService(
                             pesysData = pesysBrevdata.brevdata,
                             saksbehandlerValg = brevredigering.saksbehandlerValg,
                         ),
-                        felles = pesysBrevdata.felles.medSignerendeSaksbehandlere(
-                            brevredigering.redigertBrev.signatur.saksbehandlerNavn?.let {
-                                SignerendeSaksbehandlere(
-                                    saksbehandler = it,
-                                    attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn
-                                )
-                            }
-                        )
+                        felles = pesysBrevdata.felles
+                            .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
+                            .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
                     ).map {
                         brevredigering.redigertBrev.updateEditedLetter(it.markup) != brevredigering.redigertBrev
                     }.resultOrNull()
@@ -544,23 +539,22 @@ class BrevredigeringService(
             vedtaksId = vedtaksId,
             brevkode = brevkode,
             avsenderEnhetsId = avsenderEnhetsId,
-        )
-            .then { pesysData ->
-                brevbakerService.renderMarkup(
-                    brevkode = brevkode,
-                    spraak = spraak,
-                    brevdata = GeneriskRedigerbarBrevdata(
-                        pesysData = pesysData.brevdata,
-                        saksbehandlerValg = saksbehandlerValg,
-                    ),
-                    felles = pesysData.felles.medSignerendeSaksbehandlere(
-                        SignerendeSaksbehandlere(
-                            saksbehandler = signaturSignerende,
-                            attesterendeSaksbehandler = signaturAttestant
-                        )
-                    ).medAnnenMottakerNavn(annenMottakerNavn)
-                )
-            }
+        ).then { pesysData ->
+            brevbakerService.renderMarkup(
+                brevkode = brevkode,
+                spraak = spraak,
+                brevdata = GeneriskRedigerbarBrevdata(
+                    pesysData = pesysData.brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
+                ),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(
+                    SignerendeSaksbehandlere(
+                        saksbehandler = signaturSignerende,
+                        attesterendeSaksbehandler = signaturAttestant
+                    )
+                ).medAnnenMottakerNavn(annenMottakerNavn)
+            )
+        }
 
     private suspend fun <T> harTilgangTilEnhet(
         enhetsId: String?,
