@@ -57,8 +57,7 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din ikke er nok varig nedsatt. " +
-                        "Fordi du har en godkjent yrkesskade eller yrkessykdom, må inntektsevnen din være varig nedsatt med minst 30 prosent." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er varig nedsatt med mindre enn 30 prosent." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -81,10 +80,8 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { + " Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
                     "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
                     "og vi har derfor fastsatt din nedsatte inntektsevne til " +
-                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " })
-            }
-            paragraph {
-                text(bokmal { + "Vi vurderer at inntektsevnen din ikke er varig nedsatt med minst 30 prosent." })
+                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " +
+                        "Fordi du har en godkjent yrkesskade eller yrkessykdom, må inntektsevnen din være varig nedsatt med minst 30 prosent" })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})

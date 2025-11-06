@@ -76,10 +76,11 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { + "Den medisinske dokumentasjonen viser ikke at sykdommen var både alvorlig og varig før fylte 26 år." })
+                text(bokmal { + "Den medisinske dokumentasjonen viser ikke at sykdommen var både alvorlig og varig nok før fylte 26 år, " +
+                        ", til å oppfylle kravene til ung ufør" })
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om rettighet som ung uføre." })
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om rettighet som ung ufør." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
