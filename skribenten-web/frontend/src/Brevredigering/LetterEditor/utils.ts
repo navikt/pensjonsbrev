@@ -20,13 +20,13 @@ export const TypographyToText = isMac
   ? ({
       [Typography.TITLE1]: "Overskrift 1 (⌥+1)",
       [Typography.TITLE2]: "Overskrift 2 (⌥+2)",
-      [Typography.TITLE3]: "Overskrift 2 (⌥+3)",
+      [Typography.TITLE3]: "Overskrift 3 (⌥+3)",
       [Typography.PARAGRAPH]: "Normal (⌥+4)",
     } as const)
   : ({
       [Typography.TITLE1]: "Overskrift 1 (Alt+1)",
       [Typography.TITLE2]: "Overskrift 2 (Alt+2)",
-      [Typography.TITLE3]: "Overskrift 2 (Alt+3)",
+      [Typography.TITLE3]: "Overskrift 3 (Alt+3)",
       [Typography.PARAGRAPH]: "Normal (Alt+4)",
     } as const);
 
