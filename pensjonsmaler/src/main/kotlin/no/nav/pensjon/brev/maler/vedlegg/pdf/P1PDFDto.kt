@@ -144,7 +144,7 @@ fun joinAndSeparateByNotNull(separator: String, vararg value: String?) =
 private fun innvilgetPensjon(radnummer: Int, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
         "Institution_awarding_the_pension[$radnummer]" to formatInstitusjon(pensjon.institusjon, pensjon.vedtaksdato),
-        "Pensjonstype[$radnummer]" to "[${pensjon.pensjonstype?.nummer.toString()}]",
+        "Pensjonstype[$radnummer]" to pensjon.pensjonstype?.nummer?.toString()?.let { "[$it]" },
         "Date_of_first_payment[$radnummer]" to formaterDato(pensjon.datoFoersteUtbetaling),
         "Gross_amount[$radnummer]" to formaterValuta(
             pensjon.bruttobeloepDesimal,
