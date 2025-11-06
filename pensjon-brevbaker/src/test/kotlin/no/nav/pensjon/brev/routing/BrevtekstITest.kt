@@ -68,7 +68,7 @@ class BrevtekstITest {
 
         assertContains(tekstIPDF, markup.title.tekst())
 
-        assertEquals(10, tekstIMarkup.size)
+        assertEquals(11, tekstIMarkup.size)
         tekstIMarkup.forEach { assertFalse(it.isEmpty()) }
 
         tekstIMarkup.forEach {
