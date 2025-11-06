@@ -63,7 +63,7 @@ interface LetterMarkup {
         interface Title3 : Block {
             val content: List<ParagraphContent.Text>
             override val type: Type
-                get() = Type.TITLE2
+                get() = Type.TITLE3
         }
 
         interface Paragraph : Block {

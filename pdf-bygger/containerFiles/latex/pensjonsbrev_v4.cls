@@ -61,7 +61,7 @@
 \newcommand{\titletwotextsize}{12pt}
 \newcommand{\titletwotextspacing}{10pt}
 
-% title 2
+% title 3
 \newfontfamily\titlethreefont[LetterSpace=2.2]{Source Sans 3 Bold}
 \newcommand{\titlethree}{\titlethreefont \fontsize{\titlethreetextsize}{\titlethreetextspacing} \fontseries{bf} \selectfont}
 \newcommand{\titlethreetextsize}{11pt}
