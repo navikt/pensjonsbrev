@@ -6,7 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.createTestApplication
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class ServiceStatusTest {

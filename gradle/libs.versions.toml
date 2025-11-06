@@ -89,7 +89,6 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
-junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
