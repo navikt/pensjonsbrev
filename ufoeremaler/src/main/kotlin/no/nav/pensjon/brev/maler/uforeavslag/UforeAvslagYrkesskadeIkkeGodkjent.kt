@@ -38,20 +38,20 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVur
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få yrkessykdom eller yrkesskade tatt med i uføretrygden"})
+            text (bokmal { + "Nav har avslått søknaden din om å få beregnet uføretrygden etter reglene for yrkessykdom eller yrkesskade"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om særbestemmelser for yrkesskade eller yrkessykdom i uføretrygden, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
+                text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
+            }
+            paragraph {
+                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom." })
             }
             paragraph {
                 text(bokmal { + "For å ha rett til uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, må uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." })
-            }
-            paragraph {
-                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
