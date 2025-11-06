@@ -17,23 +17,28 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 import java.time.LocalDate
 
 object Edit {
-    data class Letter(val title: Title, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>) {
+    data class Letter(
+        val title: Title,
+        val sakspart: Sakspart,
+        val blocks: List<Block>,
+        val signatur: Signatur,
+        val deletedBlocks: Set<Int>
+    ) {
         fun withSakspart(
             gjelderNavn: String = sakspart.gjelderNavn,
             gjelderFoedselsnummer: Foedselsnummer = sakspart.gjelderFoedselsnummer,
             annenMottakerNavn: String? = sakspart.annenMottakerNavn,
             saksnummer: String = sakspart.saksnummer,
             dokumentDato: LocalDate = sakspart.dokumentDato,
-        ) =
-            copy(
-                sakspart = LetterMarkupImpl.SakspartImpl(
-                    gjelderNavn = gjelderNavn,
-                    gjelderFoedselsnummer = gjelderFoedselsnummer,
-                    annenMottakerNavn = annenMottakerNavn,
-                    saksnummer = saksnummer,
-                    dokumentDato = dokumentDato,
-                )
+        ) = copy(
+            sakspart = LetterMarkupImpl.SakspartImpl(
+                gjelderNavn = gjelderNavn,
+                gjelderFoedselsnummer = gjelderFoedselsnummer,
+                annenMottakerNavn = annenMottakerNavn,
+                saksnummer = saksnummer,
+                dokumentDato = dokumentDato,
             )
+        )
     }
 
     interface Identifiable {
