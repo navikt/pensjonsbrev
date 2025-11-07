@@ -29,10 +29,10 @@ import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 fun Application.brevbakerModule(
-    templates: AllTemplates
+    templates: AllTemplates,
+    pdfByggerUrl: (config: ApplicationConfig) -> String = { it.property("pdfByggerUrl").getString() },
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
@@ -123,7 +123,7 @@ fun Application.brevbakerModule(
 
 
     val latexCompilerService = LaTeXCompilerService(
-        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
+        pdfByggerUrl = pdfByggerUrl(brevbakerConfig),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev
 
 import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -35,4 +36,8 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
     },
+    pdfByggerUrl = {
+        PDFByggerTestContainer.start()
+        PDFByggerTestContainer.mappedUrl()
+    }
 )
