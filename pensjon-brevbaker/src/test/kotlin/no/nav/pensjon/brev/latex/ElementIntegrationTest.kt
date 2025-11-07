@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.latex
 
+import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.outlineTestTemplate
@@ -19,7 +20,7 @@ class ElementIntegrationTest {
 
     init {
         PDFByggerTestContainer.start()
-        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl(), maxRetries = 0)
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
     }
 
     @AfterAll
