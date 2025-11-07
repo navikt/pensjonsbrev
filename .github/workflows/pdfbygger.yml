@@ -102,6 +102,7 @@ jobs:
 
   "klarTilMerge":
     name: "Klar til merge"
+    if: ${{ github.event_name == 'pull_request' }}
     needs: [buildPdfbygger, pushPdfByggerToGithubRegistry]
     runs-on: "ubuntu-latest"
     steps:
