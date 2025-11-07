@@ -25,7 +25,9 @@ object PDFByggerTestContainer {
     fun mappedUrl() = "http://${pdfContainer.host}:${pdfContainer.getMappedPort(8080)}"
 
     fun start() {
-        pdfContainer.start()
+        if (!pdfContainer.isRunning) {
+            pdfContainer.start()
+        }
     }
 
     fun stop() = pdfContainer.stop()
