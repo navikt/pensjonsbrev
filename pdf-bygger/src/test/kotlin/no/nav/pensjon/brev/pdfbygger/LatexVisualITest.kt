@@ -1,14 +1,13 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.brevbaker.FellesFactory
+import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.copy
 import no.nav.brev.brevbaker.renderTestPdfOutline
 import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -34,7 +33,7 @@ class LatexVisualITest {
 
     init {
         PDFByggerTestContainer.start()
-        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl(), maxRetries = 0)
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
     }
 
     @AfterAll
