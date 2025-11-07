@@ -26,7 +26,7 @@ on:
     - cron: "0 5 1,15 * *"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
-  "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.ref_name }}"
+  "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger:main"
   JavaDistribution: "temurin"
   JavaVersion: 21
 
@@ -61,11 +61,20 @@ jobs:
         with:
           name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
-      - name: "Publish container image to ghcr.io"
+      - name: "Publish PR container image to ghcr.io"
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER} && docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} --tag ${IMAGE_BRANCH} pdf-bygger
+          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
           docker push ${IMAGE_PDF_BYGGER}
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
+      - name: "Publish main container image to ghcr.io"
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
+          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}  || docker build --pull --tag ${IMAGE_BRANCH} pdf-bygger
           docker push ${IMAGE_BRANCH}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
