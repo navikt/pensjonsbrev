@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
-import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -13,17 +12,18 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_UNG_UFOR_36
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26Dto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.SaksbehandlervalgSelectors.visUforetidspunktEtter26
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
+object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto> {
 
     override val kode = UT_AVSLAG_UNG_UFOR_36
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -69,10 +69,12 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 
-            // TODO: Toggle
-//            paragraph {
-//                text(bokmal { +"Vi viser til at uføretidspunktet er satt til etter 26 år og du fyller derfor ikke vilkårene for beregning som ung ufør." })
-//            }
+            showIf(saksbehandlerValg.visUforetidspunktEtter26) {
+                paragraph {
+                    text(bokmal { +"Vi viser til at uføretidspunktet er satt til etter 26 år og du fyller derfor ikke vilkårene for beregning som ung ufør." })
+                }
+            }
+
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
             }
