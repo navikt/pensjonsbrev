@@ -26,7 +26,7 @@ on:
     - cron: "0 5 1,15 * *"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
-  "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger::${{ github.ref_name }}"
+  "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.ref_name }}"
   JavaDistribution: "temurin"
   JavaVersion: 21
 
