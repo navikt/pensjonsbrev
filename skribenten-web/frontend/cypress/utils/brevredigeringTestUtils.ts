@@ -25,6 +25,7 @@ import type {
   Title,
   Title1Block,
   Title2Block,
+  Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import { FontType } from "~/types/brevbakerTypes";
@@ -212,6 +213,19 @@ export const nyTitle2Block = (args: {
   content?: TextContent[];
 }): Title2Block => ({
   type: "TITLE2",
+  id: args.id ?? null,
+  parentId: null,
+  editable: args.editable ?? true,
+  content: args.content ?? [nyVariable({})],
+  deletedContent: [],
+});
+
+export const nyTitle3Block = (args: {
+  id?: Nullable<number>;
+  editable?: boolean;
+  content?: TextContent[];
+}): Title3Block => ({
+  type: "TITLE3",
   id: args.id ?? null,
   parentId: null,
   editable: args.editable ?? true,

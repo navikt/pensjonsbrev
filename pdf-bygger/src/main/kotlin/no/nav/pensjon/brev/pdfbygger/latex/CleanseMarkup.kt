@@ -24,6 +24,7 @@ private fun isEmpty(block: Block): Boolean =
     when (block) {
         is Block.Title1 -> block.content
         is Block.Title2 -> block.content
+        is Block.Title3 -> block.content
         is Block.Paragraph -> block.content
     }.all { isEmpty(it) }
 
@@ -40,6 +41,7 @@ private fun isEmpty(content: LetterMarkup.ParagraphContent) =
 private fun clean(block: Block): Block? = when (block) {
     is Block.Title1 -> clean(block)
     is Block.Title2 -> clean(block)
+    is Block.Title3 -> clean(block)
     is Block.Paragraph -> clean(block)
 }
 
@@ -58,6 +60,15 @@ private fun clean(title2: Block.Title2): Block.Title2? =
         editable = title2.editable,
         content = title2.content.filter { it !is LetterMarkup.ParagraphContent.Text.NewLine },
     ).takeIf { !isEmpty(it) }
+
+@OptIn(InterneDataklasser::class)
+private fun clean(title3: Block.Title3): Block.Title3? =
+    LetterMarkupImpl.BlockImpl.Title3Impl(
+        id = title3.id,
+        editable = title3.editable,
+        content = title3.content.filter { it !is LetterMarkup.ParagraphContent.Text.NewLine },
+    ).takeIf { !isEmpty(it) }
+
 
 @OptIn(InterneDataklasser::class)
 private fun clean(paragraph: Block.Paragraph): Block.Paragraph =

@@ -280,6 +280,7 @@ function isEdited(content: Content | AnyBlock): boolean {
       return false;
     case "TITLE1":
     case "TITLE2":
+    case "TITLE3":
     case "PARAGRAPH":
       return (
         isNew(content) ||

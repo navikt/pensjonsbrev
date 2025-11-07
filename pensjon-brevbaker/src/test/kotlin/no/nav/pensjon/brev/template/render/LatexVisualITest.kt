@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.copy
@@ -91,7 +91,7 @@ class LatexVisualITest {
     @Test
     fun `verge foersteside`() {
         render(
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 annenMottaker = "Verge vergeson"
             )
         ) {
@@ -123,6 +123,7 @@ class LatexVisualITest {
             }
             title1 { text(bokmal { +"Title 1" }) }
             title2 { text(bokmal { +"Title 2" }) }
+            title3 { text(bokmal { +"Title 3" }) }
         }
     }
 
@@ -177,7 +178,7 @@ class LatexVisualITest {
     fun `verge vedlegg med saksinfo`() {
         renderTestVedlegg(
             includeSakspart = true,
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 annenMottaker = "Verge vergeson"
             ),
         ) {
@@ -209,7 +210,7 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+            felles = FellesFactory.felles.medSignerendeSaksbehandlere(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler"
                 )
@@ -222,7 +223,7 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
-            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+            felles = FellesFactory.felles.medSignerendeSaksbehandlere(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
@@ -236,7 +237,7 @@ class LatexVisualITest {
     @Test
     fun `test av ulike `() {
         render(
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
@@ -250,7 +251,7 @@ class LatexVisualITest {
     @Test
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Attesterende"
@@ -393,12 +394,12 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
-        title2 { text(bokmal { +"Second title" }) }
-    }
-
     private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle1() {
         title1 { text(bokmal { +"First title" }) }
+    }
+
+    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
+        title2 { text(bokmal { +"Second title" }) }
     }
 
     enum class ElementType(val description: String) {

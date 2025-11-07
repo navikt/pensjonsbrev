@@ -6,7 +6,7 @@ import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
@@ -113,7 +113,7 @@ object Api {
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: BrevbakerBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
@@ -123,8 +123,31 @@ object Api {
         val reservertAv: NavAnsatt,
         val timestamp: Instant,
         val expiresIn: Duration,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash<Edit.Letter>,
     )
+
+    data class PdfResponse(
+        val pdf: ByteArray,
+        val rendretBrevErEndret: Boolean,
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as PdfResponse
+
+            if (rendretBrevErEndret != other.rendretBrevErEndret) return false
+            if (!pdf.contentEquals(other.pdf)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = rendretBrevErEndret.hashCode()
+            result = 31 * result + pdf.contentHashCode()
+            return result
+        }
+    }
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)
 

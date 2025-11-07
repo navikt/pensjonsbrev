@@ -64,6 +64,7 @@ updates:
           - "io.micrometer*"
           - "net.logstash.logback:logstash-logback-encoder"
           - "no.nav*"
+          - "org.apache.pdfbox*"
           - "org.assertj:assertj-core"
           - "org.flyway*"
           - "org.jetbrains*"

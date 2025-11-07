@@ -58,6 +58,13 @@ h3.pensjonsbrev-title2 {
     font-size: 1.125rem;
 }
 
+h4.pensjonsbrev-title3 {
+    margin-top: 2rem;
+    margin-bottom: 0.0rem;
+    line-height: 1.7rem;
+    font-size: 1.1rem;
+}
+
 .pensjonsbrev-paragraph {
     margin-bottom: 1.5rem;
 }

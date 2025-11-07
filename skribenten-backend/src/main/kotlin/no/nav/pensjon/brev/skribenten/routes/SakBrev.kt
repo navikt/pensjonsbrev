@@ -39,9 +39,9 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             ).onOk { brev ->
                 call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
             }.onError { message, statusCode, tittel ->
-                if (statusCode == HttpStatusCode.BadRequest) {
+                if (statusCode == HttpStatusCode.UnprocessableEntity) {
                     logger.warn("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                    call.respond(HttpStatusCode.BadRequest, BrevExceptionDto(tittel ?: "", message))
+                    call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "", message))
                 } else {
                     logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
@@ -133,7 +133,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             val sak: Pen.SakSelection = call.attributes[SakKey]
 
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
-                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
+                ?.onOk { call.respond(it) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }

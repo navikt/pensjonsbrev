@@ -40,22 +40,20 @@ object FellesFactory {
     )
 
     val fellesAuto = lagFelles(signerendeSaksbehandlere = null)
-
-
-    // TODO: Mistenkjer at denne berre blir brukt til signerendeSaksbehandlere, kan i så fall fjerne
-    fun copy(
-        dokumentDato: LocalDate,
-        saksnummer: String,
-        avsenderEnhet: NavEnhet,
-        bruker: Bruker,
-        annenMottaker: String?,
-        signerendeSaksbehandlere: SignerendeSaksbehandlere?,
-    ): Felles = Felles(
-        dokumentDato = dokumentDato,
-        saksnummer = saksnummer,
-        avsenderEnhet = avsenderEnhet,
-        bruker = bruker,
-        annenMottakerNavn = annenMottaker,
-        signerendeSaksbehandlere = signerendeSaksbehandlere,
-    )
 }
+
+fun Felles.copy(
+    dokumentDato: LocalDate = this.dokumentDato,
+    saksnummer: String = this.saksnummer,
+    avsenderEnhet: NavEnhet = this.avsenderEnhet,
+    bruker: Bruker = this.bruker,
+    annenMottaker: String? = this.annenMottakerNavn,
+    signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
+): Felles = Felles(
+    dokumentDato = dokumentDato,
+    saksnummer = saksnummer,
+    avsenderEnhet = avsenderEnhet,
+    bruker = bruker,
+    annenMottakerNavn = annenMottaker,
+    signerendeSaksbehandlere = signerendeSaksbehandlere,
+)

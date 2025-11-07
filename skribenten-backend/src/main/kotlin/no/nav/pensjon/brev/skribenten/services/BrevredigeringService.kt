@@ -77,7 +77,6 @@ class BrevredigeringService(
             val annenMottakerNavn = mottaker?.fetchNavn()
             val vedtaksIdOmVedtaksbrev = beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId, brevkode)
 
-
             rendreBrev(
                 brevkode = brevkode,
                 spraak = spraak,
@@ -132,8 +131,7 @@ class BrevredigeringService(
                     val principal = PrincipalInContext.require()
                     transaction {
                         brevDb.apply {
-                            redigertBrev =
-                                (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
+                            redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
                             sistRedigertAvNavIdent = principal.navIdent
@@ -183,10 +181,7 @@ class BrevredigeringService(
         }
 
     private fun Brevredigering.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
-        apply {
-            redigertBrev = this@oppdaterMedAnnenMottakerNavn.redigertBrev
-                .withAnnenMottaker(annenMottaker)
-        }
+        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottaker)
     }
 
     private suspend fun Dto.Mottaker.fetchNavn(): String? =
@@ -240,7 +235,7 @@ class BrevredigeringService(
     suspend fun hentBrev(
         saksId: Long,
         brevId: Long,
-        reserverForRedigering: Boolean = false
+        reserverForRedigering: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
@@ -260,7 +255,7 @@ class BrevredigeringService(
     suspend fun hentBrevAttestering(
         saksId: Long,
         brevId: Long,
-        reserverForRedigering: Boolean = false
+        reserverForRedigering: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
@@ -306,20 +301,43 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
+    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<Api.PdfResponse>? {
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
-
         return brevredigering?.let {
-            // TODO: Midlertidig workaround for å tvinge fram henting av P1-data alltid
-            if (brevredigering.info.brevkode.kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK") {
-                opprettPdf(brevredigering)
-            }
-            else if (document != null && (document.redigertBrevHash == brevredigering.redigertBrevHash  && document.dokumentDato.isEqual(LocalDate.now()))) {
-                Ok(document.pdf)
-            } else {
-                opprettPdf(brevredigering)
+            penService.hentPesysBrevdata(
+                saksId = brevredigering.info.saksId,
+                vedtaksId = brevredigering.info.vedtaksId,
+                brevkode = brevredigering.info.brevkode,
+                avsenderEnhetsId = brevredigering.info.avsenderEnhetId
+            ).then { pesysBrevdata ->
+                val nyBrevdataHash = Hash.read(pesysBrevdata)
+
+                // dokumentDato er en del av pesysBrevdata.felles, så vi trenger ikke sjekke den eksplisitt her
+                if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
+                    Ok(Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false))
+                } else {
+                    // render markup to check if letterMarkup has changed due to changed brevdata
+                    val rendretBrevErEndret = brevbakerService.renderMarkup(
+                        brevkode = brevredigering.info.brevkode,
+                        spraak = brevredigering.info.spraak,
+                        brevdata = GeneriskRedigerbarBrevdata(
+                            pesysData = pesysBrevdata.brevdata,
+                            saksbehandlerValg = brevredigering.saksbehandlerValg,
+                        ),
+                        felles = pesysBrevdata.felles
+                            .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
+                            .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
+                    ).map {
+                        // sjekker kun blocks her fordi det er eneste situasjonen hvor vi ønsker å informere bruker om å se over endringer
+                        brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
+                    }.resultOrNull()
+
+                    opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash).map {
+                        Api.PdfResponse(pdf = it, rendretBrevErEndret = rendretBrevErEndret ?: false)
+                    }
+                }
             }
         }
     }
@@ -498,8 +516,7 @@ class BrevredigeringService(
             vedtaksId = brev.info.vedtaksId,
             saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
             avsenderEnhetsId = brev.info.avsenderEnhetId,
-            signaturSignerende = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
-            ?: principalSignatur(),
+            signaturSignerende = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn ?: principalSignatur(),
             signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
             annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn,
         )
@@ -520,27 +537,26 @@ class BrevredigeringService(
             vedtaksId = vedtaksId,
             brevkode = brevkode,
             avsenderEnhetsId = avsenderEnhetsId,
-        )
-            .then { pesysData ->
-                brevbakerService.renderMarkup(
-                    brevkode = brevkode,
-                    spraak = spraak,
-                    brevdata = GeneriskRedigerbarBrevdata(
-                        pesysData = pesysData.brevdata,
-                        saksbehandlerValg = saksbehandlerValg,
-                    ),
-                    felles = pesysData.felles.medSignerendeSaksbehandlere(
-                        SignerendeSaksbehandlere(
-                            saksbehandler = signaturSignerende,
-                            attesterendeSaksbehandler = signaturAttestant
-                        )
-                    ).medAnnenMottakerNavn(annenMottakerNavn)
-                )
-            }
+        ).then { pesysData ->
+            brevbakerService.renderMarkup(
+                brevkode = brevkode,
+                spraak = spraak,
+                brevdata = GeneriskRedigerbarBrevdata(
+                    pesysData = pesysData.brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
+                ),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(
+                    SignerendeSaksbehandlere(
+                        saksbehandler = signaturSignerende,
+                        attesterendeSaksbehandler = signaturAttestant
+                    )
+                ).medAnnenMottakerNavn(annenMottakerNavn)
+            )
+        }
 
     private suspend fun <T> harTilgangTilEnhet(
         enhetsId: String?,
-        then: suspend () -> ServiceResult<T>
+        then: suspend () -> ServiceResult<T>,
     ): ServiceResult<T> {
         return if (enhetsId == null) {
             then()
@@ -556,14 +572,10 @@ class BrevredigeringService(
 
     private suspend fun opprettPdf(
         brevredigering: Dto.Brevredigering,
+        pesysData: BrevdataResponse.Data,
+        brevdataHash: Hash<BrevdataResponse.Data>,
     ): ServiceResult<ByteArray> {
-        return penService.hentPesysBrevdata(
-            saksId = brevredigering.info.saksId,
-            vedtaksId = brevredigering.info.vedtaksId,
-            brevkode = brevredigering.info.brevkode,
-            avsenderEnhetsId = brevredigering.info.avsenderEnhetId
-        ).then { pesysData ->
-            brevbakerService.renderPdf(
+        return brevbakerService.renderPdf(
                 brevkode = brevredigering.info.brevkode,
                 spraak = brevredigering.info.spraak,
                 brevdata = GeneriskRedigerbarBrevdata(
@@ -574,7 +586,7 @@ class BrevredigeringService(
                 felles = pesysData.felles
                     .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
                     .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
-                redigertBrev = brevredigering.redigertBrev.toMarkup()
+                redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
             ).map {
                 transaction {
                     val update: Document.() -> Unit = {
@@ -582,12 +594,12 @@ class BrevredigeringService(
                         pdf = it.file
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
+                        this.brevdataHash = brevdataHash
                     }
                     Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
                         ?: Document.new(update).pdf
                 }
             }
-        }
     }
 
     private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =
@@ -749,7 +761,8 @@ private fun Document.toDto(): Dto.Document =
         brevredigeringId = brevredigering.id.value,
         dokumentDato = dokumentDato,
         pdf = pdf,
-        redigertBrevHash = redigertBrevHash
+        redigertBrevHash = redigertBrevHash,
+        brevdataHash = brevdataHash
     )
 
 private fun Brevredigering.erReservasjonUtloept(): Boolean =

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.*
@@ -14,7 +14,7 @@ class HTMLDocumentRendererTest {
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            FellesFactory.fellesAuto
         ).renderTestHtml("LETTER_EXAMPLE")
     }
 }

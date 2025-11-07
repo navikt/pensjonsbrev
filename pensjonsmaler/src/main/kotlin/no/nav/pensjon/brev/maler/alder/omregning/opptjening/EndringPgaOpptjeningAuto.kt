@@ -92,7 +92,7 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             includePhrase(AvsnittArbeidsinntekt(beregnetPensjonPerMaanedVedVirk.uttaksgrad, uforeKombinertMedAlder))
             includePhrase(AvsnittLesMerOmAlderspensjon())
             includePhrase(AvsnittMeldFraOmEndringer())
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

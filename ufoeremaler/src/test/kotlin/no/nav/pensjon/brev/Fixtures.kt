@@ -1,33 +1,24 @@
 package no.nav.pensjon.brev
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.DineRettigheterOgMulighetTilAKlageDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.TilbakekrevingResultat
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
 
-    val felles = Fixtures.felles
-
-    val fellesAuto = Fixtures.fellesAuto
+    val felles = FellesFactory.felles
 
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
+            UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
@@ -35,6 +26,12 @@ object Fixtures : LetterDataFactory {
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
+
+    private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(
+        pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
+            kravMottattDato = LocalDate.now(),
+        ), EmptySaksbehandlerValg
+    )
 
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
@@ -45,7 +42,7 @@ object Fixtures : LetterDataFactory {
             VisVurderingFraVilkarvedtak = true
         )
     )
-    
+
     private fun lagUforeAvslagInntektDto() = UforeAvslagInntektDto(
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
             kravMottattDato = LocalDate.now(),

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures.felles
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph

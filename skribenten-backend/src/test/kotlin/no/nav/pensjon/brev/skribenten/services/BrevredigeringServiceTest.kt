@@ -3,20 +3,18 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import no.nav.brev.Landkode
-import no.nav.brev.Landkoder
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
@@ -167,9 +165,26 @@ class BrevredigeringServiceTest {
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = FellesFactory.lagFelles(
+        felles = Felles(
             dokumentDato = LocalDate.now(),
-            saksnummer = sak1.saksId.toString()
+            saksnummer = sak1.saksId.toString(),
+            avsenderEnhet =
+                NavEnhet(
+                    nettside = "nav.no",
+                    navn = "Nav Familie- og pensjonsytelser Porsgrunn",
+                    telefonnummer = Telefonnummer("55553334"),
+                ),
+            bruker = Bruker(
+                fornavn = "Test",
+                mellomnavn = "\"bruker\"",
+                etternavn = "Testerson",
+                foedselsnummer = Foedselsnummer("01019878910"),
+            ),
+            signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                saksbehandler = "Ole Saksbehandler",
+                attesterendeSaksbehandler = "Per Attesterende"
+            ),
+            annenMottakerNavn = null,
         ),
         brevdata = Api.GeneriskBrevdata()
     )
@@ -602,7 +617,7 @@ class BrevredigeringServiceTest {
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
             }
-        ).isEqualTo(stagetPDF)
+        ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
@@ -689,8 +704,8 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
+            val response = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(response?.resultOrNull()).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
         }
     }
 
@@ -709,9 +724,70 @@ class BrevredigeringServiceTest {
 
             stagePdf("min andre pdf".encodeToByteArray())
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
-                ?.toString(Charsets.UTF_8)
 
-            assertEquals("min andre pdf", pdf)
+            assertThat(pdf).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+        }
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om pesysdata er endra`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+        }
+    }
+
+    @Test
+    fun `hentPdf informerer om at rendretBrev er endret pga pesysdata`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            brevbakerService.renderMarkupResultat = {
+                val signatur = it.signerendeSaksbehandlere
+                ServiceResult.Ok(
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"), LiteralImpl(99, "new text"))))
+                        .medSignatur(
+                            saksbehandler = signatur?.saksbehandler,
+                            attestant = signatur?.attesterendeSaksbehandler
+                        )
+                )
+            }
+            penService.pesysBrevdata =
+                brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+        }
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om dokumentdato er endra`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.copy(
+                dokumentDato = LocalDate.now().plusDays(2),
+                saksnummer = sak1.saksId.toString(),
+            ))
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(brevbakerService.renderPdfKall.last().sakspart.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
         }
     }
 
@@ -1224,7 +1300,7 @@ class BrevredigeringServiceTest {
     fun `oppdatering av redigertBrev endrer ogsaa redigertBrevHash`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
         val hash1 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
-        assertThat(hash1.hexBytes).isEqualTo(WithEditLetterHash.hashBrev(letter.toEdit()))
+        assertThat(hash1.hexBytes).isEqualTo(WithHash.hash(letter.toEdit()))
 
         transaction {
             Brevredigering[brev.info.id].redigertBrev =
