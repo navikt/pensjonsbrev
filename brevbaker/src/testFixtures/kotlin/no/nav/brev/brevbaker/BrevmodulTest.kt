@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -39,6 +40,18 @@ abstract class BrevmodulTest(
     val fixtures: LetterDataFactory,
     val filterForPDF: List<Brevkode<*>>
 ) {
+    private val laTeXCompilerService: LaTeXCompilerService
+
+    init {
+        PDFByggerTestContainer.start()
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    }
+
+    @AfterAll
+    fun stop() {
+        PDFByggerTestContainer.stop()
+    }
+
     @Test
     open fun `alle autobrev fins i templates`() {
         val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
@@ -121,7 +134,7 @@ abstract class BrevmodulTest(
         }
         val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak))
+        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = laTeXCompilerService)
     }
 
     @ParameterizedTest(name = "{1}, {3}")

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.copy
 import no.nav.brev.brevbaker.renderTestPdfOutline
@@ -18,16 +18,29 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 @Tag(TestTags.INTEGRATION_TEST)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService: LaTeXCompilerService
+
+    init {
+        PDFByggerTestContainer.start()
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl(), maxRetries = 0)
+    }
+
+    @AfterAll
+    fun stop() {
+        PDFByggerTestContainer.stop()
+    }
 
     private fun render(
         overrideName: String? = null,

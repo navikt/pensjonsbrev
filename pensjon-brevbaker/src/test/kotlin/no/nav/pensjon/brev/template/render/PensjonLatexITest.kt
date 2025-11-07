@@ -4,7 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
@@ -30,11 +30,22 @@ object Helpers : HasModel<TestTemplateDto>
 private const val FIND_FAILING_CHARACTERS = false
 
 @Tag(TestTags.INTEGRATION_TEST)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService: LaTeXCompilerService
+
+    init {
+        PDFByggerTestContainer.start()
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl(), maxRetries = 0)
+    }
+
+    @AfterAll
+    fun stop() {
+        PDFByggerTestContainer.stop()
+    }
 
     @Test
     fun canRender() {
@@ -61,7 +72,7 @@ class PensjonLatexITest {
 
     @Test
     fun `Ping pdf builder`() {
-        runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping() }
+        runBlocking { laTeXCompilerService.ping() }
     }
 
     // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.

@@ -1,18 +1,31 @@
 package no.nav.pensjon.brev.latex
 
-import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.dsl.text
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 @Tag(TestTags.INTEGRATION_TEST)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ElementIntegrationTest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService: LaTeXCompilerService
+
+    init {
+        PDFByggerTestContainer.start()
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl(), maxRetries = 0)
+    }
+
+    @AfterAll
+    fun stop() {
+        PDFByggerTestContainer.stop()
+    }
 
 
     @Test
