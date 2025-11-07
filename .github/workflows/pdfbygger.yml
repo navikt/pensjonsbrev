@@ -1,0 +1,111 @@
+name: "Build and deploy pdf-bygger"
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradle/libs.versions.toml"
+      - "pdf-bygger/**"
+      - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/pdfbygger.yml"
+      - "!**/**.md"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradle/libs.versions.toml"
+      - "pdf-bygger/**"
+      - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/pdfbygger.yml"
+      - "!**/**.md"
+  # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
+  schedule:
+    - cron: "0 5 1,15 * *"
+env:
+  "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+  "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger::${{ github.ref_name }}"
+  JavaDistribution: "temurin"
+  JavaVersion: 21
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+jobs:
+  buildPdfbygger:
+    uses: ./.github/workflows/.build-backend.yaml
+    secrets: inherit
+    with:
+      image_suffix: pdf-bygger
+      path: pdf-bygger
+      buildImage: true
+      uploadJar: true
+
+  pushPdfByggerToGithubRegistry:
+    name: "Push pdf-bygger to github registry"
+    needs: buildPdfbygger
+    runs-on: ubuntu-latest
+    permissions:
+      packages: "write"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Download jar
+        uses: actions/download-artifact@v6
+        with:
+          name: pdf-bygger-jar
+          path: pdf-bygger/build/libs/
+      - name: "Publish container image to ghcr.io"
+        run: |
+          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
+          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER} && docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
+          docker push ${IMAGE_PDF_BYGGER}
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
+
+  salsa-pdfbygger:
+    uses: ./.github/workflows/.salsa.yaml
+    needs: buildPdfbygger
+    secrets: inherit
+    with:
+      digest: ${{ needs.buildPdfbygger.outputs.digest }}
+      image: ${{ needs.buildPdfbygger.outputs.image }}
+
+  deployPdfByggerToDev:
+    name: "Deploy pdf-bygger to dev"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: [buildPdfbygger]
+    with:
+      cluster: "dev-gcp"
+      resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
+      image: ${{needs.buildPdfbygger.outputs.image}}
+      vars: "pdf-bygger/.nais/dev.yaml"
+
+  deployPdfByggerToProd:
+    name: "Deploy pdf-bygger to prod"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: [buildPdfbygger]
+    with:
+      cluster: "prod-gcp"
+      resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
+      image: ${{needs.buildPdfbygger.outputs.image}}
+      vars: "pdf-bygger/.nais/prod.yaml"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [buildPdfbygger]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
