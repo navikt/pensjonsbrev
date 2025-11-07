@@ -55,14 +55,15 @@ class BlockTilSlateKonvertererTest {
 
     @Test
     fun `skal konvertere title1, title2 og paragraph til HEADING_TWO, HEADING_THREE og PARAGRAPH`() {
-        val letterMarkup = brevbaker_payload_med_title1_title2_og_paragraf
+        val letterMarkup = brevbaker_payload_med_title1_title2_title3_og_paragraf
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
 
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
         assertEquals(ElementType.HEADING_TWO, konvertert.elements[0].type)
         assertEquals(ElementType.HEADING_THREE, konvertert.elements[1].type)
-        assertEquals(ElementType.PARAGRAPH, konvertert.elements[2].type)
-        assertEquals(konvertert.elements.size, 3)
+        assertEquals(ElementType.HEADING_FOUR, konvertert.elements[2].type)
+        assertEquals(ElementType.PARAGRAPH, konvertert.elements[3].type)
+        assertEquals(konvertert.elements.size, 4)
     }
 
     @Test
@@ -84,7 +85,7 @@ class BlockTilSlateKonvertererTest {
         assertEquals(konvertert.elements.size, 4)
     }
 
-    private val brevbaker_payload_med_title1_title2_og_paragraf = LetterMarkupImpl(
+    private val brevbaker_payload_med_title1_title2_title3_og_paragraf = LetterMarkupImpl(
         title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(1, "Et dokument fra brevbakeren")),
         sakspart = LetterMarkupImpl.SakspartImpl(
             gjelderNavn = "Ola Nordmann",
@@ -117,6 +118,16 @@ class BlockTilSlateKonvertererTest {
                     LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                         id = 4,
                         text = "Dette er title2",
+                    )
+                )
+            ),
+            LetterMarkupImpl.BlockImpl.Title3Impl(
+                id = 4,
+                editable = true,
+                content = listOf(
+                    LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                        id = 5,
+                        text = "Dette er title3",
                     )
                 )
             ),

@@ -352,6 +352,10 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         insertBlock(draft, "TITLE2", el.content);
         break;
       }
+      case "H3": {
+        insertBlock(draft, "TITLE3", el.content);
+        break;
+      }
       case "P": {
         insertBlock(draft, "PARAGRAPH", el.content);
         break;
@@ -368,7 +372,11 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
   });
 }
 
-function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "PARAGRAPH", content: Text[]) {
+function insertBlock(
+  draft: Draft<LetterEditorState>,
+  type: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH",
+  content: Text[],
+) {
   const focusedBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
   const blockContent = focusedBlock?.content[draft.focus.contentIndex];
 
@@ -512,6 +520,12 @@ interface Title2Element {
   type: "H2";
   content: Text[];
 }
+
+interface Title3Element {
+  type: "H3";
+  content: Text[];
+}
+
 interface TableCell {
   content: Text[];
 }
@@ -526,7 +540,7 @@ interface Table {
   headerCells?: TableCell[];
 }
 
-type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Table;
+type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Title3Element | Table;
 
 /** Return clipboard HTML or plain text, sanitised through DOMPurify. */
 function getCleanClipboardMarkup(dt: DataTransfer): string {
@@ -552,6 +566,7 @@ function getCleanClipboardMarkup(dt: DataTransfer): string {
       "span",
       "h1",
       "h2",
+      "h3",
     ],
     ALLOWED_ATTR: ["rowspan", "colspan"],
   });
@@ -602,6 +617,7 @@ function traverseTable(element: Element, font: FontType): Table {
           return child.content;
         case "H1":
         case "H2":
+        case "H3":
         case "TABLE":
           return [];
         default:
@@ -653,7 +669,11 @@ function traverseTable(element: Element, font: FontType): Table {
   };
 }
 
-function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
+function traverseTextContainer(
+  element: Element,
+  type: "ITEM" | "H1" | "H2" | "H3",
+  font: FontType,
+): TraversedElement[] {
   if (element.children.length === 0) {
     const sanitizedText = cleansePastedText(element.textContent ?? "");
     // allowed with empty list items
@@ -665,8 +685,9 @@ function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", fon
           return [child];
         }
         case "P":
-        case "H2":
         case "H1":
+        case "H2":
+        case "H3":
         case "ITEM": {
           return child.content;
         }
@@ -728,6 +749,10 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
       return traverseTextContainer(element, "H2", font);
     }
 
+    case "H3": {
+      return traverseTextContainer(element, "H3", font);
+    }
+
     case "TABLE": {
       return [traverseTable(element, font)];
     }
@@ -769,7 +794,8 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
       case "ITEM":
       case "P":
       case "H1":
-      case "H2": {
+      case "H2":
+      case "H3": {
         return traversedElement.content;
       }
       case "TABLE": {
@@ -780,7 +806,7 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
   });
 }
 
-type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element;
+type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element | Title3Element;
 
 function traverseParagraphChildren(paragraph: Element, font: FontType): ParagraphChild[] {
   const result: ParagraphChild[] = [];
@@ -803,6 +829,7 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
       case "ITEM":
       case "H1":
       case "H2":
+      case "H3":
       case "P":
         flushBuffer();
         result.push(node);

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.converters
+package no.nav.pensjon.brev.skribenten.serialize
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
@@ -6,26 +6,42 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.skribenten.services.BrevbakerServiceException
+import no.nav.pensjon.brev.skribenten.services.addAbstractTypeMapping
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
-
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 
 @OptIn(InterneDataklasser::class)
-object LetterMarkupModule : SimpleModule() {
+internal object LetterMarkupJacksonModule : SimpleModule() {
     @Suppress("unused")
-    private fun readResolve(): Any = LetterMarkupModule
-
-    class DeserializationException(message: String): Exception(message)
+    private fun readResolve(): Any = LetterMarkupJacksonModule
 
     init {
         addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
 
-        settOppDeserialiseringFraInterfaceTilImplementasjon()
+        addAbstractTypeMapping<LetterMarkup.Sakspart, LetterMarkupImpl.SakspartImpl>()
+        addAbstractTypeMapping<LetterMarkup.Signatur, LetterMarkupImpl.SignaturImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList, LetterMarkupImpl.ParagraphContentImpl.ItemListImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList.Item, LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Literal, LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Variable, LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.NewLine, LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl>()
+        addAbstractTypeMapping<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table, LetterMarkupImpl.ParagraphContentImpl.TableImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Row, LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Cell, LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Header, LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.ColumnSpec, LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl>()
+        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
+        addAbstractTypeMapping<LetterMarkupWithDataUsage, LetterMarkupWithDataUsageImpl>()
+        addAbstractTypeMapping<LetterMarkupWithDataUsage.Property, LetterMarkupWithDataUsageImpl.PropertyImpl>()
     }
 
     private fun blockDeserializer() =
@@ -51,8 +67,8 @@ object LetterMarkupModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
                     LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
                     LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> ParagraphContentImpl.Form.TextImpl::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> ParagraphContentImpl.Form.MultipleChoiceImpl::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl::class.java
                     LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
                 }
                 return p.codec.treeToValue(node, type)
@@ -70,29 +86,9 @@ object LetterMarkupModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.TABLE,
                     LetterMarkup.ParagraphContent.Type.FORM_TEXT,
                     LetterMarkup.ParagraphContent.Type.FORM_CHOICE,
-                    LetterMarkup.ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("$contentType is not allowed in a text-only block.")
+                    LetterMarkup.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, clazz)
             }
         }
-
-    private fun settOppDeserialiseringFraInterfaceTilImplementasjon() {
-        addAbstractTypeMapping<LetterMarkup.Sakspart, SakspartImpl>()
-        addAbstractTypeMapping<LetterMarkup.Signatur, SignaturImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>()
-        addAbstractTypeMapping<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
-    }
 }

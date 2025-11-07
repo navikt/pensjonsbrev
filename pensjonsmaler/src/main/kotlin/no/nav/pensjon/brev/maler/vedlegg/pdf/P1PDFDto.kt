@@ -181,6 +181,14 @@ private fun formatInstitusjon(
     institusjoner.joinToString(System.lineSeparator()) { institusjon ->
         joinAndSeparateByNotNull(
             System.lineSeparator(),
+            institusjon.land?.formaterLandkode(languageCode)
+                ?.let {
+                    if (languageCode == LanguageCode.BOKMAL) {
+                        "Land: $it"
+                    } else {
+                        "Country: $it"
+                    }
+                },
             institusjon.institusjonsnavn,
             institusjon.pin?.takeIf { it.isNotBlank() }?.let { "PIN: $it" },
             institusjon.saksnummer?.takeIf { it.isNotBlank() }?.let {
@@ -248,11 +256,11 @@ private fun formaterValuta(
 private fun avslaattPensjon(radnummer: Int, pensjon: P1Dto.AvslaattPensjon) = mapOf(
     "Institution_rejecting_the_pension[$radnummer]" to
             (pensjon.institusjoner ?: pensjon.institusjon?.let { listOf(it) })?.let {
-        formatInstitusjon(
-            it,
-            pensjon.vedtaksdato
-        )
-    },
+                formatInstitusjon(
+                    it,
+                    pensjon.vedtaksdato
+                )
+            },
     "Pensjonstype[$radnummer]" to pensjon.pensjonstype?.nummer?.let { "[$it]" },
     "GrunnlagAvslag[$radnummer]" to pensjon.avslagsbegrunnelse?.nummer?.let { "[$it]" },
     "Review_period[${radnummer * 2}]" to pensjon.vurderingsperiode,
