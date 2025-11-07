@@ -64,7 +64,7 @@ jobs:
       - name: "Publish container image to ghcr.io"
         run: |
            docker login ghcr.io -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-           docker pull --tag ${OUTPUT_IMAGE} pdf-bygger
+           docker build --pull --tag ${OUTPUT_IMAGE} pdf-bygger
            docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}
            docker push ${IMAGE_PDF_BYGGER}
            docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}
