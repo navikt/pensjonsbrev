@@ -54,7 +54,7 @@ export const internalRoutes = (server: Express) => {
       case 404:
         return "WARN";
       case 422:
-        return "DEBUG";
+        return "INFO";
       default:
         return "ERROR";
     }
