@@ -27,6 +27,7 @@ data class InnerElement(
 enum class ElementType(@JsonValue val value: String) {
     HEADING_TWO("heading-two"),
     HEADING_THREE("heading-three"),
+    HEADING_FOUR("heading-four"),
     PARAGRAPH("paragraph"),
     BULLETED_LIST("bulleted-list"),
     LIST_ITEM("list-item"),

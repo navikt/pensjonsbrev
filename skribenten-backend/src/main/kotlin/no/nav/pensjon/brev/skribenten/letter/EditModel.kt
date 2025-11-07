@@ -59,7 +59,7 @@ object Edit {
 
     sealed class Block(val type: Type) : Identifiable {
         enum class Type {
-            TITLE1, TITLE2, PARAGRAPH,
+            TITLE1, TITLE2, TITLE3, PARAGRAPH,
         }
 
         abstract val editable: Boolean
@@ -89,6 +89,15 @@ object Edit {
             override val originalType: Type? = null,
             override val parentId: Int? = null,
         ) : Block(Type.TITLE2)
+
+        data class Title3(
+            override val id: Int?,
+            override val editable: Boolean,
+            override val content: List<ParagraphContent.Text>,
+            override val deletedContent: Set<Int> = emptySet(),
+            override val originalType: Type? = null,
+            override val parentId: Int? = null,
+        ) : Block(Type.TITLE3)
 
         data class Paragraph(
             override val id: Int?,
@@ -205,6 +214,7 @@ fun Block.toEdit(): Edit.Block =
         is Block.Paragraph -> Edit.Block.Paragraph(id = id, editable = editable, content = content.map { it.toEdit(id) }, parentId = null)
         is Block.Title1 -> Edit.Block.Title1(id = id, editable = editable, content = content.toEdit(id), parentId = null)
         is Block.Title2 -> Edit.Block.Title2(id = id, editable = editable, content = content.toEdit(id), parentId = null)
+        is Block.Title3 -> Edit.Block.Title3(id = id, editable = editable, content = content.toEdit(id), parentId = null)
     }
 
 fun List<ParagraphContent.Text>.toEdit(parentId: Int?): List<Edit.ParagraphContent.Text> =
@@ -264,6 +274,7 @@ fun Edit.Block.toMarkup(): Block =
         is Edit.Block.Paragraph -> BlockImpl.ParagraphImpl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
         is Edit.Block.Title1 -> BlockImpl.Title1Impl(id = id ?: 0, editable = editable, content = content.toMarkup())
         is Edit.Block.Title2 -> BlockImpl.Title2Impl(id = id ?: 0, editable = editable, content = content.toMarkup())
+        is Edit.Block.Title3 -> BlockImpl.Title3Impl(id = id ?: 0, editable = editable, content = content.toMarkup())
     }
 
 fun List<Edit.ParagraphContent.Text>.toMarkup() =
