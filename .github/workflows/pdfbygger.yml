@@ -63,9 +63,12 @@ jobs:
           path: pdf-bygger/build/libs/
       - name: "Publish container image to ghcr.io"
         run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER} && docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
-          docker push ${IMAGE_PDF_BYGGER}
+           docker login ghcr.io -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+           docker pull ${OUTPUT_IMAGE}
+           docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}
+           docker push ${IMAGE_PDF_BYGGER}
+           docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}
+           docker push ${IMAGE_BRANCH}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
           OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
