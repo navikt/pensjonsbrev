@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.latex
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
