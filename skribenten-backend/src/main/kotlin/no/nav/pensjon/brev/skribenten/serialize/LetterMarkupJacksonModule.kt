@@ -51,6 +51,7 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
                 val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
                     LetterMarkup.Block.Type.TITLE1 -> LetterMarkupImpl.BlockImpl.Title1Impl::class.java
                     LetterMarkup.Block.Type.TITLE2 -> LetterMarkupImpl.BlockImpl.Title2Impl::class.java
+                    LetterMarkup.Block.Type.TITLE3 -> LetterMarkupImpl.BlockImpl.Title3Impl::class.java
                     LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java
                 }
                 return p.codec.treeToValue(node, type)

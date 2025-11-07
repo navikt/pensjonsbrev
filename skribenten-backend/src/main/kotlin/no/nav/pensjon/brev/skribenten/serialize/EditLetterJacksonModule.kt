@@ -27,6 +27,7 @@ object EditLetterJacksonModule : SimpleModule() {
             val type = when (Edit.Block.Type.valueOf(node.get("type").textValue())) {
                 Edit.Block.Type.TITLE1 -> Edit.Block.Title1::class.java
                 Edit.Block.Type.TITLE2 -> Edit.Block.Title2::class.java
+                Edit.Block.Type.TITLE3 -> Edit.Block.Title3::class.java
                 Edit.Block.Type.PARAGRAPH -> Edit.Block.Paragraph::class.java
             }
             return p.codec.treeToValue(node, type)
