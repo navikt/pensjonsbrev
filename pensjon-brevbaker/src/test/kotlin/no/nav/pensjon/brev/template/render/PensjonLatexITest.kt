@@ -8,7 +8,7 @@ import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
@@ -39,7 +39,7 @@ class PensjonLatexITest {
 
     init {
         PDFByggerTestContainer.start()
-        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl(), maxRetries = 0)
+        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
     }
 
     @AfterAll
