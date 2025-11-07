@@ -1,10 +1,13 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
+import no.nav.pensjon.brev.maler.alder.omregning.fraser.Omregning2016Hjemler
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -12,8 +15,10 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
+import kotlin.Boolean
 
 
 data class OmregningAlderUfore2016Felles(
@@ -58,45 +63,46 @@ data class OmregningAlderUfore2016Felles(
 
         paragraph {
             text(
-                bokmal { + "Uføretrygden din opphører fra måneden etter at du fyller 67 år. Vi har derfor regnet den om til " + uttaksgrad.format()
-                        + " prosent alderspensjon fra " + virkFom.format() },
-                nynorsk { + "Uføretrygda di opphøyrar frå månaden etter at du fyller 67 år. Vi har derfor rekna den om til " + uttaksgrad.format()
-                        + " prosent alderspensjon frå " + virkFom.format() },
-                english { + "Your disability pension will be terminated from the month after you turn 67. We have therefore converted it into " + uttaksgrad.format()
-                        + " percent retirement pension from " + virkFom.format() }
+                bokmal { + "Fra " + virkFom.format() + " får du " + uttaksgrad.format() + " prosent alderspensjon. Du får " + totalPensjon.format() +
+                        " i alderpensjon før skatt hver måned." },
+                nynorsk { + "Frå " + virkFom.format() + " får du " + uttaksgrad.format() + " prosent alderspensjon. Du får " + totalPensjon.format() +
+                        " i alderspensjon før skatt kvar månad." },
+                english { + "From "  + virkFom.format() + " you will receive " + uttaksgrad.format() + " percent retirement pension. You will receive " + totalPensjon.format() +
+                        " in retirement pension before tax each month." }
 
             )
         }
 
         paragraph {
             text(
-                bokmal { + "Du får " + totalPensjon.format() + " hver måned før skatt fra " + virkFom.format() + " i alderspensjon fra folketrygden." },
-                nynorsk { + "Du får " + totalPensjon.format() + " kvar månad før skatt frå " + virkFom.format() + " i alderspensjon frå folketrygda." },
-                english { + "You will receive " + totalPensjon.format() + " every month before tax from " + virkFom.format() + " as retirement pension from the National Insurance Scheme" }
+                bokmal { + "Alderspensjon beregnes etter andre regler enn uføretrygd. " +
+                        "Derfor får du ikke det samme i alderspensjon som du har hatt i uføretrygd." },
+                nynorsk { + "Alderspensjon blir berekna etter andre reglar enn uføretrygd. " +
+                        "Derfor får du ikkje det same i alderspensjon som du har hatt i uføretrygd." },
+                english { + "Retirement pension is calculated according to different rules than the disability benefit. " +
+                        "Therefore, the amount you receive in retirement pension may differ from what you received in disability benefit. " }
 
             )
         }
 
         paragraph {
             text(
-                bokmal { + "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. " +
-                        "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
-                nynorsk { + "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. " +
-                        "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." },
-                english { + "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. " +
-                        "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL." }
+                bokmal { + "Du finner informasjon om hvordan alderspensjonen er satt sammen og beregnet " +
+                        "i vedleggene " },
+                nynorsk { + "Du finn informasjon om korleis alderspensjonen er sett saman og berekna" +
+                        " i vedlegga " },
+                english { + "You can find information about how your retirement pension " +
+                        "is composed and calculated in the attachments " }
             )
+            namedReference(vedleggMaanedligPensjonFoerSkatt)
+            text(
+                bokmal { + " og " },
+                nynorsk { + " og " },
+                english { + " and " }
+            )
+            namedReference(vedleggOpplysningerBruktIBeregningenAlder)
         }
 
-        showIf(antallBeregningsperioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
-            paragraph {
-                text(
-                    bokmal { + "Du kan lese mer om andre beregningsperioder i vedlegget." },
-                    nynorsk { + "Du kan lese meir om andre berekningsperiodar i vedlegget." },
-                    english { + "There is more information about other calculation periods in the attachment." }
-                )
-            }
-        }
     ifNotNull(avdodNavn) { avdodNavn ->
         showIf(gjenlevendetilleggKap19Innvilget) {
             paragraph {
@@ -177,243 +183,95 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
+        includePhrase(Omregning2016Hjemler(
+            pensjonstilleggInnvilget,
+            garantipensjonInnvilget,
+            godkjentYrkesskade,
+            oppfyltVedSammenleggingKap19,
+            oppfyltVedSammenleggingKap20,
+            oppfyltVedSammenleggingFemArKap19,
+            oppfyltVedSammenleggingFemArKap20,
+            eksportTrygdeavtaleEOS,
+            borINorge,
+            erEOSLand,
+            skjermingstilleggInnvilget,
+            gjenlevenderettAnvendt,
+            garantitilleggInnvilget,
+            eksportTrygdeavtaleAvtaleland,
+            avtaleland,
+        ))
+
         showIf(uttaksgrad.lessThan(100)) {
+
+            title2 {
+                text(
+                    bokmal { + "Du har rett til hel (100 prosent) alderspensjon" },
+                    nynorsk { + "Du har rett til heil (100 prosent) alderspensjon" },
+                    english { + "You are entitled to a full (100 percent) retirement pension " }
+                )
+            }
+
             paragraph {
                 text(
-                    bokmal { + "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden." },
-                    nynorsk { + "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden." },
-                    english { + "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application." }
+                    bokmal { + "Du har fått alderspensjon med en uttaksgrad nærmest mulig uføregraden din. Hvis du ønsker hel alderspensjon, må du gi beskjed til Nav. " +
+                            "Du kan endre pensjonen på $DIN_PENSJON_URL. " +
+                            "Alderspensjonen kan tidligst endres fra måneden etter at du har søkt om endringen. " },
+                    nynorsk { + "Du har fått alderspensjon med ein uttaksgrad nærast mogleg uføregraden din. Om du ønskjer heil alderspensjon, må du gi beskjed til Nav. " +
+                            "Du kan endre pensjonen på $DIN_PENSJON_URL. " +
+                            "Du kan tidlegast få endra alderspensjonen frå månaden etter at du har søkt om endringa. " },
+                    english { + "You have been granted a retirement pension with a withdrawal rate as close as possible to your previous disability benefit rate. " +
+                            "If you wish to receive a full retirement pension, you must notify Nav. " +
+                            "You can change your pension at $DIN_PENSJON_URL. Changes can take effect from the month after you apply. " }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { + "I pensjonskalkulatoren på $NAV_URL kan du sjekke hvor mye du kan få i hel alderspensjon. " },
+                    nynorsk { + "I pensjonskalkulatoren på $NAV_URL kan du sjekke kor mykje du kan få i heil alderspensjon. " },
+                    english { + "You can use the pension calculator at $NAV_URL to check how much you can receive in full retirement pension. " }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { + "Hvis du trenger hjelp til å beregne eller endre pensjonen, kan du ringe oss på telefon 55 55 33 34. " },
+                    nynorsk { + "Om du treng hjelp til å berekne eller endre pensjonen, kan du ringe oss på telefon 55 55 33 34. " },
+                    english { + "If you need help calculating or changing your pension, you can call us at 55 55 33 34. " }
                 )
             }
         }
 
-        showIf(
-            pensjonstilleggInnvilget.not()
-                    and garantipensjonInnvilget.not()
-                    and godkjentYrkesskade.not()
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-8, 19-10, 19-15, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-8, 19-10, 19-15, 20-2, 20-3, 20-12 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
+        title2 {
+            text(
+                bokmal { + "Sivilstanden har betydning for pensjonen din" },
+                nynorsk { + "Sivilstanden har betydning for pensjonen din" },
+                english { + "Marital status affects your pension " }
+            )
         }
 
-        showIf(
-            pensjonstilleggInnvilget.not()
-                    and garantipensjonInnvilget.not()
-                    and godkjentYrkesskade
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
+        paragraph {
+            text(
+                bokmal { + "Hvis du har ektefelle eller samboer, skal pensjonen din kontrolleres mot den andre partens inntekt. " },
+                nynorsk { + "" },
+                english { + "" }
+            )
         }
 
-        showIf(
-            pensjonstilleggInnvilget
-                    and garantipensjonInnvilget.not()
-                    and godkjentYrkesskade.not()
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-10, 19-15, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-10, 19-15, 20-2, 20-3, 20-12 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
+        paragraph {
+            text(
+                bokmal { + "Du er registrert som " + sivilstand + "." },
+                nynorsk { + "" },
+                english { + "" }
+            )
         }
 
-        showIf(
-            pensjonstilleggInnvilget
-                    and garantipensjonInnvilget.not()
-                    and godkjentYrkesskade
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(
-            pensjonstilleggInnvilget
-                    and garantipensjonInnvilget
-                    and godkjentYrkesskade.not()
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-10, 19-15, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-10, 19-15, 20-2, 20-3, 20-9 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(
-            pensjonstilleggInnvilget
-                    and garantipensjonInnvilget
-                    and godkjentYrkesskade
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(
-            pensjonstilleggInnvilget.not()
-                    and garantipensjonInnvilget
-                    and godkjentYrkesskade.not()
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-8, 19-10, 19-15, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-8, 19-10, 19-15, 20-2, 20-3, 20-9 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(
-            pensjonstilleggInnvilget.not()
-                    and garantipensjonInnvilget
-                    and godkjentYrkesskade
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-2 til 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12." },
-                    english { + "This decision was made pursuant to the provisions of §§ 19-2 to 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 to 20-14, 20-19 and 22-12 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(skjermingstilleggInnvilget) {
-            paragraph {
-                text(
-                    bokmal { + "Du er også innvilget skjermingstillegg etter folketrygdloven § 19-9a." },
-                    nynorsk { + "Du er også innvilga skjermingstillegg etter folketrygdlova § 19-9a." },
-                    english { + "You have also been granted the supplement for the disabled pursuant to the provisions of § 19-9a of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(gjenlevenderettAnvendt and garantitilleggInnvilget.not()) {
-            paragraph {
-                text(
-                    bokmal { + "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024." },
-                    nynorsk { + "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024." },
-                    english { + "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the National Insurance Act § 19-16 and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024." }
-                )
-            }
-        }
-
-        showIf(gjenlevenderettAnvendt and garantitilleggInnvilget) {
-            paragraph {
-                text(
-                    bokmal { + "Gjenlevenderett er innvilget etter § 19-16 og gjenlevendetillegg etter kapittel 20 i folketrygdloven." },
-                    nynorsk { + "Attlevanderett er innvilga etter § 19-16 og attlevandetillegg etter kapittel 20 i folketrygdlova." },
-                    english { + "The survivor's rights in your retirement pension and the survivor's supplement have been granted pursuant to the provisions of § 19-16 and Chapter 20 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(garantitilleggInnvilget) {
-            paragraph {
-                text(
-                    bokmal { + "Du er også innvilget garantitillegg for opptjente rettigheter etter folketrygdloven § 20-20." },
-                    nynorsk { + "Du er også innvilga garantitillegg for opptente rettar etter folketrygdlova § 20-20." },
-                    english { + "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act." }
-                )
-            }
-        }
-
-        showIf(
-            (
-                    oppfyltVedSammenleggingKap19
-                            or oppfyltVedSammenleggingKap20
-                            or oppfyltVedSammenleggingFemArKap19
-                            or oppfyltVedSammenleggingFemArKap20)
-                    and borINorge
-                    and erEOSLand
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004." },
-                    nynorsk { + "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004." },
-                    english { + "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004." }
-                )
-            }
-        }
-
-        showIf(
-            oppfyltVedSammenleggingKap19.not()
-                    and oppfyltVedSammenleggingKap20.not()
-                    and oppfyltVedSammenleggingFemArKap19.not()
-                    and oppfyltVedSammenleggingFemArKap20.not()
-                    and eksportTrygdeavtaleEOS
-                    and borINorge.not()
-                    and erEOSLand.not()
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 7." },
-                    nynorsk { + "Vedtaket er også gjort etter EØS-avtalens reglar i forordning 883/2004, artikkel 7." },
-                    english { + "This decision was also made pursuant to the provisions of Article 7 of Regulation (EC) 883/2004." }
-                )
-            }
-        }
-
-        showIf(
-            (
-                    oppfyltVedSammenleggingKap19
-                            or oppfyltVedSammenleggingKap20
-                            or oppfyltVedSammenleggingFemArKap19
-                            or oppfyltVedSammenleggingFemArKap20)
-                    and eksportTrygdeavtaleEOS
-                    and borINorge.not()
-                    and erEOSLand
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004." },
-                    nynorsk { + "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004." },
-                    english { + "This decision was also made pursuant to the provision of Regulation (EC) 883/2004." }
-                )
-            }
-        }
-
-        showIf(
-            (
-                    oppfyltVedSammenleggingKap19
-                            or oppfyltVedSammenleggingKap20
-                            or oppfyltVedSammenleggingFemArKap19
-                            or oppfyltVedSammenleggingFemArKap20
-                            or eksportTrygdeavtaleAvtaleland)
-                    and erEOSLand.not()
-        ) {
-            ifNotNull(avtaleland) { avtaleland ->
-                paragraph {
-                    showIf(avtaleland.notNull()) {
-                        text(
-                            bokmal { + "Vedtaket er også gjort etter reglene i trygdeavtalen med " + avtaleland },
-                            nynorsk { + "Vedtaket er også gjort etter reglane i trygdeavtalen med " + avtaleland },
-                            english { + "This decision was also made pursuant the provisions of the Social Security Agreement with " + avtaleland },
-                        )
-                    }
-                }
-            }
+        paragraph {
+            text(
+                bokmal { + "" },
+                nynorsk { + "" },
+                english { + "" }
+            )
         }
 
         title2 {

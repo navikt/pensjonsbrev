@@ -58,7 +58,7 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Omregning fra Uføre til Alder",
+            displayTitle = "Vedtak – overgang fra uføretrygd til alderspensjon",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
@@ -66,9 +66,9 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
     ) {
         title {
             text(
-                bokmal { +"Vi har regnet om uføretrygden din til alderspensjon" },
-                nynorsk { +"Vi har rekna om uføretrygda di til alderspensjon" },
-                english { +"We have converted your disability pension into retirement pension" },
+                bokmal { +"Du er innvilget alderspensjon" },
+                nynorsk { +"Du er innvilga alderspensjon" },
+                english { +"You have been granted a retirement pension" },
             )
         }
         outline {

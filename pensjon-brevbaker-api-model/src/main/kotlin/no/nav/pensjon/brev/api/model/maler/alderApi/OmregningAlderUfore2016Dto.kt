@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -30,7 +31,8 @@ data class OmregningAlderUfore2016Dto(
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
     val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?,
     val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
+    val sokerSivilstand: Sivilstand,
 
 ) : BrevbakerBrevdata
 
@@ -51,6 +53,11 @@ data class InngangOgEksportVurdering(
     val oppfyltVedSammenleggingKap20: Boolean,
     val oppfyltVedSammenleggingFemArKap19: Boolean,
     val oppfyltVedSammenleggingFemArKap20: Boolean,
+)
+
+data class Sivilstand(
+    val sivilstand: MetaforceSivilstand,
+    val over2G: Boolean,
 )
 
 
