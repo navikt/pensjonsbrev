@@ -52,6 +52,10 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Her er din title2" }, nynorsk { +"Her er din title2" })
             }
 
+            title3 {
+                text(bokmal { +"Her er din title3" }, nynorsk { +"Her er din title3" })
+            }
+
             paragraph {
                 text(
                     bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." },

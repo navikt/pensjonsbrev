@@ -55,3 +55,10 @@
   font-weight: var(--a-font-weight-bold);
   margin-bottom: var(--a-spacing-1-alt);
 }
+
+.TITLE3 {
+  font-size: 16.5px;
+  line-height: var(--a-font-line-height-heading-xsmall);
+  font-weight: var(--a-font-weight-bold);
+  margin-bottom: var(--a-spacing-1-alt);
+}

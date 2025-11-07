@@ -27,6 +27,7 @@ import type {
   TextContent,
   Title1Block,
   Title2Block,
+  Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import {
@@ -38,6 +39,7 @@ import {
   TABLE,
   TITLE1,
   TITLE2,
+  TITLE3,
   VARIABLE,
 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
@@ -382,9 +384,9 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 export function newTitle(args: {
   id?: Nullable<number>;
   content: TextContent[];
-  type: typeof TITLE1 | typeof TITLE2;
+  type: typeof TITLE1 | typeof TITLE2 | typeof TITLE3;
   deletedContent?: number[];
-}): Title1Block | Title2Block {
+}): Title1Block | Title2Block | Title3Block {
   return {
     type: args.type,
     id: args.id ?? null,
@@ -628,6 +630,7 @@ export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
     switch (block.type) {
       case TITLE1:
       case TITLE2:
+      case TITLE3:
         return (block.content ?? []).filter((content) => isLiteral(content));
       case PARAGRAPH:
         return (block.content ?? []).flatMap((content) => {

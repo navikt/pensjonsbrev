@@ -166,7 +166,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return (
-        <Heading size="small" spacing>
+        <Heading size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -174,6 +174,15 @@ function ContentComponent({ content }: { content: Element }) {
       );
     }
     case ElementType.TITLE2: {
+      return (
+        <Heading size="small" spacing>
+          {content.text.map((cocs, index) => (
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
+          ))}
+        </Heading>
+      );
+    }
+    case ElementType.TITLE3: {
       return (
         <Heading size="xsmall" spacing>
           {content.text.map((cocs, index) => (

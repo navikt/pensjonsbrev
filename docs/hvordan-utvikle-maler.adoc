@@ -377,7 +377,7 @@ data class DuFaarUtbetalt(
 Det finnes 3 typer fraser, hvor de kan bli inkludert ulike steder:
 TextOnlyPhrase er ren tekst, og kan brukes alle steder text(...) og textExpr(...) kan brukes.
 ParagraphPhrase kan inneholde elementer som kan brukes inne i ett avsnitt. F.eks tabeller, tekster, lister osv.
-OutlinePhrase kan inneholde elementer som kan skrives i outline. F.eks title1, title2, paragraph.
+OutlinePhrase kan inneholde elementer som kan skrives i outline. F.eks title1, title2, title3 eller paragraph.
 
 == Vedlegg
 Brev har oftest vedlegg som kommer på egne ark i pdf etter ett brev og inkluderes i vedlegg listen.

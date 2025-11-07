@@ -112,6 +112,11 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
             is Edit.Block.Title2 -> edited.copy(
                 content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
             )
+
+            is Edit.Block.Title3 -> edited.copy(
+                content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
+            )
+
         }
 
     private fun mergeListText(
@@ -123,6 +128,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         when (rendered) {
             is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
             is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
+            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
             is Edit.Block.Paragraph -> mergeList(
                 parent,
                 editedContent,
@@ -207,6 +213,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         when (edited) {
             is Edit.Block.Title1 -> edited.copy(content = edited.content.map { updateVariableValues(it) })
             is Edit.Block.Title2 -> edited.copy(content = edited.content.map { updateVariableValues(it) })
+            is Edit.Block.Title3 -> edited.copy(content = edited.content.map { updateVariableValues(it) })
             is Edit.Block.Paragraph -> edited.copy(content = edited.content.map { updateVariableValues(it) })
         }
 
