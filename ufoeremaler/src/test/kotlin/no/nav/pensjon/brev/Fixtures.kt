@@ -22,6 +22,9 @@ object Fixtures : LetterDataFactory {
             UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
+            UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
+            UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
+            UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
@@ -32,6 +35,28 @@ object Fixtures : LetterDataFactory {
         pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
         ), EmptySaksbehandlerValg
+    )
+
+    private fun lagUforeAvslagUforetidspunkt26Dto() = UforeAvslagUforetidspunkt26Dto(
+        pesysData = UforeAvslagUforetidspunkt26Dto.UforeAvslagPendata(
+            kravMottattDato = LocalDate.now(),
+            vurdering = "Vurdering 1"
+        ),
+        saksbehandlerValg = UforeAvslagUforetidspunkt26Dto.Saksbehandlervalg(
+            VisVurderingFraVilkarvedtak = true,
+            visUforetidspunktEtter26 = true
+        )
+    )
+
+    private fun lagUforeAvslagForverrelseEtter26Dto() = UforeAvslagForverrelseEtter26Dto(
+        pesysData = UforeAvslagForverrelseEtter26Dto.UforeAvslagPendata(
+            kravMottattDato = LocalDate.now(),
+            vurdering = "Vurdering 1"
+        ),
+        saksbehandlerValg = UforeAvslagForverrelseEtter26Dto.Saksbehandlervalg(
+            VisVurderingFraVilkarvedtak = true,
+            visForverrelseEtter26 = true
+        )
     )
 
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(

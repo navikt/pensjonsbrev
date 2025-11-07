@@ -53,29 +53,6 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
             }
-            paragraph {
-                text(bokmal { +"Å ha gjennomført «alle hensiktsmessige tiltak» betyr at alle tiltak som kan bidra til at du kommer i arbeid, skal være forsøkt. " })
-            }
-            paragraph {
-                text(bokmal { +"Som hovedregel vil vi vurdere at alle hensiktsmessig tiltak ikke er gjennomført dersom; " })
-                list {
-                    item {
-                        text(
-                            bokmal { +"du er i tiltak" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"du er henvist til tiltak" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"du er anbefalt tiltak" },
-                        )
-                    }
-                }
-            }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
@@ -87,9 +64,8 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
             }
 
             paragraph {
-                text(bokmal { +
-                "Vi vurderer at du har gjennomført relevant behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
-                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere hensiktsmessige tiltak. "})
+                text(bokmal { +"Vi vurderer at du har gjennomført hensiktsmessig behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
+                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere tiltak. "})
             }
             paragraph {
                 text(bokmal { + "Det er derfor for tidlig å ta stilling til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "})

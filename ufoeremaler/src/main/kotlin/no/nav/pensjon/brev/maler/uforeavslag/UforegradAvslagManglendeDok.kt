@@ -67,7 +67,7 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { + "Vi har ikke mottatt disse dokumentene og avslår derfor søknaden din om økt uføregrad." })
+                text(bokmal { + "Vi har ikke fått disse dokumentene og avslår derfor søknaden din om økt uføregrad." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 21-3 " +

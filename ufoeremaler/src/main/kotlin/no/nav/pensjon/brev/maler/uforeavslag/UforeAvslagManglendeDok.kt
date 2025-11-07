@@ -49,7 +49,7 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Begrunnelse for vedtaket" })
+                text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss de opplysningene vi trenger. " +
@@ -67,7 +67,7 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { + "Vi har ikke mottatt disse dokumentene og avslår derfor søknaden din om uføretrygd." })
+                text(bokmal { + "Vi har ikke fått disse dokumentene og avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 21-3 " +
