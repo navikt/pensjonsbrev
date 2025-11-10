@@ -42,11 +42,6 @@ class PensjonLatexITest {
         laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
     }
 
-    @AfterAll
-    fun stop() {
-        PDFByggerTestContainer.stop()
-    }
-
     @Test
     fun canRender() {
         val template = createTemplate(

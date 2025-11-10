@@ -155,10 +155,6 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
             ) ?: it
         }
         .also { writeTestPDF(pdfFileName, it.bytes, path) }
-    if (pdfByggerService == null) {
-        // For å stoppe den nye containeren vi laga før render-kallet
-        PDFByggerTestContainer.stop()
-    }
     return this
 }
 

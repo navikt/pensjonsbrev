@@ -7,7 +7,6 @@ import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.dsl.text
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -21,11 +20,6 @@ class ElementIntegrationTest {
     init {
         PDFByggerTestContainer.start()
         laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
-
-    @AfterAll
-    fun stop() {
-        PDFByggerTestContainer.stop()
     }
 
 

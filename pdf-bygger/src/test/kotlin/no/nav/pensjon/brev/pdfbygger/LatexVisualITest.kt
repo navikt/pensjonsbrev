@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -34,11 +33,6 @@ class LatexVisualITest {
     init {
         PDFByggerTestContainer.start()
         laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
-
-    @AfterAll
-    fun stop() {
-        PDFByggerTestContainer.stop()
     }
 
     private fun render(
