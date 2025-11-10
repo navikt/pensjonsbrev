@@ -12,6 +12,8 @@ object PDFByggerTestContainer {
     // TODO: Endre frå true til false når denne PR-en er merga til main
     private const val BRUK_LOKAL_CONTAINER = true
 
+    private const val PORT = 8080
+
     private fun konfigurerPdfbyggerContainer(): GenericContainer<*> {
         // DIGEST blir i GitHub Actions-byggejobbane sendt inn som miljøvariabel
         val fullImageName = System.getenv("PDF_BYGGER_DIGEST")
@@ -19,7 +21,7 @@ object PDFByggerTestContainer {
             ?.let { "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$it" }
             ?: if (BRUK_LOKAL_CONTAINER) "pensjonsbrev-pdf-bygger:latest" else "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
         return GenericContainer(DockerImageName.parse(fullImageName))
-            .withExposedPorts(8080)
+            .withExposedPorts(PORT)
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
             .withEnv(
                 "JAVA_TOOL_OPTIONS",
@@ -32,7 +34,7 @@ object PDFByggerTestContainer {
     @Suppress("HttpUrlsUsage") // Kun for lokal kjøring
     fun mappedUrl(): String {
         start()
-        return "http://${pdfContainer.host}:${pdfContainer.getMappedPort(8080)}"
+        return "http://${pdfContainer.host}:${pdfContainer.getMappedPort(PORT)}"
     }
 
     @Synchronized
