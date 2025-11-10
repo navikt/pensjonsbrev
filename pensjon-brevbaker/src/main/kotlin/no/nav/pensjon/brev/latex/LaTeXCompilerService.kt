@@ -36,7 +36,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class LaTeXCompilerService(
-    private val pdfByggerUrl: String,
+    private val pdfByggerUrl: () -> String,
     maxRetries: Int = 30,
     private val timeout: Duration = 300.seconds,
 ) : PDFByggerService {
@@ -91,7 +91,7 @@ class LaTeXCompilerService(
     override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             val httpClient = if (shouldRetry) httpClientAuto else httpClientRedigerbar
-            httpClient.post("$pdfByggerUrl/$path") {
+            httpClient.post("${pdfByggerUrl()}/$path") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
@@ -105,5 +105,5 @@ class LaTeXCompilerService(
             }.body()
         } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
-    suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
+    suspend fun ping(): Boolean = httpClientAuto.get("${pdfByggerUrl()}/isAlive").status.isSuccess()
 }

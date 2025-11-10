@@ -123,7 +123,7 @@ fun Application.brevbakerModule(
 
 
     val latexCompilerService = LaTeXCompilerService(
-        pdfByggerUrl = pdfByggerUrl(brevbakerConfig),
+        pdfByggerUrl = { pdfByggerUrl(brevbakerConfig) },
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
