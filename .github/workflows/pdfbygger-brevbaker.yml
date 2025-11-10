@@ -91,7 +91,7 @@ jobs:
           ./gradlew :pensjon-brevbaker:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          "DIGEST": "main"
+          "DIGEST": "f9c10987e741be0ceb5340f9a788b3b70b11976a" # TODO: bytt ut denne med main etter denne PR-en er merga til main
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
