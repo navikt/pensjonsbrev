@@ -28,9 +28,10 @@ object PDFByggerTestContainer {
 
     fun start() {
         if (!pdfContainer.isRunning) {
+            println("Starter container for $fullImageName")
             pdfContainer.start()
         }
     }
 
-    fun stop() = pdfContainer.stop()
+    fun stop() = pdfContainer.stop().also { println("Stopper container for $fullImageName") }
 }
