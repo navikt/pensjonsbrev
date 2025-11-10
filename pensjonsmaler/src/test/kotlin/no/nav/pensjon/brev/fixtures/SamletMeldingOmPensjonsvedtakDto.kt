@@ -72,7 +72,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -93,7 +92,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -114,7 +112,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -135,7 +132,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = true,
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -156,7 +152,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -177,7 +172,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
 
             InnvilgetPensjon(
@@ -199,7 +193,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -220,7 +213,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -241,7 +233,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -262,7 +253,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -283,7 +273,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -304,7 +293,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay(),
@@ -325,7 +313,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
             InnvilgetPensjon(
                 institusjon = nay2(),
@@ -346,7 +333,6 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
             ),
         ),
         avslaattePensjoner =
@@ -386,13 +372,6 @@ private fun nay2(): List<P1Dto.Institusjon> = listOf(
 )
 
 private fun avslaattPensjon() = AvslaattPensjon(
-    institusjon = P1Dto.Institusjon(
-        institusjonsid = null,
-        institusjonsnavn = "NAY 4",
-        pin = null,
-        saksnummer = null,
-        land = null,
-    ),
     institusjoner = listOf(
         P1Dto.Institusjon(
             institusjonsid = null,
