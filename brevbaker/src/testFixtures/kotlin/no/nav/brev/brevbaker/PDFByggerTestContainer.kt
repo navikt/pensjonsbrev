@@ -25,7 +25,7 @@ object PDFByggerTestContainer {
                 "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork"
             )
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
-            .waitingFor(Wait.forHttp("/isAlive").forStatusCode(200))
+            .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
     }
 
     @Suppress("HttpUrlsUsage") // Kun for lokal kjøring
