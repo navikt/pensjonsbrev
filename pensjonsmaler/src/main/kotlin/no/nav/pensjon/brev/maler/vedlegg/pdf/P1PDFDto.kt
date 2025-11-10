@@ -306,11 +306,15 @@ private fun adresseNyVurdering(erNorge: Boolean, adresser: List<P1Dto.Adresse>):
     }
 
 fun P1Dto.AvslaattPensjon.erNorskRad(): Boolean {
+    val harInst = institusjoner?.isNotEmpty() ?: false
+    val harAdresse = adresseNyVurdering.isNotEmpty()
+
     val norskInst = institusjoner?.all { it.land?.trim()?.uppercase() == "NO" }?: false
     val norskAdresse = adresseNyVurdering.all { it.landkode?.landkode?.trim()?.uppercase() == "NO" }
-    return (norskInst && norskAdresse)
-            || norskInst && adresseNyVurdering.isEmpty()
-            || norskAdresse && (institusjoner?.isEmpty() ?: false)
+
+    return (norskInst && harInst && norskAdresse && harAdresse)
+            || (norskInst && !harAdresse)
+            || (norskAdresse && !harInst)
 }
 
 private fun List<P1Dto.Adresse>.formater(): Map<LanguageCode, String?> =
