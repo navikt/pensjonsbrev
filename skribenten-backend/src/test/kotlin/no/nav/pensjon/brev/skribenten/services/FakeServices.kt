@@ -96,7 +96,7 @@ open class FakeBrevbakerService(
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse> = notYetStubbed()
+    ): LetterResponse = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()

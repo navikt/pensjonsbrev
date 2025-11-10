@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.client.utils.unwrapCancellationException
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.io.EOFException
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -46,7 +47,7 @@ interface BrevbakerService {
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse>
+    ): LetterResponse
     suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>>
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
 }
@@ -106,8 +107,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse> =
-        client.post("/letter/redigerbar/pdf") {
+    ): LetterResponse {
+        val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
@@ -118,7 +119,17 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     letterMarkup = redigertBrev
                 )
             )
-        }.toServiceResult()
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }
+                    ?: "Ukjent feil oppstod ved generering av PDF for brevkode: $brevkode"
+            )
+        }
+    }
 
     override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
         client.get("/templates/redigerbar") {

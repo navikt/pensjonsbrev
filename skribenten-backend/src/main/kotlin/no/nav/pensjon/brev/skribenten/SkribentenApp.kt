@@ -137,7 +137,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
-            call.respond(HttpStatusCode.InternalServerError, "Ukjent intern feil")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
 

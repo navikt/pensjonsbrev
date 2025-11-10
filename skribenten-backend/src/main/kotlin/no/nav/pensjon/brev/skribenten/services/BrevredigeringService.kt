@@ -311,12 +311,12 @@ class BrevredigeringService(
                 vedtaksId = brevredigering.info.vedtaksId,
                 brevkode = brevredigering.info.brevkode,
                 avsenderEnhetsId = brevredigering.info.avsenderEnhetId
-            ).then { pesysBrevdata ->
+            ).map { pesysBrevdata ->
                 val nyBrevdataHash = Hash.read(pesysBrevdata)
 
                 // dokumentDato er en del av pesysBrevdata.felles, så vi trenger ikke sjekke den eksplisitt her
                 if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
-                    Ok(Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false))
+                    Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false)
                 } else {
                     // render markup to check if letterMarkup has changed due to changed brevdata
                     val rendretBrevErEndret = brevbakerService.renderMarkup(
@@ -334,9 +334,7 @@ class BrevredigeringService(
                         brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
                     }.resultOrNull()
 
-                    opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash).map {
-                        Api.PdfResponse(pdf = it, rendretBrevErEndret = rendretBrevErEndret ?: false)
-                    }
+                    Api.PdfResponse(pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash), rendretBrevErEndret = rendretBrevErEndret ?: false)
                 }
             }
         }
@@ -574,32 +572,33 @@ class BrevredigeringService(
         brevredigering: Dto.Brevredigering,
         pesysData: BrevdataResponse.Data,
         brevdataHash: Hash<BrevdataResponse.Data>,
-    ): ServiceResult<ByteArray> {
-        return brevbakerService.renderPdf(
-                brevkode = brevredigering.info.brevkode,
-                spraak = brevredigering.info.spraak,
-                brevdata = GeneriskRedigerbarBrevdata(
-                    pesysData = pesysData.brevdata,
-                    saksbehandlerValg = brevredigering.saksbehandlerValg,
-                ),
-                // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-                felles = pesysData.felles
-                    .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
-                    .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
-                redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
-            ).map {
-                transaction {
-                    val update: Document.() -> Unit = {
-                        this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = it.file
-                        dokumentDato = pesysData.felles.dokumentDato
-                        this.redigertBrevHash = brevredigering.redigertBrevHash
-                        this.brevdataHash = brevdataHash
-                    }
-                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
-                        ?: Document.new(update).pdf
-                }
+    ): ByteArray {
+        val pdf = brevbakerService.renderPdf(
+            brevkode = brevredigering.info.brevkode,
+            spraak = brevredigering.info.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brevredigering.saksbehandlerValg,
+            ),
+            // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
+            felles = pesysData.felles
+                .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
+                .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
+            redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
+                .toMarkup(),
+        )
+
+        return transaction {
+            val update: Document.() -> Unit = {
+                this.brevredigering = Brevredigering[brevredigering.info.id]
+                this.pdf = pdf.file
+                this.dokumentDato = pesysData.felles.dokumentDato
+                this.redigertBrevHash = brevredigering.redigertBrevHash
+                this.brevdataHash = brevdataHash
             }
+            Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
+                ?: Document.new(update).pdf
+        }
     }
 
     private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =

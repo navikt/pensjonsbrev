@@ -123,7 +123,7 @@ class BrevredigeringServiceTest {
 
     private class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: Felles) -> ServiceResult<LetterMarkup>)
-        lateinit var renderPdfResultat: ServiceResult<LetterResponse>
+        lateinit var renderPdfResultat: LetterResponse
         lateinit var modelSpecificationResultat: ServiceResult<TemplateModelSpecification>
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
@@ -910,7 +910,7 @@ class BrevredigeringServiceTest {
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
-        brevbakerService.renderPdfResultat = ServiceResult.Ok(letterResponse)
+        brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { ServiceResult.Ok(letter) }
 
         val brev = opprettBrev(
@@ -946,7 +946,7 @@ class BrevredigeringServiceTest {
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
-        brevbakerService.renderPdfResultat = ServiceResult.Ok(letterResponse)
+        brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { ServiceResult.Ok(letter) }
 
         val brev = opprettBrev(
@@ -1584,16 +1584,14 @@ class BrevredigeringServiceTest {
     }
 
     private fun stagePdf(pdf: ByteArray) {
-        brevbakerService.renderPdfResultat = ServiceResult.Ok(
-            LetterResponse(
-                file = pdf,
-                contentType = ContentType.Application.Pdf.toString(),
-                letterMetadata = LetterMetadata(
-                    displayTitle = "En fin tittel",
-                    isSensitiv = false,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-                )
+        brevbakerService.renderPdfResultat = LetterResponse(
+            file = pdf,
+            contentType = ContentType.Application.Pdf.toString(),
+            letterMetadata = LetterMetadata(
+                displayTitle = "En fin tittel",
+                isSensitiv = false,
+                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
             )
         )
     }
