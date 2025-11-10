@@ -113,6 +113,8 @@ sealed class Expression<out Out> : StableHash {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
                 scope.markUsage(operation.selector)
+            } else if (operation is UnaryOperation.SafeCall<*,*> && operation.operation is UnaryOperation.Select<*, *>) {
+                scope.markUsage(operation.operation.selector)
             }
             return operation.apply(value.eval(scope))
         }
