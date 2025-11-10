@@ -534,6 +534,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnFocus = (e: React.FocusEvent<HTMLSpanElement>) => {
+    // Trigges når
+    // - elementet klikkes i eller tabbes til (eller klikker #-lenke)
+    // - elementet hadde allerede fokus og vinduet får fokus igjen, da resettes fokus
+    // - programmatisk via .focus()
+    // - via autofocus-attributt
+    e.currentTarget.contentEditable = freeze ? "inherit" : "true";
     // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
@@ -543,6 +549,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (!erFritekst) return;
     e.preventDefault();
     setSelection(e.currentTarget);
+  };
+
+  const handleOnBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
+    e.currentTarget.contentEditable = "inherit";
   };
 
   const handleOnClick = (e: React.MouseEvent<HTMLSpanElement>) => {
@@ -601,6 +611,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
       }}
       data-literal-index={JSON.stringify(literalIndex)}
+      onBlur={handleOnBlur}
       onClick={handleOnClick}
       onDoubleClick={handleOnDoubleClick}
       onFocus={handleOnFocus}
