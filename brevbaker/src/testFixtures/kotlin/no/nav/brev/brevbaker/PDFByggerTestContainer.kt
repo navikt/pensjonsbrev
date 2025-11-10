@@ -29,7 +29,6 @@ object PDFByggerTestContainer {
     @Synchronized
     fun start() {
         if (!pdfContainer.isRunning) {
-            println("Starter container for $fullImageName")
             pdfContainer.start()
         }
     }
