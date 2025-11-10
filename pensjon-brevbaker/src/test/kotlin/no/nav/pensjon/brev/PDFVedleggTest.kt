@@ -42,9 +42,17 @@ class PDFVedleggTest {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6), spraak, FellesFactory.felles)
+        val letter = LetterTestImpl(
+            template,
+            createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6),
+            spraak,
+            FellesFactory.felles
+        )
 
-        letter.renderTestPDF("${brevkode.kode()}_${spraak.javaClass.simpleName}", pdfVedleggAppender = PDFVedleggAppenderImpl)
+        letter.renderTestPDF(
+            "${brevkode.kode()}_${spraak.javaClass.simpleName}",
+            pdfVedleggAppender = PDFVedleggAppenderImpl
+        )
     }
 }
 
@@ -55,6 +63,15 @@ fun createSamletMeldingOmPensjonsvedtakDto(innvilget: Int, avslag: Int) =
             sakstype = Sakstype.ALDER,
             vedlegg = createP1Dto(innvilget, avslag)
         )
+    )
+
+private val svenskInst =
+    P1Dto.Institusjon(
+        institusjonsid = "Namm",
+        institusjonsnavn = "Svenske godisfabrikken",
+        pin = "12345",
+        saksnummer = "1234",
+        land = "SE"
     )
 
 fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
@@ -79,30 +96,61 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         landkode = Landkode("NO"),
     ),
     sakstype = Sakstype.ALDER,
-    innvilgedePensjoner = (0..<innvilget).map { InnvilgetPensjon(
+    innvilgedePensjoner = (0..<innvilget).map {
+        InnvilgetPensjon(
             institusjon = nay(),
             pensjonstype = Pensjonstype.Alder,
             datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
             bruttobeloepDesimal = "540.81",
             grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
             reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
-            vurderingsperiode = "tjue år",
-            adresseNyVurdering = listOf(Adresse(
-                adresselinje1 = "Lillevik Torgvei $it",
-                adresselinje2 = null,
-                adresselinje3 = null,
-                landkode = Landkode("FI"),
-                postnummer = Postnummer("4321"),
-                poststed = Poststed("Lillevik Østre ")
-            )),
+            vurderingsperiode = null,
+            adresseNyVurdering = emptyList(),
             utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
             valuta = "NOK",
             vedtaksdato = "2020-01-01",
             erNorskRad = true,
         )
-    },
+    } + InnvilgetPensjon(
+        institusjon = listOf(svenskInst),
+        pensjonstype = Pensjonstype.Alder,
+        datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
+        bruttobeloepDesimal = "1234.81",
+        grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+        reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
+        vurderingsperiode = null,
+        adresseNyVurdering = emptyList(),
+        utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+        valuta = "SEK",
+        vedtaksdato = "2020-01-01",
+        erNorskRad = false,
+    ),
     avslaattePensjoner =
-        (0..<avslag).map { avslaattPensjon(it) },
+        (0..<avslag).map { avslaattPensjon(it) }
+                + AvslaattPensjon(
+            institusjoner = listOf(svenskInst),
+            pensjonstype = Pensjonstype.Etterlatte,
+            avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
+            vurderingsperiode = null,
+            adresseNyVurdering = emptyList(),
+            vedtaksdato = "2020-01-01"
+        ) + AvslaattPensjon( // teste at rar blanding ikke skal overstyres med norsk adresse.
+            institusjoner = listOf(svenskInst),
+            pensjonstype = Pensjonstype.Etterlatte,
+            avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
+            vurderingsperiode = null,
+            adresseNyVurdering = listOf(
+                Adresse(
+                    adresselinje1 = "Lillevik Torgvei 1",
+                    adresselinje2 = null,
+                    adresselinje3 = null,
+                    landkode = Landkode("NO"),
+                    postnummer = Postnummer("4321"),
+                    poststed = Poststed("Lillevik Østre")
+                )
+            ),
+            vedtaksdato = "2020-01-01"
+        ),
     utfyllendeInstitusjon = UtfyllendeInstitusjon(
         navn = "NFP",
         adresselinje = "Lilleviksgrenda",
@@ -119,41 +167,19 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
 
 private fun nay(): List<P1Dto.Institusjon> = listOf(
     P1Dto.Institusjon(
-        institusjonsid = null,
+        institusjonsid = "1234",
         institusjonsnavn = "NAY",
-        pin = null,
+        pin = "11111111",
         saksnummer = null,
-        land = null,
+        land = "NO",
     )
 )
 
 private fun avslaattPensjon(i: Int) = AvslaattPensjon(
-    institusjon = P1Dto.Institusjon(
-        institusjonsid = null,
-        institusjonsnavn = "NAY 4",
-        pin = null,
-        saksnummer = null,
-        land = null,
-    ),
-    institusjoner = listOf(
-        P1Dto.Institusjon(
-            institusjonsid = null,
-            institusjonsnavn = "NAY 4",
-            pin = null,
-            saksnummer = null,
-            land = null,
-        )
-    ),
+    institusjoner = nay(),
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
-    vurderingsperiode = "en måned",
-    adresseNyVurdering = listOf(Adresse(
-        adresselinje1 = "Lillevik Torgvei $i",
-        adresselinje2 = null,
-        adresselinje3 = null,
-        landkode = Landkode("FI"),
-        postnummer = Postnummer("4321"),
-        poststed = Poststed("Lillevik Østre")
-    )),
+    vurderingsperiode = null,
+    adresseNyVurdering = emptyList(),
     vedtaksdato = "2020-01-01"
 )
