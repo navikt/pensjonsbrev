@@ -10,6 +10,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Avslagsbegrunnelse
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Epost
@@ -41,9 +42,17 @@ class PDFVedleggTest {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6), spraak, FellesFactory.felles)
+        val letter = LetterTestImpl(
+            template,
+            createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6),
+            spraak,
+            FellesFactory.felles
+        )
 
-        letter.renderTestPDF("${brevkode.kode()}_${spraak.javaClass.simpleName}", pdfVedleggAppender = PDFVedleggAppenderImpl)
+        letter.renderTestPDF(
+            "${brevkode.kode()}_${spraak.javaClass.simpleName}",
+            pdfVedleggAppender = PDFVedleggAppenderImpl
+        )
     }
 }
 
@@ -87,7 +96,8 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         landkode = Landkode("NO"),
     ),
     sakstype = Sakstype.ALDER,
-    innvilgedePensjoner = (0..<innvilget).map { InnvilgetPensjon(
+    innvilgedePensjoner = (0..<innvilget).map {
+        InnvilgetPensjon(
             institusjon = nay(),
             pensjonstype = Pensjonstype.Alder,
             datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
@@ -99,6 +109,7 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
             utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
             valuta = "NOK",
             vedtaksdato = "2020-01-01",
+            erNorskRad = true,
         )
     } + InnvilgetPensjon(
         institusjon = listOf(svenskInst),
@@ -112,15 +123,32 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
         valuta = "SEK",
         vedtaksdato = "2020-01-01",
+        erNorskRad = false,
     ),
     avslaattePensjoner =
         (0..<avslag).map { avslaattPensjon(it) }
-    + AvslaattPensjon(
+                + AvslaattPensjon(
             institusjoner = listOf(svenskInst),
             pensjonstype = Pensjonstype.Etterlatte,
             avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
             vurderingsperiode = null,
             adresseNyVurdering = emptyList(),
+            vedtaksdato = "2020-01-01"
+        ) + AvslaattPensjon( // teste at rar blanding ikke skal overstyres med norsk adresse.
+            institusjoner = listOf(svenskInst),
+            pensjonstype = Pensjonstype.Etterlatte,
+            avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
+            vurderingsperiode = null,
+            adresseNyVurdering = listOf(
+                Adresse(
+                    adresselinje1 = "Lillevik Torgvei 1",
+                    adresselinje2 = null,
+                    adresselinje3 = null,
+                    landkode = Landkode("NO"),
+                    postnummer = Postnummer("4321"),
+                    poststed = Poststed("Lillevik Østre")
+                )
+            ),
             vedtaksdato = "2020-01-01"
         ),
     utfyllendeInstitusjon = UtfyllendeInstitusjon(

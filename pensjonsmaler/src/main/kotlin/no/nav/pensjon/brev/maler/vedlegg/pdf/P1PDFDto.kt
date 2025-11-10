@@ -148,7 +148,7 @@ val vurderingsperiodeSeksUker = mapOf(
 )
 
 val adresseNyVurderingNorge = mapOf(
-    BOKMAL to "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
+    BOKMAL to "The Norwegian Labour and Welfare Administration\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
     ENGLISH to "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorway",
 )
 
@@ -158,11 +158,12 @@ val seTidligereVedtakFraLand: Map<LanguageCode, String> = mapOf(
 )
 
 private fun innvilgetPensjon(radnummer: Int, innvilgelse: P1Dto.InnvilgetPensjon): Map<String, Any?> {
+    val erNorskRad = innvilgelse.erNorskRad ?: false
     return mapOf(
         "Institution_awarding_the_pension[$radnummer]" to formatInstitusjon(
             innvilgelse.institusjon,
             innvilgelse.vedtaksdato,
-            innvilgelse.erNorskRad()
+            erNorskRad
         ),
         "Pensjonstype[$radnummer]" to innvilgelse.pensjonstype?.nummer?.toString()?.let { "[$it]" },
         "Date_of_first_payment[$radnummer]" to formaterDato(innvilgelse.datoFoersteUtbetaling),
@@ -173,9 +174,9 @@ private fun innvilgetPensjon(radnummer: Int, innvilgelse: P1Dto.InnvilgetPensjon
         ),
         "PensjonInnvilget[$radnummer]" to innvilgelse.grunnlagInnvilget?.nummer?.let { "[$it]" },
         "PensjonRedusert[$radnummer]" to innvilgelse.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
-        "Review_period[${radnummer * 2}]" to vurderingsperiode(innvilgelse.erNorskRad(), innvilgelse.vurderingsperiode),
+        "Review_period[${radnummer * 2}]" to vurderingsperiode(erNorskRad, innvilgelse.vurderingsperiode),
         "Where_to_adress_the_request[$radnummer]" to
-                adresseNyVurdering(innvilgelse.erNorskRad(), innvilgelse.adresseNyVurdering),
+                adresseNyVurdering(erNorskRad, innvilgelse.adresseNyVurdering),
     )
 }
 
@@ -304,14 +305,13 @@ private fun adresseNyVurdering(erNorge: Boolean, adresser: List<P1Dto.Adresse>):
         seTidligereVedtakFraLand
     }
 
-fun P1Dto.InnvilgetPensjon.erNorskRad() =
-    institusjon.any { it.land?.trim()?.uppercase() == "NO" }
-            || adresseNyVurdering.any { it.landkode?.landkode?.trim()?.uppercase() == "NO" }
-            || valuta?.trim()?.uppercase() == "NOK"
-
-fun P1Dto.AvslaattPensjon.erNorskRad() =
-    institusjoner?.any { it.land?.trim()?.uppercase() == "NO" } ?: false
-            || adresseNyVurdering.any { it.landkode?.landkode?.trim()?.uppercase() == "NO" }
+fun P1Dto.AvslaattPensjon.erNorskRad(): Boolean {
+    val norskInst = institusjoner?.all { it.land?.trim()?.uppercase() == "NO" }?: false
+    val norskAdresse = adresseNyVurdering.all { it.landkode?.landkode?.trim()?.uppercase() == "NO" }
+    return (norskInst && norskAdresse)
+            || norskInst && adresseNyVurdering.isEmpty()
+            || norskAdresse && (institusjoner?.isEmpty() ?: false)
+}
 
 private fun List<P1Dto.Adresse>.formater(): Map<LanguageCode, String?> =
     mapOf(
