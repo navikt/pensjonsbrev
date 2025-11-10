@@ -483,6 +483,14 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title2 : 
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title3 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getText ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class no/nav/pensjon/brev/template/Expression : no/nav/pensjon/brev/template/StableHash {
 	public abstract fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public final fun toString ()Ljava/lang/String;
@@ -744,6 +752,20 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$IntFormat : n
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$IntFormat;
 	public fun apply (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatter : no/nav/pensjon/brev/template/LocalizedFormatter {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatter;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/time/Month;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatterShort : no/nav/pensjon/brev/template/LocalizedFormatter {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$MonthFormatterShort;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/time/Month;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -1070,6 +1092,7 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun title1 (Lkotlin/jvm/functions/Function1;)V
 	public fun title2 (Lkotlin/jvm/functions/Function1;)V
+	public fun title3 (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/OutlineScope {
@@ -1077,12 +1100,14 @@ public abstract interface class no/nav/pensjon/brev/template/dsl/OutlineScope {
 	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
 	public fun title1 (Lkotlin/jvm/functions/Function1;)V
 	public fun title2 (Lkotlin/jvm/functions/Function1;)V
+	public fun title3 (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/OutlineScope$DefaultImpls {
 	public static fun paragraph (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
 	public static fun title1 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
 	public static fun title2 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
+	public static fun title3 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/ParagraphScope {
@@ -1410,6 +1435,8 @@ public final class no/nav/pensjon/brev/template/dsl/expression/CollectionKt {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
+	public static final fun format (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun format$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatLocalDate (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun formatLocalDate$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatLocalDateNullable (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;

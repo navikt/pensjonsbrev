@@ -218,6 +218,13 @@ internal object LatexDocumentRenderer {
                     appendCmd("lettersectiontitletwo", titleText, escape = false)  // allerede escapet over.
                 }
             }
+
+            is LetterMarkup.Block.Title3 -> renderTitleIfNonEmptyText(block.content) { titleText ->
+                if (!next.startsWithTable()) {
+                    appendCmd("lettersectiontitlethree", titleText, escape = false)  // allerede escapet over.
+                }
+            }
+
         }
 
     private fun LetterMarkup.Block?.startsWithTable(): Boolean =
@@ -287,6 +294,7 @@ internal object LatexDocumentRenderer {
         when (previous) {
             is LetterMarkup.Block.Title1 -> renderTextsToString(previous.content)
             is LetterMarkup.Block.Title2 -> renderTextsToString(previous.content)
+            is LetterMarkup.Block.Title3 -> renderTextsToString(previous.content)
             else -> null
         }?.takeIf { it.isNotBlank() }
 

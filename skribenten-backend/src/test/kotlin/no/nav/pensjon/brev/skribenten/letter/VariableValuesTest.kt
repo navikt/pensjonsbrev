@@ -58,6 +58,7 @@ class VariableValuesTest {
             ),
             Edit.Block.Title1(null, true, listOf(Literal(null, "lit3"), vars.create(), vars.create())),
             Edit.Block.Title2(null, true, listOf(Literal(null, "lit3"), vars.create(), vars.create())),
+            Edit.Block.Title3(null, true, listOf(Literal(null, "lit3"), vars.create(), vars.create())),
         )
 
         assertEquals(vars.variables, letter.variablesValueMap())

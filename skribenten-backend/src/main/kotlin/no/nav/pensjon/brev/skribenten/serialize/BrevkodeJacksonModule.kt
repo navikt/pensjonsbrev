@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.routes
+package no.nav.pensjon.brev.skribenten.serialize
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
@@ -8,8 +8,8 @@ import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 
-object BrevkodeModule : SimpleModule() {
-    private fun readResolve(): Any = BrevkodeModule
+object BrevkodeJacksonModule : SimpleModule() {
+    private fun readResolve(): Any = BrevkodeJacksonModule
 
     init {
         addDeserializer(Brevkode.Automatisk::class.java, BrevkodeDeserializerAutomatisk)

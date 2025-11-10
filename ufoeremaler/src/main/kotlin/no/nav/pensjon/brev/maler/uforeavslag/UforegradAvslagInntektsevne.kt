@@ -57,11 +57,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Inntektsevnen din er ikke ytterligere varig nedsatt." })
-            }
-            paragraph {
-                text(bokmal { +"Du mottar " + fritekst("nåværende uføregrad") + " prosent uføretrygd. " +
-                        "Uføregraden kan økes dersom inntektsevnen blir varig nedsatt med mer enn dette, på grunn av sykdom eller skade." })
+                text(bokmal { +"Vi avslår søknaden din fordi vi mener at inntektsevnen din ikke er ytterligere varig nedsatt." })
             }
             paragraph {
                 text(bokmal { +"Vi har sammenliknet inntektsmulighetene dine før og etter at du ble ufør, og har vurdert hvor mye inntektsevnen din er varig nedsatt." })
@@ -90,6 +86,9 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                     "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
                     "og vi har derfor fastsatt din nedsatte inntektsevne til " +
                     fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " })
+            }
+            paragraph {
+                text(bokmal { + "Du får i dag " + fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent uføretrygd, og derfor vurderer vi at inntektsevnen din ikke er mer nedsatt."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})

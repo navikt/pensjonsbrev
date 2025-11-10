@@ -42,6 +42,14 @@ sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
             .also { addOutlineContent(it) }
     }
 
+    fun title3(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        PlainTextOnlyScope<Lang, LetterData>().apply(create)
+            .let { Element.OutlineContent.Title3(it.elements) }
+            .let { ContentOrControlStructure.Content(it) }
+            .also { addOutlineContent(it) }
+    }
+
+
 
     fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)

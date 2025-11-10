@@ -51,30 +51,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt hensiktsmessig arbeidsrettede tiltak." })
-            }
-            paragraph {
-                text(bokmal { +"Å ha gjennomført «alle hensiktsmessige tiltak» betyr at alle tiltak som kan bidra til at du kommer i arbeid, skal være forsøkt. " })
-            }
-            paragraph {
-                text(bokmal { +"Som hovedregel vil vi vurdere at alle hensiktsmessig tiltak ikke er gjennomført dersom; " })
-                list {
-                    item {
-                        text(
-                            bokmal { +"du er i tiltak" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"du er henvist til tiltak" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"du er anbefalt tiltak" },
-                        )
-                    }
-                }
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt arbeidsrettede tiltak." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -87,10 +64,9 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
             }
 
             paragraph {
-                text(bokmal { +
-                "Vi vurderer at du ikke har forsøkt nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
-                        "Fordi du ikke har forsøkt arbeidsrettede tiltak, " +
-                        "er det for tidlig å ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt, og om dette skyldes sykdom eller skade."})
+                text(bokmal { +"Vi vurderer at du har gjennomført hensiktsmessig behandling. " +
+                        "Du har imidlertid ikke gjennomført nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
+                        "Fordi du ikke har forsøkt arbeidsrettede tiltak, er det for tidlig å ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt, og om dette skyldes sykdom eller skade."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})

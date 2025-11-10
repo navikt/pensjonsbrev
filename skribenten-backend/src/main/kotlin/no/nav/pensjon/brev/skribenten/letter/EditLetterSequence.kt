@@ -46,6 +46,7 @@ abstract class EditLetterSequence<T> {
         when (block) {
             is Title1 -> visit(block)
             is Title2 -> visit(block)
+            is Title3 -> visit(block)
             is Paragraph -> visit(block)
         }
 
@@ -60,6 +61,11 @@ abstract class EditLetterSequence<T> {
     }
 
     open suspend fun SequenceScope<T>.visit(block: Title2) {
+        visitIdentifiable(block)
+        block.content.forEach { visit(it) }
+    }
+
+    open suspend fun SequenceScope<T>.visit(block: Title3) {
         visitIdentifiable(block)
         block.content.forEach { visit(it) }
     }
