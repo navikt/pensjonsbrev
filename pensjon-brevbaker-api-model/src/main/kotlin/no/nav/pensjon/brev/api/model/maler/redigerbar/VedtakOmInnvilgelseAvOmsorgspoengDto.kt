@@ -12,6 +12,7 @@ data class VedtakOmInnvilgelseAvOmsorgspoengDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakOmInnvilgelseAvOmsorgspoengDto.PesysData> {
 
     data class PesysData(
+        val brukerNavn: String,
         val omsorgsopptjeningsaar: String,
         val orienteringOmSaksbehandlingstidDto: OrienteringOmSaksbehandlingstidDto
     ) : BrevbakerBrevdata
