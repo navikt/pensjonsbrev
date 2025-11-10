@@ -35,7 +35,7 @@ class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
 
-    private fun latexCompilerService() = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     @Test
     fun canRender() {
@@ -57,12 +57,12 @@ class PensjonLatexITest {
                 }
             }
         }
-        LetterImpl(template, brevData, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = latexCompilerService())
+        LetterImpl(template, brevData, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
     fun `Ping pdf builder`() {
-        runBlocking { latexCompilerService().ping() }
+        runBlocking { laTeXCompilerService.ping() }
     }
 
     // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
@@ -128,7 +128,7 @@ class PensjonLatexITest {
             }
 
             LetterImpl(testTemplate, brevData, Bokmal, FellesFactory.felles)
-                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = latexCompilerService())
+                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
 
             return true
         } catch (e: Throwable) {

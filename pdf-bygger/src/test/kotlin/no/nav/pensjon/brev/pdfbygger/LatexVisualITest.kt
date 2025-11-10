@@ -28,7 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    private fun latexCompilerService() = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val laTexCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     private fun render(
         overrideName: String? = null,
@@ -46,7 +46,7 @@ class LatexVisualITest {
             brevtype = brevtype,
             outlineInit = outlineInit,
             title = title ?: testName,
-            pdfByggerService = latexCompilerService()
+            pdfByggerService = laTexCompilerService
         )
     }
 
@@ -62,7 +62,7 @@ class LatexVisualITest {
                 .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
             includeSakspart = includeSakspart,
             outlineInit = vedleggOutlineInit,
-            pdfByggerService = latexCompilerService(),
+            pdfByggerService = laTexCompilerService,
             felles = felles,
         )
     }
