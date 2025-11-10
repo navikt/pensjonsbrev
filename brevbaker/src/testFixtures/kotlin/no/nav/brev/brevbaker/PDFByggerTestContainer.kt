@@ -26,10 +26,15 @@ object PDFByggerTestContainer {
     @Suppress("HttpUrlsUsage") // Kun for lokal kjøring
     fun mappedUrl() = "http://${pdfContainer.host}:${pdfContainer.getMappedPort(8080)}"
 
+    @Synchronized
     fun start() {
         if (!pdfContainer.isRunning) {
             println("Starter container for $fullImageName")
-         pdfContainer.start()
+            startContainer()
         }
+    }
+
+    private fun startContainer() {
+        pdfContainer.start()
     }
 }
