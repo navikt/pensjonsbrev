@@ -14,7 +14,7 @@ object PDFByggerTestContainer {
 
     private fun konfigurerPdfbyggerContainer(): GenericContainer<*> {
         // DIGEST blir i GitHub Actions-byggejobbane sendt inn som miljøvariabel
-        val fullImageName = System.getenv("DIGEST")
+        val fullImageName = System.getenv("PDF_BYGGER_DIGEST")
             ?.takeIf { it.isNotBlank() }
             ?.let { "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$it" }
             ?: if (BRUK_LOKAL_CONTAINER) "pensjonsbrev-pdf-bygger:latest" else "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"

@@ -91,7 +91,7 @@ jobs:
           ./gradlew :pensjon-brevbaker:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          "DIGEST": "8e210168c8299d13ed337837f59fabbdd19697bc" # TODO: bytt ut denne med main etter denne PR-en er merga til main
+          "PDF_BYGGER_DIGEST": "8e210168c8299d13ed337837f59fabbdd19697bc" # TODO: bytt ut denne med main etter denne PR-en er merga til main
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
