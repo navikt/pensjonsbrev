@@ -8,13 +8,15 @@ object PDFByggerTestContainer {
 
     private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
 
+    // Overstyr denne hvis du vil kjøre testene lokalt mot din nyest bygde pdf-bygger
+    private const val BRUK_LOKAL_CONTAINER = false
+
     private fun konfigurerPdfbyggerContainer(): GenericContainer<*> {
-        // DIGEST blir i GitHub Actions-byggejobbane sendt inn som miljøvariabel. Lokalt kan vi bruke nyeste bygde.
-        // TODO: differensier lokal køyring
+        // DIGEST blir i GitHub Actions-byggejobbane sendt inn som miljøvariabel
         val fullImageName = System.getenv("DIGEST")
             ?.takeIf { it.isNotBlank() }
             ?.let { "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$it" }
-            ?: "pensjonsbrev-pdf-bygger:latest"
+            ?: if (BRUK_LOKAL_CONTAINER) "pensjonsbrev-pdf-bygger:latest" else "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
         return GenericContainer(DockerImageName.parse(fullImageName))
             .withExposedPorts(8080)
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
