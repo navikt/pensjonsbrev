@@ -31,9 +31,9 @@ object PDFByggerTestContainer {
             .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
     }
 
-    @Suppress("HttpUrlsUsage") // Kun for lokal kjøring
     fun mappedUrl(): String {
         start()
+        @Suppress("HttpUrlsUsage") // Kun for lokal kjøring
         return "http://${pdfContainer.host}:${pdfContainer.getMappedPort(PORT)}"
     }
 
