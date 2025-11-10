@@ -6,12 +6,14 @@ import org.testcontainers.utility.DockerImageName
 
 object PDFByggerTestContainer {
 
-    private val pdfContainer: GenericContainer<*> = GenericContainer(
-        DockerImageName.parse(
-            // TODO: Skal erstatte denne med main, må berre fikse eigen byggejobb først
-            "ghcr.io/navikt/pensjonsbrev/pdf-bygger:f9c10987e741be0ceb5340f9a788b3b70b11976a"
-        )
-    )
+    val imageDigest = System.getenv("digest") ?: "latest"
+    val fullImageName = if (System.getenv("digest")?.isNotEmpty() == true) {
+        "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$imageDigest"
+    } else {
+        "pensjonsbrev-pdf-bygger:latest"
+    }
+
+    private val pdfContainer: GenericContainer<*> = GenericContainer(DockerImageName.parse(fullImageName))
         .withExposedPorts(8080)
         .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
         .withEnv(
