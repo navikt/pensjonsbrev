@@ -30,7 +30,7 @@ tasks {
 tasks {
     test {
         useJUnitPlatform {
-            excludeTags = setOf("integration-test", "manual-test")
+            excludeTags = setOf("integration-test")
         }
     }
     val test by testing.suites.existing(JvmTestSuite::class)
@@ -45,14 +45,6 @@ tasks {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("integration-test")
-        }
-    }
-    register<Test>("manualTest") {
-        testClassesDirs = files(test.map { it.sources.output.classesDirs })
-        classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("manual-test")
         }
     }
 }
