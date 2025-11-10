@@ -6,12 +6,12 @@ import org.testcontainers.utility.DockerImageName
 
 object PDFByggerTestContainer {
 
-    val imageDigest = System.getenv("DIGEST") ?: "latest"
-    val fullImageName = if (System.getenv("DIGEST")?.isNotEmpty() == true) {
-        "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$imageDigest"
-    } else {
-        "pensjonsbrev-pdf-bygger:latest"
-    }
+    // DIGEST blir i GitHub Actions-byggejobbane sendt inn som miljøvariabel. Lokalt kan vi bruke nyeste bygde.
+    // TODO: differensier lokal køyring
+    private val fullImageName = System.getenv("DIGEST")
+            ?.takeIf { it.isNotBlank() }
+            ?.let { "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$it" }
+            ?: "pensjonsbrev-pdf-bygger:latest"
 
     private val pdfContainer: GenericContainer<*> = GenericContainer(DockerImageName.parse(fullImageName))
         .withExposedPorts(8080)
