@@ -281,7 +281,7 @@ private fun avslaattPensjon(radnummer: Int, avslag: P1Dto.AvslaattPensjon): Map<
         "Institution_rejecting_the_pension[$radnummer]" to
                 avslag.institusjoner?.let {
                     formatInstitusjon(it, avslag.vedtaksdato, erNorskAvslag)
-        },
+                },
 
         "Pensjonstype[$radnummer]" to avslag.pensjonstype?.nummer?.let { "[$it]" },
 

@@ -42,18 +42,19 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få yrkessykdom eller yrkesskade tatt med i uføretrygden"})
+            text (bokmal { + "Nav har avslått søknaden din om å få uføretrygden beregnet etter reglene for yrkessykdom eller yrkesskade"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om særbestemmelser for yrkesskade eller yrkessykdom i uføretrygden, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
+                text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
             }
 
             paragraph {
-                text( bokmal { + "Du har en godkjent yrkesskade/yrkessykdom, jf. vedtak datert " + fritekst("dato") + ". Etter en samlet vurdering mener vi at denne mest sannsynlig ikke er årsaken til den arbeidsuførheten du har nå. "})
+                text( bokmal { + "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaksbrevet fra " + fritekst("dato") + ". " +
+                        "Vi har vurdert at den nedsatte inntektsevnen din ikke skyldes den godkjente yrkesskaden eller yrkessykdommen din. Det er andre sykdomsforhold som er årsaken til den nedsatte inntektsevnen din."})
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -65,11 +66,6 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 
-            paragraph {
-                text(bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. " +
-                        "Vi har vurdert at den nedsatte inntektsevnen din ikke skyldes den godkjente yrkesskaden eller yrkessykdommen din. " +
-                        "Det er andre sykdomsforhold som er årsaken til den nedsatte inntektsevnen din." })
-            }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
             }

@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css, Global } from "@emotion/react";
 import { Accordion, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
 import type { Dispatch } from "react";
 import React from "react";
@@ -56,6 +56,18 @@ export function DebugPanel() {
         width: 100%;
       `}
     >
+      <Global
+        styles={css`
+          .editor {
+            [contenteditable] {
+              &:focus-within {
+                outline: 1px solid lightgrey;
+              }
+              outline: 1px solid lightgrey;
+            }
+          }
+        `}
+      />
       <HStack gap={"4"}>
         {mappedSelection ? (
           <>

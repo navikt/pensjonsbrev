@@ -49,8 +49,6 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       const dy = Math.abs(clientY - pointerDownY);
       if (dx + dy < 3) return; // only unify after an actual drag
       dragStarted = true;
-      // For å starte en ny drag-select i fritekstfelt som har fått fokus -> helmarkert
-      getSelection()?.getRangeAt(0)?.collapse();
       unify();
     };
 
@@ -94,7 +92,6 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
         restore();
         return;
       }
-      if (!dragStarted && !selectingByKeys) return;
       if (isInside(selection.anchorNode) || isInside(selection.focusNode)) {
         unify();
       }
