@@ -15,13 +15,10 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ElementIntegrationTest {
 
-    private val laTeXCompilerService: LaTeXCompilerService
-
-    init {
+    private fun latexCompilerService(): LaTeXCompilerService {
         PDFByggerTestContainer.start()
-        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+        return LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
     }
-
 
     @Test
     fun `tom title1`() {
@@ -30,7 +27,7 @@ class ElementIntegrationTest {
             title1 { }
             paragraph { text(bokmal { +"Test" }) }
             title1 { text(bokmal { +"med tekst" }) }
-        }.renderTestPDF("elementTest tom title1", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest tom title1", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -40,7 +37,7 @@ class ElementIntegrationTest {
             title2 { text(bokmal { +"" }) }
             paragraph { text(bokmal { +"Test" }) }
             title2 { text(bokmal { +"med tekst" }) }
-        }.renderTestPDF("elementTest tom title2", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest tom title2", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -50,7 +47,7 @@ class ElementIntegrationTest {
             title3 { text(bokmal { +"" }) }
             paragraph { text(bokmal { +"Test" }) }
             title3 { text(bokmal { +"med tekst" }) }
-        }.renderTestPDF("elementTest tom title3", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest tom title3", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -58,7 +55,7 @@ class ElementIntegrationTest {
         outlineTestTemplate<EmptyBrevdata> {
             title2 { text(bokmal { +"Test" }) }
             paragraph { }
-        }.renderTestPDF("elementTest tom paragraph", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest tom paragraph", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -75,7 +72,7 @@ class ElementIntegrationTest {
                 newline()
                 text(bokmal { +"Etter newline" })
             }
-        }.renderTestPDF("elementTest newline uten tekst forran", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest newline uten tekst forran", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -87,7 +84,7 @@ class ElementIntegrationTest {
                 newline()
                 text(bokmal { +"Etter newline" })
             }
-        }.renderTestPDF("elementTest paragraph med newline etter tom paragraph", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest paragraph med newline etter tom paragraph", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -101,7 +98,7 @@ class ElementIntegrationTest {
                 newline()
                 text(bokmal { +"Etter newline" })
             }
-        }.renderTestPDF("elementTest kan ha newline etter itemlist", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest kan ha newline etter itemlist", pdfByggerService = latexCompilerService())
     }
 
     @Test
@@ -126,6 +123,6 @@ class ElementIntegrationTest {
                 newline()
                 text(bokmal { +"Etter newline" })
             }
-        }.renderTestPDF("elementTest kan ha newline etter table", pdfByggerService = laTeXCompilerService)
+        }.renderTestPDF("elementTest kan ha newline etter table", pdfByggerService = latexCompilerService())
     }
 }
