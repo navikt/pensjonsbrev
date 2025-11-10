@@ -117,7 +117,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                         logger.info("$statusCode - Funksjonell feil ved henting av brev: $message")
                         call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved henting av brev", message))
                     } else {
-                        call.application.log.error("$statusCode - Feil ved henting av brev: $message")
+                        logger.error("$statusCode - Feil ved henting av brev: $message")
                         call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
                     }
                 }
@@ -156,7 +156,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                             logger.info("$statusCode - Funksjonell feil ved attestering av brev: $message")
                             call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved attestering av brev", message))
                         } else {
-                            call.application.log.error("$statusCode - Feil ved attestering av brev: $message")
+                            logger.error("$statusCode - Feil ved attestering av brev: $message")
                             call.respond(HttpStatusCode.InternalServerError, "Feil ved attestering av brev.")
                         }
                     }
