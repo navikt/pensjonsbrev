@@ -6,8 +6,8 @@ import org.testcontainers.utility.DockerImageName
 
 object PDFByggerTestContainer {
 
-    val imageDigest = System.getenv("digest") ?: "latest"
-    val fullImageName = if (System.getenv("digest")?.isNotEmpty() == true) {
+    val imageDigest = System.getenv("DIGEST") ?: "latest"
+    val fullImageName = if (System.getenv("DIGEST")?.isNotEmpty() == true) {
         "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$imageDigest"
     } else {
         "pensjonsbrev-pdf-bygger:latest"
