@@ -99,7 +99,6 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
             utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
             valuta = "NOK",
             vedtaksdato = "2020-01-01",
-            erNorskRad = true,
         )
     } + InnvilgetPensjon(
         institusjon = listOf(svenskInst),
@@ -113,12 +112,10 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
         valuta = "SEK",
         vedtaksdato = "2020-01-01",
-        erNorskRad = false,
     ),
     avslaattePensjoner =
         (0..<avslag).map { avslaattPensjon(it) }
     + AvslaattPensjon(
-            institusjon = null,
             institusjoner = listOf(svenskInst),
             pensjonstype = Pensjonstype.Etterlatte,
             avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
@@ -151,7 +148,6 @@ private fun nay(): List<P1Dto.Institusjon> = listOf(
 )
 
 private fun avslaattPensjon(i: Int) = AvslaattPensjon(
-    institusjon = null,
     institusjoner = nay(),
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
