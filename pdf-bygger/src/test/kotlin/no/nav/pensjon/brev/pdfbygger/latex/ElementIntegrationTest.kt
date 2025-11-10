@@ -15,10 +15,7 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ElementIntegrationTest {
 
-    private fun latexCompilerService(): LaTeXCompilerService {
-        PDFByggerTestContainer.start()
-        return LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
+    private fun latexCompilerService() = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     @Test
     fun `tom title1`() {

@@ -35,10 +35,7 @@ class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
 
-    private fun latexCompilerService(): LaTeXCompilerService {
-        PDFByggerTestContainer.start()
-        return LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
+    private fun latexCompilerService() = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     @Test
     fun canRender() {

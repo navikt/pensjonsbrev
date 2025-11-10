@@ -29,10 +29,13 @@ object PDFByggerTestContainer {
     }
 
     @Suppress("HttpUrlsUsage") // Kun for lokal kjøring
-    fun mappedUrl() = "http://${pdfContainer.host}:${pdfContainer.getMappedPort(8080)}"
+    fun mappedUrl(): String {
+        start()
+        return "http://${pdfContainer.host}:${pdfContainer.getMappedPort(8080)}"
+    }
 
     @Synchronized
-    fun start() {
+    private fun start() {
         if (!pdfContainer.isRunning) {
             pdfContainer.start()
         }

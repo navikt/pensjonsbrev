@@ -36,8 +36,5 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
     },
-    pdfByggerUrl = {
-        PDFByggerTestContainer.start()
-        PDFByggerTestContainer.mappedUrl()
-    }
+    pdfByggerUrl = { PDFByggerTestContainer.mappedUrl() }
 )

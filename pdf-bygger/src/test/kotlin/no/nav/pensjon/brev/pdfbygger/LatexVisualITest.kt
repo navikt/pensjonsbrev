@@ -28,10 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    private fun latexCompilerService(): LaTeXCompilerService {
-        PDFByggerTestContainer.start()
-        return LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
+    private fun latexCompilerService() = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     private fun render(
         overrideName: String? = null,

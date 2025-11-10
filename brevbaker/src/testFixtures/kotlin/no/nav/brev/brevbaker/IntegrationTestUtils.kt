@@ -128,9 +128,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         })
     }
 
-    val pdfBygger = pdfByggerService ?: PDFByggerTestContainer.start().let {
-        LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
+    val pdfBygger = pdfByggerService ?: LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     Letter2Markup.render(this)
         .let {
