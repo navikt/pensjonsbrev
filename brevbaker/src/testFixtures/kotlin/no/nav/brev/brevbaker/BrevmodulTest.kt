@@ -39,13 +39,6 @@ abstract class BrevmodulTest(
     val fixtures: LetterDataFactory,
     val filterForPDF: List<Brevkode<*>>
 ) {
-    private val laTeXCompilerService: LaTeXCompilerService
-
-    init {
-        PDFByggerTestContainer.start()
-        laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    }
-
     @Test
     open fun `alle autobrev fins i templates`() {
         val brukteKoder = templates.hentAutobrevmaler().map { it.kode }
@@ -128,7 +121,8 @@ abstract class BrevmodulTest(
         }
         val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = laTeXCompilerService)
+        PDFByggerTestContainer.start()
+        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl()))
     }
 
     @ParameterizedTest(name = "{1}, {3}")
