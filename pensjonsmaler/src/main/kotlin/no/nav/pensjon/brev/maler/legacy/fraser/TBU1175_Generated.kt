@@ -1,18 +1,14 @@
-
-
-package no.nav.pensjon.brev.maler.fraser.generated
+package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_onsketvirkningsdato
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_virkningfom
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
-
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU1175_Generated(
     val pe: Expression<PE>,
