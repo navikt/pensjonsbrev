@@ -3,15 +3,17 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.*
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -23,11 +25,11 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
+object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtAvslag.toggle
+    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD
+    override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -2042,8 +2044,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_bo_utl")){
                 includePhrase(TBU1225_Generated)
             }
-            includePhrase(TBU1074_MedMargin_Generated)
-            includePhrase(TBU1075_Generated(pe))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(TBU1227_Generated)
             includePhrase(TBU1228_Generated)
 
@@ -2064,8 +2065,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
             }
-            includePhrase(TBU1076_MedMargin_Generated)
-            includePhrase(TBU1077_Generated)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
             includePhrase(TBU1231_Generated(pe))
             //[TBU1232EN, TBU1232, TBU1232NN]
 

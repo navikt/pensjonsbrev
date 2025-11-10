@@ -8,6 +8,7 @@ enum class FeatureToggles(private val key: String) {
     pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
     brevmalUtAvslag("brevmalUtAvslag"),
+    brevmalUtInnvilgelse("brevmalUtInnvilgelse"),
     apAvslagGjenlevenderett("apAvslagGjenlevenderett"),
     informasjonOmGjenlevenderettigheter("informasjonOmGjenlevenderettigheter"),
     omsorgEgenManuell("omsorgEgenManuell"),
