@@ -148,8 +148,8 @@ val vurderingsperiodeSeksUker = mapOf(
 )
 
 val adresseNyVurderingNorge = mapOf(
-    BOKMAL to "The Norwegian Labour and Welfare Administration\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
-    ENGLISH to "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorway",
+    BOKMAL to "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
+    ENGLISH to "The Norwegian Labour and Welfare Administration\nPostboks 6600 Etterstad\n0607 Oslo\nNorway",
 )
 
 val seTidligereVedtakFraLand: Map<LanguageCode, String> = mapOf(
