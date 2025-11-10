@@ -29,6 +29,10 @@ export const Route = createRootRouteWithContext<{
 }>()({
   component: () => (
     <>
+      <div>
+        <AppHeader />
+        <Outlet />
+      </div>
       <React.Suspense fallback="">
         {!isProdOrCypressTest && (
           <Global
@@ -45,10 +49,6 @@ export const Route = createRootRouteWithContext<{
         <TanStackRouterDevtools initialIsOpen={false} position="top-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
       </React.Suspense>
-      <Box background="neutral-moderate">
-        <AppHeader />
-        <Outlet />
-      </Box>
     </>
   ),
   notFoundComponent: () => "Finner ikke siden",
