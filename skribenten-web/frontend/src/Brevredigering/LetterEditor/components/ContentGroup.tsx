@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -529,6 +529,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     // - programmatisk via .focus()
     // - via autofocus-attributt
     e.currentTarget.contentEditable = freeze ? "inherit" : "true";
+    setCursorType("text");
     // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
@@ -542,6 +543,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
     e.currentTarget.contentEditable = "inherit";
+    setCursorType("pointer");
   };
 
   const handleOnClick = (e: React.MouseEvent<HTMLSpanElement>) => {
@@ -578,6 +580,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       selection.addRange(range);
     }
   };
+  const [cursorType, setCursorType] = useState<"pointer" | "text">(() => "pointer");
 
   return (
     <span
@@ -597,7 +600,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(erFritekst && {
           color: "var(--a-blue-500)",
           textDecoration: "underline",
-          cursor: "pointer",
+          cursor: cursorType,
         }),
         ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
