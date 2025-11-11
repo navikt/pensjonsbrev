@@ -67,27 +67,20 @@ jobs:
           registry: "https://ghcr.io"
           username: ${{ github.repository }}
           password: ${{ github.token }}
-      - name: "Pull existing Docker image"
+      - name: "Build Docker image"
         run: | 
-          echo ${{ needs.buildPdfbygger.outputs.image }}
-          docker pull ${{ needs.buildPdfbygger.outputs.image }}
-      - name: "Tag image with sha"
-        run: |
-          docker tag ${{ needs.buildPdfbygger.outputs.image }} ${IMAGE_PDF_BYGGER}
+          docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
       - name: "Push image with sha"
         run: |
           docker push ${IMAGE_PDF_BYGGER}
       - name: "Tag image with main"
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
-          docker tag ${{ needs.buildPdfbygger.outputs.image }} ${IMAGE_BRANCH}
+          docker tag ${IMAGE_PDF_BYGGER} ${IMAGE_BRANCH}
       - name: "Push image with main"
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
           docker push ${IMAGE_BRANCH}
-    env:
-      "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-      OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
 
   salsa-pdfbygger:
     uses: ./.github/workflows/.salsa.yaml
