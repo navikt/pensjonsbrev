@@ -35,6 +35,16 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
         override fun hentAutobrevmaler() = alleAutobrevmaler
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
+    }
+)
+
+// Brukes av `testBrevbakerApp` gjennom test/resources/application.conf
+@Suppress("unused")
+fun Application.brevbakerIntegrationTestModule() = this.brevbakerModule(
+    templates = object : AllTemplates {
+        override fun hentAutobrevmaler() = alleAutobrevmaler
+
+        override fun hentRedigerbareMaler() = alleRedigerbareMaler
     },
     pdfByggerUrl = { PDFByggerTestContainer.mappedUrl() }
 )

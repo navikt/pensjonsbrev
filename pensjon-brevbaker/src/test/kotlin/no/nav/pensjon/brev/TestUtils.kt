@@ -11,10 +11,12 @@ import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun testBrevbakerApp(
     enableAllToggles: Boolean = false,
-    block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit
+    isIntegrationTest: Boolean = true,
+    block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
 ): Unit = testApplication {
     environment {
-        config = ApplicationConfig("application.conf").mergeWith(
+        val conf = if (isIntegrationTest) "application-integrationtests.conf" else "application.conf"
+        config = ApplicationConfig(conf).mergeWith(
             MapApplicationConfig(
                 "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
             )
