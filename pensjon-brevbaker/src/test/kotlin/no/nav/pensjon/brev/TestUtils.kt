@@ -7,6 +7,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun testBrevbakerApp(
@@ -19,6 +20,7 @@ fun testBrevbakerApp(
         config = ApplicationConfig(conf).mergeWith(
             MapApplicationConfig(
                 "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
+                "pdfByggerUrl" to if (isIntegrationTest) PDFByggerTestContainer.mappedUrl() else "http://localhost:8081",
             )
         )
     }

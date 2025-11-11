@@ -31,8 +31,7 @@ import no.nav.pensjon.brev.template.brevbakerConfig
 import kotlin.time.Duration.Companion.minutes
 
 fun Application.brevbakerModule(
-    templates: AllTemplates,
-    pdfByggerUrl: (config: ApplicationConfig) -> String = { it.property("pdfByggerUrl").getString() },
+    templates: AllTemplates
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
@@ -123,7 +122,7 @@ fun Application.brevbakerModule(
 
 
     val latexCompilerService = LaTeXCompilerService(
-        pdfByggerUrl = pdfByggerUrl(brevbakerConfig),
+        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 

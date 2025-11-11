@@ -38,7 +38,7 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
     }
 )
 
-// Brukes av `testBrevbakerApp` gjennom test/resources/application.conf
+// Brukes av `testBrevbakerApp` gjennom test/resources/application-integrationtests.conf
 @Suppress("unused")
 fun Application.brevbakerIntegrationTestModule() = this.brevbakerModule(
     templates = object : AllTemplates {
@@ -46,5 +46,4 @@ fun Application.brevbakerIntegrationTestModule() = this.brevbakerModule(
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
     },
-    pdfByggerUrl = { PDFByggerTestContainer.mappedUrl() }
 )
