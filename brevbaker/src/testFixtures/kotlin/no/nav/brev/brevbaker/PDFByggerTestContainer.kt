@@ -2,6 +2,7 @@ package no.nav.brev.brevbaker
 
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.images.ImagePullPolicy
 import org.testcontainers.utility.DockerImageName
 
 object PDFByggerTestContainer {
@@ -16,11 +17,13 @@ object PDFByggerTestContainer {
 
     private fun konfigurerPdfbyggerContainer(): GenericContainer<*> {
         // DIGEST blir i GitHub Actions-byggejobbane sendt inn som miljøvariabel
-        val fullImageName = System.getenv("PDF_BYGGER_DIGEST")
+        val digest = System.getenv("PDF_BYGGER_DIGEST")
             ?.takeIf { it.isNotBlank() }
+        val fullImageName = digest
             ?.let { "ghcr.io/navikt/pensjonsbrev/pdf-bygger:$it" }
             ?: if (BRUK_LOKAL_CONTAINER) "pensjonsbrev-pdf-bygger:latest" else "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
         return GenericContainer(DockerImageName.parse(fullImageName))
+            .withImagePullPolicy(AlwaysPull)
             .withExposedPorts(PORT)
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
             .withEnv(
@@ -43,4 +46,8 @@ object PDFByggerTestContainer {
             pdfContainer.start()
         }
     }
+}
+
+private object AlwaysPull : ImagePullPolicy {
+    override fun shouldPull(imageName: DockerImageName?) = true
 }
