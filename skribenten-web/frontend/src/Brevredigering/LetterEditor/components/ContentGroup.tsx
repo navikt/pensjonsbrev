@@ -268,6 +268,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const handleArrowLeft = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (contentEditableReference.current === null) return;
 
+    // span[contenteditable] treffer både når contenteditable er true og false
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
@@ -312,6 +313,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (contentEditableReference.current === null || event.shiftKey) return;
 
+    // span[contenteditable] treffer både når contenteditable er true og false
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
 
@@ -600,11 +602,21 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
      * interaktiv, tekst
      */
     <span
-      // contentEditable='plaintext-only' blocks rich text content and prevents unhandled native
-      // bold/italic/underline formatting from interfering with Skribenten-styling. However, Cypress
-      // and jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
-      // shortcuts and pasting can be blocked/overridden in event handlers.
-      // contentEditable={isEditable && !freeze}
+      // contentEditable='plaintext-only' blokkerer for rik-tekst formatering,
+      // men Cypress/jsdom/happy-dom støtten for 'plaintext-only' er upålitelig.
+      // Derfor bruker vi kun 'true/false', men oppnår samme effekt som
+      // 'plaintext-only' ved å:
+      // - overstyre lim-inn og konvertere rik tekst til Skribenten format
+      // - overstyre hurtigtaster for fet/kursiv/understreking
+      // Anntakelser:
+      // - det ene elementet som er contentEditable=true er elementet som har
+      //   fokus, er aktivt og har tekstmarkør
+      // - alle element som er contentEditable=false er element som inneholder
+      //   redigerbar tekst, men som ikke er redigerbare i øyeblikket
+      // - alle element som inneholder potensielt redigerbar teskt vil treffes
+      //   av selektoren 'span[contenteditable]', uavhengig av om attributtet er
+      //   true / false (dvs. ikke "unset" contenteditable, sett til 'false')
+      contentEditable={isEditable && !freeze}
       css={{
         ...(erFritekst && {
           color: "var(--ax-accent-600)",
