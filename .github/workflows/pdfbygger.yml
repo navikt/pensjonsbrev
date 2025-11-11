@@ -61,8 +61,7 @@ jobs:
         with:
           name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
-      - name: "Publish PR container image to ghcr.io"
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: "Publish sha-tagged container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
           [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
