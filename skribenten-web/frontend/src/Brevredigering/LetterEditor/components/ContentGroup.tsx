@@ -159,6 +159,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
+  const [cursorType, setCursorType] = useState<"pointer" | "text">(() => "pointer");
+  const [isEditable, setIsEditable] = useState<boolean>(() => false);
+
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
@@ -528,7 +531,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     // - elementet hadde allerede fokus og vinduet får fokus igjen, da resettes fokus
     // - programmatisk via .focus()
     // - via autofocus-attributt
-    e.currentTarget.contentEditable = freeze ? "inherit" : "true";
+    setIsEditable(true);
     setCursorType("text");
     // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
     const offset = getCursorOffset();
@@ -541,8 +544,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     setSelection(e.currentTarget);
   };
 
-  const handleOnBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
-    e.currentTarget.contentEditable = "inherit";
+  const handleOnBlur = () => {
+    setIsEditable(false);
     setCursorType("pointer");
   };
 
@@ -580,7 +583,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       selection.addRange(range);
     }
   };
-  const [cursorType, setCursorType] = useState<"pointer" | "text">(() => "pointer");
 
   return (
     <span
@@ -589,7 +591,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // Skribenten-styling. However, Cypress and jsdom/happy-dom do not handle
       // 'plaintext-only' well, and browser native formatting shortcuts and
       // pasting can be blocked/overridden in event handlers.
-      // contentEditable={!freeze}
+      // contentEditable={isEditable && !freeze}
       css={{
         lineHeight: "var(--ax-font-line-height-medium)",
         ...(erFritekst && {
