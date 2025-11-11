@@ -1,7 +1,7 @@
+import { css } from "@emotion/react";
 import { Alert, Heading } from "@navikt/ds-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { css } from "@emotion/react";
 
 import { getUserInfo } from "~/api/bff-endpoints";
 import { getBrevInfoQuery } from "~/api/brev-queries";
