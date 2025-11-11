@@ -1,54 +1,50 @@
-package no.nav.pensjon.brev.maler.alder
+package no.nav.pensjon.brev.aldersovergang
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import brev.felles.HarDuSpoersmaalAlder
+import brev.felles.InfoInntektAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoAFPprivatAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoBoddArbeidetUtlandet
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoFTAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoOenskeSokeAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoOnsketUttakAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoPensjonFraAndreAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoSivilstandAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoSkattAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoSoekeAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoSoekeAnnenGradAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoVelgeAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InnledningInfoYtelse
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoAFPprivatAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoBoddArbeidetUtlandet
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoFTAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoInntektAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoOenskeSokeAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoOnsketUttakAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSivilstandAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSoekeAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSoekeAnnenGradAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoVelgeAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnledningInfoYtelse
-import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
-// MF_000129 : AP_INFO_AO67_AUTO
 @TemplateModelHelpers
 object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang67AarAutoDto> {
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO
 
     override val template =
         createTemplate(
-            languages = languages(Bokmal, Nynorsk, English),
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Informasjon til deg som snart fyller 67 år",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                    brevtype = INFORMASJONSBREV,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),
         ) {
             title {
                 text(
-                    bokmal { + "Informasjon om alderspensjon til deg som snart fyller 67 år" },
-                    nynorsk { + "Informasjon om alderspensjon til deg som snart fyller 67 år" },
-                    english { + "Information about retirement pension for people who are about to turn 67" },
+                    bokmal { +"Informasjon om alderspensjon til deg som snart fyller 67 år" },
+                    nynorsk { +"Informasjon om alderspensjon til deg som snart fyller 67 år" },
+                    english { +"Information about retirement pension for people who are about to turn 67" },
                 )
             }
             outline {
@@ -65,7 +61,7 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 includePhrase(InfoInntektAP)
                 includePhrase(InfoBoddArbeidetUtlandet)
                 includePhrase(InfoPensjonFraAndreAP)
-                includePhrase(Felles.HarDuSpoersmaal.alder)
+                includePhrase(HarDuSpoersmaalAlder)
             }
         }
 }
