@@ -130,7 +130,7 @@ jobs:
           ./gradlew :pdf-bygger:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          "PDF_BYGGER_DIGEST": "${{ github.sha }}"
+          "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
