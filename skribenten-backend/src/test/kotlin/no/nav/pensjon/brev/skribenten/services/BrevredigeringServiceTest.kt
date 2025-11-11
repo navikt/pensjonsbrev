@@ -124,7 +124,7 @@ class BrevredigeringServiceTest {
     private class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: Felles) -> ServiceResult<LetterMarkup>)
         lateinit var renderPdfResultat: LetterResponse
-        lateinit var modelSpecificationResultat: ServiceResult<TemplateModelSpecification>
+        lateinit var modelSpecificationResultat: TemplateModelSpecification
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
@@ -1447,20 +1447,18 @@ class BrevredigeringServiceTest {
             )?.resultOrNull()!!
         }
 
-        brevbakerService.modelSpecificationResultat = ServiceResult.Ok(
-            TemplateModelSpecification(
-                types = mapOf(
-                    "BrevData1" to mapOf(
-                        "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
-                    ),
-                    "SaksbehandlerValg1" to mapOf(
-                        "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
-                        "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
-                        "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
-                    ),
+        brevbakerService.modelSpecificationResultat = TemplateModelSpecification(
+            types = mapOf(
+                "BrevData1" to mapOf(
+                    "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
                 ),
-                letterModelTypeName = "BrevData1",
-            )
+                "SaksbehandlerValg1" to mapOf(
+                    "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
+                    "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
+                    "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
+                ),
+            ),
+            letterModelTypeName = "BrevData1",
         )
 
         val tilbakestilt = withPrincipal(saksbehandler1Principal) {

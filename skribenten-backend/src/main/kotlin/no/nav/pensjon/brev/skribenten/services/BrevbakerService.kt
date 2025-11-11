@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
 interface BrevbakerService {
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification>
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification?
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
@@ -80,8 +80,19 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
     /**
      * Get model specification for a template.
      */
-    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
-        client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification").toServiceResult()
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? {
+        val response = client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification")
+
+        return when (response.status) {
+            HttpStatusCode.OK -> return response.body()
+            HttpStatusCode.NotFound -> null
+            else -> throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }
+                    ?: "Ukjent feil oppstod ved henting av modelSpecification for brevkode: $brevkode"
+            )
+        }
+
+    }
 
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,

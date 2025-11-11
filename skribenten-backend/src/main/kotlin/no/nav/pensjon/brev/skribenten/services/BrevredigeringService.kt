@@ -443,18 +443,24 @@ class BrevredigeringService(
 
     suspend fun tilbakestill(brevId: Long): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId) {
-            brevbakerService.getModelSpecification(brevDto.info.brevkode)
-                .map { brevDto.saksbehandlerValg.tilbakestill(it) }
-                .then { tilbakestiltValg ->
-                    rendreBrev(brev = brevDto, saksbehandlerValg = tilbakestiltValg).map { rendretBrev ->
-                        transaction {
-                            brevDb.apply {
-                                saksbehandlerValg = tilbakestiltValg
-                                redigertBrev = rendretBrev.markup.toEdit()
-                            }.toDto(rendretBrev.letterDataUsage)
-                        }
+            val modelSpec = brevbakerService.getModelSpecification(brevDto.info.brevkode)
+
+            if (modelSpec != null) {
+                val tilbakestiltValg = brevDto.saksbehandlerValg.tilbakestill(modelSpec)
+                rendreBrev(
+                    brev = brevDto,
+                    saksbehandlerValg = tilbakestiltValg
+                ).map { rendretBrev ->
+                    transaction {
+                        brevDb.apply {
+                            saksbehandlerValg = tilbakestiltValg
+                            redigertBrev = rendretBrev.markup.toEdit()
+                        }.toDto(rendretBrev.letterDataUsage)
                     }
                 }
+            } else {
+                throw BrevmalFinnesIkke("Finner ikke brevmal for brevkode ${brevDto.info.brevkode}")
+            }
         }
 
     private suspend fun <T> hentBrevMedReservasjon(
