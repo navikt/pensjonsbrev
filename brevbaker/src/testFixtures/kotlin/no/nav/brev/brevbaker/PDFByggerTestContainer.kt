@@ -23,8 +23,9 @@ object PDFByggerTestContainer {
             BRUK_LOKAL_CONTAINER -> "pensjonsbrev-pdf-bygger:latest"
             else -> "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
         }
+        val pullPolicy = if (envImageName == null && BRUK_LOKAL_CONTAINER) PullPolicy.defaultPolicy() else PullPolicy.alwaysPull()
         return GenericContainer(DockerImageName.parse(fullImageName))
-            .withImagePullPolicy(PullPolicy.alwaysPull())
+            .withImagePullPolicy(pullPolicy)
             .withExposedPorts(PORT)
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
             .withEnv(
