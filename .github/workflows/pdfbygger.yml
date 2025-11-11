@@ -69,6 +69,7 @@ jobs:
           password: ${{ github.token }}
       - name: "Pull existing Docker image"
         run: | 
+          echo ${{ needs.buildPdfbygger.outputs.image }}
           docker pull ${{ needs.buildPdfbygger.outputs.image }}
       - name: "Tag image with sha"
         run: |
@@ -84,8 +85,6 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
           docker push ${IMAGE_BRANCH}
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
     env:
       "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
