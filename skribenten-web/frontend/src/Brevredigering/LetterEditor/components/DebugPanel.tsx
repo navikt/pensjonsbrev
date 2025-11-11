@@ -52,7 +52,7 @@ export function DebugPanel() {
       <Global
         styles={{
           ".editor": {
-            "[contenteditable]": {
+            "[contenteditable='true']": {
               "&:focus-within": {
                 outline: "1px solid var(--ax-border-brand-magenta-subtle)",
               },
