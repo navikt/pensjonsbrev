@@ -26,7 +26,7 @@ class ApplicationITest {
     fun `ping running brevbaker`() {
         runBlocking {
             try {
-                testBrevbakerApp {
+                testBrevbakerApp(isIntegrationTest = false) {
                     client.get("isAlive")
                 }
             } catch (e: Exception) {
@@ -58,7 +58,7 @@ class ApplicationITest {
     }
 
     @Test
-    fun `response includes deserialization error`() = testBrevbakerApp { client ->
+    fun `response includes deserialization error`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -73,7 +73,7 @@ class ApplicationITest {
     }
 
     @Test
-    fun `response includes letterData deserialization error`() = testBrevbakerApp { client ->
+    fun `response includes letterData deserialization error`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
