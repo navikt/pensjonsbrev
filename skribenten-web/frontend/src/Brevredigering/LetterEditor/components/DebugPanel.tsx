@@ -59,7 +59,7 @@ export function DebugPanel() {
       <Global
         styles={css`
           .editor {
-            [contenteditable] {
+            [contenteditable="true"] {
               &:focus-within {
                 outline: 1px solid lightgrey;
               }
