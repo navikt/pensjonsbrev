@@ -36,6 +36,16 @@ class ElementIntegrationTest {
     }
 
     @Test
+    fun `tom title3`() {
+        outlineTestTemplate<EmptyBrevdata> {
+            title3 { }
+            title3 { text(bokmal { +"" }) }
+            paragraph { text(bokmal { +"Test" }) }
+            title3 { text(bokmal { +"med tekst" }) }
+        }.renderTestPDF("elementTest tom title3", pdfByggerService = laTeXCompilerService)
+    }
+
+    @Test
     fun `tom paragraph`() {
         outlineTestTemplate<EmptyBrevdata> {
             title2 { text(bokmal { +"Test" }) }

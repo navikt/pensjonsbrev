@@ -15,23 +15,27 @@ import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
-fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
-    val authService = AzureADService(authConfig)
+fun Application.configureRouting(
+    authConfig: JwtConfig,
+    skribentenConfig: Config,
+    cache: Cache
+) {
+    val authService = AzureADService(authConfig, cache = cache)
     val servicesConfig = skribentenConfig.getConfig("services")
-    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopPreparing) { db.close() } }
+    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
-    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService)
+    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
-    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService)
+    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
     val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
-    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService)
+    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"))
+    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
@@ -63,7 +67,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             )
 
             landRoute()
-            brevmal(brevbakerService)
+            brevmal(brevbakerService, brevmalService)
             kodeverkRoute(penService)
             sakRoute(
                 dto2ApiService,

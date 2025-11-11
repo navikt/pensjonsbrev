@@ -112,7 +112,7 @@ services:
       EXPRESS_HOST: "::"
       SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
-      PSAK_BASE_URL: "https://pensjon-psak-q2.dev.adeo.no"
+      PSAK_BASE_URL: "https://pensjon-psak-q2.intern.dev.nav.no"
 
   brevoppskrift:
     profiles:

@@ -1,6 +1,6 @@
 import "./editor.css";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -137,7 +137,7 @@ describe("<LetterEditor />", () => {
       // CP3
       cy.contains("CP3-1").click();
       move("{home}", 1);
-      assertCaret("[CP3-1]", 90);
+      assertCaret("[CP3-1]", 82);
       move("{downArrow}", 1);
       assertCaret("[CP3-2]", 0);
       move("{downArrow}", 1);
@@ -145,7 +145,7 @@ describe("<LetterEditor />", () => {
       move("{downArrow}", 1);
       assertCaret("Tittel under punktliste", 5);
     });
-    it.only("ArrowUp at first node moves caret to the beginning", () => {
+    it("ArrowUp at first node moves caret to the beginning", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("Informasjon om saksbehandlingstiden vår").click();
       assertCaret("Informasjon om saksbehandlingstiden vår", 39);
@@ -203,7 +203,7 @@ describe("<LetterEditor />", () => {
         />,
       );
 
-      cy.contains("Verge:").should("exist");
+      cy.contains("Mottaker:").should("exist");
       cy.contains("Vergio Vergburg").should("exist");
       cy.contains("Navn:").should("not.exist");
       cy.contains("Saken gjelder:").should("exist");
@@ -224,7 +224,7 @@ describe("<LetterEditor />", () => {
         />,
       );
 
-      cy.contains("Verge:").should("not.exist");
+      cy.contains("Mottaker:").should("not.exist");
       cy.contains("Vergio Vergburg").should("not.exist");
       cy.contains("Navn:").should("exist");
       cy.contains("Saken gjelder:").should("not.exist");

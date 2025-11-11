@@ -85,3 +85,32 @@ enum class BeloepEndring {
 enum class GarantipensjonSatsType {
     HOY, ORDINAER
 }
+
+enum class Beregningsmetode {
+    AUSTRALIA,
+    CANADA,
+    CHILE,
+    EOS,
+    FOLKETRYGD,
+    INDIA,
+    ISRAEL,
+    NORDISK,
+    PRORATA,
+    SOR_KOREA,
+    SVEITS,
+    USA
+}
+
+enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }
+
+enum class InformasjonOmMedlemskap {
+    EOES,
+    UTENFOR_EOES,
+    IKKE_RELEVANT
+}
+enum class EksportForbudKode {
+    FLYKT_ALDER,
+    TPUNGUFOR_ALDER,
+    UFOR25_ALDER,
+    DOD26_ALDER
+}

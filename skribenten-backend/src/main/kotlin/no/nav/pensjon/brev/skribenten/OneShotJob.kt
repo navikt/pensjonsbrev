@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
@@ -114,7 +114,7 @@ fun JobConfig.updateBrevredigeringJson() {
             val redigertBrev = it[BrevredigeringTable.redigertBrevKryptert]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
-                update[BrevredigeringTable.redigertBrevKryptertHash] = EditLetterHash.read(redigertBrev)
+                update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
             }
         }
 

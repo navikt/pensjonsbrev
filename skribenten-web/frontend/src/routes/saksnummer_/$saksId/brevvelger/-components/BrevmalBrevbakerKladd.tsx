@@ -22,7 +22,7 @@ import { Route } from "../route";
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
   brevId: number;
-  letterTemplates: LetterMetadata[];
+  brevmetadata: Record<string, LetterMetadata>;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const brevQuery = useQuery({
@@ -33,7 +33,7 @@ export const BrevmalBrevbakerKladd = (props: {
 
   const brev = brevQuery.data;
   const brevExists = brev !== undefined;
-  const letterMetadataForBrev = brevExists ? props.letterTemplates.find((l) => l.id === brev!.brevkode) : undefined;
+  const letterMetadataForBrev = brevExists ? props.brevmetadata[brev.brevkode] : undefined;
 
   return (
     <>

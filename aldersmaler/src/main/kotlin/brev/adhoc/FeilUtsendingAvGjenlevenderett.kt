@@ -1,7 +1,7 @@
 package brev.adhoc
 
 import brev.felles.Constants
-import brev.felles.HarDuSpoersmaal
+import brev.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -55,13 +55,8 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
                     english { +"We apologise for the error." }
                 )
             }
+            includePhrase(HarDuSpoersmaalAlder)
 
-            includePhrase(
-                HarDuSpoersmaal(
-                    merInformasjonUrl = Constants.ALDERSPENSJON_GJENLEVENDE_URL,
-                    telefonnummer = Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
-                )
-            )
         }
     }
 }

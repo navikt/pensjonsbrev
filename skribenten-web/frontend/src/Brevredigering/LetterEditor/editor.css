@@ -2,7 +2,6 @@
   margin-top: var(--a-spacing-6);
   /*clamp: minimum, ideal, max */
   padding: 0 clamp(1rem, 2vw, 4rem);
-  caret-color: green;
 
   [contenteditable] {
     &:focus-within {
@@ -51,6 +50,13 @@
 .TITLE2 {
   font-size: 18px;
   letter-spacing: 0.3px;
+  line-height: var(--a-font-line-height-heading-xsmall);
+  font-weight: var(--a-font-weight-bold);
+  margin-bottom: var(--a-spacing-1-alt);
+}
+
+.TITLE3 {
+  font-size: 16.5px;
   line-height: var(--a-font-line-height-heading-xsmall);
   font-weight: var(--a-font-weight-bold);
   margin-bottom: var(--a-spacing-1-alt);

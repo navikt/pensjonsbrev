@@ -193,6 +193,7 @@ object ExpressionVisitor {
             is Paragraph -> visit(element.paragraph)
             is Element.OutlineContent.Title1 -> visit(element.text)
             is Element.OutlineContent.Title2 -> visit(element.text)
+            is Element.OutlineContent.Title3 -> visit(element.text)
             is Element.ParagraphContent.ItemList -> visit(element.items)
             is Element.ParagraphContent.Table -> visit(element.header) + visit(element.rows)
             is Text.Expression -> listOf(element.expression)

@@ -5,6 +5,7 @@ import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import testingLibrary from "eslint-plugin-testing-library";
 import reactHooks from "eslint-plugin-react-hooks";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import noOnlyTests from "eslint-plugin-no-only-tests";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
@@ -57,6 +58,16 @@ export default [
       ],
     }),
   ),
+  // Prevent committing .only in all test files
+  {
+    files: ["**/*.{test,spec}.{ts,tsx}", "test/**/*.{ts,tsx}", "cypress/**/*.cy.{ts,tsx}", "**/*.cy.{ts,tsx}"],
+    plugins: {
+      "no-only-tests": noOnlyTests,
+    },
+    rules: {
+      "no-only-tests/no-only-tests": "error",
+    },
+  },
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     plugins: {

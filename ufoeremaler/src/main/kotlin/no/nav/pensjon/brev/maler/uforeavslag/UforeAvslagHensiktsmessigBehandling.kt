@@ -12,18 +12,17 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.SaksbehandlervalgSelectors.brukVurderingFraVilkarsvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> {
+object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
     override val kode = UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
@@ -54,51 +53,43 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagDto> 
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
             }
+            paragraph {
+                text(bokmal { +"Å ha gjennomført «all hensiktsmessig behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskere og kommer i arbeid, skal være forsøkt." })
+            }
+            paragraph {
+                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom " })
+                list {
+                    item {
+                        text(
+                            bokmal { +"du er i behandling" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er henvist til behandling" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er anbefalt behandling" },
+                        )
+                    }
+                }
+            }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(
-                        bokmal { + pesysData.vurdering }
-                    )
+                    text(bokmal { + pesysData.vurdering })
                 }
             }
-            showIf(saksbehandlerValg.brukVurderingFraVilkarsvedtak) {
-                paragraph {
-                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
-                }
-            }.orShow {
-                paragraph {
-                    text(bokmal { +"Funksjonsnedsettelsen vises i form av " + fritekst("X") })
-                    text(bokmal {
-                        +". Følgene av dette er at du ikke klarer å fungere i arbeid. Det er forsøkt behandling i form av " + fritekst(
-                            "X"
-                        )
-                    })
-                    text(bokmal {
-                        +". Det er for tidlig å ta stilling til effekten av behandlingen fordi du " +
-                                fritekst("fortsatt er under behandling/det finnes behandling som ikke er forsøkt.")
-                    })
-                }
-                paragraph {
-                    text(bokmal { +"Fastlegen din vurderer at videre behandling i form av " + fritekst("X") })
-                    text(bokmal { +"kan bedre inntektsevnen din. Rådgivende lege/spesialist vurderer " + fritekst("X") + "." })
-                }
-                paragraph {
-                    text(bokmal {
-                        +"Vi mener at du ikke har fått all hensiktsmessig behandling som kan bedre inntektsevnen. " +
-                                fritekst(
-                                    "(Individuell begrunnelse, vær konkret, f.eks utredning, samarbeidende spesialist, " +
-                                            "anbefalt konkret behandling som ikke er forsøkt, våre retningslinjer ved spesielle sykdomstilstander, alder)."
-                                )
-                    })
-
-                }
+            paragraph {
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
                 text(bokmal {
-                    +"Det kan ikke utelukkes at behandlingen kan bedre funksjons- og inntektsevnen. " +
-                            "Samlet sett vurderer vi det som hensiktsmessig at behandlingen forsøkes. Fordi du ikke har fått " +
+                    +"Vi kan ikke utelukke at behandling kan bedre din funksjons- og inntektsevne. " +
+                            "Samlet sett vurderer vi det som hensiktsmessig at du forsøker behandling. Fordi du ikke har fått " +
                             "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
                 })
             }

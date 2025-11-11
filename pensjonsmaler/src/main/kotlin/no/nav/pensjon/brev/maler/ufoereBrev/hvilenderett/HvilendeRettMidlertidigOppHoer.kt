@@ -71,7 +71,7 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyBrevdata> {
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
 

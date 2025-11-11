@@ -9,22 +9,22 @@ import io.ktor.server.routing.*
 
 sealed class ServiceResult<Result> {
     data class Ok<Result>(val result: Result) : ServiceResult<Result>()
-    data class Error<Result>(val error: String, val statusCode: HttpStatusCode) : ServiceResult<Result>()
+    data class Error<Result>(val error: String, val statusCode: HttpStatusCode, val tittel: String? = null) : ServiceResult<Result>()
 
     inline fun <T> map(func: (Result) -> T): ServiceResult<T> = when (this) {
         is Ok -> Ok(func(result))
-        is Error -> Error(error, statusCode)
+        is Error -> Error(error,  statusCode, tittel)
     }
 
     inline fun <T> then(func: (Result) -> ServiceResult<T>): ServiceResult<T> = when (this) {
         is Ok -> func(result)
-        is Error -> Error(error, statusCode)
+        is Error -> Error(error, statusCode, tittel)
     }
 
     inline fun <T, Second> then(second: ServiceResult<Second>, func: (Result, Second) -> ServiceResult<T>): ServiceResult<T> =
         when (this) {
             is Ok -> second.then { func(result, it) }
-            is Error -> Error(error, statusCode)
+            is Error -> Error(error, statusCode, tittel)
         }
 
     inline fun <T, Second, Third> then(
@@ -34,7 +34,7 @@ sealed class ServiceResult<Result> {
     ): ServiceResult<T> =
         when (this) {
             is Ok -> second.then(third) { secondResult, thirdResult -> func(result, secondResult, thirdResult) }
-            is Error -> Error(error, statusCode)
+            is Error -> Error(error,  statusCode, tittel)
         }
 
     inline fun catch(func: (String, HttpStatusCode) -> Result): Result = when (this) {
@@ -52,12 +52,17 @@ sealed class ServiceResult<Result> {
         return this
     }
 
+    inline fun onError(func: (error: String, statusCode: HttpStatusCode, tittel: String?) -> Unit): ServiceResult<Result> {
+        if (this is Error) func(error,  statusCode, tittel)
+        return this
+    }
+
     fun resultOrNull(): Result? =
         if (this is Ok) result else null
 
-    fun nonNull(error: String, statusCode: HttpStatusCode): ServiceResult<Result & Any> = when (this) {
-        is Ok -> result?.let { Ok(result) } ?: Error(error, statusCode)
-        is Error -> Error(this.error, this.statusCode)
+    fun nonNull(error: String, statusCode: HttpStatusCode, tittel: String? = null): ServiceResult<Result & Any> = when (this) {
+        is Ok -> result?.let { Ok(result) } ?: Error(error,  statusCode, tittel)
+        is Error -> Error(this.error, this.statusCode, this.tittel)
     }
 
 }

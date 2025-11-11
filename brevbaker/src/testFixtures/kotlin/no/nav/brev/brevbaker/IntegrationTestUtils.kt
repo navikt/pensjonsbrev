@@ -33,6 +33,8 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -72,13 +74,13 @@ fun renderTestPdfOutline(
     testName: String,
     felles: Felles? = null,
     brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-    attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
+    attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
     title: String? = null,
     pdfByggerService: PDFByggerService = laTeXCompilerService,
-    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
 ) {
     val template = createTemplate(
-        EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
+        EmptyVedleggData::class, languages(Bokmal), LetterMetadata(
             testName,
             false,
             LetterMetadata.Distribusjonstype.VEDTAK,
@@ -91,7 +93,7 @@ fun renderTestPdfOutline(
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }
     }
-    val letter = LetterImpl(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
+    val letter = LetterImpl(template, Unit, Bokmal, felles ?: FellesFactory.fellesAuto)
     letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
 }
 
@@ -102,9 +104,9 @@ fun renderTestVedleggPdf(
     outputFolder: String,
     felles: Felles? = null,
     pdfByggerService: PDFByggerService = laTeXCompilerService,
-    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
 ) {
-    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment(
+    val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
         title = newText(
             Bokmal to (title ?: testName)
         ),
@@ -181,7 +183,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
     return this
 }
 
-fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
+fun <AttachmentData : VedleggData, Lang : LanguageSupport> createVedleggTestTemplate(
     template: AttachmentTemplate<Lang, AttachmentData>,
     attachmentData: Expression<AttachmentData>,
     languages: Lang,
@@ -216,7 +218,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
+fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = FellesFactory.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
     LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 val bokmalTittel = newText(Bokmal to "test brev")

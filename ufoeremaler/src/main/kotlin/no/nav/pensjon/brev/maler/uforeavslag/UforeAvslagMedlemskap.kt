@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -54,13 +55,11 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Du var ikke medlem av folketrygden i fem år før du ble ufør. Du oppfyller heller ingen av unntaksreglene." })
+                text(bokmal { +"Du var ikke medlem av folketrygden i de fem siste årene før du ble ufør. Du oppfyller heller ingen av unntaksreglene." })
             }
             paragraph {
-                text(bokmal { +"For å ha rett til uføretrygd, må du ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet. " })
-            }
-            paragraph {
-                text(bokmal { +"Vi kan gjøre unntak fra hovedregelen dersom: " })
+                text(bokmal { +"For å ha rett til uføretrygd, må du som hovedregel ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet. " +
+                        "Vi kan gjøre unntak fra hovedregelen dersom: " })
                 list {
                     item {
                         text(bokmal { + "uførheten din skyldes en godkjent yrkesskade eller yrkessykdom " })
@@ -68,7 +67,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +"Eller dersom du har vært medlem av folketrygden i minst ett år umiddelbart før du setter fram krav om uføretrygd, og " })
+                text(bokmal { +"Eller dersom du har vært medlem av folketrygden i minst ett år umiddelbart før du søker om uføretrygd, og " })
                 list {
                     item {
                         text(bokmal { + "ble ufør før du fylte 26 år og da var medlem av trygden eller " })
@@ -90,14 +89,16 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Du flyttet til Norge " + fritekst("innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " +
                         "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
             }
+
             paragraph {
                 showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
             paragraph {
-                text(bokmal { + fritekst("Fritekst med klargjøring av faktisk medlemsskap " ) })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
+
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, vi avslår derfor søknaden din om uføretrygd. Vedtaket er gjort etter folketrygdloven § 12-2. " })
             }

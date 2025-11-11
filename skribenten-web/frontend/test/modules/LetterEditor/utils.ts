@@ -20,9 +20,10 @@ import type {
   TextContent,
   Title1Block,
   Title2Block,
+  Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+import { ITEM_LIST, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
@@ -127,6 +128,18 @@ export function title2(...content: TextContent[]): Title2Block {
     parentId: null,
     editable: true,
     type: TITLE2,
+    deletedContent: [],
+    content: withParent(content, id),
+  };
+}
+
+export function title3(...content: TextContent[]): Title3Block {
+  const id = randomId();
+  return {
+    id,
+    parentId: null,
+    editable: true,
+    type: TITLE3,
     deletedContent: [],
     content: withParent(content, id),
   };

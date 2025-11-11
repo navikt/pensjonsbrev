@@ -5,103 +5,24 @@ on:
     branches:
       - "main"
     paths:
+      - .github/workflows/.verify-frontend.yaml
       - .github/workflows/verify-skribenten-web.yaml
       - skribenten-web/**
 
+permissions:
+  contents: read
+
 jobs:
-  verify-bff:
-    name: Verify bff tests, lint and typescript errors
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: Install bff dependencies
-        working-directory: skribenten-web/bff
-        run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: Run ESLint
-        working-directory: skribenten-web/bff
-        run: npm run lint
-
-      - name: Check for typescript errors
-        working-directory: skribenten-web/bff
-        run: npm run check-types
-
-      - name: Build bff
-        working-directory: skribenten-web/bff
-        run: npm run build
-
-  verify-frontend:
-    name: Verify frontend tests, lint and typescript errors
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-          cache: "npm"
-          cache-dependency-path: skribenten-web/frontend
-      - name: Install dependencies
-        working-directory: skribenten-web/frontend
-        run: npm ci
-
-      - name: Cypress run e2e tests
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
-        with:
-          working-directory: skribenten-web/frontend
-          install: false
-          browser: chrome
-          component: false
-          start: npm run dev
-
-      - name: Cypress run component tests
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
-        with:
-          working-directory: skribenten-web/frontend
-          install: false
-          browser: chrome
-          component: true
-
-      - name: Run tests
-        working-directory: skribenten-web/frontend
-        run: npm run test
-
-      - name: Run ESLint
-        working-directory: skribenten-web/frontend
-        run: npm run lint
-
-      - name: Run stylelint
-        working-directory: skribenten-web/frontend
-        run: npm run stylelint
-
-      - name: Check for typescript errors
-        working-directory: skribenten-web/frontend
-        run: npm run check-types
-
-      - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: skribenten-web/frontend/cypress/screenshots
+  verify:
+    uses: ./.github/workflows/.verify-frontend.yaml
+    secrets: inherit
+    with:
+      workingDir: skribenten-web
+      cypress: true
 
   "klarTilMerge":
     name: "Klar til merge"
-    needs: [verify-bff, verify-frontend]
+    needs: [verify]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5

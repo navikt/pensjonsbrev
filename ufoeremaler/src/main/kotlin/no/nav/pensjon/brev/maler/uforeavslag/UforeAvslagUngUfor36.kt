@@ -12,17 +12,18 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_UNG_UFOR_36
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26Dto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.SaksbehandlervalgSelectors.visUforetidspunktEtter26
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
+object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto> {
 
     override val kode = UT_AVSLAG_UNG_UFOR_36
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -48,15 +49,15 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd med ung ufør fordel" })
+                text(bokmal { +"Derfor får du ikke rettigheter som ung ufør" })
             }
             paragraph {
-                text(bokmal { +"Du har satt frem søknaden etter at du fylte 36 år, og har jobbet mer enn 50 prosent." })
+                text(bokmal { +"Vi avslår søknaden fordi du har søkt om ung ufør etter at du fylte 36 år, og har jobbet mer enn 50 prosent etter du fylte 26 år." })
             }
             paragraph {
-                text(bokmal { +"For å bli innvilget rettighet som ung ufør er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig " +
-                        "og varig sykdom eller skade, som er klart dokumentert. " +
-                        "Dersom du har vært mer enn 50 prosent yrkesaktiv etter at du fylte 26 år, må du ha søkt om uføretrygd før du fyller 36 år." })
+                text(bokmal { +"For å få innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert. " +
+                        "Søker du etter at du fylte 36 år, må du har jobbet mindre enn 50 prosent etter du fylte 26 år. Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
+                        "Derfor må vi vurdere om dette tyder på en reell inntektsevne på mer enn 50 prosent. Vi vurderer at det du har arbeidet etter at du fylte 26 år ikke kan anses som et mislykket arbeidsforsøk." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -65,14 +66,15 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
-
-            paragraph {
-                text(bokmal { +"Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
-                        "Du søkte om uføretrygd etter at du fylte 36 år og oppfyller derfor ikke dette vilkåret." })
+            showIf(saksbehandlerValg.visUforetidspunktEtter26) {
+                paragraph {
+                    text(bokmal { +"Vi viser til at uføretidspunktet er satt til etter 26 år og du fyller derfor ikke vilkårene for beregning som ung ufør." })
+                }
             }
+
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
             }

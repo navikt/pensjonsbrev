@@ -1,5 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -14,7 +16,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment(
+val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
     title = newText(
         Bokmal to "Informasjon til deg som handler på vegne av barnet",
         Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
@@ -28,7 +30,7 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment(
 }
 
 @TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment(
+val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
     title = newText(
         Bokmal to "Informasjon til deg som handler på vegne av barnet",
         Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
@@ -42,7 +44,7 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment(
     utbetalingUtland()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.informasjon() {
     paragraph {
         text(
             bokmal { +"Frem til barn fyller 18 år, er det verge som ivaretar barnets interesser. " +
@@ -66,7 +68,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
 }
 
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.endringAvKontonummerUtland() {
     title2 {
         text(
             bokmal { +"Skal du endre kontonummer?" },
@@ -97,7 +99,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerNasjonal() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.endringAvKontonummerNasjonal() {
     title2 {
         text(
             bokmal { +"Skal du endre kontonummer?" },
@@ -131,7 +133,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.utbetalingUtland() {
     title2 {
         text(
             bokmal { +"Utbetaling av barnepensjon" },

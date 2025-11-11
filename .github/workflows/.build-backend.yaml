@@ -1,0 +1,88 @@
+name: .build-backend.yaml
+
+on:
+  workflow_call:
+    inputs:
+      image_suffix:
+        description: "Image suffix"
+        required: true
+        type: string
+      path:
+        description: "Path to build"
+        required: true
+        type: string
+      extraModulesToBuild:
+        description: "Modules to build"
+        required: false
+        type: string
+      buildImage:
+        description: "Build image?"
+        required: true
+        type: boolean
+      uploadJar:
+        description: "Upload jar?"
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      image:
+        description: "Image name"
+        value: ${{ jobs.build.outputs.image }}
+      digest:
+        description: "Image digest"
+        value: ${{ jobs.build.outputs.digest }}
+
+env:
+  JavaDistribution: "temurin"
+  JavaVersion: 21
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+      packages: "read"
+      id-token: "write"
+    outputs:
+      image: ${{ steps.docker-push.outputs.image }}
+      digest: ${{ steps.docker-push.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: gradle/actions/wrapper-validation@v5
+      - uses: gradle/actions/setup-gradle@v5
+      - uses: actions/setup-java@v5
+        with:
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
+      - name: "publish common to Maven local"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+      - name: "publish extra modules to Maven local"
+        if: ${{ inputs.extraModulesToBuild != '' }}
+        run: |
+          ./gradlew ${{ inputs.extraModulesToBuild }}
+      - name: "compile and run tests"
+        run: |
+          ./gradlew :${{ inputs.path }}:buildNeeded
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Build and publish container image to GAR"
+        uses: nais/docker-build-push@v0
+        id: docker-push
+        if: ${{ inputs.buildImage && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') }}
+        with:
+          team: pensjonsbrev
+          image_suffix: ${{ inputs.image_suffix }}
+          pull: true
+          docker_context: ./${{ inputs.path }}
+          dockerfile: ${{ inputs.path }}/Dockerfile
+          salsa: false
+      - name: "Upload jar"
+        if: ${{ inputs.uploadJar }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{inputs.path}}-jar
+          path: ${{ inputs.path }}/build/libs/
+          if-no-files-found: 'error'

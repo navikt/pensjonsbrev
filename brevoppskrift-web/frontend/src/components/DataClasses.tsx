@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { VStack } from "@navikt/ds-react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { capitalize } from "lodash";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import type { FieldType, LetterModelSpecification, ObjectTypeSpecification } from "~/api/brevbakerTypes";
 
@@ -41,9 +41,12 @@ function DataView({
   const reference = useRef<HTMLSpanElement>(null);
 
   const isHighlighted = highlightedDataClass === trimClassName(name);
-  if (isHighlighted && reference.current) {
-    reference.current.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+
+  useEffect(() => {
+    if (isHighlighted && reference.current) {
+      reference.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [isHighlighted]);
 
   return (
     <VStack className={isHighlighted ? "highlight" : undefined} gap="1">
@@ -71,9 +74,11 @@ function DataField({ name, fieldType }: { name: string; fieldType: FieldType }) 
 
   const isHighlighted = highlightedDataField === name;
 
-  if (isHighlighted && reference.current) {
-    reference.current.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+  useEffect(() => {
+    if (isHighlighted && reference.current) {
+      reference.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [isHighlighted]);
 
   return (
     <span

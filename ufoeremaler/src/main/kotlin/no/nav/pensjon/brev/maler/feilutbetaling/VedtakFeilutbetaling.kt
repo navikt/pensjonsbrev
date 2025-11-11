@@ -7,18 +7,22 @@ import no.nav.pensjon.brev.maler.fraser.Felles
 import no.nav.pensjon.brev.maler.fraser.Felles.HarDuSporsmal
 import no.nav.pensjon.brev.maler.fraser.Felles.RettTilInnsynRefVedlegg
 import no.nav.pensjon.brev.maler.vedlegg.oversiktOverFeilutbetalinger
+import no.nav.pensjon.brev.maler.vedlegg.oversiktOverFeilutbetalingerPaRadform
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VEDTAK_FEILUTBETALING
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.feilutbetalingPerArListe
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.feilutbetaltTotalBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.resultatAvVurderingenForTotalBelop
@@ -200,7 +204,9 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
             includePhrase(RettTilInnsynRefVedlegg)
             includePhrase(HarDuSporsmal)
         }
-        includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto)
+
+        includeAttachment(oversiktOverFeilutbetalingerPaRadform, pesysData.oversiktOverFeilutbetalingPEDto, pesysData.oversiktOverFeilutbetalingPEDto.feilutbetalingPerArListe.notNull())
+        includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto, pesysData.oversiktOverFeilutbetalingPEDto.feilutbetalingPerArListe.isNull())
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }

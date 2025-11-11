@@ -161,8 +161,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
-  //hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
-  const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
+  // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
+  const erFritekst =
+    content.tags.includes(ElementTags.FRITEKST) &&
+    (content.editedText === null || content.editedText === undefined || content.editedText === content.text);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -264,7 +266,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     if (isRange && erFritekst) {
       const nextFocus = allSpans[thisSpanIndex];
-      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.startOffset);
+      focusAtOffset(nextFocus?.childNodes[0], cursorOffsetOrRange.startOffset);
     } else {
       const cursorIsAtBeginning = isCursorOffset ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
 
@@ -280,7 +282,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const nextFocus = allSpans[previousSpanIndex];
 
       focusAtOffset(
-        nextFocus.childNodes[0],
+        nextFocus?.childNodes[0],
         isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : (nextFocus.textContent?.length ?? 0),
       );
     }
@@ -295,7 +297,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
    *  - skal tast alltid flytte posisjon
    */
   const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    if (contentEditableReference.current === null) return;
+    if (contentEditableReference.current === null || event.shiftKey) return;
 
     const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
     const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
@@ -308,7 +310,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     if (isRange && erFritekst) {
       const nextFocus = allSpans[thisSpanIndex];
-      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.endOffset);
+      focusAtOffset(nextFocus?.childNodes[0], cursorOffsetOrRange.endOffset);
     } else {
       const textLength = text === ZERO_WIDTH_SPACE ? 0 : text.length;
       const cursorIsAtEnd = isCursorOffset
@@ -325,7 +327,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
       event.preventDefault();
       const nextFocus = allSpans[nextSpanIndex];
-      focusAtOffset(nextFocus.childNodes[0], isNextSpanInSameBlock ? 1 : 0);
+      focusAtOffset(nextFocus?.childNodes[0], isNextSpanInSameBlock ? 1 : 0);
     }
   };
 
@@ -333,7 +335,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined) {
+    if (element === null || caretCoordinates === undefined || event.shiftKey) {
       return;
     }
 
@@ -353,7 +355,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined) {
+    if (element === null || caretCoordinates === undefined || event.shiftKey) {
       return;
     }
 
@@ -407,7 +409,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     return true;
   };
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+  const handleOnPaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
@@ -418,28 +420,149 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
-  const handleOnclick = (e: React.MouseEvent) => {
-    if (!erFritekst) return;
-    const selection = globalThis.getSelection();
-    const collapsed = !selection || selection.rangeCount === 0 || selection.getRangeAt(0).collapsed;
-    if (collapsed) handleWordSelect(e.target as HTMLSpanElement);
+  const handleOnInput = ({ currentTarget }: React.FormEvent<HTMLSpanElement>) => {
+    const postEditCursorPosition = getCharacterOffset(currentTarget);
+    applyAction(
+      Actions.updateContentText,
+      setEditorState,
+      literalIndex,
+      currentTarget.textContent ?? "",
+      postEditCursorPosition,
+    );
   };
 
-  const handleOnFocus = (e: React.FocusEvent) => {
-    //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
+    const selection = globalThis.getSelection();
+    const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
+
+    if (hasRange && (e.key === "Backspace" || e.key === "Delete")) {
+      return; // bubble to wrapper div and handle there
+    }
+    const isUndo = (isMac ? e.metaKey : e.ctrlKey) && e.key === "z" && !e.shiftKey;
+    const isRedo = (isMac ? e.metaKey : e.ctrlKey) && (e.key === "y" || (e.key === "z" && e.shiftKey));
+
+    if (isUndo) {
+      e.preventDefault();
+      e.stopPropagation();
+      undo();
+      return;
+    }
+    if (isRedo) {
+      e.preventDefault();
+      e.stopPropagation();
+      redo();
+      return;
+    }
+
+    const isEditingKey =
+      !e.ctrlKey &&
+      !e.altKey &&
+      !e.metaKey &&
+      (e.key.length === 1 || e.key === "Backspace" || e.key === "Delete" || e.key === "Enter");
+
+    if (isEditingKey && contentEditableReference.current) {
+      const selection = globalThis.getSelection();
+      const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
+      // Store the caret position before a text-changing key
+      // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
+      if (editorState.focus.cursorPosition !== preEditCursorPosition || !hasFocus(editorState.focus, literalIndex)) {
+        applyAction(updateFocus, setEditorState, {
+          ...literalIndex,
+          cursorPosition: selection?.isCollapsed ? preEditCursorPosition : undefined,
+        });
+      }
+    }
+
+    if (e.key === "Backspace") {
+      if (handleBackspaceInTableCell(e, editorState, setEditorState)) return;
+
+      handleBackspace(e);
+      e.stopPropagation();
+      return;
+    }
+
+    if (e.key === "Tab") {
+      handleTab(e);
+      return;
+    }
+    if (e.key === "Enter") {
+      handleEnter(e);
+      e.stopPropagation();
+    }
+    if (e.key === "Delete") {
+      handleDelete(e);
+      e.stopPropagation();
+    }
+    if (e.key === "ArrowLeft") {
+      handleArrowLeft(e);
+    }
+    if (e.key === "ArrowRight") {
+      handleArrowRight(e);
+    }
+    if (e.key === "ArrowDown") {
+      handleArrowDown(e);
+    }
+    if (e.key === "ArrowUp") {
+      handleArrowUp(e);
+    }
+  };
+
+  const handleOnMouseDown = (e: React.MouseEvent) => {
+    if (!erFritekst) return;
+
+    // Tøm markering for å restarte dra-og-marker
+    const selection = globalThis.getSelection();
+    if (selection && !selection.isCollapsed && selection.containsNode(e.currentTarget, true)) {
+      selection.collapse(e.currentTarget);
+    }
+
+    // Blokker dobbeltklikk-markering av enkeltord for å heller markere hele friteksten
+    if (erFritekst && e.detail === 2) {
+      e.preventDefault();
+    }
+  };
+
+  const handleOnFocus = (e: React.FocusEvent<HTMLSpanElement>) => {
+    // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
+    const offset = getCursorOffset();
     setEditorState((oldState) => ({
       ...oldState,
-      focus: literalIndex,
+      focus: { ...literalIndex, ...(offset && { cursorPosition: offset }) },
     }));
     if (!erFritekst) return;
-    handleWordSelect(e.target as HTMLSpanElement);
+    e.preventDefault();
+    setSelection(e.currentTarget);
   };
 
-  const handleWordSelect = (element: HTMLSpanElement) => {
+  const handleOnClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    if (!erFritekst) return;
+    e.preventDefault();
     const selection = globalThis.getSelection();
-    const range = document.createRange();
-
     if (selection) {
+      const span = e.currentTarget;
+      // Elementet er allerede fokusert/markert eller har markør
+      if (span.contains(selection.anchorNode) && span.contains(selection.focusNode)) {
+        return;
+      }
+      const isDoubleClick = e.detail === 2;
+      if (selection?.isCollapsed && !isDoubleClick) {
+        setSelection(span);
+      }
+    }
+  };
+
+  const handleOnDoubleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    if (!erFritekst) return;
+    // Blokker dobbeltklikk-markering av enkeltord for å heller markere hele friteksten
+    e.preventDefault();
+    e.stopPropagation();
+    setSelection(e.currentTarget);
+  };
+
+  const setSelection = (element: HTMLSpanElement) => {
+    const selection = globalThis.getSelection();
+    if (selection) {
+      const range = document.createRange();
       selection.removeAllRanges();
       range.selectNodeContents(element.childNodes[0]);
       selection.addRange(range);
@@ -448,114 +571,29 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   return (
     <span
-      // NOTE: ideally this would be "plaintext-only", and it works in practice.
-      // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
-      // This is not documented anywhere I could find and caused a day of frustration, beware
+      // contentEditable='plaintext-only' blocks rich text content and prevents
+      // unhandled native bold/italic/underline formatting from interfering with
+      // Skribenten-styling. However, Cypress and jsdom/happy-dom do not handle
+      // 'plaintext-only' well, and browser native formatting shortcuts and
+      // pasting can be blocked/overridden in event handlers.
       contentEditable={!freeze}
-      css={css`
-        ${erFritekst &&
-        css`
-          color: var(--a-blue-500);
-          text-decoration: underline;
-          cursor: pointer;
-        `}
-        ${fontTypeOf(content) === FontType.BOLD && "font-weight: bold;"}
-        ${fontTypeOf(content) === FontType.ITALIC && "font-style: italic;"}
-      `}
+      css={css({
+        ...(erFritekst && {
+          color: "var(--a-blue-500)",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }),
+        ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
+        ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
+      })}
       data-literal-index={JSON.stringify(literalIndex)}
-      onClick={handleOnclick}
+      onClick={handleOnClick}
+      onDoubleClick={handleOnDoubleClick}
       onFocus={handleOnFocus}
-      onInput={(event) => {
-        const target = event.target as HTMLSpanElement;
-        const postEditCursorPosition = getCharacterOffset(target);
-        applyAction(
-          Actions.updateContentText,
-          setEditorState,
-          literalIndex,
-          (event.target as HTMLSpanElement).textContent ?? "",
-          postEditCursorPosition,
-        );
-      }}
-      onKeyDown={(event) => {
-        const selection = globalThis.getSelection();
-        const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
-
-        if (hasRange && (event.key === "Backspace" || event.key === "Delete")) {
-          return; // bubble to wrapper div and handle there
-        }
-        const isUndo = (isMac ? event.metaKey : event.ctrlKey) && event.key === "z" && !event.shiftKey;
-        const isRedo =
-          (isMac ? event.metaKey : event.ctrlKey) && (event.key === "y" || (event.key === "z" && event.shiftKey));
-
-        if (isUndo) {
-          event.preventDefault();
-          event.stopPropagation();
-          undo();
-          return;
-        }
-        if (isRedo) {
-          event.preventDefault();
-          event.stopPropagation();
-          redo();
-          return;
-        }
-
-        const isEditingKey =
-          !event.ctrlKey &&
-          !event.altKey &&
-          !event.metaKey &&
-          (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete" || event.key === "Enter");
-
-        if (isEditingKey && contentEditableReference.current) {
-          const selection = globalThis.getSelection();
-          const preEditCursorPosition = getCharacterOffset(contentEditableReference.current);
-          // Store the caret position before a text-changing key
-          // if it changed or focus moved, so undo/redo can restore the correct pre-edit cursor.
-          if (
-            editorState.focus.cursorPosition !== preEditCursorPosition ||
-            !hasFocus(editorState.focus, literalIndex)
-          ) {
-            applyAction(updateFocus, setEditorState, {
-              ...literalIndex,
-              cursorPosition: selection?.isCollapsed ? preEditCursorPosition : undefined,
-            });
-          }
-        }
-
-        if (event.key === "Backspace") {
-          if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
-
-          handleBackspace(event);
-          event.stopPropagation();
-          return;
-        }
-
-        if (event.key === "Tab") {
-          if (handleTab(event)) return;
-          return;
-        }
-        if (event.key === "Enter") {
-          handleEnter(event);
-          event.stopPropagation();
-        }
-        if (event.key === "Delete") {
-          handleDelete(event);
-          event.stopPropagation();
-        }
-        if (event.key === "ArrowLeft") {
-          handleArrowLeft(event);
-        }
-        if (event.key === "ArrowRight") {
-          handleArrowRight(event);
-        }
-        if (event.key === "ArrowDown") {
-          handleArrowDown(event);
-        }
-        if (event.key === "ArrowUp") {
-          handleArrowUp(event);
-        }
-      }}
-      onPaste={handlePaste}
+      onInput={handleOnInput}
+      onKeyDown={handleOnKeyDown}
+      onMouseDown={handleOnMouseDown}
+      onPaste={handleOnPaste}
       ref={contentEditableReference}
       tabIndex={erFritekst ? 0 : -1}
     />

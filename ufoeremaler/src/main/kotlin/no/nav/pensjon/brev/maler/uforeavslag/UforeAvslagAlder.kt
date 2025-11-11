@@ -59,7 +59,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                         "må din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet. " +
                         "Hvis du ikke oppfyller dette vilkåret, må du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet. " +
                         "Grunnbeløpet utgjør " + fritekst("grunnbeløp") + " kroner. " +
-                        "I tillegg kan du ikke få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
+                        "Det er også et vilkår at du ikke kan få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -67,15 +67,12 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { +fritekst("Individuell vurdering") })
             }
 
-
             paragraph {
-                text(bokmal { +
-                "Din pensjonsgivende inntekt er lavere enn kravene om inntekt for søkere mellom 62 og 67 år. I tillegg har du rett til å ta ut hel alderspensjon."})
+                text(bokmal { +"Din pensjonsgivende inntekt er lavere enn kravene om inntekt for søkere mellom 62 og 67 år. I tillegg har du rett til å ta ut hel alderspensjon."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})

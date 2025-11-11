@@ -12,17 +12,14 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDtoSelectors.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
+object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVurderingDto> {
 
     override val kode = UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -41,33 +38,20 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDt
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få yrkessykdom eller yrkesskade tatt med i uføretrygden"})
+            text (bokmal { + "Nav har avslått søknaden din om å få beregnet uføretrygden etter reglene for yrkessykdom eller yrkesskade"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om særbestemmelser for yrkesskade eller yrkessykdom i uføretrygden, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd med yrkesskade fordel" })
+                text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
             }
             paragraph {
-                text(bokmal { + "Du har ingen registrert eller godkjent yrkesskade eller yrkessykdom." })
+                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom." })
             }
-
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
-                paragraph {
-                    text(bokmal { +pesysData.vurdering })
-                }
-            }
-            paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
-            }
-
             paragraph {
                 text(bokmal { + "For å ha rett til uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, må uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." })
-            }
-            paragraph {
-                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})

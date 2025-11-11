@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
+import no.nav.pensjon.brev.maler.uforeavslag.UforegradAvslagSykdom.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -51,11 +53,10 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi det ikke er dokumentert at sykdom eller skade er hovedårsaken til din nedsatte funksjonsevne." })
+                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til din nedsatte funksjonsevne. " })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen i hovedsak skyldes varig sykdom eller skade. " +
-                        "Dokumentasjonen i din sak viser at det i all hovedsak er andre forhold enn sykdom og skade som påvirker funksjons- og inntektsevnen din." })
+                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -63,14 +64,13 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-                paragraph {
-                    text(bokmal { + fritekst("Lim inn teksten fra vilkårsvurderingen her") })
-                }
+            paragraph {
+                text(bokmal { + fritekst("Individuell vurdering") })
+            }
 
             paragraph {
-                text(bokmal { +
-                "Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men det er ikke tilstrekkelig dokumentert at dette er hovedårsaken. " +
-                        "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
+                text(bokmal { +"Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men vi vurderer at det er andre forhold som er hovedårsak til at din funksjons- og inntektsevne er nedsatt. " +
+                        "Før andre forhold er rettet, kan vi ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})

@@ -585,14 +585,6 @@ data class OpplysningerOmBarnetillegg(
                     )
                 }
             }
-
-            paragraph {
-                text(
-                    bokmal { + "Dersom et barn får egen inntekt eller kapitalinntekt i løpet av et år som er høyere enn folketrygdens grunnbeløp, så har du ikke rett til barnetillegg for dette barnet." },
-                    nynorsk { + "Dersom eit barn får eiga inntekt eller kapitalinntekt som er høgare enn grunnbeløpet i folketrygda gjennom eit år, så har du ikkje rett til barnetillegg for dette barnet." },
-                    english { + "If a child has its own income or capital income in a year that is higher than the national insurance basic amount, you are not entitled to child supplement for this child." }
-                )
-            }
         }
 
     }

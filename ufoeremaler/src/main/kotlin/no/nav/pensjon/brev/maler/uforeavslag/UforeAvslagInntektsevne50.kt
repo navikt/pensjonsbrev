@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagIFUOktStilling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
@@ -56,8 +57,7 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din ikke er nok varig nedsatt. " +
-                        "Inntektsevnen din må som hovedregel være varig nedsatt med minst 50 prosent." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er nedsatt med mindre enn 50 prosent." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -65,11 +65,9 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-
             paragraph {
-                text(bokmal { +fritekst("Konkret begrunnelse der det er nødvendig") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
-
 
             paragraph {
                 text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
@@ -83,10 +81,10 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
                     "og vi har derfor fastsatt din nedsatte inntektsevne til " +
                     fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " +
-                    "Du oppfyller heller ikke unntaksreglene for yrkesskade, yrkessykdom eller personer som har fått arbeidsavklaringspenger."})
+                    "For å få uføretrygd, må inntektsevnen din som hovedregel være varig nedsatt med minst 50 prosent."})
             }
             paragraph {
-                text(bokmal { + "Inntektsevnen din er ikke varig nedsatt med minst halvparten."})
+                text(bokmal { + "Du omfattes heller ikke av unntaksreglene for yrkesskade, yrkessykdom eller personer som har fått arbeidsavklaringspenger."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})

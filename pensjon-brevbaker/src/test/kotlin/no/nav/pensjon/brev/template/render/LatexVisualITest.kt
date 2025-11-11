@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.copy
 import no.nav.brev.brevbaker.renderTestPdfOutline
 import no.nav.brev.brevbaker.renderTestVedleggPdf
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
@@ -34,7 +34,7 @@ class LatexVisualITest {
         title: String? = null,
         felles: Felles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+        outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
     ) {
         val testName = overrideName ?: StackWalker.getInstance()
             .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
@@ -53,7 +53,7 @@ class LatexVisualITest {
         includeSakspart: Boolean,
         testName: String? = null,
         felles: Felles? = null,
-        vedleggOutlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+        vedleggOutlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
     ) {
         renderTestVedleggPdf(
             outputFolder = "test_visual/pdf",
@@ -67,7 +67,7 @@ class LatexVisualITest {
     }
 
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.ipsumText() = text(bokmal { +lipsums[1] })
+    private fun ParagraphOnlyScope<LangBokmal, EmptyVedleggData>.ipsumText() = text(bokmal { +lipsums[1] })
 
     @Test
     fun `two paragraphs in a row`() {
@@ -91,7 +91,7 @@ class LatexVisualITest {
     @Test
     fun `verge foersteside`() {
         render(
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 annenMottaker = "Verge vergeson"
             )
         ) {
@@ -123,6 +123,7 @@ class LatexVisualITest {
             }
             title1 { text(bokmal { +"Title 1" }) }
             title2 { text(bokmal { +"Title 2" }) }
+            title3 { text(bokmal { +"Title 3" }) }
         }
     }
 
@@ -177,7 +178,7 @@ class LatexVisualITest {
     fun `verge vedlegg med saksinfo`() {
         renderTestVedlegg(
             includeSakspart = true,
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 annenMottaker = "Verge vergeson"
             ),
         ) {
@@ -209,7 +210,7 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+            felles = FellesFactory.felles.medSignerendeSaksbehandlere(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler"
                 )
@@ -222,7 +223,7 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
-            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+            felles = FellesFactory.felles.medSignerendeSaksbehandlere(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
@@ -236,7 +237,7 @@ class LatexVisualITest {
     @Test
     fun `test av ulike `() {
         render(
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
@@ -250,7 +251,7 @@ class LatexVisualITest {
     @Test
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
+            felles = FellesFactory.felles.copy(
                 signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Attesterende"
@@ -344,7 +345,7 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyBrevdata>.renderOutlineElementOfType(elementA: ElementType) {
+    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.renderOutlineElementOfType(elementA: ElementType) {
         when (elementA) {
             ElementType.T1 -> testTitle1()
             ElementType.T2 -> testTitle2()
@@ -366,7 +367,7 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testList() {
+    private fun ParagraphOnlyScope<LangBokmal, EmptyVedleggData>.testList() {
         list {
             item {
                 text(bokmal { +"Text point 1" })
@@ -377,7 +378,7 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable(numRows: Int = 1) {
+    private fun ParagraphOnlyScope<LangBokmal, EmptyVedleggData>.testTable(numRows: Int = 1) {
         table(
             header = {
                 column { text(bokmal { +"Column A" }) }
@@ -393,12 +394,12 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyBrevdata>.testTitle2() {
-        title2 { text(bokmal { +"Second title" }) }
+    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle1() {
+        title1 { text(bokmal { +"First title" }) }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyBrevdata>.testTitle1() {
-        title1 { text(bokmal { +"First title" }) }
+    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
+        title2 { text(bokmal { +"Second title" }) }
     }
 
     enum class ElementType(val description: String) {

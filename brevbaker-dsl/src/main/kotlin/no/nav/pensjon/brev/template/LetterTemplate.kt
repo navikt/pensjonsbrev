@@ -113,6 +113,8 @@ sealed class Expression<out Out> : StableHash {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
                 scope.markUsage(operation.selector)
+            } else if (operation is UnaryOperation.SafeCall<*,*> && operation.operation is UnaryOperation.Select<*, *>) {
+                scope.markUsage(operation.operation.selector)
             }
             return operation.apply(value.eval(scope))
         }
@@ -237,6 +239,16 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun hashCode() = Objects.hash(text)
             override fun toString(): String = "Title2(text=$text)"
         }
+
+        class Title3<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+            override fun equals(other: Any?): Boolean {
+                if (other !is Title3<*>) return false
+                return text == other.text
+            }
+            override fun hashCode() = Objects.hash(text)
+            override fun toString(): String = "Title3(text=$text)"
+        }
+
 
         class Paragraph<out Lang : LanguageSupport> internal constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph) {
             override fun equals(other: Any?): Boolean {

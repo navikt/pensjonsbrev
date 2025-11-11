@@ -3,6 +3,11 @@ package brev.aldersovergang
 import brev.felles.Constants
 import brev.felles.HarDuSpoersmaalAlder
 import brev.felles.MeldeFraOmEndringer
+import brev.felles.RettTilAAKlage
+import brev.felles.RettTilInnsyn
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import brev.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.model.alder.aldersovergang.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.model.alder.aldersovergang.AlderspensjonVedVirkSelectors.uttaksgrad
@@ -10,6 +15,9 @@ import no.nav.pensjon.brev.model.alder.aldersovergang.BeregnetPensjonPerManedVed
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -22,6 +30,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// MF_000195
 @TemplateModelHelpers
 object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAldersovergang67AarGarantitilleggAutoDto> {
     override val kode = Aldersbrevkoder.AutoBrev.VEDTAK_ALDERSOVERGANG_67_AAR_GARANTITILLEGG_AUTO
@@ -31,7 +40,7 @@ object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAlde
             languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Vedtak - du har fått innvilget garantitillegg",
+                    displayTitle = "Vedtak - omregning av alderspensjon pga rett til garantitillegg",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -159,10 +168,13 @@ object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAlde
                     )
                 }
                 includePhrase(MeldeFraOmEndringer)
-                //includePhrase(RettTilAAKlage(vedlegg = brev.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-                //includePhrase(RettTilInnsyn(vedlegg = brev.felles.rettTilInnsyn))
-
-                includePhrase(HarDuSpoersmaalAlder())
+                includePhrase(RettTilAAKlage)
+                includePhrase(RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(HarDuSpoersmaalAlder)
             }
+
+            includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025Dto)
         }
 }

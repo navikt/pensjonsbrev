@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -11,7 +12,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 
 @TemplateModelHelpers
-val tilbakekrevingVedlegg = createAttachment(
+val tilbakekrevingVedlegg = createAttachment<LangBokmalNynorskEnglish, TilbakekrevingDTO>(
 	title = newText(
 		Bokmal to "Oversikt over feilutbetalinger",
 		Nynorsk to "Oversikt over feilutbetalingar",

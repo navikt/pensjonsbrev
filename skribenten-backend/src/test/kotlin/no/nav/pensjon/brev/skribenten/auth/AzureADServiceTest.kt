@@ -9,9 +9,11 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.InMemoryCache
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 private val fakeJwtPayload = object : Payload {
     override fun getIssuer() = null
@@ -21,7 +23,20 @@ private val fakeJwtPayload = object : Payload {
     override fun getNotBefore() = null
     override fun getIssuedAt() = null
     override fun getId() = null
-    override fun getClaim(name: String?) = null
+    override fun getClaim(name: String?) = object : Claim {
+        override fun isNull() = false
+        override fun isMissing() = false
+        override fun asBoolean() = false
+        override fun asInt() = 0
+        override fun asLong() = 0L
+        override fun asDouble() = 0.0
+        override fun asString() = name
+        override fun asDate() = null
+        override fun <T : Any?> asArray(clazz: Class<T?>?) = null
+        override fun <T : Any?> asList(clazz: Class<T?>?) = listOf<T>()
+        override fun asMap() = mapOf<String, Any>()
+        override fun <T : Any?> `as`(clazz: Class<T?>?) = null
+    }
     override fun getClaims() = mapOf<String?, Claim?>()
 }
 
@@ -54,7 +69,7 @@ class AzureADServiceTest {
     }
 
     @Test
-    fun `getOnBehalfOfToken returns error`() {
+    fun `getOnBehalfOfToken throws error`() {
         val errorResponse = TokenResponse.ErrorResponse("an error", "a description", emptyList(), "123", "abc", "call", "abc")
 
         val service = createService {
@@ -66,7 +81,9 @@ class AzureADServiceTest {
         }
 
         runBlocking {
-            assertEquals(errorResponse, service.getOnBehalfOfToken(principal, "abc"))
+            assertThrows<AzureAdOnBehalfOfAuthorizationException> {
+                service.getOnBehalfOfToken(principal, "abc")
+            }
         }
     }
 
@@ -74,5 +91,6 @@ class AzureADServiceTest {
         AzureADService(
             jwtConfig = jwtConfig,
             engine = MockEngine.invoke(handler),
+            cache = InMemoryCache()
         )
 }

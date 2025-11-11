@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.uforeavslag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.fraser.Felles.*
+import no.nav.pensjon.brev.maler.uforeavslag.UforeAvslagHensiktsmessigBehandling.fritekst
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -48,14 +49,14 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { +"Vi har avslått søknaden din om å endre den fastsatte inntekten din før du ble ufør, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { + "Derfor endres ikke inntekten din før du ble ufør"})
+                text(bokmal { + "Derfor endrer vi ikke inntekten din"})
             }
             paragraph {
-                text(bokmal { + "Du har hatt en varig inntektsøkning, men det er fordi du har økt stillingsandelen din."})
+                text(bokmal { + "Du har hatt en varig inntektsøkning, men det er fordi stillingsprosenten din har økt."})
             }
             paragraph {
                 text(bokmal { +"For å ha rett til å endre den fastsatte inntekten din før du ble ufør, " +
-                        "må du ha hatt en varig inntektsøkning uten at stillingsandelen din har økt. " +
+                        "må du ha hatt en varig inntektsøkning som ikke skyldes at stillingsprosenten din har økt. " +
                         "Inntekt før uførhet kan bare endres dersom du mottar gradert uføretrygd." })
             }
 
@@ -65,7 +66,7 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +fritekst("Lim inn teksten fra vilkårsvurderingen her") })
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
