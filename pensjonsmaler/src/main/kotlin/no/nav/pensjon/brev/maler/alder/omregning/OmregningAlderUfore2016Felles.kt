@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.maler.alder.omregning.fraser.Omregning2016Hjemler
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -50,8 +51,8 @@ data class OmregningAlderUfore2016Felles(
     val avtaleland: Expression<String?>,
     val innvilgetFor67: Expression<Boolean>,
     val fullTrygdetid: Expression<Boolean>,
-    val sivilstand: Expression<MetaforceSivilstand>,
-    val over2G: Expression<Boolean>,
+    val borMedSivilstand: Expression<BorMedSivilstand?>,
+    val over2G: Expression<Boolean?>,
 
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -299,35 +300,49 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
-            paragraph {
+        paragraph {
+            text(
+                bokmal { +"Du er registrert som " },
+                nynorsk { +"Du er registrert som " },
+                english { +" You are registered as " }
+            )
+            ifNotNull(borMedSivilstand) { borMedSivilstand ->
                 text(
-                    bokmal { +"Du er registrert som " + sivilstand.bestemtForm() + "." }, //TODO - førsteperson formatter
-                    nynorsk { +"Du er registrert som " + sivilstand.bestemtForm() + "." },
-                    english { +" You are registered as " + sivilstand.bestemtForm() + "." }
+                    bokmal { +borMedSivilstand.ubestemtForm() },
+                    nynorsk { +borMedSivilstand.ubestemtForm() },
+                    english { +borMedSivilstand.ubestemtForm() }
+                )
+            }.orShowIf(borMedSivilstand.isNull()) {
+                text(
+                    bokmal { +"enslig." },
+                    nynorsk { +"einsleg." },
+                    english { +"single." }
                 )
             }
-
-        showIf(sivilstand.notEqualTo(MetaforceSivilstand.ENSLIG)) {
+        }
+        ifNotNull(borMedSivilstand) { borMedSivilstand ->
             paragraph {
                 text(
-                    bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + sivilstand.bestemtForm() + " din har egen pensjon eller inntekt på " },
-                    nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + sivilstand.bestemtForm() + " din har eigen pensjon eller inntekt på " },
-                    english { +"We have calculated your retirement pension based on the assumption that your " + sivilstand.bestemtForm() + " has an income of " }
+                    bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " din har egen pensjon eller inntekt på " },
+                    nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " din har eigen pensjon eller inntekt på " },
+                    english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " has an income of " }
                 )
             }
-            showIf(over2G) {
-                paragraph {
-                    text(
-                        bokmal { +"over 2G." },
-                        nynorsk { +"over 2G." },
-                        english { +"over 2G." })
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        bokmal { +"under 2G." },
-                        nynorsk { +"under 2G." },
-                        english { +"under 2G." })
+            ifNotNull(over2G) { over2G ->
+                showIf(over2G) {
+                    paragraph {
+                        text(
+                            bokmal { +"over 2G." },
+                            nynorsk { +"over 2G." },
+                            english { +"over 2G." })
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"under 2G." },
+                            nynorsk { +"under 2G." },
+                            english { +"under 2G." })
+                    }
                 }
             }
         }
@@ -586,8 +601,7 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        includePhrase(Felles.RettTilAAKlage) //TODO: Endres når brevet flyttes til ny modul
-
+        includePhrase(Felles.RettTilAAKlage)
         includePhrase(Felles.HarDuSpoersmaal.alder)
 
     }

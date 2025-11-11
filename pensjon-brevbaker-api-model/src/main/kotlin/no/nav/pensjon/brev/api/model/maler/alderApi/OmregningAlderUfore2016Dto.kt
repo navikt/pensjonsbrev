@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -56,8 +57,8 @@ data class InngangOgEksportVurdering(
 )
 
 data class Sivilstand(
-    val sivilstand: MetaforceSivilstand,
-    val over2G: Boolean,
+    val borMedSivilstand: BorMedSivilstand?,
+    val over2G: Boolean?,
 )
 
 
