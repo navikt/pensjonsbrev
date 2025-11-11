@@ -20,7 +20,7 @@ fun testBrevbakerApp(
         config = ApplicationConfig(conf).mergeWith(
             MapApplicationConfig(
                 "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
-                "pdfByggerUrl" to if (isIntegrationTest) PDFByggerTestContainer.mappedUrl() else "http://localhost:8081",
+                "brevbaker.pdfByggerUrl" to if (isIntegrationTest) PDFByggerTestContainer.mappedUrl() else "http://localhost:8081",
             )
         )
     }
