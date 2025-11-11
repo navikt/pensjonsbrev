@@ -16,6 +16,7 @@ object Constants {
     const val ENDRING_KONTONUMMER_URL = "$NAV_URL/start/soknad-endring-bankkontonummer"
     const val KONTAKT_URL = "$NAV_URL/kontaktoss"
     const val KLAGE_URL = "$NAV_URL/klage"
+    const val KLAGERETTIGHETER_URL = "$NAV_URL/klagerettigheter"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelopet"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersende"
     const val ETTERSENDE_OMS_URL = "$NAV_URL/ettersende#omstillingsstonad"

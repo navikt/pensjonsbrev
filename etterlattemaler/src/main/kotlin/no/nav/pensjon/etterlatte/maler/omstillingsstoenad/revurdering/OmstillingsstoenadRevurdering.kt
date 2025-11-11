@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.beregning
@@ -120,7 +121,7 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                 includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
                 includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
                 includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilAaKlage)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
 
