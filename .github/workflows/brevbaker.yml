@@ -15,7 +15,7 @@ on:
       - "ufoeremaler/**"
       - "pensjon-brevbaker/**"
       - ".github/workflows/.build-backend.yaml"
-      - ".github/workflows/pdfbygger-brevbaker.yml"
+      - ".github/workflows/brevbaker.yml"
       - "!**/**.md"
   push:
     branches:
@@ -33,7 +33,7 @@ on:
       - "ufoeremaler/**"
       - "pensjon-brevbaker/**"
       - ".github/workflows/.build-backend.yaml"
-      - ".github/workflows/pdfbygger-brevbaker.yml"
+      - ".github/workflows/brevbaker.yml"
       - "!**/**.md"
 env:
   JavaDistribution: "temurin"
