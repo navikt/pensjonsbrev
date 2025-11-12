@@ -2,7 +2,7 @@ app-name: "skribenten-backend"
 
 database:
   auditlog: "on"
-
+  postgresVersion: POSTGRES_14
 ingresses:
   - "https://pensjon-skribenten-api.intern.nav.no"
 
