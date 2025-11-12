@@ -1,8 +1,6 @@
 name: "Build and publish new LaTeX image"
 on:
   workflow_dispatch:
-env:
-  "IMAGE_LATEX": "ghcr.io/${{ github.repository }}/pensjon-latex:${$(date +'%Y-%m-%d-%H:%M')}"
 jobs:
   "build-container":
     name: "build latest texlive/XeTeX version from ctan"
@@ -27,3 +25,5 @@ jobs:
           docker push ${{ env.IMAGE_LATEX }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    env:
+      "IMAGE_LATEX": "ghcr.io/${{ github.repository }}/pensjon-latex:$(date +'%Y-%m-%d-%H_%M')"
