@@ -89,7 +89,7 @@ open class FakeBrevbakerService(
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkupWithDataUsage> = notYetStubbed()
+    ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,

@@ -329,12 +329,12 @@ class BrevredigeringService(
                         felles = pesysBrevdata.felles
                             .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
                             .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
-                    ).map {
+                    ).let {
                         // sjekker kun blocks her fordi det er eneste situasjonen hvor vi ønsker å informere bruker om å se over endringer
                         brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
-                    }.resultOrNull()
+                    }
 
-                    Api.PdfResponse(pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash), rendretBrevErEndret = rendretBrevErEndret ?: false)
+                    Api.PdfResponse(pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash), rendretBrevErEndret = rendretBrevErEndret)
                 }
             }
         }
@@ -541,7 +541,7 @@ class BrevredigeringService(
             vedtaksId = vedtaksId,
             brevkode = brevkode,
             avsenderEnhetsId = avsenderEnhetsId,
-        ).then { pesysData ->
+        ).map { pesysData ->
             brevbakerService.renderMarkup(
                 brevkode = brevkode,
                 spraak = spraak,

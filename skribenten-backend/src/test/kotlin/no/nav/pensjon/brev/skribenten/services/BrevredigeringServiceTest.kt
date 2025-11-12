@@ -122,7 +122,7 @@ class BrevredigeringServiceTest {
     private val brevbakerService = BrevredigeringFakeBrevbakerService()
 
     private class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
-        lateinit var renderMarkupResultat: suspend ((f: Felles) -> ServiceResult<LetterMarkup>)
+        lateinit var renderMarkupResultat: suspend ((f: Felles) -> LetterMarkup)
         lateinit var renderPdfResultat: LetterResponse
         lateinit var modelSpecificationResultat: TemplateModelSpecification
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
@@ -134,10 +134,10 @@ class BrevredigeringServiceTest {
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
             felles: Felles
-        ): ServiceResult<LetterMarkupWithDataUsage> =
+        ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .map { LetterMarkupWithDataUsageImpl(it, emptySet()) }
+                .let { LetterMarkupWithDataUsageImpl(it, emptySet()) }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
@@ -266,12 +266,9 @@ class BrevredigeringServiceTest {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupResultat = {
-            val signatur = it.signerendeSaksbehandlere
-            ServiceResult.Ok(
-                letter.medSignatur(
-                    saksbehandler = signatur?.saksbehandler,
-                    attestant = signatur?.attesterendeSaksbehandler
-                )
+            letter.medSignatur(
+                saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
+                attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
             )
         }
 
@@ -529,7 +526,7 @@ class BrevredigeringServiceTest {
         val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
         val freshRender =
             letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph"))))
-        brevbakerService.renderMarkupResultat = { ServiceResult.Ok(freshRender) }
+        brevbakerService.renderMarkupResultat = { freshRender }
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.oppdaterBrev(
@@ -568,7 +565,7 @@ class BrevredigeringServiceTest {
 
         brevbakerService.renderMarkupResultat = {
             delay(10.minutes)
-            ServiceResult.Ok(letter)
+            letter
         }
 
         val result = withTimeout(10.seconds) {
@@ -754,14 +751,11 @@ class BrevredigeringServiceTest {
 
             stagePdf("min andre pdf".encodeToByteArray())
             brevbakerService.renderMarkupResultat = {
-                val signatur = it.signerendeSaksbehandlere
-                ServiceResult.Ok(
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"), LiteralImpl(99, "new text"))))
-                        .medSignatur(
-                            saksbehandler = signatur?.saksbehandler,
-                            attestant = signatur?.attesterendeSaksbehandler
-                        )
-                )
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"), LiteralImpl(99, "new text"))))
+                    .medSignatur(
+                        saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
+                        attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
+                    )
             }
             penService.pesysBrevdata =
                 brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
@@ -911,7 +905,7 @@ class BrevredigeringServiceTest {
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         brevbakerService.renderPdfResultat = letterResponse
-        brevbakerService.renderMarkupResultat = { ServiceResult.Ok(letter) }
+        brevbakerService.renderMarkupResultat = { letter }
 
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
@@ -947,7 +941,7 @@ class BrevredigeringServiceTest {
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         brevbakerService.renderPdfResultat = letterResponse
-        brevbakerService.renderMarkupResultat = { ServiceResult.Ok(letter) }
+        brevbakerService.renderMarkupResultat = { letter }
 
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
@@ -1033,7 +1027,7 @@ class BrevredigeringServiceTest {
 
             brevbakerService.renderMarkupResultat = {
                 delay(100)
-                ServiceResult.Ok(letter)
+                letter
             }
 
             val hentBrev = (0..10).map {
@@ -1475,16 +1469,14 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan ikke markere brev klar til sending om ikke alle fritekst er fylt ut`(): Unit = runBlocking {
         brevbakerService.renderMarkupResultat = {
-            ServiceResult.Ok(
-                letter(
-                    ParagraphImpl(
-                        1,
-                        true,
-                        listOf(
-                            LiteralImpl(12, "Vi har "),
-                            LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
-                            LiteralImpl(14, " mottatt søknad.")
-                        )
+            letter(
+                ParagraphImpl(
+                    1,
+                    true,
+                    listOf(
+                        LiteralImpl(12, "Vi har "),
+                        LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
+                        LiteralImpl(14, " mottatt søknad.")
                     )
                 )
             )
@@ -1507,16 +1499,14 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan markere brev klar til sending om alle fritekst er fylt ut`(): Unit = runBlocking {
         brevbakerService.renderMarkupResultat = {
-            ServiceResult.Ok(
-                letter(
-                    ParagraphImpl(
-                        1,
-                        true,
-                        listOf(
-                            LiteralImpl(12, "Vi har "),
-                            LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
-                            LiteralImpl(14, " mottatt søknad.")
-                        )
+            letter(
+                ParagraphImpl(
+                    1,
+                    true,
+                    listOf(
+                        LiteralImpl(12, "Vi har "),
+                        LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
+                        LiteralImpl(14, " mottatt søknad.")
                     )
                 )
             )

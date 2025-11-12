@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.*
-import io.ktor.client.call.body
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.bodyAsText
-import io.ktor.client.utils.unwrapCancellationException
+import io.ktor.client.statement.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.io.EOFException
@@ -24,9 +24,9 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.cached
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
-import no.nav.pensjon.brev.skribenten.cached
 import no.nav.pensjon.brevbaker.api.model.*
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
@@ -40,7 +40,7 @@ interface BrevbakerService {
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkupWithDataUsage>
+    ): LetterMarkupWithDataUsage
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
@@ -99,8 +99,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkupWithDataUsage> =
-        client.post("/letter/redigerbar/markup-usage") {
+    ): LetterMarkupWithDataUsage {
+        val response = client.post("/letter/redigerbar/markup-usage") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -110,7 +110,17 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     language = spraak,
                 )
             )
-        }.toServiceResult()
+        }
+
+        if (response.status.isSuccess()) {
+            return response.body()
+        } else {
+            throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }
+                    ?: "Ukjent feil oppstod ved generering av markup for brevkode: $brevkode"
+            )
+        }
+    }
 
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
