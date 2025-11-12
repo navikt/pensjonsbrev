@@ -3,10 +3,13 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.typesafe.config.Config
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
@@ -38,10 +41,14 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
     override suspend fun getEnhet(enhetId: String): NavEnhet? =
         cache.cached(Cacheomraade.NORG , enhetId) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
-            client.get("api/v1/enhet/$enhetId")
-                .toServiceResult<NavEnhet>()
-                .onError { error, statusCode -> logger.error("Fant ikke Nav-enhet $enhetId: $statusCode - $error") }
-                .resultOrNull()
+            val response = client.get("api/v1/enhet/$enhetId")
+
+            if (response.status.isSuccess()) {
+                response.body()
+            } else {
+                logger.error("Feil ved henting av enhet $enhetId. Status: ${response.status} Message: ${response.bodyAsText()}")
+                null
+            }
         }
 }
 
