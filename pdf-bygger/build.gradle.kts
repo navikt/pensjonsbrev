@@ -74,6 +74,7 @@ dependencies {
     testImplementation(libs.assertJ)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation(testFixtures(project(":brevbaker-dsl")))
 }
 
 application {

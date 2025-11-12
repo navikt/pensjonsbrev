@@ -1,9 +1,8 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.pensjon.brev.pdfbygger.latex
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
@@ -20,8 +19,9 @@ import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
+import no.nav.pensjon.brev.pdfbygger.latex.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -38,6 +38,7 @@ object Helpers : HasModel<TestTemplateDto>
 
 private const val FIND_FAILING_CHARACTERS = false
 
+@OptIn(InterneDataklasser::class)
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PensjonLatexITest {
@@ -94,7 +95,7 @@ class PensjonLatexITest {
                 """.trimIndent()
             )
         }
-        assertThat(invalidCharacters, isEmpty)
+        assertThat(invalidCharacters).isEmpty()
     }
 
     private fun isValidCharacters(begin: Int, end: Int, invalidCharacters: ArrayList<Int>) {
@@ -171,26 +172,26 @@ class PensjonLatexITest {
 
 @OptIn(InternKonstruktoer::class)
 object TestTemplateDtoSelectors {
-    val etNavnSelector = object : TemplateModelSelector<no.nav.pensjon.brev.template.render.TestTemplateDto, kotlin.String> {
-        override val className: String = "no.nav.pensjon.brev.template.render.TestTemplateDto"
+    val etNavnSelector = object : TemplateModelSelector<TestTemplateDto, String> {
+        override val className: String = "no.nav.pensjon.brev.pdfbygger.latex.TestTemplateDto"
         override val propertyName: String = "etNavn"
         override val propertyType: String = "kotlin.String"
-        override val selector = no.nav.pensjon.brev.template.render.TestTemplateDto::etNavn
+        override val selector = TestTemplateDto::etNavn
     }
 
-    val TemplateGlobalScope<no.nav.pensjon.brev.template.render.TestTemplateDto>.etNavn: Expression<kotlin.String>
+    val TemplateGlobalScope<TestTemplateDto>.etNavn: Expression<String>
         get() = Expression.UnaryInvoke(
             Expression.FromScope.Argument(),
             UnaryOperation.Select(etNavnSelector)
         )
 
-    val Expression<no.nav.pensjon.brev.template.render.TestTemplateDto>.etNavn: Expression<kotlin.String>
+    val Expression<TestTemplateDto>.etNavn: Expression<String>
         get() = Expression.UnaryInvoke(
             this,
             UnaryOperation.Select(etNavnSelector)
         )
 
-    val Expression<no.nav.pensjon.brev.template.render.TestTemplateDto?>.etNavn_safe: Expression<kotlin.String?>
+    val Expression<TestTemplateDto?>.etNavn_safe: Expression<String?>
         get() = Expression.UnaryInvoke(
             this,
             UnaryOperation.SafeCall(etNavnSelector)
