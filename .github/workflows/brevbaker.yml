@@ -110,7 +110,6 @@ jobs:
           ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
           ./gradlew :pensjon-brevbaker:integrationTest
         env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
       - name: Publish Test Report
         if: ${{ always() }}
