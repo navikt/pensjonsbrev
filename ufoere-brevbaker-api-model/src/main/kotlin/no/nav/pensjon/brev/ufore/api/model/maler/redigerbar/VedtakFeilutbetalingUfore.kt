@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.Saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
+import java.time.Month
 
 data class VedtakFeilutbetalingUforeIngenTilbakekrevingDto(
     override val pesysData: PesysData,
@@ -45,6 +46,7 @@ data class OversiktOverFeilutbetalingPEDto(
     val resultatAvVurderingenForTotalbelop: TilbakekrevingResultat,
     val skattefradragSomInnkrevesTotalbelop: Int,
     val tilbakekrevingPerManed: List<Tilbakekreving>,
+    val feilutbetalingPerArListe: List<FeilutbetalingPerAr>? = null,
 ) : VedleggData {
     data class Tilbakekreving(
         val manedOgAr: LocalDate,
@@ -56,6 +58,20 @@ data class OversiktOverFeilutbetalingPEDto(
         val ytelsenMedFeilutbetaling: KonteringType,
     )
 }
+
+data class FeilutbetalingPerAr(
+    val ar: Int,
+    val feilutbetalingManed: List<FeilutbetalingManed>
+)
+
+data class FeilutbetalingManed(
+    val maned: Month,
+    val feilutbetaltBelop: Int,
+    val resultat: TilbakekrevingResultat,
+    val bruttoBelop: Int,
+    val skatt: Int,
+    val nettobelopBelop: Int,
+)
 
 data class DineRettigheterOgMulighetTilAKlageDto(
     val sakstype: Sakstype,

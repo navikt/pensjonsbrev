@@ -57,14 +57,8 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din ikke er nok varig nedsatt. " +
-                        "Fordi du fikk arbeidsavklaringspenger da du søkte om uføretrygd, må inntektsevnen din være varig nedsatt med minst 40 prosent." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er varig nedsatt med mindre enn 40 prosent." })
             }
-
-            paragraph {
-                text(bokmal { + fritekst("konkret begrunnelse der det er nødvendig") })
-            }
-
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
@@ -86,10 +80,9 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { + " Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
                     "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
                     "og vi har derfor fastsatt din nedsatte inntektsevne til " +
-                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent."})
-            }
-            paragraph {
-                text(bokmal { + "Vi har kommet fram til at inntektsevnen din ikke er varig nedsatt med minst 40 prosent."})
+                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " +
+                        "Fordi du fikk arbeidsavklaringspenger da du søkte om uføretrygd, må inntektsevnen din være varig nedsatt med minst 40 prosent for å få uføretrygd. " +
+                        "Du omfattes heller ikke av unntaksreglene for yrkesskade og yrkessykdom."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})

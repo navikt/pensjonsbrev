@@ -1,4 +1,4 @@
-name: "Build and deploy brevbaker and pdf-bygger"
+name: "Build and deploy pdf-bygger"
 on:
   workflow_dispatch:
   pull_request:
@@ -6,17 +6,9 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "template-model-generator/**"
-      - "brevbaker/**"
-      - "brevbaker-dsl/**"
-      - "etterlattemaler/**"
-      - "pensjonsmaler/**"
-      - "aldersmaler/**"
-      - "ufoeremaler/**"
-      - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
-      - ".github/workflows/pdfbygger-brevbaker.yml"
+      - ".github/workflows/pdfbygger.yml"
       - "!**/**.md"
   push:
     branches:
@@ -25,23 +17,16 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "template-model-generator/**"
-      - "brevbaker/**"
-      - "brevbaker-dsl/**"
-      - "etterlattemaler/**"
-      - "pensjonsmaler/**"
-      - "aldersmaler/**"
-      - "ufoeremaler/**"
-      - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
-      - ".github/workflows/pdfbygger-brevbaker.yml"
+      - ".github/workflows/pdfbygger.yml"
       - "!**/**.md"
   # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
   schedule:
     - cron: "0 5 1,15 * *"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+  "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger:main"
   JavaDistribution: "temurin"
   JavaVersion: 21
 
@@ -51,23 +36,6 @@ permissions:
   id-token: write
 
 jobs:
-  buildBrevbaker:
-    uses: ./.github/workflows/.build-backend.yaml
-    secrets: inherit
-    with:
-      image_suffix: brevbaker
-      path: pensjon-brevbaker
-      extraModulesToBuild: ':pensjon-brevbaker-api-model:publishToMavenLocal :alder-brevbaker-api-model:publishToMavenLocal :ufoere-brevbaker-api-model:publishToMavenLocal'
-      buildImage: true
-
-  salsa-brevbaker:
-    uses: ./.github/workflows/.salsa.yaml
-    needs: buildBrevbaker
-    secrets: inherit
-    with:
-      digest: ${{ needs.buildBrevbaker.outputs.digest }}
-      image: ${{ needs.buildBrevbaker.outputs.image }}
-
   buildPdfbygger:
     uses: ./.github/workflows/.build-backend.yaml
     secrets: inherit
@@ -93,14 +61,26 @@ jobs:
         with:
           name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
-      - name: "Publish container image to ghcr.io"
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          registry: "https://ghcr.io"
+          username: ${{ github.repository }}
+          password: ${{ github.token }}
+      - name: "Build Docker image"
+        run: | 
+          docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
+      - name: "Push image with sha"
         run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
           docker push ${IMAGE_PDF_BYGGER}
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
+      - name: "Tag image with main"
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          docker tag ${IMAGE_PDF_BYGGER} ${IMAGE_BRANCH}
+      - name: "Push image with main"
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          docker push ${IMAGE_BRANCH}
 
   salsa-pdfbygger:
     uses: ./.github/workflows/.salsa.yaml
@@ -131,16 +111,6 @@ jobs:
   runIntegrationTests:
     name: "Integration tests"
     needs: [ pushPdfByggerToGithubRegistry, changes ]
-    services:
-      pdf-bygger:
-        env:
-          PDF_BYGGER_COMPILE_TMP_DIR: "/tmp"
-        ports:
-          - 8081:8080
-        image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
-        credentials:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest-16-cores
     permissions:
       statuses: write
@@ -159,12 +129,10 @@ jobs:
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :pensjon-brevbaker:integrationTest
+          ./gradlew :pdf-bygger:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+          "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
@@ -177,7 +145,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: visuals
-          path: pensjon-brevbaker/build/test_visual/
+          path: pdf-bygger/build/test_visual/
 
   analyzeImages:
     name: "Analyze images"
@@ -193,18 +161,18 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: visuals
-          path: pensjon-brevbaker/build/test_visual/
+          path: pdf-bygger/build/test_visual/
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
         with:
-          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
+          command: mogrify -path pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pdf-bygger/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
       - run: npm install --save-dev @percy/cli
       - name: Publish visual-tests to percy
         run: |
-          npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
+          npx percy upload pdf-bygger/build/test_visual/ > percy.log
           cat percy.log
           URL=$(cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g')
           if [[ $URL ]]; then echo $URL > percy-build-url;else echo "Percy upload feilet" > percy-build-url;fi
@@ -217,16 +185,6 @@ jobs:
           issue-number: ${{ github.event.number }}
           body-path: percy-build-url
 
-  deployBrevbakerToDev:
-    name: "Deploy brevbaker to dev"
-    uses: ./.github/workflows/.deploy.yaml
-    secrets: inherit
-    needs: [runIntegrationTests, buildBrevbaker]
-    with:
-      cluster: "dev-gcp"
-      resource: "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
-      image: ${{needs.buildBrevbaker.outputs.image}}
-      vars: "pensjon-brevbaker/.nais/dev.yaml"
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
@@ -238,17 +196,6 @@ jobs:
       resource: "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml"
       image: ${{needs.buildPdfbygger.outputs.image}}
       vars: "pdf-bygger/.nais/dev.yaml"
-
-  deployBrevbakerToProduction:
-    name: "Deploy brevbaker to production"
-    uses: ./.github/workflows/.deploy.yaml
-    secrets: inherit
-    needs: [runIntegrationTests, buildBrevbaker]
-    with:
-      cluster: "prod-gcp"
-      resource: "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
-      image: ${{needs.buildBrevbaker.outputs.image}}
-      vars: "pensjon-brevbaker/.nais/prod.yaml"
 
   deployPdfByggerToProd:
     name: "Deploy pdf-bygger to prod"
@@ -263,7 +210,8 @@ jobs:
 
   "klarTilMerge":
     name: "Klar til merge"
-    needs: [buildBrevbaker, buildPdfbygger, runIntegrationTests]
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [buildPdfbygger, pushPdfByggerToGithubRegistry, runIntegrationTests]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5

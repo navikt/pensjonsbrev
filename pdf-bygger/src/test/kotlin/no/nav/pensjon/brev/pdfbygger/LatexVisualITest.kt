@@ -1,14 +1,13 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.LaTeXCompilerService
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.copy
 import no.nav.brev.brevbaker.renderTestPdfOutline
 import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -20,14 +19,16 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 @Tag(TestTags.INTEGRATION_TEST)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     private fun render(
         overrideName: String? = null,
@@ -123,6 +124,7 @@ class LatexVisualITest {
             }
             title1 { text(bokmal { +"Title 1" }) }
             title2 { text(bokmal { +"Title 2" }) }
+            title3 { text(bokmal { +"Title 3" }) }
         }
     }
 
@@ -393,12 +395,12 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
-        title2 { text(bokmal { +"Second title" }) }
-    }
-
     private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle1() {
         title1 { text(bokmal { +"First title" }) }
+    }
+
+    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
+        title2 { text(bokmal { +"Second title" }) }
     }
 
     enum class ElementType(val description: String) {

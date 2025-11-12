@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
+import java.time.Month
 import java.time.YearMonth
 
 @JvmName("formatLocalDate")
@@ -14,6 +15,9 @@ private fun dateFormatter(short: Boolean): LocalizedFormatter<LocalDate> =
     if (short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat
 
 fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
+
+fun Expression<Month>.format(short: Boolean = false): Expression<String> =
+    if (short) this.format(LocalizedFormatter.MonthFormatterShort) else this.format(LocalizedFormatter.MonthFormatter)
 
 @JvmName("formatYearMonth")
 fun Expression<YearMonth>.formatYearMonth(): Expression<String> = this.format(LocalizedFormatter.YearMonthFormatter)

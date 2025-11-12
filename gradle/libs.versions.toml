@@ -6,7 +6,7 @@ assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.19.0"
-commonVersion = "2.10.0"
+commonVersion = "2.11.0"
 exposedVersion = "0.61.0"
 flywayVersion = "11.15.0"
 hamkrestVersion = "1.8.0.1"
@@ -20,6 +20,7 @@ logstashVersion = "9.0"
 micrometerVersion = "1.15.5"
 pdfboxVersion = "3.0.6"
 postgresqlVersion = "42.7.8"
+testcontainersCoreVersion = "2.0.1"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.1.1"
 valkeyVersion = "5.5.0"
@@ -93,6 +94,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "ju
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 
 [bundles]
 junit = ["junit-jupiter", "junit-platform-launcher"]

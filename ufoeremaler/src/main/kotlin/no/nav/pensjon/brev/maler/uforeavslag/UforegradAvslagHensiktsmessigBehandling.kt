@@ -53,6 +53,29 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
             }
+            paragraph {
+                text(bokmal { +"Å ha gjennomført «all hensiktsmessig behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskere og kommer i arbeid, skal være forsøkt." })
+            }
+            paragraph {
+                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom " })
+                list {
+                    item {
+                        text(
+                            bokmal { +"du er i behandling" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er henvist til behandling" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du er anbefalt behandling" },
+                        )
+                    }
+                }
+            }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
@@ -66,8 +89,8 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
             paragraph {
                 text(bokmal {
                     +"Vi kan ikke utelukke at behandlingen kan bedre funksjons- og inntektsevnen din. " +
-                            "Derfor vurderer vi at du må gjennomføre mer behandling. Før du har gått gjennom all behandling " +
-                            "er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
+                            "Derfor vurderer vi at du må gjennomføre hensiktsmessig behandling. " +
+                            "Før du har gått gjennom all hensiktsmessig behandling, er det for tidlig å ta stilling til om arbeidsrettede tiltak er prøvd. "
                 })
             }
             paragraph {

@@ -1,5 +1,8 @@
 package brev.maler.aldersovergang
 
+import brev.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.model.alder.aldersovergang.AlderspensjonVedVirk
 import no.nav.pensjon.brev.model.alder.aldersovergang.BeregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
@@ -15,5 +18,8 @@ fun createVedtakAldersovergang67AarGarantitilleggAutoDto(): VedtakAldersovergang
         alderspensjonVedVirk = AlderspensjonVedVirk(
             totalPensjon = Kroner(5678),
             uttaksgrad = 100
-        )
+        ),
+        orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(Sakstype.ALDER),
+        maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+        maanedligPensjonFoerSkattAP2025Dto = null,
     )

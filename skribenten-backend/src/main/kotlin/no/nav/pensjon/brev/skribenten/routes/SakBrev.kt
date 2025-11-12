@@ -112,9 +112,14 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             brevredigeringService.hentBrev(sak.saksId, brevId, reserver)
                 ?.onOk { brev ->
                     call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev))
-                }?.onError { message, statusCode ->
-                    call.application.log.error("$statusCode - Feil ved henting av brev: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
+                }?.onError { message, statusCode, tittel ->
+                    if (statusCode == HttpStatusCode.UnprocessableEntity) {
+                        logger.info("$statusCode - Funksjonell feil ved henting av brev: $message")
+                        call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved henting av brev", message))
+                    } else {
+                        logger.error("$statusCode - Feil ved henting av brev: $message")
+                        call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
+                    }
                 }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
@@ -133,7 +138,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             val sak: Pen.SakSelection = call.attributes[SakKey]
 
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
-                ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
+                ?.onOk { call.respond(it) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
@@ -146,9 +151,14 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
 
                 brevredigeringService.hentBrevAttestering(sak.saksId, brevId, reserver)
                     ?.onOk { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
-                    ?.onError { message, statusCode ->
-                        call.application.log.error("$statusCode - Feil ved henting av brev: $message")
-                        call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
+                    ?.onError { message, statusCode, tittel ->
+                        if (statusCode == HttpStatusCode.UnprocessableEntity) {
+                            logger.info("$statusCode - Funksjonell feil ved attestering av brev: $message")
+                            call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved attestering av brev", message))
+                        } else {
+                            logger.error("$statusCode - Feil ved attestering av brev: $message")
+                            call.respond(HttpStatusCode.InternalServerError, "Feil ved attestering av brev.")
+                        }
                     }
                     ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
             }
