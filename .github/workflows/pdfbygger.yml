@@ -61,24 +61,26 @@ jobs:
         with:
           name: pdf-bygger-jar
           path: pdf-bygger/build/libs/
-      - name: "Publish PR container image to ghcr.io"
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          registry: "https://ghcr.io"
+          username: ${{ github.repository }}
+          password: ${{ github.token }}
+      - name: "Build Docker image"
+        run: | 
+          docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
+      - name: "Push image with sha"
         run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
           docker push ${IMAGE_PDF_BYGGER}
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
-      - name: "Publish main container image to ghcr.io"
+      - name: "Tag image with main"
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
-          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_BRANCH}  || docker build --pull --tag ${IMAGE_BRANCH} pdf-bygger
+          docker tag ${IMAGE_PDF_BYGGER} ${IMAGE_BRANCH}
+      - name: "Push image with main"
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
           docker push ${IMAGE_BRANCH}
-        env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          OUTPUT_IMAGE: ${{ needs.buildPdfbygger.outputs.image }}
 
   salsa-pdfbygger:
     uses: ./.github/workflows/.salsa.yaml
