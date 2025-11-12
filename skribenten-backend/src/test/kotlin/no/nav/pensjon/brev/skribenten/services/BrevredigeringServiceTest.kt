@@ -58,7 +58,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
 class BrevredigeringServiceTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
+    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     init {
         KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
