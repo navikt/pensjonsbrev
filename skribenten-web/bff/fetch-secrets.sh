@@ -15,5 +15,3 @@ mkdir -p secrets
 secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp skribenten-web -o=jsonpath='{.spec.secretName}')"
 kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret ${secret_name} -o json | jq '.data | map_values(@base64d)' | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env
 echo ".env file created."
-
-echo "All secrets are fetched and stored in the \"secrets\" folder."

@@ -99,8 +99,6 @@ services:
     profiles:
       - skribenten
     image: ghcr.io/nais/texas:latest
-    ports:
-      - "3000:3000"
     environment:
       BIND_ADDRESS: "0.0.0.0:3000"
       AZURE_ENABLED: "true"
