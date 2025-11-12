@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev
 
+import brev.maler.aldersovergang.createEndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import brev.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
 import brev.maler.aldersovergang.createVedtakEndringAFPEndretOpptjeningAutoDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonGarantitilleggDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandAutoDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandSaerskiltSatsDto
+import brev.maler.stans.createVedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.fixtures.alder.createAlderspensjonGjtOppryddingAutoDto
@@ -32,6 +34,8 @@ import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantit
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
+import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
@@ -60,6 +64,8 @@ object Fixtures : LetterDataFactory {
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
             EmptyBrevdata::class -> EmptyBrevdata as T
+            EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
+            VedtakStansAlderspensjonFlyttingMellomLandDto::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 }
