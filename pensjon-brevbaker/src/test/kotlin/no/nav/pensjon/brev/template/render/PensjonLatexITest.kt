@@ -3,19 +3,28 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.InternKonstruktoer
 import no.nav.brev.brevbaker.FellesFactory
+import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.brev.brevbaker.LaTeXCompilerService
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.TemplateModelSelector
+import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -156,5 +165,36 @@ class PensjonLatexITest {
             }
         }
     }
+
+}
+
+
+@OptIn(InternKonstruktoer::class)
+object TestTemplateDtoSelectors {
+    val etNavnSelector = object : TemplateModelSelector<no.nav.pensjon.brev.template.render.TestTemplateDto, kotlin.String> {
+        override val className: String = "no.nav.pensjon.brev.template.render.TestTemplateDto"
+        override val propertyName: String = "etNavn"
+        override val propertyType: String = "kotlin.String"
+        override val selector = no.nav.pensjon.brev.template.render.TestTemplateDto::etNavn
+    }
+
+    val TemplateGlobalScope<no.nav.pensjon.brev.template.render.TestTemplateDto>.etNavn: Expression<kotlin.String>
+        get() = Expression.UnaryInvoke(
+            Expression.FromScope.Argument(),
+            UnaryOperation.Select(etNavnSelector)
+        )
+
+    val Expression<no.nav.pensjon.brev.template.render.TestTemplateDto>.etNavn: Expression<kotlin.String>
+        get() = Expression.UnaryInvoke(
+            this,
+            UnaryOperation.Select(etNavnSelector)
+        )
+
+    val Expression<no.nav.pensjon.brev.template.render.TestTemplateDto?>.etNavn_safe: Expression<kotlin.String?>
+        get() = Expression.UnaryInvoke(
+            this,
+            UnaryOperation.SafeCall(etNavnSelector)
+        )
+
 
 }
