@@ -79,7 +79,7 @@ open class FakeBrevbakerService(
     open var maler: List<TemplateDescription.Redigerbar> = listOf(),
     open var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf(),
 ) : BrevbakerService {
-    override suspend fun getTemplates() = ServiceResult.Ok(maler)
+    override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
 

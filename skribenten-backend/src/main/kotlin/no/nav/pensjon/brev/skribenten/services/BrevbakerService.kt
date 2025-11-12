@@ -48,7 +48,7 @@ interface BrevbakerService {
         felles: Felles,
         redigertBrev: LetterMarkup,
     ): LetterResponse
-    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>>
+    suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
 }
 
@@ -112,8 +112,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             )
         }
 
-        if (response.status.isSuccess()) {
-            return response.body()
+        return if (response.status.isSuccess()) {
+            response.body()
         } else {
             throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }
@@ -152,18 +152,32 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         }
     }
 
-    override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
-        client.get("/templates/redigerbar") {
+    override suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? {
+        val response = client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
             }
-        }.toServiceResult()
+        }
+        return if (response.status.isSuccess()) {
+             response.body()
+        } else {
+            logger.error("Feilet ved henting av maler fra Brevbaker: ${response.status.value} - ${response.bodyAsText()}")
+            null
+        }
+    }
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode) {
-            client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
-                .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
-                .resultOrNull()
+            val response = client.get("/templates/redigerbar/${brevkode.kode()}")
+
+            if (response.status.isSuccess()) {
+                 response.body()
+            } else if (response.status == HttpStatusCode.NotFound) {
+                null
+            } else {
+                logger.error("Feilet ved henting av templateDescription for $brevkode: ${response.status.value} - ${response.bodyAsText()}")
+                null
+            }
         }
 
     override val name = "Brevbaker"
