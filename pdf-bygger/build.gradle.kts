@@ -5,7 +5,6 @@ val javaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     application
-    alias(libs.plugins.ktor) apply true
 }
 
 group="no.nav.pensjon.brev"
@@ -81,10 +80,4 @@ dependencies {
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
-}
-
-ktor {
-    fatJar {
-        archiveFileName.set("${project.name}.jar")
-    }
 }
