@@ -30,6 +30,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.vedtattIPesys
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterBosattUtland
@@ -106,7 +107,7 @@ object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonFore
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(Felles.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
