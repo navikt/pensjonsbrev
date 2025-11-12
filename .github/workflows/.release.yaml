@@ -50,8 +50,6 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :${{ inputs.path }}:build
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
         if: ${{ github.ref == 'refs/heads/main' && inputs.changes == 'true' }}
         run: "./gradlew :${{ inputs.path }}:publish -Dorg.gradle.configuration-cache=false"
