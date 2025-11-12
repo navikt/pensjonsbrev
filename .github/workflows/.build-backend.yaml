@@ -84,5 +84,5 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: ${{inputs.path}}-jar
-          path: ${{ inputs.path }}/build/libs/
+          path: ${{ inputs.path }}/build/install/${{ inputs.path }}/lib
           if-no-files-found: 'error'
