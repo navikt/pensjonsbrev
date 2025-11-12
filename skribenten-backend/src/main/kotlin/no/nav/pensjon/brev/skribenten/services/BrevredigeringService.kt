@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
@@ -20,7 +19,6 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
-import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -45,6 +43,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
     class AlleredeAttestertException(message: String) : BrevredigeringException(message)
     class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
     class VedtaksbrevKreverVedtaksId(message: String) : BrevredigeringException(message)
+    class IkkeTilgangTilEnhetException(message: String) : BrevredigeringException(message)
 }
 
 interface HentBrevService {
@@ -558,19 +557,13 @@ class BrevredigeringService(
             )
         }
 
-    private suspend fun <T> harTilgangTilEnhet(
-        enhetsId: String?,
-        then: suspend () -> ServiceResult<T>,
-    ): ServiceResult<T> {
-        return if (enhetsId == null) {
+    private suspend fun <T> harTilgangTilEnhet(enhetsId: String?, then: suspend () -> T): T {
+        val ident = PrincipalInContext.require().navIdent.id
+
+        return if (enhetsId == null || navansattService.harTilgangTilEnhet(ident, enhetsId)) {
             then()
         } else {
-            navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
-                .then { harTilgang ->
-                    if (harTilgang) {
-                        then()
-                    } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
-                }
+            throw IkkeTilgangTilEnhetException("Mangler tilgang til NavEnhet $enhetsId")
         }
     }
 

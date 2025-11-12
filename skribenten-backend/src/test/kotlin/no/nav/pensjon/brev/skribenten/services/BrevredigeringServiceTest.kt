@@ -472,18 +472,17 @@ class BrevredigeringServiceTest {
     @Test
     fun `cannot create brevredigering for a NavEnhet without access to it`(): Unit = runBlocking {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
-        val result = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.opprettBrev(
-                sak = sak1,
-                vedtaksId = null,
-                brevkode = Testbrevkoder.INFORMASJONSBREV,
-                spraak = LanguageCode.ENGLISH,
-                avsenderEnhetsId = "The Matrix",
-                saksbehandlerValg = saksbehandlerValg
-            )
-        }
-        assertThat(result).isInstanceOfSatisfying<ServiceResult.Error<*>> {
-            assertThat(it.statusCode).isEqualTo(HttpStatusCode.Forbidden)
+        assertThrows<IkkeTilgangTilEnhetException> {
+            withPrincipal(saksbehandler1Principal) {
+                brevredigeringService.opprettBrev(
+                    sak = sak1,
+                    vedtaksId = null,
+                    brevkode = Testbrevkoder.INFORMASJONSBREV,
+                    spraak = LanguageCode.ENGLISH,
+                    avsenderEnhetsId = "The Matrix",
+                    saksbehandlerValg = saksbehandlerValg
+                )
+            }
         }
     }
 

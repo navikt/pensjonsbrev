@@ -36,7 +36,7 @@ open class FakeNavansattService(
     val navansatte: Map<String, String> = emptyMap(),
 ) : NavansattService {
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) =
-        ServiceResult.Ok(harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false))
+        harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false)
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
         Navansatt(
