@@ -296,9 +296,9 @@ object Felles {
 
             paragraph {
                 text(
-                    bokmal { +"Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}" },
-                    nynorsk { +"Meir informasjon om klagerettar finn du på ${Constants.KLAGERETTIGHETER_URL}" },
-                    english { +"More information about appeal rights can be found at ${Constants.KLAGERETTIGHETER_URL}" }
+                    bokmal { +"Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}." },
+                    nynorsk { +"Meir informasjon om klagerettar finn du på ${Constants.KLAGERETTIGHETER_URL}." },
+                    english { +"More information about appeal rights can be found at ${Constants.KLAGERETTIGHETER_URL}." }
                 )
             }
         }
