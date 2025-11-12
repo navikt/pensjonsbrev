@@ -39,6 +39,9 @@ tasks {
     compileTestJava {
         targetCompatibility = javaTarget
     }
+    build {
+        dependsOn(installDist)
+    }
 }
 
 tasks.compileTestKotlin {
