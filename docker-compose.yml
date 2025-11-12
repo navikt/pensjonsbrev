@@ -95,6 +95,21 @@ services:
       - WONDERWALL_UPSTREAM_HOST=skribenten-bff:8084
       - WONDERWALL_LOG_LEVEL=debug
       - WONDERWALL_LOG_FORMAT=text
+  texas:
+    profiles:
+      - skribenten
+    image: ghcr.io/nais/texas:latest
+    ports:
+      - "3000:3000"
+    environment:
+      BIND_ADDRESS: "0.0.0.0:3000"
+      AZURE_ENABLED: "true"
+      TEXAS_HTTP_CONNECT_TIMEOUT_MILLIS: "10000"
+      TEXAS_HTTP_READ_TIMEOUT_MILLIS: "10000"
+      TEXAS_HTTP_OVERALL_TIMEOUT_MILLIS: "10000"
+    env_file:
+      - skribenten-web/bff/.env
+
   skribenten-bff:
     profiles:
       - skribenten
@@ -113,6 +128,9 @@ services:
       SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
       PSAK_BASE_URL: "https://pensjon-psak-q2.intern.dev.nav.no"
+      NAIS_TOKEN_ENDPOINT: http://texas:3000/api/v1/token
+      NAIS_TOKEN_EXCHANGE_ENDPOINT: http://texas:3000/api/v1/token/exchange
+      NAIS_TOKEN_INTROSPECTION_ENDPOINT: http://texas:3000/api/v1/introspect
 
   brevoppskrift:
     profiles:
