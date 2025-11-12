@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
 import kotlinx.coroutines.runBlocking
-import no.nav.brev.InternKonstruktoer
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LaTeXCompilerService
@@ -9,14 +8,11 @@ import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.TemplateModelSelector
-import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.pdfbygger.latex.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
@@ -28,8 +24,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.opentest4j.AssertionFailedError
 import org.slf4j.LoggerFactory
 
-data class TestTemplateDto(val etNavn: String)
-
 private const val FIND_FAILING_CHARACTERS = false
 
 @OptIn(InterneDataklasser::class)
@@ -37,14 +31,13 @@ private const val FIND_FAILING_CHARACTERS = false
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
-    private val brevData = TestTemplateDto("Ole")
 
     private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     @Test
     fun canRender() {
         val template = createTemplate(
-            letterDataType = TestTemplateDto::class,
+            letterDataType = EmptyBrevdata::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
@@ -56,12 +49,10 @@ class PensjonLatexITest {
             title { text(bokmal { +"En fin tittel" }) }
             outline {
                 paragraph {
-                    text(bokmal { +"Argumentet etNavn er: " })
-                    eval(etNavn)
-                }
+                    text(bokmal { +"Argumentet etNavn er: " }) }
             }
         }
-        LetterImpl(template, brevData, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
+        LetterImpl(template, EmptyBrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -113,7 +104,7 @@ class PensjonLatexITest {
     private fun testCharacters(startChar: Int, endChar: Int): Boolean {
         try {
             val testTemplate = createTemplate(
-                letterDataType = TestTemplateDto::class,
+                letterDataType = EmptyBrevdata::class,
                 languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",
@@ -126,12 +117,11 @@ class PensjonLatexITest {
                 outline {
                     paragraph {
                         text(bokmal { +addChars(startChar, endChar) + "test" })
-                        eval(etNavn)
                     }
                 }
             }
 
-            LetterImpl(testTemplate, brevData, Bokmal, FellesFactory.felles)
+            LetterImpl(testTemplate, EmptyBrevdata, Bokmal, FellesFactory.felles)
                 .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
 
             return true
@@ -161,21 +151,4 @@ class PensjonLatexITest {
         }
     }
 
-}
-
-
-object TestTemplateDtoSelectors {
-    val etNavnSelector = object : TemplateModelSelector<TestTemplateDto, String> {
-        override val className: String = "no.nav.pensjon.brev.pdfbygger.latex.TestTemplateDto"
-        override val propertyName: String = "etNavn"
-        override val propertyType: String = "kotlin.String"
-        override val selector = TestTemplateDto::etNavn
-    }
-
-    val etNavn: Expression<String>
-        get() = Expression.UnaryInvoke(
-            @OptIn(InternKonstruktoer::class)
-            Expression.FromScope.Argument(),
-            UnaryOperation.Select(etNavnSelector)
-        )
 }
