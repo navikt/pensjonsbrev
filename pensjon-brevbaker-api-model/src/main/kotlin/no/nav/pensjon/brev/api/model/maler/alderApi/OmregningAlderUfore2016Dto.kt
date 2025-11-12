@@ -33,7 +33,7 @@ data class OmregningAlderUfore2016Dto(
     val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?,
     val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
-    val sokerSivilstand: Sivilstand,
+    val sivilstand: Sivilstand,
 
 ) : BrevbakerBrevdata
 

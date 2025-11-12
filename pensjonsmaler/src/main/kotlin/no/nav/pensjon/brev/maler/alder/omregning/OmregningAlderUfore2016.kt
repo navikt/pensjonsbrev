@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.opplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.persongrunnlagAvdod
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.skjermingstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.uttaksgrad
@@ -41,6 +42,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Redig
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
+import no.nav.pensjon.brev.api.model.maler.alderApi.SivilstandSelectors.borMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.alderApi.SivilstandSelectors.over2g
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
@@ -113,6 +116,9 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     avtaleland = pesysData.inngangOgEksportVurdering.avtaleland,
                     innvilgetFor67 = pesysData.innvilgetFor67,
                     fullTrygdetid = pesysData.fullTrygdetid,
+                    borMedSivilstand = pesysData.sivilstand.borMedSivilstand,
+                    over2g = pesysData.sivilstand.over2g,
+
                 )
             )
 
