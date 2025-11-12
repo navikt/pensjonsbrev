@@ -10,13 +10,10 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.UnaryOperation
-import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.pdfbygger.latex.TestTemplateDtoSelectors.etNavn
@@ -32,9 +29,6 @@ import org.opentest4j.AssertionFailedError
 import org.slf4j.LoggerFactory
 
 data class TestTemplateDto(val etNavn: String)
-
-@TemplateModelHelpers
-object Helpers : HasModel<TestTemplateDto>
 
 private const val FIND_FAILING_CHARACTERS = false
 
@@ -170,7 +164,6 @@ class PensjonLatexITest {
 }
 
 
-@OptIn(InternKonstruktoer::class)
 object TestTemplateDtoSelectors {
     val etNavnSelector = object : TemplateModelSelector<TestTemplateDto, String> {
         override val className: String = "no.nav.pensjon.brev.pdfbygger.latex.TestTemplateDto"
@@ -179,23 +172,10 @@ object TestTemplateDtoSelectors {
         override val selector = TestTemplateDto::etNavn
     }
 
-    val TemplateGlobalScope<TestTemplateDto>.etNavn: Expression<String>
+    val etNavn: Expression<String>
         get() = Expression.UnaryInvoke(
+            @OptIn(InternKonstruktoer::class)
             Expression.FromScope.Argument(),
             UnaryOperation.Select(etNavnSelector)
         )
-
-    val Expression<TestTemplateDto>.etNavn: Expression<String>
-        get() = Expression.UnaryInvoke(
-            this,
-            UnaryOperation.Select(etNavnSelector)
-        )
-
-    val Expression<TestTemplateDto?>.etNavn_safe: Expression<String?>
-        get() = Expression.UnaryInvoke(
-            this,
-            UnaryOperation.SafeCall(etNavnSelector)
-        )
-
-
 }
