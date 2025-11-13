@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.fixtures
+package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
@@ -8,7 +8,7 @@ fun createVedtakOmInnvilgelseAvOmsorgspoengDto() =
     VedtakOmInnvilgelseAvOmsorgspoengDto(
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = VedtakOmInnvilgelseAvOmsorgspoengDto.PesysData(
-            brukerNavn = "Per Pensjon",
+            omsorgspersonNavn = "Per Omsorgsperson Pensjon",
             omsorgsopptjeningsaar = "2025",
             orienteringOmSaksbehandlingstidDto = Fixtures.create()
         )

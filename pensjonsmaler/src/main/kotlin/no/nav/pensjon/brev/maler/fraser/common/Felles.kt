@@ -120,7 +120,7 @@ object Felles {
                     bokmal { + "Du finner mer informasjon på $merInformasjonUrl." +
                             " På $KONTAKT_URL kan du chatte eller skrive til oss." +
                             " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer" +
-                            " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID." },
+                            " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID." },
                     english { + "You can find more information at $merInformasjonUrl." +
                             " At $KONTAKT_URL, you can chat or write to us." +
                             " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer," +

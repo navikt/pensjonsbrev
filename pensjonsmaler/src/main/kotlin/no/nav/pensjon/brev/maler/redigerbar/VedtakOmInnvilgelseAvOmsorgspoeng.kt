@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.brukerNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgsopptjeningsaar
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgspersonNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -47,7 +47,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
             paragraph {
                 text(
                     bokmal { +"Nav har vedtatt at du skal godskrives omsorgsopptjening for " + pesysData.omsorgsopptjeningsaar + "." },
-                    english { +"Nav has decided that you should be credited with acquired rights for care work in respect of " + pesysData.omsorgsopptjeningsaar + "." }
+                    english { +"Nav has decided that you should be credited with acquired rights for care work in " + pesysData.omsorgsopptjeningsaar + "." }
                 )
             }
             title1 {
@@ -59,14 +59,14 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er gjort etter folketrygdloven paragraf 3-16 første ledd bokstav b, og paragrafene 20-8 første ledd bokstav b og 20-21 hvis du er født etter 1953. "
-                        +"Det er lagt til grunn for vedtaket at omsorgen for " + pesysData.brukerNavn + " utgjør minst 22 timer per uke, "
-                        +"og at omsorgen har hatt en varighet på minst seks måneder av " + pesysData.omsorgsopptjeningsaar + "."
+                        +"Vedtaket er fattet med hjemmel i folketrygdloven § 3-16 første ledd bokstav b, samt §§ 20-8 første ledd bokstav b og 20-21 hvis du er født etter 1953. "
+                        +"Det er lagt til grunn at omsorgen for " + pesysData.omsorgspersonNavn + " utgjør minst 22 timer per uke, "
+                        +"og at omsorgen har hatt en varighet på minst seks måneder i " + pesysData.omsorgsopptjeningsaar + "."
                     },
                     english {
                         +"The decision has been made in accordance with section 3-16, first paragraph, letter b of the National Insurance Act, and sections 20-8 first paragraph, "
-                        +"letter b and 20-21 of the National Insurance Act, if your year of birth is after 1953. "
-                        +"The basis of the decision is that the care provided for " + pesysData.brukerNavn + " has amounted to at least 22 hours per week, "
+                        +"letter b and 20-21 of the National Insurance Act. "
+                        +"The basis of the decision is that the care provided for " + pesysData.omsorgspersonNavn + " has amounted to at least 22 hours per week, "
                         +"and that the duration of the care was at least six months in " + pesysData.omsorgsopptjeningsaar + "."
                     }
                 )
@@ -77,6 +77,31 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                     english { +"What are acquired rights for care work?" }
                 )
             }
+            /*
+            paragraph {
+                text(
+                    bokmal {
+                        +"Omsorgsopptjening gir deg pensjonsopptjening tilsvarende 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. "
+                    },
+                    english { +"" }
+                )
+                text(
+                    bokmal { +"Dette kan bidra til at du får en høyere pensjon enn du ellers ville hatt. " },
+                    english { +"" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Omsorgsopptjening kan ikke kombineres med annen opptjening. " },
+                    english { +"" }
+                )
+                text(
+                    bokmal { +"Har du annen pensjonsopptjening i det aktuelle året som er høyere enn omsorgsopptjeningen, vil den opptjeningen legges til grunn." },
+                    english { +"" }
+                )
+            } */
+
+
             paragraph {
                 text(
                     bokmal {
@@ -106,6 +131,8 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                     },
                 )
             }
+
+
             paragraph {
                 text(
                     bokmal {
