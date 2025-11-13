@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { TextField } from "@navikt/ds-react";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";

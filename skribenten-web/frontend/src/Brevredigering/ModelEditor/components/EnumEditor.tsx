@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { Radio, RadioGroup } from "@navikt/ds-react";
 import { Controller, useFormContext } from "react-hook-form";
 
