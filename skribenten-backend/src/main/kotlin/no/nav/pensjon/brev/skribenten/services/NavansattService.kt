@@ -26,7 +26,7 @@ interface NavansattService {
     suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet>
 }
 
-class NavansattServiceException(override val message: String, cause: Throwable? = null) : Exception(message, cause)
+class NavansattServiceException(message: String) : ServiceError(message)
 
 class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)

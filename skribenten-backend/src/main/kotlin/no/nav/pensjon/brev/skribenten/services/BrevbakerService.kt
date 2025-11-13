@@ -31,7 +31,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
-class BrevbakerServiceException(msg: String) : Exception(msg)
+class BrevbakerServiceException(msg: String) : ServiceError(msg)
 
 interface BrevbakerService {
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification?
