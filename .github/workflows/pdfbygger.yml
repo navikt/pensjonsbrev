@@ -60,7 +60,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: pdf-bygger-jar
-          path: pdf-bygger/build/libs/
+          path: pdf-bygger/build/install/pdf-bygger/lib
       - name: Docker login
         uses: docker/login-action@v3
         with:
