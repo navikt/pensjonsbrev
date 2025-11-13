@@ -4,6 +4,7 @@ import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VS
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
@@ -181,10 +182,18 @@ function Brevmaler({
     [brevmalKoder, brevmetadata],
   );
 
-  const brevmalerMatchingSearchTerm = sortBy(
-    alleBrevmaler.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
-    (template) => template.name,
-  );
+  const fuse = useMemo(() => {
+    const fuseOptions = {
+      keys: ["name"],
+      threshold: 0.4, // lower => stricter, less fuzzy (default is 0.6)
+    };
+    return new Fuse(alleBrevmaler, fuseOptions);
+  }, [alleBrevmaler]);
+
+  const brevmalerMatchingSearchTerm =
+    searchTerm.trim().length === 0
+      ? sortBy(alleBrevmaler, (template) => template.name)
+      : fuse.search(searchTerm).map((result) => result.item);
 
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
   const [eblanketter, brevmaler] = partition(
