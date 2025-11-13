@@ -67,19 +67,17 @@ class LegacyBrevServiceTest {
 
     private val safService = object : SafServiceStub() {
         override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
-        override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<SafService.HentDokumenterResponse> {
-            return ServiceResult.Ok(
-                SafService.HentDokumenterResponse(
-                    SafService.HentDokumenterResponse.Journalposter(
-                        SafService.HentDokumenterResponse.Journalpost(
-                            journalpostId, listOf(
-                                SafService.HentDokumenterResponse.Dokument(forventaDokumentId)
-                            )
+        override suspend fun getFirstDocumentInJournal(journalpostId: String): SafService.HentDokumenterResponse =
+            SafService.HentDokumenterResponse(
+                data = SafService.HentDokumenterResponse.Journalposter(
+                    SafService.HentDokumenterResponse.Journalpost(
+                        journalpostId, listOf(
+                            SafService.HentDokumenterResponse.Dokument(forventaDokumentId)
                         )
-                    ), null
-                )
+                    )
+                ),
+                errors = null,
             )
-        }
     }
 
     private val penService = object : PenServiceStub() {

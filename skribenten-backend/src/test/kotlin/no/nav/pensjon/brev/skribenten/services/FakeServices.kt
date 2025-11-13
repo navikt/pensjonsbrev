@@ -153,6 +153,6 @@ open class PdlServiceStub : PdlService {
 
 open class SafServiceStub : SafService {
     override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult = notYetStubbed()
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse> = notYetStubbed()
-    override suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> = notYetStubbed()
+    override suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse = notYetStubbed()
+    override suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray = notYetStubbed()
 }
