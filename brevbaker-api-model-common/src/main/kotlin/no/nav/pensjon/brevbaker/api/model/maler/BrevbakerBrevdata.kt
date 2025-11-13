@@ -10,6 +10,8 @@ interface RedigerbarBrevdata<SaksbehandlerValg : SaksbehandlerValgBrevdata, Pesy
     val pesysData: PesysData
 }
 
+interface AutobrevData : BrevbakerBrevdata, PesysBrevdata
+
 interface PesysBrevdata : BrevbakerBrevdata
 
 interface SaksbehandlerValgBrevdata : BrevbakerBrevdata
