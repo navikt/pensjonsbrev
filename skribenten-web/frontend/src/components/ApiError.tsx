@@ -37,9 +37,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
 
   if (error instanceof AxiosError) {
     if (isFunctionalError(error)) {
-      const response = error.response;
-      if (!response) return null;
-      const { tittel, melding } = response.data;
+      const { tittel, melding } = error.response!.data;
 
       return (
         <Alert

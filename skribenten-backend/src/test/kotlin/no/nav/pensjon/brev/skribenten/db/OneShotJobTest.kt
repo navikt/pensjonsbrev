@@ -15,7 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 import java.util.concurrent.atomic.AtomicInteger
 
 class OneShotJobTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
+    private val postgres = PostgreSQLContainer("postgres:17-alpine")
     private val config = ConfigFactory.parseMap(mapOf("services.leader.url" to null))
     private val jobnameCounter = AtomicInteger(0)
 

@@ -1,25 +1,18 @@
-package no.nav.pensjon.brev.maler.alder
+package brev.aldersovergang
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon.EndringKanHaBetydningForSkatt
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import brev.felles.*
+import brev.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import brev.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import brev.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.regelverkType
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
@@ -34,14 +27,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype
 
-
 /* MF_000118 : AP_INNV_AO_75_AUTO / AO_AP_GRAD_AP_75
 Det er omregning til 100 prosent alderspensjon for de som har gradert pensjon med regelverk AP2011 eller AP2016.
  */
 @TemplateModelHelpers
 object EndringAvAlderspensjonFordiDuFyller75AarAuto :
     AutobrevTemplate<EndringAvAlderspensjonFordiDuFyller75AarAutoDto> {
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ENDRING_FORDI_DU_FYLLER_75_AAR_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ENDRING_FORDI_DU_FYLLER_75_AAR_AUTO
 
     override val template =
         createTemplate(
@@ -67,7 +59,15 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(DuFaarHverMaaned(totalPensjon))
                 includePhrase(Utbetalingsinformasjon)
 
-                showIf(maanedligPensjonFoerSkattDto.notNull()) { includePhrase(Felles.FlereBeregningsperioder) }
+                showIf(maanedligPensjonFoerSkattDto.notNull()) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du kan lese mer om andre beregningsperioder i vedlegget." },
+                            nynorsk { +"Du kan lese meir om andre berekningsperiodar i vedlegget." },
+                            english { +"There is more information about other calculation periods in the attachment." },
+                        )
+                    }
+                }
 
                 // begrunnAP75
                 paragraph {
@@ -78,7 +78,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                     )
                 }
 
-                showIf(regelverkType.equalTo(AP2011)) {
+                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
                     // endrUtaksgradAP2011
                     paragraph {
                         text(
@@ -87,7 +87,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                             english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
                         )
                     }
-                }.orShowIf(regelverkType.equalTo(AP2016)) {
+                }.orShowIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) {
                     // endrUtaksgradAP2016
                     paragraph {
                         text(
@@ -98,11 +98,11 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                     }
                 }
 
-                includePhrase(EndringKanHaBetydningForSkatt)
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
                 includePhrase(MeldFraOmEndringer2)
-                includePhrase(Felles.RettTilAAKlage)
-                includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(Felles.HarDuSpoersmaal.alder)
+                includePhrase(RettTilAAKlage)
+                includePhrase(RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(HarDuSpoersmaalAlder)
             }
             includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)

@@ -53,30 +53,6 @@ object BarnepensjonFellesFraser {
         }
     }
 
-    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    bokmal { +"Du har rett til å klage" },
-                    nynorsk { +"Du har rett til å klage" },
-                    english { +"You have the right to appeal" }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                        "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}." },
-                    nynorsk { +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen " +
-                        "du fekk vedtaket. Klaga må vere skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}." },
-                    english { +"If you believe the decision is incorrect, " +
-                        "you may appeal the decision within six weeks from the date you received the decision. " +
-                        "The appeal must be in writing. " +
-                        "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}." }
-                )
-            }
-        }
-    }
-
     object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {

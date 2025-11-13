@@ -1,12 +1,12 @@
-package no.nav.pensjon.brev.api.model.maler.redigerbar
+package no.nav.pensjon.brev.model.alder.stans
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.EksportForbudKode
-import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.model.alder.EksportForbudKode
+import no.nav.pensjon.brev.model.alder.InformasjonOmMedlemskap
+import no.nav.pensjon.brev.model.alder.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 

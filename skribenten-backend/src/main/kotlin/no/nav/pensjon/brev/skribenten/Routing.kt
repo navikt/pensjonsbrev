@@ -22,7 +22,7 @@ fun Application.configureRouting(
 ) {
     val authService = AzureADService(authConfig, cache = cache)
     val servicesConfig = skribentenConfig.getConfig("services")
-    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopPreparing) { db.close() } }
+    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
