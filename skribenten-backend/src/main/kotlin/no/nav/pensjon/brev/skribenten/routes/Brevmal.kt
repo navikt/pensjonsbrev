@@ -35,12 +35,14 @@ fun Route.brevmal(brevbakerService: BrevbakerService, brevmalService: BrevmalSer
 
             get("/modelSpecification") {
                 val brevkode = call.parameters.getBrevkode()
-                brevbakerService.getModelSpecification(brevkode)
-                    .onOk { call.respond(it) }
-                    .onError { message, status ->
-                        logger.error("Feil ved henting av modelSpecification for ${brevkode.kode()}: Status:$status Melding: $message ")
-                        call.respond(status, message)
-                    }
+                val modelSpec = brevbakerService.getModelSpecification(brevkode)
+
+                if (modelSpec != null) {
+                    call.respond(HttpStatusCode.OK, modelSpec)
+                } else {
+                    logger.info("Fant ikke modelSpecification for brevkode ${brevkode.kode()}")
+                    call.respond(HttpStatusCode.NotFound)
+                }
             }
         }
     }
