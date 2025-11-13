@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_OPEN_
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
@@ -100,6 +101,40 @@ object Felles {
                 )
             val alder =
                 HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
+        }
+    }
+
+    data class HarDuSpoersmaalBokmalEnglish(
+        val merInformasjonUrl: String,
+        val telefonnummer: String,
+    ) : OutlinePhrase<LangBokmalEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Har du spørsmål?" },
+                    english { + "Do you have questions?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Du finner mer informasjon på $merInformasjonUrl." +
+                            " På $KONTAKT_URL kan du chatte eller skrive til oss." +
+                            " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer" +
+                            " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID." },
+                    english { + "You can find more information at $merInformasjonUrl." +
+                            " At $KONTAKT_URL, you can chat or write to us." +
+                            " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer," +
+                            " weekdays $NAV_KONTAKTSENTER_OPEN_HOURS." },
+                )
+            }
+        }
+
+        companion object {
+            val omsorg =
+                HarDuSpoersmaalBokmalEnglish(
+                    Constants.OMSORGSOPPTJENING_URL,
+                    Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON,
+                )
         }
     }
 
