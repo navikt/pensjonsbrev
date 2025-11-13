@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
@@ -24,6 +24,6 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
         val sumTilInnkrevingTotalBeloep: Kroner,  // sumTilInnkreving
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
-    ) : BrevbakerBrevdata
+    ) : PesysBrevdata
 }
 

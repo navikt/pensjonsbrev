@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.VedleggData
@@ -37,7 +38,7 @@ data class PesysData(
     val sumTilInnkrevingTotalBelop: Int,
     val dineRettigheterOgMulighetTilAKlageDto: DineRettigheterOgMulighetTilAKlageDto,
     val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
-) : BrevbakerBrevdata
+) : PesysBrevdata
 
 data class OversiktOverFeilutbetalingPEDto(
     val bruttoTilbakekrevdTotalbelop: Int,

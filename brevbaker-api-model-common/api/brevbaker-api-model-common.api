@@ -200,7 +200,7 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Brevkode$Aut
 public abstract interface class no/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart : no/nav/pensjon/brev/api/model/maler/Brevkode {
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/EmptyBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+public final class no/nav/pensjon/brev/api/model/maler/EmptyBrevdata : no/nav/pensjon/brev/api/model/maler/PesysBrevdata {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
@@ -210,8 +210,8 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyBrevdata : no/nav/pe
 public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata;
 	public fun equals (Ljava/lang/Object;)Z
-	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
 	public fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
+	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/PesysBrevdata;
 	public fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg;
 	public synthetic fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
 	public fun hashCode ()I
@@ -232,8 +232,11 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/maler/PesysBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+}
+
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
-	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/PesysBrevdata;
 	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
 }
 

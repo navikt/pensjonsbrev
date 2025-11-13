@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.*
@@ -50,7 +50,7 @@ data class EksempelRedigerbartDto(
         val navneliste: List<String>,
         val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
-    ) : BrevbakerBrevdata
+    ) : PesysBrevdata
 }
 
 fun Felles.copy(

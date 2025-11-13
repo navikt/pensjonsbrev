@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.stans
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
@@ -33,5 +33,5 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val regelverkType: AlderspensjonRegelverkType,
         val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
         val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
-        ) : BrevbakerBrevdata
+        ) : PesysBrevdata
 }
