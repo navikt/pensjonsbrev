@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravInitiertAv
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
@@ -31,7 +31,7 @@ data class VedtakEndringAvUttaksgradDto(
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?
-    ) : BrevbakerBrevdata
+    ) : PesysBrevdata
 
     data class Krav(
         val kravInitiertAv: KravInitiertAv,

@@ -5,10 +5,12 @@ package no.nav.pensjon.brev.api.model.maler
  */
 interface BrevbakerBrevdata
 
-interface RedigerbarBrevdata<SaksbehandlerValg : SaksbehandlerValgBrevdata, PesysData : BrevbakerBrevdata> : BrevbakerBrevdata {
+interface RedigerbarBrevdata<SaksbehandlerValg : SaksbehandlerValgBrevdata, PesysData : PesysBrevdata> : BrevbakerBrevdata {
     val saksbehandlerValg: SaksbehandlerValg
     val pesysData: PesysData
 }
+
+interface PesysBrevdata : BrevbakerBrevdata
 
 interface SaksbehandlerValgBrevdata : BrevbakerBrevdata
 

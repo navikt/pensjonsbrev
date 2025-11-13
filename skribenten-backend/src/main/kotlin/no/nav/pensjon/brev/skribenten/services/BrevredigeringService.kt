@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
@@ -24,9 +24,9 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 data class GeneriskRedigerbarBrevdata(
-    override val pesysData: BrevbakerBrevdata,
+    override val pesysData: PesysBrevdata,
     override val saksbehandlerValg: SaksbehandlerValgBrevdata,
-) : RedigerbarBrevdata<SaksbehandlerValgBrevdata, BrevbakerBrevdata>
+) : RedigerbarBrevdata<SaksbehandlerValgBrevdata, PesysBrevdata>
 
 sealed class BrevredigeringException(override val message: String) : Exception() {
     class KanIkkeReservereBrevredigeringException(message: String, val response: Api.ReservasjonResponse) :

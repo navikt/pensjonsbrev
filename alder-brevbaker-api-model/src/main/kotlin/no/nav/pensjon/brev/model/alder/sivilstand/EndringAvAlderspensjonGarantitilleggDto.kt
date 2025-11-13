@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.model.alder.sivilstand
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
@@ -21,7 +21,7 @@ data class EndringAvAlderspensjonGarantitilleggDto(
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-    ) : BrevbakerBrevdata
+    ) : PesysBrevdata
 
     data class AlderspensjonVedVirk(
         val innvilgetFor67: Boolean,

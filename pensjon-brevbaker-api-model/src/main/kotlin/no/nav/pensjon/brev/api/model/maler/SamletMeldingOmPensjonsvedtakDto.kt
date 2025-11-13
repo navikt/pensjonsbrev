@@ -13,7 +13,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
     data class PesysData(
         val sakstype: Sakstype,
         val vedlegg: P1Dto,
-    ) : BrevbakerBrevdata
+    ) : PesysBrevdata
 }
 
 data class P1Dto(

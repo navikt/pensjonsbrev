@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import java.time.LocalDate
@@ -15,7 +15,7 @@ data class VedtakEndringAvUttaksgradStansBrukerEllerVergeDto(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto
-    ) : BrevbakerBrevdata
+    ) : PesysBrevdata
 
     data class Krav(
         val virkDatoFom: LocalDate
