@@ -9,6 +9,8 @@ on:
       - "template-model-generator/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/template-model-generator.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
 
 permissions:
   contents: read
