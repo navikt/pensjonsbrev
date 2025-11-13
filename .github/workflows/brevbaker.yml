@@ -17,6 +17,8 @@ on:
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker.yml"
       - "!**/**.md"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
   push:
     branches:
       - "main"
@@ -35,6 +37,8 @@ on:
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker.yml"
       - "!**/**.md"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
 env:
   JavaDistribution: "temurin"
   JavaVersion: 21

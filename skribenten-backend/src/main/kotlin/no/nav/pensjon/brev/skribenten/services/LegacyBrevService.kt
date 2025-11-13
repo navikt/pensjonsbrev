@@ -229,7 +229,6 @@ class LegacyBrevService(
 
     private suspend fun harTilgangTilEnhet(enhetsId: String): Boolean =
         navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
-            .catch { message, httpStatusCode -> throw LegacyBrevException("Kunne ikke hente NavEnheter - $httpStatusCode: $message") }
 
     private fun Pen.BestillDoksysBrevResponse.FailureType.toApi(): Api.BestillOgRedigerBrevResponse.FailureType =
         when (this) {

@@ -133,11 +133,12 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
             }
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
-            call.respond(HttpStatusCode.InternalServerError, "Ukjent intern feil")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
 

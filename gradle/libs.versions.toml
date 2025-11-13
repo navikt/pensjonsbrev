@@ -26,7 +26,6 @@ unleashVersion = "11.1.1"
 valkeyVersion = "5.5.0"
 
 [plugins]
-ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
 

@@ -5,7 +5,6 @@ val javaTarget: String by System.getProperties()
 plugins {
 	application
 	kotlin("jvm")
-	alias(libs.plugins.ktor) apply true
 }
 
 group = "no.nav.pensjon.brev.tjenestebuss"
@@ -41,10 +40,18 @@ dependencies {
 	implementation("no.nav.tjenestespesifikasjoner.pensjon:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion") {
         exclude("com.sun.xml.ws", "jaxws-ri")
         exclude("com.sun.xml.bind", "jaxb-core")
+        exclude("org.eclipse.angus", "angus-mail")
     }
 
+    // Denne brukes transitivt gjennom samhandler-tjenestespesifikasjon og cxf-rt-frontend-jaxws.
+    // Der har de per nå 2.0.3, som er sårbar, så vi overstyrer til patchen ett hakk før, som har retta en alvorlig CVE
+    // Fjern denne rada, samt exclude av transitiv avhengighet, når vi får ny cxf-versjon eller ny samhandler-versjon med oppdatert angus-mail.
+    implementation("org.eclipse.angus:angus-mail:2.0.4")
+
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
-	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion") {
+        exclude("org.eclipse.angus", "angus-mail")
+    }
 	implementation("org.apache.cxf:cxf-rt-ws-policy:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
 

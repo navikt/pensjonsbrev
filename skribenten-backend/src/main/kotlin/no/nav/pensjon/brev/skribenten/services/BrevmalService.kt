@@ -91,9 +91,6 @@ class BrevmalService(
             .map { it.toApi() }
 
     private suspend fun hentBrevakerMaler(): List<TemplateDescription.Redigerbar> =
-        brevbakerService.getTemplates()
-            .catch { message, statusCode ->
-                logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
-                emptyList()
-            }
+        brevbakerService.getTemplates() ?: emptyList()
+
 }
