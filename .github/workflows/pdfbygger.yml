@@ -9,6 +9,8 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
   push:
     branches:
@@ -20,6 +22,8 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
   # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
   schedule:
