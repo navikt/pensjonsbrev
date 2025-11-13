@@ -7,6 +7,7 @@ import brev.aldersovergang.InfoAldersovergangEps62AarAuto
 import brev.aldersovergang.InfoFyller67AarSaerskiltSats
 import brev.aldersovergang.VedtakAldersovergang67AarGarantitilleggAuto
 import brev.aldersovergang.VedtakEndringAFPEndretOpptjeningAuto
+import brev.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto
 import brev.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import brev.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import brev.sivilstand.EndringAvAlderspensjonSivilstand
@@ -53,6 +54,7 @@ object AlderTemplates : AllTemplates {
             InfoFyller67AarSaerskiltSats,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
+            VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto,
         )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
