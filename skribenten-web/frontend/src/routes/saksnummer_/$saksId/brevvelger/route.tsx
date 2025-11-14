@@ -184,7 +184,7 @@ function Brevmaler({
 
   const fuse = useMemo(() => {
     const fuseOptions = {
-      keys: ["name"],
+      keys: ["name", "brevsystem"],
       threshold: 0.4, // lower => stricter, less fuzzy (default is 0.6)
     };
     return new Fuse(alleBrevmaler, fuseOptions);
