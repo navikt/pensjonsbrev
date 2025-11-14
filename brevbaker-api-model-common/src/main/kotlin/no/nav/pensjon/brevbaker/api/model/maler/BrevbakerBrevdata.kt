@@ -16,4 +16,4 @@ interface PesysBrevdata
 
 interface SaksbehandlerValgBrevdata
 
-interface VedleggData : BrevbakerBrevdata
+interface VedleggData

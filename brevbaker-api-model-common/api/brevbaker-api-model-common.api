@@ -268,7 +268,7 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
