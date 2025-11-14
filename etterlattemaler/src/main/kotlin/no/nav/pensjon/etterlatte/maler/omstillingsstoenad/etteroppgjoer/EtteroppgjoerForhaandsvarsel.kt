@@ -155,7 +155,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
             }
 
-            includePhrase(Felles.DuHarRettTilAaKlage)
+            includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEtteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(data.bosattUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
