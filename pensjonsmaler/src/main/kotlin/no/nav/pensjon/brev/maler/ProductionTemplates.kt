@@ -7,10 +7,10 @@ import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
-import no.nav.pensjon.brev.maler.alder.*
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.*
+import no.nav.pensjon.brev.alder.maler.omregning.OmregningAlderUfore2016
+import no.nav.pensjon.brev.alder.maler.omregning.OmregningAlderUfore2016Auto
+import no.nav.pensjon.brev.alder.maler.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy

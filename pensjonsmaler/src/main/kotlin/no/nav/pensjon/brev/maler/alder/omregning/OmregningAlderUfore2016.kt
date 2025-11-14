@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.alder.omregning
+package no.nav.pensjon.brev.alder.maler.omregning
 
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.Sakstype

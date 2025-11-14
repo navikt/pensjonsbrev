@@ -58,7 +58,7 @@ tasks {
                 val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
                     .find(text)?.groupValues?.get(1)
 
-                val requiredPrefix = "no.nav.pensjon.brev.model.alder"
+                val requiredPrefix = "no.nav.pensjon.brev.alder.model"
                 if (pkg == null) {
                     throw GradleException("File $file is missing package directive!")
                 } else if (!pkg.startsWith(requiredPrefix)) {

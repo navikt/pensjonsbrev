@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.alder.omregning.opptjening
+package no.nav.pensjon.brev.alder.maler.omregning.opptjening
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.uttaksgrad
@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoS
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.antallAarEndretOpptjening
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.*
+import no.nav.pensjon.brev.alder.maler.omregning.opptjening.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
