@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { css } from "@emotion/react";
 import type { SortState } from "@navikt/ds-react";
 import { BodyShort, Button, Table, VStack } from "@navikt/ds-react";

@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { Select } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { Controller } from "react-hook-form";

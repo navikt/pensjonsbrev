@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, HStack, Modal, Tabs } from "@navikt/ds-react";
