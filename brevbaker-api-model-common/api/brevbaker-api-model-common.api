@@ -265,7 +265,7 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {

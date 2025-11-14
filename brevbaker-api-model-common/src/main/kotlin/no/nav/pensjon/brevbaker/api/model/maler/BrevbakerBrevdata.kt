@@ -14,6 +14,6 @@ interface AutobrevData : BrevbakerBrevdata, PesysBrevdata
 
 interface PesysBrevdata
 
-interface SaksbehandlerValgBrevdata : BrevbakerBrevdata
+interface SaksbehandlerValgBrevdata
 
 interface VedleggData : BrevbakerBrevdata
