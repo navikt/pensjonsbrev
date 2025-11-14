@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder
+package no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegningenalder
 
 
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.*
