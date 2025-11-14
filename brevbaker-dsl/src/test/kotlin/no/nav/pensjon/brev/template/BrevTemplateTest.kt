@@ -5,7 +5,7 @@ import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
@@ -25,7 +25,7 @@ private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
 }
 
 private class BrevTemplateTest {
-    private val testExpressionScope = ExpressionScope(EmptyBrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
     private object EksempelBrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER

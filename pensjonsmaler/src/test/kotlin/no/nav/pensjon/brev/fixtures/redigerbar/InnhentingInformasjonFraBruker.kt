@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
 
 fun createInnhentingInformasjonFraBrukerDto() =
@@ -19,5 +19,5 @@ fun createInnhentingInformasjonFraBrukerDto() =
             manglendeOpptjening = true,
             boOgArbeidsperioder = true,
         ),
-        pesysData = EmptyBrevdata
+        pesysData = EmptyFagsystemdata
     )

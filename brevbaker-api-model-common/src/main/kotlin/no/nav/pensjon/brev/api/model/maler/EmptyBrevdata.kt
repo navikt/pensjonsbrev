@@ -4,9 +4,6 @@ package no.nav.pensjon.brev.api.model.maler
 
 data object EmptyAutobrevdata : AutobrevData
 
-// TODO: Fjern denne
-data object EmptyBrevdata : PesysBrevdata
-
 data object EmptyFagsystemdata : PesysBrevdata
 
 data object EmptySaksbehandlerValg : SaksbehandlerValgBrevdata
