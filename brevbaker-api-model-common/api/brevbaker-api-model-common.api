@@ -242,7 +242,7 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/PesysBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/PesysBrevdata {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
