@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -19,5 +19,5 @@ data class UforeAvslagEnkelDto(
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
         val vurdering: String
-    ) : PesysBrevdata
+    ) : FagsystemBrevdata
 }

@@ -172,7 +172,7 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar 
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/AutobrevData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata, no/nav/pensjon/brev/api/model/maler/PesysBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/AutobrevData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata, no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/AutomatiskBrevkode : no/nav/pensjon/brev/api/model/maler/Brevkode$Automatisk {
@@ -210,7 +210,7 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyAutobrevdata : no/na
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata : no/nav/pensjon/brev/api/model/maler/PesysBrevdata {
+public final class no/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata : no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
@@ -221,7 +221,7 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata :
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata;
-	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/PesysBrevdata;
+	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;
 	public fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg;
 	public synthetic fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
 	public fun hashCode ()I
@@ -242,11 +242,11 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/PesysBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
-	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/PesysBrevdata;
+	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;
 	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
 }
 

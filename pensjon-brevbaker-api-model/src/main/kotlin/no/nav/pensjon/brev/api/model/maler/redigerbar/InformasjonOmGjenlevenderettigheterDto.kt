@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.PesysBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.SaksbehandlerValg
@@ -16,7 +16,7 @@ data class InformasjonOmGjenlevenderettigheterDto(
     data class PesysData(
         val sakstype: Sakstype,
         val gjenlevendesAlder: Int,
-    ) : PesysBrevdata
+    ) : FagsystemBrevdata
 
     data class SaksbehandlerValg(
 
