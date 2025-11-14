@@ -4,7 +4,7 @@ import brev.felles.Constants.KONTAKT_URL
 import brev.felles.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.PERSONVERNERKLAERING_URL
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata> {
+object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ADHOC_2025_SKJERMT_FEIL_BEROERT_BRUKER
 
     override val template = createTemplate(

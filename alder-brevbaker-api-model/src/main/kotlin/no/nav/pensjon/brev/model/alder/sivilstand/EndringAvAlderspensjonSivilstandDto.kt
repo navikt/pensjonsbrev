@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.model.alder.sivilstand
 
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
@@ -50,7 +50,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 
     data class EpsVedVirk(
         val borSammenMedBruker: Boolean,

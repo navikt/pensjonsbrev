@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -28,7 +28,7 @@ data class EndringPgaOpptjeningAutoDto(
     val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     val opplysningerOmAvdoedBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 enum class OpptjeningType {
     TILVEKST,

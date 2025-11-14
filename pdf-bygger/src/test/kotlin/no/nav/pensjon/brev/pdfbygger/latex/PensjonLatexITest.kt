@@ -8,7 +8,7 @@ import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.languages
@@ -37,7 +37,7 @@ class PensjonLatexITest {
     @Test
     fun canRender() {
         val template = createTemplate(
-            letterDataType = EmptyBrevdata::class,
+            letterDataType = EmptyAutobrevdata::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
@@ -52,7 +52,7 @@ class PensjonLatexITest {
                     text(bokmal { +"Argumentet etNavn er: " }) }
             }
         }
-        LetterImpl(template, EmptyBrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
+        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -104,7 +104,7 @@ class PensjonLatexITest {
     private fun testCharacters(startChar: Int, endChar: Int): Boolean {
         try {
             val testTemplate = createTemplate(
-                letterDataType = EmptyBrevdata::class,
+                letterDataType = EmptyAutobrevdata::class,
                 languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",
@@ -121,7 +121,7 @@ class PensjonLatexITest {
                 }
             }
 
-            LetterImpl(testTemplate, EmptyBrevdata, Bokmal, FellesFactory.felles)
+            LetterImpl(testTemplate, EmptyAutobrevdata, Bokmal, FellesFactory.felles)
                 .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
 
             return true

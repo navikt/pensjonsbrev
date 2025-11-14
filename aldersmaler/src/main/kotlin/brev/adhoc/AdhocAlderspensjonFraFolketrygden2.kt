@@ -3,8 +3,8 @@ package brev.adhoc
 import brev.felles.Constants.PENSJON_ENDRING_URL
 import brev.felles.Constants.UTBETALINGSOVERSIKT_URL
 import brev.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
+object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyAutobrevdata> {
 
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2
 
