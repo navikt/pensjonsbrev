@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.model.alder.aldersovergang
 
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
@@ -16,4 +17,4 @@ data class EndringAvAlderspensjonFordiDuFyller75AarAutoDto(
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
-) : BrevbakerBrevdata
+) : AutobrevData

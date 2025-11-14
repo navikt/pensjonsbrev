@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027
 
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 
 data class Gjenlevenderett2027Dto(
@@ -19,4 +20,4 @@ data class Gjenlevenderett2027Dto(
 
     val inntekt2022Over3g: Boolean,
     val inntekt2023Over3g: Boolean,
-): BrevbakerBrevdata
+): AutobrevData

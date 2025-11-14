@@ -6,8 +6,8 @@ import brev.felles.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import brev.felles.Constants.NAV_KONTAKTSENTER_OPEN_HOURS
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTemplate<EmptyBrevdata> {
+object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_2024_IKKEUTBET_FT_VARSEL_OPPH
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),

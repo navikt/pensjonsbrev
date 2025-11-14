@@ -1,8 +1,8 @@
 package brev.aldersovergang
 
 import brev.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // MF_000239
 @TemplateModelHelpers
-object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
+object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.INFO_FYLLER_67_AAR_SAERSKILT_SATS
 
     override val template =

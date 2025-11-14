@@ -4,6 +4,7 @@ import brev.felles.Constants.AFP_OFFENTLIG_URL
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.SEND_BESKJED_URL
 import brev.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -14,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyBrevdata> {
+object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_2024_INFO_TOLERANSEBELOP
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),

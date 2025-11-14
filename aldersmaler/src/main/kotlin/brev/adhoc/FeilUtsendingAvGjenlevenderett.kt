@@ -1,9 +1,8 @@
 package brev.adhoc
 
-import brev.felles.Constants
 import brev.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -13,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
+object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyAutobrevdata> {
 
     override val kode = Aldersbrevkoder.AutoBrev.PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER
 

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -20,7 +21,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =
-        if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyBrevdata, EmptyRedigerbarBrevdata)) {
+        if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyBrevdata, EmptyAutobrevdata, EmptyRedigerbarBrevdata)) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
             throw TemplateModelSpecificationError("Cannot create specification of class without primary constructor: ${from.qualifiedName}")

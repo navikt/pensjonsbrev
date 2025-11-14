@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.aldersovergang
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.model.alder.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.model.alder.vedlegg.OrienteringOmRettigheterOgPlikterDto
@@ -15,7 +15,7 @@ data class VedtakAldersovergang67AarGarantitilleggAutoDto(
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class BeregnetPensjonPerManedVedVirk(
     val garantitillegg: Kroner,
