@@ -5,7 +5,6 @@ import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.SEND_BESKJED_URL
 import brev.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
