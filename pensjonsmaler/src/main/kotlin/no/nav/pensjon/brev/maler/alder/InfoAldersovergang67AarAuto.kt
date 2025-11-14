@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler
+package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto

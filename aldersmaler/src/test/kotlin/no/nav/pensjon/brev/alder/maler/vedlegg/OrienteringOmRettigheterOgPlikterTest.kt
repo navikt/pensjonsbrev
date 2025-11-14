@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.alder.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.AFP
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER

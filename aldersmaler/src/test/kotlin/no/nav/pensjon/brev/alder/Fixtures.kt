@@ -1,5 +1,6 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.alder
 
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createEndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakEndringAFPEndretOpptjeningAutoDto
@@ -39,9 +40,9 @@ import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMel
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
-    val felles = no.nav.brev.brevbaker.FellesFactory.felles
+    val felles = FellesFactory.felles
 
-    val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
+    val fellesAuto = FellesFactory.fellesAuto
 
     inline fun <reified T : Any> create(): T = create(T::class)
 

@@ -1,8 +1,7 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.alder.maler
 
 import no.nav.brev.brevbaker.BrevmodulTest
-import no.nav.pensjon.brev.alder.maler.AlderTemplates
-import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.alder.Fixtures
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 
 class AlderTemplatesTest : BrevmodulTest(

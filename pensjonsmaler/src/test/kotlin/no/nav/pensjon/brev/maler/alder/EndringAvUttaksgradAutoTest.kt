@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler
+package no.nav.pensjon.brev.maler.alder
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags

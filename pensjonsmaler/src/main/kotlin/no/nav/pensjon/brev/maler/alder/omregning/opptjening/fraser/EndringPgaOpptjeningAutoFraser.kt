@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.omregning.opptjening.fraser
+package no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler
+package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.BorI.*
