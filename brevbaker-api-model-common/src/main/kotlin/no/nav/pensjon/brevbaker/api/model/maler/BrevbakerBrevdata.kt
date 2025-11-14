@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler
 
 /**
- * Top-level interface for all Brevbaker Dto classes.
+ * Interface for toppnivå-mal-DTO.
+ * Ikke utvid denne direkte for en mal-dto, bruk heller de spesifikke interfacene under.
  */
 interface BrevbakerBrevdata
 
