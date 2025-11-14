@@ -23,7 +23,7 @@ data class P1Dto(
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
-) : BrevbakerBrevdata, PDFVedleggData {
+) : PDFVedleggData {
 
     data class P1Person(
         val fornavn: String?,
