@@ -13,7 +13,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillAutobrevRequest
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
@@ -40,7 +40,7 @@ class LetterRoutesITest {
         felles = FellesFactory.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
-    private val bestillMarkupRequest = BestillBrevRequest(
+    private val bestillMarkupRequest = BestillRedigerbartBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
         letterData = createEksempelbrevRedigerbartDto(),
         felles = FellesFactory.felles,

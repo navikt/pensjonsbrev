@@ -5,7 +5,8 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.TestTags
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillAutobrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -41,7 +42,7 @@ class BrevtekstITest {
         val markup = client.post("/letter/redigerbar/markup") {
             accept(ContentType.Application.Json)
             setBody(
-                BestillBrevRequest(
+                BestillRedigerbartBrevRequest(
                     kode = EnkeltRedigerbartTestbrev.kode,
                     letterData = EmptyRedigerbarBrevdata,
                     felles = felles,
@@ -81,7 +82,7 @@ class BrevtekstITest {
         val pdf: LetterResponse = client.post("/letter/autobrev/pdf") {
             accept(ContentType.Application.Json)
             setBody(
-                BestillBrevRequest(
+                BestillAutobrevRequest(
                     kode = LetterExample.kode,
                     letterData = createLetterExampleDto(),
                     felles = felles,
