@@ -14,6 +14,7 @@ import brev.sivilstand.EndringAvAlderspensjonSivilstandAuto
 import brev.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSats
 import brev.stans.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
@@ -50,6 +51,7 @@ object AlderTemplates : AllTemplates {
             FeilUtsendingAvGjenlevenderett,
             InfoAldersovergangEps60AarAuto,
             InfoAldersovergangEps62AarAuto,
+            InfoAldersovergang67AarAuto,
             InfoFyller67AarSaerskiltSats,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,

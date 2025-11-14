@@ -114,3 +114,13 @@ enum class EksportForbudKode {
     UFOR25_ALDER,
     DOD26_ALDER
 }
+
+enum class YtelseForAldersovergangKode {
+    FAM_PL,
+    GJP_AVKORT,
+    GJP_FULL,
+    INGEN_YT,
+    UT,
+    UT_AP_GRAD,
+    UT_GRAD,
+}
