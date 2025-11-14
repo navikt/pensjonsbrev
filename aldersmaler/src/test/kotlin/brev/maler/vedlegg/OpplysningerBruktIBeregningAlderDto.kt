@@ -1,6 +1,6 @@
 package brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.vedlegg.Pensjonspoeng
+import no.nav.pensjon.brev.model.alder.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.alder.Beregningsmetode
 import no.nav.pensjon.brev.model.alder.MetaforceSivilstand

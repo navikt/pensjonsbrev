@@ -11,10 +11,10 @@ import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
-import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
-import no.nav.pensjon.brev.api.model.maler.vedlegg.TrygdetidSelectors.fom
-import no.nav.pensjon.brev.api.model.maler.vedlegg.TrygdetidSelectors.land
-import no.nav.pensjon.brev.api.model.maler.vedlegg.TrygdetidSelectors.tom
+import no.nav.pensjon.brev.model.alder.vedlegg.Trygdetid
+import no.nav.pensjon.brev.model.alder.vedlegg.TrygdetidSelectors.fom
+import no.nav.pensjon.brev.model.alder.vedlegg.TrygdetidSelectors.land
+import no.nav.pensjon.brev.model.alder.vedlegg.TrygdetidSelectors.tom
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase

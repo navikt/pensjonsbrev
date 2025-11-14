@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.model.alder.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
 import no.nav.pensjon.brev.model.alder.GarantipensjonSatsType
 import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
 import no.nav.pensjon.brevbaker.api.model.Kroner

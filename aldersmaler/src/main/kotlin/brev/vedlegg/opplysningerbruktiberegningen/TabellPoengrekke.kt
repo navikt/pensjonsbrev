@@ -1,13 +1,13 @@
 package brev.vedlegg.opplysningerbruktiberegningen
 
 import no.nav.pensjon.brev.model.alder.PoengTallsType
-import no.nav.pensjon.brev.api.model.maler.vedlegg.Pensjonspoeng
-import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.arstall
-import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.bruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.grunnbelopVeiet
-import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.pensjonsgivendeinntekt
-import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.pensjonspoeng
-import no.nav.pensjon.brev.api.model.maler.vedlegg.PensjonspoengSelectors.poengtallstype
+import no.nav.pensjon.brev.model.alder.vedlegg.Pensjonspoeng
+import no.nav.pensjon.brev.model.alder.vedlegg.PensjonspoengSelectors.arstall
+import no.nav.pensjon.brev.model.alder.vedlegg.PensjonspoengSelectors.bruktIBeregningen
+import no.nav.pensjon.brev.model.alder.vedlegg.PensjonspoengSelectors.grunnbelopVeiet
+import no.nav.pensjon.brev.model.alder.vedlegg.PensjonspoengSelectors.pensjonsgivendeinntekt
+import no.nav.pensjon.brev.model.alder.vedlegg.PensjonspoengSelectors.pensjonspoeng
+import no.nav.pensjon.brev.model.alder.vedlegg.PensjonspoengSelectors.poengtallstype
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.vedlegg
+package no.nav.pensjon.brev.model.alder.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.model.alder.PoengTallsType

@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.model.alder.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.api.model.maler.vedlegg.Pensjonspoeng
-import no.nav.pensjon.brev.api.model.maler.vedlegg.Trygdetid
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.alder.Beregningsmetode
 import no.nav.pensjon.brev.model.alder.MetaforceSivilstand
