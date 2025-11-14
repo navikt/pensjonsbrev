@@ -1,12 +1,11 @@
 import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, CopyButton, Heading, Link, VStack } from "@navikt/ds-react";
+import { Alert, CopyButton, Heading, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
 import type { FailureType } from "~/types/apiTypes";
 import { FAILURE_TYPES } from "~/types/apiTypes";
-import feedbackUrl from "~/utils/feedbackUrl";
 import { logError } from "~/utils/logger";
 
 interface FunctionalErrorPayload {
@@ -84,12 +83,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
           <VStack gap="1">
             <div>
               <span>{mapErrorMessage(error.message)}</span>
-              <span>
-                Hvis det skjer igjen, kopier ID nedenfor og{" "}
-                <Link href={feedbackUrl} target="_blank">
-                  meld feil i Teams
-                </Link>
-              </span>
+              <span>Hvis det skjer igjen, kopier ID nedenfor. Denne kan brukes ved kontakt med brukerstøtte.</span>
             </div>
             <CopyButton
               copyText={correlationId}
