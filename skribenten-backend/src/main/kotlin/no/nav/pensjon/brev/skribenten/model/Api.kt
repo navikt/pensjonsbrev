@@ -115,7 +115,7 @@ object Api {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: BrevbakerBrevdata,
+        val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
