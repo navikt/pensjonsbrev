@@ -83,7 +83,9 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
           <VStack gap="1">
             <div>
               <span>{mapErrorMessage(error.message)}</span>
-              <span>Hvis det skjer igjen, kopier ID nedenfor. Denne kan brukes ved kontakt med brukerstøtte.</span>
+              <span>
+                Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
+              </span>
             </div>
             <CopyButton
               copyText={correlationId}
