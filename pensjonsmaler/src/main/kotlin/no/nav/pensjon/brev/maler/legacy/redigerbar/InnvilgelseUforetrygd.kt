@@ -107,13 +107,23 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             //PE_Vedtaksdata_Kravhode_KravGjelder = "mellombh"
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("mellombh")){
                 //[TBU1112EN, TBU1112, TBU1112NN]
-
-                paragraph {
-                    text (
-                        bokmal { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Vi har innvilget søknaden din ut fra opplysninger vi har fått fra " + fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().format() + "." },
-                        nynorsk { + "Vi viser til vedtak frå " + fritekst("vedtaksdato") + " om førebels avslag på søknaden din om uføretrygd. Vi har innvilga søknaden din ut ifrå opplysningar vi har fått frå " + fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd frå " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().format() + "." },
-                        english { + "We refer to the decision from " + fritekst("vedtaksdato") + " regarding provisional rejection of your application for disability benefit. We have granted your application based on information we have received from " + fritekst("land") + ". You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " per cent disability benefit from " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().format() + "." },
-                    )
+                ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()) { virkningstidpunkt ->
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Vi har innvilget søknaden din ut fra opplysninger vi har fått fra " +
+                                        fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + virkningstidpunkt.format() + "."
+                                   },
+                            nynorsk {
+                                +"Vi viser til vedtak frå " + fritekst("vedtaksdato") + " om førebels avslag på søknaden din om uføretrygd. Vi har innvilga søknaden din ut ifrå opplysningar vi har fått frå " +
+                                        fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd frå " + virkningstidpunkt.format() + "."
+                            },
+                            english {
+                                +"We refer to the decision from " + fritekst("vedtaksdato") + " regarding provisional rejection of your application for disability benefit. We have granted your application based on information we have received from " +
+                                        fritekst("land") + ". You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " per cent disability benefit from " + virkningstidpunkt.format() + "."
+                                    },
+                        )
+                    }
                 }
             }
 
