@@ -546,7 +546,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         text (
                             bokmal { + " og forskrift om barnetillegg i uføretrygden" },
                             nynorsk { + " og forskrift om barnetillegg i uføretrygda" },
-                            english { + " of the Norwegian National Insurance Act." },
+                            english { + " of the Norwegian National Insurance Act" },
                         )
                     }
                     text (
