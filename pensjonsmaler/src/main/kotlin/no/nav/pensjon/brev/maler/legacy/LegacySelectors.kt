@@ -70,6 +70,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.Trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidfom_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidtom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.FratrekkListeSelectors.inntektsgrunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektListeSelectors.inntektsgrunnlag_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
@@ -337,6 +338,7 @@ fun Expression<PE>.grunnlag_persongrunnlagsliste_personbostedsland(): Expression
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdeavtaler_safe.avtaleland_safe.ifNull("")
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidfombilateral_safe
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.getOrNull().trygdetidfom_safe
+fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.getOrNull().trygdetidtom_safe
 fun Expression<PE>.harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg(): Expression<Boolean> = functions.harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
 fun Expression<PE>.harOpptjeningUTMedFoerstegangstjenesteOgOmsorg(): Expression<Boolean> = functions.harOpptjeningUTMedFoerstegangstjenesteOgOmsorg
 fun Expression<PE>.harOpptjeningUTMedOmsorg(): Expression<Boolean> = functions.harOpptjeningUTMedOmsorg
