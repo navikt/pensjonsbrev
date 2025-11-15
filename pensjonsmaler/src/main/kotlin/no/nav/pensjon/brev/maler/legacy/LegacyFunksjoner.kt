@@ -267,6 +267,16 @@ fun Expression<PE>.ut_barnet_barna_innvilget(): Expression<String> {
     )
 }
 
+fun Expression<PE>.ut_forsorgeransvar_ingen_er_false(): Expression<Boolean> {
+    return something
+}
+fun Expression<PE>.ut_forsorgeransvar_ingen_er_true(): Expression<Boolean> {
+    return something
+}
+fun Expression<PE>.ut_forsorgeransvar_siste_er_true(): Expression<Boolean> {
+    return something
+}
+
 // GENERATED
 fun Expression<PE>.inkluderopplysningerbruktiberegningen() = ((not(vedtaksdata_faktoromregnet()) and pebrevkode().notEqualTo("PE_UT_04_102")) or (pebrevkode().equalTo("PE_UT_04_102") and (vedtaksdata_beregningsdata_beregningufore_belopokt() or (vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(0)) or vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_5")) or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
 fun Expression<PE>.ut_etteroppgjor_bt_utbetalt(): Expression<Boolean> = not((vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))
