@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
@@ -61,6 +60,9 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
         outline {
             val pe = pesysData.pe
 
+            val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
+            val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(LocalDate.now())
+
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) <> "oppfylt"   AND (PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_klage" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_anke" )  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).notEqualTo("oppfylt") and (pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("omgj_etter_klage") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("omgj_etter_anke")))){
                 //[TBU1107EN, TBU1107, TBU1107NN]
@@ -116,23 +118,21 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             //PE_Vedtaksdata_Kravhode_KravGjelder = "mellombh"
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("mellombh")){
                 //[TBU1112EN, TBU1112, TBU1112NN]
-                ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt()) { virkningstidpunkt ->
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Vi har innvilget søknaden din ut fra opplysninger vi har fått fra " +
-                                        fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + virkningstidpunkt.format() + "."
-                                   },
-                            nynorsk {
-                                +"Vi viser til vedtak frå " + fritekst("vedtaksdato") + " om førebels avslag på søknaden din om uføretrygd. Vi har innvilga søknaden din ut ifrå opplysningar vi har fått frå " +
-                                        fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd frå " + virkningstidpunkt.format() + "."
-                            },
-                            english {
-                                +"We refer to the decision from " + fritekst("vedtaksdato") + " regarding provisional rejection of your application for disability benefit. We have granted your application based on information we have received from " +
-                                        fritekst("land") + ". You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " per cent disability benefit from " + virkningstidpunkt.format() + "."
-                                    },
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Vi har innvilget søknaden din ut fra opplysninger vi har fått fra " +
+                                    fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + virkningstidpunkt.format() + "."
+                               },
+                        nynorsk {
+                            +"Vi viser til vedtak frå " + fritekst("vedtaksdato") + " om førebels avslag på søknaden din om uføretrygd. Vi har innvilga søknaden din ut ifrå opplysningar vi har fått frå " +
+                                    fritekst("land") + ". Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd frå " + virkningstidpunkt.format() + "."
+                        },
+                        english {
+                            +"We refer to the decision from " + fritekst("vedtaksdato") + " regarding provisional rejection of your application for disability benefit. We have granted your application based on information we have received from " +
+                                    fritekst("land") + ". You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " per cent disability benefit from " + virkningstidpunkt.format() + "."
+                                },
+                    )
                 }
             }
 
@@ -427,12 +427,32 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
                 ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom()) { trygdetidfom ->
-                    paragraph {
-                        text (
-                            bokmal { + "Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom().format() + ". Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral().format() + ". Uføretidspunktet ditt er satt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().format() + ". Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden." },
-                            nynorsk { + "Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom().format() + ". Vi har fått opplyst at du har vore medlem av den <FRITEKST: Nasjonalitet> trygdeordninga frå " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral().format() + ". Uføretidspunktet ditt er sett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt().format() + ". Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: Nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: Land>, får du unntak frå vilkåret om medlemskap i folketrygda." },
-                            english { + "You have been a member of the Norwegian National Insurance Scheme from " + trygdetidfom.format() + " to " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom().format() + ". We have been informed that you have been a member of the <FRITEKST: Nasjonalitet> social security scheme from " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().format() + " to " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral().format() + ". Your date of disability has been determined to be " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().format() + ". Therefore, you have been a member of the Norwegian National Insurance Scheme and the <FRITEKST: Nasjonalitet> social security scheme continuously for three years or more up to the time of your disability. As we have added together the periods of membership in Norway and <FRITEKST: Land>, you have been exempted from the provision regarding membership of the Norwegian National Insurance Scheme." },
-                        )
+                    ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom()) { trygdetidtom ->
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom
+                                        .format() + ". Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
+                                        .format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()
+                                        .format() + ". Uføretidspunktet ditt er satt til " + uforetidspunkt
+                                        .format() + ". Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden."
+                                },
+                                nynorsk {
+                                    +"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom
+                                        .format() + ". Vi har fått opplyst at du har vore medlem av den <FRITEKST: Nasjonalitet> trygdeordninga frå " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
+                                        .format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()
+                                        .format() + ". Uføretidspunktet ditt er sett til " + uforetidspunkt
+                                        .format() + ". Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: Nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: Land>, får du unntak frå vilkåret om medlemskap i folketrygda."
+                                },
+                                english {
+                                    +"You have been a member of the Norwegian National Insurance Scheme from " + trygdetidfom.format() + " to " + trygdetidtom
+                                        .format() + ". We have been informed that you have been a member of the <FRITEKST: Nasjonalitet> social security scheme from " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
+                                        .format() + " to " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()
+                                        .format() + ". Your date of disability has been determined to be " + uforetidspunkt
+                                        .format() + ". Therefore, you have been a member of the Norwegian National Insurance Scheme and the <FRITEKST: Nasjonalitet> social security scheme continuously for three years or more up to the time of your disability. As we have added together the periods of membership in Norway and <FRITEKST: Land>, you have been exempted from the provision regarding membership of the Norwegian National Insurance Scheme."
+                                },
+                            )
+                        }
                     }
                 }
 
@@ -1211,24 +1231,21 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = true) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_bo_utl") and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())){
                 //[TBU1162EN, TBU1162, TBU1162NN]
-                ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()) { uforetidspunkt ->
+                paragraph {
+                    text (
+                        bokmal { + "Du har vært medlem av folketrygden fra <FRITEKST: Norsk trygdetid fom> til <FRITEKST: Norsk trygdetid tom>. Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra <FRITEKST: Trygdetid utland fom> til <FRITEKST: trygdetid utland tom>. Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden." },
+                        nynorsk { + "Du har vore medlem av den norske folketrygda frå <FRITEKST: Norsk trygdetid fom> til <FRITEKST: Norsk trygdetid tom>. Vi har fått opplyst at du har vore medlem av den <FRITEKST: nasjonalitet> trygdeordninga frå <FRITEKST: Trygdetid utland fom> til <FRITEKST: trygdetid utland tom>. Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: land>, får du unntak frå vilkåret om medlemskap i folketrygda." },
+                        english { + "You have been a member of the Norwegian National Insurance Scheme from <FRITEKST: Norsk trygdetid fom> to <FRITEKST: Norsk trygdetid tom>. We have received information that you have been a member of the <FRITEKST: Nasjonalitet> social security scheme from <FRITEKST: Trygdetid utland fom> to <FRITEKST: Trygdetid utland tom>. The date when you became disabled is determined to be " + uforetidspunkt.format() + ". Therefore, you have been a member of the National Insurance Scheme and the <FRITEKST: Nasjonalitet> social security scheme continuously for three years or more up to the time when you became disabled. As we have added together the periods of membership in Norway and <FRITEKST: Land>, you qualify for exemption from the condition of membership in the National Insurance Scheme." },
+                    )
+                }
+                //[TBU1163EN, TBU1163, TBU1163NN]
 
-                    paragraph {
-                        text (
-                            bokmal { + "Du har vært medlem av folketrygden fra <FRITEKST: Norsk trygdetid fom> til <FRITEKST: Norsk trygdetid tom>. Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra <FRITEKST: Trygdetid utland fom> til <FRITEKST: trygdetid utland tom>. Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden." },
-                            nynorsk { + "Du har vore medlem av den norske folketrygda frå <FRITEKST: Norsk trygdetid fom> til <FRITEKST: Norsk trygdetid tom>. Vi har fått opplyst at du har vore medlem av den <FRITEKST: nasjonalitet> trygdeordninga frå <FRITEKST: Trygdetid utland fom> til <FRITEKST: trygdetid utland tom>. Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: land>, får du unntak frå vilkåret om medlemskap i folketrygda." },
-                            english { + "You have been a member of the Norwegian National Insurance Scheme from <FRITEKST: Norsk trygdetid fom> to <FRITEKST: Norsk trygdetid tom>. We have received information that you have been a member of the <FRITEKST: Nasjonalitet> social security scheme from <FRITEKST: Trygdetid utland fom> to <FRITEKST: Trygdetid utland tom>. The date when you became disabled is determined to be " + uforetidspunkt.format() + ". Therefore, you have been a member of the National Insurance Scheme and the <FRITEKST: Nasjonalitet> social security scheme continuously for three years or more up to the time when you became disabled. As we have added together the periods of membership in Norway and <FRITEKST: Land>, you qualify for exemption from the condition of membership in the National Insurance Scheme." },
-                        )
-                    }
-                    //[TBU1163EN, TBU1163, TBU1163NN]
-
-                    paragraph {
-                        text (
-                            bokmal { + "Vedtaket er gjort etter EØS-avtalen artikkel 7 i forordning 883/2004 og folketrygdloven § 12-2." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova § 12-2 og reglane i EØS-avtalen i forordning 883/2004, artikkel 6." },
-                            english { + "The decision was made pursuant to the provisions of § 12-2 of the National Insurance Act and the provisions of Articles 6 of Regulation (EC) 883/2004." },
-                        )
-                    }
+                paragraph {
+                    text (
+                        bokmal { + "Vedtaket er gjort etter EØS-avtalen artikkel 7 i forordning 883/2004 og folketrygdloven § 12-2." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova § 12-2 og reglane i EØS-avtalen i forordning 883/2004, artikkel 6." },
+                        english { + "The decision was made pursuant to the provisions of § 12-2 of the National Insurance Act and the provisions of Articles 6 of Regulation (EC) 883/2004." },
+                    )
                 }
             }
 
@@ -1537,40 +1554,34 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder <> "mellombh" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_UforetidspunktBegrunnelse) = "stdbegr_12_7_1_1") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("mellombh") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse()).equalTo("stdbegr_12_7_1_1"))){
-                ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()) { uforetidspunkt ->
-                    paragraph {
-                        text(
-                            bokmal { +"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
-                            nynorsk { +"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
-                            english { +"You became disabled on " + uforetidspunkt.format() + ". Your earning ability then became permanently reduced to at least half." },
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal { +"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
+                        nynorsk { +"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
+                        english { +"You became disabled on " + uforetidspunkt.format() + ". Your earning ability then became permanently reduced to at least half." },
+                    )
                 }
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder <> "mellombh" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_UforetidspunktBegrunnelse) = "stdbegr_12_7_1_2") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("mellombh") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse()).equalTo("stdbegr_12_7_1_2"))){
-                ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()) { uforetidspunkt ->
-                    paragraph {
-                        text(
-                            bokmal {+"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent."},
-                            nynorsk {+"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent."},
-                            english {+"You became disabled on " + uforetidspunkt.format() + ". Your earning ability then became permanently reduced by at least 40 percent."},
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal {+"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent."},
+                        nynorsk {+"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent."},
+                        english {+"You became disabled on " + uforetidspunkt.format() + ". Your earning ability then became permanently reduced by at least 40 percent."},
+                    )
                 }
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder <> "mellombh" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_UforetidspunktBegrunnelse) = "stdbegr_12_7_1_3") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("mellombh") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse()).equalTo("stdbegr_12_7_1_3"))){
-                ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt()) { uforetidspunkt ->
-                    paragraph {
-                        text(
-                            bokmal {+"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent."},
-                            nynorsk {+"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent."},
-                            english {+"You became disabled on " + uforetidspunkt.format() + ". Your earning ability then became permanently reduced by at least 30 percent."},
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal {+"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent."},
+                        nynorsk {+"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent."},
+                        english {+"You became disabled on " + uforetidspunkt.format() + ". Your earning ability then became permanently reduced by at least 30 percent."},
+                    )
                 }
             }
 
