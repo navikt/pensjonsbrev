@@ -39,29 +39,27 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
     ) {
         title {
             text(
-                bokmal { +"Godskriving av pensjonsopptjening ved omsorgsarbeid - melding om vedtak" },
+                bokmal { +"Du har rett til pensjonsopptjening" },
                 english { +"Crediting of acquired rights for care work - notification of decision" }
             )
         }
         outline {
             paragraph {
                 text(
-                    bokmal { +"Nav har vedtatt at du skal godskrives omsorgsopptjening for " + pesysData.omsorgsopptjeningsaar + "." },
+                    bokmal { +"Nav har godkjent at du få omsorgsopptjening for " + pesysData.omsorgsopptjeningsaar + "." },
                     english { +"Nav has decided that you should be credited with acquired rights for care work in " + pesysData.omsorgsopptjeningsaar + "." }
                 )
             }
-            title1 {
+            paragraph {
                 text(
-                    bokmal { +"Begrunnelse for vedtaket" },
-                    english { +"Reason for the decision" }
+                    bokmal { +"Vi har lagt til grunn at omsorgsarbeidet for " + pesysData.omsorgspersonNavn +" er minst 22 timer per uke i minst seks måneder i " + pesysData.omsorgsopptjeningsaar + "." },
+                    english {+""}
                 )
             }
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er fattet med hjemmel i folketrygdloven § 3-16 første ledd bokstav b, samt §§ 20-8 første ledd bokstav b og 20-21 hvis du er født etter 1953. "
-                        +"Det er lagt til grunn at omsorgen for " + pesysData.omsorgspersonNavn + " utgjør minst 22 timer per uke, "
-                        +"og at omsorgen har hatt en varighet på minst seks måneder i " + pesysData.omsorgsopptjeningsaar + "."
+                        +"Vedtaket er gjort etter folketrygdloven § 3-16 første ledd bokstav b, og §§ 20-8 første ledd bokstav b og 20-21 hvis du er født etter 1953."
                     },
                     english {
                         +"The decision has been made in accordance with section 3-16, first paragraph, letter b of the National Insurance Act, and sections 20-8 first paragraph, "
@@ -77,16 +75,15 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                     english { +"What are acquired rights for care work?" }
                 )
             }
-            /*
             paragraph {
                 text(
                     bokmal {
-                        +"Omsorgsopptjening gir deg pensjonsopptjening tilsvarende 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. "
+                        +"Omsorgsopptjening gir deg pensjonsopptjening 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. "
                     },
                     english { +"" }
                 )
                 text(
-                    bokmal { +"Dette kan bidra til at du får en høyere pensjon enn du ellers ville hatt. " },
+                    bokmal { +"Det kan gi en høyere pensjon enn du ellers ville hatt. " },
                     english { +"" }
                 )
             }
@@ -99,45 +96,12 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                     bokmal { +"Har du annen pensjonsopptjening i det aktuelle året som er høyere enn omsorgsopptjeningen, vil den opptjeningen legges til grunn." },
                     english { +"" }
                 )
-            } */
-
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"Omsorgsopptjeningen tilsvarte for hvert år før 2010 en inntekt på fire ganger folketrygdens grunnbeløp. "
-                        +"Fra og med 2010 tilsvarer omsorgsopptjeningen 4,5 ganger grunnbeløpet. "
-                        +"Omsorgsopptjening kan bidra til at du får høyere pensjon enn du ellers ville fått."
-                    },
-                    english {
-                        +"In the years before 2010, acquired rights for care work were calculated as an income of four times the national insurance basic amount (G) per year. "
-                        +"From 2010, acquired rights for care work equal 4.5 times the national insurance basic amount. "
-                        +"Acquired rights for care work may help ensure that you receive a higher pension that you would have done otherwise. "
-                    }
-                )
             }
             paragraph {
                 text(
                     bokmal {
-                        +"Omsorgsopptjening gis ved at en inntekt tilsvarende fire eller 4,5 ganger grunnbeløpet legges til grunn for opptjeningen for det aktuelle året. "
-                        +"Annen opptjening kan ikke legges sammen med omsorgsopptjening. "
-                        +"Dersom du har annen pensjonsopptjening i det aktuelle året som er høyere enn omsorgsopptjeningen legges denne opptjeningen til grunn."
-                    },
-                    english {
-                        +"Acquired rights for care work are considered equivalent to the rights acquired by an income of four or 4.5 times the national insurance basic amount for the year. "
-                        +"Other earnings may not be combined with acquired rights for care work. "
-                        +"If, in the year in question, you accumulated pension rights in some other way and these pension rights are higher than the acquired rights for care work, "
-                        +"the higher pension rights are used to calculate your pension."
-                    },
-                )
-            }
-
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"I nettjenesten Din pensjon på nav.no får du oversikt over hele pensjonsopptjeningen din. "
-                        +"Her finner du også omsorgsopptjening som du har fått godskrevet."
+                        +"På nav.no/din-pensjon får du oversikt over hele pensjonsopptjeningen din. "
+                        +"Her finner du også omsorgsopptjeningen som du har godkjent."
                     },
                     english {
                         +"Nav has an online pension service Din Pensjon on nav.no which shows your pensionable income and how much pension you have accumulated. "
