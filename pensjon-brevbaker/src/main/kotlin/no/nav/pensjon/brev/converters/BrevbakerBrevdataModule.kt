@@ -14,7 +14,11 @@ object BrevbakerBrevdataModule : SimpleModule() {
 
     private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
 
-    private data class GenericRedigerbarBrevdata(override val saksbehandlerValg: GenericBrevdata, override val pesysData: GenericBrevdata) : RedigerbarBrevdata<GenericBrevdata, GenericBrevdata>
+    private class GenericSaksbehandlervalg : LinkedHashMap<String, Any>(), SaksbehandlerValgBrevdata
+
+    private class GenericFagsystemBrevdata : LinkedHashMap<String, Any>(), FagsystemBrevdata
+
+    private data class GenericRedigerbarBrevdata(override val saksbehandlerValg: GenericSaksbehandlervalg, override val pesysData: GenericFagsystemBrevdata) : RedigerbarBrevdata<GenericSaksbehandlervalg, GenericFagsystemBrevdata>
 
     init {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
