@@ -82,7 +82,7 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
 
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9, omstillingsstønadsforskriften § 9 og folketrygdloven $ 22-12." },
+                        bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9, omstillingsstønadsforskriften § 9 og folketrygdloven § 22-12." },
                         nynorsk { +"Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova § 17-9, omstillingsstønadsforskriften § 9 og folketrygdlova § 22-12." },
                         english { +"The decision has been made pursuant to the regulations on adjustment allowance in Section 17-9 of the National Insurance Act, Section 9 of " +
                                 "the Adjustment Allowance Regulations, and Section 22-12 of the National Insurance Act." },
