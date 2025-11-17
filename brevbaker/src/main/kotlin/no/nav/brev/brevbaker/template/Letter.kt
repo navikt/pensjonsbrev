@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Felles
 
 // TODO: Look at * projections for LetterTemplate, we have to have it for the API endpoint, but perhaps not for internal usage.
@@ -8,7 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 //        when passing it to Letter you can pass any value as argument, and a new upper bound of Any will be chosen.
 
 @InterneDataklasser
-data class LetterImpl<ParameterType : Any>(
+data class LetterImpl<ParameterType : BrevbakerBrevdata>(
     override val template: LetterTemplate<*, ParameterType>,
     override val argument: ParameterType,
     override val language: Language,
@@ -22,7 +23,7 @@ data class LetterImpl<ParameterType : Any>(
     }
 }
 
-interface Letter<ParameterType : Any> {
+interface Letter<ParameterType : BrevbakerBrevdata> {
     val template: LetterTemplate<*, ParameterType>
     val argument: ParameterType
     val language: Language
