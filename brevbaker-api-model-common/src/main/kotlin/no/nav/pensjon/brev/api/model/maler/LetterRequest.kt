@@ -10,26 +10,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import java.util.Objects
 
 @Suppress("unused")
-class BestillBrevRequest<T : Brevkode<T>>(
-    val kode: T,
-    val letterData: BrevbakerBrevdata,
-    val felles: Felles,
-    val language: LanguageCode,
-) : BrevRequest<T> {
-    override fun equals(other: Any?): Boolean {
-        if (other !is BestillBrevRequest<*>) return false
-        return kode == other.kode
-                && letterData == other.letterData
-                && felles == other.felles
-                && language == other.language
-    }
-
-    override fun hashCode() = Objects.hash(kode, letterData, felles, language)
-
-    override fun toString() = "BestillBrevRequest(kode=$kode, letterData=$letterData, felles=$felles, language=$language)"
-}
-
-@Suppress("unused")
 class BestillAutobrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: AutobrevData,

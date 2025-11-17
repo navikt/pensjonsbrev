@@ -15,7 +15,7 @@ import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.io.EOFException
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -103,7 +103,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         val response = client.post("/letter/redigerbar/markup-usage") {
             contentType(ContentType.Application.Json)
             setBody(
-                BestillBrevRequest(
+                BestillRedigerbartBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
                     felles = felles,

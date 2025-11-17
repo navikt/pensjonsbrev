@@ -9,7 +9,6 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.FeatureToggleService
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -32,6 +31,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.BestillAutobrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
@@ -52,7 +52,7 @@ object TestTags {
 }
 
 
-fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse =
+fun requestLetter(client: HttpClient, letterRequest: BestillAutobrevRequest<Brevkode.Automatisk>): LetterResponse =
     runBlocking {
         client.post("letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
