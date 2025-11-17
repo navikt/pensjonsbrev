@@ -22,7 +22,7 @@ import kotlin.test.Test
 
 class IncludeAttachmentTest {
     data class NullData(val vedlegg: VedleggData?)
-    data class VedleggData(val test: String?) : no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+    data class VedleggData(val test: String?) : no.nav.pensjon.brev.api.model.maler.VedleggData
 
     @TemplateModelHelpers
     object Helpers : HasModel<NullData>
