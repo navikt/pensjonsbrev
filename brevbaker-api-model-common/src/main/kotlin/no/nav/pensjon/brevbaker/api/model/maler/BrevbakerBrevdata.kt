@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler
+package no.nav.pensjon.brevbaker.api.model.maler
 
 /**
  * Interface for toppnivå-mal-DTO.

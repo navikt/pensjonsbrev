@@ -1,6 +1,6 @@
 package no.nav.brev.brevbaker.template
 
-import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.Letter

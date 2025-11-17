@@ -60,7 +60,7 @@ class IncludeAttachmentTest {
 
     data class NullData(val testVedleggData: VedleggData?)
 
-    data class VedleggData(val test: String?) : no.nav.pensjon.brev.api.model.maler.VedleggData
+    data class VedleggData(val test: String?) : no.nav.pensjon.brevbaker.api.model.maler.VedleggData
 
     @Nested
     inner class IncludeIfNotNull{

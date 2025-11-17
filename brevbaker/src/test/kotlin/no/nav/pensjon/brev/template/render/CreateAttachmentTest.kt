@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.render
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
-import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl

@@ -1,9 +1,8 @@
 package no.nav.pensjon.brev.alder.model.avslag
 
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
+import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brevbaker.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.hentMuligOverstyrtMal
 import no.nav.pensjon.brev.template.BrevTemplate

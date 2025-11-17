@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
