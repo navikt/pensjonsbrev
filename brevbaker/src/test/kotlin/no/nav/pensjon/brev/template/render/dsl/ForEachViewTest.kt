@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Test
@@ -19,7 +20,7 @@ class ForEachViewTest {
     @Test
     fun `ForEachView will render the body for all list items`() {
         val listen = listOf("hei", "ha det bra", "og", "goodbye")
-        val actual = outlineTestTemplate<Unit> {
+        val actual = outlineTestTemplate<EmptyAutobrevdata> {
             val myList = listen.expr()
             val str = 5.expr().format()
 
@@ -35,7 +36,7 @@ class ForEachViewTest {
         }
 
         assertThat(
-            Letter2Markup.render(LetterImpl(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     listen.forEach { variable(it) }
@@ -50,7 +51,7 @@ class ForEachViewTest {
     @Test
     fun `ForEachView works for nested forEach`() {
         val listen = listOf(listOf("hei", "hello", "bonjour"), listOf("ha det bra", "goodbye", "au revoir"))
-        val actual = outlineTestTemplate<Unit> {
+        val actual = outlineTestTemplate<EmptyAutobrevdata> {
             val myList = listen.expr()
 
             paragraph {
@@ -63,7 +64,7 @@ class ForEachViewTest {
         }
 
         assertThat(
-            Letter2Markup.render(LetterImpl(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     listen.forEach { nestedList ->
@@ -76,7 +77,7 @@ class ForEachViewTest {
         )
     }
 
-    data class Argument(val value: String)
+    data class Argument(val value: String) : AutobrevData
 
     @Test
     fun `ForEachView render works with letter argument`() {
@@ -128,7 +129,7 @@ class ForEachViewTest {
         val expected = "1,1;1,2;2,1;2,2;"
 
         assertThat(
-            Letter2Markup.render(LetterImpl(template, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     list.forEach { outer ->

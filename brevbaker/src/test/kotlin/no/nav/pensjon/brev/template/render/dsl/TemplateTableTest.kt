@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Test
 
@@ -15,7 +16,7 @@ class TemplateTableTest {
 
     @Test
     fun `table is not rendered when all the rows are filtered out`() {
-        val doc = outlineTestTemplate<Unit> {
+        val doc = outlineTestTemplate<EmptyAutobrevdata> {
             title1 { text(bokmal { +"THIS TEXT SHOULD RENDER" }) }
             paragraph {
                 table(
@@ -40,7 +41,7 @@ class TemplateTableTest {
             }
         }
 
-        val actual = Letter2Markup.render(LetterImpl(doc, Unit, Language.Bokmal, FellesFactory.felles)).letterMarkup
+        val actual = Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup
         assertThat(
             actual,
             hasBlocks {
@@ -52,7 +53,7 @@ class TemplateTableTest {
 
     @Test
     fun `all table elements are rendered`() {
-        val doc = outlineTestTemplate<Unit> {
+        val doc = outlineTestTemplate<EmptyAutobrevdata> {
             paragraph {
                 table(
                     header = {
@@ -77,7 +78,7 @@ class TemplateTableTest {
         }
 
         assertThat(
-            Letter2Markup.render(LetterImpl(doc, Unit, Language.Bokmal, FellesFactory.felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     table {
