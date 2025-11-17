@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
-/**
- * Interface for toppnivå-mal-DTO.
- * Ikke utvid denne direkte for en mal-dto, bruk heller de spesifikke interfacene under.
- */
+// Interface for toppnivå-mal-DTO.
 sealed interface BrevbakerBrevdata
 
 interface RedigerbarBrevdata<Valg : SaksbehandlerValgBrevdata, Data : FagsystemBrevdata> : BrevbakerBrevdata {
