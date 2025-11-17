@@ -12,6 +12,7 @@ import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.pensjon.brev.api.model.BestillAutobrevRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LetterRoutesITest {
-    private val autoBrevRequest = BestillBrevRequest(
+    private val autoBrevRequest = BestillAutobrevRequest(
         kode = LetterExample.kode,
         letterData = createLetterExampleDto(),
         felles = FellesFactory.fellesAuto,
@@ -173,7 +174,7 @@ class LetterRoutesITest {
     }
 }
 
-private fun <T : Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
+private fun <T : Brevkode<T>> BestillAutobrevRequest<T>.copy(kode: T) = BestillAutobrevRequest(
     kode = kode,
     letterData = this.letterData,
     felles = this.felles,
