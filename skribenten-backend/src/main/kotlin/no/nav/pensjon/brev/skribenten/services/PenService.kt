@@ -220,5 +220,5 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 }
 
 data class BrevdataResponse(val data: Data?, val feil: BrevExceptionDto? = null) {
-    data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
+    data class Data(val felles: Felles, val brevdata: Api.FagsystemBrevdata)
 }

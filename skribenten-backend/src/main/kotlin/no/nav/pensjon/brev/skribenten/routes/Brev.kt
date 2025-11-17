@@ -6,8 +6,8 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
 import org.slf4j.LoggerFactory
 
@@ -56,7 +56,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
             )
         }
 
-        put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
+        put<Api.SaksbehandlerValg>("/saksbehandlerValg") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             respond(
                 brevredigeringService.oppdaterBrev(

@@ -97,7 +97,7 @@ class MottakerTest {
             this.brevkode = Testbrevkoder.TESTBREV
             this.spraak = LanguageCode.BOKMAL
             this.avsenderEnhetId = "1111"
-            this.saksbehandlerValg = Api.GeneriskBrevdata()
+            this.saksbehandlerValg = Api.SaksbehandlerValg()
             laastForRedigering = false
             distribusjonstype = Distribusjonstype.SENTRALPRINT
             redigeresAvNavIdent = principal
