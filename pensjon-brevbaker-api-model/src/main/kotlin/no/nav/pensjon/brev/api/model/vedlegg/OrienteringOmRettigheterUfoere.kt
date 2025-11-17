@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 
 data class OrienteringOmRettigheterUfoereDto(
     val bruker_borINorge: Boolean,

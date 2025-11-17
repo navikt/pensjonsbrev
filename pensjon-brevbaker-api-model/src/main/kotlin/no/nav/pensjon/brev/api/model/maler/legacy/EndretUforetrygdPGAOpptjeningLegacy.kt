@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.legacy
 
-import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 

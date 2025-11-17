@@ -1,7 +1,7 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
-import no.nav.pensjon.brevbaker.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 

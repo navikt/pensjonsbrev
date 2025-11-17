@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 
 @Suppress("unused")
 data class OrienteringOmRettigheterAfpDto(

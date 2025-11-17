@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.KonteringType
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
-import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 

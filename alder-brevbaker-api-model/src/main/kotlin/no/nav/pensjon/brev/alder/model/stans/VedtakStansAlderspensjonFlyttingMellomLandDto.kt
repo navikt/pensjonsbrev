@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.EksportForbudKode
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brevbaker.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brevbaker.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brevbaker.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 

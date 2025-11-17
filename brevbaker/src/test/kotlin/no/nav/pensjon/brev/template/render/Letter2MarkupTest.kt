@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
-import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal

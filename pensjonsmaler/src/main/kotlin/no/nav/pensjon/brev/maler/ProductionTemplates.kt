@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
-import no.nav.pensjon.brevbaker.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig

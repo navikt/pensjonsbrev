@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi
 
-import no.nav.pensjon.brevbaker.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import java.time.LocalDate
 
 

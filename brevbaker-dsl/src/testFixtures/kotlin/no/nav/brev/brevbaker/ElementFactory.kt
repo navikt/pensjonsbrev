@@ -1,7 +1,7 @@
 package no.nav.brev.brevbaker
 
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element

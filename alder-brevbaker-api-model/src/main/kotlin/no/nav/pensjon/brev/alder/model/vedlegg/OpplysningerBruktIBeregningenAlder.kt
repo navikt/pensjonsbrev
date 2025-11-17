@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.model.vedlegg
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.Beregningsmetode
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
-import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 

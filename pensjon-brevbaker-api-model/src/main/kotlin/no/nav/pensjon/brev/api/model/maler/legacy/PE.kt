@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.legacy
 
-import no.nav.pensjon.brevbaker.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brevbaker.api.model.Kroner
