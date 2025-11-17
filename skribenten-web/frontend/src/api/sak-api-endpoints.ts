@@ -14,6 +14,11 @@ import type {
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
+export type PdfResponse = {
+  pdf: Blob;
+  rendretBrevErEndret: boolean;
+};
+
 export const hentAlleBrevForSak = {
   queryKey: (sakId: string) => ["hentAlleBrevForSak", sakId],
   queryFn: async (saksId: string) => hentAlleBrevForSakFunction(saksId),
@@ -30,9 +35,9 @@ export const hentPdfForBrev = {
 const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =>
   (
     await axios
-      .get<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
-        responseType: "blob",
-        headers: { Accept: "application/pdf" },
+      .get<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
+        responseType: "json",
+        headers: { Accept: "application/json" },
       })
       .catch((error) => {
         if (error?.response?.status === 404) {

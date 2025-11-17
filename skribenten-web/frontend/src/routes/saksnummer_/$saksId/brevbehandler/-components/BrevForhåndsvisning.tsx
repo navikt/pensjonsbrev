@@ -39,13 +39,13 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
         </Alert>
       </>
     ),
-    success: (pdf) =>
-      pdf === null ? (
+    success: (pdfResponse) =>
+      pdfResponse === null ? (
         <VStack align="center">Fant ikke PDF for brev med id {properties.brevId}</VStack>
       ) : (
         <PDFViewer
           brevId={properties.brevId}
-          pdf={pdf}
+          pdf={pdfResponse.pdf}
           sakId={properties.saksId}
           viewerHeight={"var(--main-page-content-height)"}
         />
