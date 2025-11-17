@@ -4,9 +4,9 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
+import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestVedleggPdf
 import no.nav.brev.brevbaker.copy
-import no.nav.brev.brevbaker.renderTestPdfOutline
-import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

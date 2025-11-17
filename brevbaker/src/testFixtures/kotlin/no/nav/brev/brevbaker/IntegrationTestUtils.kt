@@ -66,55 +66,6 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-fun renderTestPdfOutline(
-    outputFolder: String,
-    testName: String,
-    felles: Felles? = null,
-    brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-    attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
-    title: String? = null,
-    pdfByggerService: PDFByggerService,
-    outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
-) {
-    val template = createTemplate(
-        EmptyVedleggData::class, languages(Bokmal), LetterMetadata(
-            testName,
-            false,
-            LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype
-        )
-    ) {
-        title {
-            text(bokmal { +(title ?: testName) })
-        }
-        outline { outlineInit() }
-        attachments.forEach { includeAttachment(it) }
-    }
-    val letter = LetterImpl(template, Unit, Bokmal, felles ?: FellesFactory.fellesAuto)
-    letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
-}
-
-fun renderTestVedleggPdf(
-    testName: String,
-    title: String? = null,
-    includeSakspart: Boolean,
-    outputFolder: String,
-    felles: Felles? = null,
-    pdfByggerService: PDFByggerService,
-    outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
-) {
-    val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
-        title = newText(
-            Bokmal to (title ?: testName)
-        ),
-        includeSakspart = includeSakspart,
-    ) {
-        outlineInit()
-    }
-    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles, pdfByggerService = pdfByggerService) {}
-}
-
-
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
@@ -228,3 +179,53 @@ val testLetterMetadata = LetterMetadata(
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )
+
+object VedleggPDFTestUtils {
+    fun renderTestVedleggPdf(
+        testName: String,
+        title: String? = null,
+        includeSakspart: Boolean,
+        outputFolder: String,
+        felles: Felles? = null,
+        pdfByggerService: PDFByggerService,
+        outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
+    ) {
+        val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
+            title = newText(
+                Bokmal to (title ?: testName)
+            ),
+            includeSakspart = includeSakspart,
+        ) {
+            outlineInit()
+        }
+        renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles, pdfByggerService = pdfByggerService) {}
+    }
+
+    fun renderTestPdfOutline(
+        outputFolder: String,
+        testName: String,
+        felles: Felles? = null,
+        brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
+        title: String? = null,
+        pdfByggerService: PDFByggerService,
+        outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
+    ) {
+        val template = createTemplate(
+            EmptyVedleggData::class, languages(Bokmal), LetterMetadata(
+                testName,
+                false,
+                LetterMetadata.Distribusjonstype.VEDTAK,
+                brevtype
+            )
+        ) {
+            title {
+                text(bokmal { +(title ?: testName) })
+            }
+            outline { outlineInit() }
+            attachments.forEach { includeAttachment(it) }
+        }
+        val letter = LetterImpl(template, Unit, Bokmal, felles ?: FellesFactory.fellesAuto)
+        letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
+    }
+}
