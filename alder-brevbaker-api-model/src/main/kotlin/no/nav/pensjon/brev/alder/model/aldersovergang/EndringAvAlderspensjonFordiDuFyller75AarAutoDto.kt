@@ -16,4 +16,4 @@ data class EndringAvAlderspensjonFordiDuFyller75AarAutoDto(
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
-) : BrevbakerBrevdata
+) : AutobrevData

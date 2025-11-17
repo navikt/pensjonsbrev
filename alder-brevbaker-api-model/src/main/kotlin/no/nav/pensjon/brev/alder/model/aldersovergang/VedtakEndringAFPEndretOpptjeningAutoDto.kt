@@ -14,7 +14,7 @@ data class VedtakEndringAFPEndretOpptjeningAutoDto(
     val afpPrivatBeregningGjeldende: AFPPrivatBeregning,
     val endretOpptjening: OpptjeningInfo,
     val maanedligPensjonFoerSkattAFP: MaanedligPensjonFoerSkattAFPDto?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class AFPPrivatBeregning(
     val totalPensjon: Kroner,

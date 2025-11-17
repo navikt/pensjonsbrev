@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -21,7 +22,7 @@ data class EndringAvAlderspensjonGarantitilleggDto(
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 
     data class AlderspensjonVedVirk(
         val innvilgetFor67: Boolean,

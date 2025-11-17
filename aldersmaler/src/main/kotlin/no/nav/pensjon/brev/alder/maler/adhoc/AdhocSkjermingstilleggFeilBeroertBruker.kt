@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.adhoc
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata> {
+object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ADHOC_2025_SKJERMT_FEIL_BEROERT_BRUKER
 
     override val template = createTemplate(

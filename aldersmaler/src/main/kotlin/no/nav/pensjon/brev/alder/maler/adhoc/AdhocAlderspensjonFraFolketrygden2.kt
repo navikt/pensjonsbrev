@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
+object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyAutobrevdata> {
 
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2
 

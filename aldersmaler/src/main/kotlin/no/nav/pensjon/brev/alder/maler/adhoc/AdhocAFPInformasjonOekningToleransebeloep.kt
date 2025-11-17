@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.maler.adhoc
 
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyBrevdata> {
+object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_2024_INFO_TOLERANSEBELOP
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),

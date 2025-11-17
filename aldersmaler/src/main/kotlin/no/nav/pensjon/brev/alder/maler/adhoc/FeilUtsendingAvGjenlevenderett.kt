@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
+object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyAutobrevdata> {
 
     override val kode = Aldersbrevkoder.AutoBrev.PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER
 

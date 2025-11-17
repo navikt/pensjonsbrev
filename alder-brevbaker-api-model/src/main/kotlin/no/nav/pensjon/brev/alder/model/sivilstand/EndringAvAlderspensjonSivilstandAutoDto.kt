@@ -24,7 +24,7 @@ data class EndringAvAlderspensjonSivilstandAutoDto(
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val beloepEndring: BeloepEndring,
-) : BrevbakerBrevdata {
+) : AutobrevData {
     data class EpsVedVirk(
         val harInntektOver2G: Boolean,
     )

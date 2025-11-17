@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling : AutobrevTemplate<EmptyBrevdata> {
+object AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_2024_UTBET_FT_VARSEL_OPPH
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),

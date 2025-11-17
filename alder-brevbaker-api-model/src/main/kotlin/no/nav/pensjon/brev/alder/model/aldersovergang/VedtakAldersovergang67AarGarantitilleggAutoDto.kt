@@ -15,7 +15,7 @@ data class VedtakAldersovergang67AarGarantitilleggAutoDto(
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class BeregnetPensjonPerManedVedVirk(
     val garantitillegg: Kroner,

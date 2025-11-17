@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // MF_000239
 @TemplateModelHelpers
-object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyBrevdata> {
+object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Aldersbrevkoder.AutoBrev.INFO_FYLLER_67_AAR_SAERSKILT_SATS
 
     override val template =

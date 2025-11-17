@@ -23,7 +23,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
@@ -34,7 +34,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object AlderTemplates : AllTemplates {
-    override fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>> =
+    override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> =
         setOf(
             AdhocAFPInformasjonOekningToleransebeloep,
             AdhocAlderspensjonFraFolketrygden,

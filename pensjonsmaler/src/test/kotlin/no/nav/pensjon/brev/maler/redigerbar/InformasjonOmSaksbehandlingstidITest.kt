@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
@@ -19,7 +19,7 @@ class InformasjonOmSaksbehandlingstidITest {
             soeknadMottattFraUtland = false,
             venterPaaSvarAFP = false,
         ),
-        pesysData = EmptyBrevdata
+        pesysData = EmptyFagsystemdata
     )
 
     @Test

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import java.time.LocalDate
@@ -84,7 +84,7 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun lagVarselFeilutbetalingUforeDto() = VarselFeilutbetalingUforeDto(
-        pesysData = EmptyBrevdata,
+        pesysData = EmptyFagsystemdata,
         saksbehandlerValg = VarselFeilutbetalingUforeDto.Saksbehandlervalg(
             rentetillegg = true
         ),
