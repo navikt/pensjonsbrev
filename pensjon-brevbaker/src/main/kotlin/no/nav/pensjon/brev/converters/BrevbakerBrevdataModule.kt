@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
 
+    // TODO: Håper å klare å fase ut denne.
     private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
 
     private class GenericSaksbehandlervalg : LinkedHashMap<String, Any>(), SaksbehandlerValgBrevdata
