@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
@@ -18,6 +19,7 @@ import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -428,30 +430,28 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom()) { trygdetidfom ->
                     ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom()) { trygdetidtom ->
-                        paragraph {
-                            text(
-                                bokmal {
-                                    +"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom
-                                        .format() + ". Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
-                                        .format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()
-                                        .format() + ". Uføretidspunktet ditt er satt til " + uforetidspunkt
-                                        .format() + ". Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden."
-                                },
-                                nynorsk {
-                                    +"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom
-                                        .format() + ". Vi har fått opplyst at du har vore medlem av den <FRITEKST: Nasjonalitet> trygdeordninga frå " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
-                                        .format() + " til " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()
-                                        .format() + ". Uføretidspunktet ditt er sett til " + uforetidspunkt
-                                        .format() + ". Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: Nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: Land>, får du unntak frå vilkåret om medlemskap i folketrygda."
-                                },
-                                english {
-                                    +"You have been a member of the Norwegian National Insurance Scheme from " + trygdetidfom.format() + " to " + trygdetidtom
-                                        .format() + ". We have been informed that you have been a member of the <FRITEKST: Nasjonalitet> social security scheme from " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
-                                        .format() + " to " + pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()
-                                        .format() + ". Your date of disability has been determined to be " + uforetidspunkt
-                                        .format() + ". Therefore, you have been a member of the Norwegian National Insurance Scheme and the <FRITEKST: Nasjonalitet> social security scheme continuously for three years or more up to the time of your disability. As we have added together the periods of membership in Norway and <FRITEKST: Land>, you have been exempted from the provision regarding membership of the Norwegian National Insurance Scheme."
-                                },
-                            )
+                        ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()) { trygdetidfombilateral ->
+                            ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()) { trygdetidtombilateral ->
+                                paragraph {
+                                    text(
+                                        bokmal {+"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". " +
+                                                "Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". " +
+                                                "Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". " +
+                                                "Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden."
+                                        },
+                                        nynorsk {+"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". " +
+                                                "Vi har fått opplyst at du har vore medlem av den <FRITEKST: Nasjonalitet> trygdeordninga frå " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". " +
+                                                "Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". " +
+                                                "Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: Nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: Land>, får du unntak frå vilkåret om medlemskap i folketrygda."
+                                        },
+                                        english {+"You have been a member of the Norwegian National Insurance Scheme from " + trygdetidfom.format() + " to " + trygdetidtom.format() + ". " +
+                                                "We have been informed that you have been a member of the <FRITEKST: Nasjonalitet> social security scheme from " + trygdetidfombilateral.format() + " to " + trygdetidtombilateral.format() + ". " +
+                                                "Your date of disability has been determined to be " + uforetidspunkt.format() + ". " +
+                                                "Therefore, you have been a member of the Norwegian National Insurance Scheme and the <FRITEKST: Nasjonalitet> social security scheme continuously for three years or more up to the time of your disability. As we have added together the periods of membership in Norway and <FRITEKST: Land>, you have been exempted from the provision regarding membership of the Norwegian National Insurance Scheme."
+                                        },
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -2738,15 +2738,6 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 //IF(  ( PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)   OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1  ) THEN      INCLUDE ENDIF
                 showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
                     text (
-                        bokmal { + " " },
-                        nynorsk { + " " },
-                        english { + " " },
-                    )
-                }
-
-                //IF(  ( PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)   OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1  ) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                    text (
                         bokmal { + "Dette er din månedlige uføretrygd før skatt" },
                         nynorsk { + "Dette er den månadlege uføretrygda di før skatt" },
                         english { + "This is your monthly disability benefit before tax" },
@@ -2764,6 +2755,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 )
             }
         }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }

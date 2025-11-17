@@ -62,6 +62,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelecto
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistenor_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.uforetrygdetteroppgjor_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.TrygdeavtalerSelectors.avtaleland_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.TrygdeavtalerSelectors.avtaletype_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidfombilateral_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateralSelectors.trygdetidtombilateral_safe
@@ -337,6 +338,7 @@ fun Expression<PE>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygd
 fun Expression<PE>.grunnlag_persongrunnlagsliste_brukerflyktning(): Expression<Boolean> = vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().brukerflyktning_safe.ifNull(false)
 fun Expression<PE>.grunnlag_persongrunnlagsliste_personbostedsland(): Expression<String> = vedtaksbrev.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().personbostedsland_safe.ifNull("")
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdeavtaler_safe.avtaleland_safe.ifNull("")
+fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdeavtaler_safe.avtaletype_safe.ifNull("")
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidfombilateral_safe
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistebilateral_safe.trygdetidsgrunnlagbilateral_safe.getOrNull().trygdetidtombilateral_safe
 fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom(): Expression<LocalDate?> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().trygdetidsgrunnlaglistenor_safe.trygdetidsgrunnlag_safe.getOrNull().trygdetidfom_safe
@@ -591,7 +593,6 @@ fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskade
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarvirkningfom_safe
 fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate> = vedtaksbrev_safe.vedtaksdata_safe.virkningfom_safe.ifNull(LocalDate.now())
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto(): Expression<Kroner> = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningsresultattilrevurderingtotalnetto_safe.ifNull(Kroner(0))
-fun Expression<PE>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype(): Expression<String> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.trygdeavtaler_safe.avtaletype_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse(): Expression<String> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.virkningbegrunnelse_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap(): Expression<Boolean> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.forutgaendemedlemskap_safe.unntakfraforutgaendemedlemskap_safe.ifNull(false)
 fun Expression<PE>.vedtaksbrev_vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_inngangunntak(): Expression<String> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.forutgaendemedlemskap_safe.inngangunntak_safe.ifNull("")
