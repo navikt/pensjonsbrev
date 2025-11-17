@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
 import no.nav.pensjon.brev.maler.alder.omregning.fraser.Omregning2016Hjemler
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -51,6 +53,7 @@ data class OmregningAlderUfore2016Felles(
     val avtaleland: Expression<String?>,
     val innvilgetFor67: Expression<Boolean>,
     val fullTrygdetid: Expression<Boolean>,
+    val brukersSivilstand: Expression<Sivilstand>,
     val borMedSivilstand: Expression<BorMedSivilstand?>,
     val over2G: Expression<Boolean?>,
 
@@ -306,42 +309,37 @@ data class OmregningAlderUfore2016Felles(
                 nynorsk { +"Du er registrert som " },
                 english { +" You are registered as " }
             )
-            ifNotNull(borMedSivilstand) { borMedSivilstand ->
                 text(
-                    bokmal { +borMedSivilstand.ubestemtForm() },
-                    nynorsk { +borMedSivilstand.ubestemtForm() },
-                    english { +borMedSivilstand.ubestemtForm() }
-                )
-            }.orShowIf(borMedSivilstand.isNull()) {
-                text(
-                    bokmal { +"enslig." },
-                    nynorsk { +"einsleg." },
-                    english { +"single." }
+                    bokmal { +brukersSivilstand.ubestemtForm() },
+                    nynorsk { +brukersSivilstand.ubestemtForm() },
+                    english { +brukersSivilstand.ubestemtForm() }
                 )
             }
-        }
-        ifNotNull(borMedSivilstand) { borMedSivilstand ->
-            paragraph {
-                text(
-                    bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " din har egen pensjon eller inntekt på " },
-                    nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " din har eigen pensjon eller inntekt på " },
-                    english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " has an income of " }
-                )
-            }
-            ifNotNull(over2G) { over2G ->
-                showIf(over2G) {
-                    paragraph {
-                        text(
-                            bokmal { +"over 2G." },
-                            nynorsk { +"over 2G." },
-                            english { +"over 2G." })
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            bokmal { +"under 2G." },
-                            nynorsk { +"under 2G." },
-                            english { +"under 2G." })
+
+        showIf(brukersSivilstand.notEqualTo(Sivilstand.ENSLIG)){
+            ifNotNull(borMedSivilstand){ borMedSivilstand ->
+                paragraph {
+                    text(
+                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " din har egen pensjon eller inntekt på " },
+                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " din har eigen pensjon eller inntekt på " },
+                        english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " has an income of " }
+                    )
+                }
+                ifNotNull(over2G) { over2G ->
+                    showIf(over2G) {
+                        paragraph {
+                            text(
+                                bokmal { +"over 2G." },
+                                nynorsk { +"over 2G." },
+                                english { +"over 2G." })
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(
+                                bokmal { +"under 2G." },
+                                nynorsk { +"under 2G." },
+                                english { +"under 2G." })
+                        }
                     }
                 }
             }

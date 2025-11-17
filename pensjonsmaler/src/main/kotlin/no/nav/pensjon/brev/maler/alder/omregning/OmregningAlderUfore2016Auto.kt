@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSel
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.antallBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.borMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.faktiskBostedsland
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
@@ -103,6 +104,7 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
                     avtaleland = inngangOgEksportVurdering.avtaleland,
                     innvilgetFor67 = innvilgetFor67,
                     fullTrygdetid = fullTrygdetid,
+                    brukersSivilstand = brukersSivilstand,
                     borMedSivilstand = borMedSivilstand,
                     over2G = over2G,
                 )

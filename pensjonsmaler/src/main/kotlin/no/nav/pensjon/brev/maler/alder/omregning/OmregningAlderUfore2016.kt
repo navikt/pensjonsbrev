@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSel
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.antallBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.borMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.faktiskBostedsland
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
@@ -115,6 +116,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     avtaleland = pesysData.inngangOgEksportVurdering.avtaleland,
                     innvilgetFor67 = pesysData.innvilgetFor67,
                     fullTrygdetid = pesysData.fullTrygdetid,
+                    brukersSivilstand = pesysData.brukersSivilstand,
                     borMedSivilstand = pesysData.borMedSivilstand,
                     over2G = pesysData.over2G,
 
