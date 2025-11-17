@@ -1,19 +1,13 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang
 
+import no.nav.pensjon.brev.alder.maler.felles.*
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.alder.maler.felles.DuFaarHverMaaned
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
-import no.nav.pensjon.brev.alder.maler.felles.MeldFraOmEndringer2
-import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
-import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
-import no.nav.pensjon.brev.alder.maler.felles.Utbetalingsinformasjon
-import no.nav.pensjon.brev.alder.maler.felles.Vedtak
-import no.nav.pensjon.brev.alder.maler.felles.VedtakAlderspensjon
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
+import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
@@ -23,10 +17,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFord
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -66,7 +57,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(DuFaarHverMaaned(totalPensjon))
                 includePhrase(Utbetalingsinformasjon)
 
-                showIf(maanedligPensjonFoerSkattDto.notNull()) {
+                showIf(maanedligPensjonFoerSkattDto.notNull() and totalPensjon.greaterThan(0) and harFlereBeregningsperioder) {
                     paragraph {
                         text(
                             bokmal { +"Du kan lese mer om andre beregningsperioder i vedlegget." },
