@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -32,7 +32,7 @@ data class OmregningAlderUfore2016Dto(
     val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?
 
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class PersongrunnlagAvdod(
     val avdodNavn: String?,

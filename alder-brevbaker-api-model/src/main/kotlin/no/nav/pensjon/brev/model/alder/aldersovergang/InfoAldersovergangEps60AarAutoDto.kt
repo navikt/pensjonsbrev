@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.model.alder.aldersovergang
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 
 data class InfoAldersovergangEps60AarAutoDto(
     val ytelse: Ytelse
-) : BrevbakerBrevdata
+) : AutobrevData
 
 enum class Ytelse {
     ALDER,

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.render.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -11,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Test
 
@@ -115,7 +115,7 @@ class ForEachViewTest {
     @Test
     fun `ForEach works with nested loops over the same collection`() {
         val list = listOf("1", "2")
-        val template = outlineTestTemplate<EmptyBrevdata> {
+        val template = outlineTestTemplate<EmptyAutobrevdata> {
             val listExpr = list.expr()
             paragraph {
                 forEach(listExpr) { outer ->

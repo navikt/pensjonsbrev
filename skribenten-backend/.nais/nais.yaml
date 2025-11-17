@@ -44,7 +44,7 @@ spec:
       memory: "256Mi"
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: {{database.postgresVersion}}
         tier: db-custom-1-3840
         databases:
           - envVarPrefix: DB

@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
-import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test

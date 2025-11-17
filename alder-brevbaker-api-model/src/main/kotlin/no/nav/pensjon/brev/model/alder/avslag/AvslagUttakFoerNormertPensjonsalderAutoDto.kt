@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.model.alder.avslag
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
@@ -19,7 +19,7 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val harEOSLand: Boolean,
     val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2025,
     val avtaleland: String?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 @Suppress("unused")
 data class AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
@@ -33,12 +33,12 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
     val harEOSLand: Boolean,
     val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2016,
     val avtaleland: String?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 @Suppress("unused")
 data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto(
     val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2016
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class NormertPensjonsalder(
     val aar: Int,

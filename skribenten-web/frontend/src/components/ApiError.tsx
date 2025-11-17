@@ -1,12 +1,11 @@
 import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, CopyButton, Heading, Link, VStack } from "@navikt/ds-react";
+import { Alert, CopyButton, Heading, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
 import type { FailureType } from "~/types/apiTypes";
 import { FAILURE_TYPES } from "~/types/apiTypes";
-import feedbackUrl from "~/utils/feedbackUrl";
 import { logError } from "~/utils/logger";
 
 interface FunctionalErrorPayload {
@@ -37,9 +36,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
 
   if (error instanceof AxiosError) {
     if (isFunctionalError(error)) {
-      const response = error.response;
-      if (!response) return null;
-      const { tittel, melding } = response.data;
+      const { tittel, melding } = error.response!.data;
 
       return (
         <Alert
@@ -87,10 +84,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             <div>
               <span>{mapErrorMessage(error.message)}</span>
               <span>
-                Hvis det skjer igjen, kopier ID nedenfor og{" "}
-                <Link href={feedbackUrl} target="_blank">
-                  meld feil i Teams
-                </Link>
+                Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
               </span>
             </div>
             <CopyButton

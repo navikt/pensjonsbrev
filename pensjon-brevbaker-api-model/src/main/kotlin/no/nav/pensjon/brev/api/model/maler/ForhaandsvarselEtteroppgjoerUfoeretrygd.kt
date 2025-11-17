@@ -12,4 +12,4 @@ data class ForhaandsvarselEtteroppgjoerUfoeretrygdDto(
     val oppjustertInntektFoerUfoerhet: Kroner,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
     val opplysningerOmEtteroppgjoeretUfoeretrygd: OpplysningerOmEtteroppgjoeretDto,
-) : BrevbakerBrevdata
+) : AutobrevData

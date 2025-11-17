@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -8,4 +8,4 @@ import java.time.LocalDate
 data class AdhocAlderspensjonGjtOppryddingAutoDto(
     val totalPensjon: Kroner,
     val virkFom: LocalDate
-) : BrevbakerBrevdata
+) : AutobrevData

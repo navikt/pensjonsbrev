@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
@@ -33,6 +32,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.toCode
@@ -42,7 +42,6 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
-const val PDF_BUILDER_URL = "http://localhost:8081"
 
 object TestTags {
     const val INTEGRATION_TEST = "integration-test"
@@ -67,8 +66,6 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL)
-
 fun renderTestPdfOutline(
     outputFolder: String,
     testName: String,
@@ -76,7 +73,7 @@ fun renderTestPdfOutline(
     brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
     title: String? = null,
-    pdfByggerService: PDFByggerService = laTeXCompilerService,
+    pdfByggerService: PDFByggerService,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
 ) {
     val template = createTemplate(
@@ -103,7 +100,7 @@ fun renderTestVedleggPdf(
     includeSakspart: Boolean,
     outputFolder: String,
     felles: Felles? = null,
-    pdfByggerService: PDFByggerService = laTeXCompilerService,
+    pdfByggerService: PDFByggerService,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
 ) {
     val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
@@ -121,7 +118,7 @@ fun renderTestVedleggPdf(
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
-    pdfByggerService: PDFByggerService = laTeXCompilerService,
+    pdfByggerService: PDFByggerService? = null,
     pdfVedleggAppender: PDFVedleggAppender? = null
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
@@ -131,10 +128,12 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         })
     }
 
+    val pdfBygger = pdfByggerService ?: LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+
     Letter2Markup.render(this)
         .let {
             runBlocking {
-                pdfByggerService.producePDF(
+                pdfBygger.producePDF(
                     PDFRequest(
                         it.letterMarkup,
                         it.attachments,
@@ -218,8 +217,8 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = FellesFactory.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
-    LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
+fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: Felles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
+    LetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 val bokmalTittel = newText(Bokmal to "test brev")
 

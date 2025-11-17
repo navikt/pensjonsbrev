@@ -1,6 +1,15 @@
 package no.nav.pensjon.brev
 
-import brev.adhoc.*
+import brev.adhoc.AdhocAFPInformasjonOekningToleransebeloep
+import brev.adhoc.AdhocAlderspensjonFraFolketrygden
+import brev.adhoc.AdhocAlderspensjonFraFolketrygden2
+import brev.adhoc.AdhocAlderspensjonGjtOpprydding
+import brev.adhoc.AdhocAlderspensjonGjtVarselBrev
+import brev.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
+import brev.adhoc.AdhocSkjermingstilleggFeilMottaker
+import brev.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
+import brev.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
+import brev.adhoc.FeilUtsendingAvGjenlevenderett
 import brev.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAuto
 import brev.aldersovergang.InfoAldersovergangEps60AarAuto
 import brev.aldersovergang.InfoAldersovergangEps62AarAuto
@@ -15,7 +24,7 @@ import brev.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSats
 import brev.stans.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
@@ -30,7 +39,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object AlderTemplates : AllTemplates {
-    override fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>> =
+    override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> =
         setOf(
             AdhocAFPInformasjonOekningToleransebeloep,
             AdhocAlderspensjonFraFolketrygden,

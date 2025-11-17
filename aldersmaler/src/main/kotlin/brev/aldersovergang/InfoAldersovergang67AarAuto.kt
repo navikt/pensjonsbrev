@@ -14,9 +14,9 @@ import no.nav.pensjon.brev.aldersovergang.fraser.InfoSoekeAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoSoekeAnnenGradAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoVelgeAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InnledningInfoYtelse
-import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate

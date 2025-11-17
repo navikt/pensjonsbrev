@@ -1,6 +1,7 @@
 package brev.vedlegg.opplysningerbruktiberegningen
 
 import brev.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
@@ -30,7 +31,6 @@ import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.model.alder.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.model.alder.Beregningsmetode
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

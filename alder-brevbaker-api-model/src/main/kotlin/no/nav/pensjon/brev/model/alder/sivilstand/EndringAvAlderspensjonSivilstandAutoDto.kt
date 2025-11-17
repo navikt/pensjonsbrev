@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.model.alder.sivilstand
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.model.alder.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.model.alder.BeloepEndring
 import no.nav.pensjon.brev.model.alder.KravArsakType
@@ -24,7 +24,7 @@ data class EndringAvAlderspensjonSivilstandAutoDto(
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val beloepEndring: BeloepEndring,
-) : BrevbakerBrevdata {
+) : AutobrevData {
     data class EpsVedVirk(
         val harInntektOver2G: Boolean,
     )

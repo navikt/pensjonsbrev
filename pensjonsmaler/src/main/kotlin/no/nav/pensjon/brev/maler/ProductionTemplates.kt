@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.AdhocFeilEtteroppgjoer2023
 import no.nav.pensjon.brev.maler.adhoc.AdhocGjenlevendEtter1970
@@ -79,7 +79,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates : AllTemplates {
-    private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
+    private val autobrev: Set<AutobrevTemplate<AutobrevData>> = setOf(
         AdHocVarselUgyldiggjoringFullmaktsgiver,
         AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,

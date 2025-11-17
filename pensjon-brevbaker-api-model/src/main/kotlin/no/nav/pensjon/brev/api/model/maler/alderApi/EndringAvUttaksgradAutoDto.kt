@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
@@ -20,7 +20,7 @@ data class EndringAvUttaksgradAutoDto(
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
-): BrevbakerBrevdata {
+): AutobrevData {
 
     data class AlderspensjonVedVirk(
         val privatAFPerBrukt: Boolean,

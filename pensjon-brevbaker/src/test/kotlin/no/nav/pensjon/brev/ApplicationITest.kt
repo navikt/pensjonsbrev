@@ -15,7 +15,7 @@ import no.nav.brev.brevbaker.BREVBAKER_URL
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Tag
@@ -26,7 +26,7 @@ class ApplicationITest {
     fun `ping running brevbaker`() {
         runBlocking {
             try {
-                testBrevbakerApp {
+                testBrevbakerApp(isIntegrationTest = false) {
                     client.get("isAlive")
                 }
             } catch (e: Exception) {
@@ -58,7 +58,7 @@ class ApplicationITest {
     }
 
     @Test
-    fun `response includes deserialization error`() = testBrevbakerApp { client ->
+    fun `response includes deserialization error`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -73,13 +73,13 @@ class ApplicationITest {
     }
 
     @Test
-    fun `response includes letterData deserialization error`() = testBrevbakerApp { client ->
+    fun `response includes letterData deserialization error`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
                     kode = LetterExample.kode,
-                    letterData = EmptyBrevdata,
+                    letterData = EmptyAutobrevdata,
                     felles = FellesFactory.fellesAuto,
                     language = LanguageCode.BOKMAL
                 )

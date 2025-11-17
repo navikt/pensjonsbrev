@@ -8,7 +8,7 @@ import brev.felles.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import brev.felles.Constants.NAV_KONTAKTSENTER_OPEN_HOURS
 import brev.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import brev.felles.Constants.NAV_URL
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.alder.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocAlderspensjonGjtVarselBrev : AutobrevTemplate<EmptyBrevdata> {
+object AdhocAlderspensjonGjtVarselBrev : AutobrevTemplate<EmptyAutobrevdata> {
 
     override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ADHOC_2025_VARSELBREV_GJT_KAP_20
 

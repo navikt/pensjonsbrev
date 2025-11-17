@@ -5,6 +5,7 @@ import brev.felles.Constants
 import brev.felles.Vedtak
 import brev.felles.aarOgMaanederFormattert
 import brev.vedlegg.opplysningerbruktiberegningen.DelingstallVed67Aar
+import no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenKap19Selectors.andelGammeltRegelverk
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenKap19Selectors.andelNyttRegelverk
 import no.nav.pensjon.brev.model.alder.avslag.OpplysningerBruktIBeregningenKap19Selectors.avslattKap19
@@ -38,7 +39,6 @@ import no.nav.pensjon.brev.model.alder.avslag.TrygdeperiodeNorgeSelectors.tom
 import no.nav.pensjon.brev.model.alder.avslag.TrygdeperiodeUtlandSelectors.fom
 import no.nav.pensjon.brev.model.alder.avslag.TrygdeperiodeUtlandSelectors.land
 import no.nav.pensjon.brev.model.alder.avslag.TrygdeperiodeUtlandSelectors.tom
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language

@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -68,7 +68,7 @@ abstract class BrevmodulTest(
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
-            .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class)  }
+            .filterNot { it.template.letterDataType in setOf(EmptyAutobrevdata::class, EmptyRedigerbarBrevdata::class)  }
             .forEach {
                 assertTrue(
                     it.javaClass.declaredAnnotations.any { annotation -> annotation.annotationClass == TemplateModelHelpers::class },
@@ -121,7 +121,7 @@ abstract class BrevmodulTest(
         }
         val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak))
+        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl()))
     }
 
     @ParameterizedTest(name = "{1}, {3}")

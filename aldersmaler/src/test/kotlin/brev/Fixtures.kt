@@ -9,9 +9,7 @@ import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandDto
 import brev.maler.sivilstand.createEndringAvAlderspensjonSivilstandSaerskiltSatsDto
 import brev.maler.stans.createVedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.brev.brevbaker.LetterDataFactory
-import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.fixtures.alder.createAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto
@@ -21,8 +19,10 @@ import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsal
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderDto
 import no.nav.pensjon.brev.fixtures.alder.createInfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.model.alder.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps60AarAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAldersovergangEps62AarAutoDto
+import no.nav.pensjon.brev.model.alder.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.model.alder.aldersovergang.Ytelse
@@ -37,13 +37,10 @@ import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonGarantit
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.model.alder.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
-import no.nav.pensjon.brev.model.alder.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.model.alder.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
-    val felles = no.nav.brev.brevbaker.FellesFactory.felles
-
     val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
 
     inline fun <reified T : Any> create(): T = create(T::class)
@@ -53,12 +50,26 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             AdhocAlderspensjonGjtOppryddingAutoDto::class -> createAlderspensjonGjtOppryddingAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
             AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
+            AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
+            AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
+            AvslagUttakFoerNormertPensjonsalderAP2016Dto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
+            AvslagUttakFoerNormertPensjonsalderAP2016Dto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
             AvslagUttakFoerNormertPensjonsalderAP2016Dto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
             AvslagUttakFoerNormertPensjonsalderAutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
+            AvslagUttakFoerNormertPensjonsalderAutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
+            AvslagUttakFoerNormertPensjonsalderAutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
             AvslagUttakFoerNormertPensjonsalderDto::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
-            EmptyBrevdata::class -> EmptyBrevdata as T
+            AvslagUttakFoerNormertPensjonsalderDto::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
+            AvslagUttakFoerNormertPensjonsalderDto::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
+            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
+            EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
+            EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvAlderspensjonGarantitilleggDto::class -> createEndringAvAlderspensjonGarantitilleggDto() as T
             EndringAvAlderspensjonSivilstandAutoDto::class -> createEndringAvAlderspensjonSivilstandAutoDto() as T

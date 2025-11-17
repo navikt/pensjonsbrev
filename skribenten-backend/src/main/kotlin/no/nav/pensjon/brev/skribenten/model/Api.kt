@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -18,7 +19,7 @@ import java.time.Instant
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, SaksbehandlerValgBrevdata
+    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
@@ -114,7 +115,7 @@ object Api {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: BrevbakerBrevdata,
+        val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
