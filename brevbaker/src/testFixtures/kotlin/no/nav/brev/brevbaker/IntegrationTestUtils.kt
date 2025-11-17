@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
@@ -66,7 +67,7 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
+fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
@@ -117,7 +118,7 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
         }
 }
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
+fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
             HTMLDocumentRenderer.render(
@@ -227,7 +228,7 @@ object VedleggPDFTestUtils {
             outline { outlineInit() }
             attachments.forEach { includeAttachment(it) }
         }
-        val letter = LetterImpl(template, Unit, Bokmal, felles ?: FellesFactory.fellesAuto)
+        val letter = LetterImpl(template, EmptyAutobrevdata, Bokmal, felles ?: FellesFactory.fellesAuto)
         letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
     }
 }
