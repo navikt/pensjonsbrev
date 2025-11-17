@@ -14,5 +14,7 @@ data class BeregningsVilkar(
     val uforegrad: Int?,
     val uforetidspunkt: LocalDate?,
     val virkningstidpunkt: LocalDate?,
-    val yrkesskadegrad: Int?
+    val yrkesskadegrad: Int?,
+    val virkningbegrunnelse: String?,
+    val uforetidspunktbegrunnelse: String?
 )
