@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.fixtures.createAlderspensjonPerManed
 import no.nav.pensjon.brev.template.Language
@@ -31,7 +32,7 @@ class MaanedligPensjonFoerSkattAlderspensjonTest {
         )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             spraak,
             Fixtures.fellesAuto
         ).renderTestHtml(this::class.simpleName + "_${regelverkType.name}_${spraak::class.simpleName}")

@@ -139,7 +139,7 @@ fun <AttachmentData : VedleggData, Lang : LanguageSupport> createVedleggTestTemp
     attachmentData: Expression<AttachmentData>,
     languages: Lang,
 ) = createTemplate(
-    letterDataType = Unit::class,
+    letterDataType = EmptyAutobrevdata::class,
     languages = languages,
     letterMetadata = LetterMetadata(
         "test mal",

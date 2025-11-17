@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.AFP
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.Sakstype.BARNEP
 import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.alder.model.Institusjon
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
@@ -39,7 +40,7 @@ class OrienteringOmRettigheterOgPlikterTest {
             )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             spraak,
             Fixtures.fellesAuto,
         ).renderTestHtml(this::class.simpleName + "_${sakstype}_${spraak::class.simpleName}")
