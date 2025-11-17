@@ -14,6 +14,7 @@ fun createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() =
         kravVirkDatoFom = LocalDate.of(2025, 6, 1),
         regelverkType = AlderspensjonRegelverkType.AP2011,
         totalPensjon = Kroner(25000),
+        harFlereBeregningsperioder = true,
         maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
         opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
         orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),

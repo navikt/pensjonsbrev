@@ -13,6 +13,7 @@ data class EndringAvAlderspensjonFordiDuFyller75AarAutoDto(
     val kravVirkDatoFom: LocalDate, // v3.Krav
     val regelverkType: AlderspensjonRegelverkType,
     val totalPensjon: Kroner,  // v4.Alderpensjon
+    val harFlereBeregningsperioder: Boolean,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
