@@ -7,7 +7,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestVedleggPdf
 import no.nav.brev.brevbaker.copy
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -35,7 +34,7 @@ class LatexVisualITest {
         title: String? = null,
         felles: Felles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
+        outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
         val testName = overrideName ?: StackWalker.getInstance()
             .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
@@ -54,7 +53,7 @@ class LatexVisualITest {
         includeSakspart: Boolean,
         testName: String? = null,
         felles: Felles? = null,
-        vedleggOutlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
+        vedleggOutlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
         renderTestVedleggPdf(
             outputFolder = "test_visual/pdf",
@@ -68,7 +67,7 @@ class LatexVisualITest {
     }
 
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyVedleggData>.ipsumText() = text(bokmal { +lipsums[1] })
+    private fun ParagraphOnlyScope<LangBokmal, *>.ipsumText() = text(bokmal { +lipsums[1] })
 
     @Test
     fun `two paragraphs in a row`() {
@@ -346,7 +345,7 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.renderOutlineElementOfType(elementA: ElementType) {
+    private fun OutlineOnlyScope<LangBokmal, *>.renderOutlineElementOfType(elementA: ElementType) {
         when (elementA) {
             ElementType.T1 -> testTitle1()
             ElementType.T2 -> testTitle2()
@@ -368,7 +367,7 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyVedleggData>.testList() {
+    private fun ParagraphOnlyScope<LangBokmal, *>.testList() {
         list {
             item {
                 text(bokmal { +"Text point 1" })
@@ -379,7 +378,7 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyVedleggData>.testTable(numRows: Int = 1) {
+    private fun ParagraphOnlyScope<LangBokmal, *>.testTable(numRows: Int = 1) {
         table(
             header = {
                 column { text(bokmal { +"Column A" }) }
@@ -395,11 +394,11 @@ class LatexVisualITest {
         }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle1() {
+    private fun OutlineOnlyScope<LangBokmal, *>.testTitle1() {
         title1 { text(bokmal { +"First title" }) }
     }
 
-    private fun OutlineOnlyScope<LangBokmal, EmptyVedleggData>.testTitle2() {
+    private fun OutlineOnlyScope<LangBokmal, *>.testTitle2() {
         title2 { text(bokmal { +"Second title" }) }
     }
 

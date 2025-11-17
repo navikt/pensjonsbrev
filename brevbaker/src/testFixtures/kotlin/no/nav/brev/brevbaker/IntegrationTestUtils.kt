@@ -188,7 +188,7 @@ object VedleggPDFTestUtils {
         outputFolder: String,
         felles: Felles? = null,
         pdfByggerService: PDFByggerService,
-        outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
+        outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
         val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
             title = newText(
@@ -209,10 +209,12 @@ object VedleggPDFTestUtils {
         attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
         title: String? = null,
         pdfByggerService: PDFByggerService,
-        outlineInit: OutlineOnlyScope<LangBokmal, EmptyVedleggData>.() -> Unit,
+        outlineInit: OutlineOnlyScope<LangBokmal, EmptyAutobrevdata>.() -> Unit,
     ) {
         val template = createTemplate(
-            EmptyVedleggData::class, languages(Bokmal), LetterMetadata(
+            EmptyAutobrevdata::class,
+            languages(Bokmal),
+            LetterMetadata(
                 testName,
                 false,
                 LetterMetadata.Distribusjonstype.VEDTAK,
