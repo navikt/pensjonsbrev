@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
@@ -19,13 +18,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class AdhocTest {
-    fun <T : BrevbakerBrevdata> testHtml(template: LetterTemplate<*, T>, htmlName: String, vararg language: Language) {
+    fun testHtml(template: LetterTemplate<*, EmptyAutobrevdata>, htmlName: String, vararg language: Language) {
         language.forEach {
             LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
         }
     }
 
-    fun <T : BrevbakerBrevdata> testAdhocPdf(template: LetterTemplate<*, T>, pdfName: String, vararg language: Language) {
+    fun testAdhocPdf(template: LetterTemplate<*, EmptyAutobrevdata>, pdfName: String, vararg language: Language) {
         language.forEach {
             LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
         }
