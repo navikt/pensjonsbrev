@@ -27,16 +27,15 @@ data class OmregningAlderUfore2016Dto(
     val persongrunnlagAvdod: PersongrunnlagAvdod,
     val faktiskBostedsland: String?,
     val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
+    val brukersSivilstand: Sivilstand,
+    val borMedSivilstand: BorMedSivilstand?,
+    val over2G: Boolean?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
     val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?,
     val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
-    val brukersSivilstand: Sivilstand,
-    val borMedSivilstand: BorMedSivilstand?,
-    val over2G: Boolean?,
-    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?
 ) : AutobrevData
 
 data class PersongrunnlagAvdod(
@@ -57,12 +56,6 @@ data class InngangOgEksportVurdering(
     val oppfyltVedSammenleggingFemArKap19: Boolean,
     val oppfyltVedSammenleggingFemArKap20: Boolean,
 )
-
-data class Sivilstand(
-    val borMedSivilstand: BorMedSivilstand?,
-    val over2G: Boolean?,
-)
-
 
 
 
