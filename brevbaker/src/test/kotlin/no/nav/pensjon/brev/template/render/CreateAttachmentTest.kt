@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -58,5 +59,5 @@ class CreateAttachmentTest {
         assertEquals(4, tittel.size)
     }
 
-    data class LittInnhold(val test1: String?, val test2: Int) : VedleggData
+    data class LittInnhold(val test1: String?, val test2: Int) : VedleggData, AutobrevData
 }

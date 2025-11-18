@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -25,14 +27,16 @@ data class OmregningAlderUfore2016Dto(
     val persongrunnlagAvdod: PersongrunnlagAvdod,
     val faktiskBostedsland: String?,
     val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
+    val brukersSivilstand: Sivilstand,
+    val borMedSivilstand: BorMedSivilstand?,
+    val over2G: Boolean?,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
     val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?,
     val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?
-
-) : BrevbakerBrevdata
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
+) : AutobrevData
 
 data class PersongrunnlagAvdod(
     val avdodNavn: String?,
@@ -52,7 +56,6 @@ data class InngangOgEksportVurdering(
     val oppfyltVedSammenleggingFemArKap19: Boolean,
     val oppfyltVedSammenleggingFemArKap20: Boolean,
 )
-
 
 
 

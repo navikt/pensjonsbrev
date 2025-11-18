@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -67,7 +67,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.Oms
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall
 
 object EtterlatteMaler : AllTemplates {
-    private val prodAutobrevTemplates: Set<AutobrevTemplate<BrevbakerBrevdata>> =
+    private val prodAutobrevTemplates: Set<AutobrevTemplate<AutobrevData>> =
         setOf(
             // Barnepensjon
             BarnepensjonAvslag,

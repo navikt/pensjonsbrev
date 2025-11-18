@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import java.time.LocalDate
 
 
@@ -8,4 +8,4 @@ import java.time.LocalDate
 data class VarselSaksbehandlingstidAutoDto(
     val dagensDatoMinus2Dager: LocalDate,
     val utvidetBehandlingstid: Boolean,
-) : BrevbakerBrevdata
+) : AutobrevData
