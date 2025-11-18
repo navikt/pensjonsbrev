@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 
 
 @Suppress("unused")
@@ -14,6 +15,5 @@ data class VedtakOmInnvilgelseAvOmsorgspoengDto(
     data class PesysData(
         val omsorgspersonNavn: String, //PE_Grunnlag_OmsorgGodskrGrunnlagListe_Godskrivesliste_OGPersonPleieTrengFornavn/Mellomnavn/Etternavn
         val omsorgsopptjeningsaar: String,
-        val orienteringOmSaksbehandlingstidDto: OrienteringOmSaksbehandlingstidDto
     ) : BrevbakerBrevdata
 }

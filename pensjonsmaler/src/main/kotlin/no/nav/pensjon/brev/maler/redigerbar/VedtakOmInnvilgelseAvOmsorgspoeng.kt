@@ -7,9 +7,12 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsor
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgsopptjeningsaar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgspersonNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL_INNLOGGET
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -29,9 +32,9 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
     override val sakstyper = setOf(Sakstype.OMSORG)
 
     override val template = createTemplate(
-        languages(Bokmal, English),
+        languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - fjerning av omsorgsopptjening",
+            displayTitle = "Vedtak - innvilgelse av omsorgsopptjening",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -40,76 +43,88 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
         title {
             text(
                 bokmal { +"Du har rett til pensjonsopptjening" },
-                english { +"Crediting of acquired rights for care work - notification of decision" }
+                nynorsk { +"Du har rett til pensjonsopptening " },
+                english { +"You are entitled to pension accrual " } //have Crediting of acquired rights for care work - notification of decision" }
             )
         }
         outline {
-            paragraph {
+            title1 {
                 text(
-                    bokmal { +"Nav har godkjent at du få omsorgsopptjening for " + pesysData.omsorgsopptjeningsaar + "." },
-                    english { +"Nav has decided that you should be credited with acquired rights for care work in " + pesysData.omsorgsopptjeningsaar + "." }
+                    bokmal { +"Vedtak" },
+                    nynorsk { +"Vedtak" },
+                    english { +"Decision" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har lagt til grunn at omsorgsarbeidet for " + pesysData.omsorgspersonNavn +" er minst 22 timer per uke i minst seks måneder i " + pesysData.omsorgsopptjeningsaar + "." },
-                    english {+""}
+                    bokmal { +"Nav har godkjent at du får omsorgsopptjening for " + pesysData.omsorgsopptjeningsaar + "." },
+                    nynorsk { +"Nav har godkjent at du får omsorgsopptening for " + pesysData.omsorgsopptjeningsaar + "." },
+                    english { +"Nav has approved that you will be credited with acquired rights for care work in " + pesysData.omsorgsopptjeningsaar + "." }
                 )
             }
             paragraph {
                 text(
-                    bokmal {
-                        +"Vedtaket er gjort etter folketrygdloven § 3-16 første ledd bokstav b, og §§ 20-8 første ledd bokstav b og 20-21 hvis du er født etter 1953."
-                    },
-                    english {
-                        +"The decision has been made in accordance with section 3-16, first paragraph, letter b of the National Insurance Act, and sections 20-8 first paragraph, "
-                        +"letter b and 20-21 of the National Insurance Act. "
-                        +"The basis of the decision is that the care provided for " + pesysData.omsorgspersonNavn + " has amounted to at least 22 hours per week, "
-                        +"and that the duration of the care was at least six months in " + pesysData.omsorgsopptjeningsaar + "."
+                    bokmal { +"Vi har lagt til grunn at omsorgsarbeidet for " + pesysData.omsorgspersonNavn + " er minst 22 timer per uke i minst seks måneder i " + pesysData.omsorgsopptjeningsaar + "." },
+                    nynorsk { +"Vi har lagt til grunn at omsorgsarbeidet for " + pesysData.omsorgspersonNavn + " er minst 22 timar per veke i minst seks månader i " + pesysData.omsorgsopptjeningsaar + "." },
+                    english { +"We have assumed that the care work for " + pesysData.omsorgspersonNavn + " is at least 22 hours per week for at least six months in " + pesysData.omsorgsopptjeningsaar + "." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket er gjort etter folketrygdloven § 3-16 første ledd bokstav b, og §§ 20-8 første ledd bokstav b og 20-21." },
+                    nynorsk { +"Vedtaket er gjort etter folketrygdlova § 3‑16 første ledd bokstav b, og §§ 20‑8 første ledd bokstav b og 20‑21." },
+                    english { +"The decision has been made persuant to the National Insurance Act § 3-16, first paragraph, letter b, and §§ 20-8, first paragraph, letter b, and 20-21."
                     }
                 )
             }
             title1 {
                 text(
                     bokmal { +"Hva er omsorgsopptjening?" },
+                    nynorsk { +"Kva er omsorgsopptening?" },
                     english { +"What are acquired rights for care work?" }
                 )
             }
             paragraph {
                 text(
-                    bokmal {
-                        +"Omsorgsopptjening gir deg pensjonsopptjening 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. "
-                    },
-                    english { +"" }
+                    bokmal { +"Omsorgsopptjening gir deg pensjonsopptjening 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. " },
+                    nynorsk { +"Omsorgsopptening gir deg pensjonsopptening på 4,5 gonger grunnbeløpet i folketrygda for det aktuelle året. " },
+                    english { +"Acquired rights for care work gives you a pension accrual of 4.5 times the National Insurance basic amount. " }
                 )
                 text(
                     bokmal { +"Det kan gi en høyere pensjon enn du ellers ville hatt. " },
-                    english { +"" }
+                    nynorsk { +"Det kan gi ein høgare pensjon enn du elles ville hatt. " },
+                    english { +"It may give you a higher pension than you otherwise would have had." }
                 )
             }
             paragraph {
                 text(
                     bokmal { +"Omsorgsopptjening kan ikke kombineres med annen opptjening. " },
-                    english { +"" }
+                    nynorsk { +"Omsorgsopptening kan ikkje kombinerast med anna opptening. " },
+                    english { +"Acquired rights for care work cannot be combined with other pension accruals. " }
                 )
                 text(
                     bokmal { +"Har du annen pensjonsopptjening i det aktuelle året som er høyere enn omsorgsopptjeningen, vil den opptjeningen legges til grunn." },
-                    english { +"" }
+                    nynorsk { +"Har du anna pensjonsopptening i det aktuelle året som er høgare enn omsorgsoppteninga, legg vi den oppteninga til grunn. " },
+                    english { +"If you have other pension accrual in the relevant year that is higher than the care rights, that higher accrual will be applied instead. " }
                 )
             }
             paragraph {
                 text(
                     bokmal {
-                        +"På nav.no/din-pensjon får du oversikt over hele pensjonsopptjeningen din. "
-                        +"Her finner du også omsorgsopptjeningen som du har godkjent."
+                        +"På $DIN_PENSJON_URL_INNLOGGET får du oversikt over hele pensjonsopptjeningen din. "
+                        +"Her finner du også omsorgsopptjeningen du har fått godkjent."
+                    },
+                    nynorsk {
+                        +"På $DIN_PENSJON_URL_INNLOGGET får du oversikt over heile pensjonsoppteninga di. "
+                        +"Her finn du også omsorgsoppteninga du har fått godkjent."
                     },
                     english {
-                        +"Nav has an online pension service Din Pensjon on nav.no which shows your pensionable income and how much pension you have accumulated. "
+                        +"Nav has an online pension service $DIN_PENSJON_URL_INNLOGGET on nav.no which shows your pensionable income and how much pension you have accumulated. "
                         +"On this page you can also find details of the aquired rights you have been accredited for care work."
                     }
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaalBokmalEnglish.omsorg)
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
 }
