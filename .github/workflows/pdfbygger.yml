@@ -9,6 +9,8 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
   push:
     branches:
@@ -20,6 +22,8 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
   # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
   schedule:
@@ -60,7 +64,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: pdf-bygger-jar
-          path: pdf-bygger/build/libs/
+          path: pdf-bygger/build/install/pdf-bygger/lib
       - name: Docker login
         uses: docker/login-action@v3
         with:
@@ -122,6 +126,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-encryption-key: ${{ secrets.GRADLEKEY }}
       - uses: actions/setup-java@v5
         with:
           "distribution": ${{ env.JavaDistribution }}
@@ -131,7 +137,6 @@ jobs:
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
           ./gradlew :pdf-bygger:integrationTest
         env:
-          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
       - name: Publish Test Report
         if: ${{ always() }}

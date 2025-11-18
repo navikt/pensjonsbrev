@@ -116,9 +116,9 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
                 paragraph {
                     text(
-                        bokmal { +"Meld fra om endringer i inntekten din ved å sende skjema om endring av inntekt neste år. Dette finner du på ${Constants.OMS_MELD_INN_ENDRING_URL}." },
-                        nynorsk { +"Meld frå om endringar i inntekta di ved å sende inn skjemaet om endring av inntekt for neste år. Du finn dette på ${Constants.OMS_MELD_INN_ENDRING_URL}." },
-                        english { +"Notify us of changes to your income by submitting the form for change of income next year. This is available from: ${Constants.OMS_MELD_INN_ENDRING_URL}." },
+                        bokmal { +"Du kan melde fra om endringer i forventet inntekt til neste år på ${Constants.OMS_MELD_INN_ENDRING_URL}." },
+                        nynorsk { +"Du kan melde frå om endringar i forventa inntekt for neste år på ${Constants.OMS_MELD_INN_ENDRING_URL}." },
+                        english { +"Notify us of changes in expected income for the next year at ${Constants.OMS_MELD_INN_ENDRING_URL}." },
                     )
                 }
                 paragraph {

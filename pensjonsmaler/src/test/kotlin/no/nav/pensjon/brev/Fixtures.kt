@@ -148,7 +148,7 @@ object Fixtures : LetterDataFactory {
             DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
-            EmptyBrevdata::class -> EmptyBrevdata as T
+            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
             EmptySaksbehandlerValg::class -> EmptySaksbehandlerValg as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
@@ -158,7 +158,7 @@ object Fixtures : LetterDataFactory {
             EndringPgaOpptjeningAutoDto::class -> createEndringPgaOpptjeningAutoDto() as T
             EndringAvUttaksgradAutoDto::class -> createEndringAvUttaksgradAutoDto() as T
             EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
-            FeilBelopInntekstendringsbrev::class -> EmptyBrevdata as T
+            FeilBelopInntekstendringsbrev::class -> EmptyAutobrevdata as T
             ForespoerselOmDokumentasjonAvBotidINorgeDto::class -> createForespoerselOmDokumentasjonAvBotidINorgeDto() as T
             ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDto() as T
             Gjenlevenderett2027Dto::class -> createGjenlevenderett2027Dto() as T

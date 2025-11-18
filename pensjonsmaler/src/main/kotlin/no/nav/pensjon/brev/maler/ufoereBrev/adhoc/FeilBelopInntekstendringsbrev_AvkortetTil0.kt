@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 class FeilBelopInntekstendringsbrev_AvkortetTil0 {
     @TemplateModelHelpers
-    object FeilBelopInntekstendringsbrev_AvkortetTil0 : AutobrevTemplate<EmptyBrevdata> {
+    object FeilBelopInntekstendringsbrev_AvkortetTil0 : AutobrevTemplate<EmptyAutobrevdata> {
 
         override val kode = Pesysbrevkoder.AutoBrev.UT_ADHOC_FEIL_BELOP_INNT_ENDR_AVKORTET_TIL_0
 

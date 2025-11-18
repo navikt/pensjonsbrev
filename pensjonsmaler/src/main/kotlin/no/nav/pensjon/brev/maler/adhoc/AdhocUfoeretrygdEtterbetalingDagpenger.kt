@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -8,16 +8,15 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
-object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> {
+object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_ADHOC_UFOERETRYGD_ETTERBETALING_DAGPENGER
-    override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
+    override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Ny informasjon om etterbetaling av dagpenger og betydningen for uføretrygd",

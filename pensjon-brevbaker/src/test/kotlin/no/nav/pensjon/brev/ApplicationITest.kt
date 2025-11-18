@@ -15,7 +15,7 @@ import no.nav.brev.brevbaker.BREVBAKER_URL
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Tag
@@ -79,7 +79,7 @@ class ApplicationITest {
             setBody(
                 BestillBrevRequest(
                     kode = LetterExample.kode,
-                    letterData = EmptyBrevdata,
+                    letterData = EmptyAutobrevdata,
                     felles = FellesFactory.fellesAuto,
                     language = LanguageCode.BOKMAL
                 )

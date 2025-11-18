@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val alderApiModelVersion = 28
+val alderApiModelVersion = 31
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -47,7 +47,27 @@ kotlin {
 }
 
 tasks {
+    register("verifyPackages") {
+        notCompatibleWithConfigurationCache("Uses script references")
+        doLast {
+            val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
+            files.forEach { file ->
+                val text = file.readText()
+                val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
+                    .find(text)?.groupValues?.get(1)
+
+                val requiredPrefix = "no.nav.pensjon.brev.alder"
+                if (pkg == null) {
+                    throw GradleException("File $file is missing package directive!")
+                } else if (!pkg.startsWith(requiredPrefix)) {
+                    throw GradleException("Invalid package: $pkg in file $file. Package should start with $requiredPrefix to avoid runtime class conflict.")
+                }
+            }
+        }
+    }
+
     compileJava {
+        dependsOn("verifyPackages")
         targetCompatibility = apiModelJavaTarget
     }
     compileTestJava {

@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.Barnetillegg.Fellesbarn
@@ -105,7 +106,7 @@ class OpplysningerOmEtteropgjoeretTest {
         )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             Bokmal,
             FellesFactory.fellesAuto
         ).renderTestPDF("OpplysningerOmEtteroppgjoeret")

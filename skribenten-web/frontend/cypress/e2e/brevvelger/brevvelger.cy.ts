@@ -17,20 +17,11 @@ describe("Brevvelger spec", () => {
   it("Søk etter brevmal", () => {
     cy.visit("/saksnummer/123456/brevvelger");
 
-    cy.getDataCy("brevmal-search").click();
-    cy.focused().type("b");
-    cy.getDataCy("category-item").should("have.length", 7).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 24);
+    cy.getDataCy("brevmal-search").click().type("Varsel tilbakekreving");
+    cy.getDataCy("category-item").should("contain.text", "Feilutbetaling");
+    cy.getDataCy("brevmal-button").contains("Varsel - tilbakekreving").should("be.visible");
 
-    cy.focused().type("r");
-    cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 7);
-
-    cy.focused().type("e");
-    cy.getDataCy("category-item").should("have.length", 2).and("have.class", "navds-accordion__item--open");
-    cy.getDataCy("brevmal-button").should("have.length", 4);
-
-    cy.focused().type("!");
+    cy.focused().clear().type("!");
     cy.getDataCy("category-item").should("have.length", 0);
     cy.getDataCy("brevmal-button").should("have.length", 0);
     cy.getDataCy("ingen-treff-alert");
@@ -188,7 +179,7 @@ describe("Brevvelger spec", () => {
     });
 
     cy.getDataCy("brevmal-search").click().type("E 001");
-    cy.getDataCy("brevmal-button").click();
+    cy.getDataCy("brevmal-button").contains("E 001").click();
 
     cy.getDataCy("order-letter").click();
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");

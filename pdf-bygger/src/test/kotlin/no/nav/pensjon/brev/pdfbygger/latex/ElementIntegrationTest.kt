@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `tom title1`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             title1 { text(bokmal { +"" }) }
             title1 { }
             paragraph { text(bokmal { +"Test" }) }
@@ -29,7 +29,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `tom title2`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             title2 { }
             title2 { text(bokmal { +"" }) }
             paragraph { text(bokmal { +"Test" }) }
@@ -39,7 +39,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `tom title3`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             title3 { }
             title3 { text(bokmal { +"" }) }
             paragraph { text(bokmal { +"Test" }) }
@@ -49,7 +49,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `tom paragraph`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             title2 { text(bokmal { +"Test" }) }
             paragraph { }
         }.renderTestPDF("elementTest tom paragraph", pdfByggerService = laTeXCompilerService)
@@ -57,7 +57,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `newline uten tekst forran`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             paragraph {
                 text(bokmal { +"" })
                 newline()
@@ -74,7 +74,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `paragraph med newline etter tom paragraph`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             title2 { text(bokmal { +"Test" }) }
             paragraph { }
             paragraph {
@@ -86,7 +86,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `newline etter itemlist`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             paragraph {
                 list {
                     item { text(bokmal { +"Punkt 1" }) }
@@ -100,7 +100,7 @@ class ElementIntegrationTest {
 
     @Test
     fun `newline etter table`() {
-        outlineTestTemplate<EmptyBrevdata> {
+        outlineTestTemplate<EmptyAutobrevdata> {
             paragraph {
                 table(
                     header = {
