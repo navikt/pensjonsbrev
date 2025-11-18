@@ -1,18 +1,68 @@
 import { css } from "@emotion/react";
-import { Alert, BodyLong, Heading, Label, Loader, VStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { Alert, BodyLong, Button, Heading, HStack, Label, Loader, VStack } from "@navikt/ds-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
-import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { getBrev } from "~/api/brev-queries";
+import { delvisOppdaterBrev, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import PDFViewer from "../../-components/PDFViewer";
 import PDFViewerTopBar from "../../-components/PDFViewerTopBar";
 
 const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
+  const [showBrevDataEndringAlert, setShowBrevDataEndringAlert] = useState(true);
+  const [oppdaterError, setOppdaterError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
     queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
   });
+
+  const brev = useQuery({
+    queryKey: getBrev.queryKey(properties.brevId),
+    queryFn: () => getBrev.queryFn(properties.saksId, properties.brevId),
+  });
+
+  const navigateToBrevRedigering = () =>
+    navigate({
+      to: "/saksnummer/$saksId/brev/$brevId",
+      params: { saksId: properties.saksId, brevId: properties.brevId },
+    });
+
+  const erKlarEllerAttestering =
+    brev.data?.info.status.type === "Klar" || brev.data?.info.status.type === "Attestering";
+
+  const oppdaterBrevTilKladd = useMutation({
+    mutationFn: () =>
+      delvisOppdaterBrev(properties.saksId, properties.brevId, {
+        laastForRedigering: false,
+      }),
+    onSuccess: () => {
+      setShowBrevDataEndringAlert(false);
+      navigateToBrevRedigering();
+    },
+    onError: () => {
+      setOppdaterError("Klarte ikke oppdatere brevet. Prøv igjen.");
+    },
+  });
+
+  const handleOppdater = () => {
+    if (brev.isLoading) return;
+
+    if (erKlarEllerAttestering) {
+      oppdaterBrevTilKladd.mutate();
+    } else {
+      setShowBrevDataEndringAlert(false);
+      navigateToBrevRedigering();
+    }
+  };
+
+  const handleIgnorer = () => {
+    setShowBrevDataEndringAlert(false);
+  };
 
   return queryFold({
     query: hentPdfQuery,
@@ -43,12 +93,45 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
       pdfResponse === null ? (
         <VStack align="center">Fant ikke PDF for brev med id {properties.brevId}</VStack>
       ) : (
-        <PDFViewer
-          brevId={properties.brevId}
-          pdf={pdfResponse.pdf}
-          sakId={properties.saksId}
-          viewerHeight={"var(--main-page-content-height)"}
-        />
+        <>
+          {pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert && (
+            <Alert
+              css={css`
+                border-left: none;
+                border-right: none;
+                margin-bottom: var(--a-spacing-4);
+              `}
+              fullWidth
+              variant="warning"
+            >
+              <Heading size="xsmall">Endringer i brevet</Heading>
+              <BodyLong spacing>
+                Det har kommet nye data fra Pesys som påvirker dette brevet. Oppdater brevet for å sikre at innholdet er
+                korrekt.
+              </BodyLong>
+              <HStack gap="3">
+                <Button
+                  loading={oppdaterBrevTilKladd.isPending}
+                  onClick={handleOppdater}
+                  size="small"
+                  variant="primary"
+                >
+                  Oppdater
+                </Button>
+                <Button onClick={handleIgnorer} size="small" variant="tertiary">
+                  Ignorer
+                </Button>
+              </HStack>
+              {oppdaterError && <BodyLong>{oppdaterError}</BodyLong>}
+            </Alert>
+          )}
+          <PDFViewer
+            brevId={properties.brevId}
+            pdf={pdfResponse.pdf}
+            sakId={properties.saksId}
+            viewerHeight={"var(--main-page-content-height)"}
+          />
+        </>
       ),
   });
 };
