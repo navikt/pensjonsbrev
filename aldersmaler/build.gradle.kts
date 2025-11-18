@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val alderApiModelVersion = 32
+val alderApiModelVersion = 33
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -49,8 +49,8 @@ kotlin {
 tasks {
     register("verifyPackages") {
         notCompatibleWithConfigurationCache("Uses script references")
+        val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
         doLast {
-            val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
             files.forEach { file ->
                 val text = file.readText()
                 val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
