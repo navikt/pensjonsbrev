@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class MottakerTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
+    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     @BeforeAll
     fun startDb() {

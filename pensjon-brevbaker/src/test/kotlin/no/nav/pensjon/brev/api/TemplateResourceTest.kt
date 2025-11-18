@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -90,4 +90,4 @@ private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetter
         language = this.language
     )
 
-data class SampleLetterData(val v1: Boolean) : BrevbakerBrevdata
+data class SampleLetterData(val v1: Boolean) : AutobrevData

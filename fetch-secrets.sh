@@ -13,5 +13,5 @@ gcloud auth print-access-token >& /dev/null || (
 
  (cd skribenten-backend && ./fetch-secrets.sh)
  (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
- (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
+ (cd skribenten-web/bff && ./fetch-secrets.sh)
  (cd pensjon-brevbaker && ./fetch-secrets.sh)

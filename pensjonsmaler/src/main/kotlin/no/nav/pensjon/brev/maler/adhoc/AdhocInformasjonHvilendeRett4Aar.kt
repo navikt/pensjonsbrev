@@ -1,19 +1,18 @@
 package no.nav.pensjon.brev.maler.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyBrevdata> {
+object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR
-    override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
+    override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om hvilende rett til uføretrygd",

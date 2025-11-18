@@ -8,7 +8,7 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -43,7 +43,7 @@ class BlockTilSlateKonvertererTest {
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
     }
 
-    private fun <T : BrevbakerBrevdata> lesInnBrev(template: LetterTemplate<*, T>, arg: T): LetterImpl<T> {
+    private fun <T : AutobrevData> lesInnBrev(template: LetterTemplate<*, T>, arg: T): LetterImpl<T> {
         val letter = LetterImpl(
             template,
             arg,

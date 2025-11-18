@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
-import io.ktor.http.HttpStatusCode
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
@@ -19,10 +21,12 @@ import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
 interface NavansattService {
-    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean>
+    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): Boolean
     suspend fun hentNavansatt(ansattId: String): Navansatt?
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
+    suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet>
 }
+
+class NavansattServiceException(message: String) : ServiceError(message)
 
 class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
@@ -43,22 +47,20 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
-        val cached = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
-            client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
-                .onError { error, statusCode -> logger.error("Fant ikke navansattenhet $ansattId: $statusCode - $error") }
-                .resultOrNull()
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet> {
+        return cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
+            val response = client.get("navansatt/$ansattId/enheter")
+
+            if (response.status.isSuccess()) {
+                response.body()
+            } else {
+                throw NavansattServiceException("Fant ikke navansattenhet $ansattId: ${response.status} - ${response.bodyAsText()}")
+            }
         }
-        return cached?.let { ServiceResult.Ok(it) }
-            ?: ServiceResult.Error(
-            "Ingen treff",
-            HttpStatusCode.ExpectationFailed
-        )
     }
 
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
-        hentNavAnsattEnhetListe(ansattId)
-            .map { it.any { enhet -> enhet.id == enhetsId } }
+    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): Boolean =
+        hentNavAnsattEnhetListe(ansattId).any { enhet -> enhet.id == enhetsId }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
         cache.cached(Cacheomraade.NAVANSATT, ansattId) {

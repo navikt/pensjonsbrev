@@ -9,6 +9,8 @@ on:
       - "tjenestebuss-integrasjon/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/tjenestebuss-integrasjon.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
   push:
     branches:
       - "main"
@@ -19,6 +21,8 @@ on:
       - "tjenestebuss-integrasjon/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/tjenestebuss-integrasjon.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
 
 permissions:
   contents: read
