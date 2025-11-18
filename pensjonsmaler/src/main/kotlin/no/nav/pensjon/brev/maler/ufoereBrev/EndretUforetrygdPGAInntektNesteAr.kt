@@ -297,12 +297,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 paragraph {
                     text(
                         bokmal {
-                            +"Har du fått økning av uføregraden i løpet av " + virkningFom.year.minus(1)
+                            + "Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1)
                                 .format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har benyttet for beregning av uføretrygden er korrekt. " +
                                     "Har du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
                         },
                         nynorsk {
-                            +"Har du fått auka uføregraden i løpet av " + virkningFom.year.minus(1)
+                            + "Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1)
                                 .format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt til å berekne uføretrygda er korrekt. " +
                                     "Har du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
                         }
