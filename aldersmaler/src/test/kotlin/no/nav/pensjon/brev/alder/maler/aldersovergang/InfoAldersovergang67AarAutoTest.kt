@@ -1,24 +1,25 @@
-package no.nav.pensjon.brev.maler.alder
+package no.nav.pensjon.brev.alder.maler.aldersovergang
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
-import no.nav.pensjon.brev.template.*
-import org.junit.jupiter.api.*
+import no.nav.pensjon.brev.alder.Fixtures
+import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.template.Language
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class InfoAldersovergang67AarAutoTest {
-
     @Test
     fun testPdfNB() {
         LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
     }
 
@@ -28,7 +29,7 @@ class InfoAldersovergang67AarAutoTest {
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_NYNORSK")
     }
 
@@ -38,10 +39,9 @@ class InfoAldersovergang67AarAutoTest {
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.English,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_ENGLISH")
     }
-
 
     @Test
     fun testHtml() {
@@ -49,7 +49,7 @@ class InfoAldersovergang67AarAutoTest {
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
     }
 }
