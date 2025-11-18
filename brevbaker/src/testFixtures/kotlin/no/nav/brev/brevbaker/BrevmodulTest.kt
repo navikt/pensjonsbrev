@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -109,7 +110,7 @@ abstract class BrevmodulTest(
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("filterPdf")
-    fun <T : Any> testPdf(
+    fun <T : BrevbakerBrevdata> testPdf(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
@@ -126,7 +127,7 @@ abstract class BrevmodulTest(
 
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
-    fun <T : Any> testHtml(
+    fun <T : BrevbakerBrevdata> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,

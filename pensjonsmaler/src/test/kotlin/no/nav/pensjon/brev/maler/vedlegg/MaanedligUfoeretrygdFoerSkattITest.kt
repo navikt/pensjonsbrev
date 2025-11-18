@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.template.Language.*
@@ -63,7 +64,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
     fun testPdf() {
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("MaanedligUfoeretrygdFoerSkatt")
@@ -73,7 +74,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
     fun testHtml() {
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("MaanedligUfoeretrygdFoerSkatt")

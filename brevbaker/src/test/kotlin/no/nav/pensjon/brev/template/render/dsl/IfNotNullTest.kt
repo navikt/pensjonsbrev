@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.render.hasBlocks
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-data class NullBrevDto(val test1: String?, val test2: String?)
+data class NullBrevDto(val test1: String?, val test2: String?) : AutobrevData
 
 @Suppress("unused")
 @TemplateModelHelpers
