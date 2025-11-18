@@ -13,6 +13,6 @@ data class VedtakOmInnvilgelseAvOmsorgspoengDto(
 
     data class PesysData(
         val omsorgspersonNavn: String, //PE_Grunnlag_OmsorgGodskrGrunnlagListe_Godskrivesliste_OGPersonPleieTrengFornavn/Mellomnavn/Etternavn
-        val omsorgsopptjeningsaar: String,
+        val omsorgsopptjeningsaar: String, //PE_Grunnlag_OmsorgGodskrGrunnlagListe:OmsorgGodskrGrunnlagAr
     ) : BrevbakerBrevdata
 }
