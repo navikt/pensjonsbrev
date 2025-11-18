@@ -18,7 +18,7 @@ class VedtakOmInnvilgelseAvOmsorgspoengTest {
         LetterTestImpl(
             VedtakOmInnvilgelseAvOmsorgspoeng.template,
             Fixtures.create<VedtakOmInnvilgelseAvOmsorgspoengDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.felles
         ).renderTestPDF(VedtakOmInnvilgelseAvOmsorgspoeng.kode.name)
     }

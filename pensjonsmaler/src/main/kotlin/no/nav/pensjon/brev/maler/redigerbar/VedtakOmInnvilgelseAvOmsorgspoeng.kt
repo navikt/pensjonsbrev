@@ -88,7 +88,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                 text(
                     bokmal { +"Omsorgsopptjening gir deg pensjonsopptjening 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. " },
                     nynorsk { +"Omsorgsopptening gir deg pensjonsopptening på 4,5 gonger grunnbeløpet i folketrygda for det aktuelle året. " },
-                    english { +"Acquired rights for care work gives you a pension accrual of 4.5 times the National Insurance basic amount. " }
+                    english { +"Acquired rights for care work give you a pension accrual of 4.5 times the National Insurance basic amount. " }
                 )
                 text(
                     bokmal { +"Det kan gi en høyere pensjon enn du ellers ville hatt. " },
@@ -100,7 +100,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                 text(
                     bokmal { +"Omsorgsopptjening kan ikke kombineres med annen opptjening. " },
                     nynorsk { +"Omsorgsopptening kan ikkje kombinerast med anna opptening. " },
-                    english { +"Acquired rights for care work cannot be combined with other pension accruals. " }
+                    english { +"Acquired rights for care work cannot be combined with other pension accrual. " }
                 )
                 text(
                     bokmal { +"Har du annen pensjonsopptjening i det aktuelle året som er høyere enn omsorgsopptjeningen, vil den opptjeningen legges til grunn." },
@@ -119,8 +119,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                         +"Her finn du også omsorgsoppteninga du har fått godkjent."
                     },
                     english {
-                        +"Nav has an online pension service $DIN_PENSJON_URL_INNLOGGET on nav.no which shows your pensionable income and how much pension you have accumulated. "
-                        +"On this page you can also find details of the aquired rights you have been accredited for care work."
+                        +"At $DIN_PENSJON_URL_INNLOGGET you get an overview of your entire pension accrual. Here you will also find the care rights that you have been credited."
                     }
                 )
             }
