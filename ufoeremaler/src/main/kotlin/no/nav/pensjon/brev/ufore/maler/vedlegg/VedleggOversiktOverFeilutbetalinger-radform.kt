@@ -14,10 +14,10 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.bruttoBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.feilutbetaltBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.maned
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.nettobelopBelop
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.nettobelop
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.opprinneligBrutto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.resultat
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.skatt
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingPerArSelectors.ar
@@ -63,44 +63,44 @@ val oversiktOverFeilutbetalingerPaRadform =
                     table(
                         header = {
                             column {
-                                text(bokmal { +"Måned" })
-                            }
-                            column(alignment = RIGHT) {
-                                text(bokmal { +"Feilutbetalt beløp" })
+                                text(bokmal { + "Måned" })
                             }
                             column {
-                                text(bokmal { +"Resultat" })
+                                text(bokmal { + "Resultat" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { +"Beløp inkludert skatt" })
+                                text(bokmal { + "Utbetaling før skatt" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { +"Beløp vi får tilbake fra skatteetaten" })
+                                text(bokmal { + "Feilutbetalt beløp" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { +"Beløp du skal betale tilbake " })
+                                text(bokmal { + "Sum vi krever tilbake fra skatteetaten" })
+                            }
+                            column(alignment = RIGHT) {
+                                text(bokmal { + "Sum vi krever tilbake fra deg" })
                             }
                         }
                     ) {
                         forEach(feilutbetalingPerAr.feilutbetalingManed) { feilutbetalingManed ->
                             row {
                                 cell {
-                                    text(bokmal { +feilutbetalingManed.maned.format() })
-                                }
-                                cell {
-                                    text(bokmal { +feilutbetalingManed.feilutbetaltBelop.format(CurrencyFormat) })
+                                    text(bokmal { + feilutbetalingManed.maned.format() })
                                 }
                                 cell {
                                     includePhrase(ResultatAvVurderingenTextMappingStorBokstav(feilutbetalingManed.resultat))
                                 }
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.bruttoBelop.format(CurrencyFormat) + " kr" })
+                                    text(bokmal { + feilutbetalingManed.opprinneligBrutto.format(CurrencyFormat)})
+                                }
+                                cell {
+                                    text(bokmal { + feilutbetalingManed.feilutbetaltBelop.format(CurrencyFormat) })
                                 }
                                 cell {
                                     text(bokmal { + feilutbetalingManed.skatt.format(CurrencyFormat) + " kr" })
                                 }
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.nettobelopBelop.format(CurrencyFormat) + " kr" })
+                                    text(bokmal { + feilutbetalingManed.nettobelop.format(CurrencyFormat) + " kr" }, FontType.BOLD)
                                 }
                             }
                         }

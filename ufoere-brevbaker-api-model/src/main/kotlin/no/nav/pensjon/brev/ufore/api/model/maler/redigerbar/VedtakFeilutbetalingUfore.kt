@@ -70,7 +70,8 @@ data class FeilutbetalingManed(
     val resultat: TilbakekrevingResultat,
     val bruttoBelop: Int,
     val skatt: Int,
-    val nettobelopBelop: Int,
+    val nettobelop: Int,
+    val opprinneligBrutto: Int,
 )
 
 data class DineRettigheterOgMulighetTilAKlageDto(

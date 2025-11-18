@@ -126,16 +126,18 @@ object Fixtures : LetterDataFactory {
                 feilutbetaltBelop = 1000,
                 resultat = TilbakekrevingResultat.DELVIS_TILBAKEKREV,
                 bruttoBelop = 500,
-                nettobelopBelop = 400,
-                skatt = 100
+                nettobelop = 400,
+                skatt = 100,
+                opprinneligBrutto = 5000
             ),
             FeilutbetalingManed(
                 maned = Month.JUNE,
                 feilutbetaltBelop = 1000,
                 resultat = TilbakekrevingResultat.DELVIS_TILBAKEKREV,
                 bruttoBelop = 500,
-                nettobelopBelop = 400,
-                skatt = 100
+                nettobelop = 400,
+                skatt = 100,
+                opprinneligBrutto = 5000
             )
         )
     }
