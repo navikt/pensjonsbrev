@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsor
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgspersonNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL_INNLOGGET
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -44,7 +43,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
             text(
                 bokmal { +"Du har rett til pensjonsopptjening" },
                 nynorsk { +"Du har rett til pensjonsopptening " },
-                english { +"You are entitled to pension accrual " } //have Crediting of acquired rights for care work - notification of decision" }
+                english { +"You are entitled to pension accrual " }
             )
         }
         outline {
@@ -86,7 +85,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
             }
             paragraph {
                 text(
-                    bokmal { +"Omsorgsopptjening gir deg pensjonsopptjening 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. " },
+                    bokmal { +"Omsorgsopptjening gir deg pensjonsopptjening på 4,5 ganger folketrygdens grunnbeløp for det aktuelle året. " },
                     nynorsk { +"Omsorgsopptening gir deg pensjonsopptening på 4,5 gonger grunnbeløpet i folketrygda for det aktuelle året. " },
                     english { +"Acquired rights for care work give you a pension accrual of 4.5 times the National Insurance basic amount. " }
                 )
