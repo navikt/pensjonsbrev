@@ -186,7 +186,7 @@ class BrevredigeringServiceTest {
             ),
             annenMottakerNavn = null,
         ),
-        brevdata = Api.GeneriskBrevdata()
+        brevdata = Api.FagsystemBrevdata()
     )
 
     private val penService = FakePenService()
@@ -287,7 +287,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `can create and fetch brevredigering`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
+        val saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg1", true) }
         val brev = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
         assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
@@ -471,7 +471,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `cannot create brevredigering for a NavEnhet without access to it`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
+        val saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg1", true) }
         assertThrows<IkkeTilgangTilEnhetException> {
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.opprettBrev(
@@ -488,12 +488,12 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `can update brevredigering`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
+        val saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg1", true) }
         val original = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
         brevbakerService.renderMarkupKall.clear()
 
-        val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
+        val nyeValg = Api.SaksbehandlerValg().apply { put("valg2", true) }
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.oppdaterBrev(
                 saksId = sak1.saksId,
@@ -519,10 +519,10 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `updates redigertBrev with fresh rendering from brevbaker`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
+        val saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg1", true) }
         val original = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
-        val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
+        val nyeValg = Api.SaksbehandlerValg().apply { put("valg2", true) }
         val freshRender =
             letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph"))))
         brevbakerService.renderMarkupResultat = { freshRender }
@@ -542,7 +542,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `cannot update non-existing brevredigering`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
+        val saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg1", true) }
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.oppdaterBrev(
                 saksId = sak1.saksId,
@@ -557,7 +557,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `does not wait for brevbaker before answering with brevredigering does not exist`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply {
+        val saksbehandlerValg = Api.SaksbehandlerValg().apply {
             put("valg1", true)
             put("noe unikt", UUID.randomUUID())
         }
@@ -733,7 +733,7 @@ class BrevredigeringServiceTest {
             val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             stagePdf("min andre pdf".encodeToByteArray())
-            penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.FagsystemBrevdata().also { it["a"] = "b" })
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             assertThat(first).isNotEqualTo(second)
@@ -757,7 +757,7 @@ class BrevredigeringServiceTest {
                     )
             }
             penService.pesysBrevdata =
-                brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+                brevdataResponseData.copy(brevdata = Api.FagsystemBrevdata().also { it["a"] = "b" })
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             assertThat(first).isNotEqualTo(second)
@@ -801,7 +801,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = 1,
         ).resultOrNull()!!
@@ -829,7 +829,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = 1,
         ).resultOrNull()!!
@@ -854,7 +854,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = 1,
         ).resultOrNull()!!
@@ -878,7 +878,7 @@ class BrevredigeringServiceTest {
         brevbakerService.renderPdfKall.clear()
 
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = 1,
         ).resultOrNull()!!
@@ -907,7 +907,7 @@ class BrevredigeringServiceTest {
         brevbakerService.renderMarkupResultat = { letter }
 
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
+            saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) }
         ).resultOrNull()!!
 
         withPrincipal(saksbehandler1Principal) {
@@ -943,7 +943,7 @@ class BrevredigeringServiceTest {
         brevbakerService.renderMarkupResultat = { letter }
 
         val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
+            saksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) }
         ).resultOrNull()!!
 
         withPrincipal(saksbehandler1Principal) {
@@ -1415,7 +1415,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan tilbakestille brev`(): Unit = runBlocking {
-        val brev = opprettBrev(saksbehandlerValg = Api.GeneriskBrevdata().apply {
+        val brev = opprettBrev(saksbehandlerValg = Api.SaksbehandlerValg().apply {
             put("ytelse", "uføre")
             put("inkluderAfpTekst", false)
         }).resultOrNull()!!
@@ -1424,7 +1424,7 @@ class BrevredigeringServiceTest {
             brevredigeringService.oppdaterBrev(
                 saksId = brev.info.saksId,
                 brevId = brev.info.id,
-                nyeSaksbehandlerValg = Api.GeneriskBrevdata().apply {
+                nyeSaksbehandlerValg = Api.SaksbehandlerValg().apply {
                     put("ytelse", "uføre")
                     put("inkluderAfpTekst", true)
                     put("land", "Spania")
@@ -1458,7 +1458,7 @@ class BrevredigeringServiceTest {
             brevredigeringService.tilbakestill(brev.info.id)?.resultOrNull()!!
         }
         assertThat(tilbakestilt.redigertBrev).isEqualTo(letter.toEdit())
-        assertThat(tilbakestilt.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata().apply {
+        assertThat(tilbakestilt.saksbehandlerValg).isEqualTo(Api.SaksbehandlerValg().apply {
             put("ytelse", "uføre")
             put("inkluderAfpTekst", false)
             put("land", null)
@@ -1553,7 +1553,7 @@ class BrevredigeringServiceTest {
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+        saksbehandlerValg: Api.SaksbehandlerValg = Api.SaksbehandlerValg().apply { put("valg", true) },
         brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: Long? = null,
         sak: Pen.SakSelection = sak1,

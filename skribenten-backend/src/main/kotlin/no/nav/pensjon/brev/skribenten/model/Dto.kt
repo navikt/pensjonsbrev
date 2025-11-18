@@ -19,7 +19,7 @@ object Dto {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: Api.SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 

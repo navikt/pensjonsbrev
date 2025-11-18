@@ -3,9 +3,7 @@ package no.nav.pensjon.brev.skribenten.model
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.Landkode
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -16,10 +14,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
 
-typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
+    class SaksbehandlerValg : LinkedHashMap<String, Any?>(), SaksbehandlerValgBrevdata
+    class FagsystemBrevdata : LinkedHashMap<String, Any?>(), no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,

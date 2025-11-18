@@ -30,7 +30,7 @@ class TemplateResourceITest {
             testBrevbakerApp { client ->
                 val rendered = requestLetter(
                     client,
-                    BestillBrevRequest(
+                    BestillAutobrevRequest(
                         kode = kode,
                         letterData = argument,
                         felles = FellesFactory.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = null),

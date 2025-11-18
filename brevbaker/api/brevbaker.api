@@ -69,7 +69,7 @@ public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMa
 }
 
 public abstract interface class no/nav/pensjon/brev/template/Letter {
-	public abstract fun getArgument ()Ljava/lang/Object;
+	public abstract fun getArgument ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;

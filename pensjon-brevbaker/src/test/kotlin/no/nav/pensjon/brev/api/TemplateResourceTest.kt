@@ -7,7 +7,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillAutobrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -34,7 +34,7 @@ class TemplateResourceTest {
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger)
 
-    private val validAutobrevRequest = BestillBrevRequest(
+    private val validAutobrevRequest = BestillAutobrevRequest(
         LetterExample.kode,
         createLetterExampleDto(),
         FellesFactory.fellesAuto,
@@ -82,8 +82,8 @@ class TemplateResourceTest {
     }
 }
 
-private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetterData): BestillBrevRequest<T> =
-    BestillBrevRequest(
+private fun <T: Brevkode<T>> BestillAutobrevRequest<T>.copy(letterData: SampleLetterData): BestillAutobrevRequest<T> =
+    BestillAutobrevRequest(
         kode = this.kode,
         letterData = letterData,
         felles = this.felles,
