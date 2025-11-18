@@ -27,6 +27,7 @@ object Aldersbrevkoder {
         PE_AP_ENDRING_FORDI_DU_FYLLER_75_AAR_AUTO,
         VEDTAK_ALDERSOVERGANG_67_AAR_GARANTITILLEGG_AUTO,
         VEDTAK_ENDRING_AV_AFP_ENDRET_OPPTJENING_AUTO,
+        VEDTAK_OMREGNING_GJP_TIL_ALDER_AUTO,
         ;
 
         override fun kode(): String = this.name

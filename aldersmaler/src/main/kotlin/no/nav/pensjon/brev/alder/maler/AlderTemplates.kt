@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
+import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
@@ -58,6 +59,7 @@ object AlderTemplates : AllTemplates {
             InfoFyller67AarSaerskiltSats,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
+            VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto,
         )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =

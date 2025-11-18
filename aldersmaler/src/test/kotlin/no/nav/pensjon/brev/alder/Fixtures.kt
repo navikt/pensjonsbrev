@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.alder.maler.sivilstand.createEndringAvAlderspensjonSi
 import no.nav.pensjon.brev.alder.maler.sivilstand.createEndringAvAlderspensjonSivilstandSaerskiltSatsDto
 import no.nav.pensjon.brev.alder.maler.stans.createVedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.brev.brevbaker.LetterDataFactory
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto
@@ -36,7 +36,9 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
+import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
@@ -67,6 +69,7 @@ object Fixtures : LetterDataFactory {
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             VedtakStansAlderspensjonFlyttingMellomLandDto::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
+            VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto::class -> createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 }
