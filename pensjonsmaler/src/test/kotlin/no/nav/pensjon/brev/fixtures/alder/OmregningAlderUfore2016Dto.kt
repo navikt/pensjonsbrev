@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdod
@@ -53,5 +55,8 @@ fun createOmregningAlderUfore2016Dto() =
         maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
         opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto(),
         orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
+        brukersSivilstand = Sivilstand.SEPARERT,
+        borMedSivilstand = BorMedSivilstand.GIFT_LEVER_ADSKILT,
+        over2G = false,
     )
 
