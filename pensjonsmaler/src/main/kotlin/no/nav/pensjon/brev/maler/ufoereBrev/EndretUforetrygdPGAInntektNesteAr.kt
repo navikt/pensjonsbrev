@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.inntektsgrense
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.netto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.okningUforegradVedArsjoring
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.brukerBorINorge
@@ -73,6 +74,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()
         val fellesbarnPeriodisert = barnetilleggFellesbarn.periodisert_safe.ifNull(false)
         val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)
+        val okningUforegradVedArsjoring = uforetrygd.okningUforegradVedArsjoring.ifNull(false)
 
         title {
             showIf(endretUt and not(btfbEndret or btsbEndret)) {
@@ -290,6 +292,24 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". " }
                 )
             }
+
+            showIf(okningUforegradVedArsjoring) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Har du fått økning av uføregraden i løpet av " + virkningFom.year.minus(1)
+                                .format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har benyttet for beregning av uføretrygden er korrekt. " +
+                                    "Har du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                        },
+                        nynorsk {
+                            +"Har du fått auka uføregraden i løpet av " + virkningFom.year.minus(1)
+                                .format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt til å berekne uføretrygda er korrekt. " +
+                                    "Har du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
+                        }
+                    )
+                }
+            }
+
             paragraph {
                 showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
                     text(
