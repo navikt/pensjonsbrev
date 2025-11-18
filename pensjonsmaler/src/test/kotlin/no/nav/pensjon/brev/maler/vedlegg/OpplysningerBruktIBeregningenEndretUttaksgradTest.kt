@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -30,7 +31,7 @@ class OpplysningerBruktIBeregningenEndretUttaksgradTest {
         )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             spraak,
             Fixtures.fellesAuto
         ).renderTestHtml(this::class.simpleName + "_${regelverk}_${spraak::class.simpleName}")

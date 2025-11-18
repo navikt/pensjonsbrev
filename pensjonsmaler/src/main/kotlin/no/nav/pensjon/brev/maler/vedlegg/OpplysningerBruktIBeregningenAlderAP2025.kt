@@ -264,8 +264,8 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
             paragraph {
                 text(
-                    bokmal { + "Inntektspensjonen din er så høy at du får ikke utbetalt garantipensjon." },
-                    nynorsk { + "Inntektspensjonen din er så høg at du får ikkje utbetalt garantipensjon." },
+                    bokmal { + "Inntektspensjonen din er over grensen for at du kan få utbetalt garantipensjon." },
+                    nynorsk { + "Inntektspensjonen din er over grensa for at du kan få utbetalt garantipensjon." },
                     english { + "You are not eligible for a guaranteed pension because your income pension exceeds the threshold." },
                 )
             }

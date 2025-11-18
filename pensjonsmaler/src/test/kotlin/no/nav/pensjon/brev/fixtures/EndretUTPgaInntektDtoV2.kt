@@ -18,6 +18,7 @@ fun createEndretUTPgaInntektDtoV2() =
             nettoAkkumulert = 1000000,
             nettoRestbelop = 2000000,
             totalNettoInnevarendeAr = 200000,
+            okningUforegradVedArsjoring = true,
         ),
         barnetilleggFellesbarn = BarnetilleggFellesbarn(
             netto = 1000,
