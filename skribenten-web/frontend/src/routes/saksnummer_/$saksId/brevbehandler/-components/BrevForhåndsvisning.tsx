@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Alert, BodyLong, Button, Heading, HStack, Label, Loader, VStack } from "@navikt/ds-react";
+import { Alert, BodyLong, BodyShort, Button, Heading, HStack, Label, Loader, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -94,43 +94,43 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
         <VStack align="center">Fant ikke PDF for brev med id {properties.brevId}</VStack>
       ) : (
         <>
-          {pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert && (
-            <Alert
-              css={css`
-                border-left: none;
-                border-right: none;
-                margin-bottom: var(--a-spacing-4);
-              `}
-              fullWidth
-              variant="warning"
-            >
-              <Heading size="xsmall">Endringer i brevet</Heading>
-              <BodyLong spacing>
-                Det har kommet nye data fra Pesys som påvirker dette brevet. Oppdater brevet for å sikre at innholdet er
-                korrekt.
-              </BodyLong>
-              <HStack gap="3">
-                <Button
-                  loading={oppdaterBrevTilKladd.isPending}
-                  onClick={handleOppdater}
-                  size="small"
-                  variant="primary"
-                >
-                  Oppdater
-                </Button>
-                <Button onClick={handleIgnorer} size="small" variant="tertiary">
-                  Ignorer
-                </Button>
-              </HStack>
-              {oppdaterError && <BodyLong>{oppdaterError}</BodyLong>}
-            </Alert>
-          )}
           <PDFViewer
             brevId={properties.brevId}
             pdf={pdfResponse.pdf}
             sakId={properties.saksId}
             viewerHeight={"var(--main-page-content-height)"}
-          />
+          >
+            {pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert ? (
+              <Alert
+                css={css`
+                  border-left: none;
+                  border-right: none;
+                  margin-bottom: var(--a-spacing-4);
+                `}
+                fullWidth
+                variant="warning"
+              >
+                <Heading size="xsmall">Brevet må oppdateres</Heading>
+                <BodyShort spacing>
+                  Endringer i Pesys påvirker innholdet i brevet. Oppdater brevet for å sikre korrekt innhold.
+                </BodyShort>
+                <HStack gap="3">
+                  <Button
+                    loading={oppdaterBrevTilKladd.isPending}
+                    onClick={handleOppdater}
+                    size="small"
+                    variant="primary"
+                  >
+                    Oppdater
+                  </Button>
+                  <Button onClick={handleIgnorer} size="small" variant="tertiary">
+                    Ignorer
+                  </Button>
+                </HStack>
+                {oppdaterError && <BodyLong>{oppdaterError}</BodyLong>}
+              </Alert>
+            ) : null}
+          </PDFViewer>
         </>
       ),
   });
