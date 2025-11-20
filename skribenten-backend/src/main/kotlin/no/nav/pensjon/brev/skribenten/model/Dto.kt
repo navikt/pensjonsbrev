@@ -108,8 +108,9 @@ object Dto {
                 adresselinje2: String?,
                 adresselinje3: String?,
                 manueltAdressertTil: ManueltAdressertTil
-            ) =
-                Mottaker(
+            ): Mottaker {
+                require(postnummer.length == 4) { "Norske postnummer skal være fire siffer, men dette var ${postnummer.length}: $postnummer"}
+                return Mottaker(
                     type = MottakerType.NORSK_ADRESSE,
                     navn = navn,
                     postnummer = postnummer,
@@ -119,7 +120,8 @@ object Dto {
                     adresselinje3 = adresselinje3,
                     manueltAdressertTil = manueltAdressertTil,
 
-                )
+                    )
+            }
 
             fun utenlandskAdresse(
                 navn: String,
