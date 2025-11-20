@@ -18,6 +18,8 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoFyller67AarSaerskiltSa
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakEndringAFPEndretOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto
+import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016
+import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
@@ -54,6 +56,7 @@ object AlderTemplates : AllTemplates {
             AvslagUttakFoerNormertPensjonsalderAuto,
             EndringAvAlderspensjonSivilstandAuto,
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
+            OmregningAlderUfore2016Auto,
             FeilUtsendingAvGjenlevenderett,
             InfoAldersovergangEps60AarAuto,
             InfoAldersovergangEps62AarAuto,
@@ -74,6 +77,7 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonPgaGarantitillegg,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
+            OmregningAlderUfore2016,
             VedtakStansAlderspensjonFlyttingMellomLand,
         )
 }

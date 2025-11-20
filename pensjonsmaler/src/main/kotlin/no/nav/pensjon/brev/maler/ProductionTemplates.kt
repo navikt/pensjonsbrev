@@ -28,8 +28,6 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskul
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
 import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
@@ -91,7 +89,6 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
-        OmregningAlderUfore2016Auto,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
@@ -144,7 +141,6 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         InnvilgelseAvAlderspensjon,
         InnvilgelseAvAlderspensjonTrygdeavtale,
-        OmregningAlderUfore2016,
         OmsorgEgenManuell,
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
