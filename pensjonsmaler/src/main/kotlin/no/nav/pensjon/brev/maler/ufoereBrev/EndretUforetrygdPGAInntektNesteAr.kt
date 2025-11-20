@@ -284,27 +284,30 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
-                        .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". " },
-                    nynorsk { +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
-                        .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". " }
-                )
+            showIf(not(okningUforegradVedArsjoring)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
+                                .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". "
+                        },
+                        nynorsk {
+                            +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
+                                .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". "
+                        }
+                    )
+                }
             }
-
             showIf(okningUforegradVedArsjoring) {
                 paragraph {
                     text(
                         bokmal {
-                            + "Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1)
-                                .format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har benyttet for beregning av uføretrygden er korrekt. " +
-                                    "Har du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                            + "Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. " +
+                                    "Får du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
                         },
                         nynorsk {
-                            + "Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1)
-                                .format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt til å berekne uføretrygda er korrekt. " +
-                                    "Har du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
+                            + "Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. " +
+                                    "Får du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
                         }
                     )
                 }
