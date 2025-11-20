@@ -266,11 +266,21 @@ describe("Brevbehandler", () => {
   });
 
   it("viser pdf når er brev er valgt", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
-      request.reply({ fixture: "helloWorldPdf.txt" });
+    cy.fixture("helloWorldPdf.txt", "base64").then((pdfBase64) => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
+        request.reply({
+          body: {
+            pdf: pdfBase64,
+            rendretBrevErEndret: false,
+          },
+        });
+      });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([kladdBrev]);
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
+      request.reply(kladdBrev);
     });
 
     cy.contains(kladdBrev.brevtittel).click();
@@ -282,8 +292,18 @@ describe("Brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([kladdBrev]);
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
-      request.reply({ fixture: "helloWorldPdf.txt" });
+    cy.fixture("helloWorldPdf.txt", "base64").then((pdfBase64) => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
+        request.reply({
+          body: {
+            pdf: pdfBase64,
+            rendretBrevErEndret: false,
+          },
+        });
+      });
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
+      request.reply(kladdBrev);
     });
     cy.intercept("DELETE", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
       request.reply(204);
