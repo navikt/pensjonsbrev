@@ -8,7 +8,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: pensjon-pdf-bygger
-  minReplicas: 12
+  minReplicas: {{ minReplicas }}
   maxReplicas: 150
   metrics:
     - type: Pods
