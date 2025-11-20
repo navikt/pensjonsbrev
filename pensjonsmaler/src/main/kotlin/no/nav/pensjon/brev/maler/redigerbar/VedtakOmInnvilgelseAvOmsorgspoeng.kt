@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsor
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgsopptjeningsaar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgspersonNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL_INNLOGGET
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -24,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgelseAvOmsorgspoengDto> {
 
-    //override val featureToggle = FeatureToggles.
+    override val featureToggle = FeatureToggles.vedtakOmInnvilgelseAvOmsorgspoeng.toggle
     override val kode = Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_INNVILGELSE_AV_OMSORGSPOENG
     override val kategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
