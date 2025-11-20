@@ -125,11 +125,8 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 
 open class PenServiceStub : PenService {
     override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = notYetStubbed()
-    override suspend fun bestillDoksysBrev(
-        request: Api.BestillDoksysBrevRequest,
-        enhetsId: String,
-        saksId: Long
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> = notYetStubbed()
+    override suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse =
+        notYetStubbed()
     override suspend fun bestillExstreamBrev(
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
     ): ServiceResult<BestillExstreamBrevResponse> = notYetStubbed()

@@ -171,18 +171,19 @@ class LegacyBrevService(
     private suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Api.BestillOgRedigerBrevResponse =
         if (!harTilgangTilEnhet(enhetsId)) {
             Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
-        } else penService.bestillDoksysBrev(request, enhetsId, saksId)
-            .map { response ->
+        } else {
+            penService.bestillDoksysBrev(request, enhetsId, saksId).let { response ->
                 if (response.failure != null || response.journalpostId != null) {
-                    Api.BestillOgRedigerBrevResponse(journalpostId = response.journalpostId, failureType = response.failure?.toApi())
+                    Api.BestillOgRedigerBrevResponse(
+                        journalpostId = response.journalpostId,
+                        failureType = response.failure?.toApi()
+                    )
                 } else {
                     logger.error("Tom response fra doksys bestilling")
                     Api.BestillOgRedigerBrevResponse(failureType = SKRIBENTEN_INTERNAL_ERROR)
                 }
-            }.catch { message, httpStatusCode ->
-                logger.error("Feil ved bestilling av doksys brev $message status: $httpStatusCode")
-                Api.BestillOgRedigerBrevResponse(failureType = SKRIBENTEN_INTERNAL_ERROR)
             }
+        }
 
     private suspend fun ventPaaJournalpostOgRedigerDoksysBrev(journalpostId: String): Api.BestillOgRedigerBrevResponse =
         when (safService.waitForJournalpostStatusUnderArbeid(journalpostId)) {
