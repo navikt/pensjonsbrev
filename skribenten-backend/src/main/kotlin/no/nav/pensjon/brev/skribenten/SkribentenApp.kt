@@ -124,7 +124,8 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             call.application.log.info(cause.message, cause)
             when (cause) {
                 is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
+                is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
                 is HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
