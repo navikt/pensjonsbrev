@@ -17,9 +17,9 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
@@ -174,7 +174,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var type by MottakerTable.type
     var tssId by MottakerTable.tssId
     var navn by MottakerTable.navn
-    var postnummer by MottakerTable.postnummer
+    var postnummer by MottakerTable.postnummer.wrap(::NorskPostnummer, NorskPostnummer::value)
     var poststed by MottakerTable.poststed
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -130,7 +131,7 @@ class MottakerTest {
         assertThrows<IllegalArgumentException> {
             Dto.Mottaker.norskAdresse(
                 navn = "Peder Ås",
-                postnummer = "12345",
+                postnummer = NorskPostnummer("12345"),
                 poststed = "Lillevik",
                 adresselinje1 = null,
                 adresselinje2 = null,
@@ -145,7 +146,7 @@ class MottakerTest {
         assertThrows<IllegalArgumentException> {
             Dto.Mottaker.norskAdresse(
                 navn = "Peder Ås",
-                postnummer = "123",
+                postnummer = NorskPostnummer("123"),
                 poststed = "Lillevik",
                 adresselinje1 = null,
                 adresselinje2 = null,
@@ -159,7 +160,7 @@ class MottakerTest {
     fun `takler norsk adresse med firesifra postnummer`() {
         Dto.Mottaker.norskAdresse(
             navn = "Peder Ås",
-            postnummer = "1234",
+            postnummer = NorskPostnummer("1234"),
             poststed = "Lillevik",
             adresselinje1 = null,
             adresselinje2 = null,
