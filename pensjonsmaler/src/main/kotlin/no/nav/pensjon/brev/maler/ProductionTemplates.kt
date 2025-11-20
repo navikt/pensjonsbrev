@@ -66,6 +66,7 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeIn
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringVedFlyttingMellomLand
 import no.nav.pensjon.brev.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjening
+import no.nav.pensjon.brev.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoeng
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
@@ -162,6 +163,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
+        VedtakOmInnvilgelseAvOmsorgspoeng,
     )
 
     override fun hentAutobrevmaler() = autobrev
