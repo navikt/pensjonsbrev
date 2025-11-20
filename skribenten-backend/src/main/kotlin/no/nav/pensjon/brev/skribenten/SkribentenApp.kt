@@ -25,6 +25,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.JwtUserPrincipal
@@ -124,7 +125,8 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             call.application.log.info(cause.message, cause)
             when (cause) {
                 is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
+                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
+                    BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
                 is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
