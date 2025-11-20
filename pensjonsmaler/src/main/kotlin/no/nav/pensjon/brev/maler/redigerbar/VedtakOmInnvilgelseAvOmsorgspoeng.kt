@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsor
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL_INNLOGGET
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -48,13 +49,8 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
             )
         }
         outline {
-            title1 {
-                text(
-                    bokmal { +"Vedtak" },
-                    nynorsk { +"Vedtak" },
-                    english { +"Decision" }
-                )
-            }
+            includePhrase(Vedtak.Overskrift)
+
             paragraph {
                 text(
                     bokmal { +"Nav har godkjent at du får omsorgsopptjening for " + pesysData.omsorgsopptjeningsaar + "." },
@@ -123,7 +119,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                     }
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+            includePhrase(Felles.HarDuSpoersmaal.omsorg)
         }
     }
 }
