@@ -1,0 +1,6 @@
+
+[plantuml, target=img/datagrunnlag-letterrequest, format=svg]
+....
+Skribenten -->
+
+....
