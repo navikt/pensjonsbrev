@@ -104,40 +104,6 @@ object Felles {
         }
     }
 
-    data class HarDuSpoersmaalBokmalEnglish(
-        val merInformasjonUrl: String,
-        val telefonnummer: String,
-    ) : OutlinePhrase<LangBokmalEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { + "Har du spørsmål?" },
-                    english { + "Do you have questions?" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Du finner mer informasjon på $merInformasjonUrl." +
-                            " På $KONTAKT_URL kan du chatte eller skrive til oss." +
-                            " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer" +
-                            " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID." },
-                    english { + "You can find more information at $merInformasjonUrl." +
-                            " At $KONTAKT_URL, you can chat or write to us." +
-                            " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer," +
-                            " weekdays $NAV_KONTAKTSENTER_OPEN_HOURS." },
-                )
-            }
-        }
-
-        companion object {
-            val omsorg =
-                HarDuSpoersmaalBokmalEnglish(
-                    Constants.OMSORGSOPPTJENING_URL,
-                    Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON,
-                )
-        }
-    }
-
     // TBU2213, TBU1100, RettTilKlagePesys_001
     // TBU2452NN, TBU2452EN, TBU2452
     object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
