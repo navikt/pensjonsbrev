@@ -28,7 +28,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
@@ -217,7 +217,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
+          {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
+            ? "Brevet er klart for attestering"
+            : "Brevet er klart for sending"}
         </Switch>
 
         {laasForRedigeringMutation.isError && (
