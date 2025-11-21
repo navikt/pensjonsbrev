@@ -664,3 +664,6 @@ export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
 export const countUnfilledFritekstPlaceholders = (letter: EditedLetter): number => {
   return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
 };
+
+export const base64ToPdfBlob = (b64: string) =>
+  new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: "application/pdf" });

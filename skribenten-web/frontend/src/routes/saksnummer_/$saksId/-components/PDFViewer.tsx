@@ -16,6 +16,7 @@ const PDFViewer = (properties: {
   pdf: Blob;
   viewerHeight?: string;
   utenSlettKnapp?: boolean;
+  children?: React.ReactNode;
 }) => {
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
@@ -88,6 +89,7 @@ const PDFViewer = (properties: {
           setScale,
         }}
       />
+      {properties.children}
       <div
         css={css`
           display: flex;

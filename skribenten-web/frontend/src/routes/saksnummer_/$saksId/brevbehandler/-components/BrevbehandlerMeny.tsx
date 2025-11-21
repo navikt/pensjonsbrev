@@ -21,6 +21,7 @@ import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
+import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
@@ -167,6 +168,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
       );
+      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
     },
   });
 

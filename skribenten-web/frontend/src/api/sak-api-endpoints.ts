@@ -3,6 +3,7 @@
 
 import axios from "axios";
 
+import { base64ToPdfBlob } from "~/Brevredigering/LetterEditor/actions/common";
 import type {
   BestillBrevResponse,
   BrevInfo,
@@ -13,6 +14,11 @@ import type {
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
+
+export type PdfResponse = {
+  pdf: string;
+  rendretBrevErEndret: boolean;
+};
 
 export const hentAlleBrevForSak = {
   queryKey: (sakId: string) => ["hentAlleBrevForSak", sakId],
@@ -27,21 +33,27 @@ export const hentPdfForBrev = {
   queryFn: async (saksId: string, brevId: number) => hentPdfForBrevFunction(saksId, brevId),
 };
 
-const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =>
-  (
-    await axios
-      .get<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
-        responseType: "blob",
-        headers: { Accept: "application/pdf" },
-      })
-      .catch((error) => {
-        if (error?.response?.status === 404) {
-          return null;
-        } else {
-          throw error;
-        }
-      })
-  )?.data ?? null;
+const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) => {
+  const response = await axios
+    .get<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
+      responseType: "json",
+      headers: { Accept: "application/json" },
+    })
+    .catch((error) => {
+      if (error?.response?.status === 404) {
+        return null;
+      } else {
+        throw error;
+      }
+    });
+
+  if (!response?.data) return null;
+
+  return {
+    pdf: base64ToPdfBlob(response.data.pdf),
+    rendretBrevErEndret: response.data.rendretBrevErEndret,
+  };
+};
 
 export const delvisOppdaterBrev = async (saksId: string, brevId: string | number, body: DelvisOppdaterBrevRequest) =>
   (await axios.patch<DelvisOppdaterBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body))

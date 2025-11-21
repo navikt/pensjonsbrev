@@ -184,12 +184,16 @@ describe("attestering", () => {
     cy.visit("/saksnummer/123456/attester/1/redigering");
     cy.contains("Underskrift").should("exist");
 
-    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (req) => {
-      req.reply({
-        journalpostId: 9908,
-        error: null,
-      });
-    }).as("pdf");
+    cy.fixture("helloWorldPdf.txt", "base64").then((pdfBase64) => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (req) => {
+        req.reply({
+          body: {
+            pdf: pdfBase64,
+            rendretBrevErEndret: false,
+          },
+        });
+      }).as("pdf");
+    });
 
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (req) => {
       req.reply({ ...defaultBrev, redigertBrev: req.body });
