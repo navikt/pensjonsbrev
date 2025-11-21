@@ -108,8 +108,7 @@ object Dto {
                 adresselinje2: String?,
                 adresselinje3: String?,
                 manueltAdressertTil: ManueltAdressertTil
-            ) =
-                Mottaker(
+            ) = Mottaker(
                 type = MottakerType.NORSK_ADRESSE,
                 navn = navn,
                 postnummer = postnummer,
@@ -118,8 +117,7 @@ object Dto {
                 adresselinje2 = adresselinje2,
                 adresselinje3 = adresselinje3,
                 manueltAdressertTil = manueltAdressertTil,
-
-                )
+            )
 
             fun utenlandskAdresse(
                 navn: String,
