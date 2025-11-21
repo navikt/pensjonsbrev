@@ -96,10 +96,10 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
    */
   adresse: z
     .object({
-      navn: z.string().min(1, "Obligatorisk"),
-      linje1: z.string(),
-      linje2: z.string(),
-      linje3: z.string(),
+      navn: z.string().min(1, "Obligatorisk").max(128, "Navn kan ikke være lengre enn 128 tegn"),
+      linje1: z.string().max(128, "Adresselinje 1 kan ikke være lengre enn 128 tegn"),
+      linje2: z.string().max(128, "Adresselinje 2 kan ikke være lengre enn 128 tegn"),
+      linje3: z.string().max(128, "Adresselinje 3 kan ikke være lengre enn 128 tegn"),
       manueltAdressertTil: z.enum([
         ManueltAdressertTil.BRUKER,
         ManueltAdressertTil.ANNEN,
@@ -110,7 +110,7 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
         .trim()
         .transform((s) => s.replace(/\s/g, ""))
         .nullable(),
-      poststed: z.string().nullable(),
+      poststed: z.string().max(50, "Poststed kan ikke være lengre enn 50 tegn").nullable(),
       land: z.string().min(1, "Obligatorisk"),
     })
     .superRefine((data, refinementContext) => {

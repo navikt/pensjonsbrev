@@ -210,7 +210,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
                 )
             }
-
+            showIf(sokerMottarApIlaAret) {
+                paragraph {
+                    text(
+                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
+                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
+                    )
+                }
+            }
 
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                 showIf(barnetilleggFB.inntektAnnenForelder.greaterThan(0) and barnetilleggFB.inntektBruker.greaterThan(0)) {
@@ -284,24 +291,29 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
-                        .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". " },
-                    nynorsk { +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
-                        .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". " }
-                )
+            showIf(not(okningUforegradVedArsjoring)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
+                                .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". "
+                        },
+                        nynorsk {
+                            +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
+                                .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". "
+                        }
+                    )
+                }
             }
-
             showIf(okningUforegradVedArsjoring) {
                 paragraph {
                     text(
                         bokmal {
-                            + "Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt til å beregne uføretrygden er korrekt. " +
+                            + "Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. " +
                                     "Får du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
                         },
                         nynorsk {
-                            + "Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt til å berekne uføretrygda er korrekt. " +
+                            + "Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. " +
                                     "Får du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
                         }
                     )
@@ -378,14 +390,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     bokmal { +"På $UFOERE_JOBB_URL finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: $KONTAKT_URL" },
                     nynorsk { +"På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL" }
                 )
-            }
-            showIf(sokerMottarApIlaAret) {
-                paragraph {
-                    text(
-                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
-                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
-                    )
-                }
             }
             showIf(gjtEndret) {
                 title1 {
