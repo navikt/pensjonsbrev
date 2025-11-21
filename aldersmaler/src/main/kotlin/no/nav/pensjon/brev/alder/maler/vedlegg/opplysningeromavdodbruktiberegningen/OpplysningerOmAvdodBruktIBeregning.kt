@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.TabellPoengrekke
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.OpplysningerOmAvdodTabell
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.alder.model.Beregningsmetode.*
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
