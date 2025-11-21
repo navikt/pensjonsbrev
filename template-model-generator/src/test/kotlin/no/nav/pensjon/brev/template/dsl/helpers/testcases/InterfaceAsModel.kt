@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.InterfaceAsModelSelectors.TheModelSelectors.fornavn
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.InterfaceAsModelSelectors.TheModelSelectors.fornavn_safe
 
 /**
  * Verify that it is possible to generate selectors when the model is an interface.
@@ -23,11 +22,10 @@ object InterfaceAsModel : HasModel<InterfaceAsModel.TheModel> {
     }
 
     fun someusage() {
-        val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().fornavn
-        val expressionExtensionProperty: Expression<String> = Expression.Literal(object : TheModel {
+        SimpleTemplateScope<TheModel>().fornavn
+        Expression.Literal(object : TheModel {
             override val fornavn: String = "Jadda"
         }).fornavn
-        val nullableExpressionExtensionProperty: Expression<String?> = Expression.Literal<TheModel?>(null).fornavn_safe
-        val actualSelector: TemplateModelSelector<TheModel, String> = InterfaceAsModelSelectors.TheModelSelectors.fornavnSelector
+        InterfaceAsModelSelectors.TheModelSelectors.fornavnSelector
     }
 }
