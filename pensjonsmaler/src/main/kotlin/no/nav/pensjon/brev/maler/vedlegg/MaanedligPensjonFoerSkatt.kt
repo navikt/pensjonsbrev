@@ -8,18 +8,18 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggFB_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggSB_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggSB
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EktefelletilleggGjeldendeSelectors.innvilgetEktefelletillegg_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EktefelletilleggGjeldendeSelectors.innvilgetEktefelletillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.barnetilleggGjeldende
@@ -43,7 +43,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSele
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantipensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningET
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningFB
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningSB
@@ -116,11 +116,11 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
             )
         }
 
-        val aldersEllerSykehjemInstOpphold = institusjonsoppholdGjeldende.aldersEllerSykehjem_safe.ifNull(false)
-        val ensligPgaInstitusjonsopphold = institusjonsoppholdGjeldende.ensligPaInst_safe.ifNull(false)
-        val epsErpaaInstitusjon = institusjonsoppholdGjeldende.epsPaInstitusjon_safe.ifNull(false)
-        val erPaaFengselsInstitusjon = institusjonsoppholdGjeldende.fengsel_safe.ifNull(false)
-        val erPaahelseInstitusjon = institusjonsoppholdGjeldende.helseinstitusjon_safe.ifNull(false)
+        val aldersEllerSykehjemInstOpphold = institusjonsoppholdGjeldende.safe { aldersEllerSykehjem }.ifNull(false)
+        val ensligPgaInstitusjonsopphold = institusjonsoppholdGjeldende.safe { ensligPaInst }.ifNull(false)
+        val epsErpaaInstitusjon = institusjonsoppholdGjeldende.safe { epsPaInstitusjon }.ifNull(false)
+        val erPaaFengselsInstitusjon = institusjonsoppholdGjeldende.safe { fengsel }.ifNull(false)
+        val erPaahelseInstitusjon = institusjonsoppholdGjeldende.safe { helseinstitusjon }.ifNull(false)
         val beregnetSomEnsligPgaInstopphold = (aldersEllerSykehjemInstOpphold
                 or ensligPgaInstitusjonsopphold
                 or epsErpaaInstitusjon
@@ -193,7 +193,7 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
 
         //vedleggBelopGJTkap19_001
         val harGjenlevendeTilleggKap19 =
-            beregnetPensjonPerManedGjeldende.gjenlevendetilleggKap19_safe.ifNull(Kroner(0)).greaterThan(0)
+            beregnetPensjonPerManedGjeldende.safe { gjenlevendetilleggKap19 }.ifNull(Kroner(0)).greaterThan(0)
         val gjenlevendetilleggKap19Innvilget = alderspensjonGjeldende.gjenlevendetilleggKap19Innvilget
         val gjenlevendetilleggInnvilget = alderspensjonGjeldende.gjenlevendetilleggInnvilget
         showIf(
@@ -393,7 +393,7 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
         }
 
         //vedleggBelopSaerSats_001
-        val saerskiltSatsErBrukt = saerskiltSatsGjeldende.saerskiltSatsErBrukt_safe.ifNull(false)
+        val saerskiltSatsErBrukt = saerskiltSatsGjeldende.safe { saerskiltSatsErBrukt }.ifNull(false)
         showIf(
             saerskiltSatsErBrukt
                     and regelverkstype.isOneOf(AP1967, AP2011)
@@ -452,7 +452,7 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
         val beregningVirkningsaar = beregnetPensjonPerManedGjeldende.virkDatoFom.year
         showIf(
             beregningVirkningsaar.lessThan(2025)
-                    and ektefelletilleggGjeldende.innvilgetEktefelletillegg_safe.ifNull(false)
+                    and ektefelletilleggGjeldende.safe { innvilgetEktefelletillegg }.ifNull(false)
         ) {
             paragraph {
                 text(
@@ -527,8 +527,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
             }
         }
 
-        val innvilgetBarnetilleggFellesBarn = barnetilleggGjeldende.innvilgetBarnetilleggFB_safe.ifNull(false)
-        val innvilgetBarnetilleggSaerkullesbarn = barnetilleggGjeldende.innvilgetBarnetilleggSB_safe.ifNull(false)
+        val innvilgetBarnetilleggFellesBarn = barnetilleggGjeldende.safe { innvilgetBarnetilleggFB }.ifNull(false)
+        val innvilgetBarnetilleggSaerkullesbarn = barnetilleggGjeldende.safe { innvilgetBarnetilleggSB }.ifNull(false)
         val innvilgetBarnetillegg = innvilgetBarnetilleggFellesBarn or innvilgetBarnetilleggSaerkullesbarn
 
         //vedleggBTAP_001
