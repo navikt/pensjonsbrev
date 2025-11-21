@@ -16,12 +16,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.skjermingsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.uforegradVed67
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.KravSelectors.erForstegangsbehandling
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerProRata
@@ -30,9 +30,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerProRata_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerProRata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.poengAr
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.poengAre91
@@ -59,7 +59,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -86,7 +85,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                 showIf(
                     beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
                             and not(beregningKap19VedVirk.redusertTrygdetid)
-                            and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
+                            and not(beregningKap20VedVirk.safe { redusertTrygdetid }.ifNull(false))
                 ) {
                     //tabellFlyktningstatus_002
                     flyktningstatusFraUDIrad()
@@ -336,7 +335,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                 }
 
                 //tabellUngUfor_002
-                showIf(tilleggspensjonVedVirk.pgaUngUfore_safe.ifNull(false)) {
+                showIf(tilleggspensjonVedVirk.safe { pgaUngUfore }.ifNull(false)) {
                     row {
                         cell {
                             text(
@@ -478,7 +477,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                 showIf(
                     beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
                             and not(beregningKap19VedVirk.redusertTrygdetid)
-                            and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
+                            and not(beregningKap20VedVirk.safe { redusertTrygdetid }.ifNull(false))
                 ) {
                     //tabellFlyktningstatus_002
                     flyktningstatusFraUDIrad()
@@ -510,8 +509,8 @@ data class OpplysningerBruktIBeregningTabellKap20(
 
                         //tabellTTBrokNorgeAvtaleland_001
                         ifNotNull(
-                            trygdetidsdetaljer.tellerProRata_safe,
-                            trygdetidsdetaljer.nevnerProRata_safe
+                            trygdetidsdetaljer.safe { tellerProRata },
+                            trygdetidsdetaljer.safe { nevnerProRata }
                         ) { tellerProRata, nevnerProRata ->
                             showIf(beregningsmetode.isNotAnyOf(EOS, NORDISK, FOLKETRYGD)) {
                                 prorataBroekRad(tellerProRata, nevnerProRata)
@@ -523,7 +522,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                 ifNotNull(beregningKap20VedVirk) { beregningKap20VedVirk ->
                     //tabellBeholdningForForsteUttak_001
                     showIf(krav.erForstegangsbehandling) {
-                        ifNotNull(beregningKap20VedVirk.beholdningForForsteUttak_safe) {
+                        ifNotNull(beregningKap20VedVirk.safe { beholdningForForsteUttak }) {
                             row {
                                 cell {
                                     text(
@@ -538,7 +537,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                     }
 
                     //vedleggTabellKap20NyOpptjening_001
-                    ifNotNull(beregningKap20VedVirk.nyOpptjening_safe) {
+                    ifNotNull(beregningKap20VedVirk.safe { nyOpptjening }) {
                         row {
                             cell {
                                 text(

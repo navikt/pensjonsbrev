@@ -19,8 +19,8 @@ import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKodeAvdoed_safe
-import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
+import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKodeAvdoed
+import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdoed
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskap
@@ -93,7 +93,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     english { + "." },
                 )
             }
-            showIf(pesysData.eksportForbudKode_safe.equalTo(EksportForbudKode.UFOR25_ALDER)) {
+            showIf(pesysData.eksportForbudKode.equalTo(EksportForbudKode.UFOR25_ALDER)) {
                 // eksportUngUforStans
                 paragraph {
                     text(
@@ -105,8 +105,8 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                             + "you have to live in Norway. We are therefore stopping your retirement pension." },
                     )
                 }
-            }.orShowIf(pesysData.eksportForbudKode_safe.equalTo(EksportForbudKode.FLYKT_ALDER) or
-                    pesysData.eksportForbudKodeAvdoed_safe.equalTo(EksportForbudKode.FLYKT_ALDER)) {
+            }.orShowIf(pesysData.eksportForbudKode.equalTo(EksportForbudKode.FLYKT_ALDER) or
+                    pesysData.eksportForbudKodeAvdoed.equalTo(EksportForbudKode.FLYKT_ALDER)) {
                 // eksportFlyktningStans
                 paragraph {
                     text(
@@ -120,7 +120,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 }
             }
 
-            showIf(regelverkType.isOneOf(AP2011, AP2016) and not(minst20ArTrygdetid) and pesysData.eksportForbudKode_safe.isNull()) {
+            showIf(regelverkType.isOneOf(AP2011, AP2016) and not(minst20ArTrygdetid) and pesysData.eksportForbudKode.isNull()) {
                 showIf(pesysData.harAvdoed and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
                     // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod
                     paragraph {

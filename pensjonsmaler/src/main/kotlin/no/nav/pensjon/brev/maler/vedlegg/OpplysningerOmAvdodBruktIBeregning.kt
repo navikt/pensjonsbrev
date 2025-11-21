@@ -11,10 +11,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedPoengrekkeVedVirkSelectors.inneholderOmsorgspoeng
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedPoengrekkeVedVirkSelectors.pensjonspoeng
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedSelectors.navn
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.beregningsMetode_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.anvendtTT_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.beregningsMetode_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.beregningsMetode
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.beregningsMetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.BrukerSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.alderspensjonVedVirk
@@ -43,14 +43,13 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -111,13 +110,13 @@ val vedleggOpplysningerOmAvdoedBruktIBeregning =
             )
         )
 
-        val anvendtTTKap19 = avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT_safe.ifNull(0)
+        val anvendtTTKap19 = avdoedTrygdetidsdetaljerKap19VedVirk.safe { anvendtTT }.ifNull(0)
         val ikkeFullAnvendtTTKap19 = anvendtTTKap19.greaterThan(0) and anvendtTTKap19.lessThan(40)
-        val beregningsmetodeKap19 = avdoedTrygdetidsdetaljerKap19VedVirk.beregningsMetode_safe
+        val beregningsmetodeKap19 = avdoedTrygdetidsdetaljerKap19VedVirk.safe { beregningsMetode }
 
-        val anvendtTTAP1967 = avdoedTrygdetidsdetaljerVedVirkNokkelInfo.anvendtTT_safe.ifNull(0)
+        val anvendtTTAP1967 = avdoedTrygdetidsdetaljerVedVirkNokkelInfo.safe { anvendtTT }.ifNull(0)
         val ikkeFullAnvendtTTAP1967 = anvendtTTAP1967.greaterThan(0) and anvendtTTAP1967.lessThan(40)
-        val beregningsmetodeAP1967 = avdoedTrygdetidsdetaljerVedVirkNokkelInfo.beregningsMetode_safe
+        val beregningsmetodeAP1967 = avdoedTrygdetidsdetaljerVedVirkNokkelInfo.safe { beregningsMetode }
 
         showIf(
             regelverkstype.isOneOf(AP2011, AP2016) and

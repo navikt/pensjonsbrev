@@ -9,11 +9,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoS
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.virkDatoTom
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggFB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggFB_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggSB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggSB_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.ektefelletillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.familieTillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fasteUtgifter
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantipensjon
@@ -536,9 +533,9 @@ data class TabellMaanedligPensjonKap19og20(
                 }
             }
             showIf(
-                (beregnetPensjon.ektefelletillegg_safe .ifNull(Kroner(0)).greaterThan(0)
-                        or beregnetPensjon.barnetilleggSB_safe.ifNull(Kroner(0)).greaterThan(0)
-                        or beregnetPensjon.barnetilleggFB_safe.ifNull(Kroner(0)).greaterThan(0))
+                (beregnetPensjon.ektefelletillegg .ifNull(Kroner(0)).greaterThan(0)
+                        or beregnetPensjon.barnetilleggSB.ifNull(Kroner(0)).greaterThan(0)
+                        or beregnetPensjon.barnetilleggFB.ifNull(Kroner(0)).greaterThan(0))
                         and beregnetPensjon.virkDatoFom.year.lessThan(2025)
             ) {
                 table(header = {

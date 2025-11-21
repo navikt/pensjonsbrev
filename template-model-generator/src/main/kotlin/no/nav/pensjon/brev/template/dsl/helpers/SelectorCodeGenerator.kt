@@ -85,12 +85,6 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             |       UnaryOperation.Select($selectorName)
             |   )
             |
-            |val Expression<$dataClassName?>.${propertyName}_safe: Expression<${nullable(type)}>
-            |   get() = Expression.UnaryInvoke(
-            |       this,
-            |       UnaryOperation.SafeCall($selectorName)
-            |   )
-            |
             """.replaceIndentByMargin(indent)
             )
         }

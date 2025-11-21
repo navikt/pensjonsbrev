@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G_safe
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon_safe
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.text
 
 
@@ -34,9 +35,9 @@ data class OpplysningerBruktIBeregningenSivilstand(
             )
         }
 
-        val epsBorSammenMedBruker = epsVedVirk.borSammenMedBruker_safe.ifNull(false)
-        val epsMottarPensjon = epsVedVirk.mottarPensjon_safe.ifNull(false)
-        val epsHarInntektOver2G = epsVedVirk.harInntektOver2G_safe.ifNull(false)
+        val epsBorSammenMedBruker = epsVedVirk.safe { borSammenMedBruker }.ifNull(false)
+        val epsMottarPensjon = epsVedVirk.safe { mottarPensjon }.ifNull(false)
+        val epsHarInntektOver2G = epsVedVirk.safe { harInntektOver2G }.ifNull(false)
 
 
         //vedleggBeregnGift_001
