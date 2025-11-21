@@ -8,12 +8,9 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.Avdo
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.beloep
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.fribeloepVedvirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektstak
@@ -83,9 +80,9 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
         outline {
             val harBarnetilleggForSaerkullsbarnVedVirk = barnetilleggSaerkullsbarnVedVirk.notNull()
             val harBarnOverfoertTilSaerkullsbarn =
-                barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
+                barnetilleggSaerkullsbarnVedVirk.safe { barnOverfoertTilSaerkullsbarn }.ifNull(emptyList()).isNotEmpty()
             val harbarnSomTidligerVarSaerkullsbarn =
-                barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
+                barnetilleggSaerkullsbarnVedVirk.safe { barnTidligereSaerkullsbarn }.ifNull(emptyList()).isNotEmpty()
             val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.greaterThan(0)
 
             includePhrase(Vedtak.Overskrift)
@@ -337,7 +334,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 skalViseBarnetillegg = false,
             ),
             opplysningerBruktIBeregningUT,
-            barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt_safe.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret
+            barnetilleggSaerkullsbarnVedVirk.safe { erRedusertMotInntekt }.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret
         )
 
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterOgPlikter)
