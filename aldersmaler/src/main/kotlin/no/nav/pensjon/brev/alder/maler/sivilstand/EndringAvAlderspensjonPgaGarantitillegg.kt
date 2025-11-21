@@ -22,7 +22,7 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantit
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.garantitillegg_safe
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.garantitillegg
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
@@ -65,7 +65,7 @@ object EndringAvAlderspensjonPgaGarantitillegg :
         ) {
             val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
             val garantitillegg =
-                pesysData.beregnetPensjonPerManedVedVirk.garantitillegg_safe.ifNull(then = Kroner(0))
+                pesysData.beregnetPensjonPerManedVedVirk.garantitillegg.ifNull(then = Kroner(0))
             val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.ufoereKombinertMedAlder
             val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
             val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
