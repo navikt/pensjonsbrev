@@ -210,7 +210,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
                 )
             }
-
+            showIf(sokerMottarApIlaAret) {
+                paragraph {
+                    text(
+                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
+                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
+                    )
+                }
+            }
 
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                 showIf(barnetilleggFB.inntektAnnenForelder.greaterThan(0) and barnetilleggFB.inntektBruker.greaterThan(0)) {
@@ -383,14 +390,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     bokmal { +"På $UFOERE_JOBB_URL finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: $KONTAKT_URL" },
                     nynorsk { +"På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL" }
                 )
-            }
-            showIf(sokerMottarApIlaAret) {
-                paragraph {
-                    text(
-                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
-                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
-                    )
-                }
             }
             showIf(gjtEndret) {
                 title1 {
