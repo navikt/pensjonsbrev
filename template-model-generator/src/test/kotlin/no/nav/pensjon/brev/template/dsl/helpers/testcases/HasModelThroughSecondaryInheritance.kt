@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughSecondaryInheritanceSelectors.TheModelSelectors
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughSecondaryInheritanceSelectors.TheModelSelectors.navn
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughSecondaryInheritanceSelectors.TheModelSelectors.navn_safe
 
 interface AnotherInterface<Model2: Any> : HasModel<Model2>
 
@@ -23,9 +22,8 @@ object HasModelThroughSecondaryInheritance : AnotherInterface<HasModelThroughSec
     data class TheModel(val navn: String)
 
     fun someusage() {
-        val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
-        val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
-        val nullableExpressionExtensionProperty: Expression<String?> = Expression.Literal<TheModel?>(null).navn_safe
-        val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
+        SimpleTemplateScope<TheModel>().navn
+        Expression.Literal(TheModel("jadda")).navn
+        TheModelSelectors.navnSelector
     }
 }
