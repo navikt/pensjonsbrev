@@ -1181,7 +1181,7 @@ class BrevredigeringServiceTest {
             }
 
             withPrincipal(saksbehandler1Principal) {
-                assertThrows<BrevIkkeKlartTilSendingException> {
+                assertThrows<NyereVersjonFinsException> {
                     brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
                 }
             }

@@ -36,6 +36,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
         BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
 
     class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)
+    class NyereVersjonFinsException(message: String) : BrevredigeringException(message)
     class BrevLaastForRedigeringException(message: String) : BrevredigeringException(message)
     class HarIkkeAttestantrolleException(message: String) : BrevredigeringException(message)
     class KanIkkeAttestereEgetBrevException(message: String) : BrevredigeringException(message)
@@ -386,7 +387,7 @@ class BrevredigeringService(
             }
             brev.validerErFerdigRedigert()
             if (document.redigertBrevHash != brev.redigertBrevHash) {
-                throw BrevIkkeKlartTilSendingException("Det finnes en nyere versjon av brevet enn den som er generert til PDF")
+                throw NyereVersjonFinsException("Det finnes en nyere versjon av brevet enn den som er generert til PDF")
             }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
