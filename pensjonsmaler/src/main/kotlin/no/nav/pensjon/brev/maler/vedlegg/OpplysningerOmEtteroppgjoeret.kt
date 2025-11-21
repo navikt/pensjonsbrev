@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.felles_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.felles
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.barnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.harFaattForMye
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.harGjenlevendeTillegg
@@ -34,6 +34,6 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmalNynorskEng
     ifNotNull(barnetillegg) {
         includePhrase(OmBeregningAvBarnetillegg(it, periode))
     }
-    includePhrase(ErOpplysningeneOmInntektFeil(barnetillegg.felles_safe.notNull()))
+    includePhrase(ErOpplysningeneOmInntektFeil(barnetillegg.safe { felles }.notNull()))
 }
 
