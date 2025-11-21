@@ -33,20 +33,20 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.skjermingsgrad
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.uforegradVed67
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak_safe
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening_safe
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.KravSelectors.erForstegangsbehandling
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore_safe
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerProRata
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerTTEOS
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerProRata
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerTTEOS
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerProRata_safe
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata_safe
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerProRata
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerTTEOS
@@ -86,7 +86,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                 showIf(
                     beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
                             and not(beregningKap19VedVirk.redusertTrygdetid)
-                            and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
+                            and not(beregningKap20VedVirk.safe { redusertTrygdetid }.ifNull(false))
                 ) {
                     //tabellFlyktningstatus_002
                     flyktningstatusFraUDIrad()
@@ -336,7 +336,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                 }
 
                 //tabellUngUfor_002
-                showIf(tilleggspensjonVedVirk.pgaUngUfore_safe.ifNull(false)) {
+                showIf(tilleggspensjonVedVirk.safe { pgaUngUfore }.ifNull(false)) {
                     row {
                         cell {
                             text(
@@ -478,7 +478,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                 showIf(
                     beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
                             and not(beregningKap19VedVirk.redusertTrygdetid)
-                            and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
+                            and not(beregningKap20VedVirk.safe { redusertTrygdetid }.ifNull(false))
                 ) {
                     //tabellFlyktningstatus_002
                     flyktningstatusFraUDIrad()
@@ -510,8 +510,8 @@ data class OpplysningerBruktIBeregningTabellKap20(
 
                         //tabellTTBrokNorgeAvtaleland_001
                         ifNotNull(
-                            trygdetidsdetaljer.tellerProRata_safe,
-                            trygdetidsdetaljer.nevnerProRata_safe
+                            trygdetidsdetaljer.tellerProRata,
+                            trygdetidsdetaljer.nevnerProRata
                         ) { tellerProRata, nevnerProRata ->
                             showIf(beregningsmetode.isNotAnyOf(EOS, NORDISK, FOLKETRYGD)) {
                                 prorataBroekRad(tellerProRata, nevnerProRata)
@@ -523,7 +523,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                 ifNotNull(beregningKap20VedVirk) { beregningKap20VedVirk ->
                     //tabellBeholdningForForsteUttak_001
                     showIf(krav.erForstegangsbehandling) {
-                        ifNotNull(beregningKap20VedVirk.beholdningForForsteUttak_safe) {
+                        ifNotNull(beregningKap20VedVirk.beholdningForForsteUttak) {
                             row {
                                 cell {
                                     text(
@@ -538,7 +538,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                     }
 
                     //vedleggTabellKap20NyOpptjening_001
-                    ifNotNull(beregningKap20VedVirk.nyOpptjening_safe) {
+                    ifNotNull(beregningKap20VedVirk.nyOpptjening) {
                         row {
                             cell {
                                 text(

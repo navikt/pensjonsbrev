@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegnin
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.andelGammeltRegelverk
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.andelNyttRegelverk
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.avslattKap19
-import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.avslattKap19_safe
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.fodselsAar
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.forholdstall
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.forholdstallVed67
@@ -17,7 +16,7 @@ import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.poengAar
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.poengAarE91
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.poengAarF92
-import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.redusertTrygdetidKap19_safe
+import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.redusertTrygdetidKap19
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.sluttpoengTall
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.trygdetidKap19
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap20Selectors.redusertTrygdetidKap20
@@ -265,7 +264,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                 }
                 column(alignment = RIGHT) {}
             }) {
-                showIf(opplysningerKap19.avslattKap19_safe.equalTo(false) and trygdetid.greaterThan(0)) {
+                showIf(opplysningerKap19.safe { avslattKap19 }.equalTo(false) and trygdetid.greaterThan(0)) {
                     row {
                         cell { includePhrase(Vedtak.TrygdetidText) }
                         cell {
@@ -380,7 +379,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             )
         }
 
-        showIf((opplysningerKap19.redusertTrygdetidKap19_safe.equalTo(true) or opplysningerKap20.redusertTrygdetidKap20) and opplysningerKap19.avslattKap19_safe.equalTo(false)) {
+        showIf((opplysningerKap19.safe { redusertTrygdetidKap19 }.equalTo(true) or opplysningerKap20.redusertTrygdetidKap20) and opplysningerKap19.safe { avslattKap19 }.equalTo(false)) {
             paragraph {
                 text(
                     bokmal { + "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning av pensjonen din. Full trygdetid er 40 år." +

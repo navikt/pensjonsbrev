@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt_safe
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabell
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
@@ -44,7 +44,7 @@ data class MaanedligPensjonFoerSkattPensjonstillegg(
             }
 
             //vedleggBelopSaerSats_001
-            showIf(saerskiltSatsGjeldende.saerskiltSatsErBrukt_safe.ifNull(false)) {
+            showIf(saerskiltSatsGjeldende.safe { saerskiltSatsErBrukt }.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { + "Fordi du forsørger " + beregnetPensjonPerManedGjeldende.brukersSivilstand.bestemtForm()
