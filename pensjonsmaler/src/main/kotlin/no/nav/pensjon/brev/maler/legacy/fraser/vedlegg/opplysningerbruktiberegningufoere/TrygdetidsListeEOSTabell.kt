@@ -2,12 +2,11 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetideosland
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -54,7 +53,7 @@ data class TrygdetidsListeEOSTabell(
                             )
                         }
                         cell {
-                            ifNotNull(trygdetidEOS.trygdetidfomeos_safe) {
+                            ifNotNull(trygdetidEOS.trygdetidfomeos) {
                                 text(
                                     bokmal { + it.format() },
                                     nynorsk { + it.format() },
@@ -63,7 +62,7 @@ data class TrygdetidsListeEOSTabell(
                             }
                         }
                         cell {
-                            ifNotNull(trygdetidEOS.trygdetidtomeos_safe) {
+                            ifNotNull(trygdetidEOS.trygdetidtomeos) {
                                 text(
                                     bokmal { + it.format() },
                                     nynorsk { + it.format() },
