@@ -48,7 +48,7 @@ object Constants {
     const val MELDE_URL = "$UFOERETRYGD_URL#melde"
     const val UFOERE_ETTERSENDE_POST_URL = "$NAV_URL/uføre-ettersende-post"
     const val UFOERE_ETTERSENDE_URL = "$NAV_URL/uføre-ettersende"
-    const val UFOERE_JOBB_URL = "$NAV_URL/uføre-jobb"
+    const val UFOERE_JOBB_URL = "$NAV_URL/uføretrygd#jobb"
     const val UTBETALINGER_URL = "$NAV_URL/utbetalinger"
     const val SAKSBEHANDLINGSTID_URL = "$NAV_URL/saksbehandlingstider"
 }
