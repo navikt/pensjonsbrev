@@ -197,8 +197,12 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
 @JvmInline
 value class NorskPostnummer(val value: String) {
     init {
-        require(value.length == 4) {
+        require(value.trim().matches(regex)) {
             "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
         }
+    }
+
+    companion object {
+        private val regex = Regex("^[0-9]{4}$")
     }
 }
