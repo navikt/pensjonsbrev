@@ -3,12 +3,11 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenal
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -31,9 +30,9 @@ data class OpplysningerBruktIBeregningenSivilstand(
             )
         }
 
-        val epsBorSammenMedBruker = epsVedVirk.borSammenMedBruker_safe.ifNull(false)
-        val epsMottarPensjon = epsVedVirk.mottarPensjon_safe.ifNull(false)
-        val epsHarInntektOver2G = epsVedVirk.harInntektOver2G_safe.ifNull(false)
+        val epsBorSammenMedBruker = epsVedVirk.safe { borSammenMedBruker }.ifNull(false)
+        val epsMottarPensjon = epsVedVirk.safe { mottarPensjon }.ifNull(false)
+        val epsHarInntektOver2G = epsVedVirk.safe { harInntektOver2G }.ifNull(false)
 
 
         //vedleggBeregnGift_001
