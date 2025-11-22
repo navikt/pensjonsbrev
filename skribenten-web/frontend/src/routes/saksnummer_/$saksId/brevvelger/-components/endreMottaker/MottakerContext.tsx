@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { createContext, useContext, useState } from "react";
 
 import type { Mottaker } from "~/types/brev";
