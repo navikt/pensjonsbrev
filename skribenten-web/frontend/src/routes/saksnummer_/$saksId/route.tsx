@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
