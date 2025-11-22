@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.model
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.brev.brevbaker.FellesFactory
 import com.natpryce.hamkrest.equalTo
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.FellesFactory
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import org.junit.jupiter.api.Test
 
 class GenerellFormattingTest {
-    private val testExpressionScope = ExpressionScope(EmptyBrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
     @Test
     fun `kan formattere nullable kroneverdi som er satt`(){

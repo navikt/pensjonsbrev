@@ -1,18 +1,17 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 import { isEqual } from "lodash";
 
 import type { ItemList } from "~/types/brevbakerTypes";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isItemList, isTextContent } from "../model/utils";
 import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
 
-export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
+export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = withPatches(
   (draft, literalIndex) => {
     const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-    if (block.type !== "PARAGRAPH") {
+    if (block?.type !== "PARAGRAPH") {
       return;
     }
 
@@ -35,7 +34,7 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
  */
 const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
-  draft.isDirty = true;
+  draft.saveStatus = "DIRTY";
 
   const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const theIndexOfTheContent = literalIndex.contentIndex;
@@ -96,7 +95,7 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: Item
   const itemList = block.content[literalIndex.contentIndex] as ItemList;
 
   if (literalIndex.itemIndex >= 0 && literalIndex.itemIndex < itemList.items.length) {
-    draft.isDirty = true;
+    draft.saveStatus = "DIRTY";
 
     const itemContent = removeElements(literalIndex.itemIndex, 1, {
       content: itemList.items,

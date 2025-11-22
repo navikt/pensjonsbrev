@@ -1,17 +1,16 @@
 package no.nav.pensjon.brev.template.render.dsl
 
+import no.nav.brev.brevbaker.createTemplate
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.choice
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -21,7 +20,6 @@ class TemplateTest {
     @Test
     fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
-            name = "test",
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -29,14 +27,13 @@ class TemplateTest {
             title.add(bokmalTittel)
             outline {
                 title1 {
-                    text(Language.Bokmal to "Heisann. ")
+                    text(bokmal { +"Heisann. " })
                 }
             }
         }
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
@@ -60,7 +57,7 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds attachment`() {
-        val attachment = createAttachment<LangBokmalNynorskEnglish, Unit>(
+        val attachment = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
             title = newText(
                 Language.Bokmal to "asdf",
                 Language.Nynorsk to "asdf",
@@ -69,33 +66,31 @@ class TemplateTest {
         ) {
             paragraph {
                 text(
-                    Language.Bokmal to "hei",
-                    Language.Nynorsk to "hei",
-                    Language.English to "Hello",
+                    bokmal { +"hei" },
+                    nynorsk { +"hei" },
+                    english { +"Hello" },
                 )
             }
         }
 
         val doc = createTemplate(
-            name = "test",
             letterDataType = SomeDto::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
-            includeAttachment(attachment, Expression.Literal(Unit))
+            includeAttachment(attachment, Expression.Literal(EmptyVedleggData))
         }
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
                 outline = emptyList(),
                 attachments = listOf(
                     IncludeAttachment(
-                        Expression.Literal(Unit),
+                        Expression.Literal(EmptyVedleggData),
                         attachment
                     )
                 ),
@@ -123,20 +118,18 @@ class TemplateTest {
     @Test
     fun `createTemplate adds literal title`() {
         val doc = createTemplate(
-            name = "test",
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
             outline {
-                title1 { text(Language.Bokmal to "jadda") }
+                title1 { text(bokmal { +"jadda" }) }
             }
         }
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
@@ -159,23 +152,21 @@ class TemplateTest {
     @Test
     fun `createTemplate adds outline`() {
         val doc = createTemplate(
-            name = "test",
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
             outline {
-                title1 { text(Language.Bokmal to "Tittel") }
+                title1 { text(bokmal { +"Tittel" }) }
                 paragraph {
-                    text(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")
+                    text(bokmal { +"Dette er tekst som kun brukes i dette brevet." })
                 }
             }
         }
 
         assertEquals(
             LetterTemplate(
-                name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
@@ -232,10 +223,10 @@ class TemplateTest {
 data class TestFrase(val test: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
-            textExpr(
-                Language.Bokmal to "Hei på deg fra TestFrase: ".expr() + test,
-                Language.Nynorsk to "Hei på deg frå TestFrase: ".expr() + test,
-                Language.English to "Hey you, from TestFrase: ".expr() + test,
+            text(
+                bokmal { +"Hei på deg fra TestFrase: " + test },
+                nynorsk { +"Hei på deg frå TestFrase: " + test },
+                english { +"Hey you, from TestFrase: " + test },
             )
         }
 }

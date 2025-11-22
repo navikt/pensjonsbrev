@@ -1,9 +1,10 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.createTemplate
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -12,10 +13,9 @@ import org.junit.jupiter.api.assertThrows
 
 class LetterTest {
 
-    data class TestData(val s: String)
+    data class TestData(val s: String) : AutobrevData
 
     val template = createTemplate(
-        name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
@@ -26,7 +26,7 @@ class LetterTest {
         ),
     ) {
         title {
-            text(Language.Bokmal to "test")
+            text(bokmal { +"test" })
         }
     }
 

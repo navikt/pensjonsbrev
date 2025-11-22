@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -6,24 +5,12 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
-    id("com.gradleup.shadow")
 }
 
 group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"
 application {
     mainClass.set("no.nav.pensjon.brev.skribenten.SkribentenAppKt")
-}
-
-tasks {
-    named<ShadowJar>("shadowJar") {
-        /* Lager en FatJar. Dette er en workaround for å få med plugin-konfig som Flyway trenger,
-        henta fra https://stackoverflow.com/a/77237118
-        Om du endrer denne til FatJar, start først appen i en container og se at databasemigreringa fortsatt fungerer
-         */
-        mergeServiceFiles()
-        archiveFileName.set("app.jar")
-    }
 }
 
 kotlin {
@@ -46,6 +33,9 @@ tasks {
         compileTestKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
         }
+    }
+    build {
+        dependsOn(installDist)
     }
 }
 
@@ -107,13 +97,14 @@ dependencies {
     implementation(libs.bundles.metrics)
     implementation(libs.ktor.server.caching.headers.jvm)
 
+    // Caching
+    implementation(libs.valkey)
+
     // Test
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)
-
-    testImplementation(testFixtures(libs.brevbaker.common))
 
 }

@@ -25,6 +25,7 @@ import type {
   Title,
   Title1Block,
   Title2Block,
+  Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import { FontType } from "~/types/brevbakerTypes";
@@ -46,6 +47,7 @@ export const nyBrevResponse = ({
     redigertBrev: redigertBrev,
     redigertBrevHash: redigertBrevHash,
     saksbehandlerValg: saksbehandlerValg,
+    propertyUsage: null,
   };
 };
 
@@ -71,7 +73,7 @@ export const nyRedigertBrev = ({
       gjelderNavn: "TRYGG ANBEFALING",
       gjelderFoedselsnummer: "21418744917",
       saksnummer: "22981081",
-      dokumentDato: "25/09/2024",
+      dokumentDato: "2024-09-25",
     },
     blocks: blocks ?? [
       {
@@ -218,6 +220,19 @@ export const nyTitle2Block = (args: {
   deletedContent: [],
 });
 
+export const nyTitle3Block = (args: {
+  id?: Nullable<number>;
+  editable?: boolean;
+  content?: TextContent[];
+}): Title3Block => ({
+  type: "TITLE3",
+  id: args.id ?? null,
+  parentId: null,
+  editable: args.editable ?? true,
+  content: args.content ?? [nyVariable({})],
+  deletedContent: [],
+});
+
 export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Content[] }): ParagraphBlock =>
   newParagraph({
     id: args.id,
@@ -231,7 +246,7 @@ export const nySignatur = (args: {
   attesterendeSaksbehandlerNavn?: string;
   navAvsenderEnhet?: string;
 }): Signatur => ({
-  hilsenTekst: args.hilsenTekst ?? "Yours sincerely",
+  hilsenTekst: args.hilsenTekst ?? "Sincerely",
   saksbehandlerRolleTekst: args.saksbehandlerRolleTekst ?? "Caseworker",
   saksbehandlerNavn: args.saksbehandlerNavn ?? "Sak S. Behandler",
   attesterendeSaksbehandlerNavn: args.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",

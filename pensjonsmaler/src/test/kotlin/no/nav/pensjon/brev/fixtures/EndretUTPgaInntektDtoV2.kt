@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2.*
 import java.time.LocalDate
@@ -19,6 +18,7 @@ fun createEndretUTPgaInntektDtoV2() =
             nettoAkkumulert = 1000000,
             nettoRestbelop = 2000000,
             totalNettoInnevarendeAr = 200000,
+            okningUforegradVedArsjoring = true,
         ),
         barnetilleggFellesbarn = BarnetilleggFellesbarn(
             netto = 1000,
@@ -54,4 +54,5 @@ fun createEndretUTPgaInntektDtoV2() =
         brukerBorINorge = true,
         pe = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
+        gjtEndret = false
     )

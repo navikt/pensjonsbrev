@@ -40,7 +40,10 @@ class BrevmalServiceTest {
 
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
-    private fun lagBrevmalService(service: PenService = object : PenServiceStub() {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    private fun lagBrevmalService(
+        service: PenService = PenServiceStub(),
+        brevmetadataService: BrevmetadataService = FakeBrevmetadataService()
+    ): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -153,20 +156,10 @@ class BrevmalServiceTest {
     }
 
     @Test
-    fun `inkluderer brevbakerbrev om feature er aktivert`() = runBlocking {
-        Features.override(Features.brevbakerbrev, true)
+    fun `inkluderer brevbakerbrev`() = runBlocking {
         val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
         for (brev in brevbakerbrev) {
             brevmalerAssert.anyMatch { it.id == brev.name }
-        }
-    }
-
-    @Test
-    fun `inkluderer ikke brevbakerbrev om feature er deaktivert`() = runBlocking {
-        Features.override(Features.brevbakerbrev, false)
-        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
-        for (brev in brevbakerbrev) {
-            brevmalerAssert.noneMatch { it.id == brev.name }
         }
     }
 

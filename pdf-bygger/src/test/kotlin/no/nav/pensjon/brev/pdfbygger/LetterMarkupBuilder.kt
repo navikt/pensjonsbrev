@@ -5,7 +5,10 @@ package no.nav.pensjon.brev.pdfbygger
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import java.time.LocalDate
 
 fun letterMarkup(block: LetterMarkupBuilder.() -> Unit): LetterMarkup =
@@ -21,7 +24,7 @@ annotation class LetterMarkupBuilderDsl
 
 @LetterMarkupBuilderDsl
 class LetterMarkupBuilder {
-    private var title = emptyList<LetterMarkup.ParagraphContent.Text>()
+    private var title = emptyList<ParagraphContent.Text>()
     private var blocks = emptyList<LetterMarkup.Block>()
     private var sakspart = SakspartBuilder().build()
     private var signatur = SignaturBuilder().build()
@@ -56,7 +59,7 @@ class LetterMarkupBuilder {
 class SakspartBuilder {
     var gjelderNavn: String = "Navn Navnesen"
     var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer("12345678901")
-    var vergeNavn: String? = null
+    var annenMottakerNavn: String? = null
     var saksnummer: String = "123"
     var dokumentDato: LocalDate = LocalDate.of(2025, 1, 1)
 
@@ -64,7 +67,7 @@ class SakspartBuilder {
         LetterMarkupImpl.SakspartImpl(
             gjelderNavn = gjelderNavn,
             gjelderFoedselsnummer = gjelderFoedselsnummer,
-            vergeNavn = vergeNavn,
+            annenMottakerNavn = annenMottakerNavn,
             saksnummer = saksnummer,
             dokumentDato = dokumentDato,
         )
@@ -73,7 +76,6 @@ class SakspartBuilder {
 @LetterMarkupBuilderDsl
 class SignaturBuilder {
     var hilsenTekst: String = "hilsen"
-    var saksbehandlerRolleTekst: String = "saksbehandler"
     var saksbehandlerNavn: String = "Saksbehandler Saksbehandlersen"
     var attesterendeSaksbehandlerNavn: String? = null
     var navAvsenderEnhet: String = "Nav sentralt"
@@ -81,7 +83,6 @@ class SignaturBuilder {
     fun build(): LetterMarkup.Signatur =
         LetterMarkupImpl.SignaturImpl(
             hilsenTekst = hilsenTekst,
-            saksbehandlerRolleTekst = saksbehandlerRolleTekst,
             saksbehandlerNavn = saksbehandlerNavn,
             attesterendeSaksbehandlerNavn = attesterendeSaksbehandlerNavn,
             navAvsenderEnhet = navAvsenderEnhet,
@@ -90,7 +91,7 @@ class SignaturBuilder {
 
 @LetterMarkupBuilderDsl
 class AttachmentBuilder {
-    private var title = emptyList<LetterMarkup.ParagraphContent.Text>()
+    private var title = emptyList<ParagraphContent.Text>()
     private var blocks = emptyList<LetterMarkup.Block>()
     var includeSakspart = false
 
@@ -134,6 +135,16 @@ class LetterMarkupBlocksBuilder {
         )
     }
 
+    fun title3(block: TextBuilder.() -> Unit) {
+        val content = TextBuilder().apply(block).build()
+        blocks.add(
+            LetterMarkupImpl.BlockImpl.Title3Impl(
+                id = content.fold(1) { hash, e -> 31 * hash + (e.id) },
+                content = content,
+            )
+        )
+    }
+
     fun paragraph(block: ParagraphBuilder.() -> Unit) {
         blocks.add(ParagraphBuilder().apply(block).build())
     }
@@ -144,23 +155,29 @@ class LetterMarkupBlocksBuilder {
 
 @LetterMarkupBuilderDsl
 class TextBuilder {
-    private val texts = mutableListOf<String>()
+    private val texts = mutableListOf<ParagraphContent.Text>()
 
-    fun text(text: String) {
-        texts.add(text)
+    fun text(text: String, fontType: FontType = FontType.PLAIN) {
+        texts.add(LiteralImpl(text.hashCode(), text, fontType))
     }
 
-    fun build(): List<LetterMarkup.ParagraphContent.Text> = texts.map {
-        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(it.hashCode(), it)
+    fun newLine() {
+        texts.add(LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(1))
     }
+
+    fun build(): List<ParagraphContent.Text> = texts
 }
 
 @LetterMarkupBuilderDsl
 class ParagraphBuilder {
-    private val content = mutableListOf<LetterMarkup.ParagraphContent>()
+    private val content = mutableListOf<ParagraphContent>()
 
     fun text(text: String) {
-        content.add(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(text.hashCode(), text))
+        content.add(LiteralImpl(text.hashCode(), text))
+    }
+
+    fun newLine() {
+        content.add(LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(1))
     }
 
     fun list(block: ItemListBuilder.() -> Unit) {
@@ -189,7 +206,7 @@ class ParagraphBuilder {
 
 @LetterMarkupBuilderDsl
 class ItemListBuilder {
-    private val items = mutableListOf<LetterMarkup.ParagraphContent.ItemList.Item>()
+    private val items = mutableListOf<ParagraphContent.ItemList.Item>()
 
     fun item(block: TextBuilder.() -> Unit) {
         val text = TextBuilder().apply(block).build()
@@ -201,7 +218,7 @@ class ItemListBuilder {
         )
     }
 
-    fun build(): LetterMarkup.ParagraphContent.ItemList =
+    fun build(): ParagraphContent.ItemList =
         LetterMarkupImpl.ParagraphContentImpl.ItemListImpl(
             id = items.fold(1) { hash, e -> 31 * hash + (e.id) },
             items = items
@@ -210,11 +227,11 @@ class ItemListBuilder {
 
 @LetterMarkupBuilderDsl
 class TableHeaderBuilder {
-    private val columns = mutableListOf<LetterMarkup.ParagraphContent.Table.ColumnSpec>()
+    private val columns = mutableListOf<ParagraphContent.Table.ColumnSpec>()
 
     fun column(
         span: Int = 1,
-        alignment: LetterMarkup.ParagraphContent.Table.ColumnAlignment = LetterMarkup.ParagraphContent.Table.ColumnAlignment.LEFT,
+        alignment: ParagraphContent.Table.ColumnAlignment = ParagraphContent.Table.ColumnAlignment.LEFT,
         block: TextBuilder.() -> Unit
     ) {
         val text = TextBuilder().apply(block).build()
@@ -233,7 +250,7 @@ class TableHeaderBuilder {
         )
     }
 
-    fun build(): LetterMarkup.ParagraphContent.Table.Header =
+    fun build(): ParagraphContent.Table.Header =
         LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl(
             id = columns.fold(1) { hash, e -> 31 * hash + (e.id) },
             colSpec = columns,
@@ -242,18 +259,18 @@ class TableHeaderBuilder {
 
 @LetterMarkupBuilderDsl
 class TableBodyBuilder {
-    private val rows = mutableListOf<LetterMarkup.ParagraphContent.Table.Row>()
+    private val rows = mutableListOf<ParagraphContent.Table.Row>()
 
     fun row(block: TableRowBuilder.() -> Unit) {
         rows.add(TableRowBuilder().apply(block).build())
     }
 
-    fun build(): List<LetterMarkup.ParagraphContent.Table.Row> = rows
+    fun build(): List<ParagraphContent.Table.Row> = rows
 }
 
 @LetterMarkupBuilderDsl
 class TableRowBuilder {
-    private val cells = mutableListOf<LetterMarkup.ParagraphContent.Table.Cell>()
+    private val cells = mutableListOf<ParagraphContent.Table.Cell>()
 
     fun cell(block: TextBuilder.() -> Unit) {
         val text = TextBuilder().apply(block).build()
@@ -267,7 +284,7 @@ class TableRowBuilder {
         )
     }
 
-    fun build(): LetterMarkup.ParagraphContent.Table.Row =
+    fun build(): ParagraphContent.Table.Row =
         LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl(
             id = cells.fold(1) { hash, e -> 31 * hash + (e.id) },
             cells = cells,

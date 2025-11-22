@@ -13,7 +13,7 @@ import io.ktor.server.config.*
 import java.net.InetAddress
 
 data class LeaderElection(val isThisInstanceLeader: Boolean, val thisInstanceName: String, val leaderName: String)
-private data class LeaderResponse(val name: String)
+data class LeaderResponse(val name: String)
 
 interface LeaderService {
     suspend fun electedLeader(): LeaderElection?

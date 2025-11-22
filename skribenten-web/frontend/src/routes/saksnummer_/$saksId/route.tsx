@@ -8,14 +8,12 @@ import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import {
   getFavoritterQuery,
   getKontaktAdresseQuery,
-  getNavnQuery,
   getPreferredLanguageQuery,
   getSakContextQuery,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
-import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { BrevInfoKlarTilAttesteringProvider } from "./kvittering/-components/KlarTilAttesteringContext";
@@ -65,7 +63,17 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { saksId } = Route.useParams();
-    return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
+    return (
+      <div
+        css={css`
+          display: flex;
+          margin: var(--a-spacing-4);
+          justify-content: space-around;
+        `}
+      >
+        <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />
+      </div>
+    );
   },
 });
 
@@ -87,7 +95,6 @@ function SakLayout() {
 
 function Subheader({ sak }: { sak: SakDto }) {
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const hentNavnQuery = useQuery(getNavnQuery(sak.saksId.toString()));
 
   return (
     <div
@@ -125,13 +132,9 @@ function Subheader({ sak }: { sak: SakDto }) {
           <BodyShort size="small">
             {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
           </BodyShort>
-          {queryFold({
-            query: hentNavnQuery,
-            initial: () => null,
-            pending: () => <BodyShort size="small">Henter navn...</BodyShort>,
-            error: () => <BodyShort size="small">Feil ved henting av navn</BodyShort>,
-            success: (navn) => <BodyShort size="small">{navn}</BodyShort>,
-          })}
+          <BodyShort size="small">
+            {sak.navn.etternavn}, {sak.navn.fornavn} {sak.navn.mellomnavn}
+          </BodyShort>
         </HStack>
         <HStack>
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>

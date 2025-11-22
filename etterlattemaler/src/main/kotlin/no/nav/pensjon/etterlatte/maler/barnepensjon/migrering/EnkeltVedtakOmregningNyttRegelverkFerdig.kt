@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -21,6 +21,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.frivilligSkattetrekk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterBosattUtland
@@ -34,8 +35,6 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSom
 object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<BarnepensjonOmregnetNyttRegelverkFerdigDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDTAK_OMREGNING_FERDIG
     override val template: LetterTemplate<*, BarnepensjonOmregnetNyttRegelverkFerdigDTO> = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonOmregnetNyttRegelverkFerdigDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Endring av barnepensjon",
@@ -46,9 +45,9 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
     ) {
         title {
             text(
-                Bokmal to "Vedtak - endring av barnepensjon",
-                Nynorsk to "Vi har endra barnepensjonen din",
-                English to "Draft decision – adjustment of children's pension",
+                bokmal { +"Vedtak - endring av barnepensjon" },
+                nynorsk { +"Vi har endra barnepensjonen din" },
+                english { +"Draft decision – adjustment of children's pension" },
             )
         }
         outline {
@@ -56,7 +55,7 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
 
             includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, erBosattUtlandet, frivilligSkattetrekk))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(Felles.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
         }
 
@@ -66,28 +65,24 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         // Vedlegg under 18 år
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
-            innhold,
             erUnder18Aar.and(erBosattUtlandet.not())
         )
         includeAttachment(
             informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
-            innhold,
             erUnder18Aar.and(erBosattUtlandet)
         )
 
         // Vedlegg over 18 år
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonNasjonal,
-            innhold,
             erUnder18Aar.not().and(erBosattUtlandet.not())
         )
         includeAttachment(
             informasjonTilDegSomMottarBarnepensjonUtland,
-            innhold,
             erUnder18Aar.not().and(erBosattUtlandet)
         )
 
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, erBosattUtlandet)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, erBosattUtlandet.not())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland, erBosattUtlandet)
+        includeAttachment(dineRettigheterOgPlikterNasjonal,erBosattUtlandet.not())
     }
 }

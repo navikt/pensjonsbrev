@@ -15,6 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
+import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -55,7 +56,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             sakspart = SakspartImpl(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer,
-                vergeNavn = scope.felles.vergeNavn,
+                annenMottakerNavn = scope.felles.annenMottakerNavn,
                 saksnummer = scope.felles.saksnummer,
                 dokumentDato = scope.felles.dokumentDato,
             ),
@@ -63,7 +64,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
                 SignaturImpl(
                     hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
-                    saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.saksbehandler),
                     saksbehandlerNavn = sign?.saksbehandler,
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
@@ -83,6 +83,12 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }
     }
 
+    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> = buildList {
+        return template.pdfAttachments.map {
+            renderText(scope, it.template.title)
+        }.map { PDFTittel(it) }
+    }
+
 
     private fun renderOutline(scope: ExpressionScope<*>, outline: List<OutlineElement<*>>): List<Block> =
         buildList {
@@ -96,6 +102,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> BlockImpl.Title1Impl(element.stableHashCode(), true, renderText(scope, element.text))
             is Element.OutlineContent.Title2 -> BlockImpl.Title2Impl(element.stableHashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title3 -> BlockImpl.Title3Impl(element.stableHashCode(), true, renderText(scope, element.text))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =

@@ -95,6 +95,7 @@ object TemplateDocumentationRenderer {
         when (element) {
             is Element.OutlineContent.Title1 -> TemplateDocumentation.Element.OutlineContent.Title1(renderText(element.text, lang))
             is Element.OutlineContent.Title2 -> TemplateDocumentation.Element.OutlineContent.Title2(renderText(element.text, lang))
+            is Element.OutlineContent.Title3 -> TemplateDocumentation.Element.OutlineContent.Title3(renderText(element.text, lang))
             is Element.OutlineContent.Paragraph -> TemplateDocumentation.Element.OutlineContent.Paragraph(
                 renderContentOrStructure(element.paragraph) {
                     renderParagraphContent(it, lang)
@@ -282,9 +283,6 @@ object TemplateDocumentationRenderer {
 
             is UnaryOperation.MapValue<*, *> -> Operation(operation.mapper.name, Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.QuotationEnd -> Operation(text = "\"", Documentation.Notation.POSTFIX)
-
-            is UnaryOperation.QuotationStart -> Operation(text = "\"", Documentation.Notation.PREFIX)
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
@@ -363,6 +361,7 @@ data class TemplateDocumentation(
     @JsonSubTypes(
         JsonSubTypes.Type(Element.OutlineContent.Title1::class, name = "TITLE1"),
         JsonSubTypes.Type(Element.OutlineContent.Title2::class, name = "TITLE2"),
+        JsonSubTypes.Type(Element.OutlineContent.Title3::class, name = "TITLE3"),
         JsonSubTypes.Type(Element.OutlineContent.Paragraph::class, name = "PARAGRAPH"),
         JsonSubTypes.Type(Element.ParagraphContent.Text.Literal::class, name = "PARAGRAPH_TEXT_LITERAL"),
         JsonSubTypes.Type(Element.ParagraphContent.Text.Expression::class, name = "PARAGRAPH_TEXT_EXPRESSION"),
@@ -376,6 +375,7 @@ data class TemplateDocumentation(
         sealed class OutlineContent : Element() {
             data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
             data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Title3(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
             data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
         }
 

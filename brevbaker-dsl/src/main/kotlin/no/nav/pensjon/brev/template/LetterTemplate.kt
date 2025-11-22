@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -10,29 +11,29 @@ import java.util.Objects
 import kotlin.reflect.KClass
 
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
-    val name: String,
     val title: List<TextElement<Lang>>,
     val letterDataType: KClass<out LetterData>,
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
+    val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
     init {
         if (title.isEmpty()) {
-            throw MissingTitleInTemplateException("Missing title in template: $name")
+            throw MissingTitleInTemplateException("Missing title in template: ${letterMetadata.displayTitle}")
         }
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is LetterTemplate<*, *>) return false
-        return name == other.name && title == other.title && letterDataType == other.letterDataType
+        return title == other.title && letterDataType == other.letterDataType
                 && language == other.language && outline == other.outline && attachments == other.attachments
                 && letterMetadata == other.letterMetadata
     }
-    override fun hashCode() = Objects.hash(name, title, letterDataType, language, outline, attachments, letterMetadata)
+    override fun hashCode() = Objects.hash(title, letterDataType, language, outline, attachments, letterMetadata)
     override fun toString() =
-        "LetterTemplate(name='$name', title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
+        "LetterTemplate(title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
 }
 
 sealed class Expression<out Out> : StableHash {
@@ -88,9 +89,9 @@ sealed class Expression<out Out> : StableHash {
 
         class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {
             override fun eval(scope: ExpressionScope<*>): Out =
-                if (scope is ExpressionScope.WithAssignment<*, *>) {
+                if (scope is AssignmentExpressionScope<*, *>) {
                     @Suppress("UNCHECKED_CAST")
-                    (scope as ExpressionScope.WithAssignment<*, Out>).lookup(this)
+                    (scope as AssignmentExpressionScope<*, Out>).lookup(this)
                 } else {
                     throw InvalidScopeTypeException("Requires scope to be ${this::class.qualifiedName}, but was: ${scope::class.qualifiedName}")
                 }
@@ -109,7 +110,14 @@ sealed class Expression<out Out> : StableHash {
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
-        override fun eval(scope: ExpressionScope<*>): Out = operation.apply(value.eval(scope))
+        override fun eval(scope: ExpressionScope<*>): Out {
+            if (operation is UnaryOperation.Select) {
+                scope.markUsage(operation.selector)
+            } else if (operation is UnaryOperation.SafeCall<*,*> && operation.operation is UnaryOperation.Select<*, *>) {
+                scope.markUsage(operation.operation.selector)
+            }
+            return operation.apply(value.eval(scope))
+        }
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
@@ -231,6 +239,16 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun hashCode() = Objects.hash(text)
             override fun toString(): String = "Title2(text=$text)"
         }
+
+        class Title3<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+            override fun equals(other: Any?): Boolean {
+                if (other !is Title3<*>) return false
+                return text == other.text
+            }
+            override fun hashCode() = Objects.hash(text)
+            override fun toString(): String = "Title3(text=$text)"
+        }
+
 
         class Paragraph<out Lang : LanguageSupport> internal constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph) {
             override fun equals(other: Any?): Boolean {

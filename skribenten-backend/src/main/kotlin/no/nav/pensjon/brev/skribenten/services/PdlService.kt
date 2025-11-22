@@ -20,11 +20,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
 
-private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
-
-private val hentNavnQuery = PdlServiceHttp::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
-    ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
 private val hentAdressebeskyttelseQuery = PdlServiceHttp::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
@@ -32,7 +28,6 @@ private val hentAdressebeskyttelseQuery = PdlServiceHttp::class.java.getResource
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
 interface PdlService {
-    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String>
     suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>>
 }
 
@@ -44,6 +39,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         defaultRequest {
             url(pdlUrl)
         }
+        installRetry(logger)
         install(ContentNegotiation) {
             jackson()
         }
@@ -78,40 +74,10 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         }
     }
 
-    private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?) {
-        data class PersonMedNavn(val navn: List<Navn>? = null) {
-            data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
-                fun format() = "$fornavn ${mellomnavn?.plus(" ") ?: ""}${etternavn}"
-            }
-        }
-    }
-
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?) {
         data class PersonMedAdressebeskyttelse(val adressebeskyttelse: List<Adressebeskyttelse>) {
             data class Adressebeskyttelse(val gradering: Pdl.Gradering)
         }
-    }
-
-    override suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
-        return client.post("") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            headers {
-                append("Tema", "PEN")
-                if(behandlingsnummer != null) {
-                    append("Behandlingsnummer", behandlingsnummer.name)
-                }
-            }
-            setBody(
-                PDLQuery(
-                    query = hentNavnQuery,
-                    variables = FnrVariables(fnr)
-                )
-            )
-        }.toServiceResult<PDLResponse<DataWrapperPersonMedNavn>>()
-            .map {
-                it.data?.hentPerson?.navn?.firstOrNull()?.format() ?: "" // TODO hvordan får vi error her?
-            }
     }
 
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {

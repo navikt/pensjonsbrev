@@ -1,28 +1,20 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import kotlin.reflect.KClass
-
-fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
-    name: String,
-    letterDataType: KClass<LetterData>,
-    languages: Lang,
-    letterMetadata: LetterMetadata,
-    init: TemplateRootScope<Lang, LetterData>.() -> Unit
-): LetterTemplate<Lang, LetterData> =
-    with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
-    }
+import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
+import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
+    val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
@@ -33,11 +25,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
-    fun includeAttachment(template: AttachmentTemplate<Lang, EmptyBrevdata>) {
-        attachments.add(IncludeAttachment(EmptyBrevdata.expr(), template, true.expr()))
-    }
-
-    fun <AttachmentData : Any> includeAttachment(
+    fun <AttachmentData : VedleggData> includeAttachment(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
@@ -45,14 +33,21 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
-    fun includeAttachment(
-        template: AttachmentTemplate<Lang, Unit>,
-        predicate: Expression<Boolean> = true.expr(),
+    fun <AttachmentData : PDFVedleggData> includeAttachment(
+        template: PDFTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData>,
     ) {
-        attachments.add(IncludeAttachment(Unit.expr(), template, predicate))
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
     }
 
-    fun <AttachmentData : Any> includeAttachmentIfNotNull(
+    fun includeAttachment(
+        template: AttachmentTemplate<Lang, EmptyVedleggData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
+    }
+
+    fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData?>,
     ) {

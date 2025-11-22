@@ -32,7 +32,7 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/skribenten-backend/sak/**", { statusCode: 404 }).as("sakNotFound");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456", { fixture: "sak.json" }).as("sak");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456?vedtaksId=*", { fixture: "sak.json" }).as("sak");
-  cy.intercept("GET", "/bff/skribenten-backend/sak/123456/navn", { fixture: "navn.txt" }).as("navn");
+  cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [] }).as("sakBrev");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/adresse", { fixture: "adresse.json" }).as("adresse");
   cy.intercept("GET", "/bff/skribenten-backend/kodeverk/avtaleland", { fixture: "avtaleland.json" }).as("avtaleland");
   cy.intercept("GET", "/bff/skribenten-backend/me/enheter", { fixture: "enheter.json" }).as("enheter");
@@ -42,14 +42,15 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", {
     fixture: "foretrukketSpraak.json",
   }).as("foretrukketSpraak");
-  cy.intercept("GET", "/bff/internal/userInfo", (req) =>
+  cy.intercept("GET", "/bff/api/userInfo", (req) =>
     req.reply({ id: "Z990297", navn: "F_Z990297 E_Z990297", rolle: "Saksbehandler" }),
   ).as("userInfo");
-  cy.intercept("POST", "bff/internal/logg", (req) => req.reply(200));
+  cy.intercept("POST", "/bff/api/logg", (req) => req.reply(200));
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/pdf", { fixture: "helloWorldPdf.txt" }).as("pdf");
   cy.intercept("GET", "/bff/skribenten-backend/brevmal/*/modelSpecification", (req) =>
     req.reply({ types: {}, letterModelTypeName: null }),
   );
+  cy.intercept("GET", "/bff/skribenten-backend/brevmal", { fixture: "brevmetadata.json" }).as("brevmaler");
   cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
     fixture: "brevreservasjon.json",
   }).as("reservasjon");

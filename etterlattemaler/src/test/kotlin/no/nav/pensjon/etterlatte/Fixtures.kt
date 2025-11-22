@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte
 
+import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
@@ -25,7 +26,6 @@ import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselBrev
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerVedtakBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerVedtakRedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBrukerDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageSaksbehandlingstidDtoTestI
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
@@ -74,7 +74,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
@@ -104,14 +103,14 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartB
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO
 import kotlin.reflect.KClass
 
-object Fixtures {
+object Fixtures : LetterDataFactory {
 
-    val felles = no.nav.brev.brevbaker.Fixtures.felles
+    val felles = no.nav.brev.brevbaker.FellesFactory.felles
 
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> create(letterDataType: KClass<T>): T =
+    override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
             BarnepensjonInnvilgelseRedigerbartUtfallDTO::class -> createBarnepensjonInnvilgelseRedigerbartUtfallDTO() as T
@@ -168,7 +167,6 @@ object Fixtures {
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
             KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
-            KlageOversendelseBlankettDTO::class -> createKlageOversendelseBlankettDTO() as T
             KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T
 
             ManueltBrevDTO::class -> createManueltBrevDTO() as T

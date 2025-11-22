@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.varsel
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -33,8 +33,6 @@ object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal 
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VARSEL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonVarselDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varselbrev barnepensjon",
@@ -45,9 +43,9 @@ object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal 
     ) {
         title {
             text(
-                Language.Bokmal to "Forhåndsvarsel om ny barnepensjon fra 1. januar 2024",
-                Language.Nynorsk to "Førehandsvarsel om ny barnepensjon frå 1. januar 2024",
-                Language.English to "Advance notice of new children’s pension from 1 January",
+                bokmal { +"Forhåndsvarsel om ny barnepensjon fra 1. januar 2024" },
+                nynorsk { +"Førehandsvarsel om ny barnepensjon frå 1. januar 2024" },
+                english { +"Advance notice of new children’s pension from 1 January" },
             )
         }
         outline {

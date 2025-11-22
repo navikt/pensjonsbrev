@@ -7,16 +7,21 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun testBrevbakerApp(
     enableAllToggles: Boolean = false,
-    block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit
+    isIntegrationTest: Boolean = true,
+    block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
 ): Unit = testApplication {
     environment {
-        config = ApplicationConfig("application.conf").mergeWith(
+        val conf = if (isIntegrationTest) "application-integrationtests.conf" else "application.conf"
+        config = ApplicationConfig(conf).mergeWith(
             MapApplicationConfig(
                 "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
+                // else-en her blir aldri brukt, men må være her for å ikke gi oss kompileringsfeil
+                "brevbaker.pdfByggerUrl" to if (isIntegrationTest) PDFByggerTestContainer.mappedUrl() else "denne blir ikke brukt",
             )
         )
     }

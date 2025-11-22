@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
+import { ManueltAdressertTil } from "~/types/brev";
 
 export enum Søketype {
   DIREKTE_OPPSLAG = "DIREKTE_OPPSLAG",
@@ -98,25 +99,27 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
       navn: z.string().min(1, "Obligatorisk"),
       linje1: z.string(),
       linje2: z.string(),
-      postnr: z.string(),
-      poststed: z.string(),
+      linje3: z.string(),
+      manueltAdressertTil: z.enum([
+        ManueltAdressertTil.BRUKER,
+        ManueltAdressertTil.ANNEN,
+        ManueltAdressertTil.IKKE_RELEVANT,
+      ]),
+      postnr: z
+        .string()
+        .trim()
+        .transform((s) => s.replace(/\s/g, ""))
+        .nullable(),
+      poststed: z.string().nullable(),
       land: z.string().min(1, "Obligatorisk"),
     })
     .superRefine((data, refinementContext) => {
       if (data.land === "NO") {
-        if (data.postnr.length !== 4) {
-          refinementContext.addIssue({
-            code: "custom",
-            message: "Postnummer må være 4 tegn",
-            path: ["postnr"],
-          });
+        if (!data.postnr || !/^\d{4}$/.test(data.postnr)) {
+          refinementContext.addIssue({ code: "custom", message: "Postnummer må være 4 siffer", path: ["postnr"] });
         }
-        if (data.poststed === "") {
-          refinementContext.addIssue({
-            code: "custom",
-            message: "Poststed må fylles ut",
-            path: ["poststed"],
-          });
+        if (!data.poststed) {
+          refinementContext.addIssue({ code: "custom", message: "Poststed må fylles ut", path: ["poststed"] });
         }
       } else {
         if (data.linje1 === "") {
@@ -127,7 +130,8 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
           });
         }
       }
-    }),
+    })
+    .transform((data) => (data.land === "NO" ? data : { ...data, postnr: "", poststed: "" })),
 });
 
 const leggTilManuellAdresseTabNotSelectedSchema = z.object({
@@ -135,8 +139,14 @@ const leggTilManuellAdresseTabNotSelectedSchema = z.object({
     navn: z.string(),
     linje1: z.string(),
     linje2: z.string(),
-    postnr: z.string(),
-    poststed: z.string(),
+    linje3: z.string(),
+    manueltAdressertTil: z.enum([
+      ManueltAdressertTil.BRUKER,
+      ManueltAdressertTil.ANNEN,
+      ManueltAdressertTil.IKKE_RELEVANT,
+    ]),
+    postnr: z.string().nullable(),
+    poststed: z.string().nullable(),
     land: z.string(),
   }),
 });
@@ -272,6 +282,7 @@ export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "
         : leggTilManuellAdresseTabNotSelectedSchema,
   });
 };
+
 export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
   "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
 

@@ -12,27 +12,22 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspens
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 
 // V00007 i doksys: Din månedlige pensjon før skatt (alderspensjon)
 @TemplateModelHelpers
 val maanedligPensjonFoerSkattAlderspensjon =
     createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattAlderspensjonDto>(
         title = {
-            textExpr(
-                Bokmal to "Oversikt over pensjonen fra ".expr() + krav.virkDatoFom.format(),
-                Nynorsk to "Oversikt over pensjonen frå ".expr() + krav.virkDatoFom.format(),
-                English to "Pension specifications as of".expr() + krav.virkDatoFom.format(),
+            text(
+                bokmal { + "Oversikt over pensjonen fra " + krav.virkDatoFom.format() },
+                nynorsk { + "Oversikt over pensjonen frå " + krav.virkDatoFom.format() },
+                english { + "Pension specifications as of " + krav.virkDatoFom.format() },
             )
         },
         includeSakspart = false,

@@ -1,31 +1,31 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 @Suppress("unused")
 
 data class BrukerTestBrevDto(
-    override val pesysData: EmptyBrevdata,
+    override val pesysData: EmptyFagsystemdata,
     override val saksbehandlerValg: SaksbehandlerValg,
-) : RedigerbarBrevdata<BrukerTestBrevDto.SaksbehandlerValg, EmptyBrevdata> {
+) : RedigerbarBrevdata<BrukerTestBrevDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
         @DisplayText("Utsikten fra kontoret")
-        val utsiktenFraKontoret: UtsiktenFraKontoret,
+        val utsiktenFraKontoret: UtsiktenFraKontoret?,
         @DisplayText("Den beste kaken er")
-        val denBesteKaken: DenBesteKaken,
+        val denBesteKaken: DenBesteKaken?,
         @DisplayText("Kaffemaskinens tilgjengelighet")
         val kaffemaskinensTilgjengelighet: Boolean,
         @DisplayText("Kontorplanten TorLill")
         val kontorplantenTorlill: Boolean,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     enum class UtsiktenFraKontoret {
-        @DisplayText("Mot trær og natur")
+        @DisplayText("Trær og natur")
         MOT_TRAER_OG_NATUR,
-        @DisplayText("Mot parkeringsplassen")
+        @DisplayText("Parkeringsplass")
         MOT_PARKERINGSPLASSEN,
     }
 

@@ -1,26 +1,20 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
-import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationStopPreparing
-import io.ktor.server.application.ServerReady
-import io.ktor.server.application.install
-import io.ktor.server.application.log
-import io.ktor.server.auth.Authentication
-import io.ktor.server.config.ApplicationConfig
-import io.ktor.server.plugins.BadRequestException
-import io.ktor.server.plugins.ParameterConversionException
-import io.ktor.server.plugins.callid.CallId
-import io.ktor.server.plugins.callid.callIdMdc
-import io.ktor.server.plugins.callid.generate
-import io.ktor.server.plugins.calllogging.CallLogging
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.path
-import io.ktor.server.response.respond
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.config.*
+import io.ktor.server.plugins.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.calllogging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.brev.brevbaker.LatexCompileException
 import no.nav.brev.brevbaker.LatexInvalidException
@@ -30,15 +24,14 @@ import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
+import kotlin.time.Duration.Companion.minutes
 
 fun Application.brevbakerModule(
-    templates: AllTemplates,
-    brukAsyncProducer: Boolean = true
+    templates: AllTemplates
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
@@ -133,23 +126,13 @@ fun Application.brevbakerModule(
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
-    val kafkaConfig = brevbakerConfig.config("kafka")
-    val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
-    val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
-        log.info("Oppretter Latex async compiler service")
-        LatexAsyncCompilerService(kafkaConfig)
-    } else {
-        log.info("Starter uten Latex async compiler service")
-        null
-    }
-
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
 }
 
-private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
+private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
     with(brevbakerConfig.config("unleash")) {
         FeatureToggleHandler.configure {
             useFakeUnleash = booleanProperty("useFakeUnleash")
@@ -158,7 +141,13 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
             environment = stringProperty("environment")
             host = stringProperty("host")
             apiToken = stringProperty("apiToken")
-        }.also { FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle }) }
+        }
+    }
+    monitor.subscribe(ServerReady) {
+        async {
+            delay(1.minutes)
+            FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,9 +15,15 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
-import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
+import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
@@ -28,7 +35,6 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
-import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import java.time.Instant
 import java.time.LocalDate
 import javax.sql.DataSource
@@ -43,14 +49,25 @@ object Favourites : Table() {
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(Edit.JacksonModule)
-    registerModule(LetterMarkupModule)
+    registerModule(EditLetterJacksonModule)
+    registerModule(LetterMarkupJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
 
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
 
-private inline fun <reified T> readJsonColumn(json: String): T =
+private inline fun <reified T> readJsonString(json: String): T =
+    try {
+        databaseObjectMapper.readValue<T>(json)
+    } catch (e: JacksonException) {
+        throw DatabaseJsonDeserializeException(e)
+    }
+
+fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
+    binary(name).transform(columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray))
+
+private inline fun <reified T> readJsonBinary(json: ByteArray): T =
     try {
         databaseObjectMapper.readValue<T>(json)
     } catch (e: JacksonException) {
@@ -63,9 +80,11 @@ object BrevredigeringTable : LongIdTable() {
     val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
-    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
+    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+    val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -86,8 +105,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
-    val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
+    var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
+    val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
@@ -116,15 +135,18 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
 object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
-    val pdf: Column<ExposedBlob> = blob("brevpdf")
-    val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
+    val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+    val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
+    val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
-    var pdf by DocumentTable.pdf
-    var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
+    var pdf by DocumentTable.pdfKryptert
+    var redigertBrevHash by DocumentTable.redigertBrevHash
+    var brevdataHash by DocumentTable.brevdataHash
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }
@@ -133,13 +155,15 @@ object MottakerTable : IdTable<Long>() {
     override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
-    val navn: Column<String?> = varchar("navn", 50).nullable()
-    val postnummer: Column<String?> = varchar("postnummer", 50).nullable()
-    val poststed: Column<String?> = text("poststed").nullable()
-    val adresselinje1: Column<String?> = text("adresselinje1").nullable()
-    val adresselinje2: Column<String?> = text("adresselinje2").nullable()
-    val adresselinje3: Column<String?> = text("adresselinje3").nullable()
+    val navn: Column<String?> = varchar("navn", 128).nullable()
+    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val poststed: Column<String?> = varchar("poststed", 50).nullable()
+    val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
+    val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
+    val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
     val landkode: Column<String?> = varchar("landkode", 2).nullable()
+    val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
+        .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -155,6 +179,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2
     var adresselinje3 by MottakerTable.adresselinje3
+    var manueltAdressertTil by MottakerTable.manueltAdressertTil
     var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)

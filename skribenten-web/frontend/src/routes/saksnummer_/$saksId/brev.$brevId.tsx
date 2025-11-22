@@ -8,15 +8,9 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import {
-  getBrev,
-  getBrevReservasjon,
-  oppdaterBrev,
-  oppdaterSaksbehandlerValg,
-  tilbakestillBrev,
-} from "~/api/brev-queries";
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getBrev, getBrevmetadataQuery, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -28,6 +22,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -220,21 +215,26 @@ function RedigerBrev({
   const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
+  const [warnOpen, setWarnOpen] = useState(false);
+  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
+  const navigateToBrevbehandler = () =>
+    navigate({
+      to: "/saksnummer/$saksId/brevbehandler",
+      params: { saksId },
+      search: { brevId: brev.info.id, enhetsId, vedtaksId },
+    });
+
   const brevmal = useQuery({
-    ...getSakContextQuery(saksId, vedtaksId),
-    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
+    ...getBrevmetadataQuery,
+    select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
   const showDebug = useSearch({
     strict: false,
     select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
-  });
-
-  const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
-    mutationFn: (valg) => oppdaterSaksbehandlerValg(brev.info.id, valg),
-    onSuccess: onSaveSuccess,
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
@@ -263,10 +263,20 @@ function RedigerBrev({
     defaultValues: defaultValuesModelEditor,
   });
 
+  const { getWarning } = useBrevEditorWarnings({
+    brevkode: brev.info.brevkode,
+    form,
+    redigertBrev: editorState.redigertBrev,
+    propertyUsage: brev.propertyUsage ?? [],
+  });
+
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
-        saksbehandlerValgMutation.mutate(form.getValues().saksbehandlerValg);
+        oppdaterBrevMutation.mutate({
+          redigertBrev: editorState.redigertBrev,
+          saksbehandlerValg: form.getValues().saksbehandlerValg,
+        });
       }
     });
   };
@@ -285,6 +295,16 @@ function RedigerBrev({
     );
   };
 
+  const guardedSubmit = form.handleSubmit((values) => {
+    const warning = getWarning();
+    if (warning) {
+      setWarn(warning);
+      setWarnOpen(true);
+      return;
+    }
+    onSubmit(values, navigateToBrevbehandler);
+  });
+
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
@@ -295,24 +315,45 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = saksbehandlerValgMutation.isPending || oppdaterBrevMutation.isPending;
+  const freeze = oppdaterBrevMutation.isPending;
 
-  const error = saksbehandlerValgMutation.isError || oppdaterBrevMutation.isError;
+  const error = oppdaterBrevMutation.isError;
 
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
     <FormProvider {...form}>
       <form
-        onSubmit={form.handleSubmit((v) =>
-          onSubmit(v, () =>
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId },
-              search: { brevId: brev.info.id, enhetsId, vedtaksId },
-            }),
-          ),
-        )}
+        css={css`
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          align-self: center;
+
+          @media (width <= 1023px) {
+            align-self: start;
+          }
+          min-width: 946px;
+          max-width: 1106px;
+          background: var(--a-white);
+          border-left: 1px solid var(--a-gray-200);
+          border-right: 1px solid var(--a-gray-200);
+        `}
+        onSubmit={guardedSubmit}
       >
+        <WarnModal
+          count={warn?.count ?? 0}
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => {
+            setWarnOpen(false);
+            setWarn(null);
+          }}
+          onFortsett={() => {
+            setWarnOpen(false);
+            setWarn(null);
+            onSubmit(form.getValues(), navigateToBrevbehandler);
+          }}
+          open={warnOpen}
+        />
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -324,87 +365,79 @@ function RedigerBrev({
         )}
         <div
           css={css`
-            background: var(--a-white);
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid var(--a-gray-200);
-            border-right: 1px solid var(--a-gray-200);
+            display: grid;
+            grid-template-columns: minmax(304px, 384px) minmax(640px, 720px);
+
+            > :first-of-type {
+              padding: var(--a-spacing-6);
+              border-right: 1px solid var(--a-gray-200);
+              height: var(--main-page-content-height);
+              overflow-y: auto;
+            }
+
+            @media (width <= 1024px) {
+              > :first-of-type {
+                padding: var(--a-spacing-3);
+              }
+            }
           `}
         >
-          <div
-            css={css`
-              display: grid;
-              grid-template-columns: 25% 75%;
+          <VStack gap="3">
+            <Heading size="small" spacing>
+              {brevmal.data?.name}
+            </Heading>
+            <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+            <UnderskriftTextField of="Saksbehandler" />
+          </VStack>
+          <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+        </div>
+        <HStack
+          css={css`
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--a-white);
 
-              > :first-of-type {
-                padding: var(--a-spacing-6);
-                border-right: 1px solid var(--a-gray-200);
+            border-top: 1px solid var(--a-gray-200);
+            padding: 0.5rem 1rem;
+          `}
+          justify={"space-between"}
+        >
+          <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
+            <HStack align={"center"} gap="1">
+              <ArrowCirclepathIcon
+                css={css`
+                  transform: scaleX(-1);
+                `}
+                fontSize="1.5rem"
+                title="Tilbakestill mal"
+              />
+              Tilbakestill malen
+            </HStack>
+          </Button>
+          <HStack gap="2" justify={"end"}>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevvelger",
+                  params: { saksId: saksId },
+                  search: (s) => ({ ...s, brevId: brev.info.id }),
+                })
               }
-
-              @media (width <= 1024px) {
-                > :first-of-type {
-                  padding: var(--a-spacing-3);
-                }
-              }
-            `}
-          >
-            <VStack gap="3">
-              <Heading size="small" spacing>
-                {brevmal.data?.name}
-              </Heading>
-              <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
-              <UnderskriftTextField of="Saksbehandler" />
-            </VStack>
-            <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
-          </div>
-          <HStack
-            css={css`
-              position: sticky;
-              bottom: 0;
-              left: 0;
-              width: 100%;
-              background: var(--a-white);
-
-              border-top: 1px solid var(--a-gray-200);
-              padding: 0.5rem 1rem;
-            `}
-            justify={"space-between"}
-          >
-            <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-              <HStack align={"center"} gap="1">
-                <ArrowCirclepathIcon
-                  css={css`
-                    transform: scaleX(-1);
-                  `}
-                  fontSize="1.5rem"
-                  title="Tilbakestill mal"
-                />
-                Tilbakestill malen
+              size="small"
+              type="button"
+              variant="tertiary"
+            >
+              Tilbake til brevvelger
+            </Button>
+            <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
+              <HStack align={"center"} gap="2">
+                <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
               </HStack>
             </Button>
-            <HStack gap="2" justify={"end"}>
-              <Button
-                onClick={() =>
-                  navigate({
-                    to: "/saksnummer/$saksId/brevvelger",
-                    params: { saksId: saksId },
-                    search: (s) => ({ ...s, brevId: brev.info.id }),
-                  })
-                }
-                size="small"
-                type="button"
-                variant="tertiary"
-              >
-                Tilbake til brevvelger
-              </Button>
-              <Button loading={oppdaterBrevMutation.isPending} size="small">
-                <HStack align={"center"} gap="2">
-                  <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
-                </HStack>
-              </Button>
-            </HStack>
           </HStack>
-        </div>
+        </HStack>
       </form>
     </FormProvider>
   );
@@ -417,10 +450,13 @@ enum BrevSidemenyTabs {
 
 // TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
 const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
+  const specificationFormElements = usePartitionedModelSpecification(
+    brev.info.brevkode,
+    brev.propertyUsage ?? undefined,
+  );
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
-  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredfields : [];
+  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 

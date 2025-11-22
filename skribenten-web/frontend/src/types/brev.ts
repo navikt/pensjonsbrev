@@ -1,4 +1,4 @@
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import type { EditedLetter, PropertyUsage } from "~/types/brevbakerTypes";
 
 import type { SpraakKode } from "./apiTypes";
 import type { Nullable } from "./Nullable";
@@ -21,6 +21,7 @@ export type BrevResponse = {
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
+  propertyUsage: Nullable<PropertyUsage[]>;
 };
 
 export interface DelvisOppdaterBrevRequest {
@@ -103,6 +104,12 @@ export interface Samhandler {
   navn: Nullable<string>;
 }
 
+export enum ManueltAdressertTil {
+  BRUKER = "BRUKER",
+  ANNEN = "ANNEN",
+  IKKE_RELEVANT = "IKKE_RELEVANT",
+}
+
 export interface NorskAdresse {
   type: "NorskAdresse";
   navn: string;
@@ -111,17 +118,17 @@ export interface NorskAdresse {
   adresselinje1: Nullable<string>;
   adresselinje2: Nullable<string>;
   adresselinje3: Nullable<string>;
+  manueltAdressertTil: ManueltAdressertTil;
 }
 
 export interface UtenlandskAdresse {
   type: "UtenlandskAdresse";
   navn: string;
-  postnummer: Nullable<string>;
-  poststed: Nullable<string>;
   adresselinje1: string;
   adresselinje2: Nullable<string>;
   adresselinje3: Nullable<string>;
   landkode: string;
+  manueltAdressertTil: ManueltAdressertTil;
 }
 
 export interface NAVEnhet {

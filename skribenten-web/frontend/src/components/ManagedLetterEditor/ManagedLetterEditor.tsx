@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import type { BrevResponse } from "~/types/brev";
@@ -19,9 +18,12 @@ import type { EditedLetter } from "~/types/brevbakerTypes";
 const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
   const { editorState, setEditorState, onSaveSuccess: onSaveSuccess } = useManagedLetterEditorContext();
 
-  const { mutate, isError, isPending } = useMutation<BrevResponse, AxiosError, EditedLetter>({
+  const { mutate, isError } = useMutation<BrevResponse, AxiosError, EditedLetter>({
     mutationFn: (redigertBrev: EditedLetter) => {
-      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
+      setEditorState((previousState) => ({
+        ...Actions.cursorPosition(previousState, getCursorOffset()),
+        saveStatus: "SAVE_PENDING",
+      }));
       return oppdaterBrevtekst(props.brev.info.id, redigertBrev);
     },
     onSuccess: (response) => onSaveSuccess(response),
@@ -29,15 +31,15 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
 
   useEffect(() => {
     const timoutId = setTimeout(() => {
-      if (editorState.isDirty) {
+      if (editorState.saveStatus === "DIRTY") {
         mutate(editorState.redigertBrev);
       }
     }, 5000);
     return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, mutate]);
+  }, [editorState.saveStatus, editorState.redigertBrev, mutate]);
 
   useEffect(() => {
-    if (!editorState.isDirty && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
+    if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
       setEditorState((previousState) => ({
         ...previousState,
         redigertBrev: props.brev.redigertBrev,
@@ -49,7 +51,7 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
     props.brev.redigertBrevHash,
     editorState.redigertBrevHash,
     setEditorState,
-    editorState.isDirty,
+    editorState.saveStatus,
   ]);
 
   return (
@@ -57,7 +59,7 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
       editorHeight={"var(--main-page-content-height)"}
       editorState={editorState}
       error={props.error || isError}
-      freeze={props.freeze || isPending}
+      freeze={props.freeze}
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
     />

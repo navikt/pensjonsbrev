@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -22,9 +22,13 @@ import java.time.LocalDate
 
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
-    private val pdf = pdfInnhold.toByteArray()
+    private val pdf = pdfInnhold.encodeToByteArray()
     private val fakePDFBygger = object : PDFByggerService {
-        override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
+        override suspend fun producePDF(
+            pdfRequest: PDFRequest,
+            path: String,
+            shouldRetry: Boolean
+        ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger)
@@ -32,21 +36,20 @@ class RedigerbarTemplateResourceTest {
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
-        Fixtures.felles,
+        FellesFactory.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
             title = listOf(LiteralImpl(1, "redigert markup")),
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "gjelder bruker",
                 gjelderFoedselsnummer = Foedselsnummer("123abc"),
-                vergeNavn = null,
+                annenMottakerNavn = null,
                 saksnummer = "001",
                 dokumentDato = LocalDate.now()
             ),
             blocks = emptyList(),
             signatur = LetterMarkupImpl.SignaturImpl(
                 hilsenTekst = "hilsen oss",
-                saksbehandlerRolleTekst = "en rolle",
                 saksbehandlerNavn = "Saksbehandlersen",
                 attesterendeSaksbehandlerNavn = null,
                 navAvsenderEnhet = "Akersgata"

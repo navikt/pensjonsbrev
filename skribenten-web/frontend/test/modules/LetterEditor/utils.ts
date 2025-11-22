@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
 
 import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
-import type { ItemContentIndex, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import type { LetterEditorState, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
 import type {
@@ -20,14 +20,15 @@ import type {
   TextContent,
   Title1Block,
   Title2Block,
+  Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+import { ITEM_LIST, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {
-    isDirty: false,
+    saveStatus: "SAVED",
     info: {
       id: 1,
       opprettetAv: { id: "Z993104", navn: "Zninitre Ennullfire" },
@@ -66,6 +67,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
     },
     redigertBrevHash: "hash1",
     focus: { blockIndex: 0, contentIndex: 0 },
+    history: { entries: [], entryPointer: -1 },
   };
 }
 
@@ -131,13 +133,32 @@ export function title2(...content: TextContent[]): Title2Block {
   };
 }
 
-export function literal(args: {
-  id?: Nullable<number>;
-  parentId?: Nullable<number>;
-  text: string;
-  editedText?: Nullable<string>;
-  tags?: ElementTags[];
-}): LiteralValue {
+export function title3(...content: TextContent[]): Title3Block {
+  const id = randomId();
+  return {
+    id,
+    parentId: null,
+    editable: true,
+    type: TITLE3,
+    deletedContent: [],
+    content: withParent(content, id),
+  };
+}
+
+export function literal(
+  args:
+    | {
+        id?: Nullable<number>;
+        parentId?: Nullable<number>;
+        text: string;
+        editedText?: Nullable<string>;
+        tags?: ElementTags[];
+      }
+    | string,
+): LiteralValue {
+  if (typeof args === "string") {
+    args = { text: args };
+  }
   return newLiteral({
     id: args.id ?? randomId(),
     parentId: args.parentId ?? null,
@@ -182,6 +203,10 @@ export function item(...content: TextContent[]): Item {
 }
 
 export function table(headerCells: Cell[], rows: Row[]): Table {
+  if (rows.some((r) => r.cells.length !== headerCells.length)) {
+    throw new Error("All rows must have the same number of cells as there are header cells");
+  }
+
   const tableId = randomId();
   const headerId = randomId();
   return {
@@ -235,7 +260,7 @@ export function asNew<T extends Identifiable>(c: T, keepParent: boolean = false)
   return { ...c, id: null, parentId: keepParent ? c.parentId : null };
 }
 
-export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {
+export function select<T>(from: LetterEditorState, id: Partial<LiteralIndex> & { blockIndex: number }): T {
   const block = from.redigertBrev.blocks[id.blockIndex];
 
   if (id.contentIndex == null) {
@@ -243,12 +268,21 @@ export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex>
   } else {
     const content = block?.content?.[id.contentIndex];
 
-    if (id.itemIndex == null) {
-      return content as T;
-    } else {
+    if ("itemIndex" in id && id.itemIndex != null) {
       const item = (content as ItemList)?.items?.[id.itemIndex];
-
       return id.itemContentIndex == null ? (item as T) : (item?.content?.[id.itemContentIndex] as T);
+    } else if ("rowIndex" in id && id.rowIndex != null) {
+      if (id.rowIndex === -1) throw new Error("select not implemented for header selection");
+
+      const row = (content as Table)?.rows?.[id.rowIndex];
+      if (id.cellIndex == null) {
+        return row as T;
+      } else {
+        const cell = row?.cells?.[id.cellIndex];
+        return id.cellContentIndex == null ? (cell as T) : (cell?.text?.[id.cellContentIndex] as T);
+      }
+    } else {
+      return content as T;
     }
   }
 }

@@ -1,6 +1,6 @@
 import "./editor.css";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -37,6 +37,7 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
     redigertBrev: initial,
     redigertBrevHash: "hash1",
     saksbehandlerValg: {},
+    propertyUsage: null,
   };
   const newState = Actions.create(brevresponse);
   if (focus) {
@@ -66,13 +67,14 @@ describe("<LetterEditor />", () => {
       move("{end}", 1);
       move("{leftArrow}", 10);
       move("{upArrow}", 1);
-      assertCaret("[CP1-2]", 22);
+      assertCaret("[CP1-2]", 31);
     });
     it("ArrowDown works within sibling contenteditables", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP1-1").click();
+      move("{rightArrow}", 10);
       move("{downArrow}", 1);
-      assertCaret("[CP1-2]", 74);
+      assertCaret("[CP1-2]", 109);
     });
     it("ArrowUp moves to the right of a variable if that is closest", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
@@ -112,6 +114,7 @@ describe("<LetterEditor />", () => {
     it("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP2-1").click();
+      move("{end}", 1);
       move("{leftArrow}", 10);
       move("{downArrow}", 1);
       assertCaret("[CP2-3]", 0);
@@ -123,7 +126,7 @@ describe("<LetterEditor />", () => {
       move("{upArrow}", 1);
       assertCaret("[CP3-2]", 28);
       move("{upArrow}", 1);
-      assertCaret("[CP3-1]", 136);
+      assertCaret("[CP3-1]", 103);
       move("{upArrow}", 1);
       assertCaret("[CP3-1]", 29);
       move("{upArrow}", 1);
@@ -134,7 +137,7 @@ describe("<LetterEditor />", () => {
       // CP3
       cy.contains("CP3-1").click();
       move("{home}", 1);
-      assertCaret("[CP3-1]", 108);
+      assertCaret("[CP3-1]", 82);
       move("{downArrow}", 1);
       assertCaret("[CP3-2]", 0);
       move("{downArrow}", 1);
@@ -144,9 +147,10 @@ describe("<LetterEditor />", () => {
     });
     it("ArrowUp at first node moves caret to the beginning", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
-      cy.contains("CP1-1").click();
+      cy.contains("Informasjon om saksbehandlingstiden vår").click();
+      assertCaret("Informasjon om saksbehandlingstiden vår", 39);
       move("{upArrow}", 1);
-      assertCaret("[CP1-1]", 0);
+      assertCaret("Informasjon om saksbehandlingstiden vår", 0);
     });
     it("ArrowDown at last node moves caret to the end", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
@@ -178,6 +182,53 @@ describe("<LetterEditor />", () => {
       cy.mount(<EditorWithState focus={invalidFocus} initial={exampleLetter1} />);
 
       cy.contains("Informasjon om saksbehandlingstiden vår");
+    });
+  });
+
+  describe("Presentation", () => {
+    it("displays verge only when verge is present", () => {
+      // With 'verge'
+      cy.mount(
+        <EditorWithState
+          initial={{
+            ...exampleLetter1,
+            sakspart: {
+              gjelderNavn: "Test Testeson",
+              gjelderFoedselsnummer: "12345678910",
+              annenMottakerNavn: "Vergio Vergburg",
+              saksnummer: "1234",
+              dokumentDato: "2024-03-15",
+            },
+          }}
+        />,
+      );
+
+      cy.contains("Mottaker:").should("exist");
+      cy.contains("Vergio Vergburg").should("exist");
+      cy.contains("Navn:").should("not.exist");
+      cy.contains("Saken gjelder:").should("exist");
+      cy.contains("Test Testeson").should("exist");
+
+      // Without 'verge'
+      cy.mount(
+        <EditorWithState
+          initial={{
+            ...exampleLetter1,
+            sakspart: {
+              gjelderNavn: "Test Testeson",
+              gjelderFoedselsnummer: "12345678910",
+              saksnummer: "1234",
+              dokumentDato: "2024-03-15",
+            },
+          }}
+        />,
+      );
+
+      cy.contains("Mottaker:").should("not.exist");
+      cy.contains("Vergio Vergburg").should("not.exist");
+      cy.contains("Navn:").should("exist");
+      cy.contains("Saken gjelder:").should("not.exist");
+      cy.contains("Test Testeson").should("exist");
     });
   });
 });

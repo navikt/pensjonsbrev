@@ -95,7 +95,7 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     //bestiller brev
-    cy.getDataCy("order-letter").click("left");
+    cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -153,7 +153,7 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     //bestiller brev
-    cy.getDataCy("order-letter").click("left");
+    cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -211,7 +211,7 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     //bestiller brev
-    cy.getDataCy("order-letter").click("left");
+    cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -247,15 +247,15 @@ describe("Endrer på mottaker", () => {
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
-    cy.contains("0000").should("be.visible");
-    cy.contains("Poststedet").should("be.visible");
+    cy.contains("0000").should("not.exist");
+    cy.contains("Poststedet").should("not.exist");
     cy.get("td:contains('Sverige')").should("be.visible");
     cy.getDataCy("bekreft-ny-mottaker").click();
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
-    cy.contains("0000").should("be.visible");
-    cy.contains("Poststedet").should("be.visible");
+    cy.get("body").should("not.contain", "0000");
+    cy.get("body").should("not.contain", "Poststedet");
     cy.contains("Sverige").should("be.visible");
     cy.contains("Tilbakestill mottaker").should("be.visible");
   });

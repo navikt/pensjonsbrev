@@ -1,16 +1,16 @@
 package no.nav.pensjon.brev.model
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Test
-import no.nav.brev.brevbaker.FellesFactory
+import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.dsl.expression.expr
 
 
 class FormattingTest {
-    private val testExpressionScope = ExpressionScope(EmptyBrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, Fixtures.felles, Language.Bokmal)
 
     @Test
     fun `kan formattere sakstype ufoeretrygd`() {

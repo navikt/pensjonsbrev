@@ -1,75 +1,35 @@
 import { css } from "@emotion/react";
 import { Button, Label } from "@navikt/ds-react";
 import type { ReactNode } from "react";
-import React from "react";
 
-import { fontTypeOf, isItemContentIndex, isTable } from "~/Brevredigering/LetterEditor/actions/common";
-import { isItemList, isTableCellIndex, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
-import type { CallbackReceiver } from "../lib/actions";
+import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
 
-const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
-  const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
-  const focus = editorState.focus;
-  const focusedContent = block.content[focus.contentIndex];
-
-  if (isTable(focusedContent) && isTableCellIndex(focus)) {
-    const cell =
-      focus.rowIndex === -1
-        ? focusedContent.header.colSpec[focus.cellIndex]?.headerContent
-        : focusedContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
-
-    const cellText = cell?.text.at(focus.cellContentIndex);
-
-    return isTextContent(cellText) ? fontTypeOf(cellText) : FontType.PLAIN;
-  }
-
-  const blockContent = block?.content[editorState.focus.contentIndex];
-  const textContent =
-    isItemContentIndex(editorState.focus) && isItemList(blockContent)
-      ? blockContent.items[editorState.focus.itemIndex]?.content[editorState.focus.itemContentIndex]
-      : blockContent;
-
-  if (isTextContent(textContent)) {
-    return fontTypeOf(textContent);
-  } else {
-    return FontType.PLAIN;
-  }
-};
-
-const EditorFonts = (props: {
-  editorState: LetterEditorState;
-  setEditorState: CallbackReceiver<LetterEditorState>;
-}) => {
-  const activeFontType = getCurrentActiveFontTypeAtCursor(props.editorState);
+const EditorFonts = () => {
+  const { editorState, freeze, setEditorState } = useEditor();
+  const activeFontType = getCurrentActiveFontTypeAtCursor(editorState);
 
   return (
-    <div>
+    <>
       <FontButton
         active={activeFontType === FontType.BOLD}
         dataCy="fonttype-bold"
+        disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
-          if (activeFontType === FontType.BOLD) {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
-          } else {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.BOLD);
-          }
+          applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
         }}
         text={<Label>F</Label>}
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
         dataCy="fonttype-italic"
+        disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
-          if (activeFontType === FontType.ITALIC) {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.PLAIN);
-          } else {
-            applyAction(Actions.switchFontType, props.setEditorState, props.editorState.focus, FontType.ITALIC);
-          }
+          applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
         }}
         text={
           <Label
@@ -81,7 +41,7 @@ const EditorFonts = (props: {
           </Label>
         }
       />
-    </div>
+    </>
   );
 };
 
@@ -114,7 +74,7 @@ const FontButton = (props: {
       onClick={props.onClick}
       size="small"
       type="button"
-      variant="tertiary"
+      variant="tertiary-neutral"
     >
       {props.text}
     </Button>

@@ -2,17 +2,15 @@ package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.render.hasBlocks
@@ -21,7 +19,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-data class NullBrevDto(val test1: String?, val test2: String?)
+data class NullBrevDto(val test1: String?, val test2: String?) : AutobrevData
 
 @Suppress("unused")
 @TemplateModelHelpers
@@ -30,7 +28,6 @@ object Helpers : HasModel<NullBrevDto>
 class IfNotNullTest {
 
     val template = createTemplate(
-        name = "NULL_BREV",
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
@@ -40,19 +37,19 @@ class IfNotNullTest {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        title { text(Bokmal to "Heisann") }
+        title { text(bokmal { +"Heisann" }) }
 
         outline {
             paragraph {
-                text(Bokmal to "alltid med")
+                text(bokmal { +"alltid med" })
                 val nullTing1 = test1
                 ifNotNull(nullTing1) { ting ->
-                    textExpr(
-                        Bokmal to "hei: ".expr() + ting
+                    text(
+                        bokmal { +"hei: " + ting }
                     )
                 }.orIfNotNull(test2) { ting ->
-                    textExpr(
-                        Bokmal to "tall: ".expr() + ting
+                    text(
+                        bokmal { +"tall: " + ting }
                     )
                 }
             }

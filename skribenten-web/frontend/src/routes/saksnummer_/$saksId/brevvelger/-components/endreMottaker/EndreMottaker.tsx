@@ -7,10 +7,11 @@ import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useCallback, useState } from "react";
 import type { Control } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 import { finnSamhandler } from "~/api/skribenten-api-endpoints";
 import type { Adresse, FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
+import { ManueltAdressertTil } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
@@ -159,8 +160,10 @@ export const EndreMottakerModal = (properties: {
       navn: "",
       linje1: "",
       linje2: "",
-      postnr: "",
-      poststed: "",
+      linje3: "",
+      manueltAdressertTil: ManueltAdressertTil.BRUKER,
+      postnr: null,
+      poststed: null,
       //default value skal være norge. Siden vi henter alle landkodene i backend, hardkoder vi norges verdi.
       land: "NO",
     },
@@ -224,29 +227,31 @@ export const EndreMottakerModal = (properties: {
             })(event);
           }}
         >
-          {vilAvbryte && form.formState.dirtyFields.manuellAdresse ? (
-            <BekreftAvbrytelse onBekreftAvbryt={properties.onClose} onIkkeAvbryt={() => setVilAvbryte(false)} />
-          ) : (
-            <ModalTabs
-              control={form.control}
-              error={properties.error}
-              isPending={properties.isPending}
-              manuellAdresseValues={valgtSamhandler ? null : form.getValues("manuellAdresse")}
-              onAvbrytClick={onAvbrytClick}
-              onBekreftNyMottaker={properties.onBekreftNyMottaker}
-              onFinnSamhandlerSubmit={finnSamhandlerMutation}
-              resetOnBekreftState={properties.resetOnBekreftState}
-              samhandlerValuesMedId={
-                valgtSamhandler ? { ...form.getValues("finnSamhandler"), id: valgtSamhandler } : null
-              }
-              setSamhandler={(id) => setValgtSamhandler(id)}
-              skalKunOppdatereSamhandler={properties.skalKunOppdatereSamhandler}
-              tab={{
-                tab: tab,
-                setTab: setTab,
-              }}
-            />
-          )}
+          <FormProvider {...form}>
+            {vilAvbryte && form.formState.dirtyFields.manuellAdresse ? (
+              <BekreftAvbrytelse onBekreftAvbryt={properties.onClose} onIkkeAvbryt={() => setVilAvbryte(false)} />
+            ) : (
+              <ModalTabs
+                control={form.control}
+                error={properties.error}
+                isPending={properties.isPending}
+                manuellAdresseValues={valgtSamhandler ? null : form.getValues("manuellAdresse")}
+                onAvbrytClick={onAvbrytClick}
+                onBekreftNyMottaker={properties.onBekreftNyMottaker}
+                onFinnSamhandlerSubmit={finnSamhandlerMutation}
+                resetOnBekreftState={properties.resetOnBekreftState}
+                samhandlerValuesMedId={
+                  valgtSamhandler ? { ...form.getValues("finnSamhandler"), id: valgtSamhandler } : null
+                }
+                setSamhandler={(id) => setValgtSamhandler(id)}
+                skalKunOppdatereSamhandler={properties.skalKunOppdatereSamhandler}
+                tab={{
+                  tab: tab,
+                  setTab: setTab,
+                }}
+              />
+            )}
+          </FormProvider>
         </form>
       </Modal.Body>
     </Modal>
@@ -362,7 +367,6 @@ const OppsummeringsTab = (properties: {
   if (properties.manuellAdresseValues) {
     const adresse: Adresse = {
       ...properties.manuellAdresseValues.adresse,
-      linje3: "",
     };
 
     return (

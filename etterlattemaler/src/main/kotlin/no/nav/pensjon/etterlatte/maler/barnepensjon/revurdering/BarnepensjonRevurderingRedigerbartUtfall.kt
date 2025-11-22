@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -35,8 +35,6 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_UTFALL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonRevurderingRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - revurdering",
@@ -47,9 +45,9 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
     ) {
         title {
             text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {

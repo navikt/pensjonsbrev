@@ -7,9 +7,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
@@ -17,17 +14,12 @@ import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 object Felles {
     /**
@@ -39,23 +31,23 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn",
-                    English to "You have the right to access your file",
+                    bokmal { + "Du har rett til innsyn" },
+                    nynorsk { + "Du har rett til innsyn" },
+                    english { + "You have the right to access your file" },
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg ",
-                    English to "You are entitled to see your case documents. Refer to the attachment ",
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg " },
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg " },
+                    english { + "You are entitled to see your case documents. Refer to the attachment " },
                 )
                 namedReference(vedlegg)
                 text(
-                    Bokmal to " for informasjon om hvordan du går fram.",
-                    Nynorsk to " for informasjon om korleis du går fram.",
-                    English to " for information about how to proceed.",
+                    bokmal { + " for informasjon om hvordan du går fram." },
+                    nynorsk { + " for informasjon om korleis du går fram." },
+                    english { + " for information about how to proceed." },
                 )
             }
         }
@@ -68,25 +60,25 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?",
+                    bokmal { + "Har du spørsmål?" },
+                    nynorsk { + "Har du spørsmål?" },
+                    english { + "Do you have questions?" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon på $merInformasjonUrl." +
+                    bokmal { + "Du finner mer informasjon på $merInformasjonUrl." +
                         " På $KONTAKT_URL kan du chatte eller skrive til oss." +
                         " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer" +
-                        " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
-                    Nynorsk to "Du finn meir informasjon på $merInformasjonUrl." +
+                        " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID." },
+                    nynorsk { + "Du finn meir informasjon på $merInformasjonUrl." +
                         " På $KONTAKT_URL kan du chatte eller skrive til oss." +
                         " Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer," +
-                        " kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
-                    English to "You can find more information at $merInformasjonUrl." +
+                        " kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID." },
+                    english { + "You can find more information at $merInformasjonUrl." +
                         " At $KONTAKT_URL, you can chat or write to us." +
                         " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer," +
-                        " weekdays $NAV_KONTAKTSENTER_OPEN_HOURS.",
+                        " weekdays $NAV_KONTAKTSENTER_OPEN_HOURS." },
                 )
             }
         }
@@ -113,32 +105,31 @@ object Felles {
 
     // TBU2213, TBU1100, RettTilKlagePesys_001
     // TBU2452NN, TBU2452EN, TBU2452
-    data class RettTilAAKlage(
-        val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Du har rett til å klage",
-                    Nynorsk to "Du har rett til å klage",
-                    English to "You have the right of appeal",
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                    english { +"You have the right of appeal" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to
-                        "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget ",
-                    Nynorsk to
-                        "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget ",
-                    English to
-                        "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment ",
+                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                    nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har komme fram til deg. Du finn skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                    english { +"If you think the decision is wrong, you may appeal the decision within six weeks from the date the decision was delivered to you. You can find the form and more information at " +
+                            "${Constants.KLAGE_URL}." },
                 )
-                namedReference(vedlegg)
+            }
+
+            paragraph {
                 text(
-                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    Nynorsk to " får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    English to
-                        ", you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}.",
+                    bokmal { +"Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
+                    nynorsk { +"Du får vite meir om korleis du klagar i vedlegget om rettar." },
+                    english { +"You will find more information on how to appeal in the appendix about your rights." },
                 )
             }
         }
@@ -148,10 +139,10 @@ object Felles {
         val antall: Expression<Int>,
     ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            textExpr(
-                Bokmal to antall.format() + " måneder",
-                Nynorsk to antall.format() + " månadar",
-                English to antall.format() + " months",
+            text(
+                bokmal { + antall.format() + " måneder" },
+                nynorsk { + antall.format() + " månadar" },
+                english { + antall.format() + " months" },
             )
     }
 
@@ -162,16 +153,16 @@ object Felles {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(foedselsdatoer.size().lessThanOrEqual(limit)) {
                 val foedselsDato = foedselsdatoer.format()
-                textExpr(
-                    Bokmal to " ".expr() + foedselsDato + ".",
-                    Nynorsk to " ".expr() + foedselsDato + ".",
-                    English to " ".expr() + foedselsDato + ".",
+                text(
+                    bokmal { + " " + foedselsDato + "." },
+                    nynorsk { + " " + foedselsDato + "." },
+                    english { + " " + foedselsDato + "." },
                 )
             }.orShow {
-                text(Bokmal to ":", Nynorsk to ":", English to ":")
+                text(bokmal { + ":" }, nynorsk { + ":" }, english { + ":" })
                 list {
                     forEach(foedselsdatoer) {
-                        item { textExpr(Bokmal to it, Nynorsk to it, English to it) }
+                        item { text(bokmal { + it }, nynorsk { + it }, english { + it }) }
                     }
                 }
             }
@@ -180,47 +171,23 @@ object Felles {
 
     fun Expression<Bruker>.fulltNavn(): Expression<String> = UnaryOperation.BrukerFulltNavn(this)
 
-    object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                textExpr(
-                    Bokmal to felles.avsenderEnhet.navn,
-                    Nynorsk to felles.avsenderEnhet.navn,
-                    English to felles.avsenderEnhet.navn,
-                )
-                newline()
-                textExpr(
-                    Bokmal to "Postboks 6600 Etterstad".expr(),
-                    Nynorsk to "Postboks 6600 Etterstad".expr(),
-                    English to "Postboks 6600 Etterstad".expr(),
-                )
-                newline()
-                textExpr(
-                    Bokmal to "0607 Oslo".expr(),
-                    Nynorsk to "0607 Oslo".expr(),
-                    English to "0607 Oslo, Norway".expr(),
-                )
-            }
-        }
-    }
-
     object MeldeFraEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Meld fra om endringer",
-                    Nynorsk to "Meld frå om endringar",
-                    English to "Duty to report changes",
+                    bokmal { + "Meld fra om endringer" },
+                    nynorsk { + "Meld frå om endringar" },
+                    english { + "Duty to report changes" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, " +
-                        "for eksempel ved endring av sivilstand eller ved flytting.",
-                    Nynorsk to "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, " +
-                        "for eksempel ved endring av sivilstand eller ved flytting.",
-                    English to "You must notify us immediately if there are any changes that may affect your case, " +
-                        "such as a change in your marital status or if you move.",
+                    bokmal { + "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, " +
+                        "for eksempel ved endring av sivilstand eller ved flytting." },
+                    nynorsk { + "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, " +
+                        "for eksempel ved endring av sivilstand eller ved flytting." },
+                    english { + "You must notify us immediately if there are any changes that may affect your case, " +
+                        "such as a change in your marital status or if you move." },
                 )
             }
         }
@@ -230,19 +197,19 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn",
-                    English to "You have the right to access your file",
+                    bokmal { + "Du har rett til innsyn" },
+                    nynorsk { + "Du har rett til innsyn" },
+                    english { + "You have the right to access your file" },
                 )
             }
             paragraph {
                 text(
-                    Bokmal to
-                        "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din.",
-                    Nynorsk to
-                        "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di.",
-                    English to
-                        "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case.",
+                    bokmal { + 
+                        "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din." },
+                    nynorsk { + 
+                        "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di." },
+                    english { + 
+                        "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case." },
                 )
             }
         }
@@ -252,9 +219,9 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Du kan lese mer om dette på $NAV_URL.",
-                    Nynorsk to "Du kan lese meir om dette på $NAV_URL.",
-                    English to "You can read more about this at $NAV_URL.",
+                    bokmal { + "Du kan lese mer om dette på $NAV_URL." },
+                    nynorsk { + "Du kan lese meir om dette på $NAV_URL." },
+                    english { + "You can read more about this at $NAV_URL." },
                 )
             }
         }
@@ -264,9 +231,9 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
-                    Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
-                    English to "There is more information about other calculation periods in the attachment.",
+                    bokmal { + "Du kan lese mer om andre beregningsperioder i vedlegget." },
+                    nynorsk { + "Du kan lese meir om andre berekningsperiodar i vedlegget." },
+                    english { + "There is more information about other calculation periods in the attachment." },
                 )
             }
         }

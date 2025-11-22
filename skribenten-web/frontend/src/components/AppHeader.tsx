@@ -26,6 +26,7 @@ export function AppHeader() {
           Skribenten
         </RouterLink>
       </InternalHeader.Title>
+
       <nav css={{ marginLeft: "auto", display: "flex" }}>
         <UserDropdown />
       </nav>

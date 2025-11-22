@@ -1,46 +1,51 @@
-import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
-import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
-import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
-import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
-import {
-  insertTable,
-  insertTableColumnLeft,
-  insertTableColumnRight,
-  insertTableRowAbove,
-  insertTableRowBelow,
-  removeTable,
-  removeTableColumn,
-  removeTableRow,
-} from "~/Brevredigering/LetterEditor/actions/table";
-
+import { addNewLine } from "./addNewLine";
 import { create } from "./common";
+import { cursorPosition, updateFocus } from "./cursorPosition";
+import { deleteSelection } from "./deleteSelection";
 import { merge } from "./merge";
+import { paste } from "./paste";
 import { split } from "./split";
 import { switchFontType } from "./switchFontType";
 import { switchTypography } from "./switchTypography";
-import { toggleBulletList } from "./toggleBulletList";
-import { updateContentText } from "./updateContentText";
-
-const Actions = {
-  create,
-  cursorPosition,
-  merge,
-  addNewLine,
-  paste,
-  split,
-  switchTypography,
-  updateContentText,
-  updateSignatur,
-  toggleBulletList,
-  switchFontType,
+import {
+  demoteHeaderToRow,
   insertTable,
-
-  removeTableRow,
-  removeTableColumn,
-  removeTable,
   insertTableColumnLeft,
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  promoteRowToHeader,
+  removeTable,
+  removeTableColumn,
+  removeTableRow,
+} from "./table";
+import { toggleBulletList } from "./toggleBulletList";
+import { updateContentText } from "./updateContentText";
+import { updateSignatur } from "./updateSignatur";
+
+const Actions = {
+  addNewLine,
+  create,
+  cursorPosition,
+  deleteSelection,
+  demoteHeaderToRow,
+  insertTable,
+  insertTableColumnLeft,
+  insertTableColumnRight,
+  insertTableRowAbove,
+  insertTableRowBelow,
+  merge,
+  paste,
+  promoteRowToHeader,
+  updateFocus,
+  removeTable,
+  removeTableColumn,
+  removeTableRow,
+  split,
+  switchFontType,
+  switchTypography,
+  toggleBulletList,
+  updateContentText,
+  updateSignatur,
 };
 export default Actions;

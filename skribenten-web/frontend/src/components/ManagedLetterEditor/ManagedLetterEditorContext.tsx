@@ -1,10 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
+import _ from "lodash";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createContext, useCallback, useContext, useState } from "react";
 
 import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { BrevResponse } from "~/types/brev";
 
@@ -13,6 +15,9 @@ interface ManagedLetterEditorContextValue {
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse) => void;
 }
+
+const nullsToUndefined = (obj: unknown) =>
+  JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
 
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
@@ -27,14 +32,25 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        saksbehandlerValg: response.saksbehandlerValg,
-        info: response.info,
-        isDirty: false,
-      }));
+      setEditorState((previousState) => {
+        if (previousState.saveStatus !== "DIRTY") {
+          const keepHistory = _.isEqual(
+            normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
+            normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
+          );
+          return {
+            ...previousState,
+            redigertBrev: response.redigertBrev,
+            redigertBrevHash: response.redigertBrevHash,
+            saksbehandlerValg: response.saksbehandlerValg,
+            info: response.info,
+            saveStatus: "SAVED",
+            history: keepHistory ? previousState.history : { entries: [], entryPointer: -1 },
+          };
+        } else {
+          return previousState;
+        }
+      });
     },
     [queryClient, props.brev.info.id],
   );

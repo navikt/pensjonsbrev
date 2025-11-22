@@ -5,7 +5,6 @@ val javaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     application
-    alias(libs.plugins.ktor) apply true
 }
 
 group="no.nav.pensjon.brev"
@@ -24,7 +23,31 @@ tasks {
     compileTestJava {
         targetCompatibility = javaTarget
     }
+    build {
+        dependsOn(installDist)
+    }
+}
 
+tasks {
+    test {
+        useJUnitPlatform {
+            excludeTags = setOf("integration-test")
+        }
+    }
+    val test by testing.suites.existing(JvmTestSuite::class)
+    register<Test>("integrationTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
+        outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
+        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+        systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+        systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
+        systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("integration-test")
+        }
+    }
 }
 
 dependencies {
@@ -39,9 +62,6 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.compression.jvm)
-    implementation(libs.kafka.streams)
-    implementation(libs.connect.runtime)
-
     implementation(libs.bundles.metrics)
 
     implementation(project(":brevbaker-dsl"))
@@ -52,31 +72,12 @@ dependencies {
     }
 
     testImplementation(libs.kotlin.test.junit)
-    testImplementation(libs.hamkrest)
+    testImplementation(libs.assertJ)
     testImplementation(libs.ktor.server.test.host)
+    testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation(testFixtures(project(":brevbaker-dsl")))
 }
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
-}
-
-ktor {
-    fatJar {
-        archiveFileName.set("${project.name}.jar")
-    }
-}
-
-tasks {
-    // Dette føles meningsløst å møtte gjøre, men rocksdb-biblioteket som kommer transitivt med kafka-streams trekker med seg alle disse binærfilene som vi ikke vil ha med i imaget - der vil vi kun ha for plattformen vi kjører på, altså linux/amd64.
-    // Dette er delvis henta fra https://robjohnson.dev/posts/thin-jars/
-    // Vi trigger denne oppgava fra GitHub Actions-arbeidsflyten, men den kan fint kjøres lokalt også - men den er tilpassa å fjerne alt unntatt amd64, så da er du avhengig av å ha rett plattform.
-    register<Exec>("rydd") {
-        if (file("./build/libs/pdf-bygger.jar").exists()) {
-            commandLine("zip", "--delete", "./build/libs/pdf-bygger.jar",
-                "librocksdbjni-linux32-musl.so", "librocksdbjni-linux32.so", "librocksdbjni-linux64.so", "librocksdbjni-linux-ppc64le.so", "librocksdbjni-linux-ppc64le-musl.so", "librocksdbjni-linux-aarch64.so", "librocksdbjni-linux-aarch64-musl.so", "librocksdbjni-linux-s390x.so", "librocksdbjni-linux-s390x-musl.so", "librocksdbjni-win64.dll", "librocksdbjni-osx-arm64.jnilib", "librocksdbjni-osx-x86_64.jnilib")
-                .also { it.isIgnoreExitValue = true }
-        } else {
-            commandLine("echo", "pdf-bygger-jar fins ikke, gjør ingenting")
-        }
-    }
 }

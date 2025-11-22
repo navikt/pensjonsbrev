@@ -21,6 +21,7 @@ class Dto2ApiService(
             redigertBrev = brevredigering.redigertBrev,
             redigertBrevHash = brevredigering.redigertBrevHash,
             saksbehandlerValg = brevredigering.saksbehandlerValg,
+            propertyUsage = brevredigering.propertyUsage,
         )
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
@@ -70,17 +71,17 @@ class Dto2ApiService(
             poststed = poststed!!,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3
+            adresselinje3 = adresselinje3,
+            manueltAdressertTil = manueltAdressertTil
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
             navn = navn!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
-            landkode = landkode!!
+            landkode = landkode!!,
+            manueltAdressertTil = manueltAdressertTil
         )
     }
 

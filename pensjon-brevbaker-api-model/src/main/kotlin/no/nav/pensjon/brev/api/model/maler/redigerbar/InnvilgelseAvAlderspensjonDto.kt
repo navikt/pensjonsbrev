@@ -2,8 +2,9 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -25,11 +26,11 @@ data class InnvilgelseAvAlderspensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
-        @DisplayText("Hvis egen opptjening er best")
-        val egenOpptjening: Boolean,
-        @DisplayText("Hvis kildeskatt")
-        val kildeskatt: Boolean,
-    ) : BrevbakerBrevdata
+        @DisplayText("Hvis etterbetaling av pensjon")
+        val etterbetaling: Boolean?,
+        @DisplayText("Bruk vanlig skattetrekk")
+        val vanligSkattetrekk: Boolean?,
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
@@ -50,14 +51,13 @@ data class InnvilgelseAvAlderspensjonDto(
         val norgeBehandlendeLand: Boolean,  // v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
-        val vedtakEtterbetaling: Boolean,  // v1.Vedtak
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
         val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
         val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
     // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(
         val erEksportberegnet: Boolean,

@@ -3,21 +3,19 @@ import { css } from "@emotion/react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
-const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string }) => {
+const Saksbehandler = ({ navn }: { navn?: string }) => {
   if (!navn) {
     return <></>;
   }
   return (
-    <div>
-      <p
-        css={css`
-          margin-bottom: var(--a-spacing-1-alt);
-        `}
-        data-cy="brev-editor-saksbehandler"
-      >
-        {navn}
-      </p>
-      <i>{rolleTekst}</i>
+    <div
+      css={css`
+        flex: 1;
+        margin-bottom: var(--a-spacing-6);
+      `}
+      data-cy="brev-editor-saksbehandler"
+    >
+      {navn}
     </div>
   );
 };
@@ -28,22 +26,22 @@ export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; 
       opacity: 0.5;
       display: flex;
       flex-direction: column;
-      gap: var(--a-spacing-6);
       font-size: 16.5px;
       line-height: var(--a-font-line-height-heading-xsmall);
       ${wrapperStyles}
     `}
   >
-    <span>{signatur.hilsenTekst}</span>
+    <div>{signatur.hilsenTekst}</div>
     <div
       css={css`
-        display: grid;
-        grid-template-columns: 50% 50%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         gap: var(--a-spacing-8);
       `}
     >
-      <Saksbehandler navn={signatur.saksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
-      <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
+      <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} />
+      <Saksbehandler navn={signatur.saksbehandlerNavn} />
     </div>
     <div>{signatur.navAvsenderEnhet}</div>
   </div>

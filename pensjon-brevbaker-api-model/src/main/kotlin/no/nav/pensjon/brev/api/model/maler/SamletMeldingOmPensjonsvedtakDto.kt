@@ -2,120 +2,137 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import java.time.LocalDate
-import java.time.Period
 
 data class SamletMeldingOmPensjonsvedtakDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, SamletMeldingOmPensjonsvedtakDto.PesysData> {
     data class PesysData(
         val sakstype: Sakstype,
         val vedlegg: P1Dto,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 }
 
 data class P1Dto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
-    val kravMottattDato: LocalDate,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
-    val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
-) : BrevbakerBrevdata {
+    val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
+) : PDFVedleggData {
 
     data class P1Person(
-        val fornavn: String,
-        val etternavn: String,
-        val etternavnVedFoedsel: String,
+        val fornavn: String?,
+        val etternavn: String?,
+        val etternavnVedFoedsel: String?,
         val foedselsdato: LocalDate?,
-        val adresselinje: String,
-        val poststed: Poststed,
-        val postnummer: Postnummer,
-        val landkode: Landkode,
+        val adresselinje: String?,
+        val poststed: Poststed?,
+        val postnummer: Postnummer?,
+        val landkode: Landkode?,
     )
 
     data class InnvilgetPensjon(
-        val institusjon: String,
-        val pensjonstype: Pensjonstype,
-        val datoFoersteUtbetaling: LocalDate,
-        val bruttobeloep: Penger,
-        val grunnlagInnvilget: GrunnlagInnvilget,
+        val institusjon: List<Institusjon>,
+        val pensjonstype: Pensjonstype?,
+        val datoFoersteUtbetaling: LocalDate?,
+        val bruttobeloepDesimal: String?,
+        val valuta: String?,
+        val utbetalingsHyppighet: Utbetalingshyppighet?,
+        val vedtaksdato: String?,
+        val grunnlagInnvilget: GrunnlagInnvilget?,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
-        val vurderingsperiode: Period,
-        val adresseNyVurdering: Adresse,
+        val vurderingsperiode: String?,
+        val adresseNyVurdering: List<Adresse>,
+        val erNorskRad: Boolean?
     )
 
     data class AvslaattPensjon(
-        val institusjon: String,
-        val pensjonstype: Pensjonstype,
-        val avslagsbegrunnelse: Avslagsbegrunnelse,
-        val vurderingsperiode: Period,
-        val adresseNyVurdering: Adresse,
+        val institusjoner: List<Institusjon>?,
+        val pensjonstype: Pensjonstype?,
+        val avslagsbegrunnelse: Avslagsbegrunnelse?,
+        val vurderingsperiode: String?,
+        val vedtaksdato: String?,
+        val adresseNyVurdering: List<Adresse>,
     )
 
-    enum class Pensjonstype(val nummer: Int, val fullTekst: String) {
-        Alder(1, "Old-age"),
-        Ufoere(2, "Invalidity"),
-        Etterlatte(3, "Survivor")
+    enum class Pensjonstype(val nummer: Int) {
+        Alder(1),
+        Ufoere(2),
+        Etterlatte(3)
     }
 
-    enum class GrunnlagInnvilget(val nummer: Int, val fullTekst: String) {
-        IHenholdTilNasjonalLovgivning(4, "according to national legislation"),
+    enum class GrunnlagInnvilget(val nummer: Int) {
+        IHenholdTilNasjonalLovgivning(4),
         ProRata(
-            5,
-            "as a pension in which periods from another Member State have been\n" +
-                    "taken into account (European pro rata calculation)"
+            5
         ),
         MindreEnnEttAar(
-            6,
-            "as a pension in which periods of less than one year have been taken\n" +
-                    "into account as if they had been completed under the legislation of\n" +
-                    "this Member State"
+            6
         )
     }
 
-    enum class Reduksjonsgrunnlag(val nummer: Int, val fullTekst: String) {
-        PaaGrunnAvAndreYtelserEllerAnnenInntekt(7, "in view of another benefit or income"),
-        PaaGrunnAvOverlappendeGodskrevnePerioder(8, "in view of overlapping of credited periods")
+    enum class Reduksjonsgrunnlag(val nummer: Int) {
+        PaaGrunnAvAndreYtelserEllerAnnenInntekt(7),
+        PaaGrunnAvOverlappendeGodskrevnePerioder(8)
     }
 
-    enum class Avslagsbegrunnelse(val nummer: Int, val fullTekst: String) {
-        IngenOpptjeningsperioder(4, "No insurance periods"),
-        OpptjeningsperiodePaaMindreEnnEttAar(5, "Insurance periods less than one year"),
+    enum class Avslagsbegrunnelse(val nummer: Int) {
+        IngenOpptjeningsperioder(4),
+        OpptjeningsperiodePaaMindreEnnEttAar(5),
         KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt(
-            6,
-            "qualifying period not completed or eligibility requirements not met"
+            6
         ),
-        VilkaarOmUfoerhetErIkkeOppfylt(7, "no partial disability or invalidity was found"),
-        InntektstakErOverskredet(8, "income ceiling is exceeded"),
-        PensjonsalderErIkkeNaadd(9, "pension age not yet reached"),
-        AndreAarsaker(10, "other reasons")
+        VilkaarOmUfoerhetErIkkeOppfylt(7),
+        InntektstakErOverskredet(8),
+        PensjonsalderErIkkeNaadd(9),
+        AndreAarsaker(10)
+    }
+
+    enum class Utbetalingshyppighet {
+        Aarlig,
+        Kvartalsvis,
+        Maaned12PerAar,
+        Maaned13PerAar,
+        Maaned14PerAar,
+        Ukentlig,
+        UkjentSeVedtak,
     }
 
     data class Adresse(
-        val adresselinje1: String,
+        val adresselinje1: String?,
         val adresselinje2: String?,
         val adresselinje3: String?,
-        val landkode: Landkode,
-        val postnummer: Postnummer,
-        val poststed: Poststed,
+        val landkode: Landkode?,
+        val postnummer: Postnummer?,
+        val poststed: Poststed?,
     )
 
     data class Institusjon(
+        val institusjonsid: String?,
+        val institusjonsnavn: String?,
+        val pin: String?,
+        val saksnummer: String?,
+        val land: String?
+    )
+
+    data class UtfyllendeInstitusjon(
         val navn: String,
         val adresselinje: String,
         val poststed: Poststed,
         val postnummer: Postnummer,
         val landkode: Landkode,
-        val institusjonsID: String,
+        val institusjonsID: String?,
         val faksnummer: String?,
         val telefonnummer: Telefonnummer?,
-        val epost: Epost,
+        val epost: Epost?,
         val dato: LocalDate,
-        val underskrift: String,
     )
 
     @JvmInline
@@ -142,14 +159,5 @@ data class P1Dto(
             require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ." }
             require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ." }
         }
-    }
-}
-
-data class Penger(val verdi: Int, val valuta: Valuta)
-
-@JvmInline
-value class Valuta(val valuta: String) {
-    init {
-        require(valuta.length == 3)
     }
 }

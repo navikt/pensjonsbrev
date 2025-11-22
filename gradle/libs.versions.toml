@@ -1,31 +1,31 @@
 [versions]
-kotlinVersion = "2.2.10"
-kotlinKspVersion = "2.2.10-2.0.2"
-ktorVersion = "3.2.3"
-assertJVersion = "3.27.4"
+kotlinVersion = "2.2.21"
+kotlinKspVersion = "2.3.0"
+ktorVersion = "3.3.1"
+assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
-classGraphVersion = "4.8.181"
+classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.19.0"
-commonVersion = "2.0.0"
+commonVersion = "2.12.0"
 exposedVersion = "0.61.0"
-flywayVersion = "11.11.1"
+flywayVersion = "11.15.0"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "7.0.2"
-jacksonJsr310Version = "2.19.2"
-jupiterVersion = "5.13.4"
+jacksonJsr310Version = "2.20.1"
+jupiterVersion = "6.0.1"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
-logbackVersion = "1.5.18"
-logstashVersion = "8.1"
-micrometerVersion = "1.15.3"
-pdfboxVersion = "3.0.5"
-postgresqlVersion = "42.7.7"
+logbackVersion = "1.5.20"
+logstashVersion = "9.0"
+micrometerVersion = "1.15.5"
+pdfboxVersion = "3.0.6"
+postgresqlVersion = "42.7.8"
+testcontainersCoreVersion = "2.0.1"
 testcontainersPostgresqlVersion = "1.21.3"
-unleashVersion = "11.1.0"
-kafkaVersion="3.9.0"
+unleashVersion = "11.1.1"
+valkeyVersion = "5.5.0"
 
 [plugins]
-ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
 
@@ -46,6 +46,7 @@ micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
+valkey = { module = "io.valkey:valkey-java", version.ref = "valkeyVersion" }
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
@@ -74,10 +75,6 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", versio
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
 
-# Kafka
-kafka-streams = { module = "org.apache.kafka:kafka-streams", version.ref = "kafkaVersion" }
-connect-runtime = { module = "org.apache.kafka:connect-runtime", version.ref = "kafkaVersion" }
-
 # Exposed
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
@@ -92,11 +89,11 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
-junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.13.4" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 
 [bundles]
 junit = ["junit-jupiter", "junit-platform-launcher"]

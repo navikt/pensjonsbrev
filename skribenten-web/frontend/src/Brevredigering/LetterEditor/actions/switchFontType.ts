@@ -1,180 +1,202 @@
 import type { Draft } from "immer";
-import { produce } from "immer";
 
 import type {
   Cell,
   Content,
-  FontType,
   ItemList,
   LiteralValue,
   ParagraphBlock,
   Row,
+  TextContent,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { FontType } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
-import type { Action } from "../lib/actions";
+import { type Action, withPatches } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import { isLiteral, isTableCellIndex } from "../model/utils";
+import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
-import { isItemContentIndex, isTable, newLiteral } from "./common";
+import { fontTypeOf, isItemContentIndex, isTable, newLiteral } from "./common";
+
+export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
+  const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
+  const focus = editorState.focus;
+  const blockContent = block?.content[editorState.focus.contentIndex];
+
+  let textContent: TextContent | undefined = undefined;
+
+  if (isTable(blockContent) && isTableCellIndex(focus)) {
+    const cell =
+      focus.rowIndex === -1
+        ? blockContent.header.colSpec[focus.cellIndex]?.headerContent
+        : blockContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
+
+    textContent = cell?.text?.at(focus.cellContentIndex);
+  } else if (isItemList(blockContent) && isItemContentIndex(focus)) {
+    textContent = blockContent?.items[focus.itemIndex]?.content[focus.itemContentIndex];
+  } else if (isTextContent(blockContent)) {
+    textContent = blockContent;
+  }
+
+  return isTextContent(textContent) ? fontTypeOf(textContent) : FontType.PLAIN;
+};
 
 // TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
-export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
-  (draft, literalIndex, fontType) => {
-    const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = withPatches((draft, fontType) => {
+  const literalIndex = draft.focus;
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
 
-    if (block.type !== "PARAGRAPH") {
+  if (block?.type !== "PARAGRAPH") {
+    return;
+  }
+
+  if (fontType === getCurrentActiveFontTypeAtCursor(draft)) {
+    fontType = FontType.PLAIN;
+  }
+
+  const contentAtFocus = block.content[literalIndex.contentIndex];
+  if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
+    const table = contentAtFocus;
+
+    const TABLE_HEADER_INDEX = -1;
+    if (literalIndex.rowIndex === TABLE_HEADER_INDEX) {
+      const colSpec = table.header.colSpec[literalIndex.cellIndex];
+      const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
+
+      if (isLiteral(headerLiteral)) {
+        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
+      }
+      draft.focus = { ...draft.focus, cursorPosition: 0 };
+      draft.saveStatus = "DIRTY";
       return;
     }
 
-    const contentAtFocus = block.content[literalIndex.contentIndex];
-    if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
-      const table = contentAtFocus;
+    const row: Draft<Row> = table.rows[literalIndex.rowIndex];
+    const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
 
-      if (literalIndex.rowIndex === -1) {
-        // rowIndex === -1 means header row
-        const colSpec = table.header.colSpec[literalIndex.cellIndex];
-        const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
+    const textContent = cell.text[literalIndex.cellContentIndex];
 
-        if (isLiteral(headerLiteral)) {
-          headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
-        }
-        draft.focus = { ...draft.focus, cursorPosition: 0 };
-        draft.isDirty = true;
+    if (isLiteral(textContent)) {
+      textContent.editedFontType = textContent.editedFontType === fontType ? null : fontType;
+    }
+
+    draft.focus = { ...draft.focus, cursorPosition: 0 };
+    draft.saveStatus = "DIRTY";
+    return;
+  }
+
+  draft.saveStatus = "DIRTY";
+
+  const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
+  const theContentWeAreOn = block.content[literalIndex.contentIndex];
+  const contentAfterTheLiteralWeAreOn = block.content.slice(literalIndex.contentIndex + 1);
+
+  handleSwitchContent({
+    content: theContentWeAreOn,
+    onLiteral: (literal) => {
+      const result = switchFontTypeForLiteral({
+        draft: draft,
+        thisBlock: block,
+        literalIndex: literalIndex,
+        contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
+        contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
+        literal: literal,
+        fonttype: fontType,
+      });
+
+      if (!result) {
         return;
       }
 
-      const row: Draft<Row> = table.rows[literalIndex.rowIndex];
-      const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
+      draft.focus = {
+        ...draft.focus,
+        blockIndex: literalIndex.blockIndex,
+        contentIndex:
+          block.content.slice(0, literalIndex.contentIndex).length + result.newThisLiteralPositionInNewContent,
+        cursorPosition: result.updatedCursorPosition,
+      };
+      block.content = [...contentBeforeTheLiteralWeAreOn, ...result.resultingContent, ...contentAfterTheLiteralWeAreOn];
+      block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
+    },
+    onVariable: (variable) => {
+      const newVariable = switchFontTypeForVariable({
+        fonttype: fontType,
+        variable,
+      });
 
-      const textContent = cell.text[literalIndex.cellContentIndex];
-
-      if (isLiteral(textContent)) {
-        textContent.editedFontType = textContent.editedFontType === fontType ? null : fontType;
+      block.content = [...contentBeforeTheLiteralWeAreOn, newVariable, ...contentAfterTheLiteralWeAreOn];
+    },
+    onNewLine: () => void 0,
+    onItemList: (itemList) => {
+      if (!isItemContentIndex(literalIndex)) {
+        return;
       }
 
-      draft.focus = { ...draft.focus, cursorPosition: 0 };
-      draft.isDirty = true;
-      return;
-    }
+      const item = itemList.items[literalIndex.itemIndex];
+      const itemContent = item.content[literalIndex.itemContentIndex];
 
-    draft.isDirty = true;
+      return handleSwitchTextContent({
+        content: itemContent,
+        onLiteral: (literal) => {
+          const result = switchFontTypeForLiteral({
+            draft: draft,
+            thisBlock: block,
+            literalIndex: literalIndex,
+            contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
+            contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
+            literal: literal,
+            fonttype: fontType,
+          });
 
-    const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
-    const theContentWeAreOn = block.content[literalIndex.contentIndex];
-    const contentAfterTheLiteralWeAreOn = block.content.slice(literalIndex.contentIndex + 1);
+          if (!result) {
+            return;
+          }
 
-    handleSwitchContent({
-      content: theContentWeAreOn,
-      onLiteral: (literal) => {
-        const result = switchFontTypeForLiteral({
-          draft: draft,
-          thisBlock: block,
-          literalIndex: literalIndex,
-          contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-          contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-          literal: literal,
-          fonttype: fontType,
-        });
+          const newItemContent = [
+            ...item.content.slice(0, literalIndex.itemContentIndex),
+            ...result.resultingContent,
+            ...item.content.slice(literalIndex.itemContentIndex + 1),
+          ];
 
-        if (!result) {
-          return;
-        }
+          draft.focus = {
+            ...draft.focus,
+            blockIndex: literalIndex.blockIndex,
+            cursorPosition: result.updatedCursorPosition,
+            itemContentIndex:
+              item.content.slice(0, literalIndex.itemContentIndex).length + result.newThisLiteralPositionInNewContent,
+          };
+          (
+            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
+          ).items[literalIndex.itemIndex].content = newItemContent;
+          (
+            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
+          ).items[literalIndex.itemIndex].deletedContent = [
+            ...item.deletedContent,
+            ...(result.deletedContent ? [result.deletedContent] : []),
+          ];
+        },
+        onVariable: (variable) => {
+          const newVariable = switchFontTypeForVariable({
+            fonttype: fontType,
+            variable,
+          });
 
-        draft.focus = {
-          ...draft.focus,
-          blockIndex: literalIndex.blockIndex,
-          contentIndex:
-            block.content.slice(0, literalIndex.contentIndex).length + result.newThisLiteralPositionInNewContent,
-          cursorPosition: result.updatedCursorPosition,
-        };
-        block.content = [
-          ...contentBeforeTheLiteralWeAreOn,
-          ...result.resultingContent,
-          ...contentAfterTheLiteralWeAreOn,
-        ];
-        block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
-      },
-      onVariable: (variable) => {
-        const newVariable = switchFontTypeForVariable({
-          fonttype: fontType,
-          variable,
-        });
+          const newItemContent = [
+            ...item.content.slice(0, literalIndex.itemContentIndex),
+            newVariable,
+            ...item.content.slice(literalIndex.itemContentIndex + 1),
+          ];
 
-        block.content = [...contentBeforeTheLiteralWeAreOn, newVariable, ...contentAfterTheLiteralWeAreOn];
-      },
-      onNewLine: () => void 0,
-      onItemList: (itemList) => {
-        if (!isItemContentIndex(literalIndex)) {
-          return;
-        }
-
-        const item = itemList.items[literalIndex.itemIndex];
-        const itemContent = item.content[literalIndex.itemContentIndex];
-
-        return handleSwitchTextContent({
-          content: itemContent,
-          onLiteral: (literal) => {
-            const result = switchFontTypeForLiteral({
-              draft: draft,
-              thisBlock: block,
-              literalIndex: literalIndex,
-              contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-              contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-              literal: literal,
-              fonttype: fontType,
-            });
-
-            if (!result) {
-              return;
-            }
-
-            const newItemContent = [
-              ...item.content.slice(0, literalIndex.itemContentIndex),
-              ...result.resultingContent,
-              ...item.content.slice(literalIndex.itemContentIndex + 1),
-            ];
-
-            draft.focus = {
-              ...draft.focus,
-              blockIndex: literalIndex.blockIndex,
-              cursorPosition: result.updatedCursorPosition,
-              itemContentIndex:
-                item.content.slice(0, literalIndex.itemContentIndex).length + result.newThisLiteralPositionInNewContent,
-            };
-            (
-              draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-            ).items[literalIndex.itemIndex].content = newItemContent;
-            (
-              draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-            ).items[literalIndex.itemIndex].deletedContent = [
-              ...item.deletedContent,
-              ...(result.deletedContent ? [result.deletedContent] : []),
-            ];
-          },
-          onVariable: (variable) => {
-            const newVariable = switchFontTypeForVariable({
-              fonttype: fontType,
-              variable,
-            });
-
-            const newItemContent = [
-              ...item.content.slice(0, literalIndex.itemContentIndex),
-              newVariable,
-              ...item.content.slice(literalIndex.itemContentIndex + 1),
-            ];
-
-            (
-              draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-            ).items[literalIndex.itemIndex].content = newItemContent;
-          },
-          onNewLine: () => void 0,
-        });
-      },
-    });
-  },
-);
+          (
+            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
+          ).items[literalIndex.itemIndex].content = newItemContent;
+        },
+        onNewLine: () => void 0,
+      });
+    },
+  });
+});
 
 const switchFontTypeForLiteral = (args: {
   draft: Draft<LetterEditorState>;
@@ -277,12 +299,12 @@ const switchFontTypeOfCurrentWord = (args: {
   }
 
   let wordStartPosition = cursorPosition;
-  while (wordStartPosition > 0 && text[wordStartPosition - 1].trim() !== "") {
+  while (wordStartPosition > 0 && text[wordStartPosition - 1]?.trim() !== "") {
     wordStartPosition--;
   }
 
   let wordEndPosition = cursorPosition;
-  while (wordEndPosition < text.length && text[wordEndPosition].trim() !== "") {
+  while (wordEndPosition < text.length && text[wordEndPosition]?.trim() !== "") {
     wordEndPosition++;
   }
 

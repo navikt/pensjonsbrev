@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoAvslaatt
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoInnvilget
@@ -22,15 +22,13 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -51,8 +49,6 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
-        name = "EKSEMPEL_REDIGERBART_BREV", //Letter ID
-        letterDataType = EksempelRedigerbartDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems
@@ -63,8 +59,8 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
     ) {
         title {
             text(
-                Bokmal to "Redigerbart eksempelbrev",
-                Nynorsk to "Redigerbart eksempelbrev"
+                bokmal { +"Redigerbart eksempelbrev" },
+                nynorsk { +"Redigerbart eksempelbrev" }
             )
         }
 
@@ -78,44 +74,44 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
             // section title
             title1 {
-                text(Bokmal to "Du har fått innvilget pensjon", Nynorsk to "Du har fått innvilget pensjon")
+                text(bokmal { +"Du har fått innvilget pensjon" }, nynorsk { +"Du har fått innvilget pensjon" })
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
-                    Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
+                    bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." },
+                    nynorsk { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." }
                 )
             }
 
             paragraph {
                 showIf(firstName.equalTo("Alexander")) {
                     text(
-                        Bokmal to "Hei Alexander",
-                        Nynorsk to "Hei Alexander",
+                        bokmal { +"Hei Alexander" },
+                        nynorsk { +"Hei Alexander" },
                     )
                 }.orShowIf(firstName.equalTo("Håkon")) {
                     text(
-                        Bokmal to "Hei Håkon",
-                        Nynorsk to "Hei Håkon"
+                        bokmal { +"Hei Håkon" },
+                        nynorsk { +"Hei Håkon" }
                     )
                 }.orShow {
-                    textExpr(
-                        Bokmal to "Hei ".expr() + firstName,
-                        Nynorsk to "Hei ".expr() + firstName,
+                    text(
+                        bokmal { +"Hei " + firstName },
+                        nynorsk { +"Hei " + firstName },
                     )
                 }
                 text(
-                    Bokmal to ", håper du har en fin dag!",
-                    Nynorsk to ", håper du har en fin dag!"
+                    bokmal { +", håper du har en fin dag!" },
+                    nynorsk { +", håper du har en fin dag!" }
                 )
             }
 
             paragraph {
                 forEach(pesysData.tilleggEksempel) {
-                    textExpr(
-                        Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
-                        Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                    text(
+                        bokmal { +"Heisann " + it.navn + " håper du har en fin dag!" },
+                        nynorsk { +"Heisann " + it.navn + " håper du har en fin dag!" },
                     )
                 }
             }
@@ -124,10 +120,10 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
             paragraph {
                 //ShowIf shows the content of the block if the boolean expression resolves to true
                 showIf(pesysData.pensjonInnvilget) {
-                    textExpr(
+                    text(
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
-                        Bokmal to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
-                        Nynorsk to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
+                        bokmal { +"Hei " + firstName + ". Du har fått innvilget pensjon." },
+                        nynorsk { +"Hei " + firstName + ". Du har fått innvilget pensjon." },
                     )
                 }
 
@@ -135,32 +131,32 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                     forEach(pesysData.tilleggEksempel) { tillegg ->
                         ifNotNull(tillegg.tillegg1) {
                             item {
-                                textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format(),
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format()
+                                text(
+                                    bokmal { +"Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
+                                    nynorsk { +"Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() }
                                 )
                             }
                         }
-                        item { text(Bokmal to "Joda", Nynorsk to "Jauda") }
+                        item { text(bokmal { +"Joda" }, nynorsk { +"Jauda" }) }
                     }
                     item {
-                        text(Bokmal to "Test1", Nynorsk to "Test1")
+                        text(bokmal { +"Test1" }, nynorsk { +"Test1" })
                     }
                     ifNotNull(pesysData.datoAvslaatt) { dato ->
                         item {
-                            textExpr(
-                                Bokmal to "Du har fått avslag på noe ".expr() + dato.format(),
-                                Nynorsk to "Du har fått avslag på noe ".expr() + dato.format()
+                            text(
+                                bokmal { +"Du har fått avslag på noe " + dato.format() },
+                                nynorsk { +"Du har fått avslag på noe " + dato.format() }
                             )
                         }
                     }
 
                     item {
-                        text(Bokmal to "Test2", Nynorsk to "Test2")
+                        text(bokmal { +"Test2" }, nynorsk { +"Test2" })
                     }
 
                     item {
-                        text(Bokmal to "Test3", Nynorsk to "Test3")
+                        text(bokmal { +"Test3" }, nynorsk { +"Test3" })
                     }
 
                     item {
@@ -172,24 +168,24 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                         includePhrase(TextOnlyPhraseTestWithParams(pesysData.datoInnvilget))
                     }
                 }
-                text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
+                text(bokmal { +lipsums[0] }, nynorsk { +lipsums[0] })
             }
 
             title1 {
-                text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt")
+                text(bokmal { +"Utbetalingsoversikt" }, nynorsk { +"Utbetalingsoversikt" })
             }
 
             paragraph {
                 text(
-                    Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020",
-                    Nynorsk to "Dette er din inntekt fra 01.01.2020 til 01.05.2020"
+                    bokmal { +"Dette er din inntekt fra 01.01.2020 til 01.05.2020" },
+                    nynorsk { +"Dette er din inntekt fra 01.01.2020 til 01.05.2020" }
                 )
                 table(
                     header = {
-                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1") }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2") }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3") }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4") }
+                        column(3) { text(bokmal { +"Kolonne 1" }, nynorsk { +"Kolonne 1" }) }
+                        column(1, RIGHT) { text(bokmal { +"Kolonne 2" }, nynorsk { +"Kolonne 2" }) }
+                        column(1, RIGHT) { text(bokmal { +"Kolonne 3" }, nynorsk { +"Kolonne 3" }) }
+                        column(1, RIGHT) { text(bokmal { +"Kolonne 4" }, nynorsk { +"Kolonne 4" }) }
                     }
                 ) {
                     forEach(pesysData.tilleggEksempel) { tillegg ->
@@ -199,9 +195,9 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                         val tillegg3 = tillegg.tillegg3
                         row {
                             cell {
-                                textExpr(
-                                    Bokmal to "Du får tillegg for ".expr() + navn,
-                                    Nynorsk to "Du får tillegg for ".expr() + navn
+                                text(
+                                    bokmal { +"Du får tillegg for " + navn },
+                                    nynorsk { +"Du får tillegg for " + navn }
                                 )
                             }
                             cell {
@@ -211,17 +207,17 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                             }
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
-                                    textExpr(
-                                        Bokmal to tillegg.format(),
-                                        Nynorsk to tillegg.format()
+                                    text(
+                                        bokmal { +tillegg.format() },
+                                        nynorsk { +tillegg.format() }
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg3) { tillegg ->
-                                    textExpr(
-                                        Bokmal to tillegg.format(),
-                                        Nynorsk to tillegg.format()
+                                    text(
+                                        bokmal { +tillegg.format() },
+                                        nynorsk { +tillegg.format() }
                                     )
                                 }
                             }
@@ -230,36 +226,36 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                     row {
                         cell {
                             text(
-                                Bokmal to "Din inntekt før skatt i måned 1",
-                                Nynorsk to "Din inntekt før skatt i måned 1"
+                                bokmal { +"Din inntekt før skatt i måned 1" },
+                                nynorsk { +"Din inntekt før skatt i måned 1" }
                             )
                         }
-                        cell { text(Bokmal to "100 Kr", Nynorsk to "100 Kr") }
-                        cell { text(Bokmal to "200 Kr", Nynorsk to "200 Kr") }
-                        cell { text(Bokmal to "300 Kr", Nynorsk to "300 Kr") }
+                        cell { text(bokmal { +"100 Kr" }, nynorsk { +"100 Kr" }) }
+                        cell { text(bokmal { +"200 Kr" }, nynorsk { +"200 Kr" }) }
+                        cell { text(bokmal { +"300 Kr" }, nynorsk { +"300 Kr" }) }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "Din inntekt før skatt i måned 1",
-                                Nynorsk to "Din inntekt før skatt i måned 1"
+                                bokmal { +"Din inntekt før skatt i måned 1" },
+                                nynorsk { +"Din inntekt før skatt i måned 1" }
                             )
                         }
-                        cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
-                        cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
-                        cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
+                        cell { text(bokmal { +"400 Kr" }, nynorsk { +"400 Kr" }) }
+                        cell { text(bokmal { +"500 Kr" }, nynorsk { +"500 Kr" }) }
+                        cell { text(bokmal { +"600 Kr" }, nynorsk { +"600 Kr" }) }
                     }
                     ifNotNull(pesysData.datoAvslaatt) { dato ->
                         row {
                             cell {
-                                textExpr(
-                                    Bokmal to "Du har en dato satt! ".expr() + dato.format(),
-                                    Nynorsk to "Du har en dato satt! ".expr() + dato.format()
+                                text(
+                                    bokmal { +"Du har en dato satt! " + dato.format() },
+                                    nynorsk { +"Du har en dato satt! " + dato.format() }
                                 )
                             }
-                            cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
-                            cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
-                            cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
+                            cell { text(bokmal { +"400 Kr" }, nynorsk { +"400 Kr" }) }
+                            cell { text(bokmal { +"500 Kr" }, nynorsk { +"500 Kr" }) }
+                            cell { text(bokmal { +"600 Kr" }, nynorsk { +"600 Kr" }) }
                         }
                     }
                 }
@@ -267,12 +263,12 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
             // Repeat content for each element in list
             forEach(pesysData.navneliste) {
                 title1 {
-                    textExpr(Bokmal to it, Nynorsk to it)
+                    text(bokmal { +it }, nynorsk { +it })
                 }
                 paragraph {
-                    textExpr(
-                        Bokmal to "En liste med navn har elementet: ".expr() + it,
-                        Nynorsk to "En liste med navn har elementet: ".expr() + it
+                    text(
+                        bokmal { +"En liste med navn har elementet: " + it },
+                        nynorsk { +"En liste med navn har elementet: " + it }
                     )
                 }
             }
@@ -282,7 +278,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
             //Print some lipsum paragraphs.
             for (lipsum in lipsums) {
-                paragraph { text(Bokmal to lipsum, Nynorsk to lipsum) }
+                paragraph { text(bokmal { +lipsum }, nynorsk { +lipsum }) }
             }
         }
         includeAttachment(testVedlegg, TestVedleggDto("test1", "test2").expr())
@@ -291,9 +287,9 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
 // This data class should normally be in the api-model. Placed here for test-purposes.
 data class EksempelRedigerbartDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, EksempelRedigerbartDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, EksempelRedigerbartDto.PesysData> {
     data class PesysData(
         val pensjonInnvilget: Boolean,
         val datoInnvilget: LocalDate,
@@ -301,5 +297,5 @@ data class EksempelRedigerbartDto(
         val tilleggEksempel: List<ExampleTilleggDto>,
         val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 }

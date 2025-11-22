@@ -1,13 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.maler.adhoc.AdhocAFPInformasjonOekningToleransebeloep
-import no.nav.pensjon.brev.maler.adhoc.AdhocAlderspensjonFraFolketrygden
-import no.nav.pensjon.brev.maler.adhoc.AdhocAlderspensjonFraFolketrygden2
-import no.nav.pensjon.brev.maler.adhoc.AdhocAlderspensjonGjtOpprydding
-import no.nav.pensjon.brev.maler.adhoc.AdhocAlderspensjonGjtVarselBrev
 import no.nav.pensjon.brev.maler.adhoc.AdhocFeilEtteroppgjoer2023
 import no.nav.pensjon.brev.maler.adhoc.AdhocGjenlevendEtter1970
 import no.nav.pensjon.brev.maler.adhoc.AdhocInformasjonHvilendeRett4Aar
@@ -17,9 +12,8 @@ import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdKombiDagpenger
 import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdKombiDagpengerInntektsavkorting
 import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdVarselOpphoerEktefelletillegg
 import no.nav.pensjon.brev.maler.adhoc.AdhocVarselOpphoerMedHvilendeRett
-import no.nav.pensjon.brev.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
-import no.nav.pensjon.brev.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
-import no.nav.pensjon.brev.maler.adhoc.FeilUtsendingAvGjenlevenderett
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061Utland
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
@@ -32,21 +26,11 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArs
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6270Utland
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
-import no.nav.pensjon.brev.maler.adhoc.skjermingstillegg.AdhocSkjermingstilleggFeilBeroertBruker
-import no.nav.pensjon.brev.maler.adhoc.skjermingstillegg.AdhocSkjermingstilleggFeilMottaker
-import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
-import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
-import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016Auto
-import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
-import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAuto
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
-import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
+import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
+import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
+import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
@@ -58,10 +42,8 @@ import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
 import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
-import no.nav.pensjon.brev.maler.redigerbar.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
-import no.nav.pensjon.brev.maler.redigerbar.ForhaandsvarselVedTilbakekreving
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstidUT
@@ -84,50 +66,43 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeIn
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringVedFlyttingMellomLand
 import no.nav.pensjon.brev.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjening
-import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLand
+import no.nav.pensjon.brev.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoeng
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.*
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.*
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
+import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
+import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
+import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
+import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 object ProductionTemplates : AllTemplates {
-    private val autobrev: Set<AutobrevTemplate<BrevbakerBrevdata>> = setOf(
-        AdhocAFPInformasjonOekningToleransebeloep,
-        AdhocAlderspensjonFraFolketrygden,
-        AdhocAlderspensjonFraFolketrygden2,
-        AdhocAlderspensjonGjtOpprydding,
-        AdhocAlderspensjonGjtVarselBrev,
+    private val autobrev: Set<AutobrevTemplate<AutobrevData>> = setOf(
+        AdHocVarselUgyldiggjoringFullmaktsgiver,
+        AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
         AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
-        AdhocSkjermingstilleggFeilBeroertBruker,
-        AdhocSkjermingstilleggFeilMottaker,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
-        AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
-        AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         OmregningAlderUfore2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalder2016Auto,
-        AvslagGradsendringFoerNormertPensjonsalderAuto,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
-        AvslagUttakFoerNormertPensjonsalderAP2016Auto,
-        AvslagUttakFoerNormertPensjonsalderAuto,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
+        EndringPgaOpptjeningAuto,
+        EndringAvUttaksgradAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
-        FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-        InfoAldersovergang67AarAuto,
+        InnvilgelseAvAlderspensjonAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
@@ -148,23 +123,20 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpOpphorArskull6070Utland,
         FeilBelopInntekstendringsbrev,
         FeilBelopInntekstendringsbrev_AvkortetTil0,
+        HvilendeRettInfo4Aar,
+        HvilendeRettMidlertidigOppHoer,
+        HvilendeRettOppHoer,
+        HvilendeRettVarselOpphoer
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
-        AvslagGradsendringFoerNormertPensjonsalder,
-        AvslagGradsendringFoerNormertPensjonsalderAP2016,
-        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
         AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
-        AvslagUttakFoerNormertPensjonsalder,
-        AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
         BrukerTestBrev,
-        EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
-        ForhaandsvarselVedTilbakekreving,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,
@@ -191,7 +163,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
-        VedtakStansAlderspensjonFlyttingMellomLand,
+        VedtakOmInnvilgelseAvOmsorgspoeng,
     )
 
     override fun hentAutobrevmaler() = autobrev

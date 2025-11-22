@@ -9,50 +9,52 @@ import no.nav.pensjon.brev.template.dsl.text
 fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, out Any>.postadresse(
     utland: Expression<Boolean>
 ) {
-    paragraph {
-        showIf(utland) {
+    showIf(utland) {
+        paragraph {
             text(
-                Language.Bokmal to "Nav familie- og pensjonsytelser",
-                Language.Nynorsk to "Nav familie- og pensjonsytelser",
-                Language.English to "Nav familie- og pensjonsytelser"
+                bokmal { +"Nav familie- og pensjonsytelser" },
+                nynorsk { +"Nav familie- og pensjonsytelser" },
+                english { +"Nav familie- og pensjonsytelser" }
             )
             newline()
             text(
-                Language.Bokmal to "Postboks 6600 Etterstad",
-                Language.Nynorsk to "Postboks 6600 Etterstad",
-                Language.English to "Postboks 6600 Etterstad"
+                bokmal { +"Postboks 6600 Etterstad" },
+                nynorsk { +"Postboks 6600 Etterstad" },
+                english { +"Postboks 6600 Etterstad" }
             )
             newline()
             text(
-                Language.Bokmal to "0607 Oslo",
-                Language.Nynorsk to "0607 Oslo",
-                Language.English to "0607 Oslo"
+                bokmal { +"0607 Oslo" },
+                nynorsk { +"0607 Oslo" },
+                english { +"0607 Oslo" }
             )
             newline()
             text(
-                Language.Bokmal to "Norge/Norway",
-                Language.Nynorsk to "Noreg/Norway",
-                Language.English to "Norway"
+                bokmal { +"Norge/Norway" },
+                nynorsk { +"Noreg/Norway" },
+                english { +"Norway" }
             )
-        }.orShow {
+        }
+    }.orShow {
+        paragraph {
             text(
-                Language.Bokmal to "Nav skanning",
-                Language.Nynorsk to "Nav skanning",
-                Language.English to "Nav skanning"
-            )
-            newline()
-            text(
-                Language.Bokmal to "Postboks 1400",
-                Language.Nynorsk to "Postboks 1400",
-                Language.English to "Postboks 1400"
+                bokmal { +"Nav skanning" },
+                nynorsk { +"Nav skanning" },
+                english { +"Nav skanning" }
             )
             newline()
             text(
-                Language.Bokmal to "0109 OSLO",
-                Language.Nynorsk to "0109 OSLO",
-                Language.English to "0109 OSLO"
+                bokmal { +"Postboks 1400" },
+                nynorsk { +"Postboks 1400" },
+                english { +"Postboks 1400" }
+            )
+            newline()
+            text(
+                bokmal { +"0109 OSLO" },
+                nynorsk { +"0109 OSLO" },
+                english { +"0109 OSLO" }
             )
         }
     }
-
 }
+

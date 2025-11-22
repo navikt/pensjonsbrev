@@ -2,16 +2,24 @@ package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Type
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import java.time.LocalDate
+
+@Suppress("unused")
+@InterneDataklasser
+data class LetterMarkupWithDataUsageImpl(
+    override val markup: LetterMarkup,
+    override val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
+) : LetterMarkupWithDataUsage {
+
+    @InterneDataklasser
+    data class PropertyImpl(override val typeName: String, override val propertyName: String) : LetterMarkupWithDataUsage.Property
+}
 
 @Suppress("unused")
 @InterneDataklasser
@@ -33,7 +41,7 @@ data class LetterMarkupImpl(
     data class SakspartImpl(
         override val gjelderNavn: String,
         override val gjelderFoedselsnummer: Foedselsnummer,
-        override val vergeNavn: String?,
+        override val annenMottakerNavn: String?,
         override val saksnummer: String,
         override val dokumentDato: LocalDate,
     ) : LetterMarkup.Sakspart
@@ -41,7 +49,6 @@ data class LetterMarkupImpl(
     @InterneDataklasser
     data class SignaturImpl(
         override val hilsenTekst: String,
-        override val saksbehandlerRolleTekst: String,
         override val saksbehandlerNavn: String?,
         override val attesterendeSaksbehandlerNavn: String?,
         override val navAvsenderEnhet: String,
@@ -59,6 +66,12 @@ data class LetterMarkupImpl(
         data class Title2Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) :
             Title2 {
             override val type = Type.TITLE2
+        }
+
+        @InterneDataklasser
+        data class Title3Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) :
+            Title3 {
+            override val type = Type.TITLE3
         }
 
         @InterneDataklasser

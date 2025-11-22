@@ -7,9 +7,11 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
+import no.nav.pensjon.brevbaker.api.model.AttachmentTitle
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -19,10 +21,11 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 internal object LatexDocumentRenderer {
 
     internal fun render(pdfRequest: PDFRequest): LatexDocument = render(
-        letter = pdfRequest.letterMarkup,
+        letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments,
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
+        pdfVedlegg = pdfRequest.pdfVedlegg,
     )
 
     private fun render(
@@ -30,10 +33,11 @@ internal object LatexDocumentRenderer {
         attachments: List<LetterMarkup.Attachment>,
         language: Language,
         brevtype: LetterMetadata.Brevtype,
+        pdfVedlegg: List<PDFTittel>,
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(letter, attachments, brevtype, language)
+                appendMasterTemplateParameters(letter, attachments + pdfVedlegg, brevtype, language)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
@@ -44,11 +48,11 @@ internal object LatexDocumentRenderer {
 
     private fun LatexAppendable.appendMasterTemplateParameters(
         letter: LetterMarkup,
-        attachments: List<LetterMarkup.Attachment>,
+        attachments: List<AttachmentTitle>,
         brevtype: LetterMetadata.Brevtype,
         language: Language,
     ) {
-        // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting, LanguageSetting.Closing.saksbehandler.
+        // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
                 renderTextLiteral(settingValue, Text.FontType.PLAIN)
@@ -63,7 +67,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", renderTextsToString(letter.title))
+        appendCmd("Title", renderTextsToString(letter.title), escape = false) // allerede escapet i renderTexts
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -120,13 +124,14 @@ internal object LatexDocumentRenderer {
         appendNewCmd("feltsaksnummer", sakspart.saksnummer)
         appendNewCmd("feltfoedselsnummerbruker", sakspart.gjelderFoedselsnummer.format())
         appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
-        val verge = sakspart.vergeNavn?.also { appendNewCmd("feltvergenavn", it) }
+        // TODO slett når all bruk er borte
+        val annenMottaker = sakspart.annenMottakerNavn?.also { appendNewCmd("feltannenmottakernavn", it) }
 
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")
 
-            if (verge != null) {
-                appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
+            if (annenMottaker != null) {
+                appendln("""\felt${LanguageSetting.Sakspart.annenMottaker} & \feltannenmottakernavn \\""", escape = false)
                 appendln("""\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""", escape = false)
             } else {
                 appendln("""\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""", escape = false)
@@ -150,14 +155,14 @@ internal object LatexDocumentRenderer {
         return "D:${formattedTime.replace(":", "'")}'"
     }
 
-    private fun LatexAppendable.vedleggCommand(attachments: List<LetterMarkup.Attachment>) {
+    private fun LatexAppendable.vedleggCommand(attachments: List<AttachmentTitle>) {
         appendNewCmd("feltclosingvedlegg") {
             if (attachments.isNotEmpty()) {
                 appendCmd("begin", "attachmentList")
 
                 attachments.forEach { attachment ->
                     append("""\item """, escape = false)
-                    renderText(attachment.title)
+                    renderTextAsPlain(attachment.title)
                 }
                 appendCmd("end", "attachmentList")
             }
@@ -166,14 +171,14 @@ internal object LatexDocumentRenderer {
 
     private fun LatexAppendable.renderAttachment(attachment: LetterMarkup.Attachment) {
         appendCmd("startvedlegg") {
-            arg { renderText(attachment.title) }
+            arg { renderTextAsPlain(attachment.title) }
             arg { if (attachment.includeSakspart) append("includesakinfo") }
         }
         renderBlocks(attachment.blocks)
         appendCmd("sluttvedlegg")
     }
 
-    private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+    private fun LatexAppendable.renderTitleIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
         val text = renderTextsToString(content)
         if (text.isNotEmpty()) {
             render(text)
@@ -188,8 +193,11 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderText(elements: List<Text>): Unit =
-        elements.forEach { renderTextContent(it) }
+    private fun LatexAppendable.renderTextAsPlain(elements: List<Text>): Unit =
+        renderText(elements, forcePlainText = true)
+
+    private fun LatexAppendable.renderText(elements: List<Text>, forcePlainText: Boolean = false): Unit =
+        elements.forEach { renderTextContent(it, forcePlainText) }
 
     private fun LatexAppendable.renderBlock(
         block: LetterMarkup.Block,
@@ -199,17 +207,24 @@ internal object LatexDocumentRenderer {
         when (block) {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block, previous)
 
-            is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
+            is LetterMarkup.Block.Title1 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitleone", titleText)
+                    appendCmd("lettersectiontitleone", titleText, escape = false) // allerede escapet over.
                 }
             }
 
-            is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
+            is LetterMarkup.Block.Title2 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitletwo", titleText)
+                    appendCmd("lettersectiontitletwo", titleText, escape = false)  // allerede escapet over.
                 }
             }
+
+            is LetterMarkup.Block.Title3 -> renderTitleIfNonEmptyText(block.content) { titleText ->
+                if (!next.startsWithTable()) {
+                    appendCmd("lettersectiontitlethree", titleText, escape = false)  // allerede escapet over.
+                }
+            }
+
         }
 
     private fun LetterMarkup.Block?.startsWithTable(): Boolean =
@@ -263,7 +278,7 @@ internal object LatexDocumentRenderer {
             appendCmd(
                 "begin", "letterTable", columnHeadersLatexString(columnSpec),
                 titleTextOrNull(previous)?.let { "\\tabletitle $it" } ?: ""
-                , escape = false
+                , escape = false // allerede escapet over.
             )
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
 
@@ -279,11 +294,12 @@ internal object LatexDocumentRenderer {
         when (previous) {
             is LetterMarkup.Block.Title1 -> renderTextsToString(previous.content)
             is LetterMarkup.Block.Title2 -> renderTextsToString(previous.content)
+            is LetterMarkup.Block.Title3 -> renderTextsToString(previous.content)
             else -> null
         }?.takeIf { it.isNotBlank() }
 
     private fun renderTextsToString(texts: List<Text>): String =
-        String(StringBuilder().also { LatexAppendable(it).renderText(texts) })
+        String(StringBuilder().also { LatexAppendable(it).renderTextAsPlain(texts) })
 
     private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->
@@ -311,12 +327,14 @@ internal object LatexDocumentRenderer {
                     }).repeat(it.span)
         }
 
-    private fun LatexAppendable.renderTextContent(element: Text): Unit =
+    private fun LatexAppendable.renderTextContent(element: Text, forcePlainText: Boolean) {
+        val fontType = if (forcePlainText) Text.FontType.PLAIN else element.fontType
         when (element) {
-            is Text.Literal -> renderTextLiteral(element.text, element.fontType)
-            is Text.Variable -> renderTextLiteral(element.text, element.fontType)
+            is Text.Literal -> renderTextLiteral(element.text, fontType)
+            is Text.Variable -> renderTextLiteral(element.text, fontType)
             is Text.NewLine -> appendCmd("newline")
         }
+    }
 
     private fun LatexAppendable.renderTextLiteral(text: String, fontType: Text.FontType): Unit =
         when (fontType) {
@@ -363,4 +381,5 @@ internal object LatexDocumentRenderer {
                 }
             }
         }
+
 }

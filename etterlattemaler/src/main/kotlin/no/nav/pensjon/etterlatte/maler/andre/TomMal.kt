@@ -3,7 +3,7 @@ package no.nav.pensjon.etterlatte.maler.andre
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -18,8 +18,6 @@ object TomMal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TOM_MAL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Tom mal",
@@ -30,17 +28,17 @@ object TomMal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     ) {
         title {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
+                bokmal { +"" },
+                nynorsk { +"" },
+                english { +"" },
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Dette er en tom mal som du må benytte for å fylle inn brevet",
-                    Nynorsk to "",
-                    English to ""
+                    bokmal { +"Dette er en tom mal som du må benytte for å fylle inn brevet" },
+                    nynorsk { +"" },
+                    english { +"" }
                 )
             }
 

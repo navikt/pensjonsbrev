@@ -96,16 +96,13 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             val signerende = felles.signerendeSaksbehandlere
             if (signerende != null) {
                 div(classes("closing-manuell")) {
-                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.saksbehandler)
                     signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
-                            div { text(saksbehandlerTekst) }
                         }
                     }
                     div(classes("closing-saksbehandler")) {
                         div { text(signerende.saksbehandler) }
-                        div { text(saksbehandlerTekst) }
                     }
                 }
             } else {
@@ -137,6 +134,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             is Block.Paragraph -> renderParagraph(block)
             is Block.Title1 -> h2(classes("title1")) { renderText(block.content) }
             is Block.Title2 -> h3(classes("title2")) { renderText(block.content) }
+            is Block.Title3 -> h4(classes("title3")) { renderText(block.content) }
         }
 
     private fun FlowContent.renderParagraph(paragraph: Block.Paragraph) {
@@ -285,11 +283,12 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
+                val annenMottakerNavn = felles.annenMottakerNavn
                 val navnPrefix =
-                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+                    if (annenMottakerNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
 
                 listOfNotNull(
-                    felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    annenMottakerNavn?.let { LanguageSetting.Sakspart.annenMottaker to it },
                     navnPrefix to fulltNavn(),
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
                     LanguageSetting.Sakspart.saksnummer to felles.saksnummer,

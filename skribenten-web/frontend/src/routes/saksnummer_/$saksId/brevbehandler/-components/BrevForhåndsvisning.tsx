@@ -1,15 +1,17 @@
-import { Alert, Label, Loader, VStack } from "@navikt/ds-react";
+import { css } from "@emotion/react";
+import { Alert, BodyLong, Heading, Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
+import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import PDFViewer from "../../-components/PDFViewer";
+import PDFViewerTopBar from "../../-components/PDFViewerTopBar";
 
 const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
-    queryFn: () => hentPdfForBrevFunction(properties.saksId, properties.brevId),
+    queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
   });
 
   return queryFold({
@@ -21,10 +23,25 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
         <Label>Henter brev...</Label>
       </VStack>
     ),
-    error: (error) => <Alert variant="error">{error.message}</Alert>,
+    error: () => (
+      <>
+        <PDFViewerTopBar brevId={properties.brevId} sakId={properties.saksId} utenSlettKnapp={false} />
+        <Alert
+          css={css`
+            border-left: none;
+            border-right: none;
+          `}
+          fullWidth
+          variant="error"
+        >
+          <Heading size="xsmall">Klarte ikke åpne pdf</Heading>
+          <BodyLong>Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys.</BodyLong>
+        </Alert>
+      </>
+    ),
     success: (pdf) =>
       pdf === null ? (
-        <VStack align="center">Fant ikke PDF</VStack>
+        <VStack align="center">Fant ikke PDF for brev med id {properties.brevId}</VStack>
       ) : (
         <PDFViewer
           brevId={properties.brevId}

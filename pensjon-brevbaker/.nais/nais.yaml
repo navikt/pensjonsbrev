@@ -10,8 +10,6 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
-  kafka:
-    pool: {{kafka-pool}}
   terminationGracePeriodSeconds: 60
   service:
     port: 80
@@ -45,7 +43,9 @@ spec:
   resources:
     requests:
       cpu: "400m"
-      memory: "512Mi"
+      memory: "1Gi"
+    limits:
+      memory: "2Gi"
 
   azure:
     application:
@@ -80,9 +80,5 @@ spec:
       value: "http://pensjon-pdf-bygger"
     - name: PDF_BYGGER_MAX_RETRIES
       value: "250"
-    - name: KAFKA_PDF_RENDER_TOPIC
-      value: {{kafka-pdf-render-topic}}
-    - name: ENABLE_KAFKA
-      value: "{{enable-kafka}}"
   envFrom:
     - secret: pensjon-brevbaker-unleash-api-token

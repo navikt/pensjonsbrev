@@ -18,6 +18,8 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
+      - "/alder-brevbaker-api-model"
+      - "/aldersmaler"
       - "/brevbaker-api-model-common"
       - "/brevbaker"
       - "/brevbaker-dsl"
@@ -29,6 +31,8 @@ updates:
       - "/skribenten-backend"
       - "/template-model-generator"
       - "/tjenestebuss-integrasjon"
+      - "/ufoere-brevbaker-api-model"
+      - "/ufoeremaler"
     schedule:
       interval: "monthly"
       day: "sunday"
@@ -60,6 +64,7 @@ updates:
           - "io.micrometer*"
           - "net.logstash.logback:logstash-logback-encoder"
           - "no.nav*"
+          - "org.apache.pdfbox*"
           - "org.assertj:assertj-core"
           - "org.flyway*"
           - "org.jetbrains*"

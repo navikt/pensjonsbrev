@@ -9,8 +9,8 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.choice
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -28,8 +28,6 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
-        name = "ENKELT_REDIGERTBART_TESTBREV",
-        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Displaytittelen",
@@ -40,32 +38,36 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     ) {
         title {
             text(
-                Bokmal to "Tittelen",
-                Nynorsk to "Tittelen"
+                bokmal { +"Tittelen" },
+                nynorsk { +"Tittelen" }
             )
         }
 
         outline {
             title1 {
-                text(Bokmal to "Du har fått innvilget pensjon", Nynorsk to "Du har fått innvilget pensjon")
+                text(bokmal { +"Du har fått innvilget pensjon" }, nynorsk { +"Du har fått innvilget pensjon" })
             }
 
             title2 {
-                text(Bokmal to "Her er din title2", Nynorsk to "Her er din title2")
+                text(bokmal { +"Her er din title2" }, nynorsk { +"Her er din title2" })
+            }
+
+            title3 {
+                text(bokmal { +"Her er din title3" }, nynorsk { +"Her er din title3" })
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
-                    Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
+                    bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." },
+                    nynorsk { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." }
                 )
-                text(Bokmal to " Kanskje.", Nynorsk to " Kanskje.", fontType = FontType.BOLD)
+                text(bokmal { +" Kanskje." }, nynorsk { +" Kanskje." }, fontType = FontType.BOLD)
             }
 
             paragraph {
                 list {
                     item {
-                        text(Bokmal to "Test1", Nynorsk to "Test1")
+                        text(bokmal { +"Test1" }, nynorsk { +"Test1" })
                     }
                 }
                 formText(size = Size.LONG, newText(Bokmal to "Formtittel1", Nynorsk to "Formtittel1"))
@@ -77,14 +79,14 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 table(
                     header = {
-                        column(1) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1") }
+                        column(1) { text(bokmal { +"Kolonne 1" }, nynorsk { +"Kolonne 1" }) }
                     }
                 ) {
                     row {
                         cell {
                             text(
-                                Bokmal to "Din inntekt før skatt i måned 1",
-                                Nynorsk to "Din inntekt før skatt i måned 1"
+                                bokmal { +"Din inntekt før skatt i måned 1" },
+                                nynorsk { +"Din inntekt før skatt i måned 1" }
                             )
                         }
                     }

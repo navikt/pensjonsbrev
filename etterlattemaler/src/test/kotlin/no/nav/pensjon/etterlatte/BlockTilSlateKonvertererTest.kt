@@ -5,12 +5,15 @@ import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFVedleggAppender
+import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
@@ -26,13 +29,21 @@ class BlockTilSlateKonvertererTest {
     fun `kan lese inn letter markup fra brevbakeren`() {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
         val letterMarkup = Brevbaker(object : PDFByggerService {
-            override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(ByteArray(0))
-        }).renderLetterMarkup(letter)
+            override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean) = PDFCompilationOutput(ByteArray(0))
+        },
+            object: PDFVedleggAppender {
+                override fun leggPaaVedlegg(
+                    pdfCompilationOutput: PDFCompilationOutput,
+                    attachments: List<PDFVedlegg>,
+                    spraak: LanguageCode
+                ) = pdfCompilationOutput
+            }
+            ).renderLetterMarkup(letter)
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
     }
 
-    private fun <T : BrevbakerBrevdata> lesInnBrev(template: LetterTemplate<*, T>, arg: T): LetterImpl<T> {
+    private fun <T : AutobrevData> lesInnBrev(template: LetterTemplate<*, T>, arg: T): LetterImpl<T> {
         val letter = LetterImpl(
             template,
             arg,
@@ -44,14 +55,15 @@ class BlockTilSlateKonvertererTest {
 
     @Test
     fun `skal konvertere title1, title2 og paragraph til HEADING_TWO, HEADING_THREE og PARAGRAPH`() {
-        val letterMarkup = brevbaker_payload_med_title1_title2_og_paragraf
+        val letterMarkup = brevbaker_payload_med_title1_title2_title3_og_paragraf
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
 
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
         assertEquals(ElementType.HEADING_TWO, konvertert.elements[0].type)
         assertEquals(ElementType.HEADING_THREE, konvertert.elements[1].type)
-        assertEquals(ElementType.PARAGRAPH, konvertert.elements[2].type)
-        assertEquals(konvertert.elements.size, 3)
+        assertEquals(ElementType.HEADING_FOUR, konvertert.elements[2].type)
+        assertEquals(ElementType.PARAGRAPH, konvertert.elements[3].type)
+        assertEquals(konvertert.elements.size, 4)
     }
 
     @Test
@@ -73,18 +85,17 @@ class BlockTilSlateKonvertererTest {
         assertEquals(konvertert.elements.size, 4)
     }
 
-    private val brevbaker_payload_med_title1_title2_og_paragraf = LetterMarkupImpl(
+    private val brevbaker_payload_med_title1_title2_title3_og_paragraf = LetterMarkupImpl(
         title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(1, "Et dokument fra brevbakeren")),
         sakspart = LetterMarkupImpl.SakspartImpl(
             gjelderNavn = "Ola Nordmann",
             gjelderFoedselsnummer = Foedselsnummer("1"),
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
-            vergeNavn = null,
+            annenMottakerNavn = null,
         ),
         signatur = LetterMarkupImpl.SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
-            saksbehandlerRolleTekst = "Saksbehandler",
             saksbehandlerNavn = "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn = "Per Attesterende",
             navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"
@@ -110,6 +121,16 @@ class BlockTilSlateKonvertererTest {
                     )
                 )
             ),
+            LetterMarkupImpl.BlockImpl.Title3Impl(
+                id = 4,
+                editable = true,
+                content = listOf(
+                    LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                        id = 5,
+                        text = "Dette er title3",
+                    )
+                )
+            ),
             LetterMarkupImpl.BlockImpl.ParagraphImpl(
                 id = 5,
                 editable = true,
@@ -130,7 +151,7 @@ class BlockTilSlateKonvertererTest {
             gjelderFoedselsnummer = Foedselsnummer("1"),
             saksnummer = "1",
             dokumentDato = LocalDate.of(2024, Month.JANUARY, 1),
-            vergeNavn = null,
+            annenMottakerNavn = null,
         ),
         blocks = listOf(
             LetterMarkupImpl.BlockImpl.ParagraphImpl(
@@ -196,7 +217,6 @@ class BlockTilSlateKonvertererTest {
         ),
         signatur = LetterMarkupImpl.SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
-            saksbehandlerRolleTekst = "Saksbehandler",
             saksbehandlerNavn = "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn = "Per Attesterende",
             navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"

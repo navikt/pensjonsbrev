@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.natpryce.hamkrest.*
-import com.natpryce.hamkrest.assertion.assertThat
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -16,13 +13,10 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.junit.Test
-import java.time.LocalDate
+import org.assertj.core.api.Assertions.assertThat
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -31,24 +25,9 @@ import kotlin.time.Duration.Companion.seconds
 class PdfByggerAppTest {
     @OptIn(InterneDataklasser::class)
     private val pdfRequest = PDFRequest(
-        letterMarkup = LetterMarkupImpl(
-            title = listOf(LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(-1, "Tittel 1")),
-            sakspart = LetterMarkupImpl.SakspartImpl(
-                gjelderNavn = "Navn Navnesen",
-                gjelderFoedselsnummer = Foedselsnummer("12345678901"),
-                vergeNavn = null,
-                saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1)
-            ),
-            blocks = listOf(),
-            signatur = LetterMarkupImpl.SignaturImpl(
-                hilsenTekst = "hilsen",
-                saksbehandlerRolleTekst = "saksbehandler",
-                saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
-                attesterendeSaksbehandlerNavn = null,
-                navAvsenderEnhet = "Nav sentralt",
-            )
-        ),
+        letterMarkup = letterMarkup {
+                title { text("Tittel 1") }
+        },
         attachments = listOf(),
         language = LanguageCode.BOKMAL,
         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -88,7 +67,7 @@ class PdfByggerAppTest {
                 setBody(objectMapper.writeValueAsString(pdfRequest))
             }
             assertEquals(HttpStatusCode.InternalServerError, response.status)
-            assertThat(response.bodyAsText(), containsSubstring("Compilation timed out"))
+            assertThat(response.bodyAsText()).contains("Compilation timed out")
         }
     }
 
@@ -121,8 +100,8 @@ class PdfByggerAppTest {
                 val successful = responses.filter { it.status == HttpStatusCode.OK }
                 val queueTimedOut = responses.filter { it.status == HttpStatusCode.ServiceUnavailable }
 
-                assertThat(successful, hasSize(isWithin(IntRange(parallelism, parallelism * 2))))
-                assertThat(queueTimedOut, hasSize(equalTo(requests.size - successful.size)))
+                assertThat(successful).hasSizeBetween(parallelism, parallelism * 2)
+                assertThat(queueTimedOut).hasSize(requests.size - successful.size)
             }
         }
     }

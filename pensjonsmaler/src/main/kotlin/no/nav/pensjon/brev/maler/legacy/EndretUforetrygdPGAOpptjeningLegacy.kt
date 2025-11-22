@@ -62,12 +62,11 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -78,8 +77,6 @@ object EndretUforetrygdPGAOpptjeningLegacy : AutobrevTemplate<EndretUforetrygdPG
 override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EndretUforetrygdPGAOpptjeningLegacyDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - ny beregning av uføretrygd på grunn av endring i opptjening (automatisk)",
@@ -90,7 +87,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
     ) {
        title {
             text(
-                Bokmal to "NAV har beregnet uføretrygden din på nytt",
+                bokmal { + "NAV har beregnet uføretrygden din på nytt" },
             )
         }
 
@@ -100,7 +97,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
             paragraph {
                 text (
-                    Bokmal to "Vi har mottatt nye opplysninger fra Skatteetaten, og har derfor beregnet uføretrygden din på nytt.",
+                    bokmal { + "Vi har mottatt nye opplysninger fra Skatteetaten, og har derfor beregnet uføretrygden din på nytt." },
                 )
             }
 
@@ -110,8 +107,8 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                 ifNotNull(pe.vedtaksdata_virkningfom()){virkFom ->
                     paragraph {
-                        textExpr (
-                            Bokmal to "Utbetalingen er endret med virkning fra ".expr() + virkFom.format() + ".",
+                        text (
+                            bokmal { + "Utbetalingen er endret med virkning fra " + virkFom.format() + "." },
                         )
                     }
                 }
@@ -153,22 +150,22 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
             paragraph {
                 text (
-                    Bokmal to "Uføretrygden blir beregnet ut fra inntektsårene før du ble ufør. Vi beregner uføretrygden på nytt dersom du får endringer i:",
+                    bokmal { + "Uføretrygden blir beregnet ut fra inntektsårene før du ble ufør. Vi beregner uføretrygden på nytt dersom du får endringer i:" },
                 )
                 list {
                     item {
                         text(
-                            Bokmal to "Pensjonsgivende inntekt",
+                            bokmal { + "Pensjonsgivende inntekt" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Omsorgsopptjening",
+                            bokmal { + "Omsorgsopptjening" },
                         )
                     }
                     item {
                         text(
-                            Bokmal to "År med inntekt i utlandet",
+                            bokmal { + "År med inntekt i utlandet" },
                         )
                     }
                 }
@@ -180,8 +177,8 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                 ifNotNull(pe.vedtaksdata_virkningfom()){virkFom ->
                     paragraph {
-                        textExpr (
-                            Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra ".expr() + virkFom.format() + ". Du vil derfor motta en etterbetaling fra NAV.",
+                        text (
+                            bokmal { + "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra " + virkFom.format() + ". Du vil derfor motta en etterbetaling fra NAV." },
                         )
                     }
                 }
@@ -193,8 +190,8 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                 ifNotNull(pe.vedtaksdata_virkningfom()){virkFom ->
                     paragraph {
-                        textExpr (
-                            Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en redusert uføretrygd fra ".expr() + virkFom.format() + ".",
+                        text (
+                            bokmal { + "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en redusert uføretrygd fra " + virkFom.format() + "." },
                         )
                     }
                 }
@@ -203,11 +200,11 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
             paragraph {
                 text (
-                    Bokmal to "I vedlegget ",
+                    bokmal { + "I vedlegget " },
                 )
                 namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
                 text(
-                    Bokmal to " kan du lese mer om beregningen av uføretrygden din.",
+                    bokmal { + " kan du lese mer om beregningen av uføretrygden din." },
                 )
             }
 
@@ -220,7 +217,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14 og 22-12." },
                         )
                     }
                 }
@@ -231,7 +228,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-16 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-16 og 22-12." },
                         )
                     }
                 }
@@ -242,7 +239,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12- 11 til 12-14, 12-18 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12- 11 til 12-14, 12-18 og 22-12." },
                         )
                     }
                 }
@@ -253,7 +250,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-16, 12-18 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-16, 12-18 og 22-12." },
                         )
                     }
                 }
@@ -264,7 +261,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-16, 22-12 og overgangsforskriften § 8.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-16, 22-12 og overgangsforskriften § 8." },
                         )
                     }
                 }
@@ -275,7 +272,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 22-12 og overgangsforskriften § 8.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 22-12 og overgangsforskriften § 8." },
                         )
                     }
                 }
@@ -290,7 +287,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17 og 22-12." },
                         )
                     }
                 }
@@ -301,7 +298,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-17 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-17 og 22-12." },
                         )
                     }
                 }
@@ -312,7 +309,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17, 12-18 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17, 12-18 og 22-12." },
                         )
                     }
                 }
@@ -323,7 +320,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-18 og 22-12.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-18 og 22-12." },
                         )
                     }
                 }
@@ -334,7 +331,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-17, 22-12 og overgangsforskriften § 8.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-17, 22-12 og overgangsforskriften § 8." },
                         )
                     }
                 }
@@ -350,7 +347,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17, 22-12 og overgangsforskriften § 8.",
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17, 22-12 og overgangsforskriften § 8." },
                         )
                     }
                 }
@@ -529,7 +526,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                 paragraph {
                     text (
-                        Bokmal to "Du mottar uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Gjenlevendetillegget ditt har samme grad som uføretrygden din. Endringer i opptjeningsgrunnlaget for uføretrygden din vil også ha betydning for beregningen av gjenlevendetillegget ditt. Tjener du mer enn inntektsgrensen din, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med.",
+                        bokmal { + "Du mottar uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Gjenlevendetillegget ditt har samme grad som uføretrygden din. Endringer i opptjeningsgrunnlaget for uføretrygden din vil også ha betydning for beregningen av gjenlevendetillegget ditt. Tjener du mer enn inntektsgrensen din, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med." },
                     )
                 }
 
@@ -556,7 +553,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)

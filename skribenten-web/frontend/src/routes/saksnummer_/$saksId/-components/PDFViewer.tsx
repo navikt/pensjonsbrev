@@ -73,25 +73,28 @@ const PDFViewer = (properties: {
     <div
       css={css`
         background: var(--a-gray-300);
-        height: ${properties.viewerHeight ? `${properties.viewerHeight}` : "auto"};
-        overflow: scroll;
       `}
       ref={pdfContainerReference}
     >
       <PDFViewerTopBar
         brevId={properties.brevId}
-        currentPageNumber={currentPageNumber}
         sakId={properties.sakId}
-        scale={scale}
-        setCurrentPageNumber={setCurrentPageNumber}
-        setScale={setScale}
-        totalNumberOfPages={totalNumberOfPages}
         utenSlettKnapp={properties.utenSlettKnapp}
+        viewerControls={{
+          currentPageNumber,
+          setCurrentPageNumber,
+          totalNumberOfPages,
+          scale,
+          setScale,
+        }}
       />
       <div
         css={css`
           display: flex;
-          justify-content: center;
+          justify-content: space-around;
+          padding: var(--a-spacing-2);
+          height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
+          overflow: scroll;
         `}
       >
         <Document

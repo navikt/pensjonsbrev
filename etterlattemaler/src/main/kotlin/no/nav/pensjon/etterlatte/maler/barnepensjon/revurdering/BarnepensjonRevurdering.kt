@@ -1,19 +1,17 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -37,6 +35,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
@@ -65,15 +64,13 @@ data class BarnepensjonRevurderingDTO(
     val harUtbetaling: Boolean,
     val innholdForhaandsvarsel: List<Element>,
     val kunNyttRegelverk: Boolean,
-) : FerdigstillingBrevDTO
+) : VedleggData, FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonRevurderingDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - revurdering",
@@ -84,37 +81,37 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
     ) {
         title {
             text(
-                Bokmal to "Vi har ",
-                Nynorsk to "Vi har ",
-                English to "We have ",
+                bokmal { +"Vi har " },
+                nynorsk { +"Vi har " },
+                english { +"We have " },
             )
 
             showIf(erOmgjoering) {
                 ifNotNull(datoVedtakOmgjoering) {
-                    textExpr(
-                        Bokmal to "omgjort vedtaket om barnepensjon av ".expr() + it.format(),
-                        Nynorsk to "gjort om vedtaket om barnepensjon av ".expr() + it.format(),
-                        English to "reversed our decision regarding the  children's pension on ".expr() + it.format(),
+                    text(
+                        bokmal { +"omgjort vedtaket om barnepensjon av " + it.format() },
+                        nynorsk { +"gjort om vedtaket om barnepensjon av " + it.format() },
+                        english { +"reversed our decision regarding the  children's pension on " + it.format() },
                     )
                 }
             }.orShow {
                 showIf(erEndret) {
                     text(
-                        Bokmal to "endret",
-                        Nynorsk to "endra",
-                        English to "changed",
+                        bokmal { +"endret" },
+                        nynorsk { +"endra" },
+                        english { +"changed" },
                     )
                 } orShow {
                     text(
-                        Bokmal to "vurdert",
-                        Nynorsk to "vurdert",
-                        English to "evaluated",
+                        bokmal { +"vurdert" },
+                        nynorsk { +"vurdert" },
+                        english { +"evaluated" },
                     )
                 }
                 text(
-                    Bokmal to " barnepensjonen din",
-                    Nynorsk to " barnepensjonen din",
-                    English to " your children's pension",
+                    bokmal { +" barnepensjonen din" },
+                    nynorsk { +" barnepensjonen din" },
+                    english { +" your children's pension" },
                 )
             }
         }
@@ -132,7 +129,7 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
 
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(Felles.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
@@ -143,15 +140,15 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
 
         // Vedlegg under 18 år
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, innhold, brukerUnder18Aar.and(bosattUtland))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, brukerUnder18Aar.and(bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, brukerUnder18Aar.and(bosattUtland))
 
         // Vedlegg over 18 år
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, brukerUnder18Aar.not().and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, brukerUnder18Aar.not().and(bosattUtland))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal,  brukerUnder18Aar.not().and(bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland,  brukerUnder18Aar.not().and(bosattUtland))
 
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland,  bosattUtland)
+        includeAttachment(dineRettigheterOgPlikterNasjonal, bosattUtland.not())
 
         includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

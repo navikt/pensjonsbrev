@@ -1,10 +1,22 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Button,
+  Checkbox,
+  Heading,
+  HStack,
+  Link,
+  TextField,
+  UNSAFE_Combobox,
+  VStack,
+} from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
+import { ManueltAdressertTil } from "~/types/brev";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -14,6 +26,14 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   onCloseIntent: () => void;
 }) => {
   const { data: landData, isLoading, isError, isSuccess } = useLandData();
+  const { resetField } = useFormContext<CombinedFormData>();
+
+  const land = useWatch({
+    control: properties.control,
+    name: "manuellAdresse.adresse.land",
+  });
+  const isNorge = typeof land === "string" && land === "NO";
+
   return (
     <VStack gap="6">
       <VStack gap="4">
@@ -26,12 +46,23 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             Les rutinen for endring av adresse her {<ExternalLinkIcon />}
           </Link>
         </Alert>
-        <Alert size="small" variant="info">
-          <BodyShort size="small">
-            Brev sendes til brukers folkeregistrerte adresse eller annen foretrukken kanal. Legg til mottaker dersom
-            brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
-          </BodyShort>
-        </Alert>
+
+        <Controller
+          control={properties.control}
+          name="manuellAdresse.adresse.manueltAdressertTil"
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              description="Brevet skal til en annen mottaker enn bruker"
+              onChange={(event) =>
+                field.onChange(event.target.checked ? ManueltAdressertTil.ANNEN : ManueltAdressertTil.BRUKER)
+              }
+              size="small"
+            >
+              Annen mottaker
+            </Checkbox>
+          )}
+        />
 
         <Controller
           control={properties.control}
@@ -57,39 +88,49 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         />
 
-        <HStack gap="4">
-          <Controller
-            control={properties.control}
-            name="manuellAdresse.adresse.postnr"
-            render={({ field, fieldState }) => (
-              <TextField
-                css={css`
-                  width: 25%;
-                `}
-                label="Postnummer"
-                {...field}
-                error={fieldState.error?.message}
-                size="small"
-              />
-            )}
-          />
-          <Controller
-            control={properties.control}
-            name="manuellAdresse.adresse.poststed"
-            render={({ field, fieldState }) => (
-              <TextField
-                css={css`
-                  width: 25%;
-                `}
-                label="Poststed"
-                {...field}
-                error={fieldState.error?.message}
-                size="small"
-              />
-            )}
-          />
-        </HStack>
-
+        <Controller
+          control={properties.control}
+          name="manuellAdresse.adresse.linje3"
+          render={({ field, fieldState }) => (
+            <TextField label="Adresselinje 3" {...field} error={fieldState.error?.message} size="small" />
+          )}
+        />
+        {isNorge && (
+          <HStack gap="4">
+            <Controller
+              control={properties.control}
+              name="manuellAdresse.adresse.postnr"
+              render={({ field, fieldState }) => (
+                <TextField
+                  css={css`
+                    width: 25%;
+                  `}
+                  label="Postnummer"
+                  {...field}
+                  error={fieldState.error?.message}
+                  size="small"
+                  value={field.value ?? ""}
+                />
+              )}
+            />
+            <Controller
+              control={properties.control}
+              name="manuellAdresse.adresse.poststed"
+              render={({ field, fieldState }) => (
+                <TextField
+                  css={css`
+                    width: 25%;
+                  `}
+                  label="Poststed"
+                  {...field}
+                  error={fieldState.error?.message}
+                  size="small"
+                  value={field.value ?? ""}
+                />
+              )}
+            />
+          </HStack>
+        )}
         <div>
           {isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
           {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
@@ -122,6 +163,10 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                     label="Land *"
                     onToggleSelected={(option) => {
                       field.onChange(option);
+                      if (option !== "NO") {
+                        resetField("manuellAdresse.adresse.postnr", { defaultValue: null });
+                        resetField("manuellAdresse.adresse.poststed", { defaultValue: null });
+                      }
                     }}
                     options={options}
                     selectedOptions={options.filter((option) => option.value === field.value) ?? undefined}

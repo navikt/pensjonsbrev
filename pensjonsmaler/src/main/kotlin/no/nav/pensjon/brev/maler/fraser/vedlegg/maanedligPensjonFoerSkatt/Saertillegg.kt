@@ -26,15 +26,14 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 private object SaerTilleggetBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "Særtillegget ",
-            Nynorsk to "Særtillegget ",
-            English to "Special supplement ",
+            bokmal { + "Særtillegget " },
+            nynorsk { + "Særtillegget " },
+            english { + "Special supplement " },
             FontType.BOLD
         )
     }
@@ -70,7 +69,8 @@ data class MaanedligPensjonFoerSkattSaertillegg(
 
         //vedleggBelopST_002
         showIf(
-            brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
+            harSaertillegg
+                    and brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
                     and (
                     aldersEllerSykehjemInstOpphold
                             or erPaahelseInstitusjon
@@ -80,15 +80,15 @@ data class MaanedligPensjonFoerSkattSaertillegg(
         ) {
             paragraph {
                 includePhrase(SaerTilleggetBold)
-                textExpr(
-                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjør ".expr() +
-                            grunnpensjonSats + " prosent av grunnbeløpet. Denne gis til enslige pensjonister som ikke har rett til tilleggspensjon eller som har en tilleggspensjon som er mindre enn særtillegget.",
+                text(
+                    bokmal { + "skal sikre et visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjør " +
+                            grunnpensjonSats + " prosent av grunnbeløpet. Denne gis til enslige pensjonister som ikke har rett til tilleggspensjon eller som har en tilleggspensjon som er mindre enn særtillegget." },
 
-                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer ".expr() +
-                            grunnpensjonSats + " prosent av grunnbeløpet. Denne gis til einslege pensjonistar som ikkje har rett til tilleggspensjon eller som har ein tilleggspensjon som er lågare enn særtillegget.",
+                    nynorsk { + "skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer " +
+                            grunnpensjonSats + " prosent av grunnbeløpet. Denne gis til einslege pensjonistar som ikkje har rett til tilleggspensjon eller som har ein tilleggspensjon som er lågare enn særtillegget." },
 
-                    English to "is granted to ensure a certain minimum level of pension. You will receive special supplement calculated to ".expr() +
-                            grunnpensjonSats + " percent of the National Insurance basic amount (G). This is given to single pensioners who are not entitled to supplementary pension, or receive supplementary pension that is lower than the special supplement.",
+                    english { + "is granted to ensure a certain minimum level of pension. You will receive special supplement calculated to " +
+                            grunnpensjonSats + " percent of the National Insurance basic amount (G). This is given to single pensioners who are not entitled to supplementary pension, or receive supplementary pension that is lower than the special supplement." },
                 )
             }
         }
@@ -103,9 +103,9 @@ data class MaanedligPensjonFoerSkattSaertillegg(
             paragraph {
                 includePhrase(SaerTilleggetBold)
                 text(
-                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om ektefellen du bor sammen med har tilleggspensjon eller ikke.",
-                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om ektefellen du bur saman med har tilleggspensjon eller ikkje.",
-                    English to "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your spouse, with whom you live, is receiving supplementary pension or not.",
+                    bokmal { + "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om ektefellen du bor sammen med har tilleggspensjon eller ikke." },
+                    nynorsk { + "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om ektefellen du bur saman med har tilleggspensjon eller ikkje." },
+                    english { + "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your spouse, with whom you live, is receiving supplementary pension or not." },
                 )
             }
         }
@@ -120,9 +120,9 @@ data class MaanedligPensjonFoerSkattSaertillegg(
             paragraph {
                 includePhrase(SaerTilleggetBold)
                 text(
-                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om partner du bor sammen med har tilleggspensjon eller ikke. ",
-                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om partnaren du bur saman med har tilleggspensjon eller ikkje.",
-                    English to "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your partner, with whom you live, is receiving supplementary pension or not.",
+                    bokmal { + "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om partner du bor sammen med har tilleggspensjon eller ikke. " },
+                    nynorsk { + "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om partnaren du bur saman med har tilleggspensjon eller ikkje." },
+                    english { + "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your partner, with whom you live, is receiving supplementary pension or not." },
                 )
             }
         }
@@ -132,9 +132,9 @@ data class MaanedligPensjonFoerSkattSaertillegg(
             paragraph {
                 includePhrase(SaerTilleggetBold)
                 text(
-                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om samboeren din har tilleggspensjon eller ikke.",
-                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om sambuaren din har tilleggspensjon eller ikkje.",
-                    English to "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your cohabitant is receiving supplementary pension or not.",
+                    bokmal { + "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om samboeren din har tilleggspensjon eller ikke." },
+                    nynorsk { + "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om sambuaren din har tilleggspensjon eller ikkje." },
+                    english { + "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your cohabitant is receiving supplementary pension or not." },
                 )
             }
         }
@@ -143,15 +143,15 @@ data class MaanedligPensjonFoerSkattSaertillegg(
         showIf(brukersSivilstand.isOneOf(SAMBOER_3_2) and harSaertillegg) {
             paragraph {
                 includePhrase(SaerTilleggetBold)
-                textExpr(
-                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjør ".expr() +
-                            grunnpensjonSats + " prosent av grunnbeløpet.",
+                text(
+                    bokmal { + "skal sikre et visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjør " +
+                            grunnpensjonSats + " prosent av grunnbeløpet." },
 
-                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer ".expr() +
-                            grunnpensjonSats + " prosent av grunnbeløpet.",
+                    nynorsk { + "skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer " +
+                            grunnpensjonSats + " prosent av grunnbeløpet." },
 
-                    English to "is granted to ensure a certain minimum level of pension. You will receive special supplement calculated to ".expr() +
-                            grunnpensjonSats + " percent of the National Insurance basic amount (G).",
+                    english { + "is granted to ensure a certain minimum level of pension. You will receive special supplement calculated to " +
+                            grunnpensjonSats + " percent of the National Insurance basic amount (G)." },
                 )
             }
         }
@@ -160,9 +160,9 @@ data class MaanedligPensjonFoerSkattSaertillegg(
         showIf(harSaertillegg and harTilleggspensjon and regelverkstype.isOneOf(AP1967)) {
             paragraph {
                 text(
-                    Bokmal to "Vi har avkortet særtillegget ditt mot tilleggspensjonen, slik at du får utbetalt differansen.",
-                    Nynorsk to "Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen.",
-                    English to "The supplementary pension will be deducted from the special supplement so that you will be paid the difference.",
+                    bokmal { + "Vi har avkortet særtillegget ditt mot tilleggspensjonen, slik at du får utbetalt differansen." },
+                    nynorsk { + "Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen." },
+                    english { + "The supplementary pension will be deducted from the special supplement so that you will be paid the difference." },
                 )
             }
         }
@@ -177,9 +177,9 @@ data class MaanedligPensjonFoerSkattSaertillegg(
         ) {
             paragraph {
                 text(
-                    Bokmal to "Vi har avkortet særtillegget ditt mot tilleggspensjonen, slik at du får utbetalt differansen. Det avkortes også mot trygdetid på samme måte som for grunnpensjonen.",
-                    Nynorsk to "Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen. Det blir også avkorta mot trygdetid på same måte som for grunnpensjonen.",
-                    English to "The supplementary pension will be deducted from the special supplement so that you will be paid the difference. It is also calculated on the same period of national insurance cover as the basic pension.",
+                    bokmal { + "Vi har avkortet særtillegget ditt mot tilleggspensjonen, slik at du får utbetalt differansen. Det avkortes også mot trygdetid på samme måte som for grunnpensjonen." },
+                    nynorsk { + "Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen. Det blir også avkorta mot trygdetid på same måte som for grunnpensjonen." },
+                    english { + "The supplementary pension will be deducted from the special supplement so that you will be paid the difference. It is also calculated on the same period of national insurance cover as the basic pension." },
                 )
             }
         }
@@ -190,9 +190,9 @@ data class MaanedligPensjonFoerSkattSaertillegg(
         ) {
             paragraph {
                 text(
-                    Bokmal to "Vi har avkortet særtillegget ditt mot trygdetid på samme måte som for grunnpensjonen.",
-                    Nynorsk to "Vi har avkorta særtillegget ditt mot trygdetid på same måte som for grunnpensjonen.",
-                    English to "Special supplement is calculated on the same period of national insurance cover as the basic pension.",
+                    bokmal { + "Vi har avkortet særtillegget ditt mot trygdetid på samme måte som for grunnpensjonen." },
+                    nynorsk { + "Vi har avkorta særtillegget ditt mot trygdetid på same måte som for grunnpensjonen." },
+                    english { + "Special supplement is calculated on the same period of national insurance cover as the basic pension." },
                 )
             }
         }

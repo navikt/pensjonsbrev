@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavnQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
@@ -24,7 +24,6 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
     const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
-    context.queryClient.prefetchQuery(getNavnQuery(saksId));
     return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   component: Brevbehandler,
@@ -48,88 +47,90 @@ function Brevbehandler() {
   return (
     <div
       css={css`
-        display: flex;
-        flex: 1;
+        display: grid;
+        grid-template:
+          "meny pdf" 1fr
+          "footer footer" auto / minmax(304px, 384px) minmax(640px, 720px);
+        align-self: center;
+        align-items: start;
+
+        @media (width <= 1023px) {
+          align-self: start;
+        }
+
+        width: 100%;
+        min-width: 944px;
+        max-width: 1104px;
+
+        background-color: white;
       `}
     >
       {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
-      <div
+      <VStack
         css={css`
-          display: grid;
-          grid-template:
-            "meny pdf" 1fr
-            "footer footer" auto / 33% 66%;
-          align-items: start;
-
-          background-color: white;
-          width: 1200px;
+          padding: var(--a-spacing-6);
+          border-right: 1px solid var(--a-gray-200);
+          height: var(--main-page-content-height);
+          overflow-y: auto;
         `}
+        gap="3"
       >
-        <VStack
-          css={css`
-            padding: var(--a-spacing-6);
-            border-right: 1px solid var(--a-gray-200);
-            height: var(--main-page-content-height);
-            overflow-y: auto;
-          `}
-          gap="3"
-        >
-          <Heading level="1" size="small">
-            Brevbehandler
-          </Heading>
+        <Heading level="1" size="small">
+          Brevbehandler
+        </Heading>
 
-          {alleBrevForSak.isPending && (
-            <VStack
-              css={css`
-                padding: 1rem;
-              `}
-            >
-              <Skeleton height={80} variant="rectangle" width="100%" />
-            </VStack>
-          )}
-          {alleBrevForSak.isError && (
-            <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
-          )}
-          {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
-        </VStack>
-
-        <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}</div>
-
-        <HStack
-          css={css`
-            padding: 8px 12px;
-            grid-area: footer;
-            border-top: 1px solid var(--a-gray-200);
-          `}
-          justify="space-between"
-        >
-          <Button
-            onClick={() =>
-              navigate({
-                to: "/saksnummer/$saksId/brevvelger",
-                params: { saksId: saksId },
-                search: { enhetsId, vedtaksId },
-              })
-            }
-            size="small"
-            type="button"
-            variant="secondary"
+        {alleBrevForSak.isPending && (
+          <VStack
+            css={css`
+              padding: 1rem;
+            `}
           >
-            <HStack>
-              <PlusIcon fontSize="1.5rem" title="pluss-ikon" />
-              <Label>Lag nytt brev</Label>
-            </HStack>
-          </Button>
-          {alleBrevForSak.isSuccess && (
-            <FerdigstillOgSendBrevButton
-              brevInfo={alleBrevForSak.data}
-              sakId={saksId}
-              valgtBrevId={brevId}
-              åpneFerdigstillModal={() => setModalÅpen(true)}
-            />
-          )}
-        </HStack>
-      </div>
+            <Skeleton height={80} variant="rectangle" width="100%" />
+          </VStack>
+        )}
+        {alleBrevForSak.isError && (
+          <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
+        )}
+        {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
+      </VStack>
+
+      <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}</div>
+
+      <HStack
+        css={css`
+          padding: 8px 12px;
+          grid-area: footer;
+          border-top: 1px solid var(--a-gray-200);
+        `}
+        justify="space-between"
+      >
+        <Button
+          onClick={() =>
+            navigate({
+              to: "/saksnummer/$saksId/brevvelger",
+              params: { saksId: saksId },
+              search: { enhetsId, vedtaksId },
+            })
+          }
+          size="small"
+          type="button"
+          variant="secondary"
+        >
+          <HStack>
+            <PlusIcon fontSize="1.5rem" title="pluss-ikon" />
+            <Label>Lag nytt brev</Label>
+          </HStack>
+        </Button>
+        {alleBrevForSak.isSuccess && (
+          <FerdigstillOgSendBrevButton
+            brevInfo={alleBrevForSak.data}
+            sakId={saksId}
+            valgtBrevId={brevId}
+            åpneFerdigstillModal={() => setModalÅpen(true)}
+          />
+        )}
+      </HStack>
+      {/* </div> */}
     </div>
   );
 }

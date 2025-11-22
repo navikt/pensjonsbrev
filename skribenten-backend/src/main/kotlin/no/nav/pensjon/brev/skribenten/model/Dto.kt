@@ -2,13 +2,15 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
+import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
 import java.time.LocalDate
 
@@ -16,8 +18,9 @@ object Dto {
     data class Brevredigering(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValg,
+        val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
     data class BrevInfo(
@@ -49,7 +52,8 @@ object Dto {
         val brevredigeringId: Long,
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash<Edit.Letter>,
+        val brevdataHash: Hash<BrevdataResponse.Data>?,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -61,6 +65,7 @@ object Dto {
             if (dokumentDato != other.dokumentDato) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (redigertBrevHash != other.redigertBrevHash) return false
+            if (brevdataHash != other.brevdataHash) return false
 
             return true
         }
@@ -70,6 +75,7 @@ object Dto {
             result = 31 * result + dokumentDato.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + redigertBrevHash.hashCode()
+            result = 31 * result + brevdataHash.hashCode()
             return result
         }
     }
@@ -85,14 +91,24 @@ object Dto {
         val adresselinje2: String? = null,
         val adresselinje3: String? = null,
         val landkode: Landkode? = null,
+        val manueltAdressertTil: ManueltAdressertTil,
     ) {
         companion object {
             fun samhandler(tssId: String) = Mottaker(
                 type = MottakerType.SAMHANDLER,
                 tssId = tssId,
+                manueltAdressertTil = ManueltAdressertTil.IKKE_RELEVANT
             )
 
-            fun norskAdresse(navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) =
+            fun norskAdresse(
+                navn: String,
+                postnummer: String,
+                poststed: String,
+                adresselinje1: String?,
+                adresselinje2: String?,
+                adresselinje3: String?,
+                manueltAdressertTil: ManueltAdressertTil
+            ) =
                 Mottaker(
                     type = MottakerType.NORSK_ADRESSE,
                     navn = navn,
@@ -101,26 +117,32 @@ object Dto {
                     adresselinje1 = adresselinje1,
                     adresselinje2 = adresselinje2,
                     adresselinje3 = adresselinje3,
+                    manueltAdressertTil = manueltAdressertTil,
+
                 )
 
             fun utenlandskAdresse(
                 navn: String,
-                postnummer: String?,
-                poststed: String?,
                 adresselinje1: String,
                 adresselinje2: String?,
                 adresselinje3: String?,
                 landkode: Landkode,
+                manueltAdressertTil: ManueltAdressertTil,
             ) = Mottaker(
                 type = MottakerType.UTENLANDSK_ADRESSE,
                 navn = navn,
-                postnummer = postnummer,
-                poststed = poststed,
                 adresselinje1 = adresselinje1,
                 adresselinje2 = adresselinje2,
                 adresselinje3 = adresselinje3,
                 landkode = landkode,
+                manueltAdressertTil = manueltAdressertTil,
             )
+        }
+
+        enum class ManueltAdressertTil{
+            BRUKER,
+            ANNEN,
+            IKKE_RELEVANT
         }
     }
 }
@@ -135,15 +157,15 @@ fun Api.OverstyrtMottaker.toDto() =
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
+            manueltAdressertTil = manueltAdressertTil?: Dto.Mottaker.ManueltAdressertTil.BRUKER,
         )
         is Api.OverstyrtMottaker.UtenlandskAdresse -> utenlandskAdresse(
             navn = navn,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
             landkode = landkode,
+            manueltAdressertTil = manueltAdressertTil?: Dto.Mottaker.ManueltAdressertTil.BRUKER,
         )
     }
 
@@ -166,8 +188,6 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
         utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
             navn = navn!!,
             landkode = landkode!!,
-            postnummer = postnummer,
-            poststed = poststed,
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,

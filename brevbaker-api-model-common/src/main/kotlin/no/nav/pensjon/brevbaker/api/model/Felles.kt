@@ -8,7 +8,7 @@ class Felles(
     val saksnummer: String,
     val avsenderEnhet: NavEnhet,
     val bruker: Bruker,
-    val vergeNavn: String?,
+    val annenMottakerNavn: String?,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
 ) {
     override fun equals(other: Any?): Boolean {
@@ -17,14 +17,14 @@ class Felles(
                 && saksnummer == other.saksnummer
                 && avsenderEnhet == other.avsenderEnhet
                 && bruker == other.bruker
-                && vergeNavn == other.vergeNavn
+                && annenMottakerNavn == other.annenMottakerNavn
                 && signerendeSaksbehandlere == other.signerendeSaksbehandlere
     }
 
-    override fun hashCode() = Objects.hash(dokumentDato, saksnummer, avsenderEnhet, bruker, vergeNavn, signerendeSaksbehandlere)
+    override fun hashCode() = Objects.hash(dokumentDato, saksnummer, avsenderEnhet, bruker, annenMottakerNavn, signerendeSaksbehandlere)
 
     override fun toString() =
-        "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, vergeNavn=$vergeNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
+        "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, annenMottakerNavn=$annenMottakerNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
 
     fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles =
         Felles(
@@ -32,8 +32,18 @@ class Felles(
             saksnummer = this.saksnummer,
             avsenderEnhet = this.avsenderEnhet,
             bruker = this.bruker,
-            vergeNavn = this.vergeNavn,
+            annenMottakerNavn = this.annenMottakerNavn,
             signerendeSaksbehandlere = signerendeSaksbehandlere,
+        )
+
+    fun medAnnenMottakerNavn(annenMottakerNavn: String?): Felles =
+        Felles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            annenMottakerNavn = annenMottakerNavn,
+            signerendeSaksbehandlere = this.signerendeSaksbehandlere,
         )
 }
 

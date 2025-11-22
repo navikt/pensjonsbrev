@@ -2,14 +2,24 @@ package no.nav.pensjon.brevbaker.api.model
 
 import java.time.LocalDate
 
+interface LetterMarkupWithDataUsage {
+    val markup: LetterMarkup
+    val letterDataUsage: Set<Property>
+
+    interface Property {
+        val typeName: String
+        val propertyName: String
+    }
+}
+
 interface LetterMarkup {
     val title: List<ParagraphContent.Text>
     val sakspart: Sakspart
     val blocks: List<Block>
     val signatur: Signatur
 
-    interface Attachment {
-        val title: List<ParagraphContent.Text>
+    interface Attachment : AttachmentTitle {
+        override val title: List<ParagraphContent.Text>
         val blocks: List<Block>
         val includeSakspart: Boolean
     }
@@ -17,14 +27,13 @@ interface LetterMarkup {
     interface Sakspart {
         val gjelderNavn: String
         val gjelderFoedselsnummer: Foedselsnummer
-        val vergeNavn: String?
+        val annenMottakerNavn: String?
         val saksnummer: String
         val dokumentDato: LocalDate
     }
 
     interface Signatur {
         val hilsenTekst: String
-        val saksbehandlerRolleTekst: String
         val saksbehandlerNavn: String?
         val attesterendeSaksbehandlerNavn: String?
         val navAvsenderEnhet: String
@@ -36,7 +45,7 @@ interface LetterMarkup {
         val editable: Boolean
 
         enum class Type {
-            TITLE1, TITLE2, PARAGRAPH,
+            TITLE1, TITLE2, TITLE3, PARAGRAPH,
         }
 
         interface Title1 : Block {
@@ -49,6 +58,12 @@ interface LetterMarkup {
             val content: List<ParagraphContent.Text>
             override val type: Type
                 get() = Type.TITLE2
+        }
+
+        interface Title3 : Block {
+            val content: List<ParagraphContent.Text>
+            override val type: Type
+                get() = Type.TITLE3
         }
 
         interface Paragraph : Block {

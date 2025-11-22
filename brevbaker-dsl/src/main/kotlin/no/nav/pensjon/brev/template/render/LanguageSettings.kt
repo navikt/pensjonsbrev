@@ -9,7 +9,7 @@ object LanguageSetting {
         const val navn = "navnprefix"
         const val gjelderNavn = "gjeldernavnprefix"
         const val vedleggGjelderNavn = "vedlegggjeldernavnprefix"
-        const val vergenavn = "vergenavnprefix"
+        const val annenMottaker = "annenmottakerprefix"
         const val saksnummer = "saksnummerprefix"
         const val foedselsnummer = "foedselsnummerprefix"
     }
@@ -17,7 +17,6 @@ object LanguageSetting {
     object Closing {
         const val automatiskVedtaksbrev = "closingautomatisktextvedtaksbrev"
         const val greeting = "closinggreeting"
-        const val saksbehandler = "closingsaksbehandlersuffix"
         const val automatiskInformasjonsbrev = "closingautomatisktextinfobrev"
     }
 
@@ -35,11 +34,11 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting(LanguageSetting.Sakspart.vergenavn) {
+    setting(LanguageSetting.Sakspart.annenMottaker) {
         Literal.create(
-            Bokmal to "Verge:",
-            Nynorsk to "Verje:",
-            English to "Guardian:",
+            Bokmal to "Mottaker:",
+            Nynorsk to "Mottakar:",
+            English to "Recipient:",
         )
     }
 
@@ -103,17 +102,10 @@ val pensjonLatexSettings = languageSettings {
         Literal.create(
             Bokmal to "Med vennlig hilsen",
             Nynorsk to "Med vennleg helsing",
-            English to "Yours sincerely",
+            English to "Sincerely",
         )
     }
 
-    setting(LanguageSetting.Closing.saksbehandler) {
-        Literal.create(
-            Bokmal to "Saksbehandler",
-            Nynorsk to "Saksbehandlar",
-            English to "Caseworker",
-        )
-    }
     setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
         Literal.create(
             Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",

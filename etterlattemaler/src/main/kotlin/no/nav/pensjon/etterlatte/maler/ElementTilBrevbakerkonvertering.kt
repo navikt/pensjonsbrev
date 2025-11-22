@@ -31,6 +31,14 @@ fun <L: LanguageSupport, D : BrevDTO> OutlineOnlyScope<L, D>.konverterElementerT
                     }
                 }
             }
+        }.orShowIf(element.type.equalTo(ElementType.HEADING_FOUR)) {
+            forEach(element.children) { inner ->
+                title3 {
+                    ifNotNull(inner.text) {
+                        eval(it)
+                    }
+                }
+            }
         }.orShowIf(element.type.equalTo(ElementType.PARAGRAPH)) {
             paragraph {
                 forEach(element.children) { inner ->

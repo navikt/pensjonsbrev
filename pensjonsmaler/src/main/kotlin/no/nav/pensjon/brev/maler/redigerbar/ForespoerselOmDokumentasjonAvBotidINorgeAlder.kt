@@ -10,13 +10,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.value
@@ -32,8 +29,6 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ForespoerselOmDokumentasjonAvBotidINorgeDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Forespørsel om dokumentasjon av botid i Norge - alder",
@@ -44,7 +39,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
     ) {
         title {
             text(
-                Bokmal to "Forespørsel om dokumentasjon av botid i Norge"
+                bokmal { + "Forespørsel om dokumentasjon av botid i Norge" }
             )
         }
         outline {
@@ -52,28 +47,28 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
 
             paragraph {
                 text(
-                    Bokmal to "Vi ber med dette om å få tilsendt oversikt over botiden (kopi av "
+                    bokmal { + "Vi ber med dette om å få tilsendt oversikt over botiden (kopi av " }
                 )
-                text(Bokmal to "hovedregisterkort/navnekort", fontType = FontType.BOLD)
-                textExpr(
-                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". ",
+                text(bokmal { + "hovedregisterkort/navnekort" }, fontType = FontType.BOLD)
+                text(
+                    bokmal { + " e.l) for " + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". " },
                 )
                 showIf(saksbehandlerValg.opplystOmBotid) {
                     val dato = fritekst("mm.dd.år")
-                    textExpr(
-                        Bokmal to "Vedkommende har opplyst at ".expr() + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + ".",
+                    text(
+                        bokmal { + "Vedkommende har opplyst at " + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + "." },
                     )
                 }
             }
 
             paragraph {
-                text(Bokmal to "All", fontType = FontType.BOLD)
-                text(Bokmal to " botid i Norge bes oppgitt.")
+                text(bokmal { + "All" }, fontType = FontType.BOLD)
+                text(bokmal { + " botid i Norge bes oppgitt." })
             }
             //[PE_IY_03_167_tekst]
 
             paragraph {
-                text(Bokmal to "På forhånd takk for hjelpen.")
+                text(bokmal { + "På forhånd takk for hjelpen." })
             }
         }
     }

@@ -1,4 +1,4 @@
-import { format, formatISO } from "date-fns";
+import { formatISO } from "date-fns";
 
 import brev from "../../fixtures/brevResponse.json";
 
@@ -15,8 +15,8 @@ describe("autolagring", () => {
   });
 
   it("lagrer endring av dato-felt automatisk", () => {
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).contains({
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=*", (req) => {
+      expect(req.body.saksbehandlerValg).contains({
         mottattSoeknad: "2024-09-10",
         ytelse: "alderspensjon",
         land: "Spania",
@@ -27,18 +27,19 @@ describe("autolagring", () => {
 
     cy.visit("/saksnummer/123456/brev/1");
     cy.wait("@brev");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Overstyring").click();
+    cy.contains("Mottatt søknad").should("exist");
     cy.getDataCy("datepicker-editor").should("have.value", "24.07.2024");
     cy.getDataCy("datepicker-editor").click().clear().type("10.09.2024");
 
     cy.wait("@autoLagring");
-    cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("Lagret").should("exist");
   });
 
   it("lagrer endring av tekst-felt automatisk", () => {
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).contains({
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=*", (req) => {
+      expect(req.body.saksbehandlerValg).contains({
         mottattSoeknad: "2024-07-24",
         ytelse: "Supplerende stønad",
         land: "Spania",
@@ -50,16 +51,16 @@ describe("autolagring", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.wait("@brev");
     cy.wait("@modelSpecification");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Overstyring").click();
-    cy.contains("Ytelse").click().type("{selectall}{backspace}Supplerende stønad", { delay: 20 });
+    cy.contains("Ytelse").should("exist").click().type("{selectall}{backspace}Supplerende stønad", { delay: 20 });
     cy.wait("@autoLagring");
-    cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("Lagret").should("exist");
   });
 
   it("autolagrer når nullable tekst felter tømmes", () => {
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).contains({
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=*", (req) => {
+      expect(req.body.saksbehandlerValg).contains({
         mottattSoeknad: "2024-07-24",
         ytelse: "alderspensjon",
         land: null,
@@ -75,8 +76,8 @@ describe("autolagring", () => {
   });
 
   it("autolagrer ikke før alle avhengige felter er utfylt", () => {
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).deep.equal({
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=*", (req) => {
+      expect(req.body.saksbehandlerValg).deep.equal({
         mottattSoeknad: "2024-07-24",
         ytelse: "alderspensjon",
         land: "Spania",
@@ -90,7 +91,7 @@ describe("autolagring", () => {
     }).as("autoLagringSaksbehandlerValg");
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Saksbehandlingstiden vår er vanligvis 10 uker.").should("exist");
     cy.contains("Inkluder venter svar AFP").click();
     cy.getDataCy("datepicker-editor").eq(0).should("have.value", "");
@@ -108,7 +109,7 @@ describe("autolagring", () => {
     }).as("autoLagring");
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Sak S. Behandler");
     cy.contains("Underskrift").click().type("{selectall}{backspace}").type("Min nye underskrift");
     cy.getDataCy("brev-editor-saksbehandler").should("have.text", "Min nye underskrift");
@@ -133,7 +134,7 @@ describe("autolagring", () => {
     });
 
     cy.fixture("orienteringOmSaksbehandlingstidResponseMedSoknadOversendesTilUtlandet.json").then((response) => {
-      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+      cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=*", (req) => {
         req.reply(response);
       }).as("autoLagring");
     });

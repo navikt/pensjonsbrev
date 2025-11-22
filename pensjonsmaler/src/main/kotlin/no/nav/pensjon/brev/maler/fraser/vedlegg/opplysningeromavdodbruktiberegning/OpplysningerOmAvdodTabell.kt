@@ -81,9 +81,9 @@ data class OpplysningerOmAvdodTabell(
         val regelverkstype = alderspensjonVedVirk.regelverkType
         paragraph {
             text(
-                Bokmal to "Opplysninger om avdøde som ligger til grunn for beregningen:",
-                Nynorsk to "Opplysningar om avdøde som er grunnlag for berekninga:",
-                English to "Information regarding the deceased that provides the basis for the calculation:",
+                bokmal { + "Opplysninger om avdøde som ligger til grunn for beregningen:" },
+                nynorsk { + "Opplysningar om avdøde som er grunnlag for berekninga:" },
+                english { + "Information regarding the deceased that provides the basis for the calculation:" },
             )
         }
         showIf(regelverkstype.isOneOf(AP2011, AP2016)) {
@@ -138,7 +138,9 @@ data class OpplysningerOmAvdodTabell(
                                 )
 
                                 //vedleggTabellAvdodKap19FaktiskePoengArNorge_001
-                                antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.faktiskPoengArNorge_safe)
+                                showIf(beregningsmetode.equalTo(NORDISK)) {
+                                    antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.faktiskPoengArNorge_safe)
+                                }
 
                                 //vedleggTabellAvdodKap19FramtidigPoengar_001
                                 showIf(beregningsmetode.equalTo(FOLKETRYGD)) {
@@ -511,9 +513,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.flyktningstatusBrukt(flyk
         row {
             cell {
                 text(
-                    Bokmal to "Avdøde er registrert med flyktningestatus",
-                    Nynorsk to "Avdøde er registrert med flyktningestatus",
-                    English to "The deceased is registered with the status of a refugee",
+                    bokmal { + "Avdøde er registrert med flyktningestatus" },
+                    nynorsk { + "Avdøde er registrert med flyktningestatus" },
+                    english { + "The deceased is registered with the status of a refugee" },
                 )
             }
             cell { includePhrase(Ja) }
@@ -525,9 +527,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.foedselsnummer(avdodFnr: 
     row {
         cell {
             text(
-                Bokmal to "Fødselsnummer",
-                Nynorsk to "Fødselsnummer",
-                English to "The deceased's personal identification number",
+                bokmal { + "Fødselsnummer" },
+                nynorsk { + "Fødselsnummer" },
+                english { + "The deceased's personal identification number" },
             )
         }
 
@@ -538,10 +540,10 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.foedselsnummer(avdodFnr: 
 private fun tabellHeadingOpplysningerBruktIBeregningAvdod(virkFom: Expression<LocalDate>): TableHeaderScope<LangBokmalNynorskEnglish, Unit>.() -> Unit =
     {
         column(columnSpan = 5) {
-            textExpr(
-                Bokmal to "Opplysninger brukt i beregningen per ".expr() + virkFom.format(short = true),
-                Nynorsk to "Opplysningar brukte i berekninga frå ".expr() + virkFom.format(short = true),
-                English to "Information used to calculate as of ".expr() + virkFom.format(short = true),
+            text(
+                bokmal { + "Opplysninger brukt i beregningen per " + virkFom.format(short = true) },
+                nynorsk { + "Opplysningar brukte i berekninga frå " + virkFom.format(short = true) },
+                english { + "Information used to calculate as of " + virkFom.format(short = true) },
             )
         }
         column(columnSpan = 3, alignment = RIGHT) {}
@@ -552,9 +554,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.tilleggspensjonPgaUngUfoe
         row {
             cell {
                 text(
-                    Bokmal to "Ung ufør",
-                    Nynorsk to "Ung ufør",
-                    English to "Young person with disabilities",
+                    bokmal { + "Ung ufør" },
+                    nynorsk { + "Ung ufør" },
+                    english { + "Young person with disabilities" },
                 )
             }
             cell { includePhrase(Ja) }
@@ -570,9 +572,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.yrkesskade(
         row {
             cell {
                 text(
-                    Bokmal to "Sluttpoengtall ved yrkesskade",
-                    Nynorsk to "Sluttpoengtal ved yrkesskade",
-                    English to "Final pension point score on occupational injury",
+                    bokmal { + "Sluttpoengtall ved yrkesskade" },
+                    nynorsk { + "Sluttpoengtal ved yrkesskade" },
+                    english { + "Final pension point score on occupational injury" },
                 )
             }
             cell { eval(it.format()) }
@@ -602,9 +604,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.yrkesskade(
         row {
             cell {
                 text(
-                    Bokmal to "Yrkesskade uføregrad",
-                    Nynorsk to "Yrkesskade uføregrad",
-                    English to "Occupational injury - degree of disability",
+                    bokmal { + "Yrkesskade uføregrad" },
+                    nynorsk { + "Yrkesskade uføregrad" },
+                    english { + "Occupational injury - degree of disability" },
                 )
             }
             cell { eval(it.format() + " %") }
@@ -620,9 +622,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.framtidigePoengAar(
             row {
                 cell {
                     text(
-                        Bokmal to "Antall framtidige poengår",
-                        Nynorsk to "Talet på framtidige poengår",
-                        English to "Future point earning years",
+                        bokmal { + "Antall framtidige poengår" },
+                        nynorsk { + "Talet på framtidige poengår" },
+                        english { + "Future point earning years" },
                     )
                 }
                 cell { includePhrase(AntallAarText(it)) }
@@ -667,9 +669,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.sluttpoengTall(
             row {
                 cell {
                     text(
-                        Bokmal to "Sluttpoengtall$suffixNorsk",
-                        Nynorsk to "Sluttpoengtal$suffixNorsk",
-                        English to "Final pension point score$suffixEngelsk",
+                        bokmal { + "Sluttpoengtall$suffixNorsk" },
+                        nynorsk { + "Sluttpoengtal$suffixNorsk" },
+                        english { + "Final pension point score$suffixEngelsk" },
                     )
 
                 }
@@ -681,9 +683,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.sluttpoengTall(
             row {
                 cell {
                     text(
-                        Bokmal to "Sluttpoengtall med overkompensasjon$suffixNorsk",
-                        Nynorsk to "Sluttpoengtal med overkompensasjon$suffixNorsk",
-                        English to "Final pension point score with over-compensation$suffixEngelsk",
+                        bokmal { + "Sluttpoengtall med overkompensasjon$suffixNorsk" },
+                        nynorsk { + "Sluttpoengtal med overkompensasjon$suffixNorsk" },
+                        english { + "Final pension point score with over-compensation$suffixEngelsk" },
                     )
                 }
                 cell { eval(it.format()) }
@@ -694,9 +696,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.sluttpoengTall(
             row {
                 cell {
                     text(
-                        Bokmal to "Sluttpoengtall uten overkompensasjon$suffixNorsk",
-                        Nynorsk to "Sluttpoengtal utan overkompensasjon$suffixNorsk",
-                        English to "Final pension point score without over-compensation$suffixEngelsk",
+                        bokmal { + "Sluttpoengtall uten overkompensasjon$suffixNorsk" },
+                        nynorsk { + "Sluttpoengtal utan overkompensasjon$suffixNorsk" },
+                        english { + "Final pension point score without over-compensation$suffixEngelsk" },
                     )
                 }
                 cell { eval(it.format()) }
@@ -735,7 +737,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.broekIfNotNull(
 ) {
     ifNotNull(broek) {
         row {
-            cell { text(Bokmal to bokmal, Nynorsk to nynorsk, English to engelsk) }
+            cell { text(bokmal { + bokmal }, nynorsk { + nynorsk }, english { + engelsk }) }
             cell { includePhrase(BroekText(it.teller, it.nevner)) }
         }
     }
@@ -748,9 +750,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.antallAarIfNotNull(
         row {
             cell {
                 text(
-                    Bokmal to bokmal,
-                    Nynorsk to nynorsk,
-                    English to engelsk,
+                    bokmal { + bokmal },
+                    nynorsk { + nynorsk },
+                    english { + engelsk },
                 )
             }
             cell { includePhrase(AntallAarText(it)) }
@@ -765,9 +767,9 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.antallMaanederIfNotNull(
         row {
             cell {
                 text(
-                    Bokmal to bokmalTekst,
-                    Nynorsk to nynorskTekst,
-                    English to engelskTekst,
+                    bokmal { + bokmalTekst },
+                    nynorsk { + nynorskTekst },
+                    english { + engelskTekst },
                 )
             }
             cell { includePhrase(AntallMaanederText(it)) }

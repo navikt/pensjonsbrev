@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
     val pe: Expression<PE>
@@ -25,9 +24,9 @@ data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
 
             title1 {
                 text (
-                    Bokmal to "Slik beregner vi reduksjonen av uføretrygden",
-                    Nynorsk to "Slik bereknar vi reduksjonen av uføretrygda",
-                    English to "This is how the reduction in your disability benefit is calculated",
+                    bokmal { + "Slik beregner vi reduksjonen av uføretrygden" },
+                    nynorsk { + "Slik bereknar vi reduksjonen av uføretrygda" },
+                    english { + "This is how the reduction in your disability benefit is calculated" },
                 )
             }
         }
@@ -37,38 +36,38 @@ data class TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(
             //[TBU052V-TBU073V]
 
             paragraph {
-                textExpr (
-                    Bokmal to pe.functions.pe_ut_overskytende.format(false) + " kr",
-                    Nynorsk to pe.functions.pe_ut_overskytende.format(false) + " kr",
-                    English to "NOK ".expr() + pe.functions.pe_ut_overskytende.format(false),
+                text (
+                    bokmal { + pe.functions.pe_ut_overskytende.format(false) + " kr" },
+                    nynorsk { + pe.functions.pe_ut_overskytende.format(false) + " kr" },
+                    english { + "NOK " + pe.functions.pe_ut_overskytende.format(false) },
                 )
                 text (
-                    Bokmal to " x ",
-                    Nynorsk to " x ",
-                    English to " x ",
-                )
-                textExpr (
-                    Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " %",
-                    Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " %",
-                    English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " %",
+                    bokmal { + " x " },
+                    nynorsk { + " x " },
+                    english { + " x " },
                 )
                 text (
-                    Bokmal to " = ",
-                    Nynorsk to " = ",
-                    English to " = ",
-                )
-                textExpr (
-                    Bokmal to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(),
-                    Nynorsk to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(),
-                    English to pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format(),
+                    bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " %" },
+                    nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " %" },
+                    english { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " %" },
                 )
                 text (
-                    Bokmal to " i reduksjon for året",
-                    Nynorsk to " i reduksjon for året",
-                    English to " in reductions for the year",
+                    bokmal { + " = " },
+                    nynorsk { + " = " },
+                    english { + " = " },
+                )
+                text (
+                    bokmal { + pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format() },
+                    nynorsk { + pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format() },
+                    english { + pe.functions.pe_ut_opplyningerombergeningen_nettoperar.format() },
+                )
+                text (
+                    bokmal { + " i reduksjon for året" },
+                    nynorsk { + " i reduksjon for året" },
+                    english { + " in reductions for the year" },
                 )
             }
         }

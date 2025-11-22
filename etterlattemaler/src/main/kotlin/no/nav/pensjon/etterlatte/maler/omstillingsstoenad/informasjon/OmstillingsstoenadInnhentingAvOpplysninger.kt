@@ -3,7 +3,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -25,8 +25,6 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = OmstillingsstoenadInnhentingAvOpplysningerDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
                 LetterMetadata(
@@ -38,18 +36,18 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
         ) {
             title {
                 text(
-                    Bokmal to "Du må sende oss flere opplysninger",
-                    Nynorsk to "Du må sende oss fleire opplysningar",
-                    English to "You must submit additional information",
+                    bokmal { +"Du må sende oss flere opplysninger" },
+                    nynorsk { +"Du må sende oss fleire opplysningar" },
+                    english { +"You must submit additional information" },
                 )
             }
 
             outline {
                 paragraph {
                     text(
-                        Bokmal to "UTFALL",
-                        Nynorsk to "UTFALL",
-                        English to "UTFALL",
+                        bokmal { +"UTFALL" },
+                        nynorsk { +"UTFALL" },
+                        english { +"UTFALL" },
                     )
                 }
                 includePhrase(Felles.HvordanSendeOpplysninger(borIUtlandet))

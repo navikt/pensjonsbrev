@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
@@ -27,21 +28,19 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.enabled
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
@@ -61,8 +60,6 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
     override val template = createTemplate(
-        name = "EKSEMPEL_BREV", //Letter ID
-        letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
@@ -73,8 +70,8 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
     ) {
         title {
             text(
-                Bokmal to "Eksempelbrev",
-                Nynorsk to "Eksempelbrev"
+                bokmal { +"Eksempelbrev" },
+                nynorsk { +"Eksempelbrev" }
             )
         }
 
@@ -88,44 +85,44 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
             // section title
             title1 {
-                text(Bokmal to "Du har fått innvilget pensjon", Nynorsk to "Du har fått innvilget pensjon")
+                text(bokmal { +"Du har fått innvilget pensjon" }, nynorsk { +"Du har fått innvilget pensjon" })
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
-                    Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
+                    bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." },
+                    nynorsk { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." }
                 )
             }
 
             paragraph {
                 showIf(firstName.equalTo("Alexander")) {
                     text(
-                        Bokmal to "Hei Alexander",
-                        Nynorsk to "Hei Alexander",
+                        bokmal { +"Hei Alexander" },
+                        nynorsk { +"Hei Alexander" },
                     )
                 }.orShowIf(firstName.equalTo("Håkon")) {
                     text(
-                        Bokmal to "Hei Håkon",
-                        Nynorsk to "Hei Håkon"
+                        bokmal { +"Hei Håkon" },
+                        nynorsk { +"Hei Håkon" }
                     )
                 }.orShow {
-                    textExpr(
-                        Bokmal to "Hei ".expr() + firstName,
-                        Nynorsk to "Hei ".expr() + firstName,
+                    text(
+                        bokmal { +"Hei " + firstName },
+                        nynorsk { +"Hei " + firstName },
                     )
                 }
                 text(
-                    Bokmal to ", håper du har en fin dag!",
-                    Nynorsk to ", håper du har en fin dag!"
+                    bokmal { +", håper du har en fin dag!" },
+                    nynorsk { +", håper du har en fin dag!" }
                 )
             }
 
             paragraph {
                 forEach(tilleggEksempel) {
-                    textExpr(
-                        Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
-                        Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                    text(
+                        bokmal { +"Heisann " + it.navn + " håper du har en fin dag!" },
+                        nynorsk { +"Heisann " + it.navn + " håper du har en fin dag!" },
                     )
                 }
             }
@@ -133,13 +130,13 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
             paragraph {
                 showIf(FeatureToggles.pl7231ForventetSvartid.toggle.expr().enabled() and true.expr()) {
                     text(
-                        Bokmal to "a",
-                        Nynorsk to "b",
+                        bokmal { +"a" },
+                        nynorsk { +"b" },
                     )
                 }.orShow {
                     text(
-                        Bokmal to "nei",
-                        Nynorsk to "kanskje",
+                        bokmal { +"nei" },
+                        nynorsk { +"kanskje" },
                     )
                 }
             }
@@ -147,8 +144,8 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
             showIf(FeatureToggle("" + System.currentTimeMillis()).expr().enabled()) {
                 paragraph {
                     text(
-                        Bokmal to "Tekst styrt av funksjonsbryter",
-                        Nynorsk to "Tekst styrt av funksjonsbrytar"
+                        bokmal { +"Tekst styrt av funksjonsbryter" },
+                        nynorsk { +"Tekst styrt av funksjonsbrytar" }
                     )
                 }
             }
@@ -157,10 +154,10 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
             paragraph {
                 //ShowIf shows the content of the block if the boolean expression resolves to true
                 showIf(pensjonInnvilget) {
-                    textExpr(
+                    text(
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
-                        Bokmal to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
-                        Nynorsk to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
+                        bokmal { +"Hei " + firstName + ". Du har fått innvilget pensjon." },
+                        nynorsk { +"Hei " + firstName + ". Du har fått innvilget pensjon." },
                     )
                 }
 
@@ -168,32 +165,32 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     forEach(tilleggEksempel) { tillegg ->
                         ifNotNull(tillegg.tillegg1) {
                             item {
-                                textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format(),
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format(),
+                                text(
+                                    bokmal { +"Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
+                                    nynorsk { +"Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
                                 )
                             }
                         }
-                        item { text(Bokmal to "Joda", Nynorsk to "Jauda") }
+                        item { text(bokmal { +"Joda" }, nynorsk { +"Jauda" }) }
                     }
                     item {
-                        text(Bokmal to "Test1", Nynorsk to "Test1")
+                        text(bokmal { +"Test1" }, nynorsk { +"Test1" })
                     }
                     ifNotNull(datoAvslaatt) { dato ->
                         item {
-                            textExpr(
-                                Bokmal to "Du har fått avslag på noe ".expr() + dato.format(),
-                                Nynorsk to "Du har fått avslag på noe ".expr() + dato.format()
+                            text(
+                                bokmal { +"Du har fått avslag på noe " + dato.format() },
+                                nynorsk { +"Du har fått avslag på noe " + dato.format() }
                             )
                         }
                     }
 
                     item {
-                        text(Bokmal to "Test2", Nynorsk to "Test2")
+                        text(bokmal { +"Test2" }, nynorsk { +"Test2" })
                     }
 
                     item {
-                        text(Bokmal to "Test3", Nynorsk to "Test3")
+                        text(bokmal { +"Test3" }, nynorsk { +"Test3" })
                     }
 
                     item {
@@ -205,24 +202,24 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                         includePhrase(TextOnlyPhraseTestWithParams(datoInnvilget))
                     }
                 }
-                text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
+                text(bokmal { +lipsums[0] }, nynorsk { +lipsums[0] })
             }
 
             title1 {
-                text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt")
+                text(bokmal { +"Utbetalingsoversikt" }, nynorsk { +"Utbetalingsoversikt" })
             }
 
             paragraph {
                 text(
-                    Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020",
-                    Nynorsk to "Dette er din inntekt fra 01.01.2020 til 01.05.2020"
+                    bokmal { +"Dette er din inntekt fra 01.01.2020 til 01.05.2020" },
+                    nynorsk { +"Dette er din inntekt fra 01.01.2020 til 01.05.2020" }
                 )
                 table(
                     header = {
-                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1") }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2") }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3") }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4") }
+                        column(3) { text(bokmal { +"Kolonne 1" }, nynorsk { +"Kolonne 1" }) }
+                        column(1, RIGHT) { text(bokmal { +"Kolonne 2" }, nynorsk { +"Kolonne 2" }) }
+                        column(1, RIGHT) { text(bokmal { +"Kolonne 3" }, nynorsk { +"Kolonne 3" }) }
+                        column(1, RIGHT) { text(bokmal { +"Kolonne 4" }, nynorsk { +"Kolonne 4" }) }
                     }
                 ) {
                     forEach(tilleggEksempel) { tillegg ->
@@ -232,9 +229,9 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                         val tillegg3 = tillegg.tillegg3
                         row {
                             cell {
-                                textExpr(
-                                    Bokmal to "Du får tillegg for ".expr() + navn,
-                                    Nynorsk to "Du får tillegg for ".expr() + navn
+                                text(
+                                    bokmal { +"Du får tillegg for " + navn },
+                                    nynorsk { +"Du får tillegg for " + navn }
                                 )
                             }
                             cell {
@@ -244,17 +241,17 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                             }
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
-                                    textExpr(
-                                        Bokmal to tillegg.format(),
-                                        Nynorsk to tillegg.format()
+                                    text(
+                                        bokmal { +tillegg.format() },
+                                        nynorsk { +tillegg.format() }
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg3) { tillegg ->
-                                    textExpr(
-                                        Bokmal to tillegg.format(),
-                                        Nynorsk to tillegg.format()
+                                    text(
+                                        bokmal { +tillegg.format() },
+                                        nynorsk { +tillegg.format() }
                                     )
                                 }
                             }
@@ -263,36 +260,36 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     row {
                         cell {
                             text(
-                                Bokmal to "Din inntekt før skatt i måned 1",
-                                Nynorsk to "Din inntekt før skatt i måned 1"
+                                bokmal { +"Din inntekt før skatt i måned 1" },
+                                nynorsk { +"Din inntekt før skatt i måned 1" }
                             )
                         }
-                        cell { text(Bokmal to "100 Kr", Nynorsk to "100 Kr") }
-                        cell { text(Bokmal to "200 Kr", Nynorsk to "200 Kr") }
-                        cell { text(Bokmal to "300 Kr", Nynorsk to "300 Kr") }
+                        cell { text(bokmal { +"100 Kr" }, nynorsk { +"100 Kr" }) }
+                        cell { text(bokmal { +"200 Kr" }, nynorsk { +"200 Kr" }) }
+                        cell { text(bokmal { +"300 Kr" }, nynorsk { +"300 Kr" }) }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "Din inntekt før skatt i måned 1",
-                                Nynorsk to "Din inntekt før skatt i måned 1"
+                                bokmal { +"Din inntekt før skatt i måned 1" },
+                                nynorsk { +"Din inntekt før skatt i måned 1" }
                             )
                         }
-                        cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
-                        cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
-                        cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
+                        cell { text(bokmal { +"400 Kr" }, nynorsk { +"400 Kr" }) }
+                        cell { text(bokmal { +"500 Kr" }, nynorsk { +"500 Kr" }) }
+                        cell { text(bokmal { +"600 Kr" }, nynorsk { +"600 Kr" }) }
                     }
                     ifNotNull(datoAvslaatt) { dato ->
                         row {
                             cell {
-                                textExpr(
-                                    Bokmal to "Du har en dato satt! ".expr() + dato.format(),
-                                    Nynorsk to "Du har en dato satt! ".expr() + dato.format()
+                                text(
+                                    bokmal { +"Du har en dato satt! " + dato.format() },
+                                    nynorsk { +"Du har en dato satt! " + dato.format() }
                                 )
                             }
-                            cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
-                            cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
-                            cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
+                            cell { text(bokmal { +"400 Kr" }, nynorsk { +"400 Kr" }) }
+                            cell { text(bokmal { +"500 Kr" }, nynorsk { +"500 Kr" }) }
+                            cell { text(bokmal { +"600 Kr" }, nynorsk { +"600 Kr" }) }
                         }
                     }
                 }
@@ -300,12 +297,12 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
             // Repeat content for each element in list
             forEach(navneliste) {
                 title1 {
-                    textExpr(Bokmal to it, Nynorsk to it)
+                    text(bokmal { +it }, nynorsk { +it })
                 }
                 paragraph {
-                    textExpr(
-                        Bokmal to "En liste med navn har elementet: ".expr() + it,
-                        Nynorsk to "En liste med navn har elementet: ".expr() + it
+                    text(
+                        bokmal { +"En liste med navn har elementet: " + it },
+                        nynorsk { +"En liste med navn har elementet: " + it }
                     )
                 }
             }
@@ -315,7 +312,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
             //Print some lipsum paragraphs.
             for (lipsum in lipsums) {
-                paragraph { text(Bokmal to lipsum, Nynorsk to lipsum) }
+                paragraph { text(bokmal { +lipsum }, nynorsk { +lipsum }) }
             }
         }
         includeAttachment(testVedlegg, TestVedleggDto("test1", "test2").expr())
@@ -330,7 +327,7 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class ExampleTilleggDto(
     val navn: String,
@@ -355,9 +352,9 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
         paragraph {
             showIf(pensjonInnvilget) {
                 val dato = datoInnvilget.format()
-                textExpr(
-                    Bokmal to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
-                    Nynorsk to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
+                text(
+                    bokmal { +"Du har fått innvilget pensjon fra " + dato + "." },
+                    nynorsk { +"Du har fått innvilget pensjon fra " + dato + "." },
                 )
             }
         }
@@ -368,33 +365,33 @@ object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
     override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() =
         list {
             item {
-                text(Bokmal to "Test 1", Nynorsk to "Test 1")
+                text(bokmal { +"Test 1" }, nynorsk { +"Test 1" })
             }
 
             item {
-                text(Bokmal to "Test 2", Nynorsk to "Test 2")
+                text(bokmal { +"Test 2" }, nynorsk { +"Test 2" })
             }
 
             item {
-                text(Bokmal to "Test 3", Nynorsk to "Test 3")
+                text(bokmal { +"Test 3" }, nynorsk { +"Test 3" })
             }
         }
 }
 
 object TextOnlyPhraseTest : TextOnlyPhrase<LangBokmalNynorsk>() {
     override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
-        text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
+        text(bokmal { +"Dette er en tekstfrase" }, nynorsk { +"Dette er en tekstfrase" })
 }
 
 data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
     override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
-        textExpr(
-            Bokmal to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
-            Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+        text(
+            bokmal { +"Dette er en tekstfrase med datoen: " + dato.format() },
+            nynorsk { +"Dette er en tekstfrase med datoen: " + dato.format() },
         )
 }
 
-data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)
+data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : VedleggData
 
 @TemplateModelHelpers
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
@@ -407,9 +404,9 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     paragraph {
         //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
         val dokDato = felles.dokumentDato.format()
-        textExpr(
-            Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
-            Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
+        text(
+            bokmal { +"Test verdi 1: " + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato },
+            nynorsk { +"Test verdi 1: " + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato },
         )
     }
 }

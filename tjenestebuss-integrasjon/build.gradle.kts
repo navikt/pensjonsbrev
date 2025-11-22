@@ -1,6 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin.SHADOW_JAR_TASK_NAME
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -8,31 +5,24 @@ val javaTarget: String by System.getProperties()
 plugins {
 	application
 	kotlin("jvm")
-	alias(libs.plugins.ktor) apply true
 }
 
 group = "no.nav.pensjon.brev.tjenestebuss"
 version = "0.0.1"
 
+repositories {
+    maven {
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
+    }
+}
+
 application {
 	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
-// Merge cxf/bus-extensions.txt fra alle cxf-avhengigheter
-tasks.named(SHADOW_JAR_TASK_NAME, ShadowJar::class.java) {
-	transform(AppendingTransformer::class.java) {
-		resource = "META-INF/cxf/bus-extensions.txt"
-	}
-}
-
-ktor {
-	fatJar {
-		archiveFileName.set("app.jar")
-	}
-}
-
-val cxfVersion = "3.6.3"
-val tjenestespesifikasjonerVersion = "1.858e92e"
+// Før du oppdaterer cxf-versjonen, sjekk readme-fila for denne modulen.
+val cxfVersion = "4.1.3"
+val tjenestespesifikasjonerVersion = "1.2024.10.21-13.17-04e1c7bb6f55"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
 	implementation(libs.ktor.server.callId)
@@ -47,42 +37,31 @@ dependencies {
 	implementation(libs.ktor.client.content.negotiation)
 	implementation(libs.bundles.logging)
 
-	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
+	implementation("no.nav.tjenestespesifikasjoner.pensjon:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion") {
+        exclude("com.sun.xml.ws", "jaxws-ri")
+        exclude("com.sun.xml.bind", "jaxb-core")
+        exclude("org.eclipse.angus", "angus-mail")
+    }
 
-	implementation("javax.xml.ws:jaxws-api:2.3.1")
-	@Suppress("GradlePackageUpdate")
-	implementation("com.sun.xml.messaging.saaj:saaj-impl:1.5.1") // needs to be correct version for apache cxf to function
+    // Denne brukes transitivt gjennom samhandler-tjenestespesifikasjon og cxf-rt-frontend-jaxws.
+    // Der har de per nå 2.0.3, som er sårbar, så vi overstyrer til patchen ett hakk før, som har retta en alvorlig CVE
+    // Fjern denne rada, samt exclude av transitiv avhengighet, når vi får ny cxf-versjon eller ny samhandler-versjon med oppdatert angus-mail.
+    implementation("org.eclipse.angus:angus-mail:2.0.4")
 
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
-	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion") {
+        exclude("org.eclipse.angus", "angus-mail")
+    }
 	implementation("org.apache.cxf:cxf-rt-ws-policy:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
 
 	implementation(libs.bundles.metrics)
 
 	// Test
-	testImplementation(libs.junit.jupiter)
-	testImplementation(libs.kotlin.test.junit)
-	testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit)
 	testImplementation(libs.ktor.server.test.host)
-	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
-	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
+    testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
 	testImplementation(libs.hamkrest)
-}
-
-repositories {
-	maven {
-		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-		metadataSources {
-			artifact() //Look directly for artifact
-		}
-		content {
-			includeGroup("no.nav.pensjon.pesys-esb-wsclient")
-		}
-	}
-	maven {
-		url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-	}
 }
 
 sourceSets {
@@ -96,8 +75,8 @@ sourceSets {
 kotlin {
 	compilerOptions {
 		jvmTarget.set(JvmTarget.fromTarget(javaTarget))
-		freeCompilerArgs.add("-Xjsr305=strict")
-	}
+        freeCompilerArgs.add("-Xjsr305=strict")
+    }
 }
 
 tasks {
@@ -107,4 +86,10 @@ tasks {
 	compileTestJava {
 		targetCompatibility = javaTarget
 	}
+    test {
+        useJUnitPlatform()
+    }
+    build {
+        dependsOn(installDist)
+    }
 }

@@ -4,19 +4,19 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+
+    override val featureToggle = FeatureToggles.oversettelseAvDokumenter.toggle
 
     // PE_IY_03_168
     override val kode = Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER
@@ -25,8 +25,6 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val sakstyper = Sakstype.all
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Oversettelse av dokumenter",
@@ -37,39 +35,39 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     ) {
         title {
             text(
-                Bokmal to "Oversettelse av dokumenter",
+                bokmal { + "Oversettelse av dokumenter" },
             )
         }
         outline {
             paragraph {
-                textExpr(
-                    Bokmal to "Vi ber om bistand til å få oversatt vedlagte dokumenter fra ".expr() + fritekst("språk") + " til norsk.".expr()
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Det som ønskes oversatt er markert ".expr() + fritekst("med tusj, se vedlegg") + ".".expr()
+                text(
+                    bokmal { + "Vi ber om bistand til å få oversatt vedlagte dokumenter fra " + fritekst("språk") + " til norsk." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Husk å merke svarbrevet med saksreferansen."
+                    bokmal { + "Det som ønskes oversatt er markert " + fritekst("med tusj, se vedlegg") + "." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Husk å merke svarbrevet med saksreferansen." }
                 )
             }
             paragraph {
                 // TODO: Kan felles.avsenderEnhet.navn redigeres i fritekst felt?
-                textExpr(
-                    Bokmal to "Honorar for oversettelsen vil mot regning bli dekket av ".expr() + fritekst("felles.avsenderEnhet.navn") + ".".expr()
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to fritekst("Svar for regning sendes til følgende adresse:") + "".expr()
+                text(
+                    bokmal { + "Honorar for oversettelsen vil mot regning bli dekket av " + fritekst("felles.avsenderEnhet.navn") + "." }
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På forhånd takk for hjelpen."
+                    bokmal { + fritekst("Svar for regning sendes til følgende adresse:") + "" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "På forhånd takk for hjelpen." }
                 )
             }
         }

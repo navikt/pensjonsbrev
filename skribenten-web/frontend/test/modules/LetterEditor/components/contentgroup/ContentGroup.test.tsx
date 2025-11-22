@@ -1,3 +1,11 @@
+// jsdom sammenklapper eventuelle tekstmarkeringer umiddelbart etter avfyring av
+// fokus-hendelse, som gjør at vår programmatiske markering av fritekstfelt i
+// fokus-hendelsen ikke blir stående i den påfølgende klikk-hendelsen:
+// https://github.com/jsdom/jsdom/blob/adb999a12912f2f5ceb49fde6b1c9f7051968dc8/lib/jsdom/living/nodes/HTMLOrSVGElement-impl.js#L73
+// happy-dom gjør ikke "collapse()" etter avfyring av "focus" og oppfører seg
+// derfor likt som i nettleseren, derfor bruker vi happy-dom i denne testen:
+// @vitest-environment happy-dom
+
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Mock } from "vitest";
@@ -28,15 +36,23 @@ const block: ParagraphBlock = {
 const editorState = letter(block, block, block);
 const setEditorState: Mock<CallbackReceiver<LetterEditorState>> = vi.fn();
 
+beforeEach(() => {
+  // This makes the tests deterministic by ensuring every call to Date.now() returns the same value.
+  vi.spyOn(Date, "now").mockImplementation(() => new Date("2025-01-01T00:00:00.000Z").getTime());
+});
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
+
+const undo = vi.fn();
+const redo = vi.fn();
 
 function setup() {
   return {
     user: userEvent.setup(),
     ...render(
-      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState }}>
+      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState, undo, redo }}>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
@@ -70,7 +86,14 @@ function setupComplex(stateOverride?: LetterEditorState) {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState: stateOverride ?? complexEditorState, setEditorState }}
+        value={{
+          freeze: false,
+          error: false,
+          editorState: stateOverride ?? complexEditorState,
+          setEditorState,
+          undo,
+          redo,
+        }}
       >
         {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
           <div className={block.type} key={blockIndex}>
@@ -88,8 +111,10 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End} person");
     expect(setEditorState).toHaveBeenCalled();
+
+    const newText = content[0].text + " person";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + " person"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
   test("enter is not propagated as br-element", async () => {
@@ -99,8 +124,9 @@ describe("updateContent", () => {
 
     // The expectation is that the Enter key does not insert a line break
     // in the final text, so we expect only "asd" to be appended.
+    const newText = content[0].text + "asd";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
   test("space is not propagated as nbsp-entity", async () => {
@@ -108,8 +134,9 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}  asd");
 
+    const newText = content[0].text + "  asd";
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "  asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
   });
 });
@@ -218,6 +245,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
 
     await user.keyboard("{Home}{ArrowLeft}");
@@ -225,6 +253,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
   });
 
@@ -234,6 +263,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{Home}{ArrowLeft}");
@@ -249,6 +279,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
+      cursorPosition: 22,
     });
 
     await user.keyboard("{Home}{ArrowLeft}");
@@ -264,6 +295,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
+      cursorPosition: 7,
       itemIndex: 2,
       itemContentIndex: 0,
     });
@@ -283,12 +315,14 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowLeft}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowLeft}");
@@ -305,6 +339,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 4,
       contentIndex: 0,
+      cursorPosition: 32,
     });
 
     await user.keyboard("{ArrowRight}");
@@ -312,6 +347,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 4,
       contentIndex: 0,
+      cursorPosition: 32,
     });
   });
 
@@ -332,6 +368,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
 
     await user.keyboard("{End}{ArrowRight}");
@@ -341,6 +378,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 14,
     });
   });
   test("will skip over a block if it has no editable content", async () => {
@@ -349,6 +387,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowRight}");
@@ -357,6 +396,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
+      cursorPosition: 13,
     });
   });
   test("will skip an item if it is not editable", async () => {
@@ -365,6 +405,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
+      cursorPosition: 7,
       itemIndex: 2,
       itemContentIndex: 0,
     });
@@ -374,6 +415,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
+      cursorPosition: 7,
       itemIndex: 3,
       itemContentIndex: 0,
     });
@@ -384,18 +426,21 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowRight}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowRight}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
+      cursorPosition: 13,
     });
   });
 });

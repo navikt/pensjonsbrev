@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -55,6 +54,7 @@ internal object LetterMarkupModule : SimpleModule() {
                 val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
                     LetterMarkup.Block.Type.TITLE1 -> LetterMarkupImpl.BlockImpl.Title1Impl::class.java
                     LetterMarkup.Block.Type.TITLE2 -> LetterMarkupImpl.BlockImpl.Title2Impl::class.java
+                    LetterMarkup.Block.Type.TITLE3 -> LetterMarkupImpl.BlockImpl.Title3Impl::class.java
                     LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java
                 }
                 return p.codec.treeToValue(node, type)
@@ -95,8 +95,6 @@ internal object LetterMarkupModule : SimpleModule() {
             }
         }
 }
-
-fun pdfByggerObjectMapper() = jacksonObjectMapper().apply { pdfByggerConfig() }
 
 fun ObjectMapper.pdfByggerConfig() {
     registerModule(JavaTimeModule())

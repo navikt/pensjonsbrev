@@ -1,4 +1,4 @@
-import { format, formatISO } from "date-fns";
+import { formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
 
@@ -34,11 +34,11 @@ describe("Brevredigering", () => {
 
   it("Autolagrer etter redigering", () => {
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
     cy.wait("@hurtiglagreRedigertBrev", { timeout: 20000 });
-    cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("hello!").should("exist");
   });
 
@@ -60,6 +60,7 @@ describe("Brevredigering", () => {
     cy.contains("Land").click().type("{selectall}{backspace}").type("Mars");
     cy.contains("Underskrift").click().type("{selectall}{backspace}").type("Det nye saksbehandlernavnet");
     cy.contains("Fortsett").click();
+    cy.contains("Fortsett til brevbehandler").should("be.visible").click();
 
     cy.wait("@lagreBrev", { timeout: 20000 }).should((req) => {
       expect(req.response?.statusCode).to.equal(200);
@@ -114,7 +115,7 @@ describe("Brevredigering", () => {
     });
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
 
@@ -128,7 +129,7 @@ describe("Brevredigering", () => {
 
   it("beholder brevet etter å ville tilbakestille", () => {
     cy.visit("/saksnummer/123456/brev/1");
-    cy.contains("Lagret 26.07.2024 ").should("exist");
+    cy.contains("Lagret").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
 
@@ -154,5 +155,118 @@ describe("Brevredigering", () => {
     cy.get("ul li span:last").should("contain.text", "Du må melde");
     cy.getDataCy("editor-bullet-list").click();
     cy.get("ul li span:last").should("not.contain.text", "Du må melde");
+  });
+
+  it("lagrer ikke brev som har tomme non-nullable enum felt", () => {
+    cy.fixture("modelSpecificationBrukertestBrevPensjon2025").then((spec) => {
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].utsiktenFraKontoret.nullable = false;
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].denBesteKaken.nullable = false;
+      cy.intercept("GET", "/bff/skribenten-backend/brevmal/BRUKERTEST_BREV_PENSJON_2025/modelSpecification", spec);
+    });
+    cy.fixture("brevResponseTestBrev.json").then((brev) => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", {
+        ...brev,
+        ...{
+          saksbehandlerValg: {
+            // utsiktenFraKontoret: "MOT_TRAER_OG_NATUR",
+            // denBesteKaken: "OSTEKAKE",
+          },
+        },
+      });
+    });
+
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Overstyring").click();
+    cy.contains("Utsikten fra kontoret")
+      .parent()
+      .find('[type="radio"]')
+      .first()
+      .as("radioGroup1Option1")
+      .should("not.be.checked");
+    cy.get("@radioGroup1Option1").click().should("be.checked");
+    cy.contains("Den beste kaken er")
+      .parent()
+      .find('[type="radio"]')
+      .first()
+      .as("radioGroup2Option1")
+      .should("not.be.checked");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+      expect(req.body).deep.equal({
+        kaffemaskinensTilgjengelighet: false,
+        kontorplantenTorlill: false,
+        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
+      });
+      req.reply({
+        kaffemaskinensTilgjengelighet: false,
+        kontorplantenTorlill: false,
+        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
+      });
+    });
+
+    cy.contains("Fortsett").click().url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+      expect(req.body).deep.equal({
+        kaffemaskinensTilgjengelighet: false,
+        kontorplantenTorlill: false,
+        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
+        denBesteKaken: "GULROTKAKE",
+      });
+      req.reply({
+        kaffemaskinensTilgjengelighet: false,
+        kontorplantenTorlill: false,
+        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
+        denBesteKaken: "GULROTKAKE",
+      });
+    });
+
+    cy.get("@radioGroup2Option1").click().should("be.checked");
+    cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
+  });
+
+  it("lagrer brev som har tomme nullable enum felt", () => {
+    cy.fixture("modelSpecificationBrukertestBrevPensjon2025").then((spec) => {
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].utsiktenFraKontoret.nullable = true;
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].denBesteKaken.nullable = true;
+      cy.intercept("GET", "/bff/skribenten-backend/brevmal/BRUKERTEST_BREV_PENSJON_2025/modelSpecification", spec);
+    });
+    cy.fixture("brevResponseTestBrev.json").then((brev) => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", {
+        ...brev,
+        ...{
+          saksbehandlerValg: {
+            // utsiktenFraKontoret: "MOT_TRAER_OG_NATUR",
+            // denBesteKaken: "OSTEKAKE",
+          },
+        },
+      });
+    });
+
+    cy.visit("/saksnummer/123456/brev/1");
+    cy.contains("Overstyring").should("not.exist");
+    cy.contains("Utsikten fra kontoret")
+      .parent()
+      .find('[type="radio"]')
+      .each((elm) => expect(elm).not.to.be.checked);
+    cy.contains("Den beste kaken er")
+      .parent()
+      .find('[type="radio"]')
+      .each((elm) => expect(elm).not.to.be.checked);
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+      expect(req.body).deep.equal({
+        kaffemaskinensTilgjengelighet: false,
+        kontorplantenTorlill: false,
+      });
+      req.reply({
+        kaffemaskinensTilgjengelighet: false,
+        kontorplantenTorlill: false,
+      });
+    });
+
+    cy.contains("Fortsett").click().url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
   });
 });

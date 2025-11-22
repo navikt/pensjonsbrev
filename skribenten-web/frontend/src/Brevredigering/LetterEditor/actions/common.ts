@@ -2,11 +2,19 @@ import type { Draft } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
+import {
+  isFritekst,
+  isItemList,
+  isLiteral,
+  isTableCellIndex,
+  isTextContent,
+} from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
+  Cell,
   ColumnSpec,
   Content,
+  EditedLetter,
   ElementTags,
   Identifiable,
   Item,
@@ -17,16 +25,33 @@ import type {
   Row,
   Table,
   TextContent,
-  TITLE1,
   Title1Block,
-  TITLE2,
   Title2Block,
+  Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
+import {
+  FontType,
+  ITEM_LIST,
+  LITERAL,
+  NEW_LINE,
+  PARAGRAPH,
+  TABLE,
+  TITLE1,
+  TITLE2,
+  TITLE3,
+  VARIABLE,
+} from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
+import type {
+  BlockContentIndex,
+  Focus,
+  ItemContentIndex,
+  LetterEditorState,
+  LiteralIndex,
+  TableCellIndex,
+} from "../model/state";
 
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
@@ -36,8 +61,16 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
-  return !isItemContentIndex(f);
+export function isBlockContentIndex(f: Focus | LiteralIndex | undefined): f is BlockContentIndex {
+  return (
+    f !== undefined &&
+    "blockIndex" in f &&
+    f.blockIndex !== undefined &&
+    "contentIndex" in f &&
+    f.contentIndex !== undefined &&
+    !isItemContentIndex(f) &&
+    !isTableCellIndex(f)
+  );
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
@@ -54,12 +87,135 @@ export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is It
   );
 }
 
-export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
+export function isIndicesOfSameType<T extends LiteralIndex>(first: T, second: LiteralIndex): second is T {
   return (
-    f.contentIndex === 0 &&
-    (offset ?? f.cursorPosition) === 0 &&
-    (isItemContentIndex(f) ? f.itemIndex === 0 && f.itemContentIndex === 0 : true)
+    (isItemContentIndex(first) && isItemContentIndex(second)) ||
+    (isTableCellIndex(first) && isTableCellIndex(second)) ||
+    (isBlockContentIndex(first) && isBlockContentIndex(second))
   );
+}
+
+export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
+  if (isItemContentIndex(f)) {
+    return f.contentIndex === 0 && f.itemIndex === 0 && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+  } else if (isTableCellIndex(f)) {
+    return (
+      f.contentIndex === 0 &&
+      f.rowIndex === 0 &&
+      f.cellIndex === 0 &&
+      f.cellContentIndex === 0 &&
+      (offset ?? f.cursorPosition) === 0
+    );
+  } else if (isBlockContentIndex(f)) {
+    return f.contentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+  } else {
+    return false;
+  }
+}
+
+export function isAtStartOfItemList(f: Focus): boolean {
+  return isItemContentIndex(f) && f.itemIndex === 0 && f.itemContentIndex === 0 && f.cursorPosition === 0;
+}
+
+export function isAtEndOfItemList(f: Focus, itemList: ItemList): boolean {
+  return (
+    isItemContentIndex(f) &&
+    f.itemIndex === itemList.items.length - 1 &&
+    f.itemContentIndex === itemList.items[f.itemIndex].content.length - 1 &&
+    (f.cursorPosition ?? 0) >= text(itemList.items[f.itemIndex].content[f.itemContentIndex]).length
+  );
+}
+
+export function isAtStartOfTable(f: Focus): boolean {
+  return (
+    isTableCellIndex(f) && f.rowIndex === -1 && f.cellIndex === 0 && f.cellContentIndex === 0 && f.cursorPosition === 0
+  );
+}
+
+export function isAtEndOfTable(f: Focus, table: Table): boolean {
+  if (isTableCellIndex(f)) {
+    if (isTable(table)) {
+      const lastRowIndex = table.rows.length - 1;
+      const lastRowCells =
+        lastRowIndex >= 0
+          ? (table.rows[lastRowIndex]?.cells ?? [])
+          : table.header.colSpec.map((cs) => cs.headerContent);
+
+      const lastCellIndex = Math.max(0, lastRowCells?.length - 1);
+      const lastCellContentIndex = Math.max(0, (lastRowCells[lastCellIndex]?.text.length ?? 0) - 1);
+      const lastContent = lastRowCells[lastCellIndex]?.text[lastCellContentIndex];
+      return (
+        f.rowIndex === lastRowIndex &&
+        f.cellIndex === lastCellIndex &&
+        f.cellContentIndex === lastCellContentIndex &&
+        f.cursorPosition != null &&
+        f.cursorPosition >= (lastContent ? text(lastContent).length : 0)
+      );
+    }
+  }
+  return false;
+}
+
+export function isAtSameBlockContent(first: LiteralIndex, second: LiteralIndex): boolean {
+  return first.blockIndex === second.blockIndex && first.contentIndex === second.contentIndex;
+}
+
+export function isAtSameItem(first: ItemContentIndex, second: ItemContentIndex): boolean {
+  return (
+    first.blockIndex === first.blockIndex &&
+    second.contentIndex === second.contentIndex &&
+    first.itemIndex === second.itemIndex
+  );
+}
+
+export function isAtSameTableCell(first: TableCellIndex, second: TableCellIndex): boolean {
+  return (
+    first.blockIndex === second.blockIndex &&
+    first.contentIndex === second.contentIndex &&
+    first.rowIndex === second.rowIndex &&
+    first.cellIndex === second.cellIndex
+  );
+}
+
+export function isIndexAfter(
+  first: LiteralIndex & { cursorPosition: number },
+  after: LiteralIndex & { cursorPosition: number },
+): boolean {
+  if (first.blockIndex === after.blockIndex) {
+    if (first.contentIndex === after.contentIndex) {
+      if (isItemContentIndex(first) && isItemContentIndex(after)) {
+        if (first.itemIndex === after.itemIndex) {
+          if (first.itemContentIndex === after.itemContentIndex) {
+            return first.cursorPosition < after.cursorPosition;
+          } else {
+            return first.itemContentIndex < after.itemContentIndex;
+          }
+        } else {
+          return first.itemIndex < after.itemIndex;
+        }
+      } else if (isTableCellIndex(first) && isTableCellIndex(after)) {
+        if (first.rowIndex === after.rowIndex) {
+          if (first.cellIndex === after.cellIndex) {
+            if (first.cellContentIndex === after.cellContentIndex) {
+              return first.cursorPosition < after.cursorPosition;
+            } else {
+              return first.cellContentIndex < after.cellContentIndex;
+            }
+          } else {
+            return first.cellIndex < after.cellIndex;
+          }
+        } else {
+          return first.rowIndex < after.rowIndex;
+        }
+      } else {
+        return first.cursorPosition < after.cursorPosition;
+      }
+    } else {
+      return first.contentIndex < after.contentIndex;
+    }
+  } else {
+    return first.blockIndex < after.blockIndex;
+  }
 }
 
 export function isAtStartOfItem(f: Focus, offset?: number): boolean {
@@ -98,8 +254,9 @@ export function create(brev: BrevResponse): LetterEditorState {
     info: brev.info,
     redigertBrev: brev.redigertBrev,
     redigertBrevHash: brev.redigertBrevHash,
-    isDirty: false,
+    saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
+    history: { entries: [], entryPointer: -1 },
   };
 }
 
@@ -227,9 +384,9 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 export function newTitle(args: {
   id?: Nullable<number>;
   content: TextContent[];
-  type: typeof TITLE1 | typeof TITLE2;
+  type: typeof TITLE1 | typeof TITLE2 | typeof TITLE3;
   deletedContent?: number[];
-}): Title1Block | Title2Block {
+}): Title1Block | Title2Block | Title3Block {
   return {
     type: args.type,
     id: args.id ?? null,
@@ -380,19 +537,23 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
   };
 }
 
+export function newCell(text?: TextContent[]): Cell {
+  return {
+    id: null,
+    parentId: null,
+    text: text ?? [newLiteral({ editedText: "" })],
+  };
+}
+
 export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
-    cells: Array.from({ length: colCount }, () => ({
-      id: null,
-      parentId: null,
-      text: [newLiteral({ editedText: "" })],
-    })),
+    cells: Array.from({ length: colCount }, () => newCell()),
   };
 }
 
-export function newColSpec(colCount: number): ColumnSpec[] {
+export function newColSpec(colCount: number, headers?: { text: string; font?: FontType }[]): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
     parentId: null,
@@ -403,8 +564,8 @@ export function newColSpec(colCount: number): ColumnSpec[] {
       parentId: null,
       text: [
         newLiteral({
-          editedText: `Kolonne ${i + 1}`,
-          fontType: FontType.PLAIN,
+          editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
+          fontType: headers?.[i]?.font ?? FontType.PLAIN,
         }),
       ],
     },
@@ -414,3 +575,92 @@ export function newColSpec(colCount: number): ColumnSpec[] {
 export function safeIndex(index: number, array: unknown[]) {
   return Math.max(0, Math.min(index, array.length - 1));
 }
+
+export function isValidIndex(letter: EditedLetter, index: LiteralIndex) {
+  const content = letter.blocks[index.blockIndex]?.content[index.contentIndex];
+
+  if (isItemList(content) && isItemContentIndex(index)) {
+    return content.items[index.itemIndex]?.content[index.itemContentIndex] !== undefined;
+  } else if (isTable(content) && isTableCellIndex(index)) {
+    return index.rowIndex >= 0
+      ? content.rows[index.rowIndex]?.cells[index.cellIndex]?.text[index.cellContentIndex] !== undefined
+      : content.header.colSpec[index.cellIndex]?.headerContent?.text[index.cellContentIndex] !== undefined;
+  } else {
+    return isTextContent(content) && isBlockContentIndex(index);
+  }
+}
+
+/**
+ * Normalizes the order of deletedContent and deletedItems arrays by sorting them.
+ *
+ * This is necessary because the frontend and backend store deletion IDs in different orders:
+ * - Frontend tracks deletions in the order they occur
+ * - Backend processes and returns them in a different order.
+ *
+ * Without this normalization, identical content with differently ordered deletion arrays
+ * would be considered different, causing undo/redo history to be incorrectly cleared.
+ * see ManagedLetterEditorContextProvider.tsx for usage.
+ *
+ * Example:
+ * Frontend: deletedContent: [491536928, 1727594288, -830599486]
+ * Backend:  deletedContent: [1727594288, 491536928, -830599486]
+ * After normalization, both become: [-830599486, 491536928, 1727594288]
+ */
+export function normalizeDeletedArrays(obj: unknown): unknown {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => normalizeDeletedArrays(item));
+  }
+  if (typeof obj === "object" && obj !== null) {
+    const normalized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if ((key === "deletedContent" || key === "deletedItems" || key === "deletedBlocks") && Array.isArray(value)) {
+        // Sort to normalize order differences between frontend and backend
+        normalized[key] = [...value].sort((a, b) => a - b);
+      } else {
+        normalized[key] = normalizeDeletedArrays(value);
+      }
+    }
+    return normalized;
+  }
+  return obj;
+}
+
+export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
+  const blockLiterals = letter.blocks.flatMap((block) => {
+    switch (block.type) {
+      case TITLE1:
+      case TITLE2:
+      case TITLE3:
+        return (block.content ?? []).filter((content) => isLiteral(content));
+      case PARAGRAPH:
+        return (block.content ?? []).flatMap((content) => {
+          if (isLiteral(content)) return [content];
+          if (isItemList(content))
+            return content?.items.flatMap((item) => (item?.content ?? []).filter((literal) => isLiteral(literal)));
+          if (isTable(content)) {
+            const header = content.header?.colSpec?.flatMap((spec) =>
+              (spec.headerContent?.text ?? []).filter(isLiteral),
+            );
+            const body = content.rows?.flatMap((row) =>
+              row.cells?.flatMap((cell) => (cell.text ?? []).filter(isLiteral)),
+            );
+            return [...header, ...body];
+          }
+          return [];
+        });
+      default:
+        return [];
+    }
+  });
+  const topTitleLiterals = (letter.title?.text ?? []).filter(isLiteral);
+
+  return [...topTitleLiterals, ...blockLiterals];
+}
+
+export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
+  return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
+}
+
+export const countUnfilledFritekstPlaceholders = (letter: EditedLetter): number => {
+  return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
+};

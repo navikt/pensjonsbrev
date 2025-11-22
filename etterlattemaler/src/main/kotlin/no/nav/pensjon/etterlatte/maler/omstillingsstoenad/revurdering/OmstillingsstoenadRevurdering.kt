@@ -1,18 +1,19 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
 
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.beregning
@@ -41,7 +42,7 @@ data class OmstillingsstoenadRevurderingDTO(
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
     val erInnvilgelsesaar: Boolean
-): FerdigstillingBrevDTO {
+): VedleggData, FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
 
@@ -51,8 +52,6 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
     override val template =
         createTemplate(
-            name = kode.name,
-            letterDataType = OmstillingsstoenadRevurderingDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
             LetterMetadata(
@@ -64,44 +63,44 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
         ) {
             title {
                 text(
-                    Bokmal to "Vi har ",
-                    Nynorsk to "Vi har ",
-                    English to "We have ",
+                    bokmal { +"Vi har " },
+                    nynorsk { +"Vi har " },
+                    english { +"We have " },
                 )
                 showIf(erOmgjoering) {
                     ifNotNull(datoVedtakOmgjoering) {
-                        textExpr(
-                            Bokmal to "omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                            Nynorsk to "gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                            English to "reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                        text(
+                            bokmal { +"omgjort vedtaket om omstillingsstønad av " + it.format() },
+                            nynorsk { +"gjort om vedtaket om omstillingsstønad av " + it.format() },
+                            english { +"reversed our decision regarding the adjustment allowance on " + it.format() },
                         )
                     }
                 }.orShow {
                     showIf(beregning.sisteBeregningsperiode.sanksjon) {
                         text(
-                            Bokmal to "stanset",
-                            Nynorsk to "stansa",
-                            English to "stopped",
+                            bokmal { +"stanset" },
+                            nynorsk { +"stansa" },
+                            english { +"stopped" },
                         )
                     } orShow {
                         showIf(erEndret) {
                             text(
-                                Bokmal to "endret",
-                                Nynorsk to "endra",
-                                English to "changed",
+                                bokmal { +"endret" },
+                                nynorsk { +"endra" },
+                                english { +"changed" },
                             )
                         } orShow {
                             text(
-                                Bokmal to "vurdert",
-                                Nynorsk to "vurdert",
-                                English to "evaluated",
+                                bokmal { +"vurdert" },
+                                nynorsk { +"vurdert" },
+                                english { +"evaluated" },
                             )
                         }
                     }
                     text(
-                        Bokmal to " omstillingsstønaden din",
-                        Nynorsk to " omstillingsstønaden din",
-                        English to " your adjustment allowance",
+                        bokmal { +" omstillingsstønaden din" },
+                        nynorsk { +" omstillingsstønaden din" },
+                        english { +" your adjustment allowance" },
                     )
                 }
             }
@@ -122,7 +121,7 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                 includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
                 includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
                 includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilAaKlage)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
 
@@ -150,7 +149,7 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 
-            includeAttachment(dineRettigheterOgPlikter, innhold)
+            includeAttachment(dineRettigheterOgPlikter)
             includeAttachment(
                 forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering,
                 this.argument,

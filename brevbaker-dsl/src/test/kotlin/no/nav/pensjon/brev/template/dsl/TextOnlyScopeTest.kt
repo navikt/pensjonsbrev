@@ -14,7 +14,7 @@ class TextOnlyScopeTest {
     @Test
     fun `no-data includePhrase adds phrase elements`() {
         val phrase = object : TextOnlyPhrase<LangBokmal>() {
-            override fun TextOnlyScope<LangBokmal, Unit>.template() = text(Bokmal to "hei")
+            override fun TextOnlyScope<LangBokmal, Unit>.template() = text(bokmal { +"hei" })
         }
 
         val actual = TextOnlyScope<LangBokmal, Unit>().apply { includePhrase(phrase) }
@@ -23,7 +23,7 @@ class TextOnlyScopeTest {
     }
 
     data class TextPhraseWithArg(val str: Expression<String>): TextOnlyPhrase<LangBokmal>() {
-        override fun TextOnlyScope<LangBokmal, Unit>.template() = textExpr(Bokmal to str)
+        override fun TextOnlyScope<LangBokmal, Unit>.template() = text(bokmal { +str })
     }
 
     @Test
@@ -34,7 +34,7 @@ class TextOnlyScopeTest {
     }
 
     object TestPlainTextOnlyPhrase : PlainTextOnlyPhrase<LangBokmal>() {
-        override fun PlainTextOnlyScope<LangBokmal, Unit>.template() = text(Bokmal to "hei")
+        override fun PlainTextOnlyScope<LangBokmal, Unit>.template() = text(bokmal { + "hei" })
     }
 
     @Test
@@ -47,7 +47,7 @@ class TextOnlyScopeTest {
     @Test
     fun `includePhrase can use langcombo with more languages`() {
         val phrase = object : TextOnlyPhrase<LangBokmalNynorsk>() {
-            override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() = text(Bokmal to "hei", Nynorsk to "hei")
+            override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() = text(bokmal { +"hei" }, nynorsk { + "hei" })
         }
         // Will not compile if support is broken
         TextOnlyScope<LangBokmal, Unit>().apply { includePhrase(phrase) }

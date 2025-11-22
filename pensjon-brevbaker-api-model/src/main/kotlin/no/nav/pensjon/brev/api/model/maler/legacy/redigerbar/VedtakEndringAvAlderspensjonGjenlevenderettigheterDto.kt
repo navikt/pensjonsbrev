@@ -3,8 +3,9 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
@@ -18,17 +19,15 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
+        @DisplayText("Omregnet til enslig i samme vedtak")
         val omregnetTilEnsligISammeVedtak: Boolean,
-        val pensjonenOeker: Boolean,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
         val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
         @DisplayText("Hvis avdøde har redusert trygdetid/poengår")
         val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
-        @DisplayText("Hvis endring i pensjonsutbetaling")
-        val endringIPensjonsutbetaling: Boolean,
         @DisplayText("Hvis etterbetaling av pensjon")
-        val etterbetaling: Boolean,
-    ) : BrevbakerBrevdata
+        val etterbetaling: Boolean?,
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val avdod: Avdod,
@@ -42,7 +41,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 
     data class Avdod(
         val navn: String
@@ -54,7 +53,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
 
     data class Krav(
         val virkDatoFom: LocalDate,
-        val kravInitiertAv: KravInitiertAv
+        val kravInitiertAv: KravInitiertAv,
     )
 
     data class AlderspensjonVedVirk(

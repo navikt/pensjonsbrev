@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.util.Objects
@@ -94,23 +95,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Any): String = input.toString()
     }
 
-    object QuotationStart : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationStart") {
-        override fun apply(input: Language): String =
-            when (input) {
-                Language.Bokmal -> "«"
-                Language.Nynorsk -> "«"
-                Language.English -> "'"
-            }
-    }
-
-    object QuotationEnd : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationEnd") {
-        override fun apply(input: Language): String =
-            when (input) {
-                Language.Bokmal -> "»"
-                Language.Nynorsk -> "»"
-                Language.English -> "'"
-            }
-    }
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {

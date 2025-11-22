@@ -2,21 +2,21 @@ package no.nav.pensjon.brev.template
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 
 private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
     TESTBREV_REDIGERBART;
@@ -25,7 +25,7 @@ private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
 }
 
 private class BrevTemplateTest {
-    private val testExpressionScope = ExpressionScope(EmptyBrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
     private object EksempelBrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
@@ -34,8 +34,6 @@ private class BrevTemplateTest {
         override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =
             createTemplate(
-                name = "test",
-                letterDataType = EmptyRedigerbarBrevdata::class,
                 languages = languages(Language.Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "testBrev",
@@ -44,7 +42,7 @@ private class BrevTemplateTest {
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
                 )
             ) {
-                title { text(Language.Bokmal to "Test tittel") }
+                title { text(bokmal { +"Test tittel" }) }
 
             }
 
@@ -60,6 +58,25 @@ private class BrevTemplateTest {
                         .eval(testExpressionScope),
                     equalTo(text)
                 )
+            }
+        }
+    }
+
+    @Test
+    fun `kan ikke ha fritekst uten tekst`() {
+        with(EksempelBrev.template) {
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                    assertThrows<IllegalArgumentException> { fritekst("       ") }
+            }
+        }
+    }
+
+
+    @Test
+    fun `kan ha fritekst med mellomrom foerst og sist`() {
+        with(EksempelBrev.template) {
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                assertDoesNotThrow{ fritekst(" hei ") }
             }
         }
     }

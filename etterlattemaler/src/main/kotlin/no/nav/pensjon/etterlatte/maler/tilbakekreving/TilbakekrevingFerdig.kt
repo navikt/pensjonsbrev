@@ -1,11 +1,12 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
@@ -57,7 +58,7 @@ data class TilbakekrevingDTO(
     val helTilbakekreving: Boolean,
     val perioder: List<TilbakekrevingPeriode>,
     val summer: TilbakekrevingBeloeper
-)
+) : VedleggData
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
@@ -85,8 +86,6 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_FERDIG
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = TilbakekrevingBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Tilbakekreving",
@@ -99,23 +98,23 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
         title {
             showIf(data.tilbakekreving.skalTilbakekreve) {
                 showIf(data.doedsbo) {
-                    textExpr(
-                        Bokmal to "Dødsboet må betale tilbake ".expr() + data.sakType.format(),
-                        Nynorsk to "Dødsbuet må betale tilbake ".expr() + data.sakType.format(),
-                        English to "The estate must pay reimbursement for ".expr() + data.sakType.format()
+                    text(
+                        bokmal { +"Dødsboet må betale tilbake " + data.sakType.format() },
+                        nynorsk { +"Dødsbuet må betale tilbake " + data.sakType.format() },
+                        english { +"The estate must pay reimbursement for " + data.sakType.format() }
                     )
                 }.orShow {
-                    textExpr(
-                        Bokmal to "Du må betale tilbake ".expr() + data.sakType.format(),
-                        Nynorsk to "Du må betale tilbake ".expr() + data.sakType.format(),
-                        English to "You must pay reimbursement for ".expr() + data.sakType.format()
+                    text(
+                        bokmal { +"Du må betale tilbake " + data.sakType.format() },
+                        nynorsk { +"Du må betale tilbake " + data.sakType.format() },
+                        english { +"You must pay reimbursement for " + data.sakType.format() }
                     )
                 }
             }.orShow {
-                textExpr(
-                    Bokmal to "Du skal ikke betale tilbake ".expr() + data.sakType.format(),
-                    Nynorsk to "Du skal ikkje betale tilbake ".expr() + data.sakType.format(),
-                    English to "No reimbursement for ".expr() + data.sakType.format() + " will be claimed",
+                text(
+                    bokmal { +"Du skal ikke betale tilbake " + data.sakType.format() },
+                    nynorsk { +"Du skal ikkje betale tilbake " + data.sakType.format() },
+                    english { +"No reimbursement for " + data.sakType.format() + " will be claimed" },
                 )
             }
 
@@ -162,18 +161,16 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
 
         }
 
-        includeAttachment(tilbakekrevingVedlegg, data.tilbakekreving)
+        includeAttachment(tilbakekrevingVedlegg, attachmentData = data.tilbakekreving)
 
         // Nasjonal
         includeAttachment(
             klageOgAnke(bosattUtland = false, tilbakekreving = true),
-            innhold,
             data.bosattUtland.not().and(data.doedsbo.not())
         )
         // Bosatt utland
         includeAttachment(
             klageOgAnke(bosattUtland = true, tilbakekreving = true),
-            innhold,
             data.bosattUtland.and(data.doedsbo.not())
         )
     }

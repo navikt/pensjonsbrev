@@ -137,7 +137,7 @@ object BrevmalOverstyring {
         ),
         Brevkategori.VARSEL to listOf("VARSEL_REVURD", "PE_IY_03_051", "PE_IY_03_179"),
         Brevkategori.VEDTAK_EKSPORT to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
-        Brevkategori.OMSORGSOPPTJENING to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010"),
+        Brevkategori.OMSORGSOPPTJENING to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010", "PE_IY_04_001"),
         Brevkategori.UFOEREPENSJON to listOf(
             "PE_UP_04_001",
             "PE_UP_04_020",

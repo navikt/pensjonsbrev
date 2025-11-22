@@ -1,4 +1,4 @@
-name: "Build and release pensjon-brevbaker-api-model"
+name: "Build and release brevbaker-api-models"
 on:
   workflow_dispatch:
   pull_request:
@@ -6,18 +6,29 @@ on:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
+      - "alder-brevbaker-api-model/**"
+      - "ufoere-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
   push:
     branches:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
+      - "alder-brevbaker-api-model/**"
+      - "ufoere-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
-env:
-  JavaDistribution: "temurin"
-  JavaVersion: 21
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+
+permissions:
+  packages: write
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -26,6 +37,8 @@ jobs:
     outputs:
       common: ${{ steps.changes.outputs.common }}
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
+      aldersbrev: ${{ steps.changes.outputs.aldersbrev }}
+      ufoerebrev: ${{ steps.changes.outputs.ufoerebrev }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -38,65 +51,58 @@ jobs:
               - 'brevbaker-api-model-common/**'
             pensjonsbrev:
               - 'pensjon-brevbaker-api-model/**'
+            aldersbrev:
+              - 'alder-brevbaker-api-model/**'
+            ufoerebrev:
+              - 'ufoere-brevbaker-api-model/**'
+
   "release-common":
     name: "brevbaker-api-model-common"
-    runs-on: "ubuntu-latest"
-    permissions:
-      packages: write
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
     needs: [ changes ]
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: gradle/actions/wrapper-validation@v4
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v4
-        with:
-          "distribution": ${{ env.JavaDistribution }}
-          "java-version": ${{ env.JavaVersion }}
-      - name: "compile and run tests"
-        run: "./gradlew :brevbaker-api-model-common:build"
-      - name: "Release maven artifact"
-        if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.common == 'true' }}
-        run: "./gradlew :brevbaker-api-model-common:publish -Dorg.gradle.configuration-cache=false"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Release maven manually"
-        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :brevbaker-api-model-common:publish -Dorg.gradle.configuration-cache=false
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    with:
+      path: 'brevbaker-api-model-common'
+      release-common-result: 'success'
+      changes: ${{ needs.changes.outputs.common }}
+      dependsOnCommon: false
 
   "release-pensjon":
     name: "pensjon-brevbaker-api-model"
-    runs-on: "ubuntu-latest"
-    permissions:
-      packages: write
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
     needs: [ release-common, changes ]
-    if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped' || github.event_name == 'workflow_dispatch') }}
+    with:
+      path: 'pensjon-brevbaker-api-model'
+      release-common-result: ${{ needs.release-common.result }}
+      changes: ${{ needs.changes.outputs.pensjonsbrev }}
+
+  "release-alder":
+    name: "alder-brevbaker-api-model"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ release-common, changes ]
+    with:
+      path: 'alder-brevbaker-api-model'
+      release-common-result: ${{ needs.release-common.result }}
+      changes: ${{ needs.changes.outputs.aldersbrev }}
+
+  "release-ufoere":
+    name: "ufoere-brevbaker-api-model"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ release-common, changes ]
+    with:
+      path: 'ufoere-brevbaker-api-model'
+      release-common-result: ${{ needs.release-common.result }}
+      changes: ${{ needs.changes.outputs.ufoerebrev }}
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [release-common, release-pensjon, release-alder, release-ufoere]
+    runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: gradle/actions/wrapper-validation@v4
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/setup-java@v4
-        with:
-          "distribution": ${{ env.JavaDistribution }}
-          "java-version": ${{ env.JavaVersion }}
-      - name: "compile and run tests"
-        run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal  
-          ./gradlew :pensjon-brevbaker-api-model:build
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Release maven artifact"
-        if:  ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.pensjonsbrev == 'true' }}
-        run: "./gradlew :pensjon-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Release maven manually"
-        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :pensjon-brevbaker-api-model:publish -Dorg.gradle.configuration-cache=false
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: ./.github/pr

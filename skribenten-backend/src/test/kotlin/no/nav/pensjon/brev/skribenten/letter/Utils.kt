@@ -13,12 +13,17 @@ fun letter(vararg blocks: LetterMarkup.Block) =
         sakspart = SakspartImpl(
             gjelderNavn = "Test Testeson",
             gjelderFoedselsnummer = Foedselsnummer("1234568910"),
-            vergeNavn = null,
+            annenMottakerNavn = null,
             saksnummer = "1234",
             dokumentDato = LocalDate.now()
         ),
         blocks = blocks.toList(),
-        signatur = SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn")
+        signatur = SignaturImpl(
+            hilsenTekst = "Med vennlig hilsen",
+            saksbehandlerNavn = "Kjersti Saksbehandler",
+            attesterendeSaksbehandlerNavn = null,
+            navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
+        )
     )
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =
@@ -27,14 +32,13 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         sakspart = SakspartImpl(
             gjelderNavn = "Test Testeson",
             gjelderFoedselsnummer = Foedselsnummer("1234568910"),
-            vergeNavn = null,
+            annenMottakerNavn = null,
             saksnummer = "1234",
             dokumentDato = dokumentDato
         ),
         blocks = if (fixParentIds) { blocks.map { it.fixParentIds(null) }.toList() } else blocks.toList(),
         signatur = SignaturImpl(
             hilsenTekst = "Med vennlig hilsen",
-            saksbehandlerRolleTekst = "Saksbehandler",
             saksbehandlerNavn = "Kjersti Saksbehandler",
             attesterendeSaksbehandlerNavn = null,
             navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
@@ -47,6 +51,7 @@ private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
         is Edit.Block.Paragraph -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.Block.Title1 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.Block.Title2 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
+        is Edit.Block.Title3 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
     }
 
 private fun Edit.ParagraphContent.fixParentIds(parentId: Int?): Edit.ParagraphContent =

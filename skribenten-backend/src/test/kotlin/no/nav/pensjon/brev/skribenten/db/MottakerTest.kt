@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -21,10 +23,11 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class MottakerTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
+    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     @BeforeAll
     fun startDb() {
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         postgres.start()
         initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
     }
@@ -43,6 +46,7 @@ class MottakerTest {
             Mottaker.new(brevredigering.id.value) {
                 type = MottakerType.SAMHANDLER
                 tssId = "12345"
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
@@ -58,10 +62,12 @@ class MottakerTest {
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = "12345"
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = "123456"
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
         }
@@ -74,6 +80,7 @@ class MottakerTest {
             Mottaker.new(brevredigeringId) {
                 type = MottakerType.SAMHANDLER
                 tssId = "12345"
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         transaction { Brevredigering[brevredigeringId].mottaker?.tssId = "abc" }
@@ -101,14 +108,13 @@ class MottakerTest {
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
                     gjelderFoedselsnummer = Foedselsnummer("c"),
-                    vergeNavn = null,
+                    annenMottakerNavn = null,
                     saksnummer = "d",
                     dokumentDato = LocalDate.now(),
                 ),
                 emptyList(),
                 LetterMarkupImpl.SignaturImpl(
                     hilsenTekst = "f",
-                    saksbehandlerRolleTekst = "g",
                     saksbehandlerNavn = "en signatur",
                     attesterendeSaksbehandlerNavn = "i",
                     navAvsenderEnhet = "j",

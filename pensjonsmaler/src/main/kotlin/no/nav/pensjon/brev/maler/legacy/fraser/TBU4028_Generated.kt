@@ -10,8 +10,8 @@ object TBU4028_Generated : OutlinePhrase<LangBokmalNynorsk>() {
 
 		paragraph {
 			text (
-				Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-16 og 12-18. ",
-				Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-16 og 12-18. ",
+				bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-16 og 12-18. " },
+				nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-16 og 12-18. " },
 			)
 		}
     }

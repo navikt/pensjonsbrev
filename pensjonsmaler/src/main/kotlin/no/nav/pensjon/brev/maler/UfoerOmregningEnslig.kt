@@ -48,6 +48,7 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -61,8 +62,6 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = UfoerOmregningEnsligDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
@@ -75,9 +74,9 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
         title {
             text(
-                Bokmal to "Nav har regnet om uføretrygden din",
-                Nynorsk to "Nav har rekna om uføretrygda di",
-                English to "Nav has altered your disability benefit",
+                bokmal { + "Nav har regnet om uføretrygden din" },
+                nynorsk { + "Nav har rekna om uføretrygda di" },
+                english { + "Nav has altered your disability benefit" },
             )
         }
 
@@ -321,7 +320,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)

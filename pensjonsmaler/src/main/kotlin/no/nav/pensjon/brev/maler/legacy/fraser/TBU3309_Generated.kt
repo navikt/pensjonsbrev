@@ -21,51 +21,51 @@ data class TBU3309_Generated(
 
 		paragraph {
 			text (
-				Bokmal to "I etterbetalingen trekker vi skatt etter standardsatser fra Skatteetaten. På utbetalingsmeldingen ser du hvilken skattesats som er brukt. Nav kan redusere etterbetalingen din dersom du har:",
-				Nynorsk to "I etterbetalinga trekkjer vi skatt etter standardsatsar frå Skatteetaten. På utbetalingsmeldinga ser du kva skattesats som er brukt. Nav kan redusere etterbetalinga di dersom du har:",
+				bokmal { + "I etterbetalingen trekker vi skatt etter standardsatser fra Skatteetaten. På utbetalingsmeldingen ser du hvilken skattesats som er brukt. Nav kan redusere etterbetalingen din dersom du har:" },
+				nynorsk { + "I etterbetalinga trekkjer vi skatt etter standardsatsar frå Skatteetaten. På utbetalingsmeldinga ser du kva skattesats som er brukt. Nav kan redusere etterbetalinga di dersom du har:" },
 			)
 			list {
 				item {
 					text(
-						Bokmal to "Feilutbetalingsgjeld hos Nav",
-						Nynorsk to "feilutbetalingsgjeld hos Nav",
+						bokmal { + "Feilutbetalingsgjeld hos Nav" },
+						nynorsk { + "feilutbetalingsgjeld hos Nav" },
 					)
 				}
 
 				item {
 					text(
-						Bokmal to "Ettergitt feilutbetaling av uføretrygd ",
-						Nynorsk to "ettergitt feilutbetaling av uføretrygd ",
+						bokmal { + "Ettergitt feilutbetaling av uføretrygd " },
+						nynorsk { + "ettergitt feilutbetaling av uføretrygd " },
 					)
 
 					//IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggFB = true OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_BarnetilleggSB = true) THEN      INCLUDE ENDIF
 					showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb() or pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb())) {
 						text(
-							Bokmal to "og barnetillegg ",
-							Nynorsk to "og barnetillegg ",
+							bokmal { + "og barnetillegg " },
+							nynorsk { + "og barnetillegg " },
 						)
 					}
 					text(
-						Bokmal to "for samme år",
-						Nynorsk to "for same år",
+						bokmal { + "for samme år" },
+						nynorsk { + "for same år" },
 					)
 				}
 				item {
 					text(
-						Bokmal to "Bidragsgjeld hos Nav",
-						Nynorsk to "bidragsgjeld hos Nav",
+						bokmal { + "Bidragsgjeld hos Nav" },
+						nynorsk { + "bidragsgjeld hos Nav" },
 					)
 				}
 				item {
 					text(
-						Bokmal to "Utbetaling fra en tjenestepensjonsordning som krever refusjon",
-						Nynorsk to "utbetaling frå ei tenestepensjonsordning som krev refusjon",
+						bokmal { + "Utbetaling fra en tjenestepensjonsordning som krever refusjon" },
+						nynorsk { + "utbetaling frå ei tenestepensjonsordning som krev refusjon" },
 					)
 				}
 			}
 			text (
-				Bokmal to "Dersom vi reduserer etterbetalingsbeløpet fordi du har gjeld, mottar du et eget brev om dette. Refusjon fra en tjenestepensjonsordning ser du på utbetalingsmeldingen.",
-				Nynorsk to "Dersom vi reduserer etterbetalingsbeløpet fordi du har gjeld, får du eit eige brev om dette. Refusjon frå ei tenestepensjonsordning ser du på utbetalingsmeldinga.",
+				bokmal { + "Refusjon fra en tjenestepensjonsordning ser du på utbetalingsmeldingen." },
+				nynorsk { + "Refusjon frå ei tenestepensjonsordning ser du på utbetalingsmeldinga." },
 			)
 		}
     }

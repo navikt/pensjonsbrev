@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
+import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -22,18 +24,18 @@ class CreateAttachmentTest {
     val vedlegg = createAttachment<LangNynorsk, LittInnhold>(
         title = {
             text(
-                Nynorsk to "Test vedlegg"
+                nynorsk { +"Test vedlegg" }
             )
             ifNotNull(test1) { eval(it) }
             eval(test2.format())
             showIf(test2.greaterThan(5)) {
-                text(Nynorsk to "parameteret er større enn 5")
+                text(nynorsk { +"parameteret er større enn 5" })
             }
         },
         includeSakspart = true
     ) {
         paragraph {
-            text(Nynorsk to "test")
+            text(nynorsk { +"test" })
         }
     }
     @Test
@@ -41,22 +43,21 @@ class CreateAttachmentTest {
         val testVedlegg = vedlegg
 
         val testTemplate = createTemplate(
-            name = "test",
             letterDataType = LittInnhold::class,
             languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title { text(Nynorsk to "tittel") }
+            title { text(nynorsk { +"tittel" }) }
             outline {}
             includeAttachment(testVedlegg, argument)
         }
 
         val tittel =
-            Letter2Markup.render(LetterImpl(testTemplate, LittInnhold("testtekst", 10), Nynorsk, Fixtures.felles)).attachments
+            Letter2Markup.render(LetterImpl(testTemplate, LittInnhold("testtekst", 10), Nynorsk, FellesFactory.felles)).attachments
                 .first()
                 .title
         assertEquals(4, tittel.size)
     }
 
-    data class LittInnhold(val test1: String?, val test2: Int)
+    data class LittInnhold(val test1: String?, val test2: Int) : VedleggData, AutobrevData
 }

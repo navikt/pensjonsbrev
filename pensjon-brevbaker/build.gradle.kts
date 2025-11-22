@@ -6,7 +6,6 @@ plugins {
     application
     kotlin("jvm")
     alias(libs.plugins.ksp) apply true
-    alias(libs.plugins.ktor) apply true
 }
 
 group = "no.nav.pensjon.brev"
@@ -14,12 +13,6 @@ version = "0.0.1-SNAPSHOT"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
-}
-
-ktor {
-    fatJar {
-        archiveFileName.set("${project.name}.jar")
-    }
 }
 
 repositories {
@@ -38,6 +31,9 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = javaTarget
+    }
+    build {
+        dependsOn(installDist)
     }
 }
 
@@ -102,13 +98,15 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.client.encoding)
-    implementation(libs.kafka.streams)
-    implementation(libs.connect.runtime)
 
     implementation(project(":pensjonsmaler"))
+    implementation(project(":aldersmaler"))
+    implementation(project(":ufoeremaler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
+
+    implementation(libs.pdfbox)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
@@ -126,5 +124,6 @@ dependencies {
     testImplementation(libs.pdfbox)
 
     testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation(testFixtures(project(":brevbaker-dsl")))
 }
 

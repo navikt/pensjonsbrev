@@ -4,10 +4,12 @@ import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VS
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 
+import { getBrevmetadataQuery } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getFavoritterQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
@@ -34,8 +36,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
-    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
-    return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
+    context.queryClient.prefetchQuery(getBrevmetadataQuery);
+    return await context.queryClient.ensureQueryData(getSakContextQuery(saksId, vedtaksId));
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -47,7 +49,8 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
-  const { brevMetadata: letterTemplates } = Route.useLoaderData();
+  const { brevmalKoder } = Route.useLoaderData();
+  const brevmetadata = useQuery({ ...getBrevmetadataQuery, select: metadataMapFromList }).data ?? {};
 
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
@@ -62,12 +65,20 @@ export function BrevvelgerPage() {
         display: flex;
         flex-direction: column;
         align-self: center;
+
+        @media (width <= 1023px) {
+          align-self: start;
+        }
+        width: 100%;
+        min-width: 944px;
+        max-width: 1104px;
         background-color: white;
       `}
     >
       <BrevvelgerMainContent
         alleSaksbrevQuery={alleSaksbrevQuery}
-        letterTemplates={letterTemplates}
+        brevmalKoder={brevmalKoder}
+        brevmetadata={brevmetadata}
         saksId={saksId}
         setOnSubmitClick={setOnSubmitClick}
       />
@@ -83,56 +94,62 @@ export function BrevvelgerPage() {
 
 const BrevvelgerMainContent = (props: {
   saksId: string;
-  letterTemplates: LetterMetadata[];
+  brevmalKoder: string[];
+  brevmetadata: Record<string, LetterMetadata>;
   alleSaksbrevQuery: UseQueryResult<BrevInfo[], Error>;
   setOnSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const { brevId, templateId, enhetsId } = Route.useSearch();
+  const { brevmalKoder, brevmetadata } = props;
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
 
-  const closeAccordionWhereTemplateWasAdded = (templateId: string) => {
-    const kategori = props.letterTemplates.find((template) => template.id === templateId)?.brevkategori ?? "Annet";
+  const closeAccordionWhereTemplateWasAdded = useCallback(
+    (templateId: string) => {
+      const kategori = brevmetadata[templateId]?.brevkategori ?? "Annet";
 
-    setOpenAccordions((prev) => ({
-      ...prev,
-      [kategori]: !prev[kategori],
-    }));
-  };
+      setOpenAccordions((prev) => ({
+        ...prev,
+        [kategori]: false,
+      }));
+    },
+    [brevmetadata, setOpenAccordions],
+  );
 
   return (
     <div
       css={css`
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(640px, 720px) minmax(304px, 384px);
         background-color: white;
         height: var(--main-page-content-height);
       `}
     >
       <VStack
         css={css`
-          width: 720px;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
           padding: var(--a-spacing-5) var(--a-spacing-6);
-          overflow-y: scroll;
+          overflow-y: auto;
         `}
         gap="6"
       >
-        <Heading level="5" size="small">
-          Brevmeny
+        <Heading level="1" size="small">
+          Brevvelger
         </Heading>
         <Brevmaler
           alleSaksbrev={props.alleSaksbrevQuery}
+          brevmalKoder={brevmalKoder}
+          brevmetadata={brevmetadata}
           handleOpenAccordionChange={(categoryKey) =>
             setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
           }
-          letterTemplates={props.letterTemplates}
           openAccordions={openAccordions}
         />
       </VStack>
       <BrevmalPanel
         brevId={brevId}
+        brevmetadata={brevmetadata}
         enhetsId={enhetsId ?? ""}
-        letterTemplates={props.letterTemplates}
         onAddFavorittSuccess={(templateId) => closeAccordionWhereTemplateWasAdded(templateId)}
         saksId={props.saksId}
         setOnFormSubmitClick={props.setOnSubmitClick}
@@ -143,12 +160,14 @@ const BrevvelgerMainContent = (props: {
 };
 
 function Brevmaler({
-  letterTemplates,
+  brevmalKoder,
+  brevmetadata,
   alleSaksbrev,
   openAccordions,
   handleOpenAccordionChange,
 }: {
-  letterTemplates: LetterMetadata[];
+  brevmalKoder: string[];
+  brevmetadata: Record<string, LetterMetadata>;
   alleSaksbrev: UseQueryResult<BrevInfo[], Error>;
   openAccordions: Record<string, boolean>;
   handleOpenAccordionChange: (categoryKey: string) => void;
@@ -158,10 +177,23 @@ function Brevmaler({
   const [searchTerm, setSearchTerm] = useState("");
   const favoritter = useQuery(getFavoritterQuery).data ?? [];
 
-  const brevmalerMatchingSearchTerm = sortBy(
-    letterTemplates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
-    (template) => template.name,
+  const alleBrevmaler: LetterMetadata[] = useMemo(
+    () => brevmalKoder.map((kode) => brevmetadata[kode]).filter((b): b is LetterMetadata => b !== undefined),
+    [brevmalKoder, brevmetadata],
   );
+
+  const fuse = useMemo(() => {
+    const fuseOptions = {
+      keys: ["name", "brevsystem", "brevkategori"],
+      threshold: 0.4, // lower => stricter, less fuzzy (default is 0.6)
+    };
+    return new Fuse(alleBrevmaler, fuseOptions);
+  }, [alleBrevmaler]);
+
+  const brevmalerMatchingSearchTerm =
+    searchTerm.trim().length === 0
+      ? sortBy(alleBrevmaler, (template) => template.name)
+      : fuse.search(searchTerm).map((result) => result.item);
 
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
   const [eblanketter, brevmaler] = partition(
@@ -206,7 +238,7 @@ function Brevmaler({
         indent={false}
         size="small"
       >
-        {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} letterTemplates={letterTemplates} />}
+        {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} brevmetadata={brevmetadata} />}
 
         {Object.keys(brevmalerGroupedByType).length === 0 && (
           <Alert data-cy="ingen-treff-alert" size="small" variant="info">
@@ -293,7 +325,7 @@ function Brevmaler({
   );
 }
 
-const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterMetadata[] }) => {
+const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<string, LetterMetadata> }) => {
   const { brevId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const kladder = props.alleBrevPåSaken.filter(erBrevKladdEllerUnderRedigering);
@@ -349,9 +381,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                     gap="2"
                     wrap={false}
                   >
-                    <BrevSystemIcon
-                      brevsystem={props.letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
-                    />
+                    <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
 
                     <BodyShort
                       css={css`
@@ -432,3 +462,7 @@ const BrevmalButton = (props: {
     </Button>
   );
 };
+
+function metadataMapFromList(letterMetadataList: LetterMetadata[]): Record<string, LetterMetadata> {
+  return letterMetadataList.reduce((acc, b) => ({ ...acc, [b.id]: b }), {} as Record<string, LetterMetadata>);
+}

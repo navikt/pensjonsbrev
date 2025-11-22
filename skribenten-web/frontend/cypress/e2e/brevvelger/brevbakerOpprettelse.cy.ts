@@ -32,7 +32,7 @@ describe("Oppretter brevbakerbrev", () => {
     }).as("getBrevmal");
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
     cy.wait("@getBrevmal");
-    cy.contains("Åpne brev").click("left");
+    cy.contains("Åpne brev").click();
     cy.get(".navds-error-message").should("have.length", 3);
   });
 
@@ -56,7 +56,7 @@ describe("Oppretter brevbakerbrev", () => {
       });
 
       req.reply({ fixture: "brevResponse.json" });
-    }).as("createBrev");
+    });
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
 
@@ -66,7 +66,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
-    cy.contains("Åpne brev").click("left");
+    cy.contains("Åpne brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });
 
@@ -88,7 +88,7 @@ describe("Oppretter brevbakerbrev", () => {
         vedtaksId: null,
       });
       req.reply({ fixture: "brevResponse.json" });
-    }).as("createBrev");
+    });
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID");
 
@@ -96,7 +96,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt søknad").click().type("09.10.2024");
-    cy.contains("Åpne brev").click("left");
+    cy.contains("Åpne brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });
 
@@ -119,10 +119,75 @@ describe("Oppretter brevbakerbrev", () => {
         vedtaksId: null,
       });
       req.reply({ fixture: "brevResponse.json" });
-    }).as("createBrev");
+    });
 
     cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
-    cy.contains("Åpne brev").click("left");
+    cy.contains("Åpne brev").click();
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+  });
+
+  it("oppretter brev som har tomme nullable enum felt", () => {
+    cy.fixture("modelSpecificationBrukertestBrevPensjon2025").then((spec) => {
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].utsiktenFraKontoret.nullable = true;
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].denBesteKaken.nullable = true;
+
+      cy.intercept("GET", "/bff/skribenten-backend/brevmal/BRUKERTEST_BREV_PENSJON_2025/modelSpecification", spec).as(
+        "modelSpecification",
+      );
+    });
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", { fixture: "brevResponseTestBrev.json" });
+
+    cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
+    cy.wait("@modelSpecification");
+
+    cy.contains("Brevvelger").should("exist");
+
+    cy.contains("Mot trær og natur").should("not.exist");
+
+    cy.contains("Åpne brev").click();
+
+    cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
+
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+  });
+
+  it("oppretter ikke brev som har tomme non-nullable enum felt", () => {
+    cy.fixture("modelSpecificationBrukertestBrevPensjon2025").then((spec) => {
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].utsiktenFraKontoret.nullable = false;
+      spec.types[`${spec.letterModelTypeName}.SaksbehandlerValg`].denBesteKaken.nullable = false;
+      cy.intercept("GET", "/bff/skribenten-backend/brevmal/BRUKERTEST_BREV_PENSJON_2025/modelSpecification", spec).as(
+        "modelSpecification",
+      );
+    });
+    cy.fixture("brevResponseTestBrev.json").then((brev) => {
+      cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", {
+        ...brev,
+        ...{
+          saksbehandlerValg: {
+            utsiktenFraKontoret: "MOT_TRAER_OG_NATUR",
+            denBesteKaken: "OSTEKAKE",
+          },
+        },
+      });
+    });
+
+    cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
+    cy.wait("@modelSpecification");
+    cy.contains("Brevvelger").should("exist");
+
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
+    cy.get("select[name=spraak]").should("have.value", "NB");
+
+    cy.contains("Åpne brev").click();
+
+    cy.url().should("not.eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
+
+    cy.contains("Mot trær og natur").click();
+    cy.contains("Ostekake").click();
+    cy.contains("@errorMessage").should("not.exist");
+
+    cy.contains("Åpne brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });
 });

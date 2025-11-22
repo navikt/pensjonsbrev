@@ -7,14 +7,13 @@ import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterSaksbehandlerValg } from "~/api/brev-queries";
+import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
-import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -25,7 +24,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
@@ -76,15 +75,35 @@ const VedtakWrapper = () => {
               navigate({
                 to: "/saksnummer/$saksId/brevbehandler",
                 params: { saksId },
-                search: { vedtaksId, enhetsId },
+                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
               })
             }
             reservasjon={err.response.data as ReservasjonResponse}
           />
         );
       }
+
       if (err.response?.status === 409) {
         return <ArkivertBrev saksId={saksId} />;
+      }
+
+      if (err.response?.status === 403) {
+        const axiosError = err as AxiosError & { forbidReason?: AttestForbiddenReason };
+        const reason = axiosError.forbidReason;
+        if (reason) {
+          return (
+            <AttestForbiddenModal
+              onClose={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevbehandler",
+                  params: { saksId },
+                  search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                })
+              }
+              reason={reason}
+            />
+          );
+        }
       }
 
       return (
@@ -140,9 +159,17 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     defaultValues: defaultValuesModelEditor,
   });
 
-  const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
-    mutationFn: (saksbehandlerValg) => oppdaterSaksbehandlerValg(props.brev.info.id, saksbehandlerValg),
-    onSuccess: (response) => onSaveSuccess(response),
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+    mutationFn: (values) =>
+      oppdaterBrev({
+        saksId: Number.parseInt(props.saksId),
+        brevId: props.brev.info.id,
+        request: {
+          redigertBrev: values.redigertBrev,
+          saksbehandlerValg: values.saksbehandlerValg,
+        },
+      }),
+    onSuccess: onSaveSuccess,
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
@@ -171,8 +198,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     );
   };
 
-  const freeze = saksbehandlerValgMutation.isPending || attesterMutation.isPending;
-  const error = saksbehandlerValgMutation.isError || attesterMutation.isError;
+  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
+  const error = oppdaterBrevMutation.isError || attesterMutation.isError;
 
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
@@ -206,9 +233,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         left={
           <FormProvider {...form}>
             <VStack gap="8">
-              <Heading size="small">
-                <EditedLetterTitle title={props.brev.redigertBrev.title} />
-              </Heading>
+              <Heading size="small">{props.brev.info.brevtittel}</Heading>
               <VStack gap="4">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
                 <VStack>
@@ -240,7 +265,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <VStack>
                 <BrevmalAlternativer
                   brevkode={props.brev.info.brevkode}
-                  submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
+                  submitOnChange={() =>
+                    oppdaterBrevMutation.mutate({
+                      redigertBrev: editorState.redigertBrev,
+                      saksbehandlerValg: form.getValues("saksbehandlerValg"),
+                    })
+                  }
                   withTitle
                 />
               </VStack>

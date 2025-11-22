@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.LetterRenderer
+import no.nav.brev.brevbaker.template.render.LetterRenderer
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.ParagraphContentElement
@@ -24,10 +24,10 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
-import no.nav.pensjon.brev.template.toScope
+import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -118,8 +118,8 @@ class LetterRendererTest {
 
         val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             forEach(itemsExpr.expr()) {
-                textExpr(Bokmal to it + " person")
-                text(Bokmal to "jadda")
+                text(bokmal { + it + " person"})
+                text(bokmal { + "jadda" })
                 nextExpression = it
             }
         }
@@ -146,10 +146,10 @@ class LetterRendererTest {
     fun `render Conditional will pass showIf elements to block when predicate is true`() {
         val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             showIf(true.expr()) {
-                text(Bokmal to "hei ")
-                text(Bokmal to "person")
+                text(bokmal { + "hei "})
+                text(bokmal { + "person"})
             } orShow {
-                text(Bokmal to "should not be rendered")
+                text(bokmal { + "should not be rendered"})
             }
         }
 
@@ -176,10 +176,10 @@ class LetterRendererTest {
     fun `render Conditional will pass showElse elements to block when predicate is false`() {
         val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             showIf(false.expr()) {
-                text(Bokmal to "should not be rendered")
+                text(bokmal { + "should not be rendered"})
             } orShow {
-                text(Bokmal to "hei ")
-                text(Bokmal to "person")
+                text(bokmal { + "hei "})
+                text(bokmal { + "person"})
             }
         }
 
@@ -204,15 +204,15 @@ class LetterRendererTest {
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel"), false) {
-            paragraph { text(Bokmal to "Attachment #1") }
+        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel"), false) {
+            paragraph { text(bokmal { + "Attachment #1"}) }
         }
-        val attachment2 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel2"), false) {
-            paragraph { text(Bokmal to "Attachment #2") }
+        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel2"), false) {
+            paragraph { text(bokmal { + "Attachment #2"}) }
         }
         val attachments = listOf(
-            createIncludeAttachment(Unit.expr(), attachment1, true.expr()),
-            createIncludeAttachment(Unit.expr(), attachment2, false.expr())
+            createIncludeAttachment(EmptyVedleggData.expr(), attachment1, true.expr()),
+            createIncludeAttachment(EmptyVedleggData.expr(), attachment2, false.expr())
         )
 
         val actualAttachments = mutableListOf<AttachmentTemplate<*, *>>()
@@ -234,7 +234,7 @@ class LetterRendererTest {
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {
         var attachmentScopedExpr: Expression<String>? = null
         val attachment1 = createAttachment(newText(Bokmal to "tittel"), false) {
-            paragraph { textExpr(Bokmal to testVerdi1) }
+            paragraph { text(bokmal { +testVerdi1 }) }
             attachmentScopedExpr = testVerdi1
         }
         val letterData = LetterData("Anonymous", TestVedleggDto("a value", "another value"))

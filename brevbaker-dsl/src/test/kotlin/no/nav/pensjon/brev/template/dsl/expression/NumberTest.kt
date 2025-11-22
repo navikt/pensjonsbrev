@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.FellesFactory
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year

@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -41,8 +41,6 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_UTFALL
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonInnvilgelseRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse",
@@ -52,7 +50,7 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
         ),
     ) {
         title {
-            text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
+            text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
         }
         outline {
             includePhrase(

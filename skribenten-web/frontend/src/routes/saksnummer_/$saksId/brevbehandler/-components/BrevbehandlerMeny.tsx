@@ -28,10 +28,10 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
-import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrevmeny } from "../-BrevbehandlerUtils";
+import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
@@ -75,7 +75,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
 
   return (
     <Accordion>
-      {sortBrevmeny(properties.brev).map((brev) => (
+      {sortBrev(properties.brev).map((brev) => (
         <BrevItem
           brev={brev}
           key={brev.id}
@@ -198,7 +198,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           overrideOppsummering={(edit) => (
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
-              <HStack align="start" gap="8">
+              <HStack align="start" gap="8" wrap={false}>
                 <OppsummeringAvMottaker
                   mottaker={props.brev.mottaker ?? null}
                   saksId={props.saksId}
@@ -217,7 +217,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
+          {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
+            ? "Brevet er klart for attestering"
+            : "Brevet er klart for sending"}
         </Switch>
 
         {laasForRedigeringMutation.isError && (

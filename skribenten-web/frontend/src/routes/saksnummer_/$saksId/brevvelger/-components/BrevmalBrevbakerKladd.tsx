@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Heading, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -23,7 +22,7 @@ import { Route } from "../route";
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
   brevId: number;
-  letterTemplates: LetterMetadata[];
+  brevmetadata: Record<string, LetterMetadata>;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const brevQuery = useQuery({
@@ -34,10 +33,10 @@ export const BrevmalBrevbakerKladd = (props: {
 
   const brev = brevQuery.data;
   const brevExists = brev !== undefined;
-  const letterMetadataForBrev = brevExists ? props.letterTemplates.find((l) => l.id === brev!.brevkode) : undefined;
+  const letterMetadataForBrev = brevExists ? props.brevmetadata[brev.brevkode] : undefined;
 
   return (
-    <div>
+    <>
       {brevQuery.isPending && <Loader />}
       {brevQuery.isError && <ApiError error={brevQuery.error} title="Klarte ikke hente brev" />}
       {brevQuery.isSuccess && !brevExists && <BrevIkkeFunnet brevId={props.brevId} />}
@@ -49,7 +48,7 @@ export const BrevmalBrevbakerKladd = (props: {
           setOnFormSubmitClick={props.setOnFormSubmitClick}
         />
       )}
-    </div>
+    </>
   );
 };
 
@@ -92,14 +91,8 @@ const Brevmal = (props: {
   }, [setOnFormSubmitClick, saksId, brev, navigate, enhetsId, vedtaksId]);
 
   return (
-    <div
-      css={css`
-        display: grid;
-        grid-template-rows: 1fr auto;
-        height: 100%;
-      `}
-    >
-      <VStack gap="4">
+    <>
+      <VStack flexGrow="1" gap="4">
         <VStack gap="4">
           {!erBrevArkivert(props.brev) && (
             <SlettBrev
@@ -121,7 +114,6 @@ const Brevmal = (props: {
               sakId={props.saksId}
             />
           )}
-
           <VStack gap="2">
             <Heading size="small">{props.brev.brevtittel}</Heading>
             {props.letterMetadata ? (
@@ -131,9 +123,7 @@ const Brevmal = (props: {
             )}
           </VStack>
         </VStack>
-
         <Divider />
-
         <VStack gap="8">
           {erBrevArkivert(props.brev) ? (
             <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
@@ -145,7 +135,6 @@ const Brevmal = (props: {
               withOppsummeringTitle
             />
           )}
-
           <Oppsummeringspar
             boldedTitle
             size="small"
@@ -155,6 +144,6 @@ const Brevmal = (props: {
           <Oppsummeringspar boldedTitle size="small" tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
         </VStack>
       </VStack>
-    </div>
+    </>
   );
 };

@@ -3,16 +3,13 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -32,6 +29,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonGammeltOgNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
@@ -63,8 +61,6 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE
 
     override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonInnvilgelseDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilget søknad om barnepensjon",
@@ -76,23 +72,23 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         title {
 
             ifNotNull(datoVedtakOmgjoering) {
-                textExpr(
-                    Bokmal to "Vi har omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
-                    Nynorsk to "Vi har gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
-                    English to "We have reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                text(
+                    bokmal { +"Vi har omgjort vedtaket om omstillingsstønad av " + it.format() },
+                    nynorsk { +"Vi har gjort om vedtaket om omstillingsstønad av " + it.format() },
+                    english { +"We have reversed our decision regarding the adjustment allowance on " + it.format() },
                 )
             }
             .orShowIf(erGjenoppretting) {
                 text(
-                    Bokmal to "Du er innvilget barnepensjon på nytt",
-                    Nynorsk to "Du er innvilga barnepensjon på ny",
-                    English to "You have been granted children’s pension again",
+                    bokmal { +"Du er innvilget barnepensjon på nytt" },
+                    nynorsk { +"Du er innvilga barnepensjon på ny" },
+                    english { +"You have been granted children’s pension again" },
                 )
             }.orShow {
                 text(
-                    Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                    Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                    English to "We have granted your application for a children's pension",
+                    bokmal { +"Vi har innvilget søknaden din om barnepensjon" },
+                    nynorsk { +"Vi har innvilga søknaden din om barnepensjon" },
+                    english { +"We have granted your application for a children's pension" },
                 )
             }
         }
@@ -105,7 +101,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
             }
             includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(Felles.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
 
@@ -116,14 +112,14 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
 
         // Vedlegg under 18 år
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, innhold, brukerUnder18Aar.and(bosattUtland))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, brukerUnder18Aar.and(bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, brukerUnder18Aar.and(bosattUtland))
 
         // Vedlegg over 18 år
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, brukerUnder18Aar.not().and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, brukerUnder18Aar.not().and(bosattUtland))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, brukerUnder18Aar.not().and(bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, brukerUnder18Aar.not().and(bosattUtland))
 
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland, bosattUtland)
+        includeAttachment(dineRettigheterOgPlikterNasjonal, bosattUtland.not())
     }
 }

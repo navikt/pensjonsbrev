@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
@@ -9,6 +9,7 @@ data class EndretUTPgaInntektDtoV2 (
     val uforetrygd: Uforetrygd,
     val btfbEndret: Boolean,
     val btsbEndret: Boolean,
+    val gjtEndret: Boolean,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val gjenlevendetillegg: Gjenlevendetillegg?,
@@ -22,7 +23,7 @@ data class EndretUTPgaInntektDtoV2 (
     val pe: PE,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
 
-    ) : BrevbakerBrevdata
+    ) : AutobrevData
 {
     data class Uforetrygd(
         val netto: Int,
@@ -35,6 +36,7 @@ data class EndretUTPgaInntektDtoV2 (
         val nettoAkkumulert: Int,
         val nettoRestbelop: Int,
         val totalNettoInnevarendeAr: Int,
+        val okningUforegradVedArsjoring: Boolean?,
     )
 
     data class BarnetilleggFellesbarn(

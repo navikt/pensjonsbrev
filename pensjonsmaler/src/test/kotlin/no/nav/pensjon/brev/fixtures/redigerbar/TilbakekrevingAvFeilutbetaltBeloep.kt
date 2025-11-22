@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 import no.nav.pensjon.brev.api.model.KonteringType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
@@ -36,7 +36,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                         bruttobeloepTilbakekrevd = Kroner(2000),
                         feilutbetaltBeloep = Kroner(2000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
-                        resultatAvVurderingen = TilbakekrevingResultat.FULL_TILBAKEKREV,
+                        resultatAvVurderingen = null,
                         skattefradragSomInnkreves = Kroner(0),
                         ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
                     ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
@@ -51,7 +51,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                 )
             )
         ),
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
     )
 
 
