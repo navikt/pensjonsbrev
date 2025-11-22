@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
 import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
+import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import {
   getFavoritterQuery,
   getKontaktAdresseQuery,
@@ -28,6 +29,27 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
 
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context: { queryClient }, params: { saksId }, deps: { vedtaksId } }) => {
+    //When arriving at Skribenten from PSak without sakskontekst(vedtaksId), we fetch
+    //alleBrev, and as soon as we detect a VEDTAKSBREV that is either a Kladd or UnderRedigering, we add
+    //vedtaksId to the search params(to the url) and redirect to the same route.The loader will then rerun and load full metadata.
+    if (!vedtaksId) {
+      const alleBrev = await queryClient.fetchQuery({
+        queryKey: hentAlleBrevForSak.queryKey(String(saksId)),
+        queryFn: () => hentAlleBrevForSak.queryFn(String(saksId)),
+      });
+
+      const vedtaksbrev = alleBrev.find(
+        (brev) => brev.brevtype === "VEDTAKSBREV" && ["Kladd", "UnderRedigering"].includes(brev.status.type),
+      );
+
+      if (vedtaksbrev?.vedtaksId) {
+        throw redirect({
+          params: { saksId },
+          search: { vedtaksId: String(vedtaksbrev.vedtaksId) },
+        });
+      }
+    }
+
     const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
 
     queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
