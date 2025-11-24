@@ -24,7 +24,7 @@ export const getBrevmetadataQuery = {
 
 export const letterMetadataForBrevKey = {
   all: ["BREVMETADATA"] as const,
-  brevkode: (brevkode: string) => [...brevmetadataKeys.all, brevkode] as const,
+  brevkode: (brevkode: string) => [...letterMetadataForBrevKey.all, brevkode] as const,
 };
 
 export const getLetterMetadataForBrevQuery = (brevkode: string) => ({
