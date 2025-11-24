@@ -24,7 +24,7 @@ object Fixtures : LetterDataFactory {
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
             UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
-            UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
+            UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
@@ -66,6 +66,30 @@ object Fixtures : LetterDataFactory {
         ),
         saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
             VisVurderingFraVilkarvedtak = true
+        )
+    )
+
+    private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
+        pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
+            kravMottattDato = LocalDate.now(),
+            vurdering = "Vurdering 1",
+            kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
+            trygdetidListe = listOf(
+                UforeAvslagUtlandDto.Trygdetid(
+                    land = "Norge",
+                    fomDato = LocalDate.of(2000, Month.JANUARY, 1),
+                    tomDato = LocalDate.of(2010, Month.DECEMBER, 31)
+                ),
+                UforeAvslagUtlandDto.Trygdetid(
+                    land = "Danmark",
+                    fomDato = LocalDate.of(2011, Month.JANUARY, 1),
+                    tomDato = LocalDate.of(2020, Month.DECEMBER, 31)
+                )
+            )
+        ),
+        saksbehandlerValg = UforeAvslagUtlandDto.Saksbehandlervalg(
+            VisVurderingFraVilkarvedtak = true,
+            visInnvilgetPensjonEOSLand = true
         )
     )
 
