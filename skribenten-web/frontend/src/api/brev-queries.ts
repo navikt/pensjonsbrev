@@ -22,6 +22,16 @@ export const getBrevmetadataQuery = {
   queryFn: async () => (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/brevmal`)).data,
 };
 
+export const letterMetadataForBrevKey = {
+  all: ["BREVMETADATA"] as const,
+  brevkode: (brevkode: string) => [...brevmetadataKeys.all, brevkode] as const,
+};
+
+export const getLetterMetadataForBrevQuery = (brevkode: string) => ({
+  queryKey: letterMetadataForBrevKey.brevkode(brevkode),
+  queryFn: async () => (await axios.get<LetterMetadata>(`${SKRIBENTEN_API_BASE_PATH}/brevmal/${brevkode}`)).data,
+});
+
 export const brevmalKeys = {
   all: ["BREVMAL"] as const,
   brevkode: (brevkode: string) => [...brevmalKeys.all, brevkode] as const,

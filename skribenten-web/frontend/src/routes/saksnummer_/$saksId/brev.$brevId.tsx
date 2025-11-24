@@ -37,7 +37,10 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
   const { enhetsId, vedtaksId } = Route.useSearch();
+
+  const search = Route.useSearch();
   const navigate = Route.useNavigate();
+
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
@@ -45,6 +48,26 @@ function RedigerBrevPage() {
     retry: (_, error: AxiosError) => error && error.response?.status !== 423 && error.response?.status !== 409,
     throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
   });
+
+  useEffect(() => {
+    const brev = brevQuery.data;
+    if (!brev) return;
+
+    const vedtaksIdFromBrev = brev.info.vedtaksId;
+    if (vedtaksIdFromBrev == null) return;
+
+    const vedtaksIdAsString = String(vedtaksIdFromBrev);
+
+    if (search.vedtaksId !== vedtaksIdAsString) {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          vedtaksId: vedtaksIdAsString,
+        }),
+        replace: true,
+      });
+    }
+  }, [brevQuery.data, search.vedtaksId, navigate]);
 
   return queryFold({
     query: brevQuery,
