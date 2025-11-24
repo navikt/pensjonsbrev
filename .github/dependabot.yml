@@ -36,6 +36,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
@@ -85,6 +87,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - npm-github
@@ -108,6 +112,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
 
   # ==============
   # Docker frontend
@@ -119,6 +125,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:
@@ -136,6 +144,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:

@@ -6,6 +6,7 @@ name: "Klar til merge"
 on:
   pull_request:
     paths:
+      - ".github/dependabot.yml"
       - ".github/workflows/klar-til-merge.yml"
       - ".github/workflows/update-latex-image.yml"
       - "CODEOWNERS"
