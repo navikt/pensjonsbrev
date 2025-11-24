@@ -71,7 +71,7 @@ updates:
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
-          - "org.testcontainers:postgresql"
+          - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
 
 
