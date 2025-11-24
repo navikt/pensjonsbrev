@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -18,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.TableHeaderScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -35,7 +33,6 @@ data class OpplysningerBruktIBeregningTabellAP2025EndretPgaOpptjening(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
-
                 row {
                     cell {
                         text(
@@ -60,11 +57,9 @@ data class OpplysningerBruktIBeregningTabellAP2025EndretPgaOpptjening(
                     }
                 }
 
-                showIf(vilkarsVedtak.avslattGarantipensjon.not()) {
-                    row {
-                        cell { includePhrase(Vedtak.TrygdetidText) }
-                        cell { includePhrase(AntallAarText(trygdetidsdetaljerKap20VedVirk.anvendtTT)) }
-                    }
+                row {
+                    cell { includePhrase(Vedtak.TrygdetidText) }
+                    cell { includePhrase(AntallAarText(trygdetidsdetaljerKap20VedVirk.anvendtTT)) }
                 }
             }
         }
