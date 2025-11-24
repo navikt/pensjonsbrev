@@ -36,7 +36,7 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
     borINorge = true,
     erFoerstegangsbehandling = false,
     uforeKombinertMedAlder = false,
-    regelverkType = AlderspensjonRegelverkType.AP2016,
+    regelverkType = AlderspensjonRegelverkType.AP2025,
     orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
     opplysningerBruktIBeregningenAlder = null,
     opplysningerBruktIBeregningenAlderAP2025 = null,
@@ -77,10 +77,10 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
         trygdetidAvtaleland = emptyList(),
         pensjonsopptjeningKap20VedVirk = OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.PensjonsopptjeningKap20VedVirk(
             harOmsorgsopptjeningFOM2010 = true,
-            harOmsorgsopptjeningTOM2009 = false,
-            harDagpenger = false,
+            harOmsorgsopptjeningTOM2009 = true,
+            harDagpenger = true,
             harUforetrygd = true,
-            harUforepensjonKonvertertTilUforetrygd = false,
+            harUforepensjonKonvertertTilUforetrygd = true,
             harMerknadType = true,
             pensjonsopptjeninger = listOf(
                 OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.Pensjonsopptjening(
@@ -90,6 +90,7 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
                     merknader = listOf(
                         OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.Pensjonsopptjening.Merknad.DAGPENGER,
                         OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.Pensjonsopptjening.Merknad.UFORETRYGD,
+                        OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.Pensjonsopptjening.Merknad.DAGPENGER,
                     ),
                 )
             ),

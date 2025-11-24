@@ -17,8 +17,10 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TableHeaderScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 
@@ -34,17 +36,15 @@ data class OpplysningerBruktIBeregningTabellAP2025EndretPgaOpptjening(
         paragraph {
             table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
 
-                ifNotNull(beregningKap20VedVirk.nyOpptjening) { opptjening ->
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Ny opptjening" },
-                                nynorsk { +"Ny opptening" },
-                                english { +"New accumulated pension capital" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(opptjening)) }
+                row {
+                    cell {
+                        text(
+                            bokmal { +"Ny opptjening" },
+                            nynorsk { +"Ny opptening" },
+                            english { +"New accumulated pension capital" },
+                        )
                     }
+                    cell { includePhrase(KronerText(beregningKap20VedVirk.nyOpptjening.ifNull(Kroner(0)))) }
                 }
 
                 showIf(beregningKap20VedVirk.delingstallLevealder.greaterThan(0.0)) {
