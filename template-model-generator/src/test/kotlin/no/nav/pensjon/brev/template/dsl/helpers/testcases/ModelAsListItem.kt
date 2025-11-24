@@ -20,8 +20,8 @@ object ModelAsListItem : HasModel<List<ModelAsListItem.TheModel>> {
     data class TheModel(val navn: String)
 
     fun someusage() {
-        SimpleTemplateScope<TheModel>().navn
-        Expression.Literal(TheModel("jadda")).navn
-        TheModelSelectors.navnSelector
+        val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
+        val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
+        val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
     }
 }

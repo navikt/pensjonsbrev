@@ -22,10 +22,10 @@ object InterfaceAsModel : HasModel<InterfaceAsModel.TheModel> {
     }
 
     fun someusage() {
-        SimpleTemplateScope<TheModel>().fornavn
-        Expression.Literal(object : TheModel {
+        val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().fornavn
+        val expressionExtensionProperty: Expression<String> = Expression.Literal(object : TheModel {
             override val fornavn: String = "Jadda"
         }).fornavn
-        InterfaceAsModelSelectors.TheModelSelectors.fornavnSelector
+        val actualSelector: TemplateModelSelector<TheModel, String> = InterfaceAsModelSelectors.TheModelSelectors.fornavnSelector
     }
 }

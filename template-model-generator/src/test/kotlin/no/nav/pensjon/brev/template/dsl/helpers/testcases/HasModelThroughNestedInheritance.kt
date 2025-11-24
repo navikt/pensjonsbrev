@@ -25,9 +25,9 @@ object HasModelThroughNestedInheritance {
     @OptIn(InternKonstruktoer::class)
     object MyClass : AThirdInterface<Int, TheModel> {
         fun someusage() {
-            SimpleTemplateScope<TheModel>().navn
-            Expression.Literal(TheModel("jadda")).navn
-            TheModelSelectors.navnSelector
+            val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
+            val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
+            val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
         }
     }
 }

@@ -19,8 +19,8 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 @OptIn(InternKonstruktoer::class)
 object ModelFromDefaultPackage : HasModel<ModelFromDefaultPackage_TheModel> {
     fun someusage() {
-        SimpleTemplateScope<ModelFromDefaultPackage_TheModel>().name
-        Expression.Literal(ModelFromDefaultPackage_TheModel("jadda")).name
-        ModelFromDefaultPackage_TheModelSelectors.nameSelector
+        val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<ModelFromDefaultPackage_TheModel>().name
+        val expressionExtensionProperty: Expression<String> = Expression.Literal(ModelFromDefaultPackage_TheModel("jadda")).name
+        val actualSelector: TemplateModelSelector<ModelFromDefaultPackage_TheModel, String> = ModelFromDefaultPackage_TheModelSelectors.nameSelector
     }
 }
