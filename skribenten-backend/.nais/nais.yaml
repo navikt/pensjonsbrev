@@ -54,6 +54,8 @@ spec:
             value: "{{database.auditlog}}"
           - name: "pgaudit.log"
             value: "read,write,ddl,role"
+          - name: "pgaudit.log_parameter"
+            value: "on"
   azure:
     application:
       enabled: true
