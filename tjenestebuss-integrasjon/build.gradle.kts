@@ -46,7 +46,7 @@ dependencies {
     // Denne brukes transitivt gjennom samhandler-tjenestespesifikasjon og cxf-rt-frontend-jaxws.
     // Der har de per nå 2.0.3, som er sårbar, så vi overstyrer til patchen ett hakk før, som har retta en alvorlig CVE
     // Fjern denne rada, samt exclude av transitiv avhengighet, når vi får ny cxf-versjon eller ny samhandler-versjon med oppdatert angus-mail.
-    implementation("org.eclipse.angus:angus-mail:2.0.4")
+    implementation("org.eclipse.angus:angus-mail:2.0.5")
 
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion") {
