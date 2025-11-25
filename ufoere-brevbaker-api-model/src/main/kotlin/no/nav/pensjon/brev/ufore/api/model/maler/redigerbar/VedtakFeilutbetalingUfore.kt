@@ -67,7 +67,7 @@ data class FeilutbetalingPerAr(
 data class FeilutbetalingManed(
     val maned: Month,
     val feilutbetaltBelop: Int,
-    val resultat: TilbakekrevingResultat,
+    val resultat: TilbakekrevingResultat?,
     val bruttoBelop: Int,
     val skatt: Int,
     val nettobelop: Int,
