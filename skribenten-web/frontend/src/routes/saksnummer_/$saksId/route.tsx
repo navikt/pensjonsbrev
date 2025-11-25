@@ -3,8 +3,6 @@ import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { getLetterMetadataForBrevQuery } from "~/api/brev-queries";
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import {
   getFavoritterQuery,
   getKontaktAdresseQuery,
@@ -37,24 +35,6 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
     queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
 
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-
-    // When arriving at Skribenten from PSak without sakskontekst(vedtaksId), we fetch
-    // alleBrev. If we detect drafts (Kladd/UnderRedigering) that are missing metadata
-    // in the current context, we prefetch that metadata specifically.
-    if (!vedtaksId) {
-      const alleBrev = await queryClient.fetchQuery({
-        queryKey: hentAlleBrevForSak.queryKey(String(saksId)),
-        queryFn: () => hentAlleBrevForSak.queryFn(String(saksId)),
-      });
-
-      const draftsMissingMetadata = alleBrev
-        .filter((brev) => brev.brevtype === "VEDTAKSBREV" && ["Kladd", "UnderRedigering"].includes(brev.status.type))
-        .filter((brev) => !sakContext.brevMetadata?.some((metadata) => metadata.id === brev.brevkode));
-
-      await Promise.all(
-        draftsMissingMetadata.map((draft) => queryClient.prefetchQuery(getLetterMetadataForBrevQuery(draft.brevkode))),
-      );
-    }
 
     return sakContext;
   },
