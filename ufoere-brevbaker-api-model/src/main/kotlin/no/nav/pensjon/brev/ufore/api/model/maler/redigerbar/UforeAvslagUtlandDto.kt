@@ -22,7 +22,6 @@ data class UforeAvslagUtlandDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
-        val vurdering: String,
         val kravGjelder: KravGjelder,
         val trygdetidListe: List<Trygdetid>
     ) : FagsystemBrevdata
