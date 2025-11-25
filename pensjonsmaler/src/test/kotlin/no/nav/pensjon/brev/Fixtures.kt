@@ -55,8 +55,6 @@ import no.nav.pensjon.brev.fixtures.adhoc.gjenlevenderett2027.createGjenlevender
 import no.nav.pensjon.brev.fixtures.alder.createEndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createEndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createInnvilgelseAvAlderspensjonAutoDto
-import no.nav.pensjon.brev.fixtures.alder.createOmregningAlderUfore2016Dto
-import no.nav.pensjon.brev.fixtures.alder.createOmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.fixtures.createAvslagUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
