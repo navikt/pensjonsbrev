@@ -94,7 +94,6 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
     private data class DataWrapperPersonSakKontekst(val hentPerson: PersonForSakKontekst?) {
         data class PersonForSakKontekst(
             val adressebeskyttelse: List<Adressebeskyttelse>,
-            val vergemaalEllerFremtidsfullmakt: List<VergemaalEllerFremtidsfullmakt>,
             val doedsfall: List<Doedsfall>,
         )
     }
@@ -142,7 +141,6 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
                 val person = response.hentPerson
                 Pdl.PersonContext(
                     adressebeskyttelse = person?.adressebeskyttelse?.any { it.erGradert() }?: false,
-                    vergemaalEllerFremtidsfullmakt = person?.vergemaalEllerFremtidsfullmakt?.isNotEmpty()?: false,
                     doedsdato = person?.doedsfall?.firstNotNullOfOrNull { it.doedsdato }
                 )
             }

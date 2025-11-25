@@ -157,7 +157,6 @@ object Api {
         val sak: Pen.SakSelection,
         val brevmalKoder: List<String>,
         val adressebeskyttelse: Boolean,
-        val vergemaalEllerFremtidsfullmakt: Boolean,
         val doedsfall: LocalDate?,
         val erSkjermet: Boolean,
     )

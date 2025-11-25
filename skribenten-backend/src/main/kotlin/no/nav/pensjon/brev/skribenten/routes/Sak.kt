@@ -52,7 +52,6 @@ fun Route.sakRoute(
                             sak = sak,
                             brevmalKoder = brevmetadata.map { it.id },
                             adressebeskyttelse = person.adressebeskyttelse,
-                            vergemaalEllerFremtidsfullmakt = person.vergemaalEllerFremtidsfullmakt,
                             doedsfall = person.doedsdato,
                             erSkjermet = erSkjermet
                         )

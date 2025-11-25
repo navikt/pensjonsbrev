@@ -3,9 +3,6 @@ query PdlSakPersonKontekst($ident: ID!) {
         adressebeskyttelse{
             gradering
         }
-        vergemaalEllerFremtidsfullmakt {
-            type
-        }
         doedsfall {
             doedsdato
         }

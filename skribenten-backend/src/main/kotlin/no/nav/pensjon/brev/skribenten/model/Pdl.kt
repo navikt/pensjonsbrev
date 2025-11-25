@@ -19,7 +19,6 @@ object Pdl {
 
     data class PersonContext(
         val adressebeskyttelse: Boolean,
-        val vergemaalEllerFremtidsfullmakt: Boolean,
         val doedsdato: LocalDate?,
     )
 }
