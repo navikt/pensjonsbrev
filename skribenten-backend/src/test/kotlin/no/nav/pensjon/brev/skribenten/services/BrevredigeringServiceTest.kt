@@ -1181,7 +1181,7 @@ class BrevredigeringServiceTest {
             }
 
             withPrincipal(saksbehandler1Principal) {
-                assertThrows<BrevIkkeKlartTilSendingException> {
+                assertThrows<NyereVersjonFinsException> {
                     brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
                 }
             }
@@ -1327,7 +1327,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
+        val nyMottaker = Dto.Mottaker.norskAdresse("a", NorskPostnummer("1234"), "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(

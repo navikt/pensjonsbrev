@@ -92,7 +92,7 @@ object Api {
         data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: String,
-            val postnummer: String,
+            val postnummer: NorskPostnummer,
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
