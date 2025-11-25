@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.samhandlerRoute
+import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Application.configureRouting(

@@ -19,10 +19,10 @@ import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
