@@ -17,4 +17,5 @@ data class Vedtaksdata(
     val etteroppgjorresultat: Etteroppgjoerresultat?,
     val forrigeetteroppgjor: ForrigeEtteroppgjor?,
     val trygdetidavdod: TrygdetidAvdod?,
+    val harLopendealderspensjon: Boolean?
 )
