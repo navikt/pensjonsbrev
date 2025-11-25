@@ -100,7 +100,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
             sakId={properties.saksId}
             viewerHeight={"var(--main-page-content-height)"}
           >
-            {showBrevDataEndringAlert ? (
+            {pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert ? (
               <Alert
                 css={css`
                   border-left: none;
