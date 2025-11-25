@@ -2,21 +2,19 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
 import io.ktor.client.*
-import io.ktor.client.call.body
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
-import org.jetbrains.exposed.sql.javatime.durationParam
 import org.slf4j.LoggerFactory
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 interface SkjermingService {
@@ -42,7 +40,7 @@ class SkjermingServiceHttp(config: Config, authService: AuthService, private val
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("personident" to fnr))
             }
-            return@cached if(response.status.isSuccess()) {
+            return@cached if (response.status.isSuccess()) {
                 response.body<Boolean>()
             } else {
                 logger.error("Kunne ikke hente skjermings-status for bruker. Status: ${response.status} Message: ${response.bodyAsText()}")

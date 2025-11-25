@@ -2,25 +2,19 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.accept
-import io.ktor.client.request.headers
-import io.ktor.client.request.options
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
-import io.ktor.serialization.jackson.jackson
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
-import java.time.ZoneId
-import java.util.Date
+import java.time.LocalDate
 
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
 private const val HENT_BRUKER_CONTEXT = "/pdl/HentBrukerContext.graphql"
@@ -48,7 +42,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         }
         installRetry(logger)
         install(ContentNegotiation) {
-            jackson()
+            jackson { registerModule(JavaTimeModule()) }
         }
         callIdAndOnBehalfOfClient(pdlScope, authService)
     }
@@ -89,7 +83,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         }
     }
     data class VergemaalEllerFremtidsfullmakt(val type: String)
-    data class Doedsfall(val doedsdato: Date)
+    data class Doedsfall(val doedsdato: LocalDate)
 
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?) {
         data class PersonMedAdressebeskyttelse(val adressebeskyttelse: List<Adressebeskyttelse>) {
@@ -149,8 +143,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
                 Pdl.PersonContext(
                     adressebeskyttelse = person?.adressebeskyttelse?.any { it.erGradert() }?: false,
                     vergemaalEllerFremtidsfullmakt = person?.vergemaalEllerFremtidsfullmakt?.isNotEmpty()?: false,
-                    doedsdato = person?.doedsfall
-                        ?.firstNotNullOfOrNull { it.doedsdato.toInstant().atZone(ZoneId.systemDefault())?.toLocalDate()}
+                    doedsdato = person?.doedsfall?.firstNotNullOfOrNull { it.doedsdato }
                 )
             }
     }
