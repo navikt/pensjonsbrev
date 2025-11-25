@@ -19,16 +19,23 @@ import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import org.slf4j.LoggerFactory
+import java.time.ZoneId
+import java.util.Date
 
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
+private const val HENT_BRUKER_CONTEXT = "/pdl/HentBrukerContext.graphql"
 
 private val hentAdressebeskyttelseQuery = PdlServiceHttp::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
+
+private val hentBrukerContextQuery = PdlServiceHttp::class.java.getResource(HENT_BRUKER_CONTEXT)?.readText()
+    ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_BRUKER_CONTEXT")
 
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
 interface PdlService {
     suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>>
+    suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext>
 }
 
 class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
@@ -73,11 +80,29 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             }
         }
     }
+    data class Adressebeskyttelse(val gradering: Pdl.Gradering) {
+        fun erGradert(): Boolean = when(gradering) {
+            Pdl.Gradering.FORTROLIG -> true
+            Pdl.Gradering.STRENGT_FORTROLIG -> true
+            Pdl.Gradering.STRENGT_FORTROLIG_UTLAND -> true
+            Pdl.Gradering.UGRADERT -> false
+        }
+    }
+    data class VergemaalEllerFremtidsfullmakt(val type: String)
+    data class Doedsfall(val doedsdato: Date)
 
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?) {
         data class PersonMedAdressebeskyttelse(val adressebeskyttelse: List<Adressebeskyttelse>) {
             data class Adressebeskyttelse(val gradering: Pdl.Gradering)
         }
+    }
+
+    private data class DataWrapperPersonSakKontekst(val hentPerson: PersonForSakKontekst?) {
+        data class PersonForSakKontekst(
+            val adressebeskyttelse: List<Adressebeskyttelse>,
+            val vergemaalEllerFremtidsfullmakt: List<VergemaalEllerFremtidsfullmakt>,
+            val doedsfall: List<Doedsfall>,
+        )
     }
 
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
@@ -101,6 +126,35 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
                 it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering } ?: emptyList()
             }
     }
+
+    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> {
+        return client.post("") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(
+                PDLQuery(
+                    query = hentBrukerContextQuery,
+                    variables = FnrVariables(fnr)
+                )
+            )
+            headers {
+                if(behandlingsnummer != null)  {
+                    set("Behandlingsnummer", behandlingsnummer.name)
+                }
+            }
+        }.toServiceResult<PDLResponse<DataWrapperPersonSakKontekst>>()
+            .handleGraphQLErrors()
+            .map { response ->
+                val person = response.hentPerson
+                Pdl.PersonContext(
+                    adressebeskyttelse = person?.adressebeskyttelse?.any { it.erGradert() }?: false,
+                    vergemaalEllerFremtidsfullmakt = person?.vergemaalEllerFremtidsfullmakt?.isNotEmpty()?: false,
+                    doedsdato = person?.doedsfall
+                        ?.firstNotNullOfOrNull { it.doedsdato.toInstant().atZone(ZoneId.systemDefault())?.toLocalDate()}
+                )
+            }
+    }
+
 
     private fun <T : Any> ServiceResult<PDLResponse<T>>.handleGraphQLErrors(): ServiceResult<T> =
         when (this) {
