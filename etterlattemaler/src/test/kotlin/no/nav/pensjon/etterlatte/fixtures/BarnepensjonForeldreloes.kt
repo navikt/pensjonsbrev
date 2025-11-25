@@ -1,5 +1,7 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.brev.brevbaker.vilkaarligDato
+import no.nav.brev.brevbaker.vilkaarligMaaned
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
@@ -85,7 +87,7 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = BarnepensjonBeregning(
             innhold = createPlaceholderForRedigerbartInnhold(),
-            virkningsdato = LocalDate.now(),
+            virkningsdato = vilkaarligDato,
             antallBarn = 2,
             grunnbeloep = Kroner(123456),
             beregningsperioder = listOf(
@@ -139,8 +141,8 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
         utbetaltBeloep = Kroner(6234),
         harForeldreloessats = true,
     )
-    val foersteDoed = YearMonth.now().minusMonths(6)
-    val andreDoed = YearMonth.now().minusMonths(3).atDay(1)
+    val foersteDoed = vilkaarligMaaned.minusMonths(6)
+    val andreDoed = vilkaarligMaaned.minusMonths(3).atDay(1)
 
     return BarnepensjonForeldreloesRedigerbarDTO(
         virkningsdato = foersteDoed.plusMonths(1).atDay(1),

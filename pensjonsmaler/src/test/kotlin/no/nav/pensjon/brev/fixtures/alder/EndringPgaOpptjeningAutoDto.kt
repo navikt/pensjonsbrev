@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
@@ -49,7 +50,7 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
             garantipensjonInnvilget = true,
         ),
         beregnetPensjonPerManedVedVirk = OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.BeregnetPensjonPerManedVedVirk(
-            virkDatoFom = LocalDate.now(),
+            virkDatoFom = vilkaarligDato,
             brukersSivilstand = MetaforceSivilstand.ENSLIG
         ),
         beregningKap20VedVirk = OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.BeregningKap20VedVirk(

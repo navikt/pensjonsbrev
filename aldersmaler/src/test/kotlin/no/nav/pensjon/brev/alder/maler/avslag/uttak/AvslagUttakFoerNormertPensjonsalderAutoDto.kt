@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.alder.model.avslag.NormertPensjonsalder
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningen
@@ -33,15 +34,15 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
             virkFom = LocalDate.of(2025, 2, 1),
             prorataBruktIBeregningen = true,
             trygdeperioderNorge = listOf(
-                TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now()),
-                TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now())
+                TrygdeperiodeNorge(fom = vilkaarligDato, tom = vilkaarligDato),
+                TrygdeperiodeNorge(fom = vilkaarligDato, tom = vilkaarligDato)
             ),
             trygdeperioderUtland = listOf(
                 TrygdeperiodeUtland(
                     land = "Sverige",
-                    fom = LocalDate.now(),
-                    tom = LocalDate.now()
-                ), TrygdeperiodeUtland(land = "Danmark", fom = LocalDate.now(), tom = LocalDate.now())
+                    fom = vilkaarligDato,
+                    tom = vilkaarligDato
+                ), TrygdeperiodeUtland(land = "Danmark", fom = vilkaarligDato, tom = vilkaarligDato)
             ),
             kravAarsak = null,
             opplysningerKap19 = null,

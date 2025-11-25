@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
@@ -27,11 +28,11 @@ fun createEndringAvUttaksgradAutoDto() = EndringAvUttaksgradAutoDto(
             totalPensjon = Kroner(2000),
             garantipensjon = Kroner(1000),
             minstenivaIndividuell = Kroner(1000),
-            virkDatoFom = LocalDate.now(),
+            virkDatoFom = vilkaarligDato,
             virkDatoTom = null,
         ),
         beregnetPensjonperManed = listOf(),
-        kravVirkFom = LocalDate.now()
+        kravVirkFom = vilkaarligDato
     ),
     maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
     opplysningerBruktIBeregningenEndretUttaksgradDto = createOpplysningerBruktIBeregningenEndretUttaksgradDto(),

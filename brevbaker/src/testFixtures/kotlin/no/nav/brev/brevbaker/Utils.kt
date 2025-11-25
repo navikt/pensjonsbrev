@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import java.time.LocalDate
+import java.time.Month
+import java.time.YearMonth
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())
@@ -13,3 +16,7 @@ fun ObjectMapper.brevbakerConfig() {
 }
 
 fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }
+
+val vilkaarligDato = LocalDate.of(2025, Month.NOVEMBER, 20)
+
+val vilkaarligMaaned = YearMonth.of(2025, Month.OCTOBER)
