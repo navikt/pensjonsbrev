@@ -56,6 +56,7 @@ data class OmregningAlderUfore2016Felles(
     val brukersSivilstand: Expression<Sivilstand>,
     val borMedSivilstand: Expression<BorMedSivilstand?>,
     val over2G: Expression<Boolean?>,
+    val kronebeloep2G: Expression<Kroner>,
 
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -329,16 +330,16 @@ data class OmregningAlderUfore2016Felles(
                     showIf(over2G) {
                         paragraph {
                             text(
-                                bokmal { +"over 2G." },
-                                nynorsk { +"over 2G." },
-                                english { +"over 2G." })
+                                bokmal { +"over " + kronebeloep2G.format() + "." },
+                                nynorsk { +"over " + kronebeloep2G.format() + "." },
+                                english { +"over " + kronebeloep2G.format() + "." })
                         }
                     }.orShow {
                         paragraph {
                             text(
-                                bokmal { +"under 2G." },
-                                nynorsk { +"under 2G." },
-                                english { +"under 2G." })
+                                bokmal { +"under " + kronebeloep2G.format() + "." },
+                                nynorsk { +"under " + kronebeloep2G.format() + "." },
+                                english { +"under " + kronebeloep2G.format() + "." })
                         }
                     }
                 }

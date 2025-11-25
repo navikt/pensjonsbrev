@@ -30,6 +30,7 @@ data class OmregningAlderUfore2016Dto(
     val brukersSivilstand: Sivilstand,
     val borMedSivilstand: BorMedSivilstand?,
     val over2G: Boolean?,
+    val kronebeloep2G: Kroner,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
