@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visInnvilgetPensjonEOSLand
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.fomDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.land
@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravGjelder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.trygdetidListe
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
@@ -96,16 +95,19 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                     }
                 }
             }
+
             paragraph {
-                text(bokmal { +"Du flyttet til Norge " + fritekst("siste innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " +
-                        "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
+                text(bokmal { +"Du flyttet til Norge " + fritekst("siste innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " })
             }
 
             paragraph {
-                showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
-                    text(bokmal { +pesysData.vurdering })
-                }
+                text(bokmal { + fritekst("Individuell vurdering") })
             }
+
+            paragraph {
+                text(bokmal { +"Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
+            }
+
             paragraph {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
@@ -171,17 +173,19 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven kapittel 2 og kapittel 12. Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 6 og artikkel 51, og forskrift om beregning av uføretrygd etter EØS-avtalen av 12. februar 2015." })
             }
 
-            paragraph {
-                text(bokmal { + "For at trygdetid i EØS-land kan brukes, er det imidlertid et krav om at du er statsborger i et EØS-land." })
-            }
-            paragraph {
-                text(bokmal { + "Du er statsborger i " + fritekst("land") + ". Dette landet er ikke et EØS-land. Norge har heller ikke inngått en egen trygdeavtale med dette landet." })
-            }
-            paragraph {
-                text(bokmal { + "Fordi du ikke er statsborger i et EØS-land, har du ikke trygderettigheter etter EØS-reglene." })
-            }
-            paragraph {
-                text(bokmal { + "Vedtaket er gjort etter folketrygdloven kapittel 2 og 12. Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 2 og artikkel 6, og Nordisk konvensjon artikkel 3 og artikkel 4." })
+            showIf(saksbehandlerValg.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning) {
+                paragraph {
+                    text(bokmal { + "For at trygdetid i EØS-land kan brukes, er det imidlertid et krav om at du er statsborger i et EØS-land." })
+                }
+                paragraph {
+                    text(bokmal { + "Du er statsborger i " + fritekst("land") + ". Dette landet er ikke et EØS-land. Norge har heller ikke inngått en egen trygdeavtale med dette landet." })
+                }
+                paragraph {
+                    text(bokmal { + "Fordi du ikke er statsborger i et EØS-land, har du ikke trygderettigheter etter EØS-reglene." })
+                }
+                paragraph {
+                    text(bokmal { + "Vedtaket er gjort etter folketrygdloven kapittel 2 og 12. Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 2 og artikkel 6, og Nordisk konvensjon artikkel 3 og artikkel 4." })
+                }
             }
 
             title1 {

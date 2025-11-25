@@ -12,10 +12,11 @@ data class UforeAvslagUtlandDto(
 ) : RedigerbarBrevdata<UforeAvslagUtlandDto.Saksbehandlervalg, UforeAvslagUtlandDto.UforeAvslagPendata> {
 
     data class Saksbehandlervalg(
-        @DisplayText("Bruk vurdering fra vilkårsvedtak")
-        val VisVurderingFraVilkarvedtak: Boolean,
-        @DisplayText("Innvilget pensjon fra EØS-land")
-        val visInnvilgetPensjonEOSLand: Boolean,
+        @DisplayText("Bruker har fått innvilget pensjon fra EØS-land")
+        val visInnvilgetPensjonEOSLand: Boolean = false,
+
+        @DisplayText("Alternativ tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen")
+        val visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: Boolean = false,
 
     ) : SaksbehandlerValgBrevdata
 
