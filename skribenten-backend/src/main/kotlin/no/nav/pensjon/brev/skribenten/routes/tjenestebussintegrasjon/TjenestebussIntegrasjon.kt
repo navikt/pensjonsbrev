@@ -7,9 +7,8 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSam
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
-import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
 
-fun Route.tjenestebussIntegrasjonRoute(samhandlerService: SamhandlerService, tjenestebussIntegrasjonService: TjenestebussIntegrasjonService) {
+fun Route.tjenestebussIntegrasjonRoute(samhandlerService: SamhandlerService) {
 
     post("/finnSamhandler") {
         val requestDto = call.receive<FinnSamhandlerRequestDto>()
@@ -21,6 +20,6 @@ fun Route.tjenestebussIntegrasjonRoute(samhandlerService: SamhandlerService, tje
     }
     post("/hentSamhandlerAdresse") {
         val requestDto = call.receive<HentSamhandlerAdresseRequestDto>()
-        call.respond(tjenestebussIntegrasjonService.hentSamhandlerAdresse(requestDto.idTSSEkstern))
+        call.respond(samhandlerService.hentSamhandlerAdresse(requestDto.idTSSEkstern))
     }
 }

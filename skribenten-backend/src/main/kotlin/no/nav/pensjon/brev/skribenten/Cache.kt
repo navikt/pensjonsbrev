@@ -125,4 +125,5 @@ enum class Cacheomraade(val prefix: String) {
     NORG("Norg"),
     REDIGERBAR_MAL("Redigerbar"),
     SAMHANDLER("Samhandler"),
+    SAMHANDLER_ADRESSE("SamhandlerAdresse"),
 }

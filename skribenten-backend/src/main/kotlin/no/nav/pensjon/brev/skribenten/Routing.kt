@@ -31,7 +31,6 @@ fun Application.configureRouting(
     val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
     val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
-    val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
@@ -62,7 +61,6 @@ fun Application.configureRouting(
                 brevbakerService,
                 brevmetadataService,
                 samhandlerService,
-                tjenestebussIntegrasjonService,
                 navansattService
             )
 
@@ -81,7 +79,7 @@ fun Application.configureRouting(
                 safService,
             )
             brev(brevredigeringService, dto2ApiService, pdlService, penService)
-            tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
+            tjenestebussIntegrasjonRoute(samhandlerService)
             meRoute(navansattService)
 
         }
