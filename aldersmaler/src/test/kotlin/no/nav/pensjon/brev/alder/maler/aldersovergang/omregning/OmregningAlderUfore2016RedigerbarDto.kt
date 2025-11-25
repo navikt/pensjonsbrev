@@ -1,7 +1,7 @@
-package no.nav.pensjon.brev.fixtures.alder
+package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDto
 
 fun createOmregningAlderUfore2016RedigerbarDto() =
     OmregningAlderUfore2016RedigerbarDto(
