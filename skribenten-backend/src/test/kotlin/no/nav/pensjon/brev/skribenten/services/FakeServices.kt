@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSam
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
+import java.time.LocalDate
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -145,6 +146,7 @@ open class PenServiceStub : PenService {
 
 open class PdlServiceStub : PdlService {
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = notYetStubbed()
+    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> = notYetStubbed()
 }
 
 open class SafServiceStub : SafService {
