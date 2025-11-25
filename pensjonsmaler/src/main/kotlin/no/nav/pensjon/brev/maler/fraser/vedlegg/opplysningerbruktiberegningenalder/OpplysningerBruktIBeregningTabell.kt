@@ -103,9 +103,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                             row {
                                 cell {
                                     text(
-                                        bokmal { + "Sluttpoengtall" },
-                                        nynorsk { + "Sluttpoengtall" },
-                                        english { + "Final pension point score" },
+                                        bokmal { +"Sluttpoengtall" },
+                                        nynorsk { +"Sluttpoengtall" },
+                                        english { +"Final pension point score" },
                                     )
                                 }
                                 cell { eval(it.format()) }
@@ -117,9 +117,9 @@ data class OpplysningerBruktIBeregningTabellKap19(
                             row {
                                 cell {
                                     text(
-                                        bokmal { + "Antall poengår" },
-                                        nynorsk { + "Talet på poengår" },
-                                        english { + "Number of pension point earning years" },
+                                        bokmal { +"Antall poengår" },
+                                        nynorsk { +"Talet på poengår" },
+                                        english { +"Number of pension point earning years" },
                                     )
                                 }
                                 cell { includePhrase(AntallAarText(beregningKap19VedVirk.poengAar)) }
@@ -127,36 +127,39 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         }
 
                         //vedleggTabellKap19PoengArf92_001
-                        ifNotNull(beregningKap19VedVirk.poengArf92) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { + "Antall år med pensjonsprosent 45" },
-                                        nynorsk { + "Talet på år med pensjonsprosent 45" },
-                                        english { + "Number of years calculated with pension percentage 45" },
-                                    )
-                                }
-                                cell {
-                                    includePhrase(AntallAarText(it))
+                        ifNotNull(beregningKap19VedVirk.poengArf92) { antallAar ->
+                            showIf(antallAar.greaterThan(0)) {
+                                row {
+                                    cell {
+                                        text(
+                                            bokmal { +"Antall år med pensjonsprosent 45" },
+                                            nynorsk { +"Talet på år med pensjonsprosent 45" },
+                                            english { +"Number of years calculated with pension percentage 45" },
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(AntallAarText(antallAar))
+                                    }
                                 }
                             }
                         }
 
-                        ifNotNull(beregningKap19VedVirk.poengAre91) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { + "Antall år med pensjonsprosent 42" },
-                                        nynorsk { + "Talet på år med pensjonsprosent 42" },
-                                        english { + "Number of years calculated with pension percentage 42" },
-                                    )
-                                }
-                                cell {
-                                    includePhrase(AntallAarText(it))
+                        ifNotNull(beregningKap19VedVirk.poengAre91) { antallAar ->
+                            showIf(antallAar.greaterThan(0)) {
+                                row {
+                                    cell {
+                                        text(
+                                            bokmal { +"Antall år med pensjonsprosent 42" },
+                                            nynorsk { +"Talet på år med pensjonsprosent 42" },
+                                            english { +"Number of years calculated with pension percentage 42" },
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(AntallAarText(antallAar))
+                                    }
                                 }
                             }
                         }
-                    }
                 }.orShowIf(beregningsmetodeKap19.isOneOf(EOS)) {
                     //tabellTTNorgeEOS_001
                     row {
@@ -195,30 +198,34 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     }
 
                     //vedleggTabellKap19PoengArf92EOS_001
-                    ifNotNull(beregningKap19VedVirk.poengArf92) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { + "Antall år med pensjonsprosent 45 (EØS)" },
-                                    nynorsk { + "Talet på år med pensjonsprosent 45 (EØS)" },
-                                    english { + "Number of years calculated with pension percentage 45 (EEA)" },
-                                )
+                    ifNotNull(beregningKap19VedVirk.poengArf92) { antallAar ->
+                        showIf(antallAar.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        bokmal { +"Antall år med pensjonsprosent 45 (EØS)" },
+                                        nynorsk { +"Talet på år med pensjonsprosent 45 (EØS)" },
+                                        english { +"Number of years calculated with pension percentage 45 (EEA)" },
+                                    )
+                                }
+                                cell { includePhrase(AntallAarText(antallAar)) }
                             }
-                            cell { includePhrase(AntallAarText(it)) }
                         }
                     }
 
                     //vedleggTabellKap19PoengAre91EOS_001
-                    ifNotNull(beregningKap19VedVirk.poengAre91) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { + "Antall år med pensjonsprosent 42 (EØS)" },
-                                    nynorsk { + "Talet på år med pensjonsprosent 42 (EØS)" },
-                                    english { + "Number of years calculated with pension percentage 42 (EEA)" },
-                                )
+                    ifNotNull(beregningKap19VedVirk.poengAre91) { antallAar ->
+                        showIf(antallAar.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        bokmal { +"Antall år med pensjonsprosent 42 (EØS)" },
+                                        nynorsk { +"Talet på år med pensjonsprosent 42 (EØS)" },
+                                        english { +"Number of years calculated with pension percentage 42 (EEA)" },
+                                    )
+                                }
+                                cell { includePhrase(AntallAarText(antallAar)) }
                             }
-                            cell { includePhrase(AntallAarText(it)) }
                         }
                     }
 
@@ -275,30 +282,34 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         }
 
                         //vedleggTabellKap19PoengArf92Avtaleland_001
-                        ifNotNull(beregningKap19VedVirk.poengArf92) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { + "Antall år med pensjonsprosent 45 (Norge og avtaleland)" },
-                                        nynorsk { + "Talet på år med pensjonsprosent 45 (Noreg og avtaleland) " },
-                                        english { + "Number of years calculated with pension percentage 45 (Norway and countries with social security agreement)" },
-                                    )
+                        ifNotNull(beregningKap19VedVirk.poengArf92) { antallAar ->
+                            showIf(antallAar.greaterThan(0)) {
+                                row {
+                                    cell {
+                                        text(
+                                            bokmal { +"Antall år med pensjonsprosent 45 (Norge og avtaleland)" },
+                                            nynorsk { +"Talet på år med pensjonsprosent 45 (Noreg og avtaleland) " },
+                                            english { +"Number of years calculated with pension percentage 45 (Norway and countries with social security agreement)" },
+                                        )
+                                    }
+                                    cell { includePhrase(AntallAarText(antallAar)) }
                                 }
-                                cell { includePhrase(AntallAarText(it)) }
                             }
                         }
 
                         //vedleggTabellKap19PoengAre91Avtaleland_001
-                        ifNotNull(beregningKap19VedVirk.poengAre91) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { + "Antall år med pensjonsprosent 42 (Norge og avtaleland)" },
-                                        nynorsk { + "Talet på år med pensjonsprosent 42 (Noreg og avtaleland)" },
-                                        english { + "Number of years calculated with pension percentage 42 (Norway and countries with social security agreement)" },
-                                    )
+                        ifNotNull(beregningKap19VedVirk.poengAre91) { antallAar ->
+                            showIf(antallAar.greaterThan(0)) {
+                                row {
+                                    cell {
+                                        text(
+                                            bokmal { +"Antall år med pensjonsprosent 42 (Norge og avtaleland)" },
+                                            nynorsk { +"Talet på år med pensjonsprosent 42 (Noreg og avtaleland)" },
+                                            english { +"Number of years calculated with pension percentage 42 (Norway and countries with social security agreement)" },
+                                        )
+                                    }
+                                    cell { includePhrase(AntallAarText(antallAar)) }
                                 }
-                                cell { includePhrase(AntallAarText(it)) }
                             }
                         }
 
