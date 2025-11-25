@@ -94,7 +94,7 @@ const PDFViewer = (properties: {
         css={css`
           display: flex;
           justify-content: space-around;
-          padding: var(--a-spacing-2);
+          padding: var(--a-spacing-3);
           height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
           overflow: scroll;
         `}
