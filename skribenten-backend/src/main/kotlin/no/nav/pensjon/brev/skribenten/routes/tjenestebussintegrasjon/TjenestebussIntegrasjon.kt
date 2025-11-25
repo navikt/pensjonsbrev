@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSam
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 
-fun Route.tjenestebussIntegrasjonRoute(samhandlerService: SamhandlerService) {
+fun Route.samhandlerRoute(samhandlerService: SamhandlerService) {
 
     post("/finnSamhandler") {
         val requestDto = call.receive<FinnSamhandlerRequestDto>()
