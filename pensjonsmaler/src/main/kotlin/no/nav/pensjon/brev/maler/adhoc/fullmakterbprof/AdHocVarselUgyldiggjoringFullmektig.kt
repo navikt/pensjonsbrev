@@ -30,14 +30,14 @@ object AdHocVarselUgyldiggjoringFullmektig : AutobrevTemplate<FullmektigBprofAut
     ) {
         title {
             text(
-                bokmal { +"Du må endre fullmakten for pensjon eller uføretrygd hos Nav" },
+                bokmal { +"Du må fornye den digitale fullmakten for pensjon eller uføretrygd hos Nav " },
             )
         }
 
         outline {
             paragraph {
                 text(
-                    bokmal { +"Nav får ny løsning for digitale fullmakter. Det betyr at gamle fullmakter blir slettet <dato>." }
+                    bokmal { +"Nav får ny løsning for digitale fullmakter. Det betyr at gamle fullmakter blir slettet 10.01.2026." }
                 )
             }
             paragraph {
@@ -81,22 +81,6 @@ object AdHocVarselUgyldiggjoringFullmektig : AutobrevTemplate<FullmektigBprofAut
                 text(
                     bokmal { +"Den som har gitt fullmakten, har også fått beskjed." }
                 )
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Hvis du har gitt noen en fullmakt for å handle på vegne av deg:" }
-                )
-            }
-
-            paragraph {
-                list {
-                    item {
-                        text(
-                            bokmal { +"Logg inn på nav.no/fullmakt og gi fullmakten på nytt." }
-                        )
-                    }
-                }
             }
 
 
