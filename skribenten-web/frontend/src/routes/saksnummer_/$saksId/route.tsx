@@ -34,9 +34,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
     queryClient.prefetchQuery(getFavoritterQuery);
     queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
 
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-
-    return sakContext;
+    return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   component: SakLayout,
   errorComponent: ({ error }) => {
