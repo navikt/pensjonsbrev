@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -88,7 +89,10 @@ val oversiktOverFeilutbetalingerPaRadform =
                                     text(bokmal { + feilutbetalingManed.maned.format() })
                                 }
                                 cell {
-                                    includePhrase(ResultatAvVurderingenTextMappingStorBokstav(feilutbetalingManed.resultat))
+                                    ifNotNull(feilutbetalingManed.resultat) {resultat ->
+                                        includePhrase(ResultatAvVurderingenTextMappingStorBokstav(resultat))
+                                    }.orShow { text(bokmal { + "-" }) }
+
                                 }
                                 cell {
                                     text(bokmal { + feilutbetalingManed.opprinneligBrutto.format(CurrencyFormat)})
