@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BorI
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
@@ -53,11 +54,11 @@ fun createInnvilgelseAvAlderspensjonAutoDto() =
                 totalPensjon = Kroner(2000),
                 garantipensjon = Kroner(1000),
                 minstenivaIndividuell = Kroner(1000),
-                virkDatoFom = LocalDate.now(),
+                virkDatoFom = vilkaarligDato,
                 virkDatoTom = null,
             ),
             beregnetPensjonperManed = listOf(),
-            kravVirkFom = LocalDate.now()
+            kravVirkFom = vilkaarligDato
         ),
         opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
