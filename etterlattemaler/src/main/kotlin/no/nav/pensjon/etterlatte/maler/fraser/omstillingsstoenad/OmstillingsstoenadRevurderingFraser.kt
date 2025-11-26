@@ -460,19 +460,24 @@ class OmstillingsstoenadRevurderingFraser {
                 text(
                     bokmal { +"Når det er gått seks måneder etter " +
                         ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
-                        " er du pliktig til å være i minst 50 prosent aktivitet for å motta omstillingsstønad. Les " +
-                        "mer om aktivitetsplikt og hva denne innebærer i vedlegget " +
-                        "«Informasjon til deg som mottar omstillingsstønad»." },
-                    nynorsk { +"For at du skal kunne halde fram med å få omstillingsstønad når det " +
-                        "har gått seks månader sidan " +
+                        " er du pliktig til å være i minst 50 prosent aktivitet for å motta omstillingsstønad. Når det" +
+                        " er gått 12 måneder etter dødsfallet, kan det kreves at du er i 100 prosent arbeid eller annen" +
+                        " aktivitet med sikte på å komme i arbeid for å motta omstillingsstønad. Les mer om" +
+                        " aktivitetsplikt og hva denne innebærer i vedlegget «Informasjon til deg som mottar omstillingsstønad»." },
+                    nynorsk { +"For at du skal kunne halde fram med å få omstillingsstønad når det" +
+                        " har gått seks månader sidan " +
                         ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
-                        ", må du vere i minst 50 prosent aktivitet. I vedlegget «Informasjon til deg som får " +
-                        "omstillingsstønad» kan du lese meir om aktivitetsplikta og kva denne inneber." },
+                        ", må du vere i minst 50 prosent aktivitet. Når det har gått 12 månader etter dødsfallet, kan" +
+                        " det krevjast at du er i 100 prosent arbeid eller anna aktivitet med sikte på å kome i arbeid" +
+                        " for å få omstillingsstønad. I vedlegget «Informasjon til deg som får omstillingsstønad»" +
+                        " kan du lese meir om aktivitetsplikta og kva denne inneber." },
                     english { +"Once six months have passed since the " +
                         ifElse(tidligereFamiliepleier, "care period ended", "death") +
-                        ", you are obligated to be active at least 50 percent to receive the adjustment allowance. " +
-                        "Read more about the activity obligation and what this involves in the attachment: " +
-                        "Information for recipients of adjustment allowance." },
+                        ", you are obligated to be active at least 50 percent to receive the adjustment allowance." +
+                        " When 12 months have passed since the death, you may be required to work full time, or" +
+                        " participate in other activity with the goal of returning to work, in order to receive" +
+                        " adjustment allowance. Read more about the activity obligation and what this involves in the" +
+                        " attachment: Information for recipients of adjustment allowance." },
                 )
             }
         }

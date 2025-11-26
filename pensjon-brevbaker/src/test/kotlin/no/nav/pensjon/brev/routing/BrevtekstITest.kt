@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.routing
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import no.nav.brev.brevbaker.Fixtures.felles
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -68,7 +68,7 @@ class BrevtekstITest {
 
         assertContains(tekstIPDF, markup.title.tekst())
 
-        assertEquals(10, tekstIMarkup.size)
+        assertEquals(11, tekstIMarkup.size)
         tekstIMarkup.forEach { assertFalse(it.isEmpty()) }
 
         tekstIMarkup.forEach {
@@ -109,6 +109,7 @@ private fun finnTekst(block: Block): List<String> = when (block) {
     is Paragraph -> finnTekstForParagraph(block)
     is Title1 -> block.content.map { it.text }
     is Title2 -> block.content.map { it.text }
+    is Title3 -> block.content.map { it.text }
 }
 
 private fun finnTekstForParagraph(paragraph: Paragraph): List<String> = paragraph.content.flatMap {

@@ -21,23 +21,21 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BeregnetPensjonPerMaanedVedVirkSelectors.grunnpensjon_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BeregnetPensjonPerMaanedVedVirkSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.borIAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.borIEOES
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.eksportForbudKode_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.minst20ArBotidKap19_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.minst20ArTrygdetidKap20_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.minst20ArBotidKap19
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.minst20ArTrygdetidKap20
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.eksportForbudKode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOES
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.minst20AarTrygdetid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.KravSelectors.aarsak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.OpphoersbegrunnelseVedVirkSelectors.begrunnelseBT_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.OpphoersbegrunnelseVedVirkSelectors.begrunnelseET_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.OpphoersbegrunnelseVedVirkSelectors.begrunnelseBT
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.OpphoersbegrunnelseVedVirkSelectors.begrunnelseET
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.beregnetpensjonPerMaanedVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.bruker
@@ -45,16 +43,15 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurderingAvdoed
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurderingAvdoed_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opphoersbegrunnelseVedVirk_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opphoersbegrunnelseVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.aarsakTilAtPensjonenOeker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
@@ -95,6 +92,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -126,7 +124,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
         }
 
         outline {
-            val bostedsland = pesysData.bruker.faktiskBostedsland_safe.ifNull(fritekst("bostedsland"))
+            val bostedsland = pesysData.safe { bruker.faktiskBostedsland }.ifNull(fritekst("bostedsland"))
             val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
             val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
             val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
@@ -137,14 +135,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val aarsakUtvandret = pesysData.krav.aarsak.equalTo(KravArsakType.UTVANDRET)
 
             val beloepUendret =
-                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)
+                pesysData.safe { ytelseskomponentInformasjon }.safe { beloepEndring }.equalTo(BeloepEndring.UENDRET)
             val beloepOekning =
-                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
+                pesysData.safe { ytelseskomponentInformasjon }.safe { beloepEndring }.equalTo(BeloepEndring.ENDR_OKT)
             val beloepRedusert =
-                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)
+                pesysData.safe { ytelseskomponentInformasjon }.safe { beloepEndring }.equalTo(BeloepEndring.ENDR_RED)
 
             val eksportForbudKode = pesysData.inngangOgEksportVurdering.eksportForbudKode
-            val eksportForbudKodeAvdoed = pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe
+            val eksportForbudKodeAvdoed = pesysData.safe { inngangOgEksportVurderingAvdoed }.safe { eksportForbudKode }
 
             includePhrase(Vedtak.Overskrift)
 
@@ -215,9 +213,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
                 val minst20AarTrygdetid = pesysData.inngangOgEksportVurdering.minst20AarTrygdetid
                 val minst20AarTrygdetidAvdoed =
-                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe
+                    pesysData.inngangOgEksportVurderingAvdoed.safe { minst20ArTrygdetidKap20 }
                 val minst20AarBotidAvdoed =
-                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe
+                    pesysData.inngangOgEksportVurderingAvdoed.safe {minst20ArBotidKap19 }
                 showIf(
                     eksportForbudKode.isNull() and
                             not(minst20AarTrygdetid) and
@@ -257,11 +255,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             }
 
             val begrunnelseETErBrukerFlyttetIkkeAvtLand =
-                pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                pesysData.safe { opphoersbegrunnelseVedVirk }.safe { begrunnelseET }.equalTo(
                     BRUKER_FLYTTET_IKKE_AVT_LAND
                 )
             val begrunnelseBTErBrukerFlyttetIkkeAvtLand =
-                pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                pesysData.safe { opphoersbegrunnelseVedVirk }.safe { begrunnelseBT }.equalTo(
                     BRUKER_FLYTTET_IKKE_AVT_LAND
                 )
             showIf(
@@ -358,7 +356,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnpensjon_safe.ifNull(Kroner(0)).greaterThan(0) and
+            showIf(pesysData.safe { beregnetpensjonPerMaanedVedVirk.grunnpensjon }.ifNull(Kroner(0)).greaterThan(0) and
                     aarsakUtvandret and
                     not(beloepUendret) and
                     eksportForbudKode.isNull() and
@@ -660,7 +658,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             includePhrase(InformasjonOmAlderspensjon)
 
             includePhrase(MeldFraOmEndringer2)
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
 

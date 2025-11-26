@@ -7,7 +7,10 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "skribenten-backend/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/skribenten.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
   push:
     branches:
       - "main"
@@ -16,7 +19,10 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "skribenten-backend/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/skribenten.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
 
 permissions:
   contents: read

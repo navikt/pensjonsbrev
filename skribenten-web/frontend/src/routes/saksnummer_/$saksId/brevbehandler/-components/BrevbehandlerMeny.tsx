@@ -21,6 +21,7 @@ import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
+import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
@@ -28,10 +29,10 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 
-import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrevmeny } from "../-BrevbehandlerUtils";
+import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
@@ -75,7 +76,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
 
   return (
     <Accordion>
-      {sortBrevmeny(properties.brev).map((brev) => (
+      {sortBrev(properties.brev).map((brev) => (
         <BrevItem
           brev={brev}
           key={brev.id}
@@ -167,6 +168,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
       );
+      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
     },
   });
 
@@ -217,7 +219,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
+          {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
+            ? "Brevet er klart for attestering"
+            : "Brevet er klart for sending"}
         </Switch>
 
         {laasForRedigeringMutation.isError && (

@@ -51,6 +51,7 @@ private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
         is Edit.Block.Paragraph -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.Block.Title1 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.Block.Title2 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
+        is Edit.Block.Title3 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
     }
 
 private fun Edit.ParagraphContent.fixParentIds(parentId: Int?): Edit.ParagraphContent =

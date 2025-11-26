@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.api.model.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
@@ -12,7 +11,7 @@ data class PE(
     val pebrevkode: String,
     val personsak: PersonSak,
     val functions: ExstreamFunctions,
-) : VedleggData, BrevbakerBrevdata {
+) : VedleggData {
     data class ExstreamFunctions(
         val avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,
         val avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,

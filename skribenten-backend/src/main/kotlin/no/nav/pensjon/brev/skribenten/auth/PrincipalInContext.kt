@@ -21,7 +21,8 @@ class PrincipalInContext {
         }
     }
 
-    companion object : ContextValue<UserPrincipal> by ContextValueProvider(ContextElement, "UserPrincipal", ContextElement::principal),
+    companion object :
+        ContextValue<UserPrincipal> by ContextValueProvider(ContextElement, "UserPrincipal", ContextElement::principal),
         BaseRouteScopedPlugin<Nothing, PrincipalInContext> {
 
         override val key = AttributeKey<PrincipalInContext>("PrincipalCoroutineContext")
@@ -31,8 +32,9 @@ class PrincipalInContext {
 
             pipeline.insertPhaseBefore(ApplicationCallPipeline.Call, PrincipalContextPhase)
             pipeline.intercept(PrincipalContextPhase) {
-                val principal = call.principal()
+                if (call.isHandled) return@intercept
 
+                val principal = call.principal()
                 withPrincipal(principal) {
                     proceed()
                 }

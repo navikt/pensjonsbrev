@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -24,7 +25,7 @@ class PraktiskInformasjonEtteroppgjoerTest {
         )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("PraktiskInformasjonEtteroppgjoer")

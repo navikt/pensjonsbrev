@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.gjelderFlereBarn_safe
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.utbetalt_safe
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.InnvilgetTilleggSelectors.utbetalt_safe
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.utbetalt
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.InnvilgetTilleggSelectors.utbetalt
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.gjenlevende
@@ -59,23 +59,23 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
                 Ufoeretrygd.Beloep(
                     perMaaned = totaltUfoerePerMnd,
                     ufoeretrygd = true.expr(),
-                    ektefelle = ektefelle.utbetalt_safe.ifNull(false),
-                    gjenlevende = gjenlevende.utbetalt_safe.ifNull(false),
-                    fellesbarn = fellesbarn.utbetalt_safe.ifNull(false),
-                    saerkullsbarn = saerkullsbarn.utbetalt_safe.ifNull(false),
+                    ektefelle = ektefelle.safe { utbetalt }.ifNull(false),
+                    gjenlevende = gjenlevende.safe { utbetalt }.ifNull(false),
+                    fellesbarn = fellesbarn.safe { utbetalt }.ifNull(false),
+                    saerkullsbarn = saerkullsbarn.safe { utbetalt }.ifNull(false),
                 )
             )
 
             includePhrase(
                 Barnetillegg.BarnetilleggIkkeUtbetalt(
                     saerkullInnvilget = saerkullsbarn.notNull(),
-                    saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false),
-                    harFlereSaerkullsbarn = saerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
-                    inntektstakSaerkullsbarn = saerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    saerkullUtbetalt = saerkullsbarn.safe { utbetalt }.ifNull(false),
+                    harFlereSaerkullsbarn = saerkullsbarn.safe { gjelderFlereBarn }.ifNull(false),
+                    inntektstakSaerkullsbarn = saerkullsbarn.safe { inntektstak }.ifNull(Kroner(0)),
                     fellesInnvilget = fellesbarn.notNull(),
-                    fellesUtbetalt = fellesbarn.utbetalt_safe.ifNull(false),
-                    harFlereFellesBarn = fellesbarn.gjelderFlereBarn_safe.ifNull(false),
-                    inntektstakFellesbarn = fellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    fellesUtbetalt = fellesbarn.safe { utbetalt }.ifNull(false),
+                    harFlereFellesBarn = fellesbarn.safe { gjelderFlereBarn }.ifNull(false),
+                    inntektstakFellesbarn = fellesbarn.safe { inntektstak }.ifNull(Kroner(0)),
                 )
             )
 
@@ -88,7 +88,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
             includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

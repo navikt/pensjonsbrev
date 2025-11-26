@@ -19,7 +19,7 @@ data class OpphoerBarnetilleggAutoDto(
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class Ufoeretrygd(
     val ufoertrygdUtbetalt: Kroner,

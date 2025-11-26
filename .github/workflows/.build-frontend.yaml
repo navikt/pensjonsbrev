@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
           registry-url: https://npm.pkg.github.com/
@@ -45,7 +45,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_TEMP }}
 
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff

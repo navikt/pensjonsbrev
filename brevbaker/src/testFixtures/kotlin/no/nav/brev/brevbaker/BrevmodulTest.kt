@@ -5,8 +5,9 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -68,7 +69,7 @@ abstract class BrevmodulTest(
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
-            .filterNot { it.template.letterDataType in setOf(EmptyBrevdata::class, EmptyRedigerbarBrevdata::class)  }
+            .filterNot { it.template.letterDataType in setOf(EmptyAutobrevdata::class, EmptyRedigerbarBrevdata::class)  }
             .forEach {
                 assertTrue(
                     it.javaClass.declaredAnnotations.any { annotation -> annotation.annotationClass == TemplateModelHelpers::class },
@@ -109,7 +110,7 @@ abstract class BrevmodulTest(
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("filterPdf")
-    fun <T : Any> testPdf(
+    fun <T : BrevbakerBrevdata> testPdf(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
@@ -119,14 +120,14 @@ abstract class BrevmodulTest(
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak))
+        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl()))
     }
 
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
-    fun <T : Any> testHtml(
+    fun <T : BrevbakerBrevdata> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
@@ -140,7 +141,7 @@ abstract class BrevmodulTest(
             template,
             fixtures,
             spraak,
-            Fixtures.felles,
+            FellesFactory.felles,
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 

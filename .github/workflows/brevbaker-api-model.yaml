@@ -9,7 +9,10 @@ on:
       - "alder-brevbaker-api-model/**"
       - "ufoere-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
   push:
     branches:
       - "main"
@@ -18,7 +21,10 @@ on:
       - "alder-brevbaker-api-model/**"
       - "ufoere-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
+      - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
 
 permissions:
   packages: write

@@ -68,7 +68,7 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
                     english { + "You were credited with care credits by mistake. We have therefore reversed the decision pursuant to the Public Administration Act § 35 first paragraph letter c." }
                 )
             }
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev
 
 import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -30,6 +31,16 @@ private fun formaterOgSkrivUtFeil(e: ExceptionInInitializerError, prefiks: Strin
 // Brukes av `testBrevbakerApp` gjennom test/resources/application.conf
 @Suppress("unused")
 fun Application.brevbakerTestModule() = this.brevbakerModule(
+    templates = object : AllTemplates {
+        override fun hentAutobrevmaler() = alleAutobrevmaler
+
+        override fun hentRedigerbareMaler() = alleRedigerbareMaler
+    }
+)
+
+// Brukes av `testBrevbakerApp` gjennom test/resources/application-integrationtests.conf
+@Suppress("unused")
+fun Application.brevbakerIntegrationTestModule() = this.brevbakerModule(
     templates = object : AllTemplates {
         override fun hentAutobrevmaler() = alleAutobrevmaler
 

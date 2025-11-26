@@ -10,16 +10,22 @@ import { SlettBrev } from "~/components/SlettBrev";
 
 import { Route } from "../route";
 
-const PDFViewerTopBar = (properties: {
-  sakId: string;
-  brevId: number;
+type ViewerControls = {
   totalNumberOfPages: number;
-  scale: number;
-  setScale: (n: number) => void;
   currentPageNumber: number;
   setCurrentPageNumber: (n: number) => void;
+  scale: number;
+  setScale: (n: number) => void;
+};
+
+type PDFViewerTopBarProps = {
+  sakId: string;
+  brevId: number;
   utenSlettKnapp?: boolean;
-}) => {
+  viewerControls?: ViewerControls;
+};
+
+const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFViewerTopBarProps) => {
   const navigate = useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
@@ -36,28 +42,36 @@ const PDFViewerTopBar = (properties: {
       `}
       justify="space-between"
     >
-      <HStack align="center" gap="4">
-        <TopBarNavigation
-          currentPageNumber={properties.currentPageNumber}
-          setCurrentPageNumber={properties.setCurrentPageNumber}
-          totalNumberOfPages={properties.totalNumberOfPages}
-        />
-        <VerticalDivider />
-        <TopBarZoom scale={properties.scale} setScale={properties.setScale} />
-      </HStack>
-      {!properties.utenSlettKnapp && (
-        <SlettBrev
-          brevId={properties.brevId}
-          buttonText="Slett"
-          onSlettSuccess={() =>
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId: properties.sakId },
-              search: { enhetsId, vedtaksId },
-            })
-          }
-          sakId={properties.sakId}
-        />
+      {viewerControls && (
+        <HStack align="center" gap="4">
+          <TopBarNavigation
+            currentPageNumber={viewerControls.currentPageNumber}
+            setCurrentPageNumber={viewerControls.setCurrentPageNumber}
+            totalNumberOfPages={viewerControls.totalNumberOfPages}
+          />
+          <VerticalDivider />
+          <TopBarZoom scale={viewerControls.scale} setScale={viewerControls.setScale} />
+        </HStack>
+      )}
+      {!utenSlettKnapp && (
+        <div
+          css={css`
+            margin-left: auto;
+          `}
+        >
+          <SlettBrev
+            brevId={brevId}
+            buttonText="Slett"
+            onSlettSuccess={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevbehandler",
+                params: { saksId: sakId },
+                search: { enhetsId, vedtaksId },
+              })
+            }
+            sakId={sakId}
+          />
+        </div>
       )}
     </HStack>
   );

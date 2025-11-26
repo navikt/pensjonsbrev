@@ -6,24 +6,22 @@ import { AppHeader } from "~/components/AppHeader";
 
 export const queryClient = new QueryClient();
 
-const TanStackRouterDevtools =
-  process.env.NODE_ENV === "production" || globalThis.Cypress !== undefined
-    ? () => null // Render nothing in production
-    : React.lazy(() =>
-        // Lazy load in development
-        import("@tanstack/react-router-devtools").then((response) => ({
-          default: response.TanStackRouterDevtools,
-        })),
-      );
-
-const ReactQueryDevtools =
-  process.env.NODE_ENV === "production" || globalThis.Cypress !== undefined
-    ? () => null
-    : React.lazy(() =>
-        import("@tanstack/react-query-devtools").then((response) => ({
-          default: response.ReactQueryDevtools,
-        })),
-      );
+const isProdOrCypressTest = process.env.NODE_ENV === "production" || globalThis.Cypress !== undefined;
+const { css, Global } = isProdOrCypressTest ? { css: () => "", Global: () => null } : await import("@emotion/react");
+const TanStackRouterDevtools = isProdOrCypressTest
+  ? () => null
+  : React.lazy(() =>
+      import("@tanstack/react-router-devtools").then((response) => ({
+        default: response.TanStackRouterDevtools,
+      })),
+    );
+const ReactQueryDevtools = isProdOrCypressTest
+  ? () => null
+  : React.lazy(() =>
+      import("@tanstack/react-query-devtools").then((response) => ({
+        default: response.ReactQueryDevtools,
+      })),
+    );
 
 export const Route = createRootRouteWithContext<{
   queryClient: typeof queryClient;
@@ -31,6 +29,18 @@ export const Route = createRootRouteWithContext<{
   component: () => (
     <>
       <React.Suspense fallback="">
+        {!isProdOrCypressTest && (
+          <Global
+            styles={css`
+              .TanStackRouterDevtools > button {
+                & div:nth-of-type(2),
+                div:nth-of-type(3) {
+                  display: none;
+                }
+              }
+            `}
+          />
+        )}
         <TanStackRouterDevtools initialIsOpen={false} position="top-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
       </React.Suspense>

@@ -333,7 +333,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             includePhrase(UfoereAlder.UfoereKombinertMedAlder(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder))
 
             includePhrase(MeldFraOmEndringer2)
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

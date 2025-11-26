@@ -17,11 +17,13 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
-import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
+import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
@@ -47,15 +49,15 @@ object Favourites : Table() {
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(Edit.JacksonModule)
-    registerModule(LetterMarkupModule)
+    registerModule(EditLetterJacksonModule)
+    registerModule(LetterMarkupJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
 
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
 
-private inline fun <reified T> readJsonColumn(json: String): T =
+private inline fun <reified T> readJsonString(json: String): T =
     try {
         databaseObjectMapper.readValue<T>(json)
     } catch (e: JacksonException) {
@@ -78,11 +80,11 @@ object BrevredigeringTable : LongIdTable() {
     val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
-    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
+    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
     val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
-    val redigertBrevKryptertHash: Column<EditLetterHash> = hashColumn("redigertBrevKryptertHash")
+    val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
     val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
@@ -135,7 +137,8 @@ object DocumentTable : LongIdTable() {
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-    val redigertBrevHash: Column<EditLetterHash> = hashColumn("redigertBrevHash")
+    val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
+    val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
@@ -143,6 +146,7 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     var dokumentDato by DocumentTable.dokumentDato
     var pdf by DocumentTable.pdfKryptert
     var redigertBrevHash by DocumentTable.redigertBrevHash
+    var brevdataHash by DocumentTable.brevdataHash
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }
@@ -170,7 +174,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var type by MottakerTable.type
     var tssId by MottakerTable.tssId
     var navn by MottakerTable.navn
-    var postnummer by MottakerTable.postnummer
+    var postnummer by MottakerTable.postnummer.wrap(::NorskPostnummer, NorskPostnummer::value)
     var poststed by MottakerTable.poststed
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2

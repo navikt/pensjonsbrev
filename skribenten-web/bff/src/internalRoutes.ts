@@ -45,6 +45,22 @@ export const internalRoutes = (server: Express) => {
     });
   });
 
+  function findLogLevel(status: number | undefined): string {
+    switch (status) {
+      case undefined:
+        return "ERROR";
+      case 401:
+      case 403:
+      case 404:
+      case 504:
+        return "WARN";
+      case 422:
+        return "INFO";
+      default:
+        return "ERROR";
+    }
+  }
+
   server.post("/bff/api/logg", bodyParser.json(), cookieParser(), (request, response) => {
     if (request.cookies["use-local-vite-server"] === "true") {
       response.status(200).end();
@@ -52,11 +68,10 @@ export const internalRoutes = (server: Express) => {
     }
 
     const body = request.body;
-    const level = body.status === 403 || body.status === 404 ? "WARN" : "ERROR";
 
     console.error(
       JSON.stringify({
-        level: level,
+        level: findLogLevel(body.status),
         statusCode: body.status,
         timestamp: body.jsonContent.timestamp,
         message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,

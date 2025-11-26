@@ -140,7 +140,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
     cy.wait("@modelSpecification");
 
-    cy.contains("Brevmeny").should("exist");
+    cy.contains("Brevvelger").should("exist");
 
     cy.contains("Mot trær og natur").should("not.exist");
 
@@ -173,7 +173,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
     cy.wait("@modelSpecification");
-    cy.contains("Brevmeny").should("exist");
+    cy.contains("Brevvelger").should("exist");
 
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");

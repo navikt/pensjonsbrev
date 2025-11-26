@@ -15,6 +15,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSel
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.antallBeregningsperioder
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.borMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.faktiskBostedsland
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
@@ -30,6 +32,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.opplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.opplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.opplysningerOmAvdoedBruktIBeregningDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.over2G
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.persongrunnlagAvdod
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.skjermingstilleggInnvilget
@@ -38,14 +42,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
-import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
@@ -64,7 +61,7 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Omregning fra Uføre til Alder",
+            displayTitle = "Vedtak – Overgang fra uføretrygd til alderspensjon",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
@@ -72,9 +69,9 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
     ) {
         title {
             text(
-                bokmal { + "Vi har regnet om uføretrygden din til alderspensjon" },
-                nynorsk { + "Vi har rekna om uføretrygda di til alderspensjon" },
-                english { + "We have converted your disability pension into retirement pension" },
+                bokmal { +"Du er innvilget alderspensjon" },
+                nynorsk { +"Du er innvilga alderspensjon" },
+                english { +"You have been granted a retirement pension" },
             )
         }
         outline {
@@ -107,17 +104,19 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
                     avtaleland = inngangOgEksportVurdering.avtaleland,
                     innvilgetFor67 = innvilgetFor67,
                     fullTrygdetid = fullTrygdetid,
+                    brukersSivilstand = brukersSivilstand,
+                    borMedSivilstand = borMedSivilstand,
+                    over2G = over2G,
                 )
             )
-
         }
-        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
+        includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlderDto)
-        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning,opplysningerOmAvdoedBruktIBeregningDto)
-        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,maanedligPensjonFoerSkattAlderspensjonDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregningDto)
+        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon, maanedligPensjonFoerSkattAlderspensjonDto)
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
-        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,opplysningerBruktIBeregningenAlderAP2025Dto)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, opplysningerBruktIBeregningenAlderAP2025Dto)
     }
 }

@@ -16,6 +16,7 @@ const PDFViewer = (properties: {
   pdf: Blob;
   viewerHeight?: string;
   utenSlettKnapp?: boolean;
+  children?: React.ReactNode;
 }) => {
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
@@ -78,19 +79,22 @@ const PDFViewer = (properties: {
     >
       <PDFViewerTopBar
         brevId={properties.brevId}
-        currentPageNumber={currentPageNumber}
         sakId={properties.sakId}
-        scale={scale}
-        setCurrentPageNumber={setCurrentPageNumber}
-        setScale={setScale}
-        totalNumberOfPages={totalNumberOfPages}
         utenSlettKnapp={properties.utenSlettKnapp}
+        viewerControls={{
+          currentPageNumber,
+          setCurrentPageNumber,
+          totalNumberOfPages,
+          scale,
+          setScale,
+        }}
       />
+      {properties.children}
       <div
         css={css`
           display: flex;
           justify-content: space-around;
-          padding: var(--a-spacing-2);
+          padding: var(--a-spacing-3);
           height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
           overflow: scroll;
         `}

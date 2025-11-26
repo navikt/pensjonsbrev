@@ -5,6 +5,11 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
+import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -13,15 +18,15 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class AdhocTest {
-    fun testHtml(template: LetterTemplate<*, *>, htmlName: String, vararg language: Language) {
+    fun testHtml(template: LetterTemplate<*, EmptyAutobrevdata>, htmlName: String, vararg language: Language) {
         language.forEach {
-            LetterTestImpl(template, Unit, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
+            LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
         }
     }
 
-    fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String, vararg language: Language) {
+    fun testAdhocPdf(template: LetterTemplate<*, EmptyAutobrevdata>, pdfName: String, vararg language: Language) {
         language.forEach {
-            LetterTestImpl(template, Unit, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
+            LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
         }
     }
 
@@ -105,4 +110,28 @@ class AdhocTest {
             Bokmal
         )
     }
+
+    @Test
+    fun `testAdHocVarselUgyldiggjoringFullmaktsgiver pdf`() {
+        LetterTestImpl(
+            AdHocVarselUgyldiggjoringFullmaktsgiver.template,
+            Fixtures.create<FullmaktsgiverBprofAutoDto>(),
+            Language.Bokmal,
+            Fixtures.fellesAuto
+        ).renderTestPDF(AdHocVarselUgyldiggjoringFullmaktsgiver.kode.name)
+
+
+    }
+
+    @Test
+    fun `testAdHocVarselUgyldiggjoringFullmektig pdf`() {
+        LetterTestImpl(
+            AdHocVarselUgyldiggjoringFullmektig.template,
+            Fixtures.create<FullmektigBprofAutoDto>(),
+            Bokmal,
+            Fixtures.fellesAuto
+        ).renderTestPDF(AdHocVarselUgyldiggjoringFullmektig.kode.name)
+
+    }
+
 }

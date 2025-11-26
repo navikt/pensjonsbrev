@@ -21,6 +21,7 @@ export type Attachment = {
 export enum ElementType {
   TITLE1 = "TITLE1",
   TITLE2 = "TITLE2",
+  TITLE3 = "TITLE3",
   PARAGRAPH = "PARAGRAPH",
   PARAGRAPH_TEXT_LITERAL = "PARAGRAPH_TEXT_LITERAL",
   PARAGRAPH_TEXT_EXPRESSION = "PARAGRAPH_TEXT_EXPRESSION",
@@ -31,7 +32,7 @@ export enum ElementType {
 }
 
 export type Element = OutlineContent | ParagraphContent;
-export type OutlineContent = Title1 | Title2 | Paragraph;
+export type OutlineContent = Title1 | Title2 | Title3 | Paragraph;
 export type Title1 = {
   elementType: ElementType.TITLE1;
   text: ContentOrControlStructure<Text>[];
@@ -40,6 +41,12 @@ export type Title2 = {
   elementType: ElementType.TITLE2;
   text: ContentOrControlStructure<Text>[];
 };
+
+export type Title3 = {
+  elementType: ElementType.TITLE3;
+  text: ContentOrControlStructure<Text>[];
+};
+
 export type Paragraph = {
   elementType: ElementType.PARAGRAPH;
   paragraph: ContentOrControlStructure<ParagraphContent>[];

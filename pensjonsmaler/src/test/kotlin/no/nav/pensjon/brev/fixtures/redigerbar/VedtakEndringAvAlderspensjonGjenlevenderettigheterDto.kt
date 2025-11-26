@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
@@ -62,10 +63,10 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025(),
             opplysningerOmAvdoedBruktIBeregningDto = OpplysningerOmAvdoedBruktIBeregningDto(
                 bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
-                    foedselsdato = LocalDate.now()
+                    foedselsdato = vilkaarligDato
                 ),
                 beregnetPensjonPerManedVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.BeregnetPensjonPerManedVedVirk(
-                    virkDatoFom = LocalDate.now(),
+                    virkDatoFom = vilkaarligDato,
                     avdoedFlyktningstatusErBrukt = true
                 ),
                 avdoedTrygdetidsdetaljerKap19VedVirk = null,

@@ -18,7 +18,7 @@ export type SakDto = {
 
 export type SakContextDto = {
   readonly sak: SakDto;
-  readonly brevMetadata: LetterMetadata[];
+  readonly brevmalKoder: string[];
 };
 
 export type SakType =

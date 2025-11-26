@@ -123,6 +123,8 @@ enum class Cacheomraade(val prefix: String) {
     NAVANSATT("Navansatt"),
     NAVANSATTENHET("NavAnsattEnhet"),
     NORG("Norg"),
+    SKJERMING("Skjerming"),
     REDIGERBAR_MAL("Redigerbar"),
     SAMHANDLER("Samhandler"),
+    SAMHANDLER_ADRESSE("SamhandlerAdresse"),
 }

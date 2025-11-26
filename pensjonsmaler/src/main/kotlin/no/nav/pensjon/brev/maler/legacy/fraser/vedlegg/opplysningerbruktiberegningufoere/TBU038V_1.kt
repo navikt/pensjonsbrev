@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.ar_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.avkortetbelop_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.brukt_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.forstegansgstjeneste_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.inntektiavtaleland_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.omsorgsaar_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.pgi_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.ar
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.avkortetbelop
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.brukt
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.forstegansgstjeneste
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.inntektiavtaleland
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.omsorgsaar
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.pgi
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.Nei
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
@@ -20,9 +20,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -90,23 +87,23 @@ data class TBU038V_1(
                             row {
                                 //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Brukt,SYS_TableRow) = false) THEN      INCLUDE ENDIF
                                 cell {
-                                    showIf(opptjeningUt.brukt_safe.ifNull(false)) {
+                                    showIf(opptjeningUt.safe { brukt }.ifNull(false)) {
                                         text(
-                                            bokmal { + opptjeningUt.ar_safe.ifNull(0).format() },
-                                            nynorsk { + opptjeningUt.ar_safe.ifNull(0).format() },
-                                            english { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            bokmal { + opptjeningUt.safe { ar }.ifNull(0).format() },
+                                            nynorsk { + opptjeningUt.safe { ar }.ifNull(0).format() },
+                                            english { + opptjeningUt.safe { ar }.ifNull(0).format() },
                                             BOLD,
                                         )
                                     }.orShow {
                                         text(
-                                            bokmal { + opptjeningUt.ar_safe.ifNull(0).format() },
-                                            nynorsk { + opptjeningUt.ar_safe.ifNull(0).format() },
-                                            english { + opptjeningUt.ar_safe.ifNull(0).format() },
+                                            bokmal { + opptjeningUt.safe { ar }.ifNull(0).format() },
+                                            nynorsk { + opptjeningUt.safe { ar }.ifNull(0).format() },
+                                            english { + opptjeningUt.safe { ar }.ifNull(0).format() },
                                         )
                                     }
                                 }
                                 cell {
-                                    showIf(opptjeningUt.inntektiavtaleland_safe.ifNull(false)){
+                                    showIf(opptjeningUt.safe { inntektiavtaleland }.ifNull(false)){
                                         includePhrase(Ja)
                                     }.orShow {
                                         includePhrase(Nei)
@@ -114,24 +111,24 @@ data class TBU038V_1(
                                 }
                                 cell {
                                     text(
-                                        bokmal { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                        nynorsk { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                        english { + opptjeningUt.pgi_safe.ifNull(Kroner(0)).format(false) + " NOK" },
+                                        bokmal { + opptjeningUt.safe { pgi }.ifNull(Kroner(0)).format(false) + " kr" },
+                                        nynorsk { + opptjeningUt.safe { pgi }.ifNull(Kroner(0)).format(false) + " kr" },
+                                        english { + opptjeningUt.safe { pgi }.ifNull(Kroner(0)).format(false) + " NOK" },
                                     )
                                 }
                                 cell {
-                                    showIf(opptjeningUt.brukt_safe.ifNull(false)) {
+                                    showIf(opptjeningUt.safe { brukt }.ifNull(false)) {
                                         text(
-                                            bokmal { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            english { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " NOK" },
+                                            bokmal { + opptjeningUt.safe { avkortetbelop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + opptjeningUt.safe { avkortetbelop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            english { + opptjeningUt.safe { avkortetbelop }.ifNull(Kroner(0)).format(false) + " NOK" },
                                             BOLD,
                                         )
                                     }.orShow {
                                         text(
-                                            bokmal { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            english { + opptjeningUt.avkortetbelop_safe.ifNull(Kroner(0)).format(false) + " NOK" },
+                                            bokmal { + opptjeningUt.safe { avkortetbelop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + opptjeningUt.safe { avkortetbelop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            english { + opptjeningUt.safe { avkortetbelop }.ifNull(Kroner(0)).format(false) + " NOK" },
                                         )
                                     }
                                     text (
@@ -142,7 +139,7 @@ data class TBU038V_1(
                                 }
                                 cell {
                                     //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,SYS_TableRow) <> 0) THEN      INCLUDE ENDIF
-                                    showIf(opptjeningUt.forstegansgstjeneste_safe.ifNull(0).notEqualTo(0)){
+                                    showIf(opptjeningUt.safe { forstegansgstjeneste }.ifNull(0).notEqualTo(0)){
                                         text (
                                             bokmal { + "Førstegangsteneste * " },
                                             nynorsk { + "Førstegongsteneste * " },
@@ -151,7 +148,7 @@ data class TBU038V_1(
                                     }
 
                                     //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,SYS_TableRow) = true) THEN      INCLUDE ENDIF
-                                    showIf(opptjeningUt.omsorgsaar_safe.ifNull(false)){
+                                    showIf(opptjeningUt.safe { omsorgsaar }.ifNull(false)){
                                         text (
                                             bokmal { + "Omsorgsår *" },
                                             nynorsk { + "Omsorgsår *" },

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harDagpenger
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harMerknadType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harOmsorgsopptjeningFOM2010
@@ -122,24 +122,17 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         }
 
         showIf(
-            (garantipensjonInnvilget and garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0))
+            (garantipensjonInnvilget and garantipensjonVedVirk.safe { nettoUtbetaltPerManed }.ifNull(Kroner(0))
                 .greaterThan(0))
                     or (redusertTrygdetid and not(avslattGarantipensjon))
         ) {
             //vedleggBeregnPensjonsbeholdningOgTrygdetid_001
             title1 {
                 text(
-                    bokmal { + "Pensjonsbeholdning" },
-                    nynorsk { + "Pensjonsbehaldning" },
-                    english { + "Accumulated pension capital" },
+                    bokmal { + "Pensjonsbeholdning og trygdetid" },
+                    nynorsk { + "Pensjonsbehaldning og trygdetid" },
+                    english { + "Accumulated pension capital and Norwegian national insurance coverage" },
                 )
-                showIf(redusertTrygdetid) {
-                    text(
-                        bokmal { + " og trygdetid" },
-                        nynorsk { + " og trygdetid" },
-                        english { + " and Norwegian national insurance coverage" },
-                    )
-                }
             }
             paragraph {
                 text(
@@ -169,7 +162,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 )
                 showIf(
                     (garantipensjonInnvilget
-                            and garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0)).greaterThan(0))
+                            and garantipensjonVedVirk.safe { nettoUtbetaltPerManed }.ifNull(Kroner(0)).greaterThan(0))
                             or (not(garantipensjonInnvilget) and redusertTrygdetid)
                 ) {
                     text(
@@ -257,7 +250,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
         }
         showIf(
-            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.equalTo(0)
+            garantipensjonVedVirk.safe { nettoUtbetaltPerManed }.equalTo(0)
                     and not(avslattGarantipensjon)
                     and redusertTrygdetid
         ) {
@@ -271,8 +264,8 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
             paragraph {
                 text(
-                    bokmal { + "Inntektspensjonen din er så høy at du får ikke utbetalt garantipensjon." },
-                    nynorsk { + "Inntektspensjonen din er så høg at du får ikkje utbetalt garantipensjon." },
+                    bokmal { + "Inntektspensjonen din er over grensen for at du kan få utbetalt garantipensjon." },
+                    nynorsk { + "Inntektspensjonen din er over grensa for at du kan få utbetalt garantipensjon." },
                     english { + "You are not eligible for a guaranteed pension because your income pension exceeds the threshold." },
                 )
             }
