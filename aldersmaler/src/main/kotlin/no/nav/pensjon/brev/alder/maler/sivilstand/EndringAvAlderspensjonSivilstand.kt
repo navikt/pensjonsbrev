@@ -42,10 +42,10 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.grunnpensjon
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.harInntektOver2G_safe
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad_safe
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarPensjon_safe
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.borSammenMedBruker
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.harInntektOver2G
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarPensjon
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beloepEndring
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
@@ -59,7 +59,7 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.sivilstandsendringsaarsak_safe
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.sivilstandsendringsaarsak
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language
@@ -75,6 +75,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -115,10 +116,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             val innvilgetFor67 = alderspensjonVedVirk.innvilgetFor67
 
             val epsVedVirk = pesysData.epsVedVirk
-            val harInntektOver2G = epsVedVirk.harInntektOver2G_safe.ifNull(false)
-            val mottarPensjon = epsVedVirk.mottarPensjon_safe.ifNull(false)
-            val borSammenMedBruker = epsVedVirk.borSammenMedBruker_safe.ifNull(false)
-            val mottarOmstillingsstonad = epsVedVirk.mottarOmstillingsstonad_safe.ifNull(false)
+            val harInntektOver2G = epsVedVirk.safe { harInntektOver2G }.ifNull(false)
+            val mottarPensjon = epsVedVirk.safe { mottarPensjon }.ifNull(false)
+            val borSammenMedBruker = epsVedVirk.safe { borSammenMedBruker }.ifNull(false)
+            val mottarOmstillingsstonad = epsVedVirk.safe { mottarOmstillingsstonad }.ifNull(false)
 
             val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
             val regelverkType = pesysData.regelverkType
@@ -335,7 +336,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         ),
                 ) {
                     showIf(
-                        saksbehandlerValg.sivilstandsendringsaarsak_safe.equalTo(
+                        saksbehandlerValg.sivilstandsendringsaarsak.equalTo(
                             Sivilstandsendringsaarsak.fraFlyttet,
                         ),
                     ) {
@@ -348,7 +349,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             )
                         }
                     }.orShowIf(
-                        saksbehandlerValg.sivilstandsendringsaarsak_safe.equalTo(
+                        saksbehandlerValg.sivilstandsendringsaarsak.equalTo(
                             Sivilstandsendringsaarsak.giftBorIkkeSammen,
                         ),
                     ) {
