@@ -21,8 +21,8 @@ Bruk følgende for å bygge og kjøre:
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 
 ```bash
-(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff)
-(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
+(mkdir -p - skribenten-backend/secrets skribenten-web/bff)
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env skribenten-web/bff/.env)
 ```
 
 ```bash
@@ -37,8 +37,7 @@ docker-compose up -d --build
    - vault
    - gcloud cli
    - kjørende docker/colima
-   - naisdevice med standard dev-miljø tilganger og [tjenestebuss-q2](https://console.nav.cloud.nais.io/team/tjenestebuss-q2-naisdevice) gruppe-tilgang (optional - tilgangen trengs kun dersom du har behov for å kjøre hele backend i docker compose. Lokalt frontend kan kjøres mot q2)
-     - Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
+   - naisdevice med standard dev-miljø tilganger
 2. Hent alle secrets:
    ```bash
    ./fetch-secrets.sh

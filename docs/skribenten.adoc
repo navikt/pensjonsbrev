@@ -1,6 +1,6 @@
 = Skribenten
 
-Skribenten er en web applikasjon hvor saksbehandlere kan bestille, redigere og sende brev. Skribenten har full støtte for redigering av brev fra Brevbaker, samt den gjør det mulig å bestille legacy brev fra Doksys og Exstream. Skribenten består av skribenten-web (React) og skribenten-backend (Kotlin/Ktor). Skribenten-backend er i utgangspunktet ansvarlig for å videresende alle requests på vegne av skribenten-web. Videre har vi mikrotjenesten tjenestebuss-integrasjon som kjører i FSS og er ansvarlig for kommunikasjon med legacy systemer.
+Skribenten er en web applikasjon hvor saksbehandlere kan bestille, redigere og sende brev. Skribenten har full støtte for redigering av brev fra Brevbaker, samt den gjør det mulig å bestille legacy brev fra Doksys og Exstream. Skribenten består av skribenten-web (React) og skribenten-backend (Kotlin/Ktor). Skribenten-backend er i utgangspunktet ansvarlig for å videresende alle requests på vegne av skribenten-web.
 
 
 == Grunnleggende scenarioer
