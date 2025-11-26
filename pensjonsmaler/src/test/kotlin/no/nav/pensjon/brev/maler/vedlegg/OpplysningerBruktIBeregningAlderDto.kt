@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
@@ -12,7 +13,7 @@ import java.time.LocalDate
 fun createOpplysningerBruktIBeregningAlderDto() =
     OpplysningerBruktIBeregningenAlderDto(
         beregnetPensjonPerManedVedVirk = OpplysningerBruktIBeregningenAlderDto.AlderspensjonPerManed(
-            virkDatoFom = LocalDate.now(),
+            virkDatoFom = vilkaarligDato,
             brukersSivilstand = MetaforceSivilstand.EKTEFELLE,
             flyktningstatusErBrukt = false,
             tilleggspensjon = Kroner(200),
@@ -83,7 +84,7 @@ fun createOpplysningerBruktIBeregningAlderDto() =
         trygdetidEOS = listOf(),
         trygdetidAvtaleland = listOf(),
         bruker = OpplysningerBruktIBeregningenAlderDto.Bruker(
-            foedselsdato = LocalDate.now()
+            foedselsdato = vilkaarligDato
         ),
         krav = OpplysningerBruktIBeregningenAlderDto.Krav(
             erForstegangsbehandling = true

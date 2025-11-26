@@ -62,7 +62,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
                 text(
                     bokmal { +"du får innvilget andre stønader fra Nav" },
                     nynorsk { +"du får innvilga andre stønader frå Nav" },
-                    english { +"You are granted any other benefits by Nav " },
+                    english { +"You are granted any other benefits by Nav" },
+                )
+            }
+            item {
+                text(
+                    bokmal { +"du blir innvilget full uføretrygd (omstillingsstønaden skal stoppe)" },
+                    nynorsk { +"du blir innvilga full uføretrygd (omstillingsstønaden skal stoppe)" },
+                    english { +"you will be granted full disability benefit (the adjustment allowance will stop)" },
                 )
             }
             item {

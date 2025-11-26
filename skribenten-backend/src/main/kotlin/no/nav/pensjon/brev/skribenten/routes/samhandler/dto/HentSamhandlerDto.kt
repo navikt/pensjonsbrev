@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
+package no.nav.pensjon.brev.skribenten.routes.samhandler.dto
 
 data class HentSamhandlerResponseDto(val success: Success?, val failure: FailureType?) {
     data class Success(

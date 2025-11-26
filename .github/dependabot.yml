@@ -4,12 +4,12 @@ registries:
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
-    token: ${{secrets.READER_TOKEN}}
+    token: ${{secrets.READ_PACKAGES_TEMP}}
   gradle-artifactory:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/pensjonsbrev
     username: ${{ github.repository_owner }}
-    password: ${{secrets.READER_TOKEN}}
+    password: ${{secrets.READ_PACKAGES_TEMP}}
 
 updates:
   # ==============
@@ -36,6 +36,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
@@ -69,7 +71,7 @@ updates:
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
-          - "org.testcontainers:postgresql"
+          - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
 
 
@@ -85,6 +87,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - npm-github
@@ -108,6 +112,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
 
   # ==============
   # Docker frontend
@@ -119,6 +125,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:
@@ -136,6 +144,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:

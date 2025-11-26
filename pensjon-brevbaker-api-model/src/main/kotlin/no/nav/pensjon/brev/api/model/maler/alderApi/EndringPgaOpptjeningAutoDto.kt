@@ -27,6 +27,7 @@ data class EndringPgaOpptjeningAutoDto(
     val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
     val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+    val opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening: OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto?,
     val opplysningerOmAvdoedBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?,
 ) : AutobrevData
 
