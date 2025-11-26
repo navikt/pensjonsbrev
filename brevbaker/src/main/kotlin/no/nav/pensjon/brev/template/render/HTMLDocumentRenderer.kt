@@ -134,6 +134,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             is Block.Paragraph -> renderParagraph(block)
             is Block.Title1 -> h2(classes("title1")) { renderText(block.content) }
             is Block.Title2 -> h3(classes("title2")) { renderText(block.content) }
+            is Block.Title3 -> h4(classes("title3")) { renderText(block.content) }
         }
 
     private fun FlowContent.renderParagraph(paragraph: Block.Paragraph) {

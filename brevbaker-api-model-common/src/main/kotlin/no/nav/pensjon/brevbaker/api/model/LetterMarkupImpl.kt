@@ -2,10 +2,7 @@ package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Type
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
@@ -69,6 +66,12 @@ data class LetterMarkupImpl(
         data class Title2Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) :
             Title2 {
             override val type = Type.TITLE2
+        }
+
+        @InterneDataklasser
+        data class Title3Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) :
+            Title3 {
+            override val type = Type.TITLE3
         }
 
         @InterneDataklasser

@@ -11,7 +11,7 @@ I hovedsak gjør applikasjonen:
 Dette vil populere secrets nødvendig for alle tjenestene i repoet.
 ```bash
 gcloud auth login
-python3 setup_local_azure_secrets.py
+./fetch-secrets.sh
 ```
 
 #### Autentiser PAT(public access token)

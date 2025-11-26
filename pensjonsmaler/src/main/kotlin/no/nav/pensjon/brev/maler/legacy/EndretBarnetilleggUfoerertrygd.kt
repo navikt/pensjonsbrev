@@ -362,7 +362,7 @@ object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoer
             // TBU1223 og TBU1224
             includePhrase(MeldeFraOmEndringer)
             // TBU1100
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Felles.RettTilAAKlage)
             // TBU1074 og TBU1075
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             // TBU1227

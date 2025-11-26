@@ -53,7 +53,7 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                 paragraph {
                     text(
                         bokmal { +"Vi viser til søknaden din som vi mottok " + mottattDato.format() + "." },
-                        nynorsk { +"Vi viser til søknaden din som vi tok imot " + mottattDato.format() + "." },
+                        nynorsk { +"Vi fekk søknad frå deg " + mottattDato.format() + "." },
                         english { +"We refer to your application that we received " + mottattDato.format() + "." },
                     )
                 }
@@ -72,8 +72,8 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                                 "Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. " +
                                 "Du kan finne vår saksbehandlingstid på nav.no/saksbehandlingstider#barnepensjon." },
                             nynorsk { +
-                                "Søknaden din vil bli behandla så snart som mogleg og sinast innan <fritekst: antall uker/måneder>. " +
-                                "Dersom saka di ikkje har blitt ferdigbehandla innan denne tida, vil du få nærmare beskjed. " +
+                                "Søknaden din vil bli behandla så snart som mogleg og seinast innan <fritekst: antall uker/måneder>. " +
+                                "Dersom søknaden ikkje blir avgjort i løpet av denne tida, vil du få nærare beskjed. " +
                                 "Du finn saksbehandlingstida vår på nav.no/saksbehandlingstider#barnepensjon." },
                             english { +
                                 "Nav will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
@@ -98,7 +98,7 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                             nynorsk { +
                                 "Du må kontakte trygdemaktene i landet du bur i for å søkje om barnepensjon. " +
                                 "Trygdemaktene i landet du bur i vil sende søknaden til Nav. " +
-                                "Motteken søknad er avbrutt og vil ikkje bli behandla." },
+                                "Motteken søknad er avbroten og vil ikkje bli behandla." },
                             english { +
                                 "You must contact the national insurance authority in the country where you live to apply " +
                                 "for a children's pension. This country’s national insurance authority will then " +

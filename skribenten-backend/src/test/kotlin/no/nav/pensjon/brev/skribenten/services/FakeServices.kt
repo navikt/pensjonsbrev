@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSam
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
+import java.time.LocalDate
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -36,7 +37,7 @@ open class FakeNavansattService(
     val navansatte: Map<String, String> = emptyMap(),
 ) : NavansattService {
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) =
-        ServiceResult.Ok(harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false))
+        harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false)
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
         Navansatt(
@@ -79,24 +80,24 @@ open class FakeBrevbakerService(
     open var maler: List<TemplateDescription.Redigerbar> = listOf(),
     open var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf(),
 ) : BrevbakerService {
-    override suspend fun getTemplates() = ServiceResult.Ok(maler)
+    override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
 
-    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> = notYetStubbed()
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification = notYetStubbed()
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkupWithDataUsage> = notYetStubbed()
+    ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse> = notYetStubbed()
+    ): LetterResponse = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()
@@ -145,6 +146,7 @@ open class PenServiceStub : PenService {
 
 open class PdlServiceStub : PdlService {
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = notYetStubbed()
+    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> = notYetStubbed()
 }
 
 open class SafServiceStub : SafService {

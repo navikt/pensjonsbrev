@@ -6,7 +6,6 @@ plugins {
     application
     kotlin("jvm")
     alias(libs.plugins.ksp) apply true
-    alias(libs.plugins.ktor) apply true
 }
 
 group = "no.nav.pensjon.brev"
@@ -14,12 +13,6 @@ version = "0.0.1-SNAPSHOT"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
-}
-
-ktor {
-    fatJar {
-        archiveFileName.set("${project.name}.jar")
-    }
 }
 
 repositories {
@@ -38,6 +31,9 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = javaTarget
+    }
+    build {
+        dependsOn(installDist)
     }
 }
 

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.languages
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.assertThrows
 
 class LetterTest {
 
-    data class TestData(val s: String)
+    data class TestData(val s: String) : AutobrevData
 
     val template = createTemplate(
         letterDataType = TestData::class,

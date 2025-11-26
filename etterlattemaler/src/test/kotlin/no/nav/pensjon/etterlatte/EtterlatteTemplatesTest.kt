@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.BrevmodulTest
 import no.nav.brev.brevbaker.jacksonObjectMapper
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
@@ -41,7 +42,7 @@ class EtterlatteTemplatesTest : BrevmodulTest(
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
-    fun <T : Any> jsontest(
+    fun <T : BrevbakerBrevdata> jsontest(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,

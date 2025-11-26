@@ -4,6 +4,8 @@ import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
@@ -13,7 +15,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
     data class PesysData(
         val sakstype: Sakstype,
         val vedlegg: P1Dto,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 }
 
 data class P1Dto(
@@ -23,7 +25,7 @@ data class P1Dto(
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
-) : BrevbakerBrevdata, PDFVedleggData {
+) : PDFVedleggData {
 
     data class P1Person(
         val fornavn: String?,
@@ -52,7 +54,6 @@ data class P1Dto(
     )
 
     data class AvslaattPensjon(
-        val institusjon: Institusjon? = null,
         val institusjoner: List<Institusjon>?,
         val pensjonstype: Pensjonstype?,
         val avslagsbegrunnelse: Avslagsbegrunnelse?,
@@ -61,43 +62,37 @@ data class P1Dto(
         val adresseNyVurdering: List<Adresse>,
     )
 
-    enum class Pensjonstype(val nummer: Int, val fullTekst: String) {
-        Alder(1, "Old-age"),
-        Ufoere(2, "Invalidity"),
-        Etterlatte(3, "Survivor")
+    enum class Pensjonstype(val nummer: Int) {
+        Alder(1),
+        Ufoere(2),
+        Etterlatte(3)
     }
 
-    enum class GrunnlagInnvilget(val nummer: Int, val fullTekst: String) {
-        IHenholdTilNasjonalLovgivning(4, "according to national legislation"),
+    enum class GrunnlagInnvilget(val nummer: Int) {
+        IHenholdTilNasjonalLovgivning(4),
         ProRata(
-            5,
-            "as a pension in which periods from another Member State have been\n" +
-                    "taken into account (European pro rata calculation)"
+            5
         ),
         MindreEnnEttAar(
-            6,
-            "as a pension in which periods of less than one year have been taken\n" +
-                    "into account as if they had been completed under the legislation of\n" +
-                    "this Member State"
+            6
         )
     }
 
-    enum class Reduksjonsgrunnlag(val nummer: Int, val fullTekst: String) {
-        PaaGrunnAvAndreYtelserEllerAnnenInntekt(7, "in view of another benefit or income"),
-        PaaGrunnAvOverlappendeGodskrevnePerioder(8, "in view of overlapping of credited periods")
+    enum class Reduksjonsgrunnlag(val nummer: Int) {
+        PaaGrunnAvAndreYtelserEllerAnnenInntekt(7),
+        PaaGrunnAvOverlappendeGodskrevnePerioder(8)
     }
 
-    enum class Avslagsbegrunnelse(val nummer: Int, val fullTekst: String) {
-        IngenOpptjeningsperioder(4, "No insurance periods"),
-        OpptjeningsperiodePaaMindreEnnEttAar(5, "Insurance periods less than one year"),
+    enum class Avslagsbegrunnelse(val nummer: Int) {
+        IngenOpptjeningsperioder(4),
+        OpptjeningsperiodePaaMindreEnnEttAar(5),
         KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt(
-            6,
-            "qualifying period not completed or eligibility requirements not met"
+            6
         ),
-        VilkaarOmUfoerhetErIkkeOppfylt(7, "no partial disability or invalidity was found"),
-        InntektstakErOverskredet(8, "income ceiling is exceeded"),
-        PensjonsalderErIkkeNaadd(9, "pension age not yet reached"),
-        AndreAarsaker(10, "other reasons")
+        VilkaarOmUfoerhetErIkkeOppfylt(7),
+        InntektstakErOverskredet(8),
+        PensjonsalderErIkkeNaadd(9),
+        AndreAarsaker(10)
     }
 
     enum class Utbetalingshyppighet {

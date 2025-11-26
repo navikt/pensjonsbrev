@@ -37,3 +37,7 @@ build
 !gradle/wrapper/gradle-wrapper.jar
 /.run/
 .kotlin
+
+#Graphql
+# graphql-schema (bør kun hentes lokalt for å bygge opp queries)
+*-schema.graphql

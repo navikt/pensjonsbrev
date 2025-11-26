@@ -129,17 +129,10 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             //vedleggBeregnPensjonsbeholdningOgTrygdetid_001
             title1 {
                 text(
-                    bokmal { + "Pensjonsbeholdning" },
-                    nynorsk { + "Pensjonsbehaldning" },
-                    english { + "Accumulated pension capital" },
+                    bokmal { + "Pensjonsbeholdning og trygdetid" },
+                    nynorsk { + "Pensjonsbehaldning og trygdetid" },
+                    english { + "Accumulated pension capital and Norwegian national insurance coverage" },
                 )
-                showIf(redusertTrygdetid) {
-                    text(
-                        bokmal { + " og trygdetid" },
-                        nynorsk { + " og trygdetid" },
-                        english { + " and Norwegian national insurance coverage" },
-                    )
-                }
             }
             paragraph {
                 text(
@@ -271,8 +264,8 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
             paragraph {
                 text(
-                    bokmal { + "Inntektspensjonen din er så høy at du får ikke utbetalt garantipensjon." },
-                    nynorsk { + "Inntektspensjonen din er så høg at du får ikkje utbetalt garantipensjon." },
+                    bokmal { + "Inntektspensjonen din er over grensen for at du kan få utbetalt garantipensjon." },
+                    nynorsk { + "Inntektspensjonen din er over grensa for at du kan få utbetalt garantipensjon." },
                     english { + "You are not eligible for a guaranteed pension because your income pension exceeds the threshold." },
                 )
             }

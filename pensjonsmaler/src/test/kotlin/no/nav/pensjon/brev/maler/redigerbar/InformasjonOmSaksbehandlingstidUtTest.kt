@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDto
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
@@ -18,7 +18,7 @@ class InformasjonOmSaksbehandlingstidUtTest {
         saksbehandlerValg = InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg(
             forlengetSaksbehandlingstid = false
         ),
-        pesysData = EmptyBrevdata
+        pesysData = EmptyFagsystemdata
     )
 
     @Test

@@ -3,7 +3,7 @@ import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
@@ -138,11 +138,20 @@ const BrevmalBrevbaker = (props: {
     },
   });
 
+  const mottaker = useWatch({ control: form.control, name: "mottaker" });
+
   useEffect(() => {
     if (enhetsId && enhetsId !== form.getValues("enhetsId")) {
       form.setValue("enhetsId", enhetsId);
     }
   }, [enhetsId, form]);
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    form.handleSubmit((values) => {
+      opprettBrevMutation.mutate(values);
+    })(event);
+  };
 
   const { setOnFormSubmitClick } = props;
   useEffect(() => {
@@ -182,7 +191,7 @@ const BrevmalBrevbaker = (props: {
       <LetterTemplateHeading letterTemplate={props.letterTemplate} />
       <Divider />
       <FormProvider {...form}>
-        <BrevmalFormWrapper formRef={formRef} onSubmit={form.handleSubmit((v) => opprettBrevMutation.mutate(v))}>
+        <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
           <VStack
             css={css`
               flex: 1;
@@ -191,7 +200,7 @@ const BrevmalBrevbaker = (props: {
           >
             <VStack gap="2">
               <VStack>
-                <OppsummeringAvMottaker mottaker={form.watch("mottaker")} saksId={props.saksId} withTitle />
+                <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
 
                 {modalÅpen && (
                   <EndreMottakerModal
@@ -211,7 +220,7 @@ const BrevmalBrevbaker = (props: {
                 <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
                   Endre mottaker
                 </Button>
-                {form.watch("mottaker") !== null && (
+                {mottaker !== null && (
                   <Button onClick={() => form.setValue("mottaker", null)} size="small" type="button" variant="tertiary">
                     Tilbakestill mottaker
                   </Button>

@@ -2,6 +2,7 @@ app-name: "skribenten-backend"
 
 database:
   auditlog: "off"
+  postgresVersion: POSTGRES_17
 
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
@@ -138,3 +139,8 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
+
+  - name: SKJERMING_URL
+    value: "https://skjermede-personer-pip.intern.dev.nav.no/skjermet"
+  - name: SKJERMING_SCOPE
+    value: "api://dev-gcp.nom.skjermede-personer-pip/.default"

@@ -8,4 +8,4 @@ data class OmsorgEgenAutoDto(
     val aarEgenerklaringOmsorgspoeng: Year,
     val aarInnvilgetOmsorgspoeng: Year,
     val egenerklaeringOmsorgsarbeidDto: EgenerklaeringOmsorgsarbeidDto
-): BrevbakerBrevdata
+): AutobrevData

@@ -231,7 +231,8 @@ data class ArbeidsinntektOgAlderspensjon(
                         "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed." },
                 )
             }
-        }.orShowIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
+        }
+        showIf(uttaksgrad.lessThan(100)) {
             // nyOpptjeningGradertAP
             paragraph {
                 text(
@@ -243,7 +244,8 @@ data class ArbeidsinntektOgAlderspensjon(
                         "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated." },
                 )
             }
-        }.orShowIf(innvilgetFor67) {
+        }
+        showIf(innvilgetFor67) {
             includePhrase(UfoereAlder.UfoereKombinertMedAlder(uforeKombinertMedAlder))
         }
     }

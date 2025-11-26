@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.inntektsgrense
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.netto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.UforetrygdSelectors.okningUforegradVedArsjoring
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.brukerBorINorge
@@ -34,7 +35,6 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
@@ -74,6 +74,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()
         val fellesbarnPeriodisert = barnetilleggFellesbarn.periodisert_safe.ifNull(false)
         val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.periodisert_safe.ifNull(false)
+        val okningUforegradVedArsjoring = uforetrygd.okningUforegradVedArsjoring.ifNull(false)
 
         title {
             showIf(endretUt and not(btfbEndret or btsbEndret)) {
@@ -209,7 +210,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
                 )
             }
-
+            showIf(sokerMottarApIlaAret) {
+                paragraph {
+                    text(
+                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
+                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
+                    )
+                }
+            }
 
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
                 showIf(barnetilleggFB.inntektAnnenForelder.greaterThan(0) and barnetilleggFB.inntektBruker.greaterThan(0)) {
@@ -283,14 +291,35 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
-                        .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". " },
-                    nynorsk { +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
-                        .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". " }
-                )
+            showIf(not(okningUforegradVedArsjoring)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
+                                .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". "
+                        },
+                        nynorsk {
+                            +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
+                                .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". "
+                        }
+                    )
+                }
             }
+            showIf(okningUforegradVedArsjoring) {
+                paragraph {
+                    text(
+                        bokmal {
+                            + "Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. " +
+                                    "Får du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                        },
+                        nynorsk {
+                            + "Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. " +
+                                    "Får du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
+                        }
+                    )
+                }
+            }
+
             paragraph {
                 showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
                     text(
@@ -361,14 +390,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     bokmal { +"På $UFOERE_JOBB_URL finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: $KONTAKT_URL" },
                     nynorsk { +"På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL" }
                 )
-            }
-            showIf(sokerMottarApIlaAret) {
-                paragraph {
-                    text(
-                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd." },
-                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd." }
-                    )
-                }
             }
             showIf(gjtEndret) {
                 title1 {
@@ -692,19 +713,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
 
                 }
             }
-            title1 {
-                text(
-                    bokmal { +"Du har rett til å klage" },
-                    nynorsk { +"Du har rett til å klage" }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL." },
-                    nynorsk { +"Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL." }
-                )
-            }
-
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
 
 

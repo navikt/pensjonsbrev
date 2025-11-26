@@ -232,15 +232,13 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
-                showIf(pesysData.krav.arsakErEndretOpptjening) {
-                    // hjemmelAP2016Opptjening_001
-                    paragraph {
-                        text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19." },
-                            english { + "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act." }
-                        )
-                    }
+                // hjemmelAP2016Opptjening_001
+                paragraph {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19." },
+                        english { + "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act." }
+                    )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
                 showIf(not(pesysData.behandlingKontekst.konteksttypeErKorrigeringopptjening)) {
@@ -348,7 +346,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

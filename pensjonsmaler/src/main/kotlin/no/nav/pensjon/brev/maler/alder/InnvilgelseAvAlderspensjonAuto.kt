@@ -254,11 +254,11 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                 )
                 includePhrase(InfoPensjonFraAndreAP)
                 includePhrase(MeldeFraOmEndringer)
-                includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(Felles.RettTilAAKlage)
 
                 showIf(borI.equalTo(AVTALELAND)) { includePhrase(RettTilKlageUtland) }
 
-                includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
             includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)

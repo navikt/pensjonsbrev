@@ -38,4 +38,28 @@ class LocalizedFormatterTest {
         val formattedDate2 = LocalizedFormatter.YearMonthFormatter.apply(YearMonth.of(2023, Month.JANUARY), Language.Nynorsk)
         assertEquals(formattedDate, formattedDate2)
     }
+
+    @Test
+    fun `månedsformatering på bokmål, nynorsk og engelsk`() {
+        val date = LocalDate.of(2023, Month.JANUARY, 15)
+        val formattedDateBokmal = LocalizedFormatter.MonthFormatter.apply(date.month, Language.Bokmal)
+        val formattedDateNynorsk = LocalizedFormatter.MonthFormatter.apply(date.month, Language.Nynorsk)
+        val formattedDateEnglish = LocalizedFormatter.MonthFormatter.apply(date.month, Language.English)
+
+        assertEquals("januar", formattedDateBokmal)
+        assertEquals("januar", formattedDateNynorsk)
+        assertEquals("January", formattedDateEnglish)
+    }
+
+    @Test
+    fun `månedsformatering kort format på bokmål, nynorsk og engelsk`() {
+        val date = LocalDate.of(2023, Month.JANUARY, 15)
+        val formattedDateBokmal = LocalizedFormatter.MonthFormatterShort.apply(date.month, Language.Bokmal)
+        val formattedDateNynorsk = LocalizedFormatter.MonthFormatterShort.apply(date.month, Language.Nynorsk)
+        val formattedDateEnglish = LocalizedFormatter.MonthFormatterShort.apply(date.month, Language.English)
+
+        assertEquals("jan.", formattedDateBokmal)
+        assertEquals("jan.", formattedDateNynorsk)
+        assertEquals("Jan", formattedDateEnglish)
+    }
 }

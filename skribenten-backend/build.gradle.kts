@@ -107,6 +107,4 @@ dependencies {
     testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)
 
-    testImplementation(testFixtures(libs.brevbaker.common))
-
 }
