@@ -41,6 +41,8 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
+import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaPensjon
+import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
