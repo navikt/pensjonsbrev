@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughNestedInheritanceSelectors.TheModelSelectors
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughNestedInheritanceSelectors.TheModelSelectors.navn
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughNestedInheritanceSelectors.TheModelSelectors.navn_safe
 
 /**
  * Verify that it is possible to generate selectors through nested inheritance of HasModel.
@@ -28,7 +27,6 @@ object HasModelThroughNestedInheritance {
         fun someusage() {
             val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
             val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
-            val nullableExpressionExtensionProperty: Expression<String?> = Expression.Literal<TheModel?>(null).navn_safe
             val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
         }
     }

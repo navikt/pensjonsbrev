@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
@@ -92,7 +93,7 @@ fun createP1VedleggDto() = P1RedigerbarDto(
         faksnummer = "12134412",
         telefonnummer = Telefonnummer("+123 45678901"),
         epost = Epost("lars.holm@tøys.nfp.no"),
-        dato = LocalDate.now(),
+        dato = vilkaarligDato,
     )
 )
 

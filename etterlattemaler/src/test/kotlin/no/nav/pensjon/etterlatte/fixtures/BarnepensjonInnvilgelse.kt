@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
@@ -46,7 +47,7 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = BarnepensjonBeregning(
             innhold = listOf(),
-            virkningsdato = LocalDate.now(),
+            virkningsdato = vilkaarligDato,
             antallBarn = 2,
             grunnbeloep = Kroner(123456),
             beregningsperioder = listOf(
@@ -79,7 +80,7 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
         harUtbetaling = true,
         erMigrertYrkesskade = false,
         erEtterbetaling = false,
-        datoVedtakOmgjoering = LocalDate.now()
+        datoVedtakOmgjoering = vilkaarligDato
     )
 }
 
@@ -87,7 +88,7 @@ fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgels
     virkningsdato = LocalDate.of(2020, Month.JANUARY, 1),
     avdoed = Avdoed(
         navn = "Avdoed Avdoedesen",
-        doedsdato = LocalDate.now().minusMonths(1),
+        doedsdato = vilkaarligDato.minusMonths(1),
     ),
     sisteBeregningsperiodeDatoFom = LocalDate.of(2020, Month.JANUARY, 1),
     sisteBeregningsperiodeBeloep = Kroner(1000),

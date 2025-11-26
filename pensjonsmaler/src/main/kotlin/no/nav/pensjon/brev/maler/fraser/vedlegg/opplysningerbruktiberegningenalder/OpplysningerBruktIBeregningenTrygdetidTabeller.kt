@@ -7,18 +7,16 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.fom
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.land
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.tom
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -42,9 +40,9 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
         showIf(
             not(skalSkjuleTrygdetidstabellerPgaAldersovergang) and
                     ((trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(FOLKETRYGD)
-                            and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(FOLKETRYGD))
+                            and trygdetidsdetaljerKap20VedVirk.safe { beregningsmetode }.notEqualTo(FOLKETRYGD))
                             or beregningKap19VedVirk.redusertTrygdetid
-                            or beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false)
+                            or beregningKap20VedVirk.safe { redusertTrygdetid }.ifNull(false)
                             )
         ) {
             //trygdetidOverskrift_001
@@ -85,7 +83,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             }
 
             //norskTTAP2016Eksport_001
-            showIf(inngangOgEksportVurdering.eksportBeregnetUtenGarantipensjon_safe.ifNull(false)) {
+            showIf(inngangOgEksportVurdering.safe { eksportBeregnetUtenGarantipensjon }.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { + "Hvis du har mindre enn 20 års medlemstid, har du ikke rett på garantipensjon når du er bosatt i utlandet." },
@@ -105,7 +103,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
         showIf(
             trygdetidEOS.size().greaterThan(0)
                     and (trygdetidsdetaljerKap19VedVirk.beregningsmetode.equalTo(EOS)
-                    or trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.equalTo(EOS))
+                    or trygdetidsdetaljerKap20VedVirk.safe { beregningsmetode }.equalTo(EOS))
         ) {
             paragraph {
                 text(
@@ -120,7 +118,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
 
         showIf(
             trygdetidsdetaljerKap19VedVirk.beregningsmetode.isNotAnyOf(EOS, FOLKETRYGD, NORDISK)
-                    and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.ifNull(EOS)
+                    and trygdetidsdetaljerKap20VedVirk.safe { beregningsmetode }.ifNull(EOS)
                 .isNotAnyOf(EOS, FOLKETRYGD, NORDISK)
                     and trygdetidAvtaleland.size().greaterThan(0)
         ) {

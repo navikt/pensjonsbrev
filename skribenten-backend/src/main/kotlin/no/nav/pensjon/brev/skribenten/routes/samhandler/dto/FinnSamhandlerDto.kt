@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
+package no.nav.pensjon.brev.skribenten.routes.samhandler.dto
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
