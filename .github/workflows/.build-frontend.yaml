@@ -45,7 +45,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_TEMP }}
 
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff
