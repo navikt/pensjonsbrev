@@ -18,6 +18,9 @@ data class UforeAvslagUtlandDto(
         @DisplayText("Alternativ tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen")
         val visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: Boolean = false,
 
+        @DisplayText("Vedtak fra andre land")
+        val visVedtakFraAndreLand: Boolean = false,
+
     ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagPendata(

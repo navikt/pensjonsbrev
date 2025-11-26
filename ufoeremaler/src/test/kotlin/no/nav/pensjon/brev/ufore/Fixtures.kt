@@ -72,7 +72,6 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
-            vurdering = "Vurdering 1",
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             trygdetidListe = listOf(
                 UforeAvslagUtlandDto.Trygdetid(

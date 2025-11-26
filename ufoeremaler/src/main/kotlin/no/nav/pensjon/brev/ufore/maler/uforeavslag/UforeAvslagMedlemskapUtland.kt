@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visInnvilgetPensjonEOSLand
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visVedtakFraAndreLand
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.fomDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.land
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.tomDato
@@ -42,7 +43,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-2",
+            displayTitle = "Avslag uføretrygd - 12-2 Utland",
             isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -188,18 +189,20 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
-            title1 {
-                text(bokmal { + "Vedtak fra andre land" })
-            }
+            showIf(saksbehandlerValg.visVedtakFraAndreLand) {
+                title1 {
+                    text(bokmal { +"Vedtak fra andre land" })
+                }
 
-            paragraph {
-                text(bokmal { + "Vi har mottatt melding fra land om at du har fått " + fritekst("innvilget/avslått") + " " + fritekst("uføreytelse eller alderspensjon") + "." })
-            }
-            paragraph {
-                text(bokmal { + "Vedtaket er gjort etter landets egen trygdelovgivning. Du kan lese om begrunnelse, rettigheter og plikter i vedtaket som de skal ha sendt til deg i posten." })
-            }
-            paragraph {
-                text(bokmal { + "Du finner oversikt over alle vedtak i vedlegget «P1 - Samlet melding om pensjonsvedtak»." })
+                paragraph {
+                    text(bokmal {+"Vi har mottatt melding fra land om at du har fått " + fritekst("innvilget/avslått") + " " + fritekst("uføreytelse eller alderspensjon") + "."})
+                }
+                paragraph {
+                    text(bokmal { +"Vedtaket er gjort etter landets egen trygdelovgivning. Du kan lese om begrunnelse, rettigheter og plikter i vedtaket som de skal ha sendt til deg i posten." })
+                }
+                paragraph {
+                    text(bokmal { +"Du finner oversikt over alle vedtak i vedlegget «P1 - Samlet melding om pensjonsvedtak»." })
+                }
             }
 
             includePhrase(Felles.RettTilAKlageLang)
@@ -207,5 +210,6 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
             includePhrase(Felles.HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
+        //includeAttachment(p1Vedlegg, pesysData.vedlegg)
     }
 }
