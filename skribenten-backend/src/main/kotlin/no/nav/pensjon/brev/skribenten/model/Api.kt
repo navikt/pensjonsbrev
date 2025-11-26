@@ -15,6 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
@@ -155,6 +156,9 @@ object Api {
     data class SakContext(
         val sak: Pen.SakSelection,
         val brevmalKoder: List<String>,
+        val adressebeskyttelse: Boolean,
+        val doedsfall: LocalDate?,
+        val erSkjermet: Boolean,
     )
 
     data class Brevmal(
