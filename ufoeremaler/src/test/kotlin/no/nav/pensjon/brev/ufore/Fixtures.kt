@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
+import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
 
