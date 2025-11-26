@@ -72,7 +72,7 @@ object Fixtures : LetterDataFactory {
 
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
-            kravMottattDato = LocalDate.now(),
+            kravMottattDato = vilkaarligDato,
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             trygdetidListe = listOf(
                 UforeAvslagUtlandDto.Trygdetid(
