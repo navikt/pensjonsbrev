@@ -1,6 +1,8 @@
 import { css } from "@emotion/react";
-import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
+import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
+import { BodyShort, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { z } from "zod";
 
 import {
@@ -10,8 +12,9 @@ import {
   getSakContextQuery,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakDto } from "~/types/apiTypes";
+import type { SakContextDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
+import { humanizeName } from "~/utils/stringUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { BrevInfoKlarTilAttesteringProvider } from "./kvittering/-components/KlarTilAttesteringContext";
@@ -60,7 +63,7 @@ function SakLayout() {
     <BrevInfoKlarTilAttesteringProvider>
       <SendtBrevProvider>
         <MottakerContextProvider>
-          {sakContext && <Subheader sak={sakContext.sak} />}
+          {sakContext && <Subheader sakContext={sakContext} />}
           <div className="page-margins">
             <Outlet />
           </div>
@@ -70,8 +73,17 @@ function SakLayout() {
   );
 }
 
-function Subheader({ sak }: { sak: SakDto }) {
+function Subheader({ sakContext }: { sakContext: SakContextDto }) {
+  const sak = sakContext.sak;
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
+  const dateOfBirth = useMemo(() => {
+    const date = new Date(`${fødselsdato.slice(4, 6)}.${fødselsdato.slice(2, 4)}.${fødselsdato.slice(0, 2)}`);
+    return isNaN(date.valueOf()) ? false : date.toLocaleDateString("no-NO");
+  }, [fødselsdato]);
+  const dateOfDeath = useMemo(() => {
+    const date = new Date(sakContext.doedsfall);
+    return isNaN(date.valueOf()) ? false : date.toLocaleDateString("no-NO");
+  }, [sakContext.doedsfall]);
 
   return (
     <div
@@ -110,8 +122,32 @@ function Subheader({ sak }: { sak: SakDto }) {
             {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
           </BodyShort>
           <BodyShort size="small">
-            {sak.navn.etternavn}, {sak.navn.fornavn} {sak.navn.mellomnavn}
+            {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
           </BodyShort>
+          {/* Vil ikke vises for ugyldig dato, f.eks. dummy pnr med ugyldig månedsledd */}
+          {dateOfBirth && <BodyShort size="small">Født: {dateOfBirth}</BodyShort>}
+          {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
+          {sakContext.erSkjermet && (
+            <BodyShort>
+              <Tag css={css({ borderRadius: "4px" })} icon={<FileIcon />} size="small" variant="neutral">
+                Egen ansatt
+              </Tag>
+            </BodyShort>
+          )}
+          {sakContext.vergemaal && (
+            <BodyShort>
+              <Tag css={css({ borderRadius: "4px" })} icon={<FileIcon />} size="small" variant="neutral">
+                Vergemål
+              </Tag>
+            </BodyShort>
+          )}
+          {sakContext.adressebeskyttelse && (
+            <BodyShort>
+              <Tag css={css({ borderRadius: "4px" })} icon={<ParagraphIcon />} size="small" variant="error-filled">
+                Diskresjon
+              </Tag>
+            </BodyShort>
+          )}
         </HStack>
         <HStack>
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
