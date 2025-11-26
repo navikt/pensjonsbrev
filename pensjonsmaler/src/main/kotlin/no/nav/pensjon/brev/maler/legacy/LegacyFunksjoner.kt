@@ -266,18 +266,7 @@ fun Expression<PE>.ut_barnet_barna_innvilget(): Expression<String> {
     )
 }
 
-fun Expression<PE>.ut_forsorgeransvar_ingen_er_false(): Expression<Boolean> {
-    return something
-}
-fun Expression<PE>.ut_forsorgeransvar_ingen_er_true(): Expression<Boolean> {
-    return something
-}
-fun Expression<PE>.ut_forsorgeransvar_siste_er_true(): Expression<Boolean> {
-    return something
-}
 
-fun Expression<PE>.vedtakfattetdato_minus_1mnd(): Expression<LocalDate?> =
-    vedtaksdata_vedtakfattetdato().ifNull(LocalDate.of(1000,1,1)).minusMonths(1)
 
 // GENERATED
 fun Expression<PE>.inkluderopplysningerbruktiberegningen() = ((not(vedtaksdata_faktoromregnet()) and pebrevkode().notEqualTo("PE_UT_04_102")) or (pebrevkode().equalTo("PE_UT_04_102") and (vedtaksdata_beregningsdata_beregningufore_belopokt() or (vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(0)) or vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_5")) or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))

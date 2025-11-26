@@ -68,6 +68,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.TrygdeavtalerSelector
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.TrygdeavtalerSelectors.bostedslandbeskrivelse_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphfasteutgifterperiode.InstOpphFasteUtgifterPeriodeListeSelectors.instopphfasteutgifterperiode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphfasteutgifterperiode.InstOpphFasteUtgifterPeriodeSelectors.fasteutgifter_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeListeSelectors.forsorgeransvaralle_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeListeSelectors.forsorgeransvaringen_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeListeSelectors.forsorgeransvarsiste_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeListeSelectors.instopphreduksjonsperiode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeSelectors.forsorgeransvar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateral
@@ -109,6 +112,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.Vedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.harLopendealderspensjon_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.trygdetidavdod_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vedtakfattetdatominus1mnd_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.virkningfom_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningantallperioder_safe
@@ -630,3 +634,7 @@ fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_total(): Expression
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto(): Expression<Kroner> = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.uforetrygdordiner_safe.brutto_safe.ifNull(Kroner(0))
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningantallperioder(): Expression<Int> = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningantallperioder_safe.ifNull(0)
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt(): Expression<Month> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.virkningstidspunktmaned_safe.ifNull(Month.JANUARY)
+fun Expression<PE>.vedtakfattetdato_minus_1mnd(): Expression<LocalDate> = vedtaksbrev_safe.vedtaksdata_safe.vedtakfattetdatominus1mnd_safe.ifNull(LocalDate.of(1000,1,1))
+fun Expression<PE>.ut_forsorgeransvar_ingen_er_false(): Expression<Boolean> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().instopphreduksjonsperiodeliste_safe.forsorgeransvaralle_safe.ifNull(false)
+fun Expression<PE>.ut_forsorgeransvar_ingen_er_true(): Expression<Boolean> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().instopphreduksjonsperiodeliste_safe.forsorgeransvaringen_safe.ifNull(true)
+fun Expression<PE>.ut_forsorgeransvar_siste_er_true(): Expression<Boolean> = vedtaksbrev_safe.grunnlag_safe.persongrunnlagsliste_safe.getOrNull().instopphreduksjonsperiodeliste_safe.forsorgeransvarsiste_safe.ifNull(false)
