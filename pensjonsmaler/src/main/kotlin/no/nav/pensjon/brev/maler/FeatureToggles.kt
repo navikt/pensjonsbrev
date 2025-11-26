@@ -20,6 +20,7 @@ enum class FeatureToggles(private val key: String) {
     innvilgelseAvAlderspensjonTrygdeavtale("innvilgelseAvAlderspensjonTrygdeavtale"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
+    samletMeldingOmPensjonsvedtakV2("samletMeldingOmPensjonsvedtakV2"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakEndringOpptjeningEndret("vedtakEndringOpptjeningEndret"),
     vedtakEndringVedFlyttingMellomLand("vedtakEndringVedFlyttingMellomLand"),

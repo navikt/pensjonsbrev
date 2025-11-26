@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.vedlegg
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.vedlegg.pdf.P1PDFDto
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.sakstype
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.p1Vedlegg
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.vedlegg.pdf.P1pdfV2Dto
 import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -24,11 +24,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Mal 000090 i doksys
 @TemplateModelHelpers
-object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakDto> {
+object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakV2Dto> {
 
-    override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtak.toggle
+    override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtakV2.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
+    override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 // 000090
     override val kategori = TemplateDescription.Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
@@ -90,7 +90,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             }
         }
 
-        includeAttachment(P1PDFDto.p1Vedlegg, pesysData.vedlegg)
+        includeAttachment(P1pdfV2Dto.p1Vedlegg, p1Vedlegg)
         includeAttachment(informasjonOmP1Vedlegg, EmptyPDFVedleggData.expr())
     }
 

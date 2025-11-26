@@ -1,50 +1,15 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
-import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
+import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.AvslaattPensjon
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
-
-class PDFVedleggTest {
-
-    @Tag(TestTags.INTEGRATION_TEST)
-    @Test
-    fun testPdf() {
-        val template = SamletMeldingOmPensjonsvedtakV2.template
-        val brevkode = SamletMeldingOmPensjonsvedtakV2.kode
-        val spraak = Language.Bokmal
-        if (!template.language.supports(spraak)) {
-            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
-            return
-        }
-        val letter = LetterTestImpl(
-            template,
-            createSamletMeldingOmPensjonsvedtakV2Dto(),
-            spraak,
-            FellesFactory.felles
-        )
-
-        letter.renderTestPDF(
-            "${brevkode.kode()}_${spraak.javaClass.simpleName}",
-            pdfVedleggAppender = PDFVedleggAppenderImpl
-        )
-    }
-}
-
 
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =
@@ -110,7 +75,7 @@ private val innvilgetPensjon = InnvilgetPensjon(
     institusjon = nay,
     pensjonstype = Pensjonstype.Etterlatte,
     vurderingsperiode = "en måned",
-    datoFoersteUtbetaling = "1. Januar 2020",
+    datoFoersteUtbetaling = "TODO()",
     utbetalt = "1000 Kroner fra en dato",
     grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
     reduksjonsgrunnlag = null,
@@ -125,3 +90,5 @@ private val avslaattPensjon = AvslaattPensjon(
     vurderingsperiode = "en måned",
     adresseNyVurdering = ADRESSE_EKSEMPEL,
 )
+
+
