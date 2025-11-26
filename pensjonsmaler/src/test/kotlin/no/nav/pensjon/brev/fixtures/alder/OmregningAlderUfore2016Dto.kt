@@ -58,5 +58,6 @@ fun createOmregningAlderUfore2016Dto() =
         brukersSivilstand = Sivilstand.SEPARERT,
         borMedSivilstand = BorMedSivilstand.GIFT_LEVER_ADSKILT,
         over2G = false,
+        kronebeloep2G = Kroner(230000)
     )
 
