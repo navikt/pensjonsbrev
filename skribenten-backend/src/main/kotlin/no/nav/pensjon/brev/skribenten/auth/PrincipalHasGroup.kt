@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.createRouteScopedPlugin
+import io.ktor.server.application.isHandled
 import io.ktor.server.response.respond
 import org.slf4j.LoggerFactory
 
@@ -34,6 +35,8 @@ class PrincipalHasGroupConfiguration {
 
 val PrincipalHasGroup = createRouteScopedPlugin("PrincipalHasGroup", ::PrincipalHasGroupConfiguration) {
     on(PrincipalInContext.Hook) { call ->
+        if (call.isHandled) return@on
+
         val principal = PrincipalInContext.require()
         val requiredGroupSets = pluginConfig.groupRequirements
 

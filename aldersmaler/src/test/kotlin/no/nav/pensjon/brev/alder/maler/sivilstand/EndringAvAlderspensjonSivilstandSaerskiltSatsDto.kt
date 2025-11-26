@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
@@ -50,11 +51,11 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
                                 totalPensjon = Kroner(2000),
                                 garantipensjon = Kroner(1000),
                                 minstenivaIndividuell = Kroner(1000),
-                                virkDatoFom = LocalDate.now(),
+                                virkDatoFom = vilkaarligDato,
                                 virkDatoTom = null,
                             ),
                         beregnetPensjonperManed = listOf(),
-                        kravVirkFom = LocalDate.now(),
+                        kravVirkFom = vilkaarligDato,
                     ),
                 orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             ),

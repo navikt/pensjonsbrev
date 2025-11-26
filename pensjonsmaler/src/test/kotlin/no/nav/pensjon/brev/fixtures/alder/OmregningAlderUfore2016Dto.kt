@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.Sivilstand
@@ -16,7 +17,7 @@ import java.time.LocalDate
 
 fun createOmregningAlderUfore2016Dto() =
     OmregningAlderUfore2016Dto(
-        virkFom = LocalDate.now(),
+        virkFom = vilkaarligDato,
         uttaksgrad = 100,
         totalPensjon = Kroner(1000),
         antallBeregningsperioder = 2,

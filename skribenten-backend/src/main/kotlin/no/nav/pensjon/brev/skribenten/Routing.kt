@@ -25,6 +25,7 @@ fun Application.configureRouting(
     initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
+    val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
@@ -77,6 +78,7 @@ fun Application.configureRouting(
                 penService,
                 pensjonPersonDataService,
                 safService,
+                skjermingService,
             )
             brev(brevredigeringService, dto2ApiService, pdlService, penService)
             samhandlerRoute(samhandlerService)

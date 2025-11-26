@@ -120,3 +120,8 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten.intern.nav.no"
+
+  - name: SKJERMING_URL
+    value: "https://skjermede-personer-pip.intern.nav.no/skjermet"
+  - name: SKJERMING_SCOPE
+    value: "api://prod-gcp.nom.skjermede-personer-pip/.default"
