@@ -9,7 +9,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
   useEffect(() => {
     if (!host || !enabled) return;
 
-    const isInside = (n: Node | null) => !!n && host.contains(n);
+    const isInsideHost = (n: Node | null) => !!n && host.contains(n);
 
     // Mark the host(div) as "unified" and remove contentEditable from all children
     const unify = () => {
@@ -71,7 +71,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
 
     // selection by mouse?
     const onPointerDown = (event: PointerEvent) => {
-      pointerDownInside = isInside(event.target as Node);
+      pointerDownInside = isInsideHost(event.target as Node);
       dragStarted = false;
       if (!pointerDownInside) return;
       pointerDownX = event.clientX;
@@ -92,7 +92,16 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
         restore();
         return;
       }
-      if (isInside(selection.anchorNode) || isInside(selection.focusNode)) {
+      // Skip unify if selection changed to cover a full fritekst by tab/focus
+      if (
+        selection.anchorNode === selection.focusNode &&
+        selection.anchorOffset === 0 &&
+        selection.focusOffset === selection.focusNode?.textContent?.length
+      ) {
+        return;
+      }
+      // Ensures unification when selection starts outside host
+      if (isInsideHost(selection.anchorNode) || isInsideHost(selection.focusNode)) {
         unify();
       }
     };
