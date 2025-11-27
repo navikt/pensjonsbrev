@@ -1,18 +1,22 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
   BodyShort,
   Button,
   Detail,
+  Heading,
   HStack,
   Label,
   Loader,
+  Modal,
   Radio,
   RadioGroup,
   Switch,
+  Tabs,
   Tag,
+  Textarea,
   VStack,
 } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -162,6 +166,8 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
+  const [modalopen, setModalopen] = useState<boolean>(false);
+
   const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
     onSuccess: (response) => {
@@ -212,6 +218,35 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           )}
           saksId={props.saksId}
         />
+
+        <VStack gap="space-8">
+          <BodyShort size="small" weight="semibold">
+            Vedlegg
+          </BodyShort>
+
+          <HStack align="center">
+            <BodyShort
+              css={css`
+                margin-right: 7rem;
+              `}
+              size="small"
+            >
+              1. P1
+            </BodyShort>
+            {!erLaast && (
+              <Button
+                css={css`
+                  padding: 0;
+                `}
+                icon={<PencilIcon fontSize="24px" />}
+                onClick={() => setModalopen(true)}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
+            )}
+          </HStack>
+        </VStack>
 
         <Switch
           checked={erLaast}
@@ -296,7 +331,191 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
       </div>
+
+      <P1overstyringModal
+        brevId={props.brev.id}
+        onClose={() => setModalopen(false)}
+        open={modalopen}
+        saksId={props.saksId}
+      />
     </div>
+  );
+};
+
+//ToDo:  when modalOpen is ture we need to show a modal to edit P1 vedlegg
+
+//The moal shoud have the title "Rediger vedlegg P1" and a text area to edit the vedlegg content"
+// And Abryt og lagre buttons , abryt just close the modal and lagre should save the changes and close the modal
+//The modal should have five tabs (which are used to edit the different sections of the vedlegg P1)
+//1. Personopplysninger om innehaveren 2. Personopplysninger om den forsikrede 3. 3. Innvilget pensjon 4. 4. Avslag på pensjon 5. 5. Institusjonen som har fylt ut skjemaet
+
+type P1TabKey = "innehaver" | "forsikret" | "innvilget" | "avslag" | "institusjon";
+
+const P1overstyringModal = (props: { brevId: number; saksId: string; open: boolean; onClose: () => void }) => {
+  const [activeTab, setActiveTab] = useState<P1TabKey>("innehaver");
+
+  // One text state per tab so each section has its own content
+  const [innehaverText, setInnehaverText] = useState("");
+  const [forsikretText, setForsikretText] = useState("");
+  const [innvilgetText, setInnvilgetText] = useState("");
+  const [avslagText, setAvslagText] = useState("");
+  const [institusjonText, setInstitusjonText] = useState("");
+
+  const queryClient = useQueryClient();
+  const lagreMutation = useMutation({
+    mutationFn: async () => {
+      // TODO: hook up to actual API for P1-vedlegg
+      // Example payload – adjust to your real API contract
+      const payload = {
+        p1Vedlegg: {
+          innehaver: innehaverText,
+          forsikret: forsikretText,
+          innvilget: innvilgetText,
+          avslag: avslagText,
+          institusjon: institusjonText,
+        },
+      };
+      return delvisOppdaterBrev(props.saksId, props.brevId, payload);
+    },
+    onSuccess: () => {
+      // Refresh brev data when saved
+      queryClient.invalidateQueries({
+        queryKey: getBrev.queryKey(props.brevId),
+      });
+      // props.onClose();
+    },
+  });
+
+  const handleCancel = () => {
+    // Optional: reset state here if you want to discard edits explicitly
+    props.onClose();
+  };
+
+  const handleSave = () => {
+    lagreMutation.mutate();
+  };
+
+  const p1ModalOverride = css`
+    && {
+      max-width: 85vw;
+      width: 85vw;
+      max-height: 80vh;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+  `;
+
+  return (
+    <Modal aria-label="Rediger vedlegg P1" css={p1ModalOverride} onClose={handleCancel} open={props.open} size="medium">
+      <Modal.Header>
+        <Heading size="medium">Overstyring av vedlegg – P1 samlet melding om pensjonsvedtak</Heading>
+      </Modal.Header>
+
+      <Modal.Body
+        css={css`
+          /* Let body grow and scroll if content is tall */
+          flex: 1 1 auto;
+          overflow: auto;
+        `}
+      >
+        <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} value={activeTab}>
+          <Tabs.List>
+            <Tabs.Tab label="1. Personopplysninger om innehaveren" value="innehaver" />
+            <Tabs.Tab label="2. Personopplysninger om den forsikrede" value="forsikret" />
+            <Tabs.Tab label="3. Innvilget pensjon" value="innvilget" />
+            <Tabs.Tab label="4. Avslag på pensjon" value="avslag" />
+            <Tabs.Tab label="5. Institusjonen som har fylt ut skjemaet" value="institusjon" />
+          </Tabs.List>
+
+          <Tabs.Panel
+            css={css`
+              margin-top: 2rem;
+            `}
+            value="innehaver"
+          >
+            <Textarea
+              label="Personopplysninger om innehaveren"
+              minRows={6}
+              onChange={(e) => setInnehaverText(e.target.value)}
+              value={innehaverText}
+            />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="forsikret">
+            <Textarea
+              label="Personopplysninger om den forsikrede"
+              minRows={6}
+              onChange={(e) => setForsikretText(e.target.value)}
+              value={forsikretText}
+            />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="innvilget">
+            <Textarea
+              label="Innvilget pensjon"
+              minRows={6}
+              onChange={(e) => setInnvilgetText(e.target.value)}
+              value={innvilgetText}
+            />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="avslag">
+            <Textarea
+              label="Avslag på pensjon"
+              minRows={6}
+              onChange={(e) => setAvslagText(e.target.value)}
+              value={avslagText}
+            />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="institusjon">
+            <Textarea
+              label="Institusjonen som har fylt ut skjemaet"
+              minRows={6}
+              onChange={(e) => setInstitusjonText(e.target.value)}
+              value={institusjonText}
+            />
+          </Tabs.Panel>
+        </Tabs>
+
+        {lagreMutation.isError && (
+          <Alert
+            css={css`
+              margin-top: 1rem;
+            `}
+            size="small"
+            variant="error"
+          >
+            Noe gikk galt ved lagring av vedlegg P1.
+          </Alert>
+        )}
+      </Modal.Body>
+
+      <Modal.Footer
+        css={css`
+          justify-content: space-between;
+          flex-shrink: 0;
+        `}
+      >
+        <Button loading={lagreMutation.isPending} onClick={handleSave} size="medium" type="button" variant="primary">
+          Lagre
+        </Button>
+        <Button
+          css={css`
+            && {
+              margin-left: 0;
+            }
+          `}
+          disabled={lagreMutation.isPending}
+          onClick={handleCancel}
+          type="button"
+          variant="tertiary"
+        >
+          Avbryt
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
