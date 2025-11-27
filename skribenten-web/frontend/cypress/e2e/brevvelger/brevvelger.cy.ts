@@ -220,7 +220,7 @@ describe("Brevvelger spec", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456", (request) => {
       request.reply({
         ...sak,
-        sak: { ...sak.sak, ...{ foedselsnr: "31129999999" } },
+        sak: { ...sak.sak, ...{ foedselsdato: "1999-12-31" } },
       });
     });
 
@@ -234,7 +234,7 @@ describe("Brevvelger spec", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456", (request) => {
       request.reply({
         ...sak,
-        sak: { ...sak.sak, ...{ foedselsnr: "31129999999" } },
+        sak: { ...sak.sak, ...{ foedselsdato: "1999-12-31" } },
         ...{
           doedsfall: "2014-12-31",
           erSkjermet: true,
