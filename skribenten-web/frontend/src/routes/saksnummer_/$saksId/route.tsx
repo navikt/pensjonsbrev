@@ -82,7 +82,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
     return isNaN(date.valueOf())
       ? undefined
       : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
-  }, [fødselsdato]);
+  }, [sak.foedselsdato]);
   const dateOfDeath = useMemo(() => {
     if (!sakContext.doedsfall) return undefined;
     const date = new Date(sakContext.doedsfall);
