@@ -78,11 +78,14 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
   const dateOfBirth = useMemo(() => {
     const date = new Date(`${fødselsdato.slice(4, 6)}.${fødselsdato.slice(2, 4)}.${fødselsdato.slice(0, 2)}`);
-    return isNaN(date.valueOf()) ? false : date.toLocaleDateString("no-NO");
+    return isNaN(date.valueOf()) ? undefined : date.toLocaleDateString("no-NO");
   }, [fødselsdato]);
   const dateOfDeath = useMemo(() => {
+    if (!sakContext.doedsfall) {
+      return undefined;
+    }
     const date = new Date(sakContext.doedsfall);
-    return isNaN(date.valueOf()) ? false : date.toLocaleDateString("no-NO");
+    return isNaN(date.valueOf()) ? undefined : date.toLocaleDateString("no-NO");
   }, [sakContext.doedsfall]);
 
   return (
