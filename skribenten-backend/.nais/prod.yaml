@@ -61,7 +61,6 @@ externalHosts:
   - pensjon-pen.prod-fss-pub.nais.io
   - saf.prod-fss-pub.nais.io
   - pensjon-persondata.prod-fss-pub.nais.io
-  - pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io
   - navansatt.prod-fss-pub.nais.io
   - pensjon-samhandler-proxy.prod-fss-pub.nais.io
   - teampensjon-unleash-api.nav.cloud.nais.io
@@ -105,11 +104,6 @@ env:
     value: "https://pensjon-persondata.prod-fss-pub.nais.io"
   - name: PENSJON_PERSONDATA_SCOPE
     value: "api://prod-fss.pensjon-person.pensjon-persondata/.default"
-
-  - name: TJENESTEBUSS_INTEGRASJON_URL
-    value: "https://pensjonsbrev-tjenestebuss.prod-fss-pub.nais.io"
-  - name: TJENESTEBUSS_INTEGRASJON_SCOPE
-    value: "api://prod-fss.pensjonsbrev.pensjonsbrev-tjenestebuss/.default"
 
   - name: NAVANSATT_URL
     value: "https://navansatt.prod-fss-pub.nais.io/"

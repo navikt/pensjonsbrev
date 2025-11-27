@@ -23,9 +23,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AvdodSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.antallBeregningsperioderPensjon
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetilleggKap19_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetillegg_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.inntektspensjon_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetilleggKap19
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.inntektspensjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BrukerSelectors.fodselsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.GjenlevendetilleggKapittel19VedVirkSelectors.apKap19utenGJR
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.KravSelectors.kravInitiertAv
@@ -78,6 +78,7 @@ import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -246,7 +247,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
                 showIf(pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)) {
                     // forklaringberegningGjtKap19_148_11
-                    showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).equalTo(0)) {
+                    showIf(pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0)).equalTo(0)) {
                         paragraph {
                             text(
                                 bokmal { + "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening." },
@@ -254,7 +255,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 english { + "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings." }
                             )
                         }
-                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).greaterThan(0)) {
+                    }.orShowIf(pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0)).greaterThan(0)) {
                         // forklaringberegningGjtKap19_148_12
                         paragraph {
                             text(
@@ -277,7 +278,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0))
+                                    and pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0))
                                 .greaterThan(0)
                         ) {
                             text(
@@ -399,13 +400,13 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             ) {
                 paragraph {
                     text(
-                        bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt. Av dette er gjenlevendetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt. Av dette er gjenlevendetillegget " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19 }.ifNull(
                             Kroner(0)
                         ).format() + "." },
-                        nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19 }.ifNull(
                             Kroner(0)
                         ).format() + "." },
-                        english { + "You receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        english { + "You receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax. Of this, the survivor’s supplement is " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19 }.ifNull(
                             Kroner(0)
                         ).format() + "." },
                     )
@@ -420,22 +421,22 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             ) {
                 paragraph {
                     text(
-                        bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt. Av dette er gjenlevendetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        bokmal { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt. Av dette er gjenlevendetillegget " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19 }.ifNull(
                             Kroner(0)
                         )
-                            .format() + " etter gamle regler og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
+                            .format() + " etter gamle regler og " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetillegg }.ifNull(
                             Kroner(0)
                         ).format() + " etter nye regler." },
-                        nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        nynorsk { + "Du får " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19 }.ifNull(
                             Kroner(0)
                         )
-                            .format() + " etter gamle reglar og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
+                            .format() + " etter gamle reglar og " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetillegg }.ifNull(
                             Kroner(0)
                         ).format() + " etter nye reglar." },
-                        english { + "You receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        english { + "You receive " + pesysData.alderspensjonVedVirk.totalPensjon.format() + " in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19 }.ifNull(
                             Kroner(0)
                         )
-                            .format() + " according to old rules and " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
+                            .format() + " according to old rules and " + pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetillegg }.ifNull(
                             Kroner(0)
                         ).format() + " according to new rules." },
                     )
@@ -644,7 +645,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // innvilgetGjTilleggKap20_001
-            showIf(pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(Kroner(0)).greaterThan(0)) {
+            showIf(pesysData.safe { beregnetPensjonPerManedVedVirk.gjenlevendetillegg }.ifNull(Kroner(0)).greaterThan(0)) {
                 paragraph {
                     text(
                         bokmal { + "Du er også innvilget gjenlevendetillegg etter regler i kapittel 20 i folketrygdloven." },

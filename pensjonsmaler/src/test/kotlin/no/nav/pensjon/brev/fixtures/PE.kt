@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Persongrunnlag
@@ -342,7 +343,6 @@ fun createForutgaendeMedlemskap(): ForutgaendeMedlemskap {
     return ForutgaendeMedlemskap(
         unntakfraforutgaendemedlemskap = false,
         inngangunntak = "false",
-        minst20arbotid = false,
         minsttrearsfmnorge = false
     )
 }
@@ -356,7 +356,7 @@ fun createBeregningsVilkar() =
         skadetidspunkt = LocalDate.of(2020, 1, 1),
         trygdetid = createTrygdetid(),
         uforegrad = 100,
-        uforetidspunkt = LocalDate.now().minusYears(5),
+        uforetidspunkt = vilkaarligDato.minusYears(5),
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
         yrkesskadegrad = 29,
         virkningbegrunnelse = "virkningbegrunnelse",

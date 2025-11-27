@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -39,13 +38,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             ).onOk { brev ->
                 call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
             }.onError { message, statusCode, tittel ->
-                if (statusCode == HttpStatusCode.UnprocessableEntity) {
-                    logger.warn("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                    call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "", message))
-                } else {
-                    logger.error("$statusCode - Feil ved oppretting av brev ${request.brevkode}: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
-                }
+                haandterFeil(statusCode, message, tittel, "oppretting", request.brevkode)
             }
         }
 
@@ -61,9 +54,8 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 nyttRedigertbrev = request.redigertBrev,
                 frigiReservasjon = frigiReservasjon,
             )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
-                ?.onError { message, statusCode ->
-                    logger.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+                ?.onError { message, statusCode, tittel ->
+                    haandterFeil(statusCode, message, tittel, "oppdatering", brevId)
                 }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
@@ -113,13 +105,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 ?.onOk { brev ->
                     call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev))
                 }?.onError { message, statusCode, tittel ->
-                    if (statusCode == HttpStatusCode.UnprocessableEntity) {
-                        logger.info("$statusCode - Funksjonell feil ved henting av brev: $message")
-                        call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved henting av brev", message))
-                    } else {
-                        logger.error("$statusCode - Feil ved henting av brev: $message")
-                        call.respond(HttpStatusCode.InternalServerError, "Feil ved henting av brev.")
-                    }
+                    haandterFeil(statusCode, message, tittel, "henting", brevId)
                 }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
@@ -152,13 +138,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 brevredigeringService.hentBrevAttestering(sak.saksId, brevId, reserver)
                     ?.onOk { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
                     ?.onError { message, statusCode, tittel ->
-                        if (statusCode == HttpStatusCode.UnprocessableEntity) {
-                            logger.info("$statusCode - Funksjonell feil ved attestering av brev: $message")
-                            call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved attestering av brev", message))
-                        } else {
-                            logger.error("$statusCode - Feil ved attestering av brev: $message")
-                            call.respond(HttpStatusCode.InternalServerError, "Feil ved attestering av brev.")
-                        }
+                        haandterFeil(statusCode, message, tittel, "attestering", brevId)
                     }
                     ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
             }
@@ -175,9 +155,8 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                     nyttRedigertbrev = request.redigertBrev,
                     frigiReservasjon = frigiReservasjon,
                 )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
-                    ?.onError { message, statusCode ->
-                        logger.error("$statusCode - Feil ved oppdatering av attestering ${brevId}: $message")
-                        call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av attestering.")
+                    ?.onError { message, statusCode, tittel ->
+                        haandterFeil(statusCode, message, tittel, "oppdatering av attestering", brevId)
                     }
                     ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
             }
@@ -193,6 +172,22 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
         }
     }
+
+private suspend fun RoutingContext.haandterFeil(
+    statusCode: HttpStatusCode,
+    message: String,
+    tittel: String?,
+    operasjon: String,
+    id: Any,
+) {
+    if (statusCode == HttpStatusCode.UnprocessableEntity) {
+        logger.info("$statusCode - Feil ved $operasjon av brev $id: $message")
+        call.respond(HttpStatusCode.UnprocessableEntity, BrevExceptionDto(tittel ?: "Feil ved $operasjon av brev", message))
+    } else {
+        logger.error("$statusCode - Feil ved $operasjon av brev $id: $message")
+        call.respond(HttpStatusCode.InternalServerError, "Feil ved oppretting av brev.")
+    }
+}
 
 private fun SpraakKode.toLanguageCode(): LanguageCode =
     when (this) {

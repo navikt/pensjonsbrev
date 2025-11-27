@@ -126,4 +126,5 @@ enum class Cacheomraade(val prefix: String) {
     SKJERMING("Skjerming"),
     REDIGERBAR_MAL("Redigerbar"),
     SAMHANDLER("Samhandler"),
+    SAMHANDLER_ADRESSE("SamhandlerAdresse"),
 }
