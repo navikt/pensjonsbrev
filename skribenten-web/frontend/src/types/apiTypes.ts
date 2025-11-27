@@ -10,7 +10,7 @@ import type { Nullable } from "./Nullable";
 export type SakDto = {
   readonly saksId: number;
   readonly foedselsnr: string;
-  readonly foedselsdato: [number, number, number];
+  readonly foedselsdato: string;
   readonly navn: { readonly fornavn: string; readonly mellomnavn: string | null; readonly etternavn: string };
   readonly sakType: SakType;
   readonly enhetId: string;
