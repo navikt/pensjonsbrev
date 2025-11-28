@@ -74,6 +74,9 @@ object Fixtures : LetterDataFactory {
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
+            eosNordisk = false,
+            avtaletype = "USA",
+            artikkel =  "8",
             trygdetidListe = listOf(
                 UforeAvslagUtlandDto.Trygdetid(
                     land = "Norge",

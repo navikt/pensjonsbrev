@@ -12,11 +12,14 @@ data class UforeAvslagUtlandDto(
 ) : RedigerbarBrevdata<UforeAvslagUtlandDto.Saksbehandlervalg, UforeAvslagUtlandDto.UforeAvslagPendata> {
 
     data class Saksbehandlervalg(
+        @DisplayText("Tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen")
+        val visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: Boolean = false,
+
+        @DisplayText("Tekst ved artikkel 57 avslag")
+        val visTekstVedArtikkel57Avslag: Boolean = false,
+
         @DisplayText("Bruker har fått innvilget pensjon fra EØS-land")
         val visInnvilgetPensjonEOSLand: Boolean = false,
-
-        @DisplayText("Alternativ tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen")
-        val visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: Boolean = false,
 
         @DisplayText("Vedtak fra andre land")
         val visVedtakFraAndreLand: Boolean = false,
@@ -26,6 +29,9 @@ data class UforeAvslagUtlandDto(
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
         val kravGjelder: KravGjelder,
+        val eosNordisk: Boolean = false,
+        val avtaletype: String? = null,
+        val artikkel: String? = null,
         val trygdetidListe: List<Trygdetid>
     ) : FagsystemBrevdata
 

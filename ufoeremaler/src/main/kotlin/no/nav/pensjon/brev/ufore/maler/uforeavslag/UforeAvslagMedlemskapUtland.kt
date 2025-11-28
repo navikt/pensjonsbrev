@@ -6,7 +6,9 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -14,10 +16,14 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visInnvilgetPensjonEOSLand
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visTekstVedArtikkel57Avslag
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visVedtakFraAndreLand
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.fomDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.land
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.tomDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.artikkel
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.avtaletype
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.eosNordisk
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravGjelder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.trygdetidListe
@@ -54,11 +60,6 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
         }
         outline {
-            showIf(pesysData.kravGjelder.isOneOf(UforeAvslagUtlandDto.KravGjelder.MELLOMBH)) {
-                paragraph {
-                    text(bokmal { +"Vi viser til vårt brev av " + fritekst("dato") + " med informasjon om videre behandling av din søknad om uføretrygd." })
-                }
-            }
             paragraph {
                 text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
@@ -119,7 +120,8 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
 
             paragraph {
                 text(bokmal {+ "Fordi du har hatt opphold i land Norge har trygdeavtale med, har Nav innhentet og vurdert opplysninger om din opptjening i " + fritekst("land") + ". " +
-                        "Trygdetid i avtaleland kan legges sammen med trygdetid i Norge for å fylle vilkår om medlemskap."})
+                        "Trygdetid i avtaleland kan legges sammen med trygdetid i Norge for å fylle vilkår om medlemskap. " +
+                        "Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har godskrevet etter sin nasjonale lovgivning. "})
             }
 
             paragraph {
@@ -160,32 +162,75 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { + fritekst("Individuell vurdering medlemsskap og lovvalg") })
             }
 
-            paragraph {
-                text(bokmal { + "Du fyller ikke vilkår om medlemskap gjennom sammenlegging av trygdetid. I den anledning presiserer vi at Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har godskrevet etter sin nasjonale lovgivning." })
-            }
-
-            showIf(saksbehandlerValg.visInnvilgetPensjonEOSLand) {
-                paragraph {
-                    text(bokmal { + "I vurderingen har vi tatt hensyn til innvilget pensjon fra EØS-land, og vi har lagt til grunn en årlig utenlandsk pensjon på " + fritekst("beløp") + " kroner. Kan du dokumentere at den utenlandske pensjonsutbetalingen er høyere, gjør vi en ny vurdering." })
-                }
-            }
-
-            paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven kapittel 2 og kapittel 12. Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 6 og artikkel 51, og forskrift om beregning av uføretrygd etter EØS-avtalen av 12. februar 2015." })
-            }
-
             showIf(saksbehandlerValg.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning) {
                 paragraph {
-                    text(bokmal { + "For at trygdetid i EØS-land kan brukes, er det imidlertid et krav om at du er statsborger i et EØS-land." })
+                    text(bokmal { + "For at trygdetid i EØS-land kan brukes, er det et krav om at du er statsborger i et EØS-land. " })
                 }
                 paragraph {
-                    text(bokmal { + "Du er statsborger i " + fritekst("land") + ". Dette landet er ikke et EØS-land. Norge har heller ikke inngått en egen trygdeavtale med dette landet." })
+                    text(bokmal { + "Du er statsborger i " + fritekst("land") + ". Dette landet er ikke et EØS-land. Norge har heller ikke inngått en egen trygdeavtale med dette landet. " })
                 }
                 paragraph {
-                    text(bokmal { + "Fordi du ikke er statsborger i et EØS-land, har du ikke trygderettigheter etter EØS-reglene." })
+                    text(bokmal { + "Fordi du ikke er statsborger i et EØS-land, har du ikke trygderettigheter etter EØS-reglene. " })
                 }
                 paragraph {
                     text(bokmal { + "Vedtaket er gjort etter folketrygdloven kapittel 2 og 12. Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 2 og artikkel 6, og Nordisk konvensjon artikkel 3 og artikkel 4." })
+                }
+            }.orShowIf(saksbehandlerValg.visTekstVedArtikkel57Avslag) {
+                paragraph {
+                    text(bokmal { + "For at trygdetid i annet EØS-land kan brukes, må du ha minst ett års medlemskap i folketrygden før uføretidspunktet, forutsatt at du har vært yrkesaktiv i Norge eller andre EØS-land. " })
+                }
+                paragraph {
+                    text(bokmal { + "Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet." })
+                }
+                paragraph {
+                    text(bokmal { + "Du har ikke vært medlem av folketrygden før " + fritekst("uføretidspunktet / før dato") + ", og fyller dermed ikke minstekravet til trygdetid i Norge." })
+                }
+                paragraph {
+                    text(bokmal { + "Du har ikke rett til uføretrygd fra Norge etter EØS-avtalen." })
+                }
+                paragraph {
+                    text(bokmal { + "Vedtaket er gjort etter folketrygdloven kapittel 2 og § 12-2." })
+                }
+                paragraph {
+                    text(bokmal { + "Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 52 og artikkel 57." })
+                }
+            }.orShow {
+                paragraph {
+                    text(bokmal { + "Når vi legger sammen trygdetiden din fra utland og Norge, oppfyller du fortsatt ikke vilkårene om trygdetid." })
+                }
+
+                paragraph {
+                    text(bokmal { + fritekst("Eventuell konkret individuell begrunnelse") })
+                }
+
+                paragraph {
+                    text(bokmal { + "Du mangler trygdetid fra " + fritekst("dato") + " til " + fritekst("dato") + " i femårsperioden før uføretidspunktet. " +
+                            "Når vi legger sammen all trygdetiden din, har du også mer enn fem år uten medlemskap etter du fylte 16 år." })
+                }
+
+                showIf(saksbehandlerValg.visInnvilgetPensjonEOSLand) {
+                    paragraph {
+                        text(bokmal { + "I vurderingen har vi tatt hensyn til pensjon du har fått innvilget fra EØS-land, og vi har lagt til grunn en årlig utenlandsk pensjon på " + fritekst("beløp") + " kroner. " +
+                                "Kan du dokumentere at den utenlandske pensjonsutbetalingen er høyere, gjør vi en ny vurdering." })
+                    }
+                }
+
+                paragraph {
+                    text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven kapittel 2 og § 12-2. "})
+                }
+
+                showIf(pesysData.eosNordisk) {
+                    paragraph {
+                        text(bokmal { +"Vedtaket har vi også gjort etter EØS-forordning 883/2004 artikkel 6 og artikkel 51, og forskrift om beregning av uføretrygd etter EØS-avtalen av 12. februar 2015." })
+                    }
+                }.orShowIf(pesysData.avtaletype.notNull()) {
+                    paragraph {
+                        text(bokmal { + "Vedtaket er også gjort etter trygdeavtalen med " + pesysData.avtaletype.ifNull("avtaletype") + " artikkel " + pesysData.artikkel.ifNull("X") + "." })
+                    }
+                }.orShow {
+                    paragraph {
+                        text(bokmal { + fritekst("Du har valgt en avtaletype hvor vi ikke har en forhåndsutfylt tekst. Her må du sette inn tekst som passer til saken.") })
+                    }
                 }
             }
 
@@ -195,10 +240,10 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
 
                 paragraph {
-                    text(bokmal {+"Vi har mottatt melding fra land om at du har fått " + fritekst("innvilget/avslått") + " " + fritekst("uføreytelse eller alderspensjon") + "."})
+                    text(bokmal {+"Vi har mottatt melding fra " + fritekst("land") + " om at du har fått " + fritekst("innvilget/avslått") + " " + fritekst("uføreytelse eller alderspensjon") + "."})
                 }
                 paragraph {
-                    text(bokmal { +"Vedtaket er gjort etter landets egen trygdelovgivning. Du kan lese om begrunnelse, rettigheter og plikter i vedtaket som de skal ha sendt til deg i posten." })
+                    text(bokmal { +"Vedtaket er gjort etter landets egen trygdelovgivning. Du kan lese om begrunnelse, rettigheter og plikter i vedtaket som de skal ha sendt til deg." })
                 }
                 paragraph {
                     text(bokmal { +"Du finner oversikt over alle vedtak i vedlegget «P1 - Samlet melding om pensjonsvedtak»." })
@@ -210,6 +255,5 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
             includePhrase(Felles.HarDuSporsmal)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
-        //includeAttachment(p1Vedlegg, pesysData.vedlegg)
     }
 }
