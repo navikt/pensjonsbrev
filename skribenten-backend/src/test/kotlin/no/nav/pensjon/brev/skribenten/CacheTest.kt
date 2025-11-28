@@ -4,7 +4,7 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
-import org.junit.AfterClass
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.testcontainers.containers.GenericContainer
@@ -92,7 +92,7 @@ class CacheTest {
 
     companion object {
         @JvmStatic
-        @AfterClass
+        @AfterAll
         fun stopValkey() {
             valkeyContainer.stop()
         }
