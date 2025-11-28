@@ -332,12 +332,14 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
       </div>
 
-      <P1overstyringModal
-        brevId={props.brev.id}
-        onClose={() => setModalopen(false)}
-        open={modalopen}
-        saksId={props.saksId}
-      />
+      {modalopen && (
+        <P1overstyringModal
+          brevId={props.brev.id}
+          onClose={() => setModalopen(false)}
+          open={modalopen}
+          saksId={props.saksId}
+        />
+      )}
     </div>
   );
 };
@@ -382,7 +384,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
       queryClient.invalidateQueries({
         queryKey: getBrev.queryKey(props.brevId),
       });
-      // props.onClose();
+      props.onClose();
     },
   });
 
