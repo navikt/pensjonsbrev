@@ -53,7 +53,6 @@ export function focusAtOffset(node: ChildNode, offset: number) {
       selection?.removeAllRanges();
       selection?.addRange(range);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.warn("Could not set cursor position for node", node, error);
     }
   }
@@ -95,7 +94,6 @@ export function gotoCoordinates(coordinates: Coordinates) {
   } else if (document.caretPositionFromPoint) {
     const position = document.caretPositionFromPoint(x, y);
     if (position === null) {
-      // eslint-disable-next-line no-console
       console.warn("Could not get caret for position:", x, y);
       return;
     }
@@ -104,7 +102,6 @@ export function gotoCoordinates(coordinates: Coordinates) {
     range.collapse(true);
   }
   if (range === null) {
-    // eslint-disable-next-line no-console
     console.warn("Could not get caret for position:", x, y);
     return;
   } else {
@@ -159,7 +156,6 @@ export function fineAdjustCoordinates({ x, y }: Coordinates) {
 
   // If we found no closestRect we "failed" the caret will likely be lost and the user must click manually
   if (closestRect === undefined) {
-    // eslint-disable-next-line no-console
     console.warn("Found no editable element on the same line");
     return { x, y };
   }
