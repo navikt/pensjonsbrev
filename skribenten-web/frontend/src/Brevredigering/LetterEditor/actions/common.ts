@@ -95,6 +95,24 @@ export function isIndicesOfSameType<T extends LiteralIndex>(first: T, second: Li
   );
 }
 
+export function isMatchingFoci(first: Focus, second: Focus) {
+  return (
+    first.blockIndex === second.blockIndex &&
+    first.contentIndex === second.contentIndex &&
+    first.cursorPosition === second.cursorPosition &&
+    ((isBlockContentIndex(first) && isBlockContentIndex(second)) ||
+      (isItemContentIndex(first) &&
+        isItemContentIndex(second) &&
+        first.itemIndex === second.itemIndex &&
+        first.itemContentIndex === second.itemContentIndex) ||
+      (isTableCellIndex(first) &&
+        isTableCellIndex(second) &&
+        first.rowIndex === second.rowIndex &&
+        first.cellIndex === second.cellIndex &&
+        first.cellContentIndex === second.cellContentIndex))
+  );
+}
+
 export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
   if (isItemContentIndex(f)) {
     return f.contentIndex === 0 && f.itemIndex === 0 && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
@@ -177,16 +195,16 @@ export function isAtSameTableCell(first: TableCellIndex, second: TableCellIndex)
   );
 }
 
-export function isIndexAfter(
-  first: LiteralIndex & { cursorPosition: number },
-  after: LiteralIndex & { cursorPosition: number },
+export function isFirstBeforeAfter(
+  first: LiteralIndex & { cursorPosition?: number },
+  after: LiteralIndex & { cursorPosition?: number },
 ): boolean {
   if (first.blockIndex === after.blockIndex) {
     if (first.contentIndex === after.contentIndex) {
       if (isItemContentIndex(first) && isItemContentIndex(after)) {
         if (first.itemIndex === after.itemIndex) {
           if (first.itemContentIndex === after.itemContentIndex) {
-            return first.cursorPosition < after.cursorPosition;
+            return (first.cursorPosition ?? 0) < (after.cursorPosition ?? 0);
           } else {
             return first.itemContentIndex < after.itemContentIndex;
           }
@@ -197,7 +215,7 @@ export function isIndexAfter(
         if (first.rowIndex === after.rowIndex) {
           if (first.cellIndex === after.cellIndex) {
             if (first.cellContentIndex === after.cellContentIndex) {
-              return first.cursorPosition < after.cursorPosition;
+              return (first.cursorPosition ?? 0) < (after.cursorPosition ?? 0);
             } else {
               return first.cellContentIndex < after.cellContentIndex;
             }
@@ -208,7 +226,7 @@ export function isIndexAfter(
           return first.rowIndex < after.rowIndex;
         }
       } else {
-        return first.cursorPosition < after.cursorPosition;
+        return (first.cursorPosition ?? 0) < (after.cursorPosition ?? 0);
       }
     } else {
       return first.contentIndex < after.contentIndex;

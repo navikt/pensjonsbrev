@@ -5,7 +5,8 @@ import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
-import type { LetterEditorState } from "./model/state";
+import type { LetterEditorState, SelectionIndex } from "./model/state";
+import { getSelectionFocus } from "./services/caretUtils";
 
 export enum Typography {
   PARAGRAPH = "PARAGRAPH",
@@ -30,7 +31,11 @@ export const TypographyToText = isMac
       [Typography.PARAGRAPH]: "Normal (Alt+4)",
     } as const);
 
-export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
+export const useEditorKeyboardShortcuts = (
+  setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
+  onSwitch: (focus: SelectionIndex | undefined, fontType: FontType) => void,
+  rootEl: HTMLElement | null,
+) => {
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.defaultPrevented || event.repeat) return;
@@ -72,7 +77,13 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         if (event.metaKey) {
           if (event.key === "b") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+            event.stopPropagation();
+            if (!rootEl) return;
+            // const selection = globalThis.getSelection?.();
+            // if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+            // const range = selection.getRangeAt(0);
+            // if (!(rootEl.contains(range.startContainer) || rootEl.contains(range.endContainer))) return;
+            onSwitch(getSelectionFocus(rootEl), FontType.BOLD);
           } else if (event.key === "i") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
@@ -83,6 +94,6 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         }
       }
     },
-    [setEditorState],
+    [setEditorState, onSwitch, rootEl],
   );
 };
