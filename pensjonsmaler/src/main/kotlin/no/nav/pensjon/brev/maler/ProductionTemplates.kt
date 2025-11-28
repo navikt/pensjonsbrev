@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
@@ -128,7 +129,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettInfo4Aar,
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
-        HvilendeRettVarselOpphoer
+        HvilendeRettVarselOpphoer,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -168,6 +169,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
+        InnvilgelseUforetrygd,
     )
 
     override fun hentAutobrevmaler() = autobrev

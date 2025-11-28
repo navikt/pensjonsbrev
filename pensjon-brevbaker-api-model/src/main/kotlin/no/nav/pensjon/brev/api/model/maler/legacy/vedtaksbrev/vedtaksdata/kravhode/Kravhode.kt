@@ -12,4 +12,5 @@ data class Kravhode(
     val kravmottattdato: LocalDate?,
     val vurderetrygdeavtale: Boolean,
     val onsketvirkningsdato: LocalDate?,
+    val sokerbt: Boolean?
 )

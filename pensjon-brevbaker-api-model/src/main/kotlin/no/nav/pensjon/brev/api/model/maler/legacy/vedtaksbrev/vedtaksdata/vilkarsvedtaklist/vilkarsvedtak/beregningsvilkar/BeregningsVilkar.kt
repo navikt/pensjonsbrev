@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilka
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
-
+import java.time.Month
 
 data class BeregningsVilkar(
     val ieubegrunnelse: String?,
@@ -14,5 +14,9 @@ data class BeregningsVilkar(
     val uforegrad: Int?,
     val uforetidspunkt: LocalDate?,
     val virkningstidpunkt: LocalDate?,
-    val yrkesskadegrad: Int?
-)
+    val yrkesskadegrad: Int?,
+    val virkningbegrunnelse: String?,
+    val uforetidspunktbegrunnelse: String?
+) {
+    val virkningstidspunktmaned: Month? = virkningstidpunkt?.month
+}
