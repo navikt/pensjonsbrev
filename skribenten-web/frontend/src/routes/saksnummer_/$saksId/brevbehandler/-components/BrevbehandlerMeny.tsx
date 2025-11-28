@@ -31,6 +31,7 @@ import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
+import { getErrorMessage } from "~/utils/errorUtils";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -226,9 +227,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         {laasForRedigeringMutation.isError && (
           <Alert size="small" variant="error">
-            {typeof (laasForRedigeringMutation.error as AxiosError).response?.data === "string"
-              ? ((laasForRedigeringMutation.error as AxiosError).response?.data as string)
-              : "Noe gikk galt"}
+            {getErrorMessage(laasForRedigeringMutation.error)}
           </Alert>
         )}
 
