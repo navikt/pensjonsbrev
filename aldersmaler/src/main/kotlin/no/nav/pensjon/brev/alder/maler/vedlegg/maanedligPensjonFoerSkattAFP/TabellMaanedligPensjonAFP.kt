@@ -137,14 +137,13 @@ private data class TabellDetaljOverskrift(
     }
 }
 
-data class TabellInnhold(
+private data class TabellInnhold(
     val afpPrivatBeregning: Expression<MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
-
                     text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
                 }
                 column(alignment = RIGHT, columnSpan = 1) {

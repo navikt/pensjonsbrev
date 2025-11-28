@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGaran
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSats
+import no.nav.pensjon.brev.alder.maler.sivilstand.VedtakOmregningAFPTilEnsligPensjonistAuto
 import no.nav.pensjon.brev.alder.maler.stans.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
@@ -63,6 +64,7 @@ object AlderTemplates : AllTemplates {
             InfoFyller67AarSaerskiltSats,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
+            VedtakOmregningAFPTilEnsligPensjonistAuto,
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto,
         )
 
