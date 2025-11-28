@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { css } from "@emotion/react";
 import { StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";

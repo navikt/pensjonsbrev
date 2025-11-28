@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { Select } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
