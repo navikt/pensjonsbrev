@@ -17,7 +17,6 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
