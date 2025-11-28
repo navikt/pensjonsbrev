@@ -331,7 +331,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       </div>
 
       {modalopen && (
-        <P1overstyringModal
+        <P1EditingModal
           brevId={props.brev.id}
           onClose={() => setModalopen(false)}
           open={modalopen}
@@ -342,19 +342,15 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   );
 };
 
-//ToDo:  when modalOpen is ture we need to show a modal to edit P1 vedlegg
-
-//The moal shoud have the title "Rediger vedlegg P1" and a text area to edit the vedlegg content"
-// And Abryt og lagre buttons , abryt just close the modal and lagre should save the changes and close the modal
-//The modal should have five tabs (which are used to edit the different sections of the vedlegg P1)
-//1. Personopplysninger om innehaveren 2. Personopplysninger om den forsikrede 3. 3. Innvilget pensjon 4. 4. Avslag på pensjon 5. 5. Institusjonen som har fylt ut skjemaet
+/*
+ * Modal for editing P1
+ */
 
 type P1TabKey = "innehaver" | "forsikret" | "innvilget" | "avslag" | "institusjon";
 
-const P1overstyringModal = (props: { brevId: number; saksId: string; open: boolean; onClose: () => void }) => {
+const P1EditingModal = (props: { brevId: number; saksId: string; open: boolean; onClose: () => void }) => {
   const [activeTab, setActiveTab] = useState<P1TabKey>("innehaver");
 
-  // One text state per tab so each section has its own content
   const [innehaverText, setInnehaverText] = useState("");
   const [forsikretText, setForsikretText] = useState("");
   const [innvilgetText, setInnvilgetText] = useState("");
@@ -365,7 +361,6 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
   const lagreMutation = useMutation({
     mutationFn: async () => {
       // TODO: hook up to actual API for P1-vedlegg
-      // Example payload – adjust to your real API contract
       const payload = {
         p1Vedlegg: {
           innehaver: innehaverText,
@@ -387,7 +382,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
   });
 
   const handleCancel = () => {
-    // Optional: reset state here if you want to discard edits explicitly
+    // Optional: reset state here if we want to discard edits explicitly
     props.onClose();
   };
 
@@ -406,6 +401,10 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
     }
   `;
 
+  const tabsPanelStyle = css`
+    margin-top: 2rem;
+  `;
+
   return (
     <Modal aria-label="Rediger vedlegg P1" css={p1ModalOverride} onClose={handleCancel} open={props.open} size="medium">
       <Modal.Header>
@@ -414,7 +413,6 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
 
       <Modal.Body
         css={css`
-          /* Let body grow and scroll if content is tall */
           flex: 1 1 auto;
           overflow: auto;
         `}
@@ -428,12 +426,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
             <Tabs.Tab label="5. Institusjonen som har fylt ut skjemaet" value="institusjon" />
           </Tabs.List>
 
-          <Tabs.Panel
-            css={css`
-              margin-top: 2rem;
-            `}
-            value="innehaver"
-          >
+          <Tabs.Panel css={tabsPanelStyle} value="innehaver">
             <Textarea
               label="Personopplysninger om innehaveren"
               minRows={6}
@@ -442,7 +435,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
             />
           </Tabs.Panel>
 
-          <Tabs.Panel value="forsikret">
+          <Tabs.Panel css={tabsPanelStyle} value="forsikret">
             <Textarea
               label="Personopplysninger om den forsikrede"
               minRows={6}
@@ -451,7 +444,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
             />
           </Tabs.Panel>
 
-          <Tabs.Panel value="innvilget">
+          <Tabs.Panel css={tabsPanelStyle} value="innvilget">
             <Textarea
               label="Innvilget pensjon"
               minRows={6}
@@ -460,7 +453,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
             />
           </Tabs.Panel>
 
-          <Tabs.Panel value="avslag">
+          <Tabs.Panel css={tabsPanelStyle} value="avslag">
             <Textarea
               label="Avslag på pensjon"
               minRows={6}
@@ -469,7 +462,7 @@ const P1overstyringModal = (props: { brevId: number; saksId: string; open: boole
             />
           </Tabs.Panel>
 
-          <Tabs.Panel value="institusjon">
+          <Tabs.Panel css={tabsPanelStyle} value="institusjon">
             <Textarea
               label="Institusjonen som har fylt ut skjemaet"
               minRows={6}
