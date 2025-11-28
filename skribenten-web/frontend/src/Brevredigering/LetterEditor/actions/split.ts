@@ -32,7 +32,6 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
   } else if (isItemList(content)) {
     splitItemList(draft, literalIndex, offset, block, content);
   } else {
-    // eslint-disable-next-line no-console
     console.warn("Don't know how to split content with type: " + content.type);
   }
 }
@@ -160,7 +159,6 @@ function splitItemList(
     }
     draft.saveStatus = "DIRTY";
   } else {
-    // eslint-disable-next-line no-console
     console.warn("Can't split an ItemList without itemIndex");
   }
 }
