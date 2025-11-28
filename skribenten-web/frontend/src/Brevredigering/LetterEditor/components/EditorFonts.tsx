@@ -5,12 +5,12 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
-import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
+import { getCurrentActiveFontTypeAtFocus } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
 
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
-  const activeFontType = getCurrentActiveFontTypeAtCursor(editorState);
+  const activeFontType = getCurrentActiveFontTypeAtFocus(editorState);
 
   return (
     <>

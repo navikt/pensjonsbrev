@@ -170,7 +170,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
   const [cursorType, setCursorType] = useState<"pointer" | "text">(() => "pointer");
-  const [isEditable, setIsEditable] = useState<boolean>(() => false);
+  const [hasDomFocus, setHasDomFocus] = useState<boolean>(() => false);
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -182,6 +182,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
   useEffect(() => {
+    // Sync element to match state
     const element = contentEditableReference.current;
     if (!element) return;
 
@@ -191,6 +192,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     if (!freeze && shouldBeFocused) {
       // Preserve full selection for untouched fritekst placeholders (first key should replace it).
+      // TODO(stw): Mind that other types of selections exists, currently sPFS() returns false when
+      // selection.start or selection.end are outside element, and only true if the full selection
+      // exactly matches the full textContent of element
       if (shouldPreserveFullSelection(erFritekst, element)) {
         return;
       }
@@ -543,21 +547,24 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     // - elementet hadde allerede fokus og vinduet får fokus igjen, da resettes fokus
     // - programmatisk via .focus()
     // - via autofocus-attributt
-    setIsEditable(true);
+    setHasDomFocus(true);
     setCursorType("text");
-    // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
+
+    // I word vil endring av fonttype beholde markering av teksten, mens denne
+    // focus state endringen vil fjerne markeringen
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
       ...oldState,
       focus: { ...literalIndex, ...(offset && { cursorPosition: offset }) },
     }));
+
     if (!erFritekst) return;
     e.preventDefault();
     setSelection(e.currentTarget);
   };
 
   const handleOnBlur = () => {
-    setIsEditable(false);
+    setHasDomFocus(false);
     setCursorType("pointer");
   };
 
@@ -571,6 +578,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (span.contains(selection.anchorNode) && span.contains(selection.focusNode)) {
         return;
       }
+
       const isDoubleClick = e.detail === 2;
       if (selection?.isCollapsed && !isDoubleClick) {
         setSelection(span);
@@ -616,7 +624,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // - alle element som inneholder potensielt redigerbar teskt vil treffes
       //   av selektoren 'span[contenteditable]', uavhengig av om attributtet er
       //   true / false (dvs. ikke "unset" contenteditable, sett til 'false')
-      contentEditable={isEditable && !freeze}
+      // TODO(stw): Sørg for at klikk utenfor ce setter markør i nærmeste ce
+      contentEditable={hasDomFocus && !freeze}
       css={{
         ...(erFritekst && {
           color: "var(--ax-accent-600)",

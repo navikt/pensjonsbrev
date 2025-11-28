@@ -5,7 +5,7 @@ import { deleteSelection } from "./deleteSelection";
 import { merge } from "./merge";
 import { paste } from "./paste";
 import { split } from "./split";
-import { switchFontType } from "./switchFontType";
+import { switchFontType, switchFontType2 } from "./switchFontType";
 import { switchTypography } from "./switchTypography";
 import {
   demoteHeaderToRow,
@@ -43,6 +43,7 @@ const Actions = {
   removeTableRow,
   split,
   switchFontType,
+  switchFontType2,
   switchTypography,
   toggleBulletList,
   updateContentText,

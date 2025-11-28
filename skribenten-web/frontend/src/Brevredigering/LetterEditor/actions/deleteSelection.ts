@@ -10,7 +10,7 @@ import {
   isAtStartOfItemList,
   isAtStartOfTable,
   isBlockContentIndex,
-  isIndexAfter,
+  isFirstBeforeAfter,
   isIndicesOfSameType,
   isItemContentIndex,
   isTable,
@@ -50,7 +50,7 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
   // If selection is not valid, do nothing
   if (!isValidIndex(redigertBrev, selection.start) || !isValidIndex(redigertBrev, selection.end)) return;
   // Selection must end after it starts
-  if (!isIndexAfter(selection.start, selection.end)) return;
+  if (!isFirstBeforeAfter(selection.start, selection.end)) return;
 
   const start = { ...selection.start };
   const end = { ...selection.end };

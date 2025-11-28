@@ -36,10 +36,16 @@ export const LetterEditor = ({
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
+
+  // const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState, editorRoot);
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(
+    setEditorState,
+    (focus, fontType) => applyAction(Actions.switchFontType2, setEditorState, focus, fontType),
+    editorRoot,
+  );
 
   useDragSelectUnifier(editorRoot, !freeze);
 
