@@ -61,9 +61,9 @@ export function DebugPanel() {
           .editor {
             [contenteditable="true"] {
               &:focus-within {
-                outline: 1px solid lightgrey;
+                outline: 1px solid lightpink;
               }
-              outline: 1px solid lightgrey;
+              outline: 1px solid lightpink;
             }
           }
         `}
@@ -73,11 +73,11 @@ export function DebugPanel() {
           <>
             <VStack>
               <HStack gap={"4"}>
-                SELECTION START:
+                SELECTION &lt;:
                 <Focus focus={mappedSelection.start} />
               </HStack>
               <HStack gap={"4"}>
-                SELECTION END:
+                SELECTION &gt;:
                 <Focus focus={mappedSelection.end} />
               </HStack>
             </VStack>
