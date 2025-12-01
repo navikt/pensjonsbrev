@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrev } from "~/api/brev-queries"; // if you still want to invalidate brev
+import { getBrev } from "~/api/brev-queries";
 import { p1OverrideKeys, saveP1Override } from "~/api/brev-queries";
 import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
