@@ -32,7 +32,7 @@ class TemplateResourceTest {
             shouldRetry: Boolean
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
-    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger)
+    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger, setOf())
 
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,

@@ -304,7 +304,9 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<Api.PdfResponse>? {
+    suspend fun hentEllerOpprettPdf(
+        saksId: Long, brevId: Long, alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
+    ): ServiceResult<Api.PdfResponse>? {
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
@@ -340,7 +342,7 @@ class BrevredigeringService(
                         }
 
                         Api.PdfResponse(
-                            pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
+                            pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash, alltidValgbareVedlegg),
                             rendretBrevErEndret = rendretBrevErEndret
                         )
                     }
@@ -582,6 +584,7 @@ class BrevredigeringService(
         brevredigering: Dto.Brevredigering,
         pesysData: BrevdataResponse.Data,
         brevdataHash: Hash<BrevdataResponse.Data>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     ): ByteArray {
         val pdf = brevbakerService.renderPdf(
             brevkode = brevredigering.info.brevkode,
@@ -596,6 +599,7 @@ class BrevredigeringService(
                 .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
             redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),
+            alltidValgbareVedlegg = alltidValgbareVedlegg
         )
 
         return transaction {

@@ -7,29 +7,27 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 private val objectMapper = brevbakerJacksonObjectMapper()
 
-class LetterFactory<Kode : Brevkode<Kode>>() {
+class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>) {
+    private val vedleggLibrary = AlltidValgbartVedleggLibrary(alltidValgbareVedlegg)
 
-    fun createLetter(
-        brevbestilling: BestillBrevRequest<Kode>,
-        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
-    ) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles) }
 
-    fun createLetter(
-        brevbestilling: BestillRedigertBrevRequest<Kode>,
-        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
-    ) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles) }
+    fun createLetter(brevbestilling: BestillBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
+    with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
+
+    fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
+        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
 
     private fun createLetter(
         brevTemplate: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
@@ -37,6 +35,7 @@ class LetterFactory<Kode : Brevkode<Kode>>() {
         brevdata: BrevbakerBrevdata,
         spraak: LanguageCode,
         felles: Felles,
+        valgteVedlegg: List<AlltidValgbartVedleggKode>
     ): Letter<BrevbakerBrevdata> {
         val template =
             brevTemplate?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
@@ -48,7 +47,7 @@ class LetterFactory<Kode : Brevkode<Kode>>() {
 
         @OptIn(InterneDataklasser::class)
         return LetterImpl(
-            template = template,
+            template = template.medEkstraVedlegg(vedleggLibrary.getVedlegg(valgteVedlegg, felles)),
             argument = parseArgument(brevdata, template),
             language = language,
             felles = felles,

@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 
@@ -120,11 +121,22 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             )
         }
 
+        post<Api.OpprettPDFRequest>("/{brevId}/pdf") { request ->
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val sak: Pen.SakSelection = call.attributes[SakKey]
+
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId, request.alltidValgbareVedlegg)
+                ?.onOk { call.respond(it) }
+                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
+                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+        }
+
+        // TODO: Slett når frontend har starta å bruke post-varianten
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]
 
-            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId, listOf())
                 ?.onOk { call.respond(it) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")

@@ -29,8 +29,8 @@ fun Application.brevRouting(
     brevProvider: AllTemplates,
 ) =
     routing {
-        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService)
-        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService)
+        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, setOf())
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService, brevProvider.hentAlltidValgbareVedlegg())
 
         route("/templates") {
             templateRoutes(autobrev)
@@ -48,6 +48,7 @@ fun Application.brevRouting(
                     "",
                     EtterlatteMaler.hentAutobrevmaler(),
                     pdfByggerService,
+                    setOf()
                 )
                 autobrevRoutes(etterlatteResource)
 

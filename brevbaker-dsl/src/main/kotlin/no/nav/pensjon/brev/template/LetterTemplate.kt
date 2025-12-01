@@ -34,6 +34,16 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     override fun hashCode() = Objects.hash(title, letterDataType, language, outline, attachments, letterMetadata)
     override fun toString() =
         "LetterTemplate(title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
+    
+    fun medEkstraVedlegg(attachments: List<IncludeAttachment<*, *>>): LetterTemplate<LanguageSupport, LetterData> = LetterTemplate(
+        title = this.title,
+        letterDataType = this.letterDataType,
+        language = this.language,
+        outline = this.outline,
+        attachments = this.attachments + attachments,
+        pdfAttachments = this.pdfAttachments,
+        letterMetadata = this.letterMetadata
+    )
 }
 
 sealed class Expression<out Out> : StableHash {

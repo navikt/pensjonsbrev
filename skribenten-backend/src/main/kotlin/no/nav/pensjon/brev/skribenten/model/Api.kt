@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
@@ -46,6 +47,10 @@ object Api {
     data class OppdaterAttesteringRequest(
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
+    )
+
+    data class OpprettPDFRequest(
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
     )
 
     data class BrevInfo(
