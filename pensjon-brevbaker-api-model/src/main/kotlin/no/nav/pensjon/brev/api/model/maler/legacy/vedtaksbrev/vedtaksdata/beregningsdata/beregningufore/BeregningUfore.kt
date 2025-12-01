@@ -17,5 +17,5 @@ data class BeregningUfore(
     val belopokt: Boolean?,
     val beregningvirkningdatofom: LocalDate?,
     val beregningbrukersivilstand: String?,
-    val oifuvirkningstidspunkt: Kroner?
+    val oifuvirkningstidspunkt: Kroner? = null
 )
