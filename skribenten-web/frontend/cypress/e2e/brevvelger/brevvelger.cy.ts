@@ -69,7 +69,6 @@ describe("Brevvelger spec", () => {
         brevkode: "PE_IY_05_027",
         idTSSEkstern: null,
         spraak: "NN",
-        isSensitive: false,
         brevtittel: "",
         enhetsId: "4405",
       });
@@ -129,7 +128,6 @@ describe("Brevvelger spec", () => {
       expect(request.body).contains({
         brevkode: "PE_IY_03_156",
         spraak: "NB",
-        isSensitive: true,
         brevtittel: "GGMU",
         enhetsId: "4405",
       });
@@ -168,7 +166,6 @@ describe("Brevvelger spec", () => {
         brevkode: "E001",
         landkode: "GBR",
         mottakerText: "Haaland",
-        isSensitive: true,
         enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevEblankett.json" });
