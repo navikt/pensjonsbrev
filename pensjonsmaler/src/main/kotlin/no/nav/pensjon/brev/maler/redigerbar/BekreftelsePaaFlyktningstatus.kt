@@ -32,7 +32,6 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Bekreftelse på flyktningstatus",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )

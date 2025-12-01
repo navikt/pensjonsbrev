@@ -28,7 +28,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Egenerklæring godskriving omsorgspoeng",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = INFORMASJONSBREV,
         )
