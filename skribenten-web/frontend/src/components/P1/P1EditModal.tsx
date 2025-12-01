@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Alert, Button, Heading, Modal, Tabs } from "@navikt/ds-react";
+import { Alert, Button, Heading, Loader, Modal, Tabs } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -69,7 +69,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     },
     onSuccess: () => {
       // Invalidate P1 override + brev
-      queryClient.invalidateQueries({ queryKey: p1OverrideKeys.id(saksId, brevId) });
+      queryClient.invalidateQueries({ queryKey: p1OverrideKeys.id(brevId) });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
       onClose();
     },
@@ -103,7 +103,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
             `}
           >
             {isInitialLoading ? (
-              <Heading size="small">Laster P1-data…</Heading>
+              <Loader size="large" title="Laster data for vedlegg P1..." />
             ) : (
               <>
                 <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} value={activeTab}>

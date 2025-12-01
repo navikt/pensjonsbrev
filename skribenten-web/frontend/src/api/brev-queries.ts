@@ -138,46 +138,34 @@ export function useModelSpecification<T>(brevkode: string, select: (data: Letter
 
 export const p1OverrideKeys = {
   all: ["P1_OVERRIDE"] as const,
-  id: (saksId: string, brevId: number) => [...p1OverrideKeys.all, saksId, brevId] as const,
+  id: (brevId: number) => [...p1OverrideKeys.all, brevId] as const,
 };
 
-// GET: try to fetch existing override
-export const getP1Override = async (saksId: string, brevId: number): Promise<P1Redigerbar | null> => {
-  try {
-    const res = await axios.get<P1Redigerbar>(
-      `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`,
-    );
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      // No override exists yet
-      return null;
-    }
-    throw error;
-  }
-};
+export const getP1OverrideQuery = (saksId: string, brevId: number) => ({
+  queryKey: p1OverrideKeys.id(brevId),
+  queryFn: async () =>
+    (await axios.get<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`)).data,
+});
 
 // POST: create override from Pesys data (first time)
-export const createP1Override = async (saksId: string, brevId: number): Promise<P1Redigerbar> => {
-  const res = await axios.post<P1Redigerbar>(
-    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`,
-    {}, // empty payload
-  );
-  return res.data;
-};
+export async function createP1Override(saksId: string, brevId: number): Promise<P1Redigerbar> {
+  return (await axios.post<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`, {}))
+    .data;
+}
 
 // PUT: save edited override
-export const saveP1Override = async (saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> => {
-  const res = await axios.put<P1Redigerbar>(
-    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`,
-    payload,
-  );
-  return res.data;
-};
+export async function saveP1Override(saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> {
+  return (
+    await axios.put<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`, payload)
+  ).data;
+}
 
 // Helper: ensure we always get a P1 override (GET or POST)
-export const getOrCreateP1Override = async (saksId: string, brevId: number): Promise<P1Redigerbar> => {
-  const existing = await getP1Override(saksId, brevId);
-  if (existing) return existing;
-  return createP1Override(saksId, brevId);
-};
+export const getOrCreateP1OverrideQuery = (saksId: string, brevId: number) => ({
+  queryKey: p1OverrideKeys.id(brevId),
+  queryFn: async (): Promise<P1Redigerbar> => {
+    const existing = await getP1OverrideQuery(saksId, brevId).queryFn();
+    if (existing) return existing;
+    return createP1Override(saksId, brevId);
+  },
+});
