@@ -63,7 +63,6 @@ object VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto :
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - omregning av gjenlevendepensjon til alderspensjon",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),

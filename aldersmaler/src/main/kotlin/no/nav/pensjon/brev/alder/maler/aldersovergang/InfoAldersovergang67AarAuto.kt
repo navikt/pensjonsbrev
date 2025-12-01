@@ -35,7 +35,6 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Informasjon til deg som snart fyller 67 år",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

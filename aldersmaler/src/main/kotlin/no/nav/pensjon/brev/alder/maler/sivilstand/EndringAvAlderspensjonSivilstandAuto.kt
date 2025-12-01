@@ -78,7 +78,6 @@ object EndringAvAlderspensjonSivilstandAuto :
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - endring av alderspensjon",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
