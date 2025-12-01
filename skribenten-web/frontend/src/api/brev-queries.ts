@@ -12,6 +12,7 @@ import type {
   ReservasjonResponse,
 } from "~/types/brev";
 import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
+import type { P1Redigerbar } from "~/types/p1";
 
 export const brevmetadataKeys = {
   all: ["BREVMETADATA"] as const,
@@ -134,3 +135,49 @@ export function useModelSpecification<T>(brevkode: string, select: (data: Letter
 
   return { status, specification: data, error };
 }
+
+export const p1OverrideKeys = {
+  all: ["P1_OVERRIDE"] as const,
+  id: (saksId: string, brevId: number) => [...p1OverrideKeys.all, saksId, brevId] as const,
+};
+
+// GET: try to fetch existing override
+export const getP1Override = async (saksId: string, brevId: number): Promise<P1Redigerbar | null> => {
+  try {
+    const res = await axios.get<P1Redigerbar>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`,
+    );
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      // No override exists yet
+      return null;
+    }
+    throw error;
+  }
+};
+
+// POST: create override from Pesys data (first time)
+export const createP1Override = async (saksId: string, brevId: number): Promise<P1Redigerbar> => {
+  const res = await axios.post<P1Redigerbar>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`,
+    {}, // empty payload
+  );
+  return res.data;
+};
+
+// PUT: save edited override
+export const saveP1Override = async (saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> => {
+  const res = await axios.put<P1Redigerbar>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`,
+    payload,
+  );
+  return res.data;
+};
+
+// Helper: ensure we always get a P1 override (GET or POST)
+export const getOrCreateP1Override = async (saksId: string, brevId: number): Promise<P1Redigerbar> => {
+  const existing = await getP1Override(saksId, brevId);
+  if (existing) return existing;
+  return createP1Override(saksId, brevId);
+};
