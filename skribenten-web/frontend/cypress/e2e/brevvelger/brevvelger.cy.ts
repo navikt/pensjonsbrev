@@ -1,3 +1,5 @@
+import sak from "../../fixtures/sak.json";
+
 describe("Brevvelger spec", () => {
   beforeEach(() => {
     cy.setupSakStubs();
@@ -212,5 +214,41 @@ describe("Brevvelger spec", () => {
     });
     cy.wait("@enheter");
     cy.getDataCy("avsenderenhet-select").should("have.value", "4815");
+  });
+
+  it("Saksinformasjon i subheader", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456", (request) => {
+      request.reply({
+        ...sak,
+        sak: { ...sak.sak, ...{ foedselsdato: "1999-12-31" } },
+      });
+    });
+
+    cy.visit("/saksnummer/123456/brevvelger");
+    cy.contains("Født: 31.12.1999").should("exist");
+    cy.contains("Død: 31.12.2014").should("not.exist");
+    cy.contains("Egen ansatt").should("not.exist");
+    cy.contains("Vergemål").should("not.exist");
+    cy.contains("Diskresjon").should("not.exist");
+
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456", (request) => {
+      request.reply({
+        ...sak,
+        sak: { ...sak.sak, ...{ foedselsdato: "1999-12-31" } },
+        ...{
+          doedsfall: "2014-12-31",
+          erSkjermet: true,
+          vergemaal: true,
+          adressebeskyttelse: true,
+        },
+      });
+    });
+
+    cy.visit("/saksnummer/123456/brevvelger");
+    cy.contains("Født: 31.12.1999").should("exist");
+    cy.contains("Død: 31.12.2014").should("exist");
+    cy.contains("Egen ansatt").should("exist");
+    cy.contains("Vergemål").should("exist");
+    cy.contains("Diskresjon").should("exist");
   });
 });

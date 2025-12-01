@@ -5,14 +5,13 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BrukerSelectors.foedselsdato
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
@@ -102,8 +101,8 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             val regelverkstype = alderspensjonVedVirk.regelverkType
             val foedselsaar = bruker.foedselsdato.year
             showIf(regelverkstype.isOneOf(AP2016)) {
-                val andelKap19 = alderspensjonVedVirk.andelKap19_safe.ifNull(0)
-                val andelKap20 = alderspensjonVedVirk.andelKap20_safe.ifNull(0)
+                val andelKap19 = alderspensjonVedVirk.andelKap19.ifNull(0)
+                val andelKap20 = alderspensjonVedVirk.andelKap20.ifNull(0)
 
                 //vedleggBelopAP2016Oversikt_001
                 paragraph {
@@ -197,7 +196,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             }
 
             showIf(
-                (regelverkstype.isOneOf(AP2016) and poengrekkeVedVirk.pensjonspoeng_safe.ifNull(emptyList()).size()
+                (regelverkstype.isOneOf(AP2016) and poengrekkeVedVirk.pensjonspoeng.ifNull(emptyList()).size()
                     .greaterThan(0))
                         or (regelverkstype.isOneOf(AP2011)
                         and beregnetPensjonPerManedVedVirk.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0))
@@ -246,7 +245,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                     )
                 }
 
-                showIf(poengrekkeVedVirk.inneholderOmsorgspoeng_safe.ifNull(false)) {
+                showIf(poengrekkeVedVirk.inneholderOmsorgspoeng.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal { + "Omsorgspoengene dine vises bare hvis annen inntekt gir et lavere pensjonspoeng enn omsorgspoenget." },

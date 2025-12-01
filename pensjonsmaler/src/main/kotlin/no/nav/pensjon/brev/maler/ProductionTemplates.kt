@@ -34,11 +34,14 @@ import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
+import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaPensjon
+import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
@@ -123,7 +126,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettInfo4Aar,
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
-        HvilendeRettVarselOpphoer
+        HvilendeRettVarselOpphoer,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -131,6 +134,8 @@ object ProductionTemplates : AllTemplates {
         AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,
+        BekreftelsePaaPensjon,
+        BekreftelsePaaUfoeretrygd,
         BrukerTestBrev,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
@@ -160,6 +165,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
+        InnvilgelseUforetrygd,
     )
 
     override fun hentAutobrevmaler() = autobrev

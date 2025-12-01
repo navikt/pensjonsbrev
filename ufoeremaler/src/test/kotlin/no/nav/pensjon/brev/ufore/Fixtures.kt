@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.ufore
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
@@ -24,7 +25,7 @@ object Fixtures : LetterDataFactory {
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
             UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
-            UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
+            UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
@@ -33,13 +34,13 @@ object Fixtures : LetterDataFactory {
 
     private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(
         pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
-            kravMottattDato = LocalDate.now(),
+            kravMottattDato = vilkaarligDato,
         ), EmptySaksbehandlerValg
     )
 
     private fun lagUforeAvslagUforetidspunkt26Dto() = UforeAvslagUforetidspunkt26Dto(
         pesysData = UforeAvslagUforetidspunkt26Dto.UforeAvslagPendata(
-            kravMottattDato = LocalDate.now(),
+            kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagUforetidspunkt26Dto.Saksbehandlervalg(
@@ -50,7 +51,7 @@ object Fixtures : LetterDataFactory {
 
     private fun lagUforeAvslagForverrelseEtter26Dto() = UforeAvslagForverrelseEtter26Dto(
         pesysData = UforeAvslagForverrelseEtter26Dto.UforeAvslagPendata(
-            kravMottattDato = LocalDate.now(),
+            kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagForverrelseEtter26Dto.Saksbehandlervalg(
@@ -61,7 +62,7 @@ object Fixtures : LetterDataFactory {
 
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
-            kravMottattDato = LocalDate.now(),
+            kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
@@ -69,9 +70,35 @@ object Fixtures : LetterDataFactory {
         )
     )
 
+    private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
+        pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
+            kravMottattDato = LocalDate.now(),
+            kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
+            eosNordisk = false,
+            avtaletype = "USA",
+            artikkel =  "8",
+            trygdetidListe = listOf(
+                UforeAvslagUtlandDto.Trygdetid(
+                    land = "Norge",
+                    fomDato = LocalDate.of(2000, Month.JANUARY, 1),
+                    tomDato = LocalDate.of(2010, Month.DECEMBER, 31)
+                ),
+                UforeAvslagUtlandDto.Trygdetid(
+                    land = "Danmark",
+                    fomDato = LocalDate.of(2011, Month.JANUARY, 1),
+                    tomDato = LocalDate.of(2020, Month.DECEMBER, 31)
+                )
+            )
+        ),
+        saksbehandlerValg = UforeAvslagUtlandDto.Saksbehandlervalg(
+            visInnvilgetPensjonEOSLand = true,
+            visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning = true,
+        )
+    )
+
     private fun lagUforeAvslagInntektDto() = UforeAvslagInntektDto(
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
-            kravMottattDato = LocalDate.now(),
+            kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
             inntektForUforhet = 1,
             inntektEtterUforhet = 2,
@@ -94,8 +121,8 @@ object Fixtures : LetterDataFactory {
         pesysData = PesysData(
             feilutbetaltTotalBelop = 1,
             resultatAvVurderingenForTotalBelop = TilbakekrevingResultat.FULL_TILBAKEKREV,
-            sluttPeriodeForTilbakekreving = LocalDate.now(),
-            startPeriodeForTilbakekreving = LocalDate.now(),
+            sluttPeriodeForTilbakekreving = vilkaarligDato,
+            startPeriodeForTilbakekreving = vilkaarligDato,
             sumTilInnkrevingTotalBelop = 2,
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
@@ -146,8 +173,8 @@ object Fixtures : LetterDataFactory {
         pesysData = PesysData(
             feilutbetaltTotalBelop = 1,
             resultatAvVurderingenForTotalBelop = TilbakekrevingResultat.FULL_TILBAKEKREV,
-            sluttPeriodeForTilbakekreving = LocalDate.now(),
-            startPeriodeForTilbakekreving = LocalDate.now(),
+            sluttPeriodeForTilbakekreving = vilkaarligDato,
+            startPeriodeForTilbakekreving = vilkaarligDato,
             sumTilInnkrevingTotalBelop = 2,
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
@@ -168,7 +195,7 @@ object Fixtures : LetterDataFactory {
         skattefradragSomInnkrevesTotalbelop = 4,
         tilbakekrevingPerManed = listOf(
             OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                manedOgAr = LocalDate.now().minusMonths(1).minusYears(1),
+                manedOgAr = vilkaarligDato.minusMonths(1).minusYears(1),
                 bruttobelopTilbakekrevd = 500,
                 feilutbetaltBelop = 1000,
                 nettobelopUtenRenterTilbakekrevd = 400,
@@ -177,7 +204,7 @@ object Fixtures : LetterDataFactory {
                 ytelsenMedFeilutbetaling = KonteringType.UT_ORDINER
             ),
             OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                manedOgAr = LocalDate.now(),
+                manedOgAr = vilkaarligDato,
                 bruttobelopTilbakekrevd = 500,
                 feilutbetaltBelop = 1000,
                 nettobelopUtenRenterTilbakekrevd = 400,
@@ -186,7 +213,7 @@ object Fixtures : LetterDataFactory {
                 ytelsenMedFeilutbetaling = KonteringType.UT_ORDINER
             ),
             OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                manedOgAr = LocalDate.now().minusMonths(1),
+                manedOgAr = vilkaarligDato.minusMonths(1),
                 bruttobelopTilbakekrevd = 500,
                 feilutbetaltBelop = 1000,
                 nettobelopUtenRenterTilbakekrevd = 400,
@@ -195,7 +222,7 @@ object Fixtures : LetterDataFactory {
                 ytelsenMedFeilutbetaling = KonteringType.UT_ORDINER
             ),
             OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                manedOgAr = LocalDate.now(),
+                manedOgAr = vilkaarligDato,
                 bruttobelopTilbakekrevd = 500,
                 feilutbetaltBelop = 1000,
                 nettobelopUtenRenterTilbakekrevd = 400,

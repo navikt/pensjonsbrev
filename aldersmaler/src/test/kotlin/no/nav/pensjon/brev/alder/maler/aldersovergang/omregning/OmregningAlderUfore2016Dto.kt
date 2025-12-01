@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
@@ -16,7 +17,7 @@ import java.time.LocalDate
 
 fun createOmregningAlderUfore2016Dto() =
     OmregningAlderUfore2016Dto(
-        virkFom = LocalDate.now(),
+        virkFom = vilkaarligDato,
         uttaksgrad = 100,
         totalPensjon = Kroner(1000),
         antallBeregningsperioder = 2,

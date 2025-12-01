@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harDagpenger
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harMerknadType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harOmsorgsopptjeningFOM2010
@@ -93,7 +93,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening =
             )
             showIf(
                 (garantipensjonInnvilget
-                        and garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0)).greaterThan(0))
+                        and garantipensjonVedVirk.safe { nettoUtbetaltPerManed }.ifNull(Kroner(0)).greaterThan(0))
                         or (not(garantipensjonInnvilget) and redusertTrygdetid)
             ) {
                 text(
@@ -137,7 +137,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening =
             )
         }
 
-        showIf(garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0)).greaterThan(0)) {
+        showIf(garantipensjonVedVirk.safe { nettoUtbetaltPerManed }.ifNull(Kroner(0)).greaterThan(0)) {
             paragraph {
                 text(
                     bokmal { +"Garantipensjon " },
@@ -154,7 +154,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening =
         }
 
         showIf(
-            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0)).greaterThan(0) and redusertTrygdetid
+            garantipensjonVedVirk.safe { nettoUtbetaltPerManed }.ifNull(Kroner(0)).greaterThan(0) and redusertTrygdetid
         ) {
             paragraph {
                 text(

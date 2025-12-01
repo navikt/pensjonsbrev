@@ -2,10 +2,10 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgj
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde
 import no.nav.pensjon.brev.maler.legacy.ut_inntekt_trukket_fra_personinntekt
 import no.nav.pensjon.brev.maler.legacy.ut_sum_inntekterbt_totalbeloput
 import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
@@ -35,21 +35,18 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -121,33 +118,33 @@ object OpplysningerOmEtteroppgjoretLegacy {
         val inntektsgrunnlag: Expression<Inntektsgrunnlag>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")) {
+            showIf(inntektsgrunnlag.safe { inntekttype }.equalTo("rap_arb")) {
                 text(
                     bokmal { + "Arbeidsinntekt" },
                     nynorsk { + "Arbeidsinntekt" },
                 )
-            }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")) {
+            }.orShowIf(inntektsgrunnlag.safe { inntekttype }.equalTo("forintutl")) {
                 text(
                     bokmal { + "Utlandsinntekt" },
                     nynorsk { + "Utanlandsinntekt" },
                 )
-            }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")) {
+            }.orShowIf(inntektsgrunnlag.safe { inntekttype }.equalTo("rap_nar")) {
                 text(
                     bokmal { + "Næringsinntekt" },
                     nynorsk { + "Næringsinntekt" },
                 )
-            }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("rap_and")) {
+            }.orShowIf(inntektsgrunnlag.safe { inntekttype }.equalTo("rap_and")) {
                 text(
                     bokmal { + "Pensjoner fra andre enn Nav" },
                     nynorsk { + "Pensjon frå andre enn Nav" },
                 )
-            }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl")) {
+            }.orShowIf(inntektsgrunnlag.safe { inntekttype }.equalTo("forpenutl")) {
                 text(
                     bokmal { + "Pensjon fra utlandet" },
                     nynorsk { + "Pensjon frå utlandet" },
                 )
-            }.orShowIf(inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")) {
-                showIf(inntektsgrunnlag.grunnikkereduksjon_safe.equalTo("etterbetaling")) {
+            }.orShowIf(inntektsgrunnlag.safe { inntekttype }.equalTo("ikke_red")) {
+                showIf(inntektsgrunnlag.safe { grunnikkereduksjon }.equalTo("etterbetaling")) {
                     text(
                         bokmal { + "Inntekt" },
                         nynorsk { + "Inntekt" },
@@ -166,17 +163,17 @@ object OpplysningerOmEtteroppgjoretLegacy {
         val inntektsgrunnlag: Expression<Inntektsgrunnlag>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(inntektsgrunnlag.registerkilde_safe.equalTo("a_ordning")) {
+            showIf(inntektsgrunnlag.safe { registerkilde }.equalTo("a_ordning")) {
                 text(
                     bokmal { + "Elektronisk innmeldt fra arbeidsgiver" },
                     nynorsk { + "Elektronisk innmeld frå arbeidsgivar" },
                 )
-            }.orShowIf(inntektsgrunnlag.registerkilde_safe.equalTo("skd")) {
+            }.orShowIf(inntektsgrunnlag.safe { registerkilde }.equalTo("skd")) {
                 text(
                     bokmal { + "Oppgitt av Skatteetaten" },
                     nynorsk { + "Opplyst av Skatteetaten" },
                 )
-            }.orShowIf(inntektsgrunnlag.grunnikkereduksjon_safe.equalTo("etterbetaling")) {
+            }.orShowIf(inntektsgrunnlag.safe { grunnikkereduksjon }.equalTo("etterbetaling")) {
                 text(
                     bokmal { + "Nav" },
                     nynorsk { + "Nav" },
@@ -429,9 +426,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
 
                             //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar") or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl") or inntektsgrunnlag.inntekttype_safe.equalTo(
+                                ((inntektsgrunnlag.safe { inntekttype }.equalTo("rap_nar") or inntektsgrunnlag.safe { inntekttype }.equalTo("forintutl") or inntektsgrunnlag.safe { inntekttype }.equalTo(
                                     "rap_arb"
-                                ) or inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")))
+                                ) or inntektsgrunnlag.safe { inntekttype }.equalTo("ikke_red")))
                             ) {
                                 //[Table 3, Table 4, Table 5]
 
@@ -440,15 +437,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_InntektTypeKode(inntektsgrunnlag))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_GrunnIkkeReduksjonKode(inntektsgrunnlag.grunnikkereduksjon_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_GrunnIkkeReduksjonKode(inntektsgrunnlag.safe { grunnikkereduksjon }))
                                     }
                                     cell {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_RegisterKildeKode(inntektsgrunnlag))
                                     }
                                     cell {
                                         text(
-                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -485,7 +482,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             showIf(
                                 ((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
                                     .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb()
-                                    .notEqualTo(0)) and (inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or inntektsgrunnlag.inntekttype_safe.equalTo(
+                                    .notEqualTo(0)) and (inntektsgrunnlag.safe { inntekttype }.equalTo("rap_and") or inntektsgrunnlag.safe { inntekttype }.equalTo(
                                     "forpenutl"
                                 )))
                             ) {
@@ -495,15 +492,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_InntektTypeKode(inntektsgrunnlag))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_GrunnIkkeReduksjonKode(inntektsgrunnlag.grunnikkereduksjon_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_GrunnIkkeReduksjonKode(inntektsgrunnlag.safe { grunnikkereduksjon }))
                                     }
                                     cell {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_RegisterKildeKode(inntektsgrunnlag))
                                     }
                                     cell {
                                         text(
-                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -851,29 +848,29 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_fratrekkliste_inntektsgrunnlag()) { inntektsgrunnlag ->
                             //IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("rap_and")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")))
+                                ((inntektsgrunnlag.safe { inntekttype }.equalTo("rap_nar")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("forintutl")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("rap_arb")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("rap_and")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("forpenutl")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("ikke_red")))
                             ) {
                                 //[TBU705V_Tabell, Table 11]
 
                                 row {
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_InntektTypeKode(inntektsgrunnlag.safe { inntekttype }))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_GrunnIkkeReduksjonKode(inntektsgrunnlag.grunnikkereduksjon_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_GrunnIkkeReduksjonKode(inntektsgrunnlag.safe { grunnikkereduksjon }))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_RegisterKildeKode(inntektsgrunnlag.registerkilde_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_RegisterKildeKode(inntektsgrunnlag.safe { registerkilde }))
                                     }
                                     cell {
                                         text(
-                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -969,26 +966,26 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag()) { inntektsGrunnlag ->
                             //IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((inntektsGrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("forintutl")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("rap_arb")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("rap_and")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("forpenutl")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("ikke_red")))
+                                ((inntektsGrunnlag.safe { inntekttype }.equalTo("rap_nar")
+                                        or inntektsGrunnlag.safe { inntekttype }.equalTo("forintutl")
+                                        or inntektsGrunnlag.safe { inntekttype }.equalTo("rap_arb")
+                                        or inntektsGrunnlag.safe { inntekttype }.equalTo("rap_and")
+                                        or inntektsGrunnlag.safe { inntekttype }.equalTo("forpenutl")
+                                        or inntektsGrunnlag.safe { inntekttype }.equalTo("ikke_red")))
                             ) {
                                 //[Table 10, Table 12]
 
                                 row {
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_InntektListe_InntektTypeKode(inntektsGrunnlag.inntekttype_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_InntektListe_InntektTypeKode(inntektsGrunnlag.safe { inntekttype }))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_InntektListe_RegisterKildeKode(inntektsGrunnlag.registerkilde_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljEPS_InntektListe_RegisterKildeKode(inntektsGrunnlag.safe { registerkilde }))
                                     }
                                     cell {
                                         text(
-                                            bokmal { + inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + inntektsGrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsGrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsGrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -1075,22 +1072,22 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag()) { inntektsgrunnlag ->
                             //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")
+                                inntektsgrunnlag.safe { inntekttype }.equalTo("rap_nar")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("forintutl")
+                                        or inntektsgrunnlag.safe { inntekttype }.equalTo("rap_arb")
                             ) {
                                 //[Table 3, Table 4, Table 5]
                                 row {
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.safe { inntekttype }))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(inntektsgrunnlag.registerkilde_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(inntektsgrunnlag.safe { registerkilde }))
                                     }
                                     cell {
                                         text(
-                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }
@@ -1140,20 +1137,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             showIf(
                                 (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)
                                         or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
-                                        and (inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl"))
+                                        and (inntektsgrunnlag.safe { inntekttype }.equalTo("rap_and") or inntektsgrunnlag.safe { inntekttype }.equalTo("forpenutl"))
                             ) {
                                 //[Table 3, Table 4, Table 5]
                                 row {
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.safe { inntekttype }))
                                     }
                                     cell {
-                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(inntektsgrunnlag.registerkilde_safe))
+                                        includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(inntektsgrunnlag.safe { registerkilde }))
                                     }
                                     cell {
                                         text(
-                                            bokmal { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
-                                            nynorsk { + inntektsgrunnlag.belop_safe.ifNull(Kroner(0)).format(false) + " kr" },
+                                            bokmal { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
+                                            nynorsk { + inntektsgrunnlag.safe { belop }.ifNull(Kroner(0)).format(false) + " kr" },
                                         )
                                     }
                                 }

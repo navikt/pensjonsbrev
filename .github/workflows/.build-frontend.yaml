@@ -20,7 +20,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions/setup-node@v6
@@ -45,7 +45,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_TEMP }}
 
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff

@@ -1,6 +1,6 @@
 [versions]
 kotlinVersion = "2.2.21"
-kotlinKspVersion = "2.3.2"
+kotlinKspVersion = "2.3.3"
 ktorVersion = "3.3.2"
 assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
