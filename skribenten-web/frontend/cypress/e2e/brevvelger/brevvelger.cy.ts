@@ -87,8 +87,6 @@ describe("Brevvelger spec", () => {
     cy.get("select[name=spraak]").select("Nynorsk");
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
-    cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
-
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
@@ -111,8 +109,6 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("brevmal-search").click().type("gjenlevende");
     cy.getDataCy("brevmal-button").click();
-
-    cy.getDataCy("is-sensitive").should("not.exist");
 
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
@@ -149,9 +145,6 @@ describe("Brevvelger spec", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
 
-    cy.getDataCy("is-sensitive").get(".navds-error-message");
-    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
-
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
@@ -182,10 +175,6 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("order-letter").click();
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-
-    cy.getDataCy("is-sensitive").find(".navds-error-message");
-    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
-    cy.getDataCy("is-sensitive").find(".navds-error-message").should("not.exist");
 
     cy.get("label").contains("Land").parent().find(".navds-error-message");
     cy.get("select[name=landkode]").select("Storbritannia");
