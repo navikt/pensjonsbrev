@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -223,9 +225,15 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                     paragraph {
                         text(bokmal { +"Vedtaket har vi også gjort etter EØS-forordning 883/2004 artikkel 6 og artikkel 51, og forskrift om beregning av uføretrygd etter EØS-avtalen av 12. februar 2015." })
                     }
-                }.orShowIf(pesysData.avtaletype.notNull()) {
-                    paragraph {
-                        text(bokmal { + "Vedtaket er også gjort etter trygdeavtalen med " + pesysData.avtaletype.ifNull("avtaletype") + " artikkel " + pesysData.artikkel.ifNull("X") + "." })
+                }.orShowIf(pesysData.avtaletype.notNull() and pesysData.artikkel.notNull()) {
+                    showIf(pesysData.avtaletype.equalTo("Storbritannia")) {
+                        paragraph {
+                            text(bokmal { + "Vedtaket har vi også gjort etter konvensjonen mellom Island, Liechtenstein, Norge og Storbritannia artikkel 10 og artikkel 46." })
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(bokmal { + "Vedtaket har vi også gjort etter trygdeavtalen med " + pesysData.avtaletype.ifNull("avtaletype") + " artikkel " + pesysData.artikkel.ifNull("X") + "." })
+                        }
                     }
                 }.orShow {
                     paragraph {
