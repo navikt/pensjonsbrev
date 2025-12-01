@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdod
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import java.time.LocalDate
 
 fun createOmregningAlderUfore2016Dto() =
     OmregningAlderUfore2016Dto(
