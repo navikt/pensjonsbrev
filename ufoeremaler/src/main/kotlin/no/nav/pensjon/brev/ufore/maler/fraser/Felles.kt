@@ -89,6 +89,41 @@ class Felles {
         }
     }
 
+    object RettTilAKlageKort : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Hvis du mener vedtaket er feil, kan du klage innen 6 uker fra den datoen vedtaket har kommet fram til deg. Dette følger av folketrygdloven § 21-12. " +
+                            "Du finner skjema og informasjon på ${Constants.KLAGE_URL}."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. " +
+                            "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Hvis du sender klage i posten, må du signere klagen."},
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}."},
+                )
+            }
+        }
+    }
 
     object RettTilInnsynRefVedlegg : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -102,6 +137,21 @@ class Felles {
                 text(
                     bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram."},
                     nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram." }
+                )
+            }
+        }
+    }
+
+    object RettTilInnsyn : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Du har rett til innsyn" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via nav.no for å se dokumenter i saken din."}
                 )
             }
         }
