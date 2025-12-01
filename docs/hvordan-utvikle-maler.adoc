@@ -451,7 +451,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
         languages = languages(Bokmal, Nynorsk, English), // Støttede språk som type-parameter. Disse brukes for å sjekke at du har inkludert innhold for alle språk-lag ved compile-time
         letterMetadata = LetterMetadata(
             displayTitle = "", //Tittel som settes i arkivet. Det er denne tittelen som vises for saksbehandler.
-            isSensitiv = false, // Setter brevet som sensitivt by default (false for auto-brev, kan hende det skal brukes for manuelle brev) Kan hende at dette feltet skal fjernes.
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // Distribusjonstype. Avgjør hvordan varslingen ved distribusjon blir. [VEDTAK,VIKTIG,ANNET]
             brevtype = VEDTAKSBREV, // VEDTAKSBREV,INFORMASJONSBREV fører til endringer i signatur/slutt-tekst og første-side
         )

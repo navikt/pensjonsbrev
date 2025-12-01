@@ -141,7 +141,6 @@ class LegacyBrevService(
                     kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                     land = landkode.takeIf { isEblankett },
                     mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
-                    sensitivt = false
                 ),
                 vedtaksInformasjon = vedtaksId?.toString()
             )
