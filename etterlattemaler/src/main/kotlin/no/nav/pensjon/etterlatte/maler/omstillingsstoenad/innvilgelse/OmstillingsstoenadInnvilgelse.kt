@@ -62,7 +62,6 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - Innvilget omstillingsstønad",
-                    isSensitiv = true,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
