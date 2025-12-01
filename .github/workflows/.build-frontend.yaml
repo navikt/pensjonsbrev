@@ -31,7 +31,7 @@ jobs:
 
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm install
+        run: npm ci
 
       - name: Build frontend
         working-directory: ${{ inputs.workingDir }}/frontend
