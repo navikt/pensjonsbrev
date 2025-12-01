@@ -35,7 +35,6 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - tilbakekreving av feilutbetalt beløp",
-            isSensitiv = false,
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )

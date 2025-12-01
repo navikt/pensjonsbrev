@@ -21,7 +21,6 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyAutobrevdata> 
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Alderspensjon fra folketrygden",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

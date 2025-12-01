@@ -37,7 +37,6 @@ object BekreftelsePaaPensjon : RedigerbarTemplate<BekreftelsePaaPensjonDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Bekreftelse på at bruker mottar pensjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

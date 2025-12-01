@@ -37,7 +37,6 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtak - begrunnelse for avslag",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),

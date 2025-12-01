@@ -31,7 +31,6 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Orientering om forlenget saksbehandlingstid",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

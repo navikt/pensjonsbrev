@@ -132,7 +132,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse av alderspensjon",
-            isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = VEDTAKSBREV
         )

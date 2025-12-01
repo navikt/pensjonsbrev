@@ -37,7 +37,6 @@ private class BrevTemplateTest {
                 languages = languages(Language.Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "testBrev",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
                 )

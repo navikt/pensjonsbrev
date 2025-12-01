@@ -38,7 +38,6 @@ object AvslagUttakFoerNormertPensjonsalderAP2016Auto : AutobrevTemplate<AvslagUt
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
         )

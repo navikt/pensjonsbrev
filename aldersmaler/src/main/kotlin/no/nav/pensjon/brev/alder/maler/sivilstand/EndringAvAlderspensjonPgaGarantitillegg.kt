@@ -58,7 +58,6 @@ object EndringAvAlderspensjonPgaGarantitillegg :
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - endring av alderspensjon pga garantitillegg",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),

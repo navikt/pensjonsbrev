@@ -94,7 +94,6 @@ class BrevredigeringServiceTest {
         languages = listOf(LanguageCode.ENGLISH),
         metadata = LetterMetadata(
             displayTitle = "Et informasjonsbrev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
@@ -108,7 +107,6 @@ class BrevredigeringServiceTest {
         languages = listOf(LanguageCode.ENGLISH),
         metadata = LetterMetadata(
             displayTitle = "Et vedtaksbrev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
@@ -1576,7 +1574,6 @@ class BrevredigeringServiceTest {
             contentType = ContentType.Application.Pdf.toString(),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin tittel",
-                isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
             )
