@@ -8,5 +8,5 @@ data class BeregningsData(
     val beregningufore: BeregningUfore?,
     val beregningantallperioder: Int?,
     val beregninguforeperiode: List<BeregningUforePeriode>,
-    val beregningsresultattilrevurderingtotalnetto: Kroner?
+    val beregningsresultattilrevurderingtotalnetto: Kroner? = null,
 )

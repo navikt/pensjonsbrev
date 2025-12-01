@@ -16,6 +16,6 @@ data class Persongrunnlag(
     val trygdetidsgrunnlaglisteeos: TrygdetidsgrunnlagListeEOS?,
     val trygdetidsgrunnlaglistenor: TrygdetidsgrunnlagListeNor?,
     val uforetrygdetteroppgjor: UforetrygdEtteroppgjor?,
-    val instopphfasteutgifterperiodeliste: InstOpphFasteUtgifterPeriodeListe?,
-    val instopphreduksjonsperiodeliste: InstOpphReduksjonsPeriodeListe?
+    val instopphfasteutgifterperiodeliste: InstOpphFasteUtgifterPeriodeListe? = null,
+    val instopphreduksjonsperiodeliste: InstOpphReduksjonsPeriodeListe? = null
 )
