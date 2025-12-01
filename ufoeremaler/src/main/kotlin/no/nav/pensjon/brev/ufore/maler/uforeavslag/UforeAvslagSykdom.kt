@@ -45,16 +45,16 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til din nedsatte funksjonsevne. " })
+                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til din nedsatte inntektsevne. " })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " })
+                text(bokmal { +"For å få innvilget uføretrygd, må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -67,14 +67,15 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { +"Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men vi vurderer at det er andre forhold som er hovedårsak til at din funksjons- og inntektsevne er nedsatt. " +
-                        "Før andre forhold er rettet, kan vi ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
+                text(bokmal { +"Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, " +
+                        "men vi vurderer at det er andre forhold som er hovedårsak til at din funksjons- og inntektsevne er nedsatt. " +
+                        "Vi kan derfor ikke vurdere i hvor stor grad inntektsevnen din er varig nedsatt." })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-6." })
             }
 
             includePhrase(Felles.HvaSkjerNa)

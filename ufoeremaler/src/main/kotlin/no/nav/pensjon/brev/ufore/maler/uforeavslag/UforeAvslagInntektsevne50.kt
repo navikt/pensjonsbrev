@@ -50,14 +50,23 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er nedsatt med mindre enn 50 prosent." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er varig nedsatt med mindre enn 50 prosent." })
             }
+
+            title1 {
+                text(bokmal { +"Slik har vi beregnet inntektsevnen din" })
+            }
+            paragraph {
+                text(bokmal { +"Vi sammenligner inntekten din før og etter at du ble ufør for å avgjøre i hvor stor grad inntektsevnen din er nedsatt." })
+            }
+
+            // TODO: Ikke ferdig
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {

@@ -38,7 +38,7 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVur
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få beregnet uføretrygden etter reglene for yrkessykdom eller yrkesskade"})
+            text (bokmal { + "Nav har avslått søknaden din om å få beregnet uføretrygden etter reglene for yrkesskade eller yrkessykdom"})
         }
         outline {
             paragraph {
@@ -48,16 +48,16 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVur
                 text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
             }
             paragraph {
-                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom." })
+                text(bokmal { + "Vi avslår søknaden din fordi du ikke har en godkjent yrkesskade eller yrkessykdom." })
             }
             paragraph {
-                text(bokmal { + "For å ha rett til uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, må uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." })
+                text(bokmal { + "For å ha rett til uføretrygd etter reglende for yrkesskade eller yrkessykdom, må uførheten din skyldes en yrkesskade eller yrkessykdom som er godkjent av Nav." })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-17." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

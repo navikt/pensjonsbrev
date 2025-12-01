@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -31,7 +32,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-5",
             isSensitiv = false,
@@ -41,37 +42,43 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
+                nynorsk { + "Nav har avslått søknaden din om uføretrygd" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om uføretrygd som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Derfor får du ikke uføretrygd" },
+                    nynorsk { +"Difor får du ikkje uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." },
+                    nynorsk { +"Vi avslår søknaden din fordi du ikkje har gjennomført all føremålstenleg behandling, som kan betre inntektsevna di." })
             }
             paragraph {
-                text(bokmal { +"Å ha gjennomført «all hensiktsmessig behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskere og kommer i arbeid, skal være forsøkt." })
+                text(bokmal { +"Å ha gjennomført «all hensiktsmessig behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskere og kommer i arbeid, skal være forsøkt." },
+                    nynorsk { +"Å ha gjennomført «all føremålstenleg behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskare og kjem i arbeid, skal vere forsøkt." })
             }
             paragraph {
-                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom " })
+                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom " },
+                    nynorsk { +"Som hovudregel vil vi vurderer at all føremålstenleg behandling ikkje er gjennomført dersom " })
                 list {
                     item {
                         text(
-                            bokmal { +"du er i behandling" },
+                            bokmal { +"du er i behandling eller under utredning" },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"du er henvist til behandling" },
+                            bokmal { +"du er henvist til utredning/behandling" },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"du er anbefalt behandling" },
+                            bokmal { +"du er anbefalt utredning/behandling" },
                         )
                     }
                 }
@@ -87,20 +94,13 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
             }
 
             paragraph {
-                text(bokmal {
-                    +"Vi kan ikke utelukke at behandling kan bedre din funksjons- og inntektsevne. " +
-                            "Samlet sett vurderer vi det som hensiktsmessig at du forsøker behandling. Fordi du ikke har fått " +
-                            "all hensiktsmessig behandling, er det for tidlig å ta stilling til om hensiktsmessig arbeidsrettede tiltak er prøvd."
-                })
+                text(bokmal { +"Hvor mye og hva du kan jobbe med kan ikke avklares før vi ser hvordan videre behandling virker." })
             }
             paragraph {
-                text(bokmal {
-                    +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. " +
-                            "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."
-                })
+                text(bokmal { +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." })
             }
 
             includePhrase(Felles.HvaSkjerNa)

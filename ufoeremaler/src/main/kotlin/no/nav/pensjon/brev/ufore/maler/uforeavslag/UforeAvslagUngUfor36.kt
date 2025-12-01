@@ -49,15 +49,16 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
                 text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke rettigheter som ung ufør" })
+                text(bokmal { +"Derfor får du ikke rettighet som ung ufør" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden fordi du har søkt om ung ufør etter at du fylte 36 år, og har jobbet mer enn 50 prosent etter du fylte 26 år." })
+                text(bokmal { +"Vi avslår søknaden fordi du har jobbet mer enn 50 prosent etter du fylte 26 år og du søkte om rettighet som ung ufør etter at du fylte 36 år." })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert. " +
-                        "Søker du etter at du fylte 36 år, må du har jobbet mindre enn 50 prosent etter du fylte 26 år. Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " +
-                        "Derfor må vi vurdere om dette tyder på en reell inntektsevne på mer enn 50 prosent. Vi vurderer at det du har arbeidet etter at du fylte 26 år ikke kan anses som et mislykket arbeidsforsøk." })
+                text(bokmal { +"For å få innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert. " })
+            }
+            paragraph {
+                text(bokmal { +"Søker du etter at du fylte 36 år, må du har jobbet mindre enn 50 prosent etter du fylte 26 år. Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -69,14 +70,11 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 
-            showIf(saksbehandlerValg.visUforetidspunktEtter26) {
-                paragraph {
-                    text(bokmal { +"Vi viser til at uføretidspunktet er satt til etter 26 år og du fyller derfor ikke vilkårene for beregning som ung ufør." })
-                }
-            }
-
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
+                text(bokmal { +"Du oppfyller derfor ikke vilkårene for rettighet som ung ufør. " })
+            }
+            paragraph {
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-13 tredje ledd." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

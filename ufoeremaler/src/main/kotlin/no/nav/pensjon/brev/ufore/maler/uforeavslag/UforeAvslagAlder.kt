@@ -45,21 +45,30 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke oppfyller kravet om inntekt for søkere mellom 62 og 67 år. " +
-                        "I tillegg har du rett til å ta ut hel alderspensjon fra folketrygden." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke oppfyller kravet om inntekt for søkere mellom 62 og 67 år. " })
             }
             paragraph {
-                text(bokmal { +"Når du søker om uføretrygd mellom fylte 62 og 67 år, " +
-                        "må din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet. " +
-                        "Hvis du ikke oppfyller dette vilkåret, må du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet. " +
-                        "Grunnbeløpet utgjør " + fritekst("grunnbeløp") + " kroner. " +
-                        "Det er også et vilkår at du ikke kan få gjenlevendepensjon, eller ha rett til å ta ut hel alderspensjon." })
+                text(bokmal { +"For å få uføretrygd når du er mellom fylte 62 og 67 år på søknadstidspunktet må " })
+                list {
+                    item {
+                        text(bokmal { +"din pensjonsgivende inntekt ha vært minst folketrygdens grunnbeløp i året før uføretidspunktet eller " })
+                    }
+                    item {
+                        text(bokmal { +"du ha tjent minst tre ganger folketrygdens grunnbeløp i løpet av de tre siste årene før uføretidspunktet " })
+                    }
+                }
+            }
+            paragraph {
+                text(bokmal { +"Grunnbeløpet er per i dag " + fritekst("X") + " kroner. " })
+            }
+            paragraph {
+                text(bokmal { +"Hvis du ikke oppfyller ett av de to vilkårene over, kan du likevel få uføretrygd hvis du ikke har rett til hel alderspensjon. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -78,7 +87,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-4." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-4." })
             }
 
             includePhrase(Felles.HvaSkjerNa)

@@ -52,8 +52,8 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text( bokmal { + "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaksbrevet fra " + fritekst("dato") + ". " +
-                        "Vi har vurdert at den nedsatte inntektsevnen din ikke skyldes den godkjente yrkesskaden eller yrkessykdommen din. Det er andre sykdomsforhold som er årsaken til den nedsatte inntektsevnen din."})
+                text( bokmal { + "Vi avslår søknaden din fordi det er andre sykdomsforhold enn din godkjente yrkesskade som er årsaken til den nedsatte inntektsevnen din. " +
+                        "Du har en godkjent yrkesskade eller yrkessykdom, dette " + "finner du i vedtaksbrevet fra " + fritekst("dato") + ". " }) // TODO: Underline
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -69,7 +69,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-17." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

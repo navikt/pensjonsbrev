@@ -45,7 +45,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
