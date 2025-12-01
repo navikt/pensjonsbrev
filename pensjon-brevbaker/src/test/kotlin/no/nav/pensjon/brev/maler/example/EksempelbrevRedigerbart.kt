@@ -51,7 +51,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems // If this letter contains sensitive information requiring level 4 log-in
+            displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
