@@ -6,17 +6,13 @@ import {
   BodyShort,
   Button,
   Detail,
-  Heading,
   HStack,
   Label,
   Loader,
-  Modal,
   Radio,
   RadioGroup,
   Switch,
-  Tabs,
   Tag,
-  Textarea,
   VStack,
 } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -28,6 +24,7 @@ import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { P1EditModal } from "~/components/P1/P1EditModal";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -331,7 +328,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       </div>
 
       {modalopen && (
-        <P1EditingModal
+        <P1EditModal
           brevId={props.brev.id}
           onClose={() => setModalopen(false)}
           open={modalopen}
@@ -339,176 +336,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         />
       )}
     </div>
-  );
-};
-
-/*
- * Modal for editing P1
- */
-
-type P1TabKey = "innehaver" | "forsikret" | "innvilget" | "avslag" | "institusjon";
-
-const P1EditingModal = (props: { brevId: number; saksId: string; open: boolean; onClose: () => void }) => {
-  const [activeTab, setActiveTab] = useState<P1TabKey>("innehaver");
-
-  const [innehaverText, setInnehaverText] = useState("");
-  const [forsikretText, setForsikretText] = useState("");
-  const [innvilgetText, setInnvilgetText] = useState("");
-  const [avslagText, setAvslagText] = useState("");
-  const [institusjonText, setInstitusjonText] = useState("");
-
-  const queryClient = useQueryClient();
-  const lagreMutation = useMutation({
-    mutationFn: async () => {
-      // TODO: hook up to actual API for P1-vedlegg
-      const payload = {
-        p1Vedlegg: {
-          innehaver: innehaverText,
-          forsikret: forsikretText,
-          innvilget: innvilgetText,
-          avslag: avslagText,
-          institusjon: institusjonText,
-        },
-      };
-      return delvisOppdaterBrev(props.saksId, props.brevId, payload);
-    },
-    onSuccess: () => {
-      // Refresh brev data when saved
-      queryClient.invalidateQueries({
-        queryKey: getBrev.queryKey(props.brevId),
-      });
-      props.onClose();
-    },
-  });
-
-  const handleCancel = () => {
-    // Optional: reset state here if we want to discard edits explicitly
-    props.onClose();
-  };
-
-  const handleSave = () => {
-    lagreMutation.mutate();
-  };
-
-  const p1ModalOverride = css`
-    && {
-      max-width: 85vw;
-      width: 85vw;
-      max-height: 80vh;
-      height: 80vh;
-      display: flex;
-      flex-direction: column;
-    }
-  `;
-
-  const tabsPanelStyle = css`
-    margin-top: 2rem;
-  `;
-
-  return (
-    <Modal aria-label="Rediger vedlegg P1" css={p1ModalOverride} onClose={handleCancel} open={props.open} size="medium">
-      <Modal.Header>
-        <Heading size="medium">Overstyring av vedlegg – P1 samlet melding om pensjonsvedtak</Heading>
-      </Modal.Header>
-
-      <Modal.Body
-        css={css`
-          flex: 1 1 auto;
-          overflow: auto;
-        `}
-      >
-        <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} value={activeTab}>
-          <Tabs.List>
-            <Tabs.Tab label="1. Personopplysninger om innehaveren" value="innehaver" />
-            <Tabs.Tab label="2. Personopplysninger om den forsikrede" value="forsikret" />
-            <Tabs.Tab label="3. Innvilget pensjon" value="innvilget" />
-            <Tabs.Tab label="4. Avslag på pensjon" value="avslag" />
-            <Tabs.Tab label="5. Institusjonen som har fylt ut skjemaet" value="institusjon" />
-          </Tabs.List>
-
-          <Tabs.Panel css={tabsPanelStyle} value="innehaver">
-            <Textarea
-              label="Personopplysninger om innehaveren"
-              minRows={6}
-              onChange={(e) => setInnehaverText(e.target.value)}
-              value={innehaverText}
-            />
-          </Tabs.Panel>
-
-          <Tabs.Panel css={tabsPanelStyle} value="forsikret">
-            <Textarea
-              label="Personopplysninger om den forsikrede"
-              minRows={6}
-              onChange={(e) => setForsikretText(e.target.value)}
-              value={forsikretText}
-            />
-          </Tabs.Panel>
-
-          <Tabs.Panel css={tabsPanelStyle} value="innvilget">
-            <Textarea
-              label="Innvilget pensjon"
-              minRows={6}
-              onChange={(e) => setInnvilgetText(e.target.value)}
-              value={innvilgetText}
-            />
-          </Tabs.Panel>
-
-          <Tabs.Panel css={tabsPanelStyle} value="avslag">
-            <Textarea
-              label="Avslag på pensjon"
-              minRows={6}
-              onChange={(e) => setAvslagText(e.target.value)}
-              value={avslagText}
-            />
-          </Tabs.Panel>
-
-          <Tabs.Panel css={tabsPanelStyle} value="institusjon">
-            <Textarea
-              label="Institusjonen som har fylt ut skjemaet"
-              minRows={6}
-              onChange={(e) => setInstitusjonText(e.target.value)}
-              value={institusjonText}
-            />
-          </Tabs.Panel>
-        </Tabs>
-
-        {lagreMutation.isError && (
-          <Alert
-            css={css`
-              margin-top: 1rem;
-            `}
-            size="small"
-            variant="error"
-          >
-            Noe gikk galt ved lagring av vedlegg P1.
-          </Alert>
-        )}
-      </Modal.Body>
-
-      <Modal.Footer
-        css={css`
-          justify-content: space-between;
-          flex-shrink: 0;
-        `}
-      >
-        <Button loading={lagreMutation.isPending} onClick={handleSave} size="medium" type="button" variant="primary">
-          Lagre
-        </Button>
-        <Button
-          css={css`
-            && {
-              margin-left: 0;
-            }
-          `}
-          disabled={lagreMutation.isPending}
-          onClick={handleCancel}
-          type="button"
-          variant="tertiary"
-        >
-          Avbryt
-        </Button>
-      </Modal.Footer>
-    </Modal>
   );
 };
 
