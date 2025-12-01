@@ -69,16 +69,19 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
                     item {
                         text(
                             bokmal { +"du er i behandling eller under utredning" },
+                            nynorsk { +"du er i behandling eller under utgreiing" }
                         )
                     }
                     item {
                         text(
                             bokmal { +"du er henvist til utredning/behandling" },
+                            nynorsk { +"du er henvist til utgreiing/behandling" }
                         )
                     }
                     item {
                         text(
                             bokmal { +"du er anbefalt utredning/behandling" },
+                            nynorsk { +"du er anbefalt utgreiing/behandling" }
                         )
                     }
                 }
@@ -86,21 +89,27 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { + pesysData.vurdering })
+                    text(bokmal { + pesysData.vurdering },
+                        nynorsk { + pesysData.vurdering })
                 }
             }
             paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
+                text(bokmal { + fritekst("Individuell vurdering") },
+                    nynorsk { + fritekst("Individuell vurdering") }
+                )
             }
 
             paragraph {
-                text(bokmal { +"Hvor mye og hva du kan jobbe med kan ikke avklares før vi ser hvordan videre behandling virker." })
+                text(bokmal { +"Hvor mye og hva du kan jobbe med kan ikke avklares før vi ser hvordan videre behandling virker." },
+                    nynorsk { +"Kor mykje og kva du kan jobbe med kan ikkje avklarast før vi ser korleis vidare behandling verkar." })
             }
             paragraph {
-                text(bokmal { +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." })
+                text(bokmal { +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
+                    nynorsk { +"Vi kan difor ikkje vurdere om sjukdom eller skade har ført til at inntektsevna di er varig nedsett. Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-5 til 12-7." })
             }
 
             includePhrase(Felles.HvaSkjerNa)
