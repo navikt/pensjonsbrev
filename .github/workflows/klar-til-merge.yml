@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - ".github/dependabot.yml"
+      - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/asciidoctor.yaml"
       - ".github/workflows/klar-til-merge.yml"
       - ".github/workflows/update-latex-image.yml"
