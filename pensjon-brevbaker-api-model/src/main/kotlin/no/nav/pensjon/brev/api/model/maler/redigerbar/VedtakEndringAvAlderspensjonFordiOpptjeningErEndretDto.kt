@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -28,6 +29,7 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
         val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
         val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+        val opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening: OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto?,
     ) : FagsystemBrevdata
 
     data class Krav(
