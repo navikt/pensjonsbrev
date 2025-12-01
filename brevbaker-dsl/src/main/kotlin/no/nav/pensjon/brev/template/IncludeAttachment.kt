@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.AlltidValgbartVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedlegg
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
@@ -16,6 +18,16 @@ fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
 )
 
 fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
+    title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
+    includeSakspart: Boolean = false,
+    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
+) = AttachmentTemplate<Lang, LetterData>(
+    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements,
+    OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
+    includeSakspart
+)
+
+fun <Lang : LanguageSupport, LetterData : AlltidValgbartVedleggData> createAlltidValgbartAttachment(
     title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit

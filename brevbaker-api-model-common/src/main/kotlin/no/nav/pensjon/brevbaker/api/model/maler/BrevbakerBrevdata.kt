@@ -17,4 +17,11 @@ interface FagsystemBrevdata
 
 interface SaksbehandlerValgBrevdata
 
-interface VedleggData
+interface VedleggData {
+    fun alltidValgbart(): Boolean = false
+}
+
+interface AlltidValgbartVedleggData : VedleggData {
+    override fun alltidValgbart(): Boolean = true
+    fun kode(): String
+}

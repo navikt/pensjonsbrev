@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.api.model
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedlegg
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -35,6 +37,7 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val felles: Felles,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,
+    val valgbareVedlegg: List<AlltidValgbartVedleggKode>
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false

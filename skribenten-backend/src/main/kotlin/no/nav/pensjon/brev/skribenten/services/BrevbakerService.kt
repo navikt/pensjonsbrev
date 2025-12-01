@@ -137,7 +137,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     letterData = brevdata,
                     felles = felles,
                     language = spraak,
-                    letterMarkup = redigertBrev
+                    letterMarkup = redigertBrev,
+                    valgbareVedlegg = listOf() // TODO send med
                 )
             )
         }

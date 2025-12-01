@@ -14,25 +14,26 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, pdfByggerService) {
+    // TODO: send med vedlegga her
+) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, setOf(), pdfByggerService) {
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         with(brevbestilling) {
-            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles))
+            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles, listOf()))
         }
 
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         with(brevbestilling) {
-            brevbaker.renderLetterMarkupWithDataUsage(createLetter(kode, letterData, language, felles))
+            brevbaker.renderLetterMarkupWithDataUsage(createLetter(kode, letterData, language, felles, listOf()))
         }
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbaker.renderRedigertBrevPDF(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbaker.renderRedigertBrevPDF(createLetter(kode, letterData, language, felles, valgbareVedlegg), letterMarkup)
         }
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbaker.renderRedigertBrevHTML(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbaker.renderRedigertBrevHTML(createLetter(kode, letterData, language, felles, valgbareVedlegg), letterMarkup)
         }
 }
