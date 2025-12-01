@@ -271,6 +271,9 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
 }
 
+public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedlegg {
+}
+
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
 	public abstract fun getTitle ()Ljava/util/List;
 }
