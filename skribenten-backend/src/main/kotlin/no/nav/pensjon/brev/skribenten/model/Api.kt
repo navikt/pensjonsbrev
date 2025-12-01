@@ -182,7 +182,6 @@ object Api {
     data class BestillExstreamBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
-        val isSensitive: Boolean,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
@@ -193,7 +192,6 @@ object Api {
         val brevkode: String,
         val landkode: String,
         val mottakerText: String,
-        val isSensitive: Boolean,
         val enhetsId: String,
     )
 
