@@ -62,4 +62,10 @@ class AlltidValgbartVedlegg<out Lang : LanguageSupport>(
     val kode: AlltidValgbartVedleggKode
 ) : HasModel<EmptyVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode())) {
     fun asIncludeAttachment(felles: Felles) = IncludeAttachment(FellesVedleggData(felles).expr(), vedlegg)
+    override fun equals(other: Any?): Boolean {
+        if (other !is AlltidValgbartVedlegg<*>) return false
+        return vedlegg == other.vedlegg && kode == other.kode
+    }
+    override fun hashCode() = Objects.hash(vedlegg, kode)
+    override fun toString() = "AlltidValgbartVedlegg(vedlegg=$vedlegg, kode=$kode)"
 }
