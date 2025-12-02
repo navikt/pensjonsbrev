@@ -12,21 +12,20 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-
-    ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, pdfByggerService) {
+    ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, setOf(), pdfByggerService) {
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbaker.renderPDF(createLetter(kode, letterData, language, felles))
+            brevbaker.renderPDF(createLetter(kode, letterData, language, felles, listOf()))
         }
 
     override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbaker.renderHTML(createLetter(kode, letterData, language, felles))
+            brevbaker.renderHTML(createLetter(kode, letterData, language, felles, listOf()))
         }
 
     fun renderJSON(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         with(brevbestilling) {
-            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles))
+            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles, listOf()))
         }
 }

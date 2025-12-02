@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedlegg
+import io.ktor.server.plugins.NotFoundException
+import no.nav.pensjon.brev.template.ValgbareVedlegg
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
-class AlltidValgbartVedleggLibrary<out T: AlltidValgbartVedlegg>(vedlegg: Set<T>) {
-    private val vedlegg: Map<String, T> = vedlegg.associateBy { it.kode.kode() }
+class AlltidValgbartVedleggLibrary(vedlegg: Set<ValgbareVedlegg<*>>) {
+    private val vedlegg: Map<AlltidValgbartVedleggKode, ValgbareVedlegg<*>> = vedlegg.associateBy { it.kode }
 
-    fun getVedlegg(kode: AlltidValgbartVedleggKode) = vedlegg[kode.kode()]
+    fun getVedlegg(kode: AlltidValgbartVedleggKode): ValgbareVedlegg<*> = vedlegg[kode] ?: throw NotFoundException("Vedlegg '$kode' doesn't exist")
 }

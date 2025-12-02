@@ -9,17 +9,15 @@ import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.AlltidValgbartVedleggData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.ValgbareVedlegg
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -29,7 +27,7 @@ private val objectMapper = brevbakerJacksonObjectMapper()
 abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>>(
     val name: String,
     templates: Set<T>,
-    alltidValgbareVedlegg: Set<AlltidValgbartVedlegg>,
+    alltidValgbareVedlegg: Set<ValgbareVedlegg<*>>,
     pdfByggerService: PDFByggerService,
 ) {
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
@@ -56,20 +54,10 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
         brevdata: BrevbakerBrevdata,
         spraak: LanguageCode,
         felles: Felles,
-        valgbareVedlegg: List<AlltidValgbartVedleggKode>
+        valgteVedlegg: List<AlltidValgbartVedleggKode>
     ): Letter<BrevbakerBrevdata> {
         val template =
             getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
-        val vedleggs: List<AlltidValgbartVedlegg> = valgbareVedlegg.map { vedleggLibrary.getVedlegg(it) ?: throw NotFoundException("Vedlegg '${it}' doesn't exist") }
-        vedleggs.map {
-            IncludeAttachment(
-                data = TODO(),
-                template = TODO(),
-                predicate = TODO()
-            )
-        }
-
-        val vedlegga = template.attachments + vedleggs
 
         val language = spraak.toLanguage()
         if (!template.language.supports(language)) {
@@ -78,7 +66,7 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
 
         @OptIn(InterneDataklasser::class)
         return LetterImpl(
-            template = template,
+            template = template.medEkstraVedlegg(valgteVedlegg.map { vedleggLibrary.getVedlegg(it)}.map { it.asIncludeAttachment() }),
             argument = parseArgument(brevdata, template),
             language = language,
             felles = felles,
