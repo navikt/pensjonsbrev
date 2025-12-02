@@ -32,8 +32,8 @@ fun Route.autobrevRoutes(
             countLetter(brevbestilling.kode)
         }
 
-        post<BestillBrevRequest<Brevkode.Automatisk>>("/json") {
-            call.respond(autobrev.renderLetterMarkup(it))
+        post<BestillBrevRequest<Brevkode.Automatisk>>("/json") { brevbestilling ->
+            call.respond(autobrev.renderLetterMarkup(brevbestilling))
         }
     }
 }
