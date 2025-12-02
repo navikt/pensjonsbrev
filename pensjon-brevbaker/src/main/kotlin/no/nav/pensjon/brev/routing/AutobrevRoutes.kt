@@ -32,7 +32,7 @@ fun Route.autobrevRoutes(
         }
 
         post<BestillBrevRequest<Brevkode.Automatisk>>("/json") {
-            call.respond(autobrev.renderJSON(it))
+            call.respond(autobrev.renderLetterMarkup(it))
         }
     }
 }

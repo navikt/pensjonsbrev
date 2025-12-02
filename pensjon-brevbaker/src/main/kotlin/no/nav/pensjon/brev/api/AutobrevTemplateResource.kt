@@ -20,6 +20,6 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderHTML(createLetter(brevbestilling))
 
-    fun renderJSON(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
+    fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 }
