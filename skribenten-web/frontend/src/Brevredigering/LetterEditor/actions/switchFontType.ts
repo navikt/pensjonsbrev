@@ -17,16 +17,7 @@ import { type Action, withPatches } from "../lib/actions";
 import type { Focus, LetterEditorState, LiteralIndex, SelectionIndex } from "../model/state";
 import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
-import {
-  fontTypeOf,
-  isFirstBeforeAfter,
-  isItemContentIndex,
-  isMatchingFoci,
-  isTable,
-  isValidIndex,
-  newLiteral,
-  text,
-} from "./common";
+import { fontTypeOf, isFirstBeforeAfter, isItemContentIndex, isTable, newLiteral, text } from "./common";
 
 export const getCurrentActiveFontTypeAtFocus = (
   editorState: LetterEditorState,
@@ -53,6 +44,41 @@ export const getCurrentActiveFontTypeAtFocus = (
   return isTextContent(textContent) ? fontTypeOf(textContent) : FontType.PLAIN;
 };
 
+const getLiteralAtFocus = (focusedContent: Content, focus: Focus): LiteralValue | undefined => {
+  if (["VARIABLE", "NEWLINE"].includes(focusedContent.type)) {
+    // VARIABLE kan foreløpig ikke endres fontType på, siden den ikke har editedFontType
+    // TODO(stw): NEWLINE har ikke fontType, så den må evt. erstattes med en tom LITERAL med fontType
+    return;
+  } else if (focusedContent.type === "ITEM_LIST" && isItemContentIndex(focus)) {
+    const itemContent = focusedContent.items[focus.itemIndex].content[focus.itemContentIndex];
+    return itemContent.type === "LITERAL" ? (itemContent as LiteralValue) : undefined;
+  } else if (focusedContent.type === "TABLE" && isTableCellIndex(focus)) {
+    if (focus.rowIndex < 0) {
+      const itemContent = focusedContent.header.colSpec[focus.cellIndex].headerContent.text[focus.cellContentIndex];
+      return itemContent.type === "LITERAL" ? (itemContent as LiteralValue) : undefined;
+    } else {
+      const itemContent = focusedContent.rows[focus.rowIndex].cells[focus.cellIndex].text[focus.cellContentIndex];
+      return itemContent.type === "LITERAL" ? (itemContent as LiteralValue) : undefined;
+    }
+  } else if (focusedContent.type === "LITERAL") {
+    return focusedContent;
+  } else {
+    return;
+  }
+};
+
+const getWordBoundariesAtIndex = (text: string, position: number) => {
+  let wordStartPosition = position;
+  while (wordStartPosition > 0 && text[wordStartPosition - 1]?.trim() !== "") {
+    wordStartPosition--;
+  }
+  let wordEndPosition = position;
+  while (wordEndPosition < text.length && text[wordEndPosition]?.trim() !== "") {
+    wordEndPosition++;
+  }
+  return [wordStartPosition, wordEndPosition];
+};
+
 // export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = withPatches((draft, fontType) => {
 export const switchFontType2: Action<
   Draft<LetterEditorState>,
@@ -66,81 +92,121 @@ export function switchFontTypeRecipe(
 ) {
   // - tillater kun en fonttype (normal, kursiv eller fet), aldri kursiv OG fet
   // - hvis målformatering er samme som eksisterende¹ settes den til normal
-  // - ellers settes formatering til målformatering for hele markeringen
-  //   [¹ eksisterende fonttype baseres på øverst venstre tegn (ref Word)]
+  // - ellers settes formatering til målformatering for hele tekstmarkeringen
+  //   [¹ eksisterende fonttype baseres på øverst venstre tegn (som i Word)]
 
   // TODO(stw) Husk å verifiser undo/redo fungerer, og preserver markering under undo/redo
+  // TODO(stw) Sjekk markering som starter/slutter i overskrift eller utenfor redigeringsfelt
 
-  let start: Focus & { cursorPosition?: number };
-  let end: Focus & { cursorPosition?: number };
+  // Sett start- og endeindeks for markering/fokus (hvis fokus i et ord markeres hele ordet)
+  let start: Focus & { cursorPosition: number };
+  let end: Focus & { cursorPosition: number };
   if (selection) {
     start = { ...selection.start };
     end = { ...selection.end };
   } else {
-    start = draft.focus;
-    end = draft.focus;
+    // Hvis startIdx === endIdx: markør i ord (ikke markert) -> marker hele ordet
+    const focusedTextContent = getLiteralAtFocus(
+      draft.redigertBrev.blocks[draft.focus.blockIndex].content[draft.focus.contentIndex],
+      draft.focus,
+    );
+
+    console.log("Target:", JSON.stringify(focusedTextContent, null, 2));
+    // TODO(stw): Hvis vi ikke har textContent i fokus, er det noe som har gått galt (sjekk om fokus er på variabel?/newline?/utenfor redigeringsflate?)
+    if (!focusedTextContent) return;
+
+    // Fokusert textContent kan innholde fra 0 til mange ord. Hvilket av ordene har fokus?
+    const [wordStartPosition, wordEndPosition] = getWordBoundariesAtIndex(
+      text(focusedTextContent),
+      draft.focus.cursorPosition ?? 0,
+    );
+
+    console.log("wordStart", wordStartPosition, "wordEnd", wordEndPosition);
+
+    // Behandle fokusert ord som om det er markert
+    start = { ...draft.focus, cursorPosition: wordStartPosition };
+    end = { ...draft.focus, cursorPosition: wordEndPosition };
+  }
+  console.log(start, end);
+
+  // TODO(stw): Sjekk guards som denne for å se om det bør settes feilmelding også
+  // if (!isFirstBeforeAfter(start, end)) return;
+  if (!isFirstBeforeAfter(start, end)) {
+    console.log("first not before after");
+    return;
   }
 
-  if (!isFirstBeforeAfter(start, end)) return;
   if (fontType === getCurrentActiveFontTypeAtFocus(draft, start)) {
     fontType = FontType.PLAIN;
   }
   draft.saveStatus = "DIRTY";
 
-  const textContents: WritableDraft<TextContent>[] = [];
-  if (start.blockIndex !== end.blockIndex) {
-    // ikke samme block, så heller ikke samme content
-    const blocksBetween = draft.redigertBrev.blocks.slice(start.blockIndex + 1, end.blockIndex);
-    textContents.push(
-      ...blocksBetween.flatMap((block) => {
-        // Ikke endre fonttype på overskrifter
-        if (block.type !== "PARAGRAPH") {
-          return [] as TextContent[];
-        }
-        return block.content.flatMap((content) => {
-          switch (content.type) {
-            case ITEM_LIST:
-              return content.items.flatMap((item) => item.content);
-            case TABLE:
-              return content.header.colSpec
-                .flatMap((colSpec) => colSpec.headerContent.text)
-                .concat(
-                  content.rows.flatMap((row) => {
-                    return row.cells.flatMap((cell) => cell.text);
-                  }),
-                );
-            case LITERAL:
-              return [content];
-            case VARIABLE:
-              // VARIABLE has a fontType property, let's test it
-              return [content];
-            case NEW_LINE:
-              // NEW_LINE has no fontType property
-              return [];
-          }
-        });
-      }),
-    );
+  // splitte innhold?
 
-    if (textContents.length > 0) {
-      draft.saveStatus = "DIRTY";
-    }
-    // textContent may be empty [] at this point
-    // betweens are handled, but also need to handle
-    // - end of startBlock and start of endBlock from startIdx & split
-    // - end of startContent and start of endContent until endIdx & split
-  } else {
-    if (start.contentIndex !== end.contentIndex) {
-      // not same content, but still same block
-    } else {
-      // same content, could still be a sel of items/cells
-    }
+  const textContents: WritableDraft<TextContent>[] = [];
+  // Hvis start===end gjør denne seksjonen ingenting
+  const blocksBetween = draft.redigertBrev.blocks.slice(start.blockIndex + 1, end.blockIndex);
+  textContents.push(
+    ...blocksBetween.flatMap((block) => {
+      // Ikke endre fonttype på overskrifter
+      if (block.type !== "PARAGRAPH") {
+        return [] as TextContent[];
+      }
+      return block.content.flatMap((content) => {
+        switch (content.type) {
+          case ITEM_LIST:
+            return content.items.flatMap((item) => item.content);
+          case TABLE:
+            return content.header.colSpec
+              .flatMap((colSpec) => colSpec.headerContent.text)
+              .concat(
+                content.rows.flatMap((row) => {
+                  return row.cells.flatMap((cell) => cell.text);
+                }),
+              );
+          case LITERAL:
+            return [content];
+          case VARIABLE:
+            // VARIABLE has a fontType property, but no editedFontType
+            return [content];
+          case NEW_LINE:
+            // NEW_LINE has neither fontType nor editedFontType
+            return [];
+        }
+      });
+    }),
+  );
+  // Her kan textContent være tom []
+  console.log(textContents);
+
+  // TODO(stw): Ta en gjennomgang og sjekk når saveStatus faktisk bør være DIRTY
+  if (textContents.length > 0) {
+    draft.saveStatus = "DIRTY";
   }
+
+  // Mellom-blokker er håndtert (hvis noen), men må også håndtere
+  // - fra startmarkør i startContent i startBlock til enden av siste content i startBlock
+  // - fra starten av første content i endBlock til sluttmarkør i endContent i endBlock
+  // - evt. splitting av content ved start-/sluttmarkør
+
+  const firstContent = getLiteralAtFocus(
+    draft.redigertBrev.blocks[start.blockIndex].content[start.contentIndex],
+    start,
+  );
+
   textContents.forEach((content) => {
     if (content.type === LITERAL) {
       content.editedFontType = fontType;
     }
   });
+
+  // Fonttype på "tomme" felt
+  // Hvis stat===end, er caretPos ikke i eller ved et ord, kan være mellom to mellomrom
+  // I Word er det sånn at en markør mellom to mellomrom settes til bold mens videre input avventes,
+  // men det settes tilbake til plain hvis man navigerer bort og tilbake
+  // Man kan forøvrig nå samme tilstand ved å slette fet tekst og stå igjen med et fett mellomrom,
+  // men da bør vi sjekke om det skal flettes, før vi sjekker om fonttype skal "glemmes"
+  // Skal vi flette når vi navigerer bort?
 
   // if start.block != end.block, change all inbetweens (may be 0)
   // then handle from start IN first block til end of block AND start of last block til end IN last block (split content)
@@ -155,22 +221,6 @@ export function switchFontTypeRecipe(
   // split if end isBlock (i.e. is not item or table) && content.type == LITERAL && end.cIdx < 0 content.text.length
   // split if end isItem && content.items[].content.type == LITERAL && end.itemContentIdx < 0 content.text.length
   // split if end isTable && content.rows[].cells[].text[].type == LITERAL || content.header.colSPec.headerContent.text[].type == LITERAL && end.cellContentIdx < 0 content.text.length
-
-  // transform between:
-  // getLiteralsBetween(startIdx, endIdx).forEach((lit) => lit.editedFontType = fontType)
-  // assume:
-  // if start isBlock: contentIdx + 1
-  // trans start.block.content.
-
-  // generalisering av problemet
-  // collectTextContentBetween(startIdx, endIdx) if selection
-  // getTextContentAt(start)
-  // if split, unshift splitted.part2 in front of collected
-  // getTextContentAt(end)
-  // if split, push splitted.part1 at end of collected
-  // process collected, mark dirty, continue
-
-  //avslutt med return
 }
 
 // TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
