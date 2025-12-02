@@ -61,13 +61,14 @@ public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pen
 }
 
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
 	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;
 	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun getValgbareVedlegg ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -172,6 +173,15 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar 
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/maler/AlltidValgbartVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
+	public fun alltidValgbart ()Z
+	public abstract fun kode ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/AlltidValgbartVedleggData$DefaultImpls {
+	public static fun alltidValgbart (Lno/nav/pensjon/brev/api/model/maler/AlltidValgbartVedleggData;)Z
+}
+
 public abstract interface class no/nav/pensjon/brev/api/model/maler/AutobrevData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata, no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
 }
 
@@ -237,6 +247,7 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg : 
 
 public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyVedleggData;
+	public fun alltidValgbart ()Z
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -269,9 +280,34 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
+	public fun alltidValgbart ()Z
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/VedleggData$DefaultImpls {
+	public static fun alltidValgbart (Lno/nav/pensjon/brev/api/model/maler/VedleggData;)Z
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedlegg {
+	public abstract fun getKode ()Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun kode ()Ljava/lang/String;
+	public static fun kode-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
+	public abstract fun kode ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
