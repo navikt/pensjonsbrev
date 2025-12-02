@@ -43,7 +43,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
       justify="space-between"
     >
       {viewerControls && (
-        <HStack align="center" gap="4">
+        <HStack align="center" gap="space-16">
           <TopBarNavigation
             currentPageNumber={viewerControls.currentPageNumber}
             setCurrentPageNumber={viewerControls.setCurrentPageNumber}
@@ -123,13 +123,8 @@ const TopBarNavigation = (properties: {
   };
 
   return (
-    <HStack align="center" css={css``} gap="2">
-      <HStack
-        align="center"
-        css={css`
-          gap: 6px;
-        `}
-      >
+    <HStack align="center" gap="space-8">
+      <HStack align="center" gap="space-6">
         <BasicPDFViewerButton
           cssOveride={css`
             padding: 0;
@@ -151,7 +146,7 @@ const TopBarNavigation = (properties: {
           onClick={goToNextPage}
         />
       </HStack>
-      <HStack gap="1">
+      <HStack gap="space-4">
         <TextField
           css={css`
             input {
@@ -195,7 +190,7 @@ const TopBarNavigation = (properties: {
 
 const TopBarZoom = (properties: { scale: number; setScale: (n: number) => void }) => {
   return (
-    <HStack gap="2">
+    <HStack gap="space-8">
       <BasicPDFViewerButton
         cssOveride={css`
           height: 32px;

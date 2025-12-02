@@ -36,7 +36,7 @@ export function SamhandlerSearchResults({
   const sortedSamhandlere = reversed ? sortedSamhandlereAscending.reverse() : sortedSamhandlereAscending;
 
   return (
-    <VStack gap="2">
+    <VStack gap="space-8">
       <BodyShort size="small">{sortedSamhandlere.length} treff</BodyShort>
       {sortedSamhandlere.length > 0 && (
         <Table onSortChange={(sortKey) => handleSort(sortKey)} size="small" sort={sort}>

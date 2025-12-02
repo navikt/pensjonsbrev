@@ -46,7 +46,7 @@ const Kvittering = () => {
         `}
       >
         {urlReady && (
-          <VStack gap="2">
+          <VStack gap="space-8">
             <Heading size="medium">Hva vil du gjøre nå?</Heading>
             <NavButtons psak={psak} saksId={saksId} />
           </VStack>
@@ -75,12 +75,12 @@ const Kvittering = () => {
         padding: var(--ax-space-32) var(--ax-space-96);
       `}
     >
-      <VStack gap="5">
+      <VStack gap="space-20">
         <Heading size="medium">Kvittering</Heading>
         <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
       </VStack>
       {urlReady && (
-        <VStack gap="2">
+        <VStack gap="space-8">
           <Heading size="medium">Hva vil du gjøre nå?</Heading>
           <NavButtons psak={psak} saksId={saksId} />
         </VStack>
@@ -98,11 +98,11 @@ const NavButtons = ({ psak, saksId }: { psak?: string; saksId: string }) => {
   };
 
   return (
-    <VStack align={"start"} gap="3">
-      <ButtonLink as={"a"} href={urls.bruker}>
+    <VStack align="start" gap="space-12">
+      <ButtonLink as="a" href={urls.bruker}>
         Gå til brukeroversikt
       </ButtonLink>
-      <ButtonLink as={"a"} href={urls.dokument}>
+      <ButtonLink as="a" href={urls.dokument}>
         Gå til dokumentoversikt
       </ButtonLink>
     </VStack>

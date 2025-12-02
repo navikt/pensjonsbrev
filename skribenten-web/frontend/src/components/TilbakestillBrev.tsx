@@ -21,7 +21,7 @@ const TilbakestillBrev = (props: { brevId: number; resetEditor: (brevResponse: B
         />
       )}
       <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-        <HStack align={"center"} gap="1">
+        <HStack align="center" gap="space-4">
           <ArrowCirclepathIcon
             css={css`
               transform: scaleX(-1);
@@ -72,7 +72,7 @@ const TilbakestillMalModal = (props: {
         <BodyLong>Du kan ikke angre denne handlingen.</BodyLong>
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button onClick={props.onClose} type="button" variant="tertiary">
             Nei, behold brevet
           </Button>

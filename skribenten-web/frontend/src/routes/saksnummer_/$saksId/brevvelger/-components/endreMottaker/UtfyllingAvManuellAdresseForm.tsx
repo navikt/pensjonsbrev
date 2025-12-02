@@ -35,8 +35,8 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   const isNorge = typeof land === "string" && land === "NO";
 
   return (
-    <VStack gap="6">
-      <VStack gap="4">
+    <VStack gap="space-24">
+      <VStack gap="space-16">
         <Alert size="small" variant="warning">
           <Heading size="xsmall">Manuell adresseendringsrutine</Heading>
           <Link
@@ -96,7 +96,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         />
         {isNorge && (
-          <HStack gap="4">
+          <HStack gap="space-16">
             <Controller
               control={properties.control}
               name="manuellAdresse.adresse.postnr"
@@ -179,12 +179,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         </div>
       </VStack>
-      <HStack
-        css={css`
-          align-self: flex-end;
-        `}
-        gap="4"
-      >
+      <HStack gap="space-16" justify="end">
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>

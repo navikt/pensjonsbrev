@@ -73,7 +73,7 @@ function Brevbehandler() {
           height: var(--main-page-content-height);
           overflow-y: auto;
         `}
-        gap="3"
+        gap="space-12"
       >
         <Heading level="1" size="small">
           Brevbehandler
@@ -82,7 +82,7 @@ function Brevbehandler() {
         {alleBrevForSak.isPending && (
           <VStack
             css={css`
-              padding: 1rem;
+              padding: var(--ax-space-16);
             `}
           >
             <Skeleton height={80} variant="rectangle" width="100%" />
@@ -98,7 +98,7 @@ function Brevbehandler() {
 
       <HStack
         css={css`
-          padding: 8px 12px;
+          padding: var(--ax-space-8) var(--ax-space-12);
           grid-area: footer;
           border-top: 1px solid var(--ax-neutral-300);
         `}

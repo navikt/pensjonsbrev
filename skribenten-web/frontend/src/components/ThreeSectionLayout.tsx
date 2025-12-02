@@ -1,16 +1,14 @@
 import { css } from "@emotion/react";
-import { BoxNew, HStack } from "@navikt/ds-react";
+import { HStack, VStack } from "@navikt/ds-react";
 
 const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
   return (
-    <BoxNew
-      background="default"
+    <VStack
       css={css`
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        flex: 1;
+        background: var(--ax-bg-default);
       `}
+      flexGrow="1"
+      justify="space-between"
     >
       <div
         css={css`
@@ -48,7 +46,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
       >
         {props.bottom}
       </HStack>
-    </BoxNew>
+    </VStack>
   );
 };
 

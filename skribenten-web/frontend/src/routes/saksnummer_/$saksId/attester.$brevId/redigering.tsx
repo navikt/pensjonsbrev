@@ -60,7 +60,7 @@ const VedtakWrapper = () => {
           padding-top: var(--ax-space-32);
         `}
       >
-        <VStack align="center" gap="1">
+        <VStack align="center" gap="space-4">
           <Loader size="3xlarge" title="henter brev..." />
           <Heading size="large">Henter brev....</Heading>
         </VStack>
@@ -232,9 +232,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         left={
           <FormProvider {...form}>
-            <VStack gap="8">
+            <VStack gap="space-32">
               <Heading size="small">{props.brev.info.brevtittel}</Heading>
-              <VStack gap="4">
+              <VStack gap="space-16">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
                 <VStack>
                   <Label size="small">Distribusjonstype</Label>
@@ -242,7 +242,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 </VStack>
               </VStack>
               <Divider />
-              <VStack gap="5">
+              <VStack gap="space-20">
                 <Switch
                   css={css`
                     display: none;

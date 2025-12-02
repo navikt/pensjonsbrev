@@ -61,22 +61,22 @@ export function DebugPanel() {
           .editor {
             [contenteditable] {
               &:focus-within {
-                outline: 1px solid lightgrey;
+                outline: 1px solid var(--ax-border-brand-magenta-subtle);
               }
-              outline: 1px solid lightgrey;
+              outline: 1px solid var(--ax-border-brand-magenta-subtle);
             }
           }
         `}
       />
-      <HStack gap={"4"}>
+      <HStack gap="space-16">
         {mappedSelection ? (
           <>
             <VStack>
-              <HStack gap={"4"}>
+              <HStack gap="space-16">
                 SELECTION START:
                 <Focus focus={mappedSelection.start} />
               </HStack>
-              <HStack gap={"4"}>
+              <HStack gap="space-16">
                 SELECTION END:
                 <Focus focus={mappedSelection.end} />
               </HStack>
@@ -84,20 +84,20 @@ export function DebugPanel() {
           </>
         ) : null}
       </HStack>
-      <HStack gap={"4"}>
+      <HStack gap="space-16">
         FOCUS:
         <Focus focus={editorState.focus} />
       </HStack>
-      <HStack gap={"4"}>
+      <HStack gap="space-16">
         FREEZE: <b css={css({ color: freeze ? "red" : "black" })}>{freeze.toString()}</b>
         SAVESTATUS: <b>{editorState.saveStatus}</b>
       </HStack>
-      <HStack gap={"4"}>
+      <HStack gap="space-16">
         MOUSE:
         <b>X: {mousePosition.x}</b>
         <b>Y: {mousePosition.y}</b>
       </HStack>
-      <HStack gap={"4"}>
+      <HStack gap="space-16">
         CARET:
         <b>offset: {caretOffset}</b>
         <b>X: {caretRect?.x}</b>
@@ -165,7 +165,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
     >
       <ExpansionCard.Header>
         <ExpansionCard.Title>
-          <HStack gap={"4"}>
+          <HStack gap="space-16">
             <span>{block.type}</span>
             <span>Index: {index}</span>
             <span>ID: {block.id ?? "NEW"}</span>
@@ -174,7 +174,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
         <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
       </ExpansionCard.Header>
       <ExpansionCard.Content>
-        <Accordion size={"small"}>
+        <Accordion size="small">
           {block.content.map((c, index) => (
             <Content content={c} focus={focus} index={index} key={index} />
           ))}
@@ -199,7 +199,7 @@ const Content = ({ content, focus, index }: { content: Content; focus?: Focus; i
       open={isOpen}
     >
       <Accordion.Header>
-        <HStack gap={"4"}>
+        <HStack gap="space-16">
           <span>{content.type}</span>
           <span>Index: {index}</span>
           <span>ID: {content.id ?? "NEW"}</span>
@@ -222,7 +222,7 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
       return "--new line--";
     case "ITEM_LIST":
       return (
-        <Accordion size={"small"}>
+        <Accordion size="small">
           {content.items.map((i, index) => (
             <ItemBody focus={focus} index={index} item={i} key={index} />
           ))}
@@ -259,14 +259,14 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
       open={isOpen}
     >
       <Accordion.Header>
-        <HStack gap={"4"}>
+        <HStack gap="space-16">
           <span>Index: {index}</span>
           <span>ID: {item.id ?? "NEW"}</span>
           <span>{textExtract(itemText)}</span>
         </HStack>
       </Accordion.Header>
       <Accordion.Content>
-        <Accordion size={"small"}>
+        <Accordion size="small">
           {item.content.map((c, index) => (
             <Content content={c} focus={itemContentFocus} index={index} key={index} />
           ))}

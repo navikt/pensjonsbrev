@@ -70,7 +70,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) =>
         justify-content: space-between;
       `}
     >
-      <HStack align="center" gap="4" margin-block="2">
+      <HStack align="center" gap="space-16" margin-block="2">
         <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
         <VerticalDivider />
         <EditorFonts />
@@ -91,7 +91,7 @@ const LagringStatus = () => {
   const { error, editorState, freeze } = useEditor();
   if (freeze || editorState.saveStatus === "SAVE_PENDING") {
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <BodyShort size="small">Lagrer...</BodyShort>
       </HStack>
     );
@@ -101,14 +101,14 @@ const LagringStatus = () => {
       : `Klarte ikke lagre. Sist lagret ${format(editorState.info.sistredigert, "dd.MM.yyyy HH:mm")}`;
 
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
         {tekst}
       </HStack>
     );
   } else if (editorState.saveStatus === "SAVED") {
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <BodyShort size="small">Lagret</BodyShort>
       </HStack>
     );

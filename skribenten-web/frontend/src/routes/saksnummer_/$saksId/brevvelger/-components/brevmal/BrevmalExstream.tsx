@@ -102,7 +102,7 @@ export default function BrevmalForExstream({
         >
           {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
           {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
-            <VStack gap="2">
+            <VStack gap="space-8">
               <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
               <EndreMottaker />
             </VStack>

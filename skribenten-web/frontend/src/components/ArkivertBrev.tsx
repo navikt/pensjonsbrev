@@ -17,7 +17,7 @@ const ArkivertBrev = (props: { saksId: string }) => {
       `}
       padding="6"
     >
-      <VStack align="start" gap="2">
+      <VStack align="start" gap="space-8">
         <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
         <Button
           as={Link}

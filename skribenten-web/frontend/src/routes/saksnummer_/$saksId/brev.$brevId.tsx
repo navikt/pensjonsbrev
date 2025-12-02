@@ -76,7 +76,7 @@ function RedigerBrevPage() {
             `}
             padding="6"
           >
-            <VStack align="start" gap="2">
+            <VStack align="start" gap="space-8">
               <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
               <Button
                 css={css`
@@ -161,7 +161,7 @@ const TilbakestillMalModal = (props: {
   return (
     <Modal
       css={css`
-        border-radius: 0.25rem;
+        border-radius: var(--ax-radius-4);
       `}
       header={{
         heading: "Vil du tilbakestille brevmalen?",
@@ -176,7 +176,7 @@ const TilbakestillMalModal = (props: {
         <BodyLong>Du kan ikke angre denne handlingen.</BodyLong>
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button onClick={props.onClose} type="button" variant="tertiary">
             Nei, behold brevet
           </Button>
@@ -382,7 +382,7 @@ function RedigerBrev({
             }
           `}
         >
-          <VStack gap="3">
+          <VStack gap="space-12">
             <Heading size="small" spacing>
               {brevmal.data?.name}
             </Heading>
@@ -400,12 +400,12 @@ function RedigerBrev({
             background: var(--ax-bg-default);
 
             border-top: 1px solid var(--ax-neutral-300);
-            padding: 0.5rem 1rem;
+            padding: var(--ax-space-8) var(--ax-space-16);
           `}
           justify={"space-between"}
         >
           <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-            <HStack align={"center"} gap="1">
+            <HStack align="center" gap="space-4">
               <ArrowCirclepathIcon
                 css={css`
                   transform: scaleX(-1);
@@ -416,7 +416,7 @@ function RedigerBrev({
               Tilbakestill malen
             </HStack>
           </Button>
-          <HStack gap="2" justify={"end"}>
+          <HStack gap="space-8" justify="end">
             <Button
               onClick={() =>
                 navigate({
@@ -432,7 +432,7 @@ function RedigerBrev({
               Tilbake til brevvelger
             </Button>
             <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
-              <HStack align={"center"} gap="2">
+              <HStack align="center" gap="space-8">
                 <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
               </HStack>
             </Button>
@@ -466,8 +466,8 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
       display: flex;
     }
     flex-direction: column;
-    gap: 1.125rem;
-    margin-top: 1.125rem;
+    gap: var(--ax-space-20);
+    margin-top: var(--ax-space-20);
   `;
 
   if (!hasOptional && !hasRequired) {

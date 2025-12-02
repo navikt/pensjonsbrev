@@ -52,7 +52,7 @@ const EksisterendeKladdModal = (props: {
         <BodyShort>Du har en eksisterende kladd basert på samme brevmal.</BodyShort>
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button onClick={props.onFormSubmit} type="button" variant="secondary">
             Lag nytt brev
           </Button>
@@ -171,12 +171,7 @@ const BrevmalBrevbaker = (props: {
   }, [setOnFormSubmitClick, harEksisterendeKladd, form]);
 
   return (
-    <VStack
-      css={css`
-        height: 100%;
-      `}
-      gap="4"
-    >
+    <VStack gap="space-16" height="100%">
       {åpnerNyttBrevOgHarKladd && (
         <EksisterendeKladdModal
           onClose={() => setÅpnerNyttBrevOgHarKladd(false)}
@@ -192,13 +187,8 @@ const BrevmalBrevbaker = (props: {
       <Divider />
       <FormProvider {...form}>
         <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
-          <VStack
-            css={css`
-              flex: 1;
-            `}
-            gap="8"
-          >
-            <VStack gap="2">
+          <VStack flexGrow="1" gap="space-32">
+            <VStack gap="space-8">
               <VStack>
                 <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
 

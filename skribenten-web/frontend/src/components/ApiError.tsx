@@ -80,7 +80,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
           {title}
         </Heading>
         {correlationId && (
-          <VStack gap="1">
+          <VStack gap="space-4">
             <div>
               <span>{mapErrorMessage(error.message)}</span>
               <span>

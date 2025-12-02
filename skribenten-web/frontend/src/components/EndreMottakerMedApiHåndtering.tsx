@@ -45,7 +45,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
 
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   return (
-    <VStack gap={props.withGap ? "2" : "0"}>
+    <VStack gap={props.withGap ? "space-8" : "space-0"}>
       {modalÅpen && (
         <EndreMottakerModal
           error={mottakerMutation.error}
@@ -58,7 +58,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           åpen={modalÅpen}
         />
       )}
-      <HStack align={"center"} gap="2">
+      <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
             <div>

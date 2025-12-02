@@ -66,7 +66,7 @@ function Kvittering() {
         css={css`
           justify-self: center;
         `}
-        gap="4"
+        gap="space-16"
       >
         <Heading size="medium">Hva vil du gjøre nå?</Heading>
         <Button

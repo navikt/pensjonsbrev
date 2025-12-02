@@ -131,7 +131,7 @@ const BrevvelgerMainContent = (props: {
           padding: var(--ax-space-20) var(--ax-space-24);
           overflow-y: auto;
         `}
-        gap="6"
+        gap="space-24"
       >
         <Heading level="1" size="small">
           Brevvelger
@@ -216,7 +216,7 @@ function Brevmaler({
   ].flat();
 
   return (
-    <VStack gap="6">
+    <VStack gap="space-24">
       <Search
         data-cy="brevmal-search"
         hideLabel={false}
@@ -297,7 +297,7 @@ function Brevmaler({
                           css={css`
                             overflow: hidden;
                           `}
-                          gap="2"
+                          gap="space-8"
                           wrap={false}
                         >
                           <BrevSystemIcon brevsystem={template.brevsystem} />
@@ -340,7 +340,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
             color: var(--ax-text-neutral);
           `}
         >
-          <HStack gap="2">
+          <HStack gap="space-8">
             <Label size="small">Kladder</Label>
           </HStack>
         </Accordion.Header>
@@ -379,7 +379,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                     css={css`
                       overflow: hidden;
                     `}
-                    gap="2"
+                    gap="space-8"
                     wrap={false}
                   >
                     <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />

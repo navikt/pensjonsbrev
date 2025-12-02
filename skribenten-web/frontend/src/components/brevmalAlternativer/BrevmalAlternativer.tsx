@@ -46,7 +46,7 @@ const BrevmalAlternativer = (props: {
         // Boolean felter er optional med default value false, så de må registreres slik i form.
         // Dermed må SaksbehandlerValgModelEditor også rendres om det finnes optional felter (ingenting blir synlig).
         return (
-          <VStack gap="3">
+          <VStack gap="space-12">
             {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <SaksbehandlerValgModelEditor
               brevkode={props.brevkode}
@@ -59,7 +59,7 @@ const BrevmalAlternativer = (props: {
       } else {
         if (!hasOptional) {
           return (
-            <VStack gap="3">
+            <VStack gap="space-12">
               {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
@@ -73,7 +73,7 @@ const BrevmalAlternativer = (props: {
 
         if (!hasRequired) {
           return (
-            <VStack gap="3">
+            <VStack gap="space-12">
               {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
@@ -86,7 +86,7 @@ const BrevmalAlternativer = (props: {
         }
 
         return (
-          <VStack gap="3">
+          <VStack gap="space-12">
             {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <Tabs
               css={css`
