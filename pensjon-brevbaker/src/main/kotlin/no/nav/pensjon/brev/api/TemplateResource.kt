@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.ValgbareVedlegg
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.Felles
@@ -27,7 +27,7 @@ private val objectMapper = brevbakerJacksonObjectMapper()
 abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>>(
     val name: String,
     templates: Set<T>,
-    alltidValgbareVedlegg: Set<ValgbareVedlegg<*>>,
+    alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
     pdfByggerService: PDFByggerService,
 ) {
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse

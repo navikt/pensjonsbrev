@@ -1,9 +1,5 @@
 package no.nav.pensjon.brevbaker.api.model
 
-interface AlltidValgbartVedlegg {
-    val kode: AlltidValgbartVedleggKode
-}
-
 interface AlltidValgbartVedleggKode {
     fun kode(): String
 }

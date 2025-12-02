@@ -55,7 +55,7 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggDat
 
 }
 
-class ValgbareVedlegg<out Lang : LanguageSupport> internal constructor(
+class AlltidValgbartVedlegg<out Lang : LanguageSupport> internal constructor(
     val vedlegg: AttachmentTemplate<Lang, EmptyVedleggData>,
     val kode: AlltidValgbartVedleggKode
 ) : HasModel<EmptyVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode())) {
