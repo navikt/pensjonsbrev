@@ -15,7 +15,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>> = emptySet(),
+    alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, alltidValgbareVedlegg, pdfByggerService) {
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
