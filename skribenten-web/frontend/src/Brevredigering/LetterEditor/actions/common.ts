@@ -196,15 +196,15 @@ export function isAtSameTableCell(first: TableCellIndex, second: TableCellIndex)
 }
 
 export function isFirstBeforeAfter(
-  first: LiteralIndex & { cursorPosition?: number },
-  after: LiteralIndex & { cursorPosition?: number },
+  first: LiteralIndex & { cursorPosition: number },
+  after: LiteralIndex & { cursorPosition: number },
 ): boolean {
   if (first.blockIndex === after.blockIndex) {
     if (first.contentIndex === after.contentIndex) {
       if (isItemContentIndex(first) && isItemContentIndex(after)) {
         if (first.itemIndex === after.itemIndex) {
           if (first.itemContentIndex === after.itemContentIndex) {
-            return (first.cursorPosition ?? 0) < (after.cursorPosition ?? 0);
+            return first.cursorPosition < after.cursorPosition;
           } else {
             return first.itemContentIndex < after.itemContentIndex;
           }
@@ -215,7 +215,7 @@ export function isFirstBeforeAfter(
         if (first.rowIndex === after.rowIndex) {
           if (first.cellIndex === after.cellIndex) {
             if (first.cellContentIndex === after.cellContentIndex) {
-              return (first.cursorPosition ?? 0) < (after.cursorPosition ?? 0);
+              return first.cursorPosition < after.cursorPosition;
             } else {
               return first.cellContentIndex < after.cellContentIndex;
             }
@@ -226,7 +226,7 @@ export function isFirstBeforeAfter(
           return first.rowIndex < after.rowIndex;
         }
       } else {
-        return (first.cursorPosition ?? 0) < (after.cursorPosition ?? 0);
+        return first.cursorPosition < after.cursorPosition;
       }
     } else {
       return first.contentIndex < after.contentIndex;

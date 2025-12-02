@@ -32,7 +32,7 @@ export function DebugPanel() {
   const selectionChangeListener = () => {
     const root = document.querySelector<HTMLElement>("[data-editor-root]");
     const mapped = root ? getSelectionFocus(root) : undefined;
-    if (mapped) setMappedSelection(mapped);
+    setMappedSelection(mapped ?? null);
   };
 
   useEffect(() => {

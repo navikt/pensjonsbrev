@@ -627,6 +627,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // TODO(stw): Sørg for at klikk utenfor ce setter markør i nærmeste ce
       contentEditable={hasDomFocus && !freeze}
       css={{
+        lineHeight: "var(--ax-font-line-height-medium)",
         ...(erFritekst && {
           color: "var(--ax-accent-600)",
           textDecoration: "underline",
