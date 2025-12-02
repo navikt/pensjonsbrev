@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -24,8 +25,8 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
     private val letterFactory: LetterFactory<Kode> = LetterFactory()
 
-    abstract fun listTemplatesWithMetadata()
-    abstract fun listTemplatekeys()
+    abstract fun listTemplatesWithMetadata(): List<TemplateDescription>
+    abstract fun listTemplatekeys(): Set<String>
 
     fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
 
