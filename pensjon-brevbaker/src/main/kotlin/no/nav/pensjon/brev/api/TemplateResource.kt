@@ -11,20 +11,20 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
-abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>> {
+interface TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>> {
 
-    abstract fun name(): String
+    fun name(): String
 
-    abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
+    suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
-    abstract fun renderHTML(brevbestilling: Request): LetterResponse
+    fun renderHTML(brevbestilling: Request): LetterResponse
 
-    abstract fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup
+    fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup
 
-    abstract fun listTemplatesWithMetadata(): List<TemplateDescription>
-    abstract fun listTemplatekeys(): Set<String>
+    fun listTemplatesWithMetadata(): List<TemplateDescription>
+    fun listTemplatekeys(): Set<String>
 
-    abstract fun getTemplate(kode: Kode): BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?
+    fun getTemplate(kode: Kode): BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?
 }
 
 fun countLetter(brevkode: Brevkode<*>): Unit =
