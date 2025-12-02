@@ -75,8 +75,7 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
 
             paragraph {
-                text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
-                    pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." })
+                text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." })
                 showIf(saksbehandlerValg.visVurderingIFU) {
                     text( bokmal { + pesysData.vurderingIFU })
                 }.orShow {
@@ -95,7 +94,7 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { + "For å få uføretrygd må inntektsevnen din som hovedregel være varig nedsatt med minst 50 prosent."})
             }
             paragraph {
-                text(bokmal { + "Vi har sammenlignet din inntekt før og etter at du ble ufør og kommet til at din uføregrad er " + fritekst("grad før avrunding") + " prosent."})
+                text(bokmal { + "Vi har sammenlignet inntekt din før og etter at du ble ufør og kommet til at din uføregrad er " + fritekst("grad før avrunding") + " prosent."})
             }
             paragraph {
                 text(bokmal { + "Uføregraden din er under 50 prosent, og du omfattes heller ikke av unntaksreglene ved yrkesskade, yrkessykdom eller for personer som mottar arbeidsavklaringspenger på søknadstidspunktet."})
@@ -113,8 +112,8 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     text(bokmal { +"Arbeidsforholdet må være dokumentert med en arbeidsavtale med en klart angitt stillingsprosent og oppstartsdato. " })
                 }
                 paragraph {
-                    text(bokmal { +"Vi vurderer at denne unntaksbestemmelsen ikke kan brukes i ditt tilfelle, fordi X (begrunnelse, " +
-                            "f.eks. ikke klart angitt stillingsprosent, jobber utover stillingsprosenten, ekstravakter/overtid, bonus, selvstendig næringsdrivende etc). " })
+                    text(bokmal { +"Vi vurderer at denne unntaksbestemmelsen ikke kan brukes i ditt tilfelle, fordi " + fritekst("X (begrunnelse, " +
+                            "f.eks. ikke klart angitt stillingsprosent, jobber utover stillingsprosenten, ekstravakter/overtid, bonus, selvstendig næringsdrivende etc)") + ". " })
                 }
             }
 
@@ -123,15 +122,6 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-7." })
-            }
-
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
-                paragraph {
-                    text(bokmal { +pesysData.vurdering })
-                }
-            }
-            paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
             }
 
             includePhrase(Felles.HvaSkjerNa)
