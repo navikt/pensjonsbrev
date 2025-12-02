@@ -515,7 +515,7 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
       css={css`
         width: 100%;
 
-        .navds-tabs__scroll-button {
+        .aksel-tabs__scroll-button {
           /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
           display: none;
         }

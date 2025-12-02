@@ -153,7 +153,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                         siden input feltet er nederts på modalen, vil det å åpne den tvinge en scroll på modalen
                         vi setter den derfor til å åpne oppover
                       */
-                      .navds-combobox__list {
+                      .aksel-combobox__list {
                         bottom: 100%;
                         top: auto;
                       }

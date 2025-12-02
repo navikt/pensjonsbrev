@@ -141,12 +141,12 @@ describe("<KvitterteBrev />", () => {
     ];
     cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId={"123456"} />);
 
-    cy.get(".navds-accordion__item").should("have.length", 6);
-    cy.get(".navds-accordion__item").eq(0).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(1).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(2).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
-    cy.get(".navds-accordion__item").eq(4).contains("Klar til attestering");
-    cy.get(".navds-accordion__item").eq(5).contains("Sendt til mottaker");
+    cy.get(".aksel-accordion__item").should("have.length", 6);
+    cy.get(".aksel-accordion__item").eq(0).contains("Kunne ikke sende brev");
+    cy.get(".aksel-accordion__item").eq(1).contains("Kunne ikke sende brev");
+    cy.get(".aksel-accordion__item").eq(2).contains("Kunne ikke sende brev");
+    cy.get(".aksel-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
+    cy.get(".aksel-accordion__item").eq(4).contains("Klar til attestering");
+    cy.get(".aksel-accordion__item").eq(5).contains("Sendt til mottaker");
   });
 });

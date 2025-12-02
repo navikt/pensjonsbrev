@@ -12,15 +12,15 @@ function SelectSensitivity() {
           legend="Er brevet sensitivt?"
           {...field}
           css={css`
-            .navds-label {
+            .aksel-label {
               margin-bottom: 0.25rem;
             }
 
-            .navds-radio-buttons {
+            .aksel-radio-buttons {
               margin: 0 !important;
             }
 
-            .navds-radio__label {
+            .aksel-radio__label {
               padding: var(--ax-space-8) 0;
             }
           `}

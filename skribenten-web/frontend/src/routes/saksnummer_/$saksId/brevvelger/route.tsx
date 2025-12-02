@@ -230,7 +230,7 @@ function Brevmaler({
         css={css`
           overflow-y: scroll;
 
-          .navds-accordion__content {
+          .aksel-accordion__content {
             padding: 0;
           }
         `}
