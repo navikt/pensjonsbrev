@@ -20,7 +20,7 @@ data class InnvilgelseAvAlderspensjonAutoDto(
     val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
     val erEOSLand: Boolean,  // v1.Land
     val erForstegangsbehandletNorgeUtland: Boolean,  // v3.Krav
-    val faktiskBostedsland: String,  // v3.Person
+    val faktiskBostedsland: String?,  // v3.Person
     val fullTrygdetid: Boolean,  // v4.AlderspensjonPerManed
     val inngangOgEksportVurdering: InngangOgEksportVurdering,
     val kravVirkDatoFom: LocalDate,
