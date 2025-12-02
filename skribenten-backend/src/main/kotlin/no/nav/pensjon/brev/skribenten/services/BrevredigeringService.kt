@@ -586,6 +586,7 @@ class BrevredigeringService(
                 .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
             redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),
+            alltidValgbareVedlegg = listOf() // TODO
         )
 
         return transaction {

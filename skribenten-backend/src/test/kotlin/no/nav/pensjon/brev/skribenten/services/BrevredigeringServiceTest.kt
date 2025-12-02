@@ -142,7 +142,8 @@ class BrevredigeringServiceTest {
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
             felles: Felles,
-            redigertBrev: LetterMarkup
+            redigertBrev: LetterMarkup,
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
         ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
