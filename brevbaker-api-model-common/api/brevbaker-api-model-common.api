@@ -287,10 +287,6 @@ public final class no/nav/pensjon/brev/api/model/maler/VedleggData$DefaultImpls 
 	public static fun alltidValgbart (Lno/nav/pensjon/brev/api/model/maler/VedleggData;)Z
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedlegg {
-	public abstract fun getKode ()Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode;
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
