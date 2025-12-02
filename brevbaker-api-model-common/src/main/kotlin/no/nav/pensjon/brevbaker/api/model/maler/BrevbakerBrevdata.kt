@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
+import no.nav.pensjon.brevbaker.api.model.Felles
+
 /**
  * Interface for toppnivå-mal-DTO.
  * Ikke utvid denne direkte for en mal-dto, bruk heller de spesifikke interfacene under.
@@ -21,7 +23,4 @@ interface VedleggData {
     fun alltidValgbart(): Boolean = false
 }
 
-interface AlltidValgbartVedleggData : VedleggData {
-    override fun alltidValgbart(): Boolean = true
-    fun kode(): String
-}
+class FellesVedleggData(val felles: Felles) : VedleggData

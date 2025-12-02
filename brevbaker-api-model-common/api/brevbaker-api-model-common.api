@@ -173,15 +173,6 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar 
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/AlltidValgbartVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
-	public fun alltidValgbart ()Z
-	public abstract fun kode ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/api/model/maler/AlltidValgbartVedleggData$DefaultImpls {
-	public static fun alltidValgbart (Lno/nav/pensjon/brev/api/model/maler/AlltidValgbartVedleggData;)Z
-}
-
 public abstract interface class no/nav/pensjon/brev/api/model/maler/AutobrevData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata, no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
 }
 
@@ -254,6 +245,12 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/FellesVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/Felles;)V
+	public fun alltidValgbart ()Z
+	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
