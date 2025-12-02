@@ -1,77 +1,7 @@
-import { css } from "@emotion/react";
 import { Heading, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
-
-const tableStyles = css`
-  width: 100%;
-  max-width: 800px;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-
-  tbody tr:nth-of-type(even) {
-    background-color: #f2f3f5;
-  }
-  tbody tr:nth-of-type(odd) {
-    background-color: var(--a-surface-default);
-  }
-
-  td {
-    border: 1px solid var(--a-border-default);
-    vertical-align: middle;
-    text-align: left;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    height: 3rem;
-  }
-
-  td:first-of-type {
-    width: 35%;
-    font-weight: 600;
-  }
-
-  td:last-of-type {
-    width: 65%;
-  }
-
-  .cell-seamless {
-    padding: 0;
-    height: 3rem;
-  }
-`;
-
-const seamlessInputStyles = css`
-  && {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
-
-  .navds-form-field {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
-
-  .navds-form-field__control {
-    height: 100%;
-  }
-
-  .navds-text-field__input {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    background-color: transparent;
-    padding: 0.75rem 1rem;
-    height: 100%;
-
-    &:focus {
-      outline: none;
-      box-shadow: inset 0 0 0 2px var(--a-border-focus);
-    }
-  }
-`;
 
 export const P1InnehaverTab = () => {
   const { register } = useFormContext<P1Redigerbar>();
@@ -82,13 +12,13 @@ export const P1InnehaverTab = () => {
         1. Personopplysninger om innehaveren
       </Heading>
 
-      <table css={tableStyles}>
+      <table className="p1-table p1-table--two-column">
         <tbody>
           <tr>
             <td>1.1 Etternavn</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield"
                 hideLabel
                 label="Etternavn"
                 size="small"
@@ -100,7 +30,7 @@ export const P1InnehaverTab = () => {
             <td>1.2 Fornavn</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Fornavn"
                 size="small"
@@ -112,7 +42,7 @@ export const P1InnehaverTab = () => {
             <td>1.3 Etternavn ved fødsel (*)</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Etternavn ved fødsel"
                 size="small"
@@ -124,7 +54,7 @@ export const P1InnehaverTab = () => {
             <td>1.4 Fødselsdato</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Fødselsdato"
                 size="small"
@@ -136,7 +66,7 @@ export const P1InnehaverTab = () => {
             <td>1.4.1 Gatenavn og -nummer</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Adresselinje"
                 size="small"
@@ -148,7 +78,7 @@ export const P1InnehaverTab = () => {
             <td>1.4.2 Poststed</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Poststed"
                 size="small"
@@ -160,7 +90,7 @@ export const P1InnehaverTab = () => {
             <td>1.4.3 Postnummer</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Postnummer"
                 size="small"
@@ -172,7 +102,7 @@ export const P1InnehaverTab = () => {
             <td>1.4.4 Landskode</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Landskode"
                 size="small"

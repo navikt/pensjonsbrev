@@ -1,0 +1,207 @@
+/* ===========================================
+   P1 Modal Styles
+   =========================================== */
+.p1-modal {
+  max-width: 85vw;
+  width: 85vw;
+  max-height: 85vh;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.p1-modal-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  position: relative;
+}
+
+.p1-loader-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.p1-tabs-panel {
+  margin-top: 2rem;
+}
+
+/* ===========================================
+   Multi-column Tables (Tab 3 & 4)
+   =========================================== */
+.p1-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 1rem;
+}
+
+.p1-table tbody tr:nth-of-type(even) {
+  background-color: #f2f3f5;
+}
+
+.p1-table tbody tr:nth-of-type(odd) {
+  background-color: var(--a-surface-default);
+}
+
+.p1-table th,
+.p1-table td {
+  border: 1px solid var(--a-border-default);
+  vertical-align: top;
+  text-align: left;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.p1-table th {
+  background: #ebfcff;
+}
+
+.p1-table--innvilget {
+  min-width: 1200px;
+}
+
+.p1-table--avslag {
+  min-width: 988px;
+}
+
+.p1-table .header-number {
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 0.25rem;
+}
+
+.p1-table .header-text {
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.p1-table .cell-seamless {
+  padding: 0;
+  height: 212px;
+}
+
+.p1-table td .navds-radio-group {
+  margin: 0;
+  gap: 0.25rem;
+}
+
+.p1-table td .navds-error-message {
+  font-size: 0.75rem;
+  margin-top: 0.15rem;
+  white-space: normal;
+}
+
+/* ===========================================
+   Two-column Tables (Tab 1, 2 & 5)
+   =========================================== */
+.p1-table--two-column {
+  max-width: 800px;
+}
+
+.p1-table--two-column td {
+  vertical-align: middle;
+  padding: 0.75rem 1rem;
+  height: 3rem;
+}
+
+.p1-table--two-column td:first-of-type {
+  width: 35%;
+  font-weight: 600;
+}
+
+.p1-table--two-column td:last-of-type {
+  width: 65%;
+}
+
+.p1-table--two-column .cell-seamless {
+  padding: 0;
+  height: 3rem;
+}
+
+/* ===========================================
+   Seamless Textarea (fills table cell)
+   =========================================== */
+.p1-seamless-textarea {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.p1-seamless-textarea .navds-form-field {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.p1-seamless-textarea .navds-form-field__control {
+  width: 100%;
+  height: 100%;
+}
+
+.p1-seamless-textarea .navds-textarea__wrapper {
+  height: 100%;
+}
+
+.p1-seamless-textarea .navds-textarea__input {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0.5rem;
+  width: 100%;
+  height: 100%;
+  resize: none;
+}
+
+.p1-seamless-textarea .navds-textarea__input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--a-border-focus);
+}
+
+/* ===========================================
+   Seamless TextField (fills table cell)
+   =========================================== */
+.p1-seamless-textfield {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.p1-seamless-textfield .navds-form-field {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.p1-seamless-textfield .navds-form-field__control {
+  height: 100%;
+}
+
+.p1-seamless-textfield .navds-text-field__input {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0.75rem 1rem;
+  height: 100%;
+}
+
+.p1-seamless-textfield .navds-text-field__input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--a-border-focus);
+}
+
+/* ===========================================
+   Buttons
+   =========================================== */
+.p1-add-row-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

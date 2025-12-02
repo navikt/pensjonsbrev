@@ -8,110 +8,6 @@ import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 import { emptyAvslaattRow } from "./emptyP1";
 import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
 
-const tableStyles = css`
-  width: 100%;
-  min-width: 900px;
-  border-collapse: collapse;
-  table-layout: fixed;
-  margin-bottom: 1rem;
-
-  tbody tr:nth-of-type(even) {
-    background-color: #f2f3f5;
-  }
-  tbody tr:nth-of-type(odd) {
-    background-color: var(--a-surface-default);
-  }
-
-  th,
-  td {
-    border: 1px solid var(--a-border-default);
-    vertical-align: top;
-    text-align: left;
-    padding: 0.5rem;
-    font-size: 0.875rem;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-  }
-
-  th {
-    background: #ebfcff;
-  }
-
-  .header-number {
-    display: block;
-    font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 0.25rem;
-  }
-
-  .header-text {
-    display: block;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .cell-seamless {
-    padding: 0;
-    height: 212px;
-  }
-
-  td .navds-radio-group {
-    margin: 0;
-    gap: 0.25rem;
-  }
-
-  td .navds-error-message {
-    font-size: 0.75rem;
-    margin-top: 0.15rem;
-    white-space: normal;
-  }
-`;
-
-const seamlessInputStyles = css`
-  && {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
-
-  .navds-form-field {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
-
-  .navds-form-field__control {
-    width: 100%;
-    height: 100%;
-  }
-
-  .navds-textarea__wrapper {
-    height: 100%;
-  }
-
-  .navds-textarea__input {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    background-color: transparent;
-    padding: 0.5rem;
-    width: 100%;
-    height: 100%;
-    resize: none;
-
-    &:focus {
-      outline: none;
-      box-shadow: inset 0 0 0 2px var(--a-border-focus);
-    }
-  }
-`;
-
-const centerButtonContainer = css`
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-
 export const P1AvslagTab = () => {
   const { control, register } = useFormContext<P1RedigerbarForm>();
 
@@ -128,7 +24,7 @@ export const P1AvslagTab = () => {
         4. Avslått pensjon
       </Heading>
 
-      <table css={tableStyles}>
+      <table className="p1-table p1-table--avslag">
         <thead>
           <tr>
             <th>
@@ -165,13 +61,17 @@ export const P1AvslagTab = () => {
                   label="Institusjon"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.institusjonsnavn` as const)}
-                  style={{ marginBottom: "0.5rem" }}
+                  css={css`
+                    margin-bottom: 0.5rem;
+                  `}
                 />
                 <TextField
                   label="PIN/saksnummer"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.pin` as const)}
-                  style={{ marginBottom: "0.5rem" }}
+                  css={css`
+                    margin-bottom: 0.5rem;
+                  `}
                 />
                 <TextField
                   label="Vedtaksdato"
@@ -192,9 +92,9 @@ export const P1AvslagTab = () => {
                       size="small"
                       value={radioField.value ?? ""}
                     >
-                      {PENSJONSTYPE_OPTIONS.map((opt) => (
-                        <Radio key={opt.value} value={opt.value}>
-                          {opt.label}
+                      {PENSJONSTYPE_OPTIONS.map((option) => (
+                        <Radio key={option.value} value={option.value}>
+                          {option.label}
                         </Radio>
                       ))}
                     </RadioGroup>
@@ -214,9 +114,9 @@ export const P1AvslagTab = () => {
                       size="small"
                       value={radioField.value ?? ""}
                     >
-                      {AVSLAGSBEGRUNNELSE_OPTIONS.map((opt) => (
-                        <Radio key={opt.value} value={opt.value}>
-                          {opt.label}
+                      {AVSLAGSBEGRUNNELSE_OPTIONS.map((option) => (
+                        <Radio key={option.value} value={option.value}>
+                          {option.label}
                         </Radio>
                       ))}
                     </RadioGroup>
@@ -227,7 +127,7 @@ export const P1AvslagTab = () => {
               {/* 4.4 Vurderingsperiode */}
               <td className="cell-seamless">
                 <Textarea
-                  css={seamlessInputStyles}
+                  className="p1-seamless-textarea"
                   hideLabel
                   label="Vurderingsperiode"
                   size="small"
@@ -238,7 +138,7 @@ export const P1AvslagTab = () => {
               {/* 4.5 Adresse ny vurdering */}
               <td className="cell-seamless">
                 <Textarea
-                  css={seamlessInputStyles}
+                  className="p1-seamless-textarea"
                   hideLabel
                   label="Adresse for ny vurdering"
                   size="small"
@@ -250,7 +150,7 @@ export const P1AvslagTab = () => {
         </tbody>
       </table>
 
-      <div css={centerButtonContainer}>
+      <div className="p1-add-row-container">
         <Button icon={<PlusIcon />} onClick={addRow} size="small" type="button" variant="tertiary">
           Legg til ny rad
         </Button>

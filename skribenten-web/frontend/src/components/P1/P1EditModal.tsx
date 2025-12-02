@@ -1,3 +1,5 @@
+import "~/css/p1.css";
+
 import { css } from "@emotion/react";
 import { Alert, Button, Heading, Loader, Modal, Tabs } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,21 +28,6 @@ type P1EditingModalProps = {
   open: boolean;
   onClose: () => void;
 };
-
-const p1ModalOverride = css`
-  && {
-    max-width: 85vw;
-    width: 85vw;
-    max-height: 80vh;
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-const tabsPanelStyle = css`
-  margin-top: 2rem;
-`;
 
 export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalProps) => {
   const [activeTab, setActiveTab] = useState<P1TabKey>("innehaver");
@@ -86,15 +73,20 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const isInitialLoading = isP1Loading && !p1Override;
 
   return (
-    <Modal aria-label="Rediger vedlegg P1" css={p1ModalOverride} onClose={handleCancel} open={open} size="medium">
+    <Modal aria-label="Rediger vedlegg P1" className="p1-modal" onClose={handleCancel} open={open} size="medium">
       <Modal.Header>
         <Heading size="medium">Overstyring av vedlegg – P1 samlet melding om pensjonsvedtak</Heading>
       </Modal.Header>
 
       <FormProvider {...formMethods}>
         <form
+          css={css`
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+          `}
           onSubmit={handleSubmit(onSubmit)}
-          style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}
         >
           <Modal.Body
             css={css`
@@ -103,7 +95,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
             `}
           >
             {isInitialLoading ? (
-              <Loader size="large" title="Laster data for vedlegg P1..." />
+              <Loader size="large" title="Laster data for P1..." />
             ) : (
               <>
                 <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} value={activeTab}>
@@ -115,23 +107,23 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                     <Tabs.Tab label="5. Institusjonen som har fylt ut skjemaet" value="institusjon" />
                   </Tabs.List>
 
-                  <Tabs.Panel css={tabsPanelStyle} value="innehaver">
+                  <Tabs.Panel className="p1-tabs-panel" value="innehaver">
                     <P1InnehaverTab />
                   </Tabs.Panel>
 
-                  <Tabs.Panel css={tabsPanelStyle} value="forsikret">
+                  <Tabs.Panel className="p1-tabs-panel" value="forsikret">
                     <P1ForsikredeTab />
                   </Tabs.Panel>
 
-                  <Tabs.Panel css={tabsPanelStyle} value="innvilget">
+                  <Tabs.Panel className="p1-tabs-panel" value="innvilget">
                     <P1InnvilgetTab />
                   </Tabs.Panel>
 
-                  <Tabs.Panel css={tabsPanelStyle} value="avslag">
+                  <Tabs.Panel className="p1-tabs-panel" value="avslag">
                     <P1AvslagTab />
                   </Tabs.Panel>
 
-                  <Tabs.Panel css={tabsPanelStyle} value="institusjon">
+                  <Tabs.Panel className="p1-tabs-panel" value="institusjon">
                     <P1InstitusjonTab />
                   </Tabs.Panel>
                 </Tabs>
@@ -144,7 +136,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                     size="small"
                     variant="error"
                   >
-                    Noe gikk galt ved lasting eller lagring av vedlegg P1.
+                    Noe gikk galt ved lasting eller lagring av P1.
                   </Alert>
                 )}
               </>

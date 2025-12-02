@@ -82,13 +82,13 @@ export const P1InstitusjonTab = () => {
         5. Institusjonen som har fylt ut skjemaet
       </Heading>
 
-      <table css={tableStyles}>
+      <table className="p1-table p1-table--two-column ">
         <tbody>
           <tr>
             <td>5.1 Navn</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Navn"
                 size="small"
@@ -100,7 +100,7 @@ export const P1InstitusjonTab = () => {
             <td>5.2 Gatenavn og -nummer</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Adresselinje"
                 size="small"
@@ -112,7 +112,7 @@ export const P1InstitusjonTab = () => {
             <td>5.3 Poststed</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Poststed"
                 size="small"
@@ -124,7 +124,7 @@ export const P1InstitusjonTab = () => {
             <td>5.4 Postnummer</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Postnummer"
                 size="small"
@@ -136,7 +136,7 @@ export const P1InstitusjonTab = () => {
             <td>5.5 Landskode</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Landskode"
                 size="small"
@@ -148,7 +148,7 @@ export const P1InstitusjonTab = () => {
             <td>5.6 Institusjons-ID</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Institusjons-ID"
                 size="small"
@@ -160,7 +160,7 @@ export const P1InstitusjonTab = () => {
             <td>5.7 Faksnummer</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Faksnummer"
                 size="small"
@@ -172,7 +172,7 @@ export const P1InstitusjonTab = () => {
             <td>5.8 Telefonnummer</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Telefonnummer"
                 size="small"
@@ -184,7 +184,7 @@ export const P1InstitusjonTab = () => {
             <td>5.9 E-post</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="E-post"
                 size="small"
@@ -196,7 +196,7 @@ export const P1InstitusjonTab = () => {
             <td>5.10 Dato</td>
             <td className="cell-seamless">
               <TextField
-                css={seamlessInputStyles}
+                className="p1-seamless-textfield "
                 hideLabel
                 label="Dato"
                 size="small"
