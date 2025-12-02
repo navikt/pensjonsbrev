@@ -19,8 +19,6 @@ interface FagsystemBrevdata
 
 interface SaksbehandlerValgBrevdata
 
-interface VedleggData {
-    fun alltidValgbart(): Boolean = false
-}
+interface VedleggData
 
 class FellesVedleggData(val felles: Felles) : VedleggData
