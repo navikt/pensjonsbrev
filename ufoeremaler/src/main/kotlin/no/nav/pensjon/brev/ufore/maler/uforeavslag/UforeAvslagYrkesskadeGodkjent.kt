@@ -53,7 +53,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text( bokmal { + "Vi avslår søknaden din fordi det er andre sykdomsforhold enn din godkjente yrkesskade som er årsaken til den nedsatte inntektsevnen din. " +
-                        "Du har en godkjent yrkesskade eller yrkessykdom, dette " + "finner du i vedtaksbrevet fra " + fritekst("dato") + ". " }) // TODO: Underline
+                        "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaket ditt av " + fritekst("dato") + ". " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
