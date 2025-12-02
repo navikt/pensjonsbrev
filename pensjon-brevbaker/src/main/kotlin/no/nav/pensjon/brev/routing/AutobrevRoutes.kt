@@ -20,7 +20,7 @@ fun ApplicationCall.useBrevkodeFromCallContext(): String? = attributes.getOrNull
 fun Route.autobrevRoutes(
     autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevTemplate<*>>,
 ) {
-    route("/${autobrev.name}") {
+    route("/${autobrev.name()}") {
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { brevbestilling ->
             installBrevkodeInCallContext(brevbestilling.kode)
             call.respond(autobrev.renderPDF(brevbestilling))

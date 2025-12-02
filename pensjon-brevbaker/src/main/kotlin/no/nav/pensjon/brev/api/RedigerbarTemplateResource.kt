@@ -13,13 +13,15 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
-    name: String,
+    val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name) {
+) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>() {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
     private val letterFactory: LetterFactory<Kode> = LetterFactory()
+
+    override fun name() = name
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
