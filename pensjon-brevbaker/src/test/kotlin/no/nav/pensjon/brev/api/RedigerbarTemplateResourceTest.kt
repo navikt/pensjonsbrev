@@ -56,7 +56,7 @@ class RedigerbarTemplateResourceTest {
                 navAvsenderEnhet = "Akersgata"
             )
         ),
-        valgbareVedlegg = listOf()
+        alltidValgbareVedlegg = listOf()
     )
 
     @Test

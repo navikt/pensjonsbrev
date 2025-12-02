@@ -59,7 +59,7 @@ class BrevtekstITest {
                     felles = felles,
                     language = LanguageCode.BOKMAL,
                     letterMarkup = markup,
-                    valgbareVedlegg = listOf()
+                    alltidValgbareVedlegg = listOf()
                 )
             )
         }.body()

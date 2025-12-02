@@ -36,7 +36,7 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val felles: Felles,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,
-    val valgbareVedlegg: List<AlltidValgbartVedleggKode>
+    val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false
