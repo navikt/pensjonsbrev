@@ -113,6 +113,7 @@
 .p1-table--two-column td:first-of-type {
   width: 35%;
   font-weight: 600;
+  font-size: 1rem;
 }
 
 .p1-table--two-column td:last-of-type {
