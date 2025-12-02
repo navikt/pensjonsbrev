@@ -427,7 +427,7 @@ function RedigerBrev({
               }
               size="small"
               type="button"
-              variant="tertiary"
+              variant="secondary"
             >
               Tilbake til brevvelger
             </Button>
