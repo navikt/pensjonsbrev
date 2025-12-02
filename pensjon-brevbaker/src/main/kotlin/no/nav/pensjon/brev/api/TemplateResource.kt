@@ -7,6 +7,8 @@ import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -44,6 +46,12 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
             "pensjon_brevbaker_letter_request_count",
             listOf(Tag.of("brevkode", brevkode.kode()))
         ).increment()
+
+    protected fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
+        with(brevbestilling) { createLetter(kode, letterData, language, felles) }
+
+    protected fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>) =
+        with(brevbestilling) { createLetter(kode, letterData, language, felles) }
 
     protected fun createLetter(
         brevkode: Kode,

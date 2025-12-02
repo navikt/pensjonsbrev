@@ -17,22 +17,14 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, pdfByggerService) {
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
-        with(brevbestilling) {
-            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles))
-        }
+        brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
-        with(brevbestilling) {
-            brevbaker.renderLetterMarkupWithDataUsage(createLetter(kode, letterData, language, felles))
-        }
+        brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        with(brevbestilling) {
-            brevbaker.renderRedigertBrevPDF(createLetter(kode, letterData, language, felles), letterMarkup)
-        }
+        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup)
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        with(brevbestilling) {
-            brevbaker.renderRedigertBrevHTML(createLetter(kode, letterData, language, felles), letterMarkup)
-        }
+        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup)
 }
