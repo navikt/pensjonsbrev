@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";

@@ -44,7 +44,11 @@ export const Route = createRootRouteWithContext<{
         <TanStackRouterDevtools initialIsOpen={false} position="top-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
       </React.Suspense>
-      <div>
+      <div
+        css={css({
+          background: "var(--ax-bg-neutral-moderate)",
+        })}
+      >
         <AppHeader />
         <Outlet />
       </div>

@@ -26,5 +26,4 @@ body {
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  background: var(--ax-bg-neutral-soft);
 }
