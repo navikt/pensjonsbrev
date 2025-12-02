@@ -231,10 +231,9 @@ function Brevmaler({
           overflow-y: scroll;
 
           .aksel-accordion__content {
-            padding: 0;
+            margin: 0;
           }
         `}
-        headingSize="xsmall"
         indent={false}
         size="small"
       >
