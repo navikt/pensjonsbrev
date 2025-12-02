@@ -71,7 +71,6 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – opphør av barnetillegget (automatisk)",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = VEDTAKSBREV
         )

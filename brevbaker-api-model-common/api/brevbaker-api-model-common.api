@@ -634,6 +634,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata {
 	public fun <init> (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
+	public synthetic fun <init> (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public final fun getDisplayTitle ()Ljava/lang/String;

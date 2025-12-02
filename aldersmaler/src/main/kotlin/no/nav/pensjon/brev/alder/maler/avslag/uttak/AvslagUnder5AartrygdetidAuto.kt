@@ -32,7 +32,6 @@ object AvslagUnder5AartrygdetidAuto : AutobrevTemplate<AvslagUnder5AarTrygdetidA
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om alderspensjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

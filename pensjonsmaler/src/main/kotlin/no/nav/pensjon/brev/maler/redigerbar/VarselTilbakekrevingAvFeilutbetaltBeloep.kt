@@ -34,7 +34,6 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - tilbakekreving av feilutbetalt beløp",
-            isSensitiv = false,
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )

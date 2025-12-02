@@ -37,7 +37,6 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
         languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - fjerning av omsorgsopptjening",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

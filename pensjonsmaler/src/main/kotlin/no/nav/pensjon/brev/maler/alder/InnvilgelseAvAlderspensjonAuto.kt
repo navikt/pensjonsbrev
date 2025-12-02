@@ -100,7 +100,6 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - innvilgelse av alderspensjon",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = VEDTAKSBREV,
                 ),

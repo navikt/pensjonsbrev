@@ -39,7 +39,6 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

@@ -29,7 +29,6 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Du må sende oss flere opplysninger",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

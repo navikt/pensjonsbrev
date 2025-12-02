@@ -61,7 +61,6 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uttaksgrad (auto)",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = VEDTAKSBREV
         ),

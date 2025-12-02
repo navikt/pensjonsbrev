@@ -48,7 +48,6 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - begrunnelse for innvilgelse",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

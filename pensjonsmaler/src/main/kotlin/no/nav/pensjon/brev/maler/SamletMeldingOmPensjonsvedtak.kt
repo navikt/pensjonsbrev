@@ -38,7 +38,6 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "P1 med forsidebrev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )

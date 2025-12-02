@@ -38,7 +38,6 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

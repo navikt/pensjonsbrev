@@ -29,7 +29,6 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpp
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

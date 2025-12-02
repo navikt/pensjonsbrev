@@ -28,7 +28,6 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om saksbehandlingstid",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

@@ -52,7 +52,7 @@ spec:
       mountPath: /app/tmp
   env:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
-      value: "120s"
+      value: "45s"
     - name: PDF_BYGGER_LATEX_PARALLELISM
       value: "4"
     - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT

@@ -32,7 +32,6 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Forespørsel om dokumentasjon av botid i Norge - alder",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

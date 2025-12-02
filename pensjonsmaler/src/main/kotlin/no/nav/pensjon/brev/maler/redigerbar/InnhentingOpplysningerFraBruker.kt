@@ -31,7 +31,6 @@ object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevd
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente opplysninger",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
