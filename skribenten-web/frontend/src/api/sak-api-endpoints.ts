@@ -35,9 +35,10 @@ export const hentPdfForBrev = {
 
 const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) => {
   const response = await axios
-    .get<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
+    .post<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
       responseType: "json",
       headers: { Accept: "application/json" },
+      alltidValgbareVedlegg: []
     })
     .catch((error) => {
       if (error?.response?.status === 404) {
