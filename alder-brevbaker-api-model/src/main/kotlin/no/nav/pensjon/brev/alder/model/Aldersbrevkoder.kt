@@ -37,6 +37,7 @@ object Aldersbrevkoder {
     }
 
     enum class Redigerbar : Redigerbart {
+        PE_AP_AVSLAG_FOR_LITE_TRYGDETID,
         PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG,
         PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS,
         PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND,

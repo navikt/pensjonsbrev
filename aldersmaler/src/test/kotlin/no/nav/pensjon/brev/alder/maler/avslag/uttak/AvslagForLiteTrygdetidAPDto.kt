@@ -1,12 +1,12 @@
-package no.nav.pensjon.brev.fixtures.redigerbar
+package no.nav.pensjon.brev.alder.maler.avslag.uttak
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.model.VedtaksBegrunnelse
+import no.nav.pensjon.brev.alder.model.avslag.AvslagForLiteTrygdetidAPDto
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.alder.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import java.time.LocalDate
 
 fun createAvslagForLiteTrygdetidAPDto() =

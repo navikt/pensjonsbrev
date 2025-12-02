@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDto
@@ -99,7 +98,6 @@ import no.nav.pensjon.brev.fixtures.createSamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.fixtures.createUfoerOmregningEnsligDto
 import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmInnvilgelseAvOmsorgspoengDto
-import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.fixtures.redigerbar.createBekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createBekreftelsePaaUfoeretrygdDto
@@ -145,7 +143,6 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             FullmektigBprofAutoDto::class -> createFullmektigBprofAutoDto() as T
             FullmaktsgiverBprofAutoDto::class -> createFullmaktsgiverBprofAutoDto() as T
-            AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
             AvslagPaaGjenlevenderettIAlderspensjonDto::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
             AvslagUfoeretrygdDto::class -> createAvslagUfoeretrygdDto() as T
             BekreftelsePaaPensjonDto::class -> createBekreftelsePaaPensjonDto() as T

@@ -1,16 +1,15 @@
-package no.nav.pensjon.brev.api.model.maler.redigerbar
+package no.nav.pensjon.brev.alder.model.avslag
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.model.VedtaksBegrunnelse
+import no.nav.pensjon.brev.alder.model.avslag.AvslagForLiteTrygdetidAPDto.PesysData
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.alder.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto.*
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 
 @Suppress("unused")
-
 data class AvslagForLiteTrygdetidAPDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: EmptySaksbehandlerValg,
@@ -28,5 +27,4 @@ data class AvslagForLiteTrygdetidAPDto(
         val vedtaksBegrunnelse: VedtaksBegrunnelse,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ) : FagsystemBrevdata
-
 }

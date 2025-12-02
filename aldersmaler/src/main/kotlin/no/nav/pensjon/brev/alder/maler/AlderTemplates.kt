@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoe
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
+import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUnder5AartrygdetidAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
@@ -70,6 +71,7 @@ object AlderTemplates : AllTemplates {
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
         setOf(
+            AvslagForLiteTrygdetidAP,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
