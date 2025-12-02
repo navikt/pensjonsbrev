@@ -8,6 +8,8 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 class AlltidValgbartVedleggLibrary(vedlegg: Set<AlltidValgbartVedlegg<*>>) {
     private val vedlegg: Map<AlltidValgbartVedleggKode, AlltidValgbartVedlegg<*>> = vedlegg.associateBy { it.kode }
 
-    fun getVedlegg(kode: AlltidValgbartVedleggKode, felles: Felles) =
+    fun getVedlegg(koder: List<AlltidValgbartVedleggKode>, felles: Felles) = koder.map { getVedlegg(it, felles) }
+
+    private fun getVedlegg(kode: AlltidValgbartVedleggKode, felles: Felles) =
         vedlegg[kode]?.asIncludeAttachment(felles) ?: throw NotFoundException("Vedlegg '$kode' doesn't exist")
 }

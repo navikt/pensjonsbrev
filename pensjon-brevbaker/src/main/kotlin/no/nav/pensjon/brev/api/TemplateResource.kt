@@ -66,7 +66,7 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
 
         @OptIn(InterneDataklasser::class)
         return LetterImpl(
-            template = template.medEkstraVedlegg(valgteVedlegg.map { vedleggLibrary.getVedlegg(it, felles)}),
+            template = template.medEkstraVedlegg(vedleggLibrary.getVedlegg(valgteVedlegg, felles)),
             argument = parseArgument(brevdata, template),
             language = language,
             felles = felles,
