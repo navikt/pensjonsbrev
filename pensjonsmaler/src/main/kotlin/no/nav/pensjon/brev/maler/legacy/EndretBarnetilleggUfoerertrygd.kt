@@ -34,7 +34,6 @@ object EndretBarnetilleggUfoerertrygd : AutobrevTemplate<EndretBarnetilleggUfoer
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Endring av barnetillegg i uføretrygden",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

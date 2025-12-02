@@ -17,10 +17,10 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
+import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
@@ -30,6 +30,7 @@ import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
+import { getErrorMessage } from "~/utils/errorUtils";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -167,6 +168,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
       );
+      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
     },
   });
 
@@ -224,9 +226,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         {laasForRedigeringMutation.isError && (
           <Alert size="small" variant="error">
-            {typeof (laasForRedigeringMutation.error as AxiosError).response?.data === "string"
-              ? ((laasForRedigeringMutation.error as AxiosError).response?.data as string)
-              : "Noe gikk galt"}
+            {getErrorMessage(laasForRedigeringMutation.error)}
           </Alert>
         )}
 

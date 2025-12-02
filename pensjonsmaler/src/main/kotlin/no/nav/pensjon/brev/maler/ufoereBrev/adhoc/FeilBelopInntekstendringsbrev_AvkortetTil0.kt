@@ -21,7 +21,6 @@ class FeilBelopInntekstendringsbrev_AvkortetTil0 {
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 displayTitle = "Visning av feil beløp i tidligere inntektsendringsbrev",
-                isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
             )

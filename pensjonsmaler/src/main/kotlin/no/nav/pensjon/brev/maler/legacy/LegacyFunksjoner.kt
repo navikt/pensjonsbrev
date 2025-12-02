@@ -4,38 +4,57 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.vedtaksdata_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopgammelbtfb_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopnybtfb_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.belopgammelbtsb_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.belopnybtsb_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.barnetilleggfellesyk_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.barnetilleggserkullyk_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.belopsendring_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningytelseskomp_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.antallbarnfelles_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbnetto_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.antallbarnserkull_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbnetto_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggfelles_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggserkull_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravmottattdato_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakListSelectors.vilkarsvedtak_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar_safe
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.virkningstidpunkt_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.beregningsdata
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopgammelbtfb
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopnybtfb
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.belopgammelbtsb
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYKSelectors.belopnybtsb
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.barnetilleggfellesyk
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BelopsendringSelectors.barnetilleggserkullyk
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.belopsendring
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUforeSelectors.beregningytelseskomp
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.antallbarnfelles
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFellesSelectors.btfbnetto
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.antallbarnserkull
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggSerkullSelectors.btsbnetto
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggfelles
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKompSelectors.barnetilleggserkull
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravarsaktype
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.KravhodeSelectors.kravmottattdato
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakListSelectors.vilkarsvedtak
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.virkningstidpunkt
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.day
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.firstDayOfYear
+import no.nav.pensjon.brev.template.dsl.expression.getOrNull
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.lastDayOfYear
+import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThan
+import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.legacyLessThan
+import no.nav.pensjon.brev.template.dsl.expression.legacyLessThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.month
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.safe
+import no.nav.pensjon.brev.template.dsl.expression.size
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -92,10 +111,10 @@ fun Expression<PE>.ut_tbu056v_51() = (
 
 
 fun Expression<PE>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
-    val belopsendring = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.belopsendring_safe
-    return vedtaksbrev_safe.vedtaksdata_safe.kravhode_safe.kravarsaktype_safe.equalTo("endret_inntekt") and
-            (belopsendring.barnetilleggfellesyk_safe.belopgammelbtfb_safe.notEqualTo(belopsendring.barnetilleggfellesyk_safe.belopnybtfb_safe) or
-                    belopsendring.barnetilleggserkullyk_safe.belopgammelbtsb_safe.notEqualTo(belopsendring.barnetilleggserkullyk_safe.belopnybtsb_safe))
+    val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
+    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
+            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb }) or
+                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb }))
 }
 
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
@@ -113,8 +132,8 @@ fun Expression<PE>.ut_trygdetid_avdod() = (vedtaksdata_beregningsdata_beregningu
 
 fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val erEttBarn = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.antallbarnfelles_safe.ifNull(0).equalTo(1)
-    val erFlereBarn = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggfelles_safe.antallbarnfelles_safe.ifNull(0).greaterThan(1)
+    val erEttBarn = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { barnetilleggfelles }.safe { antallbarnfelles }.ifNull(0).equalTo(1)
+    val erFlereBarn = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { barnetilleggfelles }.safe { antallbarnfelles }.ifNull(0).greaterThan(1)
     return ifElse(
         erEttBarn, ifElse(erEngelsk, "child", "barnet"),
         ifElse(
@@ -127,8 +146,8 @@ fun Expression<PE>.ut_barnet_barna_felles(): Expression<String> {
 
 fun Expression<PE>.ut_barnet_barna_serkull(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val erEttBarn = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.antallbarnserkull_safe.ifNull(0).equalTo(1)
-    val erFlereBarn = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe.barnetilleggserkull_safe.antallbarnserkull_safe.ifNull(0).greaterThan(1)
+    val erEttBarn = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { barnetilleggserkull }.safe { antallbarnserkull }.ifNull(0).equalTo(1)
+    val erFlereBarn = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { barnetilleggserkull }.safe { antallbarnserkull }.ifNull(0).greaterThan(1)
     return ifElse(
         erEttBarn, ifElse(erEngelsk, "child", "barnet"),
         ifElse(
@@ -141,20 +160,20 @@ fun Expression<PE>.ut_barnet_barna_serkull(): Expression<String> {
 
 fun Expression<PE>.pe_ut_barnet_barna_felles_serkull(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val beregningytelseskomp = vedtaksbrev_safe.vedtaksdata_safe.beregningsdata_safe.beregningufore_safe.beregningytelseskomp_safe
+    val beregningytelseskomp = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }
 
-    val barnetilleggserkull = beregningytelseskomp.barnetilleggserkull_safe
-    val barnetilleggfelles = beregningytelseskomp.barnetilleggfelles_safe
+    val barnetilleggserkull = beregningytelseskomp.safe { barnetilleggserkull }
+    val barnetilleggfelles = beregningytelseskomp.safe { barnetilleggfelles }
 
-    val erEttBarn = (barnetilleggfelles.antallbarnfelles_safe.ifNull(0).equalTo(1) and
-            barnetilleggfelles.btfbnetto_safe.ifNull(Kroner(0)).equalTo(0)) or
-            (barnetilleggserkull.antallbarnserkull_safe.ifNull(0).equalTo(1) and
-                    barnetilleggserkull.btsbnetto_safe.ifNull(Kroner(0)).equalTo(0))
+    val erEttBarn = (barnetilleggfelles.safe { antallbarnfelles }.ifNull(0).equalTo(1) and
+            barnetilleggfelles.safe { btfbnetto }.ifNull(Kroner(0)).equalTo(0)) or
+            (barnetilleggserkull.safe { antallbarnserkull }.ifNull(0).equalTo(1) and
+                    barnetilleggserkull.safe { btsbnetto }.ifNull(Kroner(0)).equalTo(0))
 
-    val erFlereBarn = (barnetilleggfelles.antallbarnfelles_safe.ifNull(0).greaterThan(1) and
-            barnetilleggfelles.btfbnetto_safe.ifNull(Kroner(0)).equalTo(0)) or
-            (barnetilleggserkull.antallbarnserkull_safe.ifNull(0).greaterThan(1) and
-                    barnetilleggserkull.btsbnetto_safe.ifNull(Kroner(0)).equalTo(0))
+    val erFlereBarn = (barnetilleggfelles.safe { antallbarnfelles }.ifNull(0).greaterThan(1) and
+            barnetilleggfelles.safe { btfbnetto }.ifNull(Kroner(0)).equalTo(0)) or
+            (barnetilleggserkull.safe { antallbarnserkull }.ifNull(0).greaterThan(1) and
+                    barnetilleggserkull.safe { btsbnetto }.ifNull(Kroner(0)).equalTo(0))
     return ifElse(
         erEttBarn, ifElse(erEngelsk, "child", "barnet"),
         ifElse(
@@ -175,7 +194,7 @@ fun Expression<PE>.ut_inntektsgrense_faktisk() =
 //IF FF_GetArrayElement_Date(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Virkningstidpunkt) >= DateValue("01/01/2016") THEN
 //   isGrater = true
 //ENDIF
-fun Expression<PE>.ut_virkningstidpunktstorreenn01012016() = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().beregningsvilkar_safe.virkningstidpunkt_safe.legacyGreaterThan(LocalDate.of(2016,1,1))
+fun Expression<PE>.ut_virkningstidpunktstorreenn01012016() = vedtaksbrev.safe { vedtaksdata }.safe { vilkarsvedtaklist }.safe { vilkarsvedtak }.getOrNull().safe { beregningsvilkar }.safe { virkningstidpunkt }.legacyGreaterThan(LocalDate.of(2016,1,1))
 
 fun Expression<PE>.ut_periodefomstorre0101() = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().legacyGreaterThan(ut_firstday())
 
@@ -187,7 +206,7 @@ fun Expression<PE>.ut_firstday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_
 fun Expression<PE>.ut_lastday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).lastDayOfYear
 
 fun Expression<PE>.aarstall_trygdetid(): Expression<Int> =
-    vedtaksbrev.vedtaksdata.kravhode_safe.kravmottattdato_safe.ifNull(LocalDate.now()).year
+    vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravmottattdato }.ifNull(LocalDate.now()).year
 
 fun Expression<PE>.aars_trygdetid(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English)
@@ -266,6 +285,8 @@ fun Expression<PE>.ut_barnet_barna_innvilget(): Expression<String> {
         )
     )
 }
+
+
 
 // GENERATED
 fun Expression<PE>.inkluderopplysningerbruktiberegningen() = ((not(vedtaksdata_faktoromregnet()) and pebrevkode().notEqualTo("PE_UT_04_102")) or (pebrevkode().equalTo("PE_UT_04_102") and (vedtaksdata_beregningsdata_beregningufore_belopokt() or (vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(0)) or vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_5")) or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))

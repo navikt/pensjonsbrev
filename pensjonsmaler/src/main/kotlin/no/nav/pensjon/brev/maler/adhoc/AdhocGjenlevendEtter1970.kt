@@ -23,7 +23,6 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - gjenlevendepensjonen din opphører fra 1. januar 2027",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

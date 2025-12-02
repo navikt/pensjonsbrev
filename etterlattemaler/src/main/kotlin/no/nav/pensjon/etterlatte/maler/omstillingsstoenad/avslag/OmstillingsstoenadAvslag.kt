@@ -34,7 +34,6 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

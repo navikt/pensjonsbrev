@@ -30,7 +30,6 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Orientering om saksbehandlingstid (uføretrygd)",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

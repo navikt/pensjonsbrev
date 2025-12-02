@@ -8,7 +8,6 @@ val bokmalTittel = newText(Language.Bokmal to "test brev")
 val nynorskTittel = newText(Language.Nynorsk to "test brev")
 val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
-    isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )

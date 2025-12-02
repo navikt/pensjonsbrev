@@ -8,16 +8,16 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.avdodFlyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.beregnetEtter_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.beregnetEtter
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.grunnbeloep
@@ -27,7 +27,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -55,15 +54,15 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
     val beregnetSomEnsligPgaInstopphold: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val epsBorSammenMedBruker = epsGjeldende.borSammenMedBruker_safe.ifNull(false)
-        val epsMottarPensjon = epsGjeldende.mottarPensjon_safe.ifNull(false)
-        val epsHarInntektOver2G = epsGjeldende.harInntektOver2G_safe.ifNull(false)
+        val epsBorSammenMedBruker = epsGjeldende.safe { borSammenMedBruker }.ifNull(false)
+        val epsMottarPensjon = epsGjeldende.safe { mottarPensjon }.ifNull(false)
+        val epsHarInntektOver2G = epsGjeldende.safe { harInntektOver2G }.ifNull(false)
 
         val beregnetEtterEgen =
-            beregnetPensjonPerManedGjeldende.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.AVDOD)
+            beregnetPensjonPerManedGjeldende.beregnetEtter.ifNull(AlderspensjonBeregnetEtter.AVDOD)
                 .isOneOf(AlderspensjonBeregnetEtter.EGEN)
         val beregnetEtterAvdod =
-            beregnetPensjonPerManedGjeldende.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.EGEN)
+            beregnetPensjonPerManedGjeldende.beregnetEtter.ifNull(AlderspensjonBeregnetEtter.EGEN)
                 .isOneOf(AlderspensjonBeregnetEtter.AVDOD)
 
         val grunnbeloep = beregnetPensjonPerManedGjeldende.grunnbeloep.format()
@@ -156,9 +155,9 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     epsBorSammenMedBruker
                             and not(epsHarInntektOver2G)
                             and not(epsMottarPensjon)
-                            and not(institusjonsoppholdGjeldende.aldersEllerSykehjem_safe.ifNull(false))
-                            and not(institusjonsoppholdGjeldende.helseinstitusjon_safe.ifNull(false))
-                            and not(institusjonsoppholdGjeldende.fengsel_safe.ifNull(false))
+                            and not(institusjonsoppholdGjeldende.safe { aldersEllerSykehjem }.ifNull(false))
+                            and not(institusjonsoppholdGjeldende.safe { helseinstitusjon }.ifNull(false))
+                            and not(institusjonsoppholdGjeldende.safe { fengsel }.ifNull(false))
                 ) {
                     paragraph {
                         text(
@@ -362,7 +361,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                 epsBorSammenMedBruker
                         and epsHarInntektOver2G
                         and not(epsMottarPensjon)
-                        and not(institusjonsoppholdGjeldende.ensligPaInst_safe.ifNull(false))
+                        and not(institusjonsoppholdGjeldende.safe { ensligPaInst }.ifNull(false))
             ) {
                 paragraph {
                     text(

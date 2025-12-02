@@ -6,20 +6,19 @@ import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.saertillegg_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.saertillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -52,20 +51,20 @@ data class MaanedligPensjonFoerSkattSaertillegg(
         val harTilleggspensjon: Expression<Boolean> = beregnetPensjonPerManedGjeldende.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0)
         val regelverkstype = alderspensjonGjeldende.regelverkstype
         val grunnpensjonSats = alderspensjonGjeldende.grunnpensjonSats.format()
-        val epsBorSammenMedBruker = epsGjeldende.borSammenMedBruker_safe.ifNull(false)
+        val epsBorSammenMedBruker = epsGjeldende.safe { borSammenMedBruker }.ifNull(false)
         val harFullTrygdetid = beregnetPensjonPerManedGjeldende.fullTrygdetid
-        val aldersEllerSykehjemInstOpphold = institusjonsoppholdGjeldende.aldersEllerSykehjem_safe.ifNull(false)
-        val ensligPgaInstitusjonsopphold = institusjonsoppholdGjeldende.ensligPaInst_safe.ifNull(false)
-        val epsErpaaInstitusjon = institusjonsoppholdGjeldende.epsPaInstitusjon_safe.ifNull(false)
-        val erPaaFengselsInstitusjon = institusjonsoppholdGjeldende.fengsel_safe.ifNull(false)
-        val erPaahelseInstitusjon = institusjonsoppholdGjeldende.helseinstitusjon_safe.ifNull(false)
+        val aldersEllerSykehjemInstOpphold = institusjonsoppholdGjeldende.safe { aldersEllerSykehjem }.ifNull(false)
+        val ensligPgaInstitusjonsopphold = institusjonsoppholdGjeldende.safe { ensligPaInst }.ifNull(false)
+        val epsErpaaInstitusjon = institusjonsoppholdGjeldende.safe { epsPaInstitusjon }.ifNull(false)
+        val erPaaFengselsInstitusjon = institusjonsoppholdGjeldende.safe { fengsel }.ifNull(false)
+        val erPaahelseInstitusjon = institusjonsoppholdGjeldende.safe { helseinstitusjon }.ifNull(false)
         val beregnetSomEnsligPgaInstopphold = (aldersEllerSykehjemInstOpphold
                 or ensligPgaInstitusjonsopphold
                 or epsErpaaInstitusjon
                 or erPaaFengselsInstitusjon
                 or erPaahelseInstitusjon)
 
-        val harSaertillegg = beregnetPensjonPerManedGjeldende.saertillegg_safe.ifNull(Kroner(0)).greaterThan(0)
+        val harSaertillegg = beregnetPensjonPerManedGjeldende.saertillegg.ifNull(Kroner(0)).greaterThan(0)
 
         //vedleggBelopST_002
         showIf(

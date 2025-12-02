@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar_safe
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.sakstype
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggHjelpFraAndre
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakPensjon
@@ -42,7 +42,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlage =
         }.orShow {
             includePhrase(VedleggInnsynSakUfoeretrygdPesysNoenDokumenter)
         }
-        showIf(sakstype.equalTo(Sakstype.BARNEP) and argument.brukerUnder18Aar_safe.ifNull(false).equalTo(true)) {
+        showIf(sakstype.equalTo(Sakstype.BARNEP) and argument.brukerUnder18Aar.ifNull(false).equalTo(true)) {
             includePhrase(VedleggInnsynSakUnder18)
         }
         includePhrase(VedleggHjelpFraAndre)

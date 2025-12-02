@@ -6,30 +6,29 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
 import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.Beregningsmetode.NORDISK
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAr_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BrukerSelectors.fodselsdato
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.garantipensjonsBeholdning_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.pensjonsbeholdning_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.garantipensjonsBeholdning
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.pensjonsbeholdning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restGrunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restTilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.opptjeningTilfortKap20_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poengtallSisteGyldigeOpptjeningsAr_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.sisteGyldigeOpptjeningsAr_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.opptjeningTilfortKap20
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poenggivendeInntektSisteGyldigeOpptjeningsAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poengtallSisteGyldigeOpptjeningsAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.sisteGyldigeOpptjeningsAr
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.beregningKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.beregningKap20VedVirk
@@ -59,6 +58,7 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -123,7 +123,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
         }
 
         // vedleggBeregnGradsEndrOpptjen_001
-        ifNotNull(oppfrisketOpptjeningVedVirk.sisteGyldigeOpptjeningsAr_safe, oppfrisketOpptjeningVedVirk.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe) { sisteGyldigeOpptjeningsaar, poenggivendeInntektSisteGyldigeOpptjeningsaar ->
+        ifNotNull(oppfrisketOpptjeningVedVirk.safe { sisteGyldigeOpptjeningsAr }, oppfrisketOpptjeningVedVirk.safe { poenggivendeInntektSisteGyldigeOpptjeningsAr }) { sisteGyldigeOpptjeningsaar, poenggivendeInntektSisteGyldigeOpptjeningsaar ->
             paragraph {
                 text(
                     bokmal { + "Fordi du har søkt om endring av uttaksgrad vil ny pensjonsopptjening for inntektsåret " + sisteGyldigeOpptjeningsaar.format() + " bli lagt til alderspensjonen din." },
@@ -154,8 +154,8 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
         showIf(alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
             //  vedleggBelopAP2016Oversikt_001
             paragraph {
-                val andelKap19 = alderspensjonVedVirk.andelKap19_safe.ifNull(0).format()
-                val andelKap20 = alderspensjonVedVirk.andelKap20_safe.ifNull(0).format()
+                val andelKap19 = alderspensjonVedVirk.safe { andelKap19 }.ifNull(0).format()
+                val andelKap20 = alderspensjonVedVirk.safe { andelKap20 }.ifNull(0).format()
                 text(
                     bokmal { + "De som er født i perioden 1954-1962 får en kombinasjon av alderspensjon etter gamle og nye regler i folketrygdloven (kapittel 19 og 20). Fordi du er født i " + bruker.fodselsdato.year.format()
                             + " får du beregnet " + andelKap19 + "/10 av pensjonen etter gamle regler, og " + andelKap20 + "/10 etter nye regler." },
@@ -198,7 +198,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             }
                         }
                     }
-                    ifNotNull(oppfrisketOpptjeningVedVirk.sisteGyldigeOpptjeningsAr_safe) {
+                    ifNotNull(oppfrisketOpptjeningVedVirk.safe { sisteGyldigeOpptjeningsAr }) {
                         row {
                             cell {
                                 text(
@@ -212,7 +212,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             }
                         }
                     }
-                    ifNotNull(oppfrisketOpptjeningVedVirk.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe) {
+                    ifNotNull(oppfrisketOpptjeningVedVirk.safe { poenggivendeInntektSisteGyldigeOpptjeningsAr }) {
                         showIf(it.greaterThan(0)) {
                             row {
                                 cell {
@@ -228,7 +228,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             }
                         }
                     }
-                    ifNotNull(oppfrisketOpptjeningVedVirk.poengtallSisteGyldigeOpptjeningsAr_safe) {
+                    ifNotNull(oppfrisketOpptjeningVedVirk.safe { poengtallSisteGyldigeOpptjeningsAr }) {
                         // vedleggTabellKap19SistePensjonsPoeng_001
                         showIf(it.greaterThan(0.0)) {
                             row {
@@ -246,8 +246,8 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    ifNotNull(trygdetidsdetaljerKap19VedVirk.beregningsmetode_safe) { beregningsmetode ->
-                        ifNotNull(beregningKap19VedVirk.sluttpoengtall_safe) {
+                    ifNotNull(trygdetidsdetaljerKap19VedVirk.safe { beregningsmetode }) { beregningsmetode ->
+                        ifNotNull(beregningKap19VedVirk.safe { sluttpoengtall }) {
                             showIf(it.greaterThan(0.0) and beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
                                 // vedleggTabellKap19Sluttpoengtall_001_]
                                 row {
@@ -264,7 +264,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                 }
                             }
                         }
-                        ifNotNull(beregningKap19VedVirk.poengAr_safe) {
+                        ifNotNull(beregningKap19VedVirk.safe { poengAr }) {
                             showIf(it.greaterThan(0) and beregningsmetode.equalTo(FOLKETRYGD)) {
                                 // vedleggTabellKap19PoengAr_001
                                 row {
@@ -281,7 +281,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                 }
                             }
                         }
-                        ifNotNull(beregningKap19VedVirk.poengArf92_safe) {
+                        ifNotNull(beregningKap19VedVirk.safe { poengArf92 }) {
                             showIf(it.greaterThan(0) and beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
                                 // vedleggTabellKap19PoengArf92_001
                                 row {
@@ -300,7 +300,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
 
                         }
 
-                        ifNotNull(beregningKap19VedVirk.poengAre91_safe) {
+                        ifNotNull(beregningKap19VedVirk.safe { poengAre91 }) {
                             showIf(it.greaterThan(0) and beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
                                 // vedleggTabellKap19PoengAre91_001
                                 row {
@@ -352,7 +352,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    ifNotNull(beregningKap19VedVirk.forholdstallLevealder_safe) { forholdstallLevealder ->
+                    ifNotNull(beregningKap19VedVirk.safe { forholdstallLevealder }) { forholdstallLevealder ->
                         showIf(forholdstallLevealder.greaterThan(0.0)) {
                             // vedleggTabellKap19Forholdstall_001
                             row {
@@ -389,7 +389,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
             paragraph {
                 // vedleggBeregnTabellOverskrift_002
                 table(header = tabellheader()) {
-                    ifNotNull(trygdetidsdetaljerKap20VedVirk.anvendtTT_safe) {
+                    ifNotNull(trygdetidsdetaljerKap20VedVirk.safe { anvendtTT }) {
                         showIf(it.greaterThan(0)) {
                             // vedleggTabellKap20Trygdetid_001
                             row {
@@ -407,7 +407,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    ifNotNull(oppfrisketOpptjeningVedVirk.opptjeningTilfortKap20_safe) {
+                    ifNotNull(oppfrisketOpptjeningVedVirk.safe { opptjeningTilfortKap20 }) {
                         showIf(it.greaterThan(0)) {
                             //  vedleggTabellKap20NyOpptjening_001
                             row {
@@ -425,7 +425,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    ifNotNull(endretUttaksgradVedVirk.pensjonsbeholdning_safe) {
+                    ifNotNull(endretUttaksgradVedVirk.safe { pensjonsbeholdning }) {
                         showIf(it.greaterThan(0) and alderspensjonVedVirk.regelverkType.isOneOf(AP2016, AP2025)) {
                             // tabellBeholdningEtterUttak_001
                             row {
@@ -443,7 +443,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    ifNotNull(endretUttaksgradVedVirk.garantipensjonsBeholdning_safe) {
+                    ifNotNull(endretUttaksgradVedVirk.safe { garantipensjonsBeholdning }) {
                         showIf(it.greaterThan(0)) {
                             // vedleggTabellGarantiPbeholdningEtterUttak_001
                             row {
@@ -461,7 +461,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    ifNotNull(beregningKap20VedVirk.delingstallLevealder_safe) {
+                    ifNotNull(beregningKap20VedVirk.safe { delingstallLevealder }) {
                         showIf(it.greaterThan(0.0) and alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
                             // vedleggTabellKap20Delingstall_001
                             row {

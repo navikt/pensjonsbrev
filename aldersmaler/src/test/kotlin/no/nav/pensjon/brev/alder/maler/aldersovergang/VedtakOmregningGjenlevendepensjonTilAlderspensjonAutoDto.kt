@@ -1,16 +1,16 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import java.time.LocalDate
 
 fun createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() =
     VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto(
-        virkFom = LocalDate.now(),
+        virkFom = vilkaarligDato,
         alderspensjonVedVirk = VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto.AlderspensjonVedVirk(
             totalPensjon = Kroner(20_000),
             uttaksgrad = 50,

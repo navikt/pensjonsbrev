@@ -24,7 +24,6 @@ object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag endring av uttaksgrad - før ett år",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

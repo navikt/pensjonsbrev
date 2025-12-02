@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
@@ -383,7 +384,7 @@ fun createP1Dto() = P1Dto(
             faksnummer = "12134412",
             telefonnummer = Telefonnummer("+123 45678901"),
             epost = Epost("lars.holm@tøys.nfp.no"),
-            dato = LocalDate.now(),
+            dato = vilkaarligDato,
         )
     )
 
