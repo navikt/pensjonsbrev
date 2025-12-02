@@ -1,77 +1,7 @@
-import { css } from "@emotion/react";
 import { Heading, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
-
-const tableStyles = css`
-  width: 100%;
-  max-width: 800px;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-
-  tbody tr:nth-of-type(even) {
-    background-color: #f2f3f5;
-  }
-  tbody tr:nth-of-type(odd) {
-    background-color: var(--a-surface-default);
-  }
-
-  td {
-    border: 1px solid var(--a-border-default);
-    vertical-align: middle;
-    text-align: left;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    height: 3rem;
-  }
-
-  td:first-of-type {
-    width: 35%;
-    font-weight: 600;
-  }
-
-  td:last-of-type {
-    width: 65%;
-  }
-
-  .cell-seamless {
-    padding: 0;
-    height: 3rem;
-  }
-`;
-
-const seamlessInputStyles = css`
-  && {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
-
-  .navds-form-field {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-  }
-
-  .navds-form-field__control {
-    height: 100%;
-  }
-
-  .navds-text-field__input {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    background-color: transparent;
-    padding: 0.75rem 1rem;
-    height: 100%;
-
-    &:focus {
-      outline: none;
-      box-shadow: inset 0 0 0 2px var(--a-border-focus);
-    }
-  }
-`;
 
 export const P1InstitusjonTab = () => {
   const { register } = useFormContext<P1Redigerbar>();
