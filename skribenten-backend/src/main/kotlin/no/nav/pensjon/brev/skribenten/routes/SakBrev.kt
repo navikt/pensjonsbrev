@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 
@@ -122,8 +123,10 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]
+            val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode> =
+                (call.request.queryParameters["alltidValgbareVedlegg"]?.toList() ?: listOf()) as List<AlltidValgbartVedleggKode>
 
-            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
+            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId, alltidValgbareVedlegg)
                 ?.onOk { call.respond(it) }
                 ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
