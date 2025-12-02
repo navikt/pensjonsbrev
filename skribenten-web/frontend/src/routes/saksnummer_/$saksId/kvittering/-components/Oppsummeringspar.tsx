@@ -27,7 +27,7 @@ const Oppsummeringspar = (properties: {
       ) : (
         <BodyShort
           css={css`
-            color: var(--a-gray-600);
+            color: var(--ax-neutral-700);
           `}
           size={typeof properties.size === "object" ? properties.size.bodyShort : properties.size}
         >

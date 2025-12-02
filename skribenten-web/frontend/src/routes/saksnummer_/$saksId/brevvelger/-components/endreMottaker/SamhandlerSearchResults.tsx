@@ -52,7 +52,7 @@ export function SamhandlerSearchResults({
               <Table.Row key={samhandler.idTSSEkstern}>
                 <Table.DataCell
                   css={css`
-                    font-weight: var(--a-font-weight-regular);
+                    font-weight: var(--ax-font-weight-regular);
                   `}
                   scope="row"
                 >

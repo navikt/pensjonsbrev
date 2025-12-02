@@ -59,12 +59,12 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) =>
   return (
     <div
       css={css`
-        border-bottom: 1px solid var(--a-gray-200);
+        border-bottom: 1px solid var(--ax-neutral-300);
         background: var(--a-white);
-        padding-inline: var(--a-spacing-4);
+        padding-inline: var(--ax-space-16);
         min-height: 48px;
         display: flex;
-        gap: var(--a-spacing-1);
+        gap: var(--ax-space-4);
         align-self: stretch;
         align-items: center;
         justify-content: space-between;

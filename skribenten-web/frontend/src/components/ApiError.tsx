@@ -93,7 +93,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                 border-radius: 4px;
                 background: white;
                 width: fit-content;
-                box-shadow: inset 0 0 0 2px var(--a-border-default);
+                box-shadow: inset 0 0 0 2px var(--ax-border-neutral);
               `}
               icon={<FilesIcon />}
               size="small"

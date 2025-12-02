@@ -26,8 +26,8 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
         <span
           css={css`
             border-radius: 4px;
-            border: ${isFocused ? "2px" : "1px"} solid ${isFocused ? "blue" : "var(--a-border-default)"};
-            background: var(--a-gray-50);
+            border: ${isFocused ? "2px" : "1px"} solid ${isFocused ? "blue" : "var(--ax-border-neutral)"};
+            background: var(--ax-neutral-100);
             padding: 1px 4px;
             display: inline-block;
             margin: 0 1px;

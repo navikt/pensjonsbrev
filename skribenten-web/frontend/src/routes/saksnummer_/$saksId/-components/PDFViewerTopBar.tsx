@@ -33,8 +33,8 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
       align="center"
       css={css`
         background-color: white;
-        border-bottom: 1px solid var(--a-gray-200);
-        padding: var(--a-spacing-2) var(--a-spacing-4);
+        border-bottom: 1px solid var(--ax-neutral-300);
+        padding: var(--ax-space-8) var(--ax-space-16);
         height: 48px;
         position: sticky;
         top: 0;

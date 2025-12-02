@@ -14,7 +14,7 @@ export default function LetterTemplateHeading({ letterTemplate }: { letterTempla
         css={css`
           display: flex;
           align-items: center;
-          gap: var(--a-spacing-2);
+          gap: var(--ax-space-8);
         `}
       >
         <LetterTemplateTags letterTemplate={letterTemplate} />

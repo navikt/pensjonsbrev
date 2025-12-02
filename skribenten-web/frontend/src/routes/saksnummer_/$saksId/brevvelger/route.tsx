@@ -126,9 +126,9 @@ const BrevvelgerMainContent = (props: {
     >
       <VStack
         css={css`
-          border-left: 1px solid var(--a-gray-200);
-          border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-5) var(--a-spacing-6);
+          border-left: 1px solid var(--ax-neutral-300);
+          border-right: 1px solid var(--ax-neutral-300);
+          padding: var(--ax-space-20) var(--ax-space-24);
           overflow-y: auto;
         `}
         gap="6"
@@ -275,8 +275,8 @@ function Brevmaler({
                       extraStyles={
                         template.id === templateId
                           ? css`
-                              color: var(--a-text-on-action);
-                              background-color: var(--a-surface-action-selected-hover);
+                              color: var(--ax-text-accent-contrast);
+                              background-color: var(--ax-bg-accent-strong-hover);
                             `
                           : undefined
                       }
@@ -356,8 +356,8 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                 extraStyles={
                   brev.id === brevId
                     ? css`
-                        color: var(--a-text-on-action);
-                        background-color: var(--a-surface-action-selected-hover);
+                        color: var(--ax-text-accent-contrast);
+                        background-color: var(--ax-bg-accent-strong-hover);
                       `
                     : undefined
                 }
@@ -435,11 +435,11 @@ const BrevmalButton = (props: {
         css`
           color: black;
           justify-content: flex-start;
-          padding: var(--a-spacing-2) var(--a-spacing-3);
+          padding: var(--ax-space-8) var(--ax-space-12);
           border-radius: 0;
 
           span {
-            font-weight: var(--a-font-weight-regular);
+            font-weight: var(--ax-font-weight-regular);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;

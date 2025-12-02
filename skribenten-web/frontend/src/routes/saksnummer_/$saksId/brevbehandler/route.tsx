@@ -68,8 +68,8 @@ function Brevbehandler() {
       {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
       <VStack
         css={css`
-          padding: var(--a-spacing-6);
-          border-right: 1px solid var(--a-gray-200);
+          padding: var(--ax-space-24);
+          border-right: 1px solid var(--ax-neutral-300);
           height: var(--main-page-content-height);
           overflow-y: auto;
         `}
@@ -100,7 +100,7 @@ function Brevbehandler() {
         css={css`
           padding: 8px 12px;
           grid-area: footer;
-          border-top: 1px solid var(--a-gray-200);
+          border-top: 1px solid var(--ax-neutral-300);
         `}
         justify="space-between"
       >

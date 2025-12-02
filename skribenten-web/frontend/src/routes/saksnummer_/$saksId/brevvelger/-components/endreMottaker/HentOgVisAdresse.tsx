@@ -28,7 +28,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
     <div
       css={css`
         h3 {
-          margin-bottom: var(--a-spacing-1);
+          margin-bottom: var(--ax-space-4);
         }
       `}
     >

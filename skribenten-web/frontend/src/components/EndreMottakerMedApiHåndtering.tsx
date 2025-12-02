@@ -109,7 +109,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
               <XMarkOctagonFillIcon
                 css={css`
                   align-self: center;
-                  color: var(--a-nav-red);
+                  color: var(--ax-text-logo);
                 `}
                 title="error"
               />

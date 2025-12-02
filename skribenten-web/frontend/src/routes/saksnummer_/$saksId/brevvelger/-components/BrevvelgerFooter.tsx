@@ -24,7 +24,7 @@ const BrevvelgerFooter = (props: {
     <HStack
       css={css`
         padding: 8px 12px;
-        border-top: 1px solid var(--a-gray-200);
+        border-top: 1px solid var(--ax-neutral-300);
       `}
       justify={"end"}
     >

@@ -21,7 +21,7 @@ function SelectSensitivity() {
             }
 
             .navds-radio__label {
-              padding: var(--a-spacing-2) 0;
+              padding: var(--ax-space-8) 0;
             }
           `}
           error={fieldState.error?.message}

@@ -22,8 +22,8 @@ const BrevmalPanel = (props: {
         <div
           css={css`
             display: flex;
-            border-right: 1px solid var(--a-gray-200);
-            padding: var(--a-spacing-6);
+            border-right: 1px solid var(--ax-neutral-300);
+            padding: var(--ax-space-24);
             height: 100%;
             overflow-y: auto;
           `}

@@ -94,7 +94,7 @@ const BrevmalAlternativer = (props: {
 
                 display: flex;
                 flex-direction: column;
-                gap: var(--a-spacing-5);
+                gap: var(--ax-space-20);
 
                 .navds-tabs__scroll-button {
                   /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
@@ -118,7 +118,7 @@ const BrevmalAlternativer = (props: {
                 css={css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--a-spacing-5);
+                  gap: var(--ax-space-20);
                 `}
                 value={BrevAlternativTab.TEKSTER}
               >
@@ -133,7 +133,7 @@ const BrevmalAlternativer = (props: {
                 css={css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--a-spacing-5);
+                  gap: var(--ax-space-20);
                 `}
                 value={BrevAlternativTab.OVERSTYRING}
               >

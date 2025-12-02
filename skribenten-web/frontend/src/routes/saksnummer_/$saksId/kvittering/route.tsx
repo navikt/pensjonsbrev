@@ -50,7 +50,7 @@ function Kvittering() {
         flex-grow: 1;
         grid-template-columns: 40% 1% 40%;
         gap: 3rem;
-        padding: var(--a-spacing-5) 0;
+        padding: var(--ax-space-20) 0;
         background: var(--a-white);
       `}
     >
@@ -58,7 +58,7 @@ function Kvittering() {
       <div
         // This is a vertical line
         css={css`
-          background: var(--a-gray-200);
+          background: var(--ax-neutral-300);
           width: 1px;
         `}
       ></div>

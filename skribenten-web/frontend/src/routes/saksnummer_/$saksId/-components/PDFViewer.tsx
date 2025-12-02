@@ -73,7 +73,7 @@ const PDFViewer = (properties: {
   return (
     <div
       css={css`
-        background: var(--a-gray-300);
+        background: var(--ax-neutral-400);
       `}
       ref={pdfContainerReference}
     >
@@ -94,7 +94,7 @@ const PDFViewer = (properties: {
         css={css`
           display: flex;
           justify-content: space-around;
-          padding: var(--a-spacing-3);
+          padding: var(--ax-space-12);
           height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
           overflow: scroll;
         `}

@@ -47,7 +47,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
       <div
         css={css`
           display: flex;
-          margin: var(--a-spacing-4);
+          margin: var(--ax-space-16);
           justify-content: space-around;
         `}
       >
@@ -102,11 +102,11 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
       <div
         css={css`
           display: flex;
-          padding: var(--a-spacing-2) var(--a-spacing-8);
+          padding: var(--ax-space-8) var(--ax-space-32);
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid var(--a-gray-200);
-          background: var(--a-surface-default);
+          border-bottom: 1px solid var(--ax-neutral-300);
+          background: var(--ax-bg-default);
 
           p {
             display: flex;
@@ -115,7 +115,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
 
           p::after {
             content: "/";
-            margin: 0 var(--a-spacing-3);
+            margin: 0 var(--ax-space-12);
           }
 
           p:last-child::after {

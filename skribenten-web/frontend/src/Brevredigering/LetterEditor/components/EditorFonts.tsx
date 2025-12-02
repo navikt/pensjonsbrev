@@ -57,7 +57,7 @@ const FontButton = (props: {
   return (
     <Button
       css={css`
-        color: var(--a-text-default);
+        color: var(--ax-text-neutral);
         width: 32px;
         height: 32px;
 

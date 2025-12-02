@@ -42,7 +42,7 @@ const Kvittering = () => {
           flex-direction: column;
           flex: 1;
           align-items: center;
-          padding-top: var(--a-spacing-8);
+          padding-top: var(--ax-space-32);
         `}
       >
         {urlReady && (
@@ -72,7 +72,7 @@ const Kvittering = () => {
         align-self: center;
         gap: 5rem;
         justify-content: center;
-        padding: var(--a-spacing-8) var(--a-spacing-24);
+        padding: var(--ax-space-32) var(--ax-space-96);
       `}
     >
       <VStack gap="5">

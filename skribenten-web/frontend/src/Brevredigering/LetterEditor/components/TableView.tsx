@@ -26,14 +26,14 @@ const tableStyles = css`
   }
 
   th {
-    background: var(--a-surface-subtle);
+    background: var(--ax-bg-neutral-soft);
     font-weight: 400;
   }
 `;
 
 const selectedBackgroundStyle = css`
   && {
-    background: var(--a-surface-info-subtle, #d0e7ff);
+    background: var(--ax-bg-info-soft, #d0e7ff);
   }
 `;
 

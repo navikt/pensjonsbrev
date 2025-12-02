@@ -52,7 +52,7 @@ export function DebugPanel() {
         padding: 1rem;
         margin-top: 1rem;
         align-self: flex-start;
-        background: var(--a-blue-200);
+        background: var(--ax-accent-300);
         width: 100%;
       `}
     >
@@ -277,7 +277,7 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
 };
 
 function getHighlightColor(isNew: boolean, isEdited: boolean): string {
-  return isNew ? "--a-surface-success-subtle" : isEdited ? "--a-surface-info-subtle" : "--a-surface-default";
+  return isNew ? "--ax-bg-success-soft" : isEdited ? "--ax-bg-info-soft" : "--ax-bg-default";
 }
 
 function isEdited(content: Content | AnyBlock): boolean {

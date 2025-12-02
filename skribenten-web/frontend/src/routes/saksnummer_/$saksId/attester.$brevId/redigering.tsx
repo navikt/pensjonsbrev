@@ -57,7 +57,7 @@ const VedtakWrapper = () => {
           flex-direction: column;
           flex: 1;
           align-items: center;
-          padding-top: var(--a-spacing-8);
+          padding-top: var(--ax-space-32);
         `}
       >
         <VStack align="center" gap="1">
@@ -114,7 +114,7 @@ const VedtakWrapper = () => {
             flex-direction: column;
             flex: 1;
             align-items: center;
-            padding-top: var(--a-spacing-8);
+            padding-top: var(--ax-space-32);
           `}
         >
           <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
