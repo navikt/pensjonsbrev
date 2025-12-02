@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.maler.AlltidValgbartVedleggData
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -20,16 +19,6 @@ fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
 )
 
 fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
-    title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
-    includeSakspart: Boolean = false,
-    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
-) = AttachmentTemplate<Lang, LetterData>(
-    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements,
-    OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
-    includeSakspart
-)
-
-fun <Lang : LanguageSupport, LetterData : AlltidValgbartVedleggData> createAlltidValgbartAttachment(
     title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
@@ -70,5 +59,5 @@ class ValgbareVedlegg<out Lang : LanguageSupport> internal constructor(
     val vedlegg: AttachmentTemplate<Lang, EmptyVedleggData>,
     val kode: AlltidValgbartVedleggKode
 ) : HasModel<EmptyVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode())) {
-    fun asIncludeAttachment() = IncludeAttachment<Lang, EmptyVedleggData>(EmptyVedleggData.expr(), vedlegg)
+    fun asIncludeAttachment() = IncludeAttachment(EmptyVedleggData.expr(), vedlegg)
 }
