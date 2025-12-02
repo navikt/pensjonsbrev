@@ -16,6 +16,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     pdfByggerService: PDFByggerService,
     ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates) {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
+    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderPDF(createLetter(brevbestilling))
@@ -25,4 +26,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
+
+    override fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
+    override fun listTemplatekeys() = templateLibrary.listTemplatekeys()
 }

@@ -18,6 +18,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     pdfByggerService: PDFByggerService,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates) {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
+    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
@@ -30,4 +31,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup)
+
+    override fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
+    override fun listTemplatekeys() = templateLibrary.listTemplatekeys()
 }

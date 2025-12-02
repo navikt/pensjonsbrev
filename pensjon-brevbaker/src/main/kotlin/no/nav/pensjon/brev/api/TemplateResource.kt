@@ -24,8 +24,8 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
     private val letterFactory: LetterFactory<Kode> = LetterFactory()
 
-    fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
-    fun listTemplatekeys() = templateLibrary.listTemplatekeys()
+    abstract fun listTemplatesWithMetadata()
+    abstract fun listTemplatekeys()
 
     fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
 
