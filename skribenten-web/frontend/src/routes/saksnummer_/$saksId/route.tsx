@@ -96,7 +96,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
       css={css`
         position: sticky;
         top: 48px;
-        z-index: var(--a-z-index-focus);
+        z-index: 10;
       `}
     >
       <div

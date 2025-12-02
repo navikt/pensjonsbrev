@@ -62,7 +62,7 @@ function Brevbehandler() {
         min-width: 944px;
         max-width: 1104px;
 
-        background-color: white;
+        background-color: var(--ax-bg-default);
       `}
     >
       {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}

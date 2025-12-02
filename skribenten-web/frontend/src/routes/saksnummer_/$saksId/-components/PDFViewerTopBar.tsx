@@ -32,7 +32,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
     <HStack
       align="center"
       css={css`
-        background-color: white;
+        background: var(--ax-bg-default);
         border-bottom: 1px solid var(--ax-neutral-300);
         padding: var(--ax-space-8) var(--ax-space-16);
         height: 48px;

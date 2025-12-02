@@ -72,7 +72,7 @@ export function BrevvelgerPage() {
         width: 100%;
         min-width: 944px;
         max-width: 1104px;
-        background-color: white;
+        background-color: var(--ax-bg-default);
       `}
     >
       <BrevvelgerMainContent
@@ -120,7 +120,7 @@ const BrevvelgerMainContent = (props: {
       css={css`
         display: grid;
         grid-template-columns: minmax(640px, 720px) minmax(304px, 384px);
-        background-color: white;
+        background-color: var(--ax-bg-default);
         height: var(--main-page-content-height);
       `}
     >
@@ -259,6 +259,7 @@ function Brevmaler({
                 css={css`
                   flex-direction: row-reverse;
                   justify-content: space-between;
+                  color: var(--ax-text-neutral);
                 `}
               >
                 <Label size="small">{type}</Label>
@@ -337,6 +338,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
           css={css`
             flex-direction: row-reverse;
             justify-content: space-between;
+            color: var(--ax-text-neutral);
           `}
         >
           <HStack gap="2">
@@ -433,7 +435,7 @@ const BrevmalButton = (props: {
     <Button
       css={css(
         css`
-          color: black;
+          color: var(--ax-text-neutral);
           justify-content: flex-start;
           padding: var(--ax-space-8) var(--ax-space-12);
           border-radius: 0;

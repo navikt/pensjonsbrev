@@ -334,7 +334,7 @@ function RedigerBrev({
           }
           min-width: 946px;
           max-width: 1106px;
-          background: var(--a-white);
+          background: var(--ax-bg-default);
           border-left: 1px solid var(--ax-neutral-300);
           border-right: 1px solid var(--ax-neutral-300);
         `}
@@ -397,7 +397,7 @@ function RedigerBrev({
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--a-white);
+            background: var(--ax-bg-default);
 
             border-top: 1px solid var(--ax-neutral-300);
             padding: 0.5rem 1rem;

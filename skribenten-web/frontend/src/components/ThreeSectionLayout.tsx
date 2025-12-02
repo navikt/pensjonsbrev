@@ -39,7 +39,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
           bottom: 0;
           left: 0;
           width: 100%;
-          background: var(--a-white);
+          background: var(--ax-bg-default);
 
           border-top: 1px solid var(--ax-neutral-300);
           padding: var(--ax-space-8) var(--ax-space-16);

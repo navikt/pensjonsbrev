@@ -60,7 +60,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) =>
     <div
       css={css`
         border-bottom: 1px solid var(--ax-neutral-300);
-        background: var(--a-white);
+        background: var(--ax-bg-default);
         padding-inline: var(--ax-space-16);
         min-height: 48px;
         display: flex;

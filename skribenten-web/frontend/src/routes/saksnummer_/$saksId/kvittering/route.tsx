@@ -51,7 +51,7 @@ function Kvittering() {
         grid-template-columns: 40% 1% 40%;
         gap: 3rem;
         padding: var(--ax-space-20) 0;
-        background: var(--a-white);
+        background: var(--ax-bg-default);
       `}
     >
       <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />

@@ -91,7 +91,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
               copyText={correlationId}
               css={css`
                 border-radius: 4px;
-                background: white;
+                background: var(--ax-bg-default);
                 width: fit-content;
                 box-shadow: inset 0 0 0 2px var(--ax-border-neutral);
               `}
