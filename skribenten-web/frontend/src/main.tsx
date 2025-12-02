@@ -1,6 +1,8 @@
-import "@navikt/ds-css";
+// import "@navikt/ds-css";
+import "@navikt/ds-css/darkside";
 import "./appStyles.css";
 
+import { Theme } from "@navikt/ds-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { enablePatches } from "immer";
@@ -44,7 +46,9 @@ declare module "@tanstack/react-router" {
 ReactDOM.createRoot(document.querySelector("#root") as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <Theme>
+        <RouterProvider router={router} />
+      </Theme>
     </QueryClientProvider>
   </React.StrictMode>,
 );
