@@ -16,7 +16,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     pdfByggerService: PDFByggerService,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, pdfByggerService) {
 
-    fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
+    override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =

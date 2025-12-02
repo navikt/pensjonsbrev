@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 private val objectMapper = brevbakerJacksonObjectMapper()
 
@@ -32,6 +33,8 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
     abstract fun renderHTML(brevbestilling: Request): LetterResponse
+
+    abstract fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup
 
     protected val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
