@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -35,8 +35,8 @@ const Kvittering = () => {
 
   if (sendteBrevLista.length === 0) {
     return (
-      <Box
-        background="bg-default"
+      <BoxNew
+        background="default"
         css={css`
           display: flex;
           flex-direction: column;
@@ -59,13 +59,13 @@ const Kvittering = () => {
         >
           Tilbake til forhåndsvisning
         </Link>
-      </Box>
+      </BoxNew>
     );
   }
 
   return (
-    <Box
-      background="bg-default"
+    <BoxNew
+      background="default"
       css={css`
         display: flex;
         flex: 1;
@@ -85,7 +85,7 @@ const Kvittering = () => {
           <NavButtons psak={psak} saksId={saksId} />
         </VStack>
       )}
-    </Box>
+    </BoxNew>
   );
 };
 

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import { BodyLong, BoxNew, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -68,8 +68,8 @@ function RedigerBrevPage() {
       }
       if (error.response?.status === 409) {
         return (
-          <Box
-            background="surface-default"
+          <BoxNew
+            background="default"
             css={css`
               display: flex;
               flex: 1;
@@ -95,7 +95,7 @@ function RedigerBrevPage() {
                 Gå til brevbehandler
               </Button>
             </VStack>
-          </Box>
+          </BoxNew>
         );
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;

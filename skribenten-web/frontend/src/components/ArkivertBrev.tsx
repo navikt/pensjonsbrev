@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Box, Button, Label, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, Label, VStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 
 import { Route } from "~/routes/saksnummer_/$saksId/attester.$brevId/redigering";
@@ -9,8 +9,8 @@ const ArkivertBrev = (props: { saksId: string }) => {
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   return (
-    <Box
-      background="surface-default"
+    <BoxNew
+      background="default"
       css={css`
         display: flex;
         flex: 1;
@@ -37,7 +37,7 @@ const ArkivertBrev = (props: { saksId: string }) => {
           Gå til brevbehandler
         </Button>
       </VStack>
-    </Box>
+    </BoxNew>
   );
 };
 

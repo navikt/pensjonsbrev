@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import { Box, HStack } from "@navikt/ds-react";
+import { BoxNew, HStack } from "@navikt/ds-react";
 
 const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
   return (
-    <Box
-      background="bg-default"
+    <BoxNew
+      background="default"
       css={css`
         display: flex;
         flex-direction: column;
@@ -48,7 +48,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
       >
         {props.bottom}
       </HStack>
-    </Box>
+    </BoxNew>
   );
 };
 

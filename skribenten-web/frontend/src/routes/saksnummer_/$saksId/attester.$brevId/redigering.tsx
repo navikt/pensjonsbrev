@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -50,8 +50,8 @@ const VedtakWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <Box
-        background="bg-default"
+      <BoxNew
+        background="default"
         css={css`
           display: flex;
           flex-direction: column;
@@ -64,7 +64,7 @@ const VedtakWrapper = () => {
           <Loader size="3xlarge" title="henter brev..." />
           <Heading size="large">Henter brev....</Heading>
         </VStack>
-      </Box>
+      </BoxNew>
     ),
     error: (err) => {
       if (err.response?.status === 423 && err.response?.data) {
@@ -107,8 +107,8 @@ const VedtakWrapper = () => {
       }
 
       return (
-        <Box
-          background="bg-default"
+        <BoxNew
+          background="default"
           css={css`
             display: flex;
             flex-direction: column;
@@ -118,7 +118,7 @@ const VedtakWrapper = () => {
           `}
         >
           <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
-        </Box>
+        </BoxNew>
       );
     },
     success: (brev) => (
