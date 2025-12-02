@@ -1,19 +1,18 @@
-package no.nav.pensjon.brev.fixtures.alder
+package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
-import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurdering
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
-import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdod
-import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
-import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
-import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
+import no.nav.pensjon.brev.alder.model.BorMedSivilstand
+import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
+import no.nav.pensjon.brev.alder.model.Sivilstand
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurdering
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdod
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import java.time.LocalDate
 
 fun createOmregningAlderUfore2016Dto() =
     OmregningAlderUfore2016Dto(

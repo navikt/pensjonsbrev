@@ -1,19 +1,19 @@
-package no.nav.pensjon.brev.maler.alder.omregning
+package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
-import no.nav.pensjon.brev.maler.alder.omregning.fraser.Omregning2016Hjemler
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.model.bestemtForm
+import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.fraser.Omregning2016Hjemler
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
+import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.model.BorMedSivilstand
+import no.nav.pensjon.brev.alder.model.Sivilstand
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -599,8 +599,8 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        includePhrase(Felles.RettTilAAKlage)
-        includePhrase(Felles.HarDuSpoersmaal.alder)
+        includePhrase(RettTilAAKlage)
+        includePhrase(HarDuSpoersmaalAlder)
 
     }
 }
