@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.Sivilstand
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurdering
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdod
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -58,5 +59,6 @@ fun createOmregningAlderUfore2016Dto() =
         brukersSivilstand = Sivilstand.SEPARERT,
         borMedSivilstand = BorMedSivilstand.GIFT_LEVER_ADSKILT,
         over2G = false,
+        kronebelop2G = Kroner(400000),
     )
 

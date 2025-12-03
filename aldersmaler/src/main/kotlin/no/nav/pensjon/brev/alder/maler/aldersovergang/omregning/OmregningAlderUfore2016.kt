@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.innvilgetFor67
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.kronebelop2G
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.opplysningerBruktIBeregningenAlderAP2025Dto
@@ -119,7 +120,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     brukersSivilstand = pesysData.brukersSivilstand,
                     borMedSivilstand = pesysData.borMedSivilstand,
                     over2G = pesysData.over2G,
-
+                    kronebelop2G = pesysData.kronebelop2G,
                     )
             )
 
