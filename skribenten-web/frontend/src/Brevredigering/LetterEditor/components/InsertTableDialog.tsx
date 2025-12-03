@@ -30,7 +30,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               css={css`
                 min-width: 8rem;
                 text-align: right;
-                font-weight: 400;
+                font-weight: var(--ax-font-weight-regular);
               `}
               htmlFor="num-cols"
               size="small"
@@ -64,7 +64,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               css={css`
                 min-width: 8rem;
                 text-align: right;
-                font-weight: 400;
+                font-weight: var(--ax-font-weight-regular);
                 align-content: center;
               `}
               htmlFor="num-rows"

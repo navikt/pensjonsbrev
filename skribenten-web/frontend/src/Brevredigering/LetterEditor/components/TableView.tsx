@@ -20,14 +20,14 @@ const tableStyles = css`
 
   td,
   th {
-    border: 1px solid #000;
+    border: 1px solid var(--ax-border-focus);
     padding: 2mm;
     overflow-wrap: break-word;
   }
 
   th {
     background: var(--ax-bg-neutral-soft);
-    font-weight: 400;
+    font-weight: var(--ax-font-weight-regular);
   }
 `;
 
