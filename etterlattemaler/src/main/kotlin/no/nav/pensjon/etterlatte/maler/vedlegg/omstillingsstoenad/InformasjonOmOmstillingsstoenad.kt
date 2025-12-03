@@ -277,8 +277,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             nynorsk { +"Satsen for omstillingsstønad blir justert kvart år når grunnbeløpet i folketrygda " +
                     "endrar seg 1. mai. Dette betyr at omstillingsstønaden aukar i takt med grunnbeløpet. Inntekta " +
                     "som omstillingsstønaden blir redusert etter, forblir derimot uendra så lenge du ikkje melder frå om endring. " },
-            english { +"The rate for the adjustment allowance   is adjusted every year when the National " +
-                    "Insurance base amount changes on May 1. This means that the adjustment allowance   increases in " +
+            english { +"The rate for the adjustment allowance is adjusted every year when the National " +
+                    "Insurance base amount changes on May 1. This means that the adjustment allowance increases in " +
                     "line with the base amount. However, the income that the adjustment allowance is reduced " +
                     "against remains unchanged unless you report a change. " },
         )
@@ -293,9 +293,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             nynorsk { +"Dersom du tidlegare ikkje har fått utbetalt omstillingsstønad fordi inntekta di har " +
                     "vore for høg, kan dette endre seg frå 1. mai. Du må sjølv kontrollere at stønaden er berekna ut " +
                     "frå rett inntekt, og melde frå dersom inntekta di endrar seg. " },
-            english { +"If you previously did not receive the adjustment allowance  because your income was " +
-                    "too high, this may change from May 1. You must check that the adjustment allowance  is calculated " +
-                    "based on the correct income and report any changes in your income.  " }
+            english { +"If you previously did not receive the adjustment allowance because your income was " +
+                    "too high, this may change from May 1. You must check that the adjustment allowance is calculated " +
+                    "based on the correct income and report any changes in your income. " }
         )
     }
 }
