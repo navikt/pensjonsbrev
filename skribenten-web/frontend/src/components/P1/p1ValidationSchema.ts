@@ -97,7 +97,7 @@ const p1InnvilgetPensjonFormSchema = z
       /* Pensjonstype is required if row is filled */
       if (!data.pensjonstype) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Pensjonstype må velges",
           path: ["pensjonstype"],
         });
@@ -106,7 +106,7 @@ const p1InnvilgetPensjonFormSchema = z
       /* Grunnlag innvilget is required if row is filled */
       if (!data.grunnlagInnvilget) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Grunnlag for innvilgelse må velges",
           path: ["grunnlagInnvilget"],
         });
@@ -115,7 +115,7 @@ const p1InnvilgetPensjonFormSchema = z
       /* Vedtaksdato should be a valid date format if provided */
       if (data.institusjon.vedtaksdato && !/^\d{4}-\d{2}-\d{2}$/.test(data.institusjon.vedtaksdato)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Vedtaksdato må være i formatet YYYY-MM-DD",
           path: ["institusjon", "vedtaksdato"],
         });
@@ -138,7 +138,7 @@ const p1AvslaattPensjonFormSchema = z
       /* Institusjonsnavn is required if row is filled */
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Institusjonsnavn er obligatorisk når raden er fylt ut",
           path: ["institusjon", "institusjonsnavn"],
         });
@@ -147,7 +147,7 @@ const p1AvslaattPensjonFormSchema = z
       /* Pensjonstype is required if row is filled */
       if (!data.pensjonstype) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Pensjonstype må velges",
           path: ["pensjonstype"],
         });
@@ -156,7 +156,7 @@ const p1AvslaattPensjonFormSchema = z
       /* Avslagsbegrunnelse is required if row is filled */
       if (!data.avslagsbegrunnelse) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Begrunnelse for avslag må velges",
           path: ["avslagsbegrunnelse"],
         });
@@ -165,7 +165,7 @@ const p1AvslaattPensjonFormSchema = z
       /* Vedtaksdato should be a valid date format if provided */
       if (data.institusjon.vedtaksdato && !/^\d{4}-\d{2}-\d{2}$/.test(data.institusjon.vedtaksdato)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Vedtaksdato må være i formatet YYYY-MM-DD",
           path: ["institusjon", "vedtaksdato"],
         });
@@ -210,7 +210,7 @@ export const p1RedigerbarFormSchema = z
 
     if (!hasFilledInnvilget && !hasFilledAvslaat) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "Minst én innvilget eller avslått pensjon må fylles ut",
         path: ["innvilgedePensjoner"],
       });
