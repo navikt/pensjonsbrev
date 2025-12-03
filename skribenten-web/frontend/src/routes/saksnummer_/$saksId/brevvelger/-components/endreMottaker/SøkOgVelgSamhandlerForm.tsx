@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { css } from "@emotion/react";
 import { Alert, Button, Select, TextField, VStack } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";

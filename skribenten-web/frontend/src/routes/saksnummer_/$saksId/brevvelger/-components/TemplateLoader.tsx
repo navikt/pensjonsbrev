@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { css } from "@emotion/react";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";

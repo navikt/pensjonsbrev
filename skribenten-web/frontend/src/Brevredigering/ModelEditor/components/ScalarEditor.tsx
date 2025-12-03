@@ -1,3 +1,4 @@
+"use no memo"; // TODO: Remove after fixing rule of react violation
 import { DatePicker, Switch, TextField, useDatepicker } from "@navikt/ds-react";
 import { useEffect } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
