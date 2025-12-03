@@ -14,11 +14,14 @@
 // ***********************************************************
 
 import "./commands";
-import "@navikt/ds-css";
+import "@navikt/ds-css/darkside";
+import "@navikt/ds-tokens/darkside-css";
 import "../../src/appStyles.css";
 
+import { Theme } from "@navikt/ds-react";
 import { mount } from "cypress/react";
 import { enablePatches } from "immer";
+import React from "react";
 
 enablePatches();
 
@@ -35,4 +38,6 @@ declare global {
   }
 }
 
-Cypress.Commands.add("mount", mount);
+Cypress.Commands.add("mount", (component, options) => {
+  return mount(React.createElement(Theme, null, component), options);
+});

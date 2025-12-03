@@ -1,4 +1,3 @@
-// import "@navikt/ds-css";
 import "@navikt/ds-css/darkside";
 import "@navikt/ds-tokens/darkside-css";
 import "./appStyles.css";
