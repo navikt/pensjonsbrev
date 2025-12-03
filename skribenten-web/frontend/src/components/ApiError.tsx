@@ -90,7 +90,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             <CopyButton
               copyText={correlationId}
               css={css`
-                border-radius: 4px;
+                border-radius: var(--ax-radius-4);
                 background: var(--ax-bg-default);
                 width: fit-content;
                 box-shadow: inset 0 0 0 2px var(--ax-border-neutral);

@@ -135,21 +135,26 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
           {sakContext.erSkjermet && (
             <BodyShort>
-              <Tag css={css({ borderRadius: "4px" })} icon={<FileIcon />} size="small" variant="neutral">
+              <Tag css={css({ borderRadius: "var(--ax-radius-4)" })} icon={<FileIcon />} size="small" variant="neutral">
                 Egen ansatt
               </Tag>
             </BodyShort>
           )}
           {sakContext.vergemaal && (
             <BodyShort>
-              <Tag css={css({ borderRadius: "4px" })} icon={<FileIcon />} size="small" variant="neutral">
+              <Tag css={css({ borderRadius: "var(--ax-radius-4)" })} icon={<FileIcon />} size="small" variant="neutral">
                 Vergemål
               </Tag>
             </BodyShort>
           )}
           {sakContext.adressebeskyttelse && (
             <BodyShort>
-              <Tag css={css({ borderRadius: "4px" })} icon={<ParagraphIcon />} size="small" variant="error-filled">
+              <Tag
+                css={css({ borderRadius: "var(--ax-radius-4)" })}
+                icon={<ParagraphIcon />}
+                size="small"
+                variant="error-filled"
+              >
                 Diskresjon
               </Tag>
             </BodyShort>

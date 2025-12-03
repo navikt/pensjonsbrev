@@ -25,12 +25,13 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
       return (
         <span
           css={css`
-            border-radius: 4px;
-            border: ${isFocused ? "2px" : "1px"} solid ${isFocused ? "blue" : "var(--ax-border-neutral)"};
+            border-radius: var(--ax-radius-4);
+            border: ${isFocused ? "var(--ax-border-2)" : "var(--ax-border-1)"} solid
+              ${isFocused ? "blue" : "var(--ax-border-neutral)"};
             background: var(--ax-neutral-100);
-            padding: 1px 4px;
+            padding: var(--ax-space-1) var(--ax-space-4);
             display: inline-block;
-            margin: 0 1px;
+            margin: 0 var(--ax-space-1);
             cursor: default;
 
             ${content.fontType === FontType.BOLD && "font-weight: bold;"}
