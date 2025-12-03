@@ -255,7 +255,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
               <div
                 css={css`
                   display: flex;
-                  gap: 0.5rem;
+                  gap: var(--ax-space-8);
                 `}
               >
                 Distribusjon

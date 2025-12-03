@@ -13,7 +13,7 @@ function SelectSensitivity() {
           {...field}
           css={css`
             .aksel-label {
-              margin-bottom: 0.25rem;
+              margin-bottom: var(--ax-space-4);
             }
 
             .aksel-radio-buttons {

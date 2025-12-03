@@ -240,7 +240,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   return (
     <Modal
       css={css`
-        border-radius: 0.25rem;
+        border-radius: var(--ax-radius-4);
       `}
       header={{
         heading: "Vil du ferdigstille, og sende disse brevene?",
@@ -254,7 +254,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         <Modal.Body>
           <div
             css={css`
-              margin-bottom: 1rem;
+              margin-bottom: var(--ax-space-16);
             `}
           >
             {queryFold({

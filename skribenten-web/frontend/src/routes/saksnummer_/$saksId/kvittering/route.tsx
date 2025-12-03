@@ -49,7 +49,7 @@ function Kvittering() {
         display: grid;
         flex-grow: 1;
         grid-template-columns: 40% 1% 40%;
-        gap: 3rem;
+        gap: var(--ax-space-48);
         padding: var(--ax-space-20) 0;
         background: var(--ax-bg-default);
       `}

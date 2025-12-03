@@ -108,7 +108,7 @@ const PDFViewer = (properties: {
             <div className={`pdf-page`} id={`page_${index + 1}`} key={`page_${index + 1}`}>
               <Page
                 css={css`
-                  margin-bottom: 1rem;
+                  margin-bottom: var(--ax-space-16);
                 `}
                 pageNumber={index + 1}
                 scale={scale}

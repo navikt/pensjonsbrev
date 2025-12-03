@@ -57,7 +57,7 @@ const TilbakestillMalModal = (props: {
   return (
     <Modal
       css={css`
-        border-radius: 0.25rem;
+        border-radius: var(--ax-radius-4);
       `}
       header={{
         heading: "Vil du tilbakestille brevmalen?",

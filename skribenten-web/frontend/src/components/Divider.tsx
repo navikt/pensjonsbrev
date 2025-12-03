@@ -6,7 +6,7 @@ export function Divider() {
       css={css({
         width: "100%",
         height: "1px",
-        background: "var(--ax-neutral-100A",
+        background: "var(--ax-neutral-100A)",
       })}
     />
   );
@@ -17,7 +17,7 @@ export const VerticalDivider = () => {
     <div
       css={css({
         width: "1px",
-        background: "var(--ax-neutral-400A",
+        background: "var(--ax-neutral-400A)",
         alignSelf: "stretch",
       })}
     />

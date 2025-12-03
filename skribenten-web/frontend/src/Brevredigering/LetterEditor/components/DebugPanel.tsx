@@ -49,8 +49,8 @@ export function DebugPanel() {
   return (
     <div
       css={css`
-        padding: 1rem;
-        margin-top: 1rem;
+        padding: var(--ax-space-16);
+        margin-top: var(--ax-space-16);
         align-self: flex-start;
         background: var(--ax-accent-300);
         width: 100%;
