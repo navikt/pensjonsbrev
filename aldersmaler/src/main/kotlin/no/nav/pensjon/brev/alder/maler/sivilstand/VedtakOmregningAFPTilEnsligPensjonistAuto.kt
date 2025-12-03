@@ -53,7 +53,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - omregning av AFP til enslig pensjonist",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
