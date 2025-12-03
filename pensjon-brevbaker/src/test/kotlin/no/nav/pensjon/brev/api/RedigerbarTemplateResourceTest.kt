@@ -31,7 +31,8 @@ class RedigerbarTemplateResourceTest {
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 
-    private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger)
+    private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger,
+        Testmaler.hentAlltidValgbareVedlegg())
 
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
@@ -54,7 +55,8 @@ class RedigerbarTemplateResourceTest {
                 attesterendeSaksbehandlerNavn = null,
                 navAvsenderEnhet = "Akersgata"
             )
-        )
+        ),
+        alltidValgbareVedlegg = listOf()
     )
 
     @Test

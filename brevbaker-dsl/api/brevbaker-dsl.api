@@ -53,6 +53,17 @@ public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 	public static final fun formatTelefonnummerStandard (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/template/AlltidValgbartVedlegg : no/nav/pensjon/brev/template/HasModel, no/nav/pensjon/brev/template/StableHash {
+	public fun <init> (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;)V
+	public final fun asIncludeAttachment (Lno/nav/pensjon/brevbaker/api/model/Felles;)Lno/nav/pensjon/brev/template/IncludeAttachment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKode ()Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;
+	public final fun getVedlegg ()Lno/nav/pensjon/brev/template/AttachmentTemplate;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/template/AttachmentTemplate : no/nav/pensjon/brev/template/HasModel, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getIncludeSakspart ()Z
@@ -694,6 +705,7 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
+	public final fun medEkstraVedlegg (Ljava/util/List;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public fun toString ()Ljava/lang/String;
 }
 

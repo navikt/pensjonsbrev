@@ -30,7 +30,7 @@ fun Application.brevRouting(
 ) =
     routing {
         val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService)
-        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService)
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService, brevProvider.hentAlltidValgbareVedlegg())
 
         route("/templates") {
             templateRoutes(autobrev)
@@ -52,7 +52,7 @@ fun Application.brevRouting(
                 autobrevRoutes(etterlatteResource)
 
                 post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") { request ->
-                    call.respond(etterlatteResource.renderJSON(request).let { EtterlatteMaler.somSlate(it) })
+                    call.respond(etterlatteResource.renderLetterMarkup(request).let { EtterlatteMaler.somSlate(it) })
                 }
             }
             get("/ping_authorized") {

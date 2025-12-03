@@ -5,6 +5,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.AttributeKey
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
+import no.nav.pensjon.brev.api.countLetter
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -19,20 +20,20 @@ fun ApplicationCall.useBrevkodeFromCallContext(): String? = attributes.getOrNull
 fun Route.autobrevRoutes(
     autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevTemplate<*>>,
 ) {
-    route("/${autobrev.name}") {
+    route("/${autobrev.name()}") {
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { brevbestilling ->
             installBrevkodeInCallContext(brevbestilling.kode)
             call.respond(autobrev.renderPDF(brevbestilling))
-            autobrev.countLetter(brevbestilling.kode)
+            countLetter(brevbestilling.kode)
         }
 
         post<BestillBrevRequest<Brevkode.Automatisk>>("/html") { brevbestilling ->
             call.respond(autobrev.renderHTML(brevbestilling))
-            autobrev.countLetter(brevbestilling.kode)
+            countLetter(brevbestilling.kode)
         }
 
-        post<BestillBrevRequest<Brevkode.Automatisk>>("/json") {
-            call.respond(autobrev.renderJSON(it))
+        post<BestillBrevRequest<Brevkode.Automatisk>>("/json") { brevbestilling ->
+            call.respond(autobrev.renderLetterMarkup(brevbestilling))
         }
     }
 }
