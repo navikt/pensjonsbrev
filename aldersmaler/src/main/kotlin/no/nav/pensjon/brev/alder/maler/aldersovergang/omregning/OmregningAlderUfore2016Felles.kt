@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.fraser.Omregning
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -582,19 +583,19 @@ data class OmregningAlderUfore2016Felles(
                         +"Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. " +
                                 "Stønaden er behovsprøvd og all inntekt fra Norge og utlandet blir regnet med. " +
                                 "Inntekten til eventuell ektefelle, samboer eller registrert partner blir også regnet med. " +
-                                "Du kan lese mer om supplerende stønad på nettsiden vår "
+                                "Du kan lese mer om supplerende stønad på $SUPPLERENDE_STOENAD_URL."
                     },
                     nynorsk {
                         +"Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
                                 "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. " +
                                 "Inntekta til eventuell ektefelle, sambuar eller registrert partnar skal også reknast med. " +
-                                "Du kan lese meir om supplerande stønad på nettsida vår "
+                                "Du kan lese meir om supplerande stønad på $SUPPLERENDE_STOENAD_URL."
                     },
                     english {
                         +"If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. " +
                                 "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
                                 "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
-                                "You can read more about supplementary benefit at our website "
+                                "You can read more about supplementary benefit at $SUPPLERENDE_STOENAD_URL."
                     },
                 )
             }
