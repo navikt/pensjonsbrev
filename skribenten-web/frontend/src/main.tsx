@@ -47,7 +47,7 @@ declare module "@tanstack/react-router" {
 ReactDOM.createRoot(document.querySelector("#root") as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Theme>
+      <Theme hasBackground={false}>
         <RouterProvider router={router} />
       </Theme>
     </QueryClientProvider>
