@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BoxNew, Button, Label, VStack } from "@navikt/ds-react";
+import { Button, Label, VStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 
 import { Route } from "~/routes/saksnummer_/$saksId/attester.$brevId/redigering";
@@ -9,13 +9,12 @@ const ArkivertBrev = (props: { saksId: string }) => {
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   return (
-    <BoxNew
-      background="default"
+    <VStack
       css={css`
-        display: flex;
-        flex: 1;
+        background: var(--ax-bg-default);
       `}
-      padding="6"
+      flexGrow="1"
+      padding="space-24"
     >
       <VStack align="start" gap="space-8">
         <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
@@ -37,7 +36,7 @@ const ArkivertBrev = (props: { saksId: string }) => {
           Gå til brevbehandler
         </Button>
       </VStack>
-    </BoxNew>
+    </VStack>
   );
 };
 
