@@ -9,7 +9,11 @@ import { emptyInnvilgetRow } from "./emptyP1";
 import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
 
 export const P1InnvilgetTab = () => {
-  const { control, register } = useFormContext<P1RedigerbarForm>();
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext<P1RedigerbarForm>();
 
   const { fields, append } = useFieldArray<P1RedigerbarForm>({
     control,
@@ -70,6 +74,7 @@ export const P1InnvilgetTab = () => {
               {/* 3.1 Institusjon + PIN/saksnr + vedtaksdato */}
               <td>
                 <TextField
+                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn?.message}
                   label="Institusjon"
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.institusjon.institusjonsnavn` as const)}
@@ -78,6 +83,7 @@ export const P1InnvilgetTab = () => {
                   `}
                 />
                 <TextField
+                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.pin?.message}
                   label="PIN/saksnummer"
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.institusjon.pin` as const)}
@@ -86,6 +92,7 @@ export const P1InnvilgetTab = () => {
                   `}
                 />
                 <TextField
+                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.vedtaksdato?.message}
                   label="Vedtaksdato"
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const)}
@@ -97,8 +104,9 @@ export const P1InnvilgetTab = () => {
                 <Controller
                   control={control}
                   name={`innvilgedePensjoner.${index}.pensjonstype` as const}
-                  render={({ field: radioField }) => (
+                  render={({ field: radioField, fieldState }) => (
                     <RadioGroup
+                      error={fieldState.error?.message}
                       legend="Velg"
                       onChange={(val) => radioField.onChange(val || null)}
                       size="small"
@@ -117,7 +125,8 @@ export const P1InnvilgetTab = () => {
               {/* 3.3 Dato første utbetaling */}
               <td className="cell-seamless">
                 <Textarea
-                  className="p1-seamless-textarea "
+                  className="p1-seamless-textarea"
+                  error={errors.innvilgedePensjoner?.[index]?.datoFoersteUtbetaling?.message}
                   hideLabel
                   label="Dato for første utbetaling"
                   size="small"
@@ -128,7 +137,8 @@ export const P1InnvilgetTab = () => {
               {/* 3.4 Bruttobeløp */}
               <td className="cell-seamless">
                 <Textarea
-                  className="p1-seamless-textarea "
+                  className="p1-seamless-textarea"
+                  error={errors.innvilgedePensjoner?.[index]?.utbetalt?.message}
                   hideLabel
                   label="Bruttobeløp / hyppighet / valuta"
                   size="small"
@@ -141,8 +151,9 @@ export const P1InnvilgetTab = () => {
                 <Controller
                   control={control}
                   name={`innvilgedePensjoner.${index}.grunnlagInnvilget` as const}
-                  render={({ field: radioField }) => (
+                  render={({ field: radioField, fieldState }) => (
                     <RadioGroup
+                      error={fieldState.error?.message}
                       legend="Velg"
                       onChange={(val) => radioField.onChange(val || null)}
                       size="small"
@@ -163,8 +174,9 @@ export const P1InnvilgetTab = () => {
                 <Controller
                   control={control}
                   name={`innvilgedePensjoner.${index}.reduksjonsgrunnlag` as const}
-                  render={({ field: radioField }) => (
+                  render={({ field: radioField, fieldState }) => (
                     <RadioGroup
+                      error={fieldState.error?.message}
                       legend="Velg"
                       onChange={(val) => radioField.onChange(val || null)}
                       size="small"
@@ -183,7 +195,8 @@ export const P1InnvilgetTab = () => {
               {/* 3.7 Vurderingsperiode */}
               <td className="cell-seamless">
                 <Textarea
-                  className="p1-seamless-textarea "
+                  className="p1-seamless-textarea"
+                  error={errors.innvilgedePensjoner?.[index]?.vurderingsperiode?.message}
                   hideLabel
                   label="Vurderingsperiode"
                   size="small"
@@ -194,7 +207,8 @@ export const P1InnvilgetTab = () => {
               {/* 3.8 Adresse ny vurdering */}
               <td className="cell-seamless">
                 <Textarea
-                  className="p1-seamless-textarea "
+                  className="p1-seamless-textarea"
+                  error={errors.innvilgedePensjoner?.[index]?.adresseNyVurdering?.message}
                   hideLabel
                   label="Adresse for ny vurdering"
                   size="small"

@@ -1,6 +1,7 @@
 import "~/css/p1.css";
 
 import { css } from "@emotion/react";
+import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
 import { Alert, Button, Heading, Loader, Modal, Tabs } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import { P1InnehaverTab } from "./P1InnehaverTab";
 import { P1InnvilgetTab } from "./P1InnvilgetTab";
 import { P1InstitusjonTab } from "./P1InstitusjonTab";
 import { mapP1DtoToForm, mapP1FormToDto } from "./p1Mappings";
+import { p1RedigerbarFormSchema } from "./p1ValidationSchema";
 import { useP1Override } from "./useP1Override";
 
 type P1TabKey = "innehaver" | "forsikret" | "innvilget" | "avslag" | "institusjon";
@@ -35,6 +37,8 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 
   const formMethods = useForm<P1RedigerbarForm>({
     defaultValues: emptyP1,
+    resolver: zodResolver(p1RedigerbarFormSchema),
+    mode: "onBlur", // Validate on blur for better UX
   });
 
   const { handleSubmit, reset } = formMethods;
@@ -95,7 +99,9 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
             `}
           >
             {isInitialLoading ? (
-              <Loader size="large" title="Laster data for P1..." />
+              <div className="p1-loader-container">
+                <Loader size="3xlarge" title="Laster data for P1..." />
+              </div>
             ) : (
               <>
                 <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} value={activeTab}>
