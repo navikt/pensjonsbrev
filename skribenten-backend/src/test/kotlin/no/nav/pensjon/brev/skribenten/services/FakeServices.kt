@@ -143,6 +143,13 @@ open class PenServiceStub : PenService {
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
         distribuer: Boolean,
     ): ServiceResult<Pen.BestillBrevResponse> = notYetStubbed()
+
+    override suspend fun hentP1VedleggData(
+        saksId: Long,
+        spraak: LanguageCode
+    ): ServiceResult<Api.GeneriskBrevdata> {
+        TODO("Not yet implemented")
+    }
 }
 
 

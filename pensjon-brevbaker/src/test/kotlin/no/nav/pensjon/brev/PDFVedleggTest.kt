@@ -34,7 +34,7 @@ class PDFVedleggTest {
         }
         val letter = LetterTestImpl(
             template,
-            createSamletMeldingOmPensjonsvedtakV2Dto(),
+            createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto(),
             spraak,
             FellesFactory.felles
         )
@@ -46,6 +46,14 @@ class PDFVedleggTest {
     }
 }
 
+fun createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto() =
+    SamletMeldingOmPensjonsvedtakV2Dto(
+        saksbehandlerValg = EmptySaksbehandlerValg,
+        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
+            sakstype = Sakstype.ALDER,
+            p1Vedlegg = null
+        ),
+    )
 
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =
@@ -53,8 +61,8 @@ fun createSamletMeldingOmPensjonsvedtakV2Dto() =
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
             sakstype = Sakstype.ALDER,
+            p1Vedlegg = createP1VedleggDto(),
         ),
-        p1Vedlegg = createP1VedleggDto()
     )
 
 private val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"
@@ -111,7 +119,7 @@ private val innvilgetPensjon = InnvilgetPensjon(
     institusjon = nay,
     pensjonstype = Pensjonstype.Etterlatte,
     vurderingsperiode = "en måned",
-    datoFoersteUtbetaling = "1. Januar 2020",
+    datoFoersteUtbetaling = vilkaarligDato,
     utbetalt = "1000 Kroner fra en dato",
     grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
     reduksjonsgrunnlag = null,

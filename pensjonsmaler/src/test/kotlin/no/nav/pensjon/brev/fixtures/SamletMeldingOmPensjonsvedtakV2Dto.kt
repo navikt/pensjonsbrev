@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
@@ -75,7 +76,7 @@ private val innvilgetPensjon = InnvilgetPensjon(
     institusjon = nay,
     pensjonstype = Pensjonstype.Etterlatte,
     vurderingsperiode = "en måned",
-    datoFoersteUtbetaling = "TODO()",
+    datoFoersteUtbetaling = vilkaarligDato,
     utbetalt = "1000 Kroner fra en dato",
     grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
     reduksjonsgrunnlag = null,

@@ -9,9 +9,11 @@ import java.time.LocalDate
 data class SamletMeldingOmPensjonsvedtakV2Dto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-    val p1Vedlegg: P1RedigerbarDto,
-    ) : RedigerbarBrevdata<EmptySaksbehandlerValg, SamletMeldingOmPensjonsvedtakV2Dto.PesysData> {
-    data class PesysData(val sakstype: Sakstype) : FagsystemBrevdata
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, SamletMeldingOmPensjonsvedtakV2Dto.PesysData> {
+    data class PesysData(
+        val sakstype: Sakstype,
+        val p1Vedlegg: P1RedigerbarDto?,
+    ) : FagsystemBrevdata
 }
 
 data class P1RedigerbarDto(
@@ -37,7 +39,7 @@ data class P1RedigerbarDto(
     data class InnvilgetPensjon(
         val institusjon: Institusjon?, // 3.1
         val pensjonstype: Pensjonstype?, //3.2
-        val datoFoersteUtbetaling: String?, //3.3
+        val datoFoersteUtbetaling: LocalDate?, //3.3
         val utbetalt: String?, // 3.4
         val grunnlagInnvilget: GrunnlagInnvilget?, // 3.5
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?, // 3.6
@@ -46,11 +48,11 @@ data class P1RedigerbarDto(
     )
 
     data class AvslaattPensjon(
-        val institusjon: Institusjon?, // 3.1
-        val pensjonstype: Pensjonstype?, // 3.2
-        val avslagsbegrunnelse: Avslagsbegrunnelse?, // 3.3
-        val vurderingsperiode: String?, // 3.4
-        val adresseNyVurdering: String?, //
+        val institusjon: Institusjon?, // 4.1
+        val pensjonstype: Pensjonstype?, // 4.2
+        val avslagsbegrunnelse: Avslagsbegrunnelse?, // 4.3
+        val vurderingsperiode: String?, // 4.4
+        val adresseNyVurdering: String?, // 4.5
     )
 
     enum class Pensjonstype(val nummer: Int) {

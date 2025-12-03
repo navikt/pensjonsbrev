@@ -17,6 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -26,6 +27,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.jvm.java
@@ -56,6 +58,8 @@ interface PenService {
     data class KravStoettetAvDatabyggerResult(
         val kravStoettet: Map<String, Boolean> = emptyMap()
     )
+
+    suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): ServiceResult<Api.GeneriskBrevdata>
 }
 
 class PenServiceHttp(config: Config, authService: AuthService) : PenService, ServiceStatus {
@@ -176,6 +180,23 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
                 }
             }
+
+    data class P1VedleggDataResponse(val data: Api.GeneriskBrevdata?, val feil: BrevExceptionDto? = null)
+
+    override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode) : ServiceResult<Api.GeneriskBrevdata> {
+        val response = client.get("brev/skribenten/sak/$saksId/p1data") {
+            url {
+                parameters.append("spraak", spraak.name)
+            }
+        }
+        return if(response.status.isSuccess()) {
+            ServiceResult.Ok(response.body<P1VedleggDataResponse>().data!!)
+        } else {
+            val feil = response.body<P1VedleggDataResponse?>()?.feil
+            logger.error("En feil oppstod i kall til PEN: ${feil?.tittel}: ${feil?.melding}")
+            ServiceResult.Error(feil?.melding ?: "Ukjent feil oppstod i kall til PEN", response.status, feil?.tittel)
+        }
+    }
 
 
     private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {

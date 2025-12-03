@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.p1Vedlegg
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.p1Vedlegg
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.vedlegg.pdf.P1pdfV2Dto
 import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
@@ -28,7 +28,7 @@ object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensj
 
     override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtakV2.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 // 000090
+    override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 // BREVKODEN MÅ VÆRE I SYNC MED P1SERVICE I SKRIBENTEN!
     override val kategori = TemplateDescription.Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
@@ -90,7 +90,7 @@ object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensj
             }
         }
 
-        includeAttachment(P1pdfV2Dto.p1Vedlegg, p1Vedlegg)
+        includeAttachmentIfNotNull(P1pdfV2Dto.p1Vedlegg, pesysData.p1Vedlegg)
         includeAttachment(informasjonOmP1Vedlegg, EmptyPDFVedleggData.expr())
     }
 

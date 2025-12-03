@@ -56,6 +56,7 @@ class BrevredigeringService(
     private val navansattService: NavansattService,
     private val penService: PenService,
     private val samhandlerService: SamhandlerService,
+    private val p1Service: P1Service,
 ) : HentBrevService {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -577,7 +578,8 @@ class BrevredigeringService(
             brevkode = brevredigering.info.brevkode,
             spraak = brevredigering.info.spraak,
             brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
+                pesysData = pesysData.brevdata
+                    .withP1DataIfP1(brevredigering.info, p1Service),
                 saksbehandlerValg = brevredigering.saksbehandlerValg,
             ),
             // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
@@ -635,6 +637,18 @@ class BrevredigeringService(
                 ?: principal.fullName
         }
 }
+
+private suspend fun Api.GeneriskBrevdata.withP1DataIfP1(
+    brevinfo: Dto.BrevInfo,
+    p1Service: P1Service,
+): FagsystemBrevdata =
+    p1Service.patchMedP1DataOmP1(
+        brevdata = this,
+        brevkode = brevinfo.brevkode,
+        brevId = brevinfo.id,
+        saksId = brevinfo.saksId
+    )
+
 
 private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur): Felles =
     signatur.saksbehandlerNavn?.let {
