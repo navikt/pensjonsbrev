@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import type { OrderDoksysLetterRequest, OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
-import { BrevSystem, type LetterMetadata, SpraakKode } from "~/types/apiTypes";
+import { type LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export const byggDoksysOnSubmitRequest = (argz: {
