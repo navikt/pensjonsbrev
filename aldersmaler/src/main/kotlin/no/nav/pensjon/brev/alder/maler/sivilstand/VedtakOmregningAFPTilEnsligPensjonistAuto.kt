@@ -196,54 +196,56 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                     }
                 }
 
-                showIf(
-                    avdoed.sivilstand.isOneOf(
-                        SivilstandAvdoed.SAMBOER1_5,
-                        SivilstandAvdoed.PARTNER,
-                        SivilstandAvdoed.GIFT,
-                    ),
-                ) {
+                ifNotNull(avdoed.sivilstand) { sivilstand ->
+                    showIf(
+                        sivilstand.isOneOf(
+                            SivilstandAvdoed.SAMBOER1_5,
+                            SivilstandAvdoed.PARTNER,
+                            SivilstandAvdoed.GIFT,
+                        ),
+                    ) {
 
-                    title2 {
-                        text(
-                            bokmal { +"Andre pensjonsordninger" },
-                            nynorsk { +"Andre pensjonsordningar" },
-                            english { +"Other pension schemes" },
-                        )
-                    }
+                        title2 {
+                            text(
+                                bokmal { +"Andre pensjonsordninger" },
+                                nynorsk { +"Andre pensjonsordningar" },
+                                english { +"Other pension schemes" },
+                            )
+                        }
 
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, kan du kontakte avdødes arbeidsgiver. Du kan også ta kontakt med pensjonsordningen eller forsikringsselskapet."
-                            },
-                            nynorsk {
-                                +"Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet."
-                            },
-                            english {
-                                +"If the deceased was a member of a private or public pension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company."
-                            },
-                        )
-                    }
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, kan du kontakte avdødes arbeidsgiver. Du kan også ta kontakt med pensjonsordningen eller forsikringsselskapet."
+                                },
+                                nynorsk {
+                                    +"Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet."
+                                },
+                                english {
+                                    +"If the deceased was a member of a private or public pension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company."
+                                },
+                            )
+                        }
 
-                    title2 {
-                        text(
-                            bokmal { +"Rettigheter hvis avdøde har bodd eller arbeidet i utlandet" },
-                            nynorsk { +"Rettar når avdøde har budd eller arbeidd i utlandet" },
-                            english { +"Rights if the deceased has lived or worked abroad" },
-                        )
-                    }
+                        title2 {
+                            text(
+                                bokmal { +"Rettigheter hvis avdøde har bodd eller arbeidet i utlandet" },
+                                nynorsk { +"Rettar når avdøde har budd eller arbeidd i utlandet" },
+                                english { +"Rights if the deceased has lived or worked abroad" },
+                            )
+                        }
 
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for dine rettigheter etter avdøde. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rett til pensjon fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med."
-                            },
-                            nynorsk {
-                                +"Dersom avdøde har budd eller arbeidd i utlandet kan dette få noko å seie for dine rettar etter avdøde. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rett til pensjon frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med."
-                            },
-                            english { +"" },
-                        )
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for dine rettigheter etter avdøde. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rett til pensjon fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med."
+                                },
+                                nynorsk {
+                                    +"Dersom avdøde har budd eller arbeidd i utlandet kan dette få noko å seie for dine rettar etter avdøde. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rett til pensjon frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med."
+                                },
+                                english { +"" },
+                            )
+                        }
                     }
                 }
 
