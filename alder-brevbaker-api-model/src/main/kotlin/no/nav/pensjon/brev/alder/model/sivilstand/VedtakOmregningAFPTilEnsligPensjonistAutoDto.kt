@@ -21,7 +21,7 @@ data class VedtakOmregningAFPTilEnsligPensjonistAutoDto(
 ) : AutobrevData {
     data class Avdoed(
         val navn: String,
-        val sivilstand: SivilstandAvdoed,
+        val sivilstand: SivilstandAvdoed?,
     )
 
     data class BeregnetPensjonPerManedVedVirk(
