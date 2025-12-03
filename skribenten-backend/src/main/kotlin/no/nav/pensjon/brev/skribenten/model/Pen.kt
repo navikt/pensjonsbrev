@@ -103,6 +103,7 @@ object Pen {
             val referanse: String? = null,
             val saksbehandlernavn: String? = null,
             val saksbehandlerid: String? = null,
+            val sensitivt: Boolean? = null,
             val saksid: String? = null,
             val tillattelektroniskvarsling: Boolean? = null,
             val tilleggsbeskrivelse: String? = null,
