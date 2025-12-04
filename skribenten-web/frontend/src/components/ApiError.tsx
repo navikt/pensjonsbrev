@@ -80,7 +80,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
           {title}
         </Heading>
         {correlationId && (
-          <VStack gap="1">
+          <VStack gap="space-4">
             <div>
               <span>{mapErrorMessage(error.message)}</span>
               <span>
@@ -90,10 +90,10 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             <CopyButton
               copyText={correlationId}
               css={css`
-                border-radius: 4px;
-                background: white;
+                border-radius: var(--ax-radius-4);
+                background: var(--ax-bg-default);
                 width: fit-content;
-                box-shadow: inset 0 0 0 2px var(--a-border-default);
+                box-shadow: inset 0 0 0 2px var(--ax-border-neutral);
               `}
               icon={<FilesIcon />}
               size="small"

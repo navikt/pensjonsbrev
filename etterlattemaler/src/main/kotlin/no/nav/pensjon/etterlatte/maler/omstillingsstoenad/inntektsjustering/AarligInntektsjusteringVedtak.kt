@@ -56,7 +56,6 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtaksbrev - inntektsjustering",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),

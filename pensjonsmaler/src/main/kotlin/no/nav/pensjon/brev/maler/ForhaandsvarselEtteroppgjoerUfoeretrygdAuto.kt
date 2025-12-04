@@ -43,7 +43,6 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata = LetterMetadata(
                 displayTitle = "Varsel - etteroppgjør av uføretrygd ved feilutbetaling (automatisk)",
-                isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             )

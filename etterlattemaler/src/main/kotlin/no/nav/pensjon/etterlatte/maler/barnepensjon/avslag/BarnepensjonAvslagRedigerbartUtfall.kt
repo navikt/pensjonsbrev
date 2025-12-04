@@ -30,7 +30,6 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvsl
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - begrunnelse for avslag",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

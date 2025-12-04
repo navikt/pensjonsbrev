@@ -1,19 +1,20 @@
-package no.nav.pensjon.brev.maler.alder.omregning
+package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
-import no.nav.pensjon.brev.maler.alder.omregning.fraser.Omregning2016Hjemler
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.model.bestemtForm
+import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.fraser.Omregning2016Hjemler
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SUPPLERENDE_STOENAD_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
+import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.model.BorMedSivilstand
+import no.nav.pensjon.brev.alder.model.Sivilstand
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -56,6 +57,7 @@ data class OmregningAlderUfore2016Felles(
     val brukersSivilstand: Expression<Sivilstand>,
     val borMedSivilstand: Expression<BorMedSivilstand?>,
     val over2G: Expression<Boolean?>,
+    val kronebelop2G: Expression<Kroner>,
 
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -329,16 +331,16 @@ data class OmregningAlderUfore2016Felles(
                     showIf(over2G) {
                         paragraph {
                             text(
-                                bokmal { +"over 2G." },
-                                nynorsk { +"over 2G." },
-                                english { +"over 2G." })
+                                bokmal { +"over " + kronebelop2G.format() + "." },
+                                nynorsk { +"over " + kronebelop2G.format() + "." },
+                                english { +"over " + kronebelop2G.format() + "." })
                         }
                     }.orShow {
                         paragraph {
                             text(
-                                bokmal { +"under 2G." },
-                                nynorsk { +"under 2G." },
-                                english { +"under 2G." })
+                                bokmal { +"under " + kronebelop2G.format() + "." },
+                                nynorsk { +"under " + kronebelop2G.format() + "." },
+                                english { +"under " + kronebelop2G.format() + "." })
                         }
                     }
                 }
@@ -581,26 +583,26 @@ data class OmregningAlderUfore2016Felles(
                         +"Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. " +
                                 "Stønaden er behovsprøvd og all inntekt fra Norge og utlandet blir regnet med. " +
                                 "Inntekten til eventuell ektefelle, samboer eller registrert partner blir også regnet med. " +
-                                "Du kan lese mer om supplerende stønad på nettsiden vår "
+                                "Du kan lese mer om supplerende stønad på $SUPPLERENDE_STOENAD_URL."
                     },
                     nynorsk {
                         +"Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
                                 "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. " +
                                 "Inntekta til eventuell ektefelle, sambuar eller registrert partnar skal også reknast med. " +
-                                "Du kan lese meir om supplerande stønad på nettsida vår "
+                                "Du kan lese meir om supplerande stønad på $SUPPLERENDE_STOENAD_URL."
                     },
                     english {
                         +"If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. " +
                                 "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
                                 "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
-                                "You can read more about supplementary benefit at our website "
+                                "You can read more about supplementary benefit at $SUPPLERENDE_STOENAD_URL."
                     },
                 )
             }
         }
 
-        includePhrase(Felles.RettTilAAKlage)
-        includePhrase(Felles.HarDuSpoersmaal.alder)
+        includePhrase(RettTilAAKlage)
+        includePhrase(HarDuSpoersmaalAlder)
 
     }
 }

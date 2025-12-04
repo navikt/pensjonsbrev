@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - ".github/dependabot.yml"
+      - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/asciidoctor.yaml"
       - ".github/workflows/klar-til-merge.yml"
       - ".github/workflows/update-latex-image.yml"
@@ -21,7 +22,7 @@ jobs:
     name: "Klar til merge"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: ./.github/pr

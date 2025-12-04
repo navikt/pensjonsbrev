@@ -20,7 +20,6 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyAutobrevdata> {
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har sendt deg feil brev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

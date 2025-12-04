@@ -20,7 +20,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions/setup-node@v6
@@ -31,7 +31,7 @@ jobs:
 
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm install
+        run: npm ci
 
       - name: Build frontend
         working-directory: ${{ inputs.workingDir }}/frontend

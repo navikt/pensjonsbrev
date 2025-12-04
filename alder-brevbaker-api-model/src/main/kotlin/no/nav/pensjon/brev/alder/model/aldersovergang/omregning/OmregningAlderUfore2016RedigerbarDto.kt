@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.alderApi
+package no.nav.pensjon.brev.alder.model.aldersovergang.omregning
 
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata

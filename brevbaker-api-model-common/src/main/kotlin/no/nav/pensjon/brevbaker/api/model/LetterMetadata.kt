@@ -10,7 +10,7 @@ import java.util.Objects
  */
 class LetterMetadata(
     val displayTitle: String,
-    val isSensitiv: Boolean,
+    val isSensitiv: Boolean? = false,
     val distribusjonstype: Distribusjonstype,
     val brevtype: Brevtype,
 ) {

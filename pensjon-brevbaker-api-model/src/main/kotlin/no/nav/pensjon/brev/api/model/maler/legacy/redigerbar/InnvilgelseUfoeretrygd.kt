@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 data class InnvilgelseUfoeretrygdDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     ) : RedigerbarBrevdata<EmptySaksbehandlerValg, InnvilgelseUfoeretrygdDto.PesysData> {
-    data class PesysData(val pe: PE) : FagsystemBrevdata
+    data class PesysData(
+        val pe: PE,
+        val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?
+    ) : FagsystemBrevdata
 }

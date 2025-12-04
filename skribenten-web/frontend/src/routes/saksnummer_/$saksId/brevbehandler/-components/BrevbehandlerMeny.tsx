@@ -102,13 +102,13 @@ const BrevItem = (properties: {
     <>
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
-          <VStack gap="2">
+          <VStack gap="space-8">
             <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
             <Label size="small">{properties.brev.brevtittel}</Label>
           </VStack>
         </Accordion.Header>
         <Accordion.Content>
-          <VStack gap="4">
+          <VStack gap="space-16">
             {erBrevArkivert(properties.brev) ? (
               <ArkivertBrev brev={properties.brev} />
             ) : (
@@ -203,7 +203,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           overrideOppsummering={(edit) => (
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
-              <HStack align="start" gap="8" wrap={false}>
+              <HStack align="start" gap="space-32" wrap={false}>
                 <OppsummeringAvMottaker
                   mottaker={props.brev.mottaker ?? null}
                   saksId={props.saksId}
@@ -263,12 +263,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         )}
 
         {!erLaast && (
-          <VStack
-            css={css`
-              align-items: flex-start;
-            `}
-            gap="4"
-          >
+          <VStack align="start" gap="space-16">
             <Button
               onClick={() =>
                 navigate({
@@ -292,7 +287,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
               <div
                 css={css`
                   display: flex;
-                  gap: 0.5rem;
+                  gap: var(--ax-space-8);
                 `}
               >
                 Distribusjon
@@ -306,7 +301,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                     <XMarkOctagonFillIcon
                       css={css`
                         align-self: center;
-                        color: var(--a-nav-red);
+                        color: var(--ax-text-logo);
                       `}
                       title="error"
                     />
@@ -361,7 +356,7 @@ const LokalPrintInfoAlerts = () => {
       css={css`
         display: flex;
         flex-direction: column;
-        gap: 18px;
+        gap: var(--ax-space-20);
       `}
     >
       <Alert size="small" variant="warning">

@@ -79,7 +79,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse av alderspensjon (trygdeavtale)",
-            isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = VEDTAKSBREV
         )

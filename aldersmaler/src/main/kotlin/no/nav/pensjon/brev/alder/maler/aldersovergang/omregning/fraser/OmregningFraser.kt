@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.alder.omregning.fraser
+package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.fraser
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

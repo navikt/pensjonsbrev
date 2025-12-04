@@ -32,7 +32,6 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vi har mottatt søknaden din om omstillingsstønad",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

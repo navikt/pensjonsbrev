@@ -17,7 +17,7 @@ data class Vilkar(
     val unguforbegrunnelse: String?,
     val unguforresultat: String?,
     val fortsattmedlemskap: FortsattMedlemskap?,
-    val forutgaendemedlemskap: ForutgaendeMedlemskap?,
+    val forutgaendemedlemskap: ForutgaendeMedlemskap? = null,
     val medlemskapforutettertrygdeavtaler: MedlemskapForUTetterTrygdeavtaler?,
     val yrkesskadebegrunnelse: String?,
     val yrkesskaderesultat: String?,

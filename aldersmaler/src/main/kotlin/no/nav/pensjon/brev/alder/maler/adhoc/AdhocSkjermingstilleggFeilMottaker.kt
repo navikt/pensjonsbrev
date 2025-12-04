@@ -19,7 +19,6 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyAutobrevdata> 
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har sendt deg feil brev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

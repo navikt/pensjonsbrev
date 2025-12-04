@@ -90,7 +90,7 @@ function BrevOpenError({ error }: { error: unknown }) {
           display: flex;
           justify-content: center;
           align-items: center;
-          margin-top: var(--a-spacing-4);
+          margin-top: var(--ax-space-16);
         `}
       >
         <Alert

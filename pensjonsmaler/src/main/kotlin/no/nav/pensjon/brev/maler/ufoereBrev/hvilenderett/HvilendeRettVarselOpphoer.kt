@@ -16,7 +16,6 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om opphør av uføretrygden etter 10 år med hvilende rett",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

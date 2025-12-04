@@ -42,7 +42,7 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
 
   return (
     <Accordion.Content data-cy={`journalpostId-${props.journalpostId}`}>
-      <VStack align={"start"} gap="4">
+      <VStack align="start" gap="space-16">
         <Oppsummeringspar
           tittel={"Mottaker"}
           verdi={props.brev?.mottaker?.navn ?? sakenGjelderNavn ?? "Fant ikke mottakerens navn"}
@@ -69,8 +69,8 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
 const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
   return (
     <Accordion.Content>
-      <VStack align="start" gap="3">
-        <VStack gap="5">
+      <VStack align="start" gap="space-12">
+        <VStack gap="space-20">
           <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
           <BodyShort size="small">Brevet ligger lagret i brevbehandler til brevet er sendt.</BodyShort>
         </VStack>
