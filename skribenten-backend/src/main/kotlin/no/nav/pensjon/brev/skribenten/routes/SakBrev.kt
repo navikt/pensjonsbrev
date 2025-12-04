@@ -12,14 +12,14 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.services.P1Service
+import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.SakBrev")
 
-fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: BrevredigeringService, p1Service: P1Service) =
+fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: BrevredigeringService, p1Service: P1ServiceImpl) =
     route("/brev") {
 
         post<Api.OpprettBrevRequest> { request ->

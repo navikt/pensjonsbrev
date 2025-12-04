@@ -18,8 +18,8 @@ fun createSamletMeldingOmPensjonsvedtakV2Dto() =
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
             sakstype = Sakstype.ALDER,
+            p1Vedlegg = createP1VedleggDto(),
         ),
-        p1Vedlegg = createP1VedleggDto()
     )
 
 private val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"

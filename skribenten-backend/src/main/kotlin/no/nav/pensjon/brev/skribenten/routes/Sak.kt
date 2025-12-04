@@ -23,7 +23,7 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
-    p1Service: P1Service,
+    p1Service: P1ServiceImpl,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
