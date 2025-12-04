@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -35,18 +35,18 @@ const Kvittering = () => {
 
   if (sendteBrevLista.length === 0) {
     return (
-      <Box
-        background="bg-default"
+      <BoxNew
+        background="default"
         css={css`
           display: flex;
           flex-direction: column;
           flex: 1;
           align-items: center;
-          padding-top: var(--a-spacing-8);
+          padding-top: var(--ax-space-32);
         `}
       >
         {urlReady && (
-          <VStack gap="2">
+          <VStack gap="space-8">
             <Heading size="medium">Hva vil du gjøre nå?</Heading>
             <NavButtons psak={psak} saksId={saksId} />
           </VStack>
@@ -59,33 +59,33 @@ const Kvittering = () => {
         >
           Tilbake til forhåndsvisning
         </Link>
-      </Box>
+      </BoxNew>
     );
   }
 
   return (
-    <Box
-      background="bg-default"
+    <BoxNew
+      background="default"
       css={css`
         display: flex;
         flex: 1;
         align-self: center;
         gap: 5rem;
         justify-content: center;
-        padding: var(--a-spacing-8) var(--a-spacing-24);
+        padding: var(--ax-space-32) var(--ax-space-96);
       `}
     >
-      <VStack gap="5">
+      <VStack gap="space-20">
         <Heading size="medium">Kvittering</Heading>
         <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
       </VStack>
       {urlReady && (
-        <VStack gap="2">
+        <VStack gap="space-8">
           <Heading size="medium">Hva vil du gjøre nå?</Heading>
           <NavButtons psak={psak} saksId={saksId} />
         </VStack>
       )}
-    </Box>
+    </BoxNew>
   );
 };
 
@@ -98,11 +98,11 @@ const NavButtons = ({ psak, saksId }: { psak?: string; saksId: string }) => {
   };
 
   return (
-    <VStack align={"start"} gap="3">
-      <ButtonLink as={"a"} href={urls.bruker}>
+    <VStack align="start" gap="space-12">
+      <ButtonLink as="a" href={urls.bruker}>
         Gå til brukeroversikt
       </ButtonLink>
-      <ButtonLink as={"a"} href={urls.dokument}>
+      <ButtonLink as="a" href={urls.dokument}>
         Gå til dokumentoversikt
       </ButtonLink>
     </VStack>

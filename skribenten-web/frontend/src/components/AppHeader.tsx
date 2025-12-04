@@ -10,7 +10,7 @@ export function AppHeader() {
       css={css`
         position: sticky;
         top: 0;
-        z-index: var(--a-z-index-popover);
+        z-index: 1000;
       `}
     >
       <InternalHeader.Title as="h1">

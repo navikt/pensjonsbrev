@@ -62,18 +62,18 @@ function Brevbehandler() {
         min-width: 944px;
         max-width: 1104px;
 
-        background-color: white;
+        background-color: var(--ax-bg-default);
       `}
     >
       {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
       <VStack
         css={css`
-          padding: var(--a-spacing-6);
-          border-right: 1px solid var(--a-gray-200);
+          padding: var(--ax-space-24);
+          border-right: 1px solid var(--ax-neutral-300);
           height: var(--main-page-content-height);
           overflow-y: auto;
         `}
-        gap="3"
+        gap="space-12"
       >
         <Heading level="1" size="small">
           Brevbehandler
@@ -82,7 +82,7 @@ function Brevbehandler() {
         {alleBrevForSak.isPending && (
           <VStack
             css={css`
-              padding: 1rem;
+              padding: var(--ax-space-16);
             `}
           >
             <Skeleton height={80} variant="rectangle" width="100%" />
@@ -98,9 +98,9 @@ function Brevbehandler() {
 
       <HStack
         css={css`
-          padding: 8px 12px;
+          padding: var(--ax-space-8) var(--ax-space-12);
           grid-area: footer;
-          border-top: 1px solid var(--a-gray-200);
+          border-top: 1px solid var(--ax-neutral-300);
         `}
         justify="space-between"
       >

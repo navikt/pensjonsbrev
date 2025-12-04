@@ -579,7 +579,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       contentEditable={!freeze}
       css={css({
         ...(erFritekst && {
-          color: "var(--a-blue-500)",
+          color: "var(--ax-accent-600)",
           textDecoration: "underline",
           cursor: "pointer",
         }),

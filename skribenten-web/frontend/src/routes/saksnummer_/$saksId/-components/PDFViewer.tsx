@@ -73,7 +73,7 @@ const PDFViewer = (properties: {
   return (
     <div
       css={css`
-        background: var(--a-gray-300);
+        background: var(--ax-neutral-400);
       `}
       ref={pdfContainerReference}
     >
@@ -94,7 +94,7 @@ const PDFViewer = (properties: {
         css={css`
           display: flex;
           justify-content: space-around;
-          padding: var(--a-spacing-3);
+          padding: var(--ax-space-12);
           height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
           overflow: scroll;
         `}
@@ -108,7 +108,7 @@ const PDFViewer = (properties: {
             <div className={`pdf-page`} id={`page_${index + 1}`} key={`page_${index + 1}`}>
               <Page
                 css={css`
-                  margin-bottom: 1rem;
+                  margin-bottom: var(--ax-space-16);
                 `}
                 pageNumber={index + 1}
                 scale={scale}
