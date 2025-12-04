@@ -215,6 +215,7 @@ object VedleggPDFTestUtils {
             languages(Bokmal),
             LetterMetadata(
                 testName,
+                false,
                 LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype
             )

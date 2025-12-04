@@ -29,6 +29,7 @@ class Dto2ApiServiceTest {
                     languages = listOf(LanguageCode.BOKMAL),
                     metadata = LetterMetadata(
                         "Redigerbart eksempelbrev",
+                        false,
                         LetterMetadata.Distribusjonstype.VIKTIG,
                         LetterMetadata.Brevtype.INFORMASJONSBREV
                     ),
