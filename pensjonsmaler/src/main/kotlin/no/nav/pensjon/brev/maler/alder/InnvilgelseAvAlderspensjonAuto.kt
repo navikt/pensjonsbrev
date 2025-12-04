@@ -102,7 +102,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                     displayTitle = "Vedtak - innvilgelse av alderspensjon",
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = VEDTAKSBREV,
-                ),
+                )
         ) {
 
             title {
@@ -159,30 +159,37 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                     }
                 }
 
-                includePhrase(
-                    HvisFlytetFaktiskBostedsland(
-                        eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
-                        eksportTrygdeavtaleEOS = inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
-                        faktiskBostedsland = faktiskBostedsland
+                ifNotNull(faktiskBostedsland) { faktiskBostedsland ->
+                    includePhrase(
+                        HvisFlytetFaktiskBostedsland(
+                            eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
+                            eksportTrygdeavtaleEOS = inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
+                            faktiskBostedsland = faktiskBostedsland
+                        )
                     )
-                )
 
                 // eksportAPunder20aar (NB! Finnes ikke i det manuelle brevet)
-                showIf(
-                    (regelverkType.equalTo(AP2011) and alderspensjonVedVirk.erEksportberegnet) or ((regelverkType.equalTo(AP2016)
-                            and alderspensjonVedVirk.erEksportberegnet or inngangOgEksportVurdering.eksportBeregnetUtenGarantipensjon))
-                ) {
+                showIf((regelverkType.equalTo(AP2011) and alderspensjonVedVirk.erEksportberegnet) or (regelverkType.equalTo(
+                        AP2016)
+                            and alderspensjonVedVirk.erEksportberegnet or inngangOgEksportVurdering.eksportBeregnetUtenGarantipensjon)) {
                     paragraph {
                         text(
-                            bokmal { +"For å ha rett til full alderspensjon når du bor i ".expr()
-                                    + faktiskBostedsland + ", må du ha vært medlem i folketrygden i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikke rett til full pensjon." },
-                            nynorsk { +"For å ha rett til full alderspensjon når du bur i ".expr()
-                                    + faktiskBostedsland + ", må du ha vore medlem i folketrygda i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikkje rett til full pensjon." },
-                            english { +"To be eligible for a full retirement pension while living in ".expr()
-                                    + faktiskBostedsland + ", you must have been a member of the National Insurance scheme earning pension rights for at least 20 years. " +
-                                    "You have been a member for less than 20 years, and are therefore not eligible for a full pension." }
+                            bokmal {
+                                +"For å ha rett til full alderspensjon når du bor i ".expr()
+                                +faktiskBostedsland + ", må du ha vært medlem i folketrygden i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikke rett til full pensjon."
+                            },
+                            nynorsk {
+                                +"For å ha rett til full alderspensjon når du bur i ".expr()
+                                +faktiskBostedsland + ", må du ha vore medlem i folketrygda i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikkje rett til full pensjon."
+                            },
+                            english {
+                                +"To be eligible for a full retirement pension while living in ".expr()
+                                +faktiskBostedsland + ", you must have been a member of the National Insurance scheme earning pension rights for at least 20 years. " +
+                                        "You have been a member for less than 20 years, and are therefore not eligible for a full pension."
+                            }
                         )
                     }
+                }
                     paragraph {
                         text(
                             bokmal { +"I vedleggene finner du mer detaljerte opplysninger." },
