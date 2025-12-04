@@ -100,9 +100,11 @@ object Fixtures : LetterDataFactory {
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
+            uforetidspunkt = vilkaarligDato,
             inntektForUforhet = 1,
             inntektEtterUforhet = 2,
-            vurderingIFU = "Vurdering 2"
+            vurderingIFU = "Vurdering IFU",
+            vurderingIEU = "Vurdering IEU"
         ),
         saksbehandlerValg = UforeAvslagInntektDto.SaksbehandlervalgInntekt(
             VisVurderingFraVilkarvedtak = true,

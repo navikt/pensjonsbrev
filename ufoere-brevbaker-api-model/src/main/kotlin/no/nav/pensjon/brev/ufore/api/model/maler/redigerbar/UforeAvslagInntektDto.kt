@@ -13,16 +13,22 @@ data class UforeAvslagInntektDto(
 
     data class SaksbehandlervalgInntekt(
         @DisplayText("Vis vurdering fra vilkår")
-        val VisVurderingFraVilkarvedtak: Boolean,
+        val VisVurderingFraVilkarvedtak: Boolean = false,
         @DisplayText("Vis vurdering 12-9 IFU")
-        val visVurderingIFU: Boolean
+        val visVurderingIFU: Boolean = false,
+        @DisplayText("Vis vurdering 12-9 IEU")
+        val visVurderingIEU: Boolean = false,
+        @DisplayText("Unntaksregel om fremtidig inntekt")
+        val visUnntaksregelFremtidigInntekt: Boolean = false
     ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagInntektPendata(
         val kravMottattDato: LocalDate,
         val vurdering: String,
+        val uforetidspunkt: LocalDate,
         val inntektForUforhet: Int,
         val inntektEtterUforhet: Int,
         val vurderingIFU: String,
+        val vurderingIEU: String,
     ) : FagsystemBrevdata
 }

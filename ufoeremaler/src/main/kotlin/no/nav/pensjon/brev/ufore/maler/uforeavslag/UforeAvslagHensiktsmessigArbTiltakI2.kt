@@ -44,13 +44,20 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført tilstrekkelig arbeidsrettede tiltak." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført hensiktsmessige arbeidsrettede tiltak, " +
+                        "eller forsøkt annet arbeid som kan bedre inntektsevnen din." })
+            }
+            paragraph {
+                text(bokmal { +"Arbeidsrettede tiltak betyr alle former for tiltak som kan øke din inntektsevne, og hjelpe deg med å skaffe arbeid, øke arbeidsinnsatsen din eller beholde lønnet arbeid. " })
+            }
+            paragraph {
+                text(bokmal { +"Du kan bare la være å prøve ut tiltak hvis det er klare grunner til at du ikke bør gjennomføre dette, eller tiltak ikke er hensiktsmessig. Unntaksregelen er streng, og det skal mye til for å ikke måtte gjennomføre tiltak. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -63,17 +70,14 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
             }
 
             paragraph {
-                text(bokmal { +"Vi vurderer at du har gjennomført hensiktsmessig behandling, men ikke alle nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
-                        "Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du delta i flere tiltak. "})
-            }
-            paragraph {
-                text(bokmal { + "Det er derfor for tidlig å ta stilling til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "})
+                text(bokmal { +"Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du gjennomføre flere tiltak. " +
+                        "Det er derfor for tidlig å vurdere til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." })
             }
 
             includePhrase(Felles.HvaSkjerNa)
