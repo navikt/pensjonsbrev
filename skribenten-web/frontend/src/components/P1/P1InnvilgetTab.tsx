@@ -7,6 +7,7 @@ import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
 import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
+const currentYear = new Date().getFullYear();
 
 export const P1InnvilgetTab = () => {
   const {
@@ -122,11 +123,35 @@ export const P1InnvilgetTab = () => {
                     margin-bottom: 0.5rem;
                   `}
                 />
-                <TextField
-                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.vedtaksdato?.message}
-                  label="Vedtaksdato"
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const)}
+                <Controller
+                  control={control}
+                  name={`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const}
+                  render={({ field: dateField, fieldState }) => (
+                    <DatePicker
+                      dropdownCaption
+                      fromDate={new Date(`1 Jan ${currentYear - 50}`)}
+                      onSelect={(date) => {
+                        if (date) {
+                          const day = String(date.getDate()).padStart(2, "0");
+                          const month = String(date.getMonth() + 1).padStart(2, "0");
+                          const year = date.getFullYear();
+                          dateField.onChange(`${day}.${month}.${year}`);
+                        } else {
+                          dateField.onChange("");
+                        }
+                      }}
+                      toDate={new Date(`31 Dec ${currentYear + 5}`)}
+                    >
+                      <DatePicker.Input
+                        className="p1-datepicker"
+                        error={fieldState.error?.message}
+                        label="Vedtaksdato"
+                        placeholder="dd.mm.åååå"
+                        size="small"
+                        {...dateField}
+                      />
+                    </DatePicker>
+                  )}
                 />
               </td>
 
@@ -160,6 +185,8 @@ export const P1InnvilgetTab = () => {
                   name={`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const}
                   render={({ field: dateField, fieldState }) => (
                     <DatePicker
+                      dropdownCaption
+                      fromDate={new Date(`1 Jan ${currentYear - 50}`)}
                       onSelect={(date) => {
                         if (date) {
                           const day = String(date.getDate()).padStart(2, "0");
@@ -170,6 +197,7 @@ export const P1InnvilgetTab = () => {
                           dateField.onChange("");
                         }
                       }}
+                      toDate={new Date(`31 Dec ${currentYear + 5}`)}
                     >
                       <DatePicker.Input
                         className="p1-datepicker"
@@ -184,7 +212,6 @@ export const P1InnvilgetTab = () => {
                   )}
                 />
               </td>
-
               {/* 3.4 Bruttobeløp */}
               <td className={`cell-seamless ${hasUtbetaltError(index) ? "p1-cell-error" : ""}`}>
                 <Textarea
