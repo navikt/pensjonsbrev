@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Button, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
+import { Button, DatePicker, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
@@ -21,6 +21,28 @@ export const P1InnvilgetTab = () => {
   });
 
   const addRow = () => append(emptyInnvilgetRow());
+
+  const hasInstitusjonError = (index: number) =>
+    !!(
+      errors.innvilgedePensjoner?.[index]?.institusjon?.land ||
+      errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn ||
+      errors.innvilgedePensjoner?.[index]?.institusjon?.pin ||
+      errors.innvilgedePensjoner?.[index]?.institusjon?.vedtaksdato
+    );
+
+  const hasPensjonstypeError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.pensjonstype;
+
+  const hasDatoError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.datoFoersteUtbetaling;
+
+  const hasUtbetaltError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.utbetalt;
+
+  const hasGrunnlagError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.grunnlagInnvilget;
+
+  const hasReduksjonsgrunnlagError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.reduksjonsgrunnlag;
+
+  const hasVurderingsperiodeError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.vurderingsperiode;
+
+  const hasAdresseError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.adresseNyVurdering;
 
   return (
     <div>
@@ -71,8 +93,17 @@ export const P1InnvilgetTab = () => {
         <tbody>
           {fields.map((field, index) => (
             <tr key={field.id}>
-              {/* 3.1 Institusjon + PIN/saksnr + vedtaksdato */}
-              <td>
+              {/* 3.1 Institusjon */}
+              <td className={hasInstitusjonError(index) ? "p1-cell-error" : ""}>
+                <TextField
+                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.land?.message}
+                  label="Land"
+                  size="small"
+                  {...register(`innvilgedePensjoner.${index}.institusjon.land` as const)}
+                  css={css`
+                    margin-bottom: 0.5rem;
+                  `}
+                />
                 <TextField
                   error={errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn?.message}
                   label="Institusjon"
@@ -100,7 +131,7 @@ export const P1InnvilgetTab = () => {
               </td>
 
               {/* 3.2 Pensjonstype */}
-              <td>
+              <td className={hasPensjonstypeError(index) ? "p1-cell-error" : ""}>
                 <Controller
                   control={control}
                   name={`innvilgedePensjoner.${index}.pensjonstype` as const}
@@ -123,19 +154,39 @@ export const P1InnvilgetTab = () => {
               </td>
 
               {/* 3.3 Dato første utbetaling */}
-              <td className="cell-seamless">
-                <Textarea
-                  className="p1-seamless-textarea"
-                  error={errors.innvilgedePensjoner?.[index]?.datoFoersteUtbetaling?.message}
-                  hideLabel
-                  label="Dato for første utbetaling"
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const)}
+              <td className={hasDatoError(index) ? "p1-cell-error" : ""}>
+                <Controller
+                  control={control}
+                  name={`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const}
+                  render={({ field: dateField, fieldState }) => (
+                    <DatePicker
+                      onSelect={(date) => {
+                        if (date) {
+                          const day = String(date.getDate()).padStart(2, "0");
+                          const month = String(date.getMonth() + 1).padStart(2, "0");
+                          const year = date.getFullYear();
+                          dateField.onChange(`${day}.${month}.${year}`);
+                        } else {
+                          dateField.onChange("");
+                        }
+                      }}
+                    >
+                      <DatePicker.Input
+                        className="p1-datepicker"
+                        error={fieldState.error?.message}
+                        hideLabel
+                        label="Dato for første utbetaling"
+                        placeholder="dd.mm.åååå"
+                        size="small"
+                        {...dateField}
+                      />
+                    </DatePicker>
+                  )}
                 />
               </td>
 
               {/* 3.4 Bruttobeløp */}
-              <td className="cell-seamless">
+              <td className={`cell-seamless ${hasUtbetaltError(index) ? "p1-cell-error" : ""}`}>
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.innvilgedePensjoner?.[index]?.utbetalt?.message}
@@ -147,7 +198,7 @@ export const P1InnvilgetTab = () => {
               </td>
 
               {/* 3.5 Grunnlag innvilget */}
-              <td>
+              <td className={hasGrunnlagError(index) ? "p1-cell-error" : ""}>
                 <Controller
                   control={control}
                   name={`innvilgedePensjoner.${index}.grunnlagInnvilget` as const}
@@ -155,9 +206,11 @@ export const P1InnvilgetTab = () => {
                     <RadioGroup
                       error={fieldState.error?.message}
                       legend="Velg"
-                      onChange={(val) => radioField.onChange(val || null)}
+                      onChange={(val) => {
+                        radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
+                      }}
                       size="small"
-                      value={radioField.value ?? ""}
+                      value={radioField.value ?? "IKKE_RELEVANT"}
                     >
                       {GRUNNLAG_INNVILGET_OPTIONS.map((option) => (
                         <Radio key={option.value} value={option.value}>
@@ -170,7 +223,7 @@ export const P1InnvilgetTab = () => {
               </td>
 
               {/* 3.6 Reduksjonsgrunnlag */}
-              <td>
+              <td className={hasReduksjonsgrunnlagError(index) ? "p1-cell-error" : ""}>
                 <Controller
                   control={control}
                   name={`innvilgedePensjoner.${index}.reduksjonsgrunnlag` as const}
@@ -178,9 +231,11 @@ export const P1InnvilgetTab = () => {
                     <RadioGroup
                       error={fieldState.error?.message}
                       legend="Velg"
-                      onChange={(val) => radioField.onChange(val || null)}
+                      onChange={(val) => {
+                        radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
+                      }}
                       size="small"
-                      value={radioField.value ?? ""}
+                      value={radioField.value ?? "IKKE_RELEVANT"}
                     >
                       {REDUKSJONSGRUNNLAG_OPTIONS.map((option) => (
                         <Radio key={option.value} value={option.value}>
@@ -193,7 +248,7 @@ export const P1InnvilgetTab = () => {
               </td>
 
               {/* 3.7 Vurderingsperiode */}
-              <td className="cell-seamless">
+              <td className={`cell-seamless ${hasVurderingsperiodeError(index) ? "p1-cell-error" : ""}`}>
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.innvilgedePensjoner?.[index]?.vurderingsperiode?.message}
@@ -205,7 +260,7 @@ export const P1InnvilgetTab = () => {
               </td>
 
               {/* 3.8 Adresse ny vurdering */}
-              <td className="cell-seamless">
+              <td className={`cell-seamless ${hasAdresseError(index) ? "p1-cell-error" : ""}`}>
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.innvilgedePensjoner?.[index]?.adresseNyVurdering?.message}
