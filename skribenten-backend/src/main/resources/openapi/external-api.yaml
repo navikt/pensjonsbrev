@@ -168,7 +168,7 @@ components:
               description: Navn på mottaker
             postnummer:
               type: string
-              description: Postnummer
+              description: Postnummer. Fire siffer.
             poststed:
               type: string
               description: Poststed

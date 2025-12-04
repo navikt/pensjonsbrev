@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
@@ -51,6 +52,21 @@ const sendBrevSuccessSentralprint = nyKvittertBrev({
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 
+const KvitterteBrevWithContext = ({ kvitterteBrev, sakId }: { kvitterteBrev: KvittertBrev[]; sakId: string }) => {
+  const rootRoute = createRootRoute({
+    component: () => <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={sakId} />,
+  });
+  const router = createRouter({
+    routeTree: rootRoute,
+  });
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
+};
+
 describe("<KvitterteBrev />", () => {
   beforeEach(() => {
     cy.setupSakStubs();
@@ -66,11 +82,7 @@ describe("<KvitterteBrev />", () => {
       sendBrevSuccessSentralprint,
     ];
 
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={"123456"} />
-      </QueryClientProvider>,
-    );
+    cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId={"123456"} />);
 
     cy.get('span:contains("Kunne ikke sende brev")').eq(0).should("be.visible");
     cy.get('span:contains("Kunne ikke sende brev")').eq(0);
@@ -127,18 +139,14 @@ describe("<KvitterteBrev />", () => {
       sendBrevError,
       attesteringSuccess,
     ];
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={"123456"} />
-      </QueryClientProvider>,
-    );
+    cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId={"123456"} />);
 
-    cy.get(".navds-accordion__item").should("have.length", 6);
-    cy.get(".navds-accordion__item").eq(0).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(1).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(2).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
-    cy.get(".navds-accordion__item").eq(4).contains("Klar til attestering");
-    cy.get(".navds-accordion__item").eq(5).contains("Sendt til mottaker");
+    cy.get(".aksel-accordion__item").should("have.length", 6);
+    cy.get(".aksel-accordion__item").eq(0).contains("Kunne ikke sende brev");
+    cy.get(".aksel-accordion__item").eq(1).contains("Kunne ikke sende brev");
+    cy.get(".aksel-accordion__item").eq(2).contains("Kunne ikke sende brev");
+    cy.get(".aksel-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
+    cy.get(".aksel-accordion__item").eq(4).contains("Klar til attestering");
+    cy.get(".aksel-accordion__item").eq(5).contains("Sendt til mottaker");
   });
 });

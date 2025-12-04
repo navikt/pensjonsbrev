@@ -63,6 +63,10 @@ class BlocksAssert(private val matchSize: Boolean) {
         blockMatchers.add(isA(Block::type, "TITLE2", has(Block.Title2::content, ContentAssert().apply(that).build())))
     }
 
+    fun title3(that: ContentAssert.() -> Unit) {
+        blockMatchers.add(isA(Block::type, "TITLE3", has(Block.Title3::content, ContentAssert().apply(that).build())))
+    }
+
     fun build(): Matcher<List<Block>> = if (matchSize)
         hasSize(equalTo(blockMatchers.size)) and ListIndexMatcher.forList(blockMatchers)
     else ListIndexMatcher.forList(blockMatchers)

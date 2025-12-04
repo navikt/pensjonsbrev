@@ -41,6 +41,7 @@ private val testSak = Pen.SakSelection(
     1337,
     "12345",
     LocalDate.of(1990, 1, 1),
+    Pen.SakSelection.Navn("a", "b", "c"),
     ALDER,
     "en veldig bra enhet"
 )
@@ -48,6 +49,7 @@ private val sakVikafossen = Pen.SakSelection(
     7007,
     "007",
     LocalDate.of(1920, Month.NOVEMBER, 11),
+    Pen.SakSelection.Navn("a", "b", "c"),
     ALDER,
     "vikafossen"
 )
@@ -56,6 +58,7 @@ private val generellSak0001 = Pen.SakSelection(
     7008,
     "12345",
     LocalDate.of(1920, Month.NOVEMBER, 11),
+    Pen.SakSelection.Navn("a", "b", "c"),
     GENRL,
     "0001"
 )
@@ -64,6 +67,7 @@ private val generellSak0002 = Pen.SakSelection(
     7009,
     "12345",
     LocalDate.of(1920, Month.NOVEMBER, 11),
+    Pen.SakSelection.Navn("a", "b", "c"),
     GENRL,
     "0002"
 )
@@ -80,6 +84,10 @@ class AuthorizeAnsattSakTilgangTest {
         override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
             adressebeskyttelser[Pair(fnr, behandlingsnummer)]
                 ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $fnr og behandlingsnummer $behandlingsnummer")
+
+        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> =
+            notYetStubbed("Mangler stub for hentBrukerContext")
+
     }
 
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(emptyList())))

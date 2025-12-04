@@ -1,23 +1,21 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyBrevdata> {
+object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_HVILENDE_RETT_INFO_4_AAR
-    override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
+    override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om hvilende rett til uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

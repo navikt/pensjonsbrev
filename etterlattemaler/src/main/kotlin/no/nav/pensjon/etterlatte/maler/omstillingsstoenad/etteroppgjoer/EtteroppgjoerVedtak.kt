@@ -22,6 +22,7 @@ import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTOSelectors.data
@@ -38,7 +39,6 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettighete
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.beregningsVedlegg
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.praktiskInformasjonOmEtteroppgjoeret
 
 data class EtteroppgjoerVedtakBrevDTO(
     override val innhold: List<Element>,
@@ -71,7 +71,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtak - Etteroppgjør",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
@@ -113,7 +112,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     text(
                         bokmal { +"Ett rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
                         nynorsk { +"Eitt rettsgebyr er per 31. desember " + data.etteroppgjoersAar.format() + " på " + data.rettsgebyrBeloep.format() + "."},
-                        english { +"One court fee as of December 31st " + data.etteroppgjoersAar.format() + " is " + data.rettsgebyrBeloep.format() + "." }
+                        english { +"As of 31 December " + data.etteroppgjoersAar.format() + " a standard court fee is " + data.rettsgebyrBeloep.format() + "." }
                     )
                 }
 
@@ -129,7 +128,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     text(
                         bokmal { +"Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9 og omstillingsstønadsforskriften § 9." },
                         nynorsk { +"Vedtaket er fatta etter føresegnene om omstillingsstønad i folketrygdlova § 17-9 og omstillingsstønadsforskriften § 9." },
-                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations.." },
+                        english { +"The decision has been made pursuant to Section 17-9 of the Norwegian National Insurance Act and Section 9 of the Adjustment Allowance Regulations." },
                     )
                 }
 
@@ -139,7 +138,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                         text(
                             bokmal { +"Hvordan skal du betale tilbake" },
                             nynorsk { +"Korleis du skal betale tilbake" },
-                            english { +"" },
+                            english { +"How to repay" },
                         )
                     }
                     paragraph {
@@ -170,8 +169,8 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     title2 {
                         text(
                             bokmal { +"Etterbetaling av beløpet" },
-                            nynorsk { +"" },
-                            english { +"" },
+                            nynorsk { +"Etterbetaling av beløpet" },
+                            english { +"Back payment of the amount" },
                         )
                     }
                     paragraph {
@@ -215,7 +214,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     )
                 }
 
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilAaKlage)
 
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {
@@ -231,12 +230,12 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             }
 
             includeAttachment(beregningsVedlegg, data.beregningsVedleggData)
-            includeAttachment(dineRettigheterOgPlikter, innhold)
+            includeAttachment(dineRettigheterOgPlikter)
 
             // Nasjonal
-            includeAttachment(klageOgAnke(bosattUtland = false, tilbakekreving = true), innhold, data.bosattUtland.not())
+            includeAttachment(klageOgAnke(bosattUtland = false, tilbakekreving = true), data.bosattUtland.not())
 
             // Bosatt utland
-            includeAttachment(klageOgAnke(bosattUtland = true, tilbakekreving = true), innhold, data.bosattUtland)
+            includeAttachment(klageOgAnke(bosattUtland = true, tilbakekreving = true), data.bosattUtland)
         }
 }

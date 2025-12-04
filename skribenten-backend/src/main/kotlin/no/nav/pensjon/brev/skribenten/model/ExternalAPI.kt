@@ -39,7 +39,7 @@ object ExternalAPI {
         data class Samhandler(val tssId: String) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: String,
-            val postnummer: String,
+            val postnummer: NorskPostnummer,
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
@@ -49,8 +49,6 @@ object ExternalAPI {
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
             val navn: String,
-            val postnummer: String?,
-            val poststed: String?,
             val adresselinje1: String,
             val adresselinje2: String?,
             val adresselinje3: String?,

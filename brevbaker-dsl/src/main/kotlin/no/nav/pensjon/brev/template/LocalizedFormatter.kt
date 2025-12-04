@@ -6,9 +6,11 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.Month
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
 import kotlin.apply
 
 const val NON_BREAKING_SPACE = '\u00A0'
@@ -32,6 +34,22 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         }
 
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
+    }
+
+    object MonthFormatter : LocalizedFormatter<Month>() {
+        override fun apply(first: Month, second: Language): String {
+            return first.getDisplayName(TextStyle.FULL, second.locale())
+        }
+
+        override fun stableHashCode(): Int =  StableHash.of("MaanedFormatter").hashCode()
+    }
+
+    object MonthFormatterShort : LocalizedFormatter<Month>() {
+        override fun apply(first: Month, second: Language): String {
+            return first.getDisplayName(TextStyle.SHORT, second.locale())
+        }
+
+        override fun stableHashCode(): Int =  StableHash.of("MaanedFormatterKort").hashCode()
     }
 
     object YearMonthFormatter : LocalizedFormatter<YearMonth>() {

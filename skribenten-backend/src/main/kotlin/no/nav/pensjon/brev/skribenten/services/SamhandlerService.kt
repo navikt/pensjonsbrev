@@ -3,27 +3,35 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.typesafe.config.Config
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import org.slf4j.LoggerFactory
+import kotlin.collections.flatMap
 
 interface SamhandlerService {
     suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto
     suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto
     suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
+    suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -67,9 +75,25 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
                 HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
             }
 
-    private val samhandlerNavnCache = Cache<String, String>()
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached(Cacheomraade.SAMHANDLER, idTSSEkstern) {
         hentSamhandler(idTSSEkstern).success?.navn
+    }
+
+    override suspend fun hentSamhandlerAdresse(idTSSEkstern: String) = cache.cached(Cacheomraade.SAMHANDLER_ADRESSE, idTSSEkstern) {
+        samhandlerProxyClient.get("/api/samhandler/hentSamhandlerPostadresse/") {
+            url {
+                appendPathSegments(idTSSEkstern)
+            }
+            contentType(Json)
+            accept(Json)
+        }.let { response ->
+            response
+                .takeIf { it.status.isSuccess() }
+                ?.body<HentSamhandlerAdresseResponseDto>()
+                ?: HentSamhandlerAdresseResponseDto(null, GENERISK).also {
+                    logger.error("Feil ved henting av samhandler adresse fra tjenestebuss-integrasjon. Status: ${response.status}, melding: ${response.bodyAsText()}")
+                }
+        }
     }
 
     override val name = "SamhandlerService"

@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
+import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottaker";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
@@ -28,6 +29,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
       );
+      queryClient.setQueryData(getBrev.queryKey(props.brev.id), response);
       setModalÅpen(false);
     },
   });
@@ -43,7 +45,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
 
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   return (
-    <VStack gap={props.withGap ? "2" : "0"}>
+    <VStack gap={props.withGap ? "space-8" : "space-0"}>
       {modalÅpen && (
         <EndreMottakerModal
           error={mottakerMutation.error}
@@ -56,7 +58,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           åpen={modalÅpen}
         />
       )}
-      <HStack align={"center"} gap="2">
+      <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
             <div>
@@ -107,7 +109,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
               <XMarkOctagonFillIcon
                 css={css`
                   align-self: center;
-                  color: var(--a-nav-red);
+                  color: var(--ax-text-logo);
                 `}
                 title="error"
               />

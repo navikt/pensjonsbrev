@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import { BodyLong, BoxNew, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -8,9 +8,9 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrev, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getBrev, getBrevmetadataQuery, getBrevReservasjon, oppdaterBrev, tilbakestillBrev } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -22,6 +22,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -67,15 +68,15 @@ function RedigerBrevPage() {
       }
       if (error.response?.status === 409) {
         return (
-          <Box
-            background="surface-default"
+          <BoxNew
+            background="default"
             css={css`
               display: flex;
               flex: 1;
             `}
             padding="6"
           >
-            <VStack align="start" gap="2">
+            <VStack align="start" gap="space-8">
               <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
               <Button
                 css={css`
@@ -94,7 +95,7 @@ function RedigerBrevPage() {
                 Gå til brevbehandler
               </Button>
             </VStack>
-          </Box>
+          </BoxNew>
         );
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
@@ -160,7 +161,7 @@ const TilbakestillMalModal = (props: {
   return (
     <Modal
       css={css`
-        border-radius: 0.25rem;
+        border-radius: var(--ax-radius-4);
       `}
       header={{
         heading: "Vil du tilbakestille brevmalen?",
@@ -175,7 +176,7 @@ const TilbakestillMalModal = (props: {
         <BodyLong>Du kan ikke angre denne handlingen.</BodyLong>
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button onClick={props.onClose} type="button" variant="tertiary">
             Nei, behold brevet
           </Button>
@@ -214,11 +215,21 @@ function RedigerBrev({
   const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
+  const [warnOpen, setWarnOpen] = useState(false);
+  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
+  const navigateToBrevbehandler = () =>
+    navigate({
+      to: "/saksnummer/$saksId/brevbehandler",
+      params: { saksId },
+      search: { brevId: brev.info.id, enhetsId, vedtaksId },
+    });
+
   const brevmal = useQuery({
-    ...getSakContextQuery(saksId, vedtaksId),
-    select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
+    ...getBrevmetadataQuery,
+    select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
   const showDebug = useSearch({
@@ -252,6 +263,13 @@ function RedigerBrev({
     defaultValues: defaultValuesModelEditor,
   });
 
+  const { getWarning } = useBrevEditorWarnings({
+    brevkode: brev.info.brevkode,
+    form,
+    redigertBrev: editorState.redigertBrev,
+    propertyUsage: brev.propertyUsage ?? [],
+  });
+
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
@@ -276,6 +294,16 @@ function RedigerBrev({
       },
     );
   };
+
+  const guardedSubmit = form.handleSubmit((values) => {
+    const warning = getWarning();
+    if (warning) {
+      setWarn(warning);
+      setWarnOpen(true);
+      return;
+    }
+    onSubmit(values, navigateToBrevbehandler);
+  });
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
@@ -306,20 +334,26 @@ function RedigerBrev({
           }
           min-width: 946px;
           max-width: 1106px;
-          background: var(--a-white);
-          border-left: 1px solid var(--a-gray-200);
-          border-right: 1px solid var(--a-gray-200);
+          background: var(--ax-bg-default);
+          border-left: 1px solid var(--ax-neutral-300);
+          border-right: 1px solid var(--ax-neutral-300);
         `}
-        onSubmit={form.handleSubmit((v) =>
-          onSubmit(v, () =>
-            navigate({
-              to: "/saksnummer/$saksId/brevbehandler",
-              params: { saksId },
-              search: { brevId: brev.info.id, enhetsId, vedtaksId },
-            }),
-          ),
-        )}
+        onSubmit={guardedSubmit}
       >
+        <WarnModal
+          count={warn?.count ?? 0}
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => {
+            setWarnOpen(false);
+            setWarn(null);
+          }}
+          onFortsett={() => {
+            setWarnOpen(false);
+            setWarn(null);
+            onSubmit(form.getValues(), navigateToBrevbehandler);
+          }}
+          open={warnOpen}
+        />
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -335,20 +369,20 @@ function RedigerBrev({
             grid-template-columns: minmax(304px, 384px) minmax(640px, 720px);
 
             > :first-of-type {
-              padding: var(--a-spacing-6);
-              border-right: 1px solid var(--a-gray-200);
+              padding: var(--ax-space-24);
+              border-right: 1px solid var(--ax-neutral-300);
               height: var(--main-page-content-height);
               overflow-y: auto;
             }
 
             @media (width <= 1024px) {
               > :first-of-type {
-                padding: var(--a-spacing-3);
+                padding: var(--ax-space-12);
               }
             }
           `}
         >
-          <VStack gap="3">
+          <VStack gap="space-12">
             <Heading size="small" spacing>
               {brevmal.data?.name}
             </Heading>
@@ -363,15 +397,15 @@ function RedigerBrev({
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--a-white);
+            background: var(--ax-bg-default);
 
-            border-top: 1px solid var(--a-gray-200);
-            padding: 0.5rem 1rem;
+            border-top: 1px solid var(--ax-neutral-300);
+            padding: var(--ax-space-8) var(--ax-space-16);
           `}
           justify={"space-between"}
         >
           <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-            <HStack align={"center"} gap="1">
+            <HStack align="center" gap="space-4">
               <ArrowCirclepathIcon
                 css={css`
                   transform: scaleX(-1);
@@ -382,7 +416,7 @@ function RedigerBrev({
               Tilbakestill malen
             </HStack>
           </Button>
-          <HStack gap="2" justify={"end"}>
+          <HStack gap="space-8" justify="end">
             <Button
               onClick={() =>
                 navigate({
@@ -393,12 +427,12 @@ function RedigerBrev({
               }
               size="small"
               type="button"
-              variant="tertiary"
+              variant="secondary"
             >
               Tilbake til brevvelger
             </Button>
-            <Button loading={oppdaterBrevMutation.isPending} size="small">
-              <HStack align={"center"} gap="2">
+            <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
+              <HStack align="center" gap="space-8">
                 <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
               </HStack>
             </Button>
@@ -416,7 +450,10 @@ enum BrevSidemenyTabs {
 
 // TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
 const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(brev.info.brevkode);
+  const specificationFormElements = usePartitionedModelSpecification(
+    brev.info.brevkode,
+    brev.propertyUsage ?? undefined,
+  );
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
   const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
@@ -429,8 +466,8 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
       display: flex;
     }
     flex-direction: column;
-    gap: 1.125rem;
-    margin-top: 1.125rem;
+    gap: var(--ax-space-20);
+    margin-top: var(--ax-space-20);
   `;
 
   if (!hasOptional && !hasRequired) {
@@ -478,7 +515,7 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
       css={css`
         width: 100%;
 
-        .navds-tabs__scroll-button {
+        .aksel-tabs__scroll-button {
           /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
           display: none;
         }

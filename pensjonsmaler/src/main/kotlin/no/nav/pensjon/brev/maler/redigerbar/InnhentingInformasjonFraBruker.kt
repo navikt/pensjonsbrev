@@ -41,7 +41,6 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhenting av opplysninger/dokumentasjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -650,9 +649,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             }
             paragraph {
                 text(
-                    bokmal { + "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss." },
-                    nynorsk { + "Saka vil bli behandla innan " + fritekst("talet på dagar/veker/månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss." },
-                    english { + "Your case will be processed within " + fritekst("antall days/weeks/months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us." },
+                    bokmal { + "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi mottok søknaden. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss." },
+                    nynorsk { + "Saka vil bli behandla innan " + fritekst("talet på dagar/veker/månader") + " etter at vi fekk søknaden. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss." },
+                    english { + "Your case will be processed within " + fritekst("antall days/weeks/months") + " after we received the application. If your case has not been decided within this time, you will hear from us." },
                 )
             }
 

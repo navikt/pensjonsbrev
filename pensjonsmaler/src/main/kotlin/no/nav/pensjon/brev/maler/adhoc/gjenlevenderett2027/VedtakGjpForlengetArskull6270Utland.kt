@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnittInntektG
@@ -40,7 +40,6 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Gjenlevendepensjonen din forlenges",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -159,7 +158,7 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
@@ -177,6 +176,6 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
 
             includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
-        includeAttachment(vedleggGjpDineRettigheterOgPlikter, EmptyBrevdata.expr())
+        includeAttachment(vedleggGjpDineRettigheterOgPlikter, EmptyVedleggData.expr())
     }
 }

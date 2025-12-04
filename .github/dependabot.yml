@@ -4,12 +4,12 @@ registries:
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
-    token: ${{secrets.READER_TOKEN}}
+    token: ${{secrets.READ_PACKAGES_TEMP}}
   gradle-artifactory:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/pensjonsbrev
     username: ${{ github.repository_owner }}
-    password: ${{secrets.READER_TOKEN}}
+    password: ${{secrets.READ_PACKAGES_TEMP}}
 
 updates:
   # ==============
@@ -30,23 +30,19 @@ updates:
       - "/pensjonsmaler"
       - "/skribenten-backend"
       - "/template-model-generator"
-      - "/tjenestebuss-integrasjon"
       - "/ufoere-brevbaker-api-model"
       - "/ufoeremaler"
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
     ignore:
       - dependency-name: "no.nav.pensjon.brevbaker:brevbaker-api-model-common"
     groups:
-      tjenestebuss:
-        patterns:
-          - "org.apache.cxf*"
-          - "com.sun.xml.messaging.saaj:saaj-impl"
-          - "com.sun.xml.bind:jaxb-core"
       postgresql:
         patterns:
           - "org.postgresql:postgresql"
@@ -64,11 +60,12 @@ updates:
           - "io.micrometer*"
           - "net.logstash.logback:logstash-logback-encoder"
           - "no.nav*"
+          - "org.apache.pdfbox*"
           - "org.assertj:assertj-core"
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
-          - "org.testcontainers:postgresql"
+          - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
 
 
@@ -84,6 +81,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - npm-github
@@ -107,6 +106,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
 
   # ==============
   # Docker frontend
@@ -118,6 +119,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:
@@ -131,10 +134,11 @@ updates:
       - "/pensjon-brevbaker"
       - "/pdf-bygger"
       - "/skribenten-backend"
-      - "/tjenestebuss-integrasjon"
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:

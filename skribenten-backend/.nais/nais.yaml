@@ -44,7 +44,7 @@ spec:
       memory: "256Mi"
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: {{database.postgresVersion}}
         tier: db-custom-1-3840
         databases:
           - envVarPrefix: DB
@@ -54,6 +54,8 @@ spec:
             value: "{{database.auditlog}}"
           - name: "pgaudit.log"
             value: "read,write,ddl,role"
+          - name: "pgaudit.log_parameter"
+            value: "on"
   azure:
     application:
       enabled: true
@@ -65,6 +67,9 @@ spec:
           {{/each}}
         extra:
           - azp_name
+  valkey:
+    - instance: "cache"
+      access: readwrite
 
   accessPolicy:
     outbound:

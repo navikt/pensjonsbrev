@@ -32,7 +32,6 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vi har mottatt søknaden din om omstillingsstønad",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),
@@ -48,7 +47,7 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                 paragraph {
                     text(
                         bokmal { +"Vi viser til søknaden din som vi mottok " + mottattDato.format() + "." },
-                        nynorsk { +"Vi viser til søknaden din som vi tok imot " + mottattDato.format() + "." },
+                        nynorsk { +"Vi fekk søknad frå deg " + mottattDato.format() + "." },
                         english { +"We refer to your application that we received " + mottattDato.format() + "." },
                     )
                 }
@@ -67,8 +66,8 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                                     "Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. " +
                                     "Du kan finne vår saksbehandlingstid på nav.no/saksbehandlingstider#omstillingsstonad." },
                             nynorsk { +
-                                    "Søknaden din vil bli behandla så snart som mogleg og sinast innan <fritekst: antall uker/måneder>. " +
-                                    "Dersom saka di ikkje har blitt ferdigbehandla innan denne tida, vil du få nærmare beskjed. " +
+                                    "Søknaden din vil bli behandla så snart som mogleg og seinast innan <fritekst: antall uker/måneder>. " +
+                                    "Dersom søknaden ikkje blir avgjort i løpet av denne tida, vil du få nærare informasjon frå oss. " +
                                     "Du finn saksbehandlingstida vår på nav.no/saksbehandlingstider#omstillingsstonad." },
                             english { +
                                     "Nav will process your application as soon as possible, and within <fritekst: antall uker/måneder> " +
@@ -91,9 +90,9 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                                     "Dette landets trygdemyndigheter vil sende søknaden videre til Nav. " +
                                     "Mottatt søknad er derfor avbrutt og vil ikke bli behandlet." },
                             nynorsk { +
-                                    "Du må kontakte trygdemaktene i landet du bur i for å søkje om omstillingsstønad. " +
+                                    "Du må kontakte trygdemaktene i landet du bur i for å søkje omstillingsstønad. " +
                                     "Trygdemaktene i landet du bur i vil sende søknaden til Nav. " +
-                                    "Motteken søknad er avbrutt og vil ikkje bli behandla." },
+                                    "Motteken søknad er avbroten og vil ikkje bli behandla." },
                             english { +
                                     "You must contact the national insurance authority in the country where you live to apply " +
                                     "for an adjustment allowance. This country’s national insurance authority will then " +

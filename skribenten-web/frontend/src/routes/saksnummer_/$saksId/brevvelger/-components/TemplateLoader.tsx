@@ -31,7 +31,7 @@ export const TemplateLoader = (props: {
       css={css`
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: var(--ax-space-16);
       `}
     >
       <FavoriteButton onAddFavorittSuccess={props.onAddFavorittSuccess} templateId={props.templateId} />
@@ -90,6 +90,7 @@ function Brevmal({
         <BrevmalForDoksys
           defaultValues={defaultValues}
           displayLanguages={displayLanguages}
+          key={templateId}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
@@ -103,6 +104,7 @@ function Brevmal({
         <BrevmalForExstream
           defaultValues={defaultValues}
           displayLanguages={displayLanguages}
+          key={templateId}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}
@@ -116,6 +118,7 @@ function Brevmal({
         <BrevmalBrevbaker
           defaultValues={defaultValues}
           displayLanguages={displayLanguages}
+          key={templateId}
           letterTemplate={letterTemplate}
           preferredLanguage={preferredLanguage}
           saksId={saksId}

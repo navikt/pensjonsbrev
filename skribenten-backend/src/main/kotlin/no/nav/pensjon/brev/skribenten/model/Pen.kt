@@ -47,9 +47,12 @@ object Pen {
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
+        val navn: Navn,
         val sakType: SakType,
         val enhetId: String,
-    )
+    ) {
+        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+    }
 
     data class Avtaleland(val navn: String, val kode: String)
 
@@ -153,8 +156,8 @@ object Pen {
 
         data class Mottaker(val type: Type, val tssId: String? = null, val norskAdresse: NorskAdresse? = null, val utenlandskAdresse: UtenlandsAdresse? = null) {
             enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
-            data class NorskAdresse(val navn: String, val postnummer: String, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
-            data class UtenlandsAdresse(val navn: String, val landkode: Landkode, val postnummer: String?, val poststed: String?, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
+            data class NorskAdresse(val navn: String, val postnummer: NorskPostnummer, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
+            data class UtenlandsAdresse(val navn: String, val landkode: Landkode, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
         }
     }
 

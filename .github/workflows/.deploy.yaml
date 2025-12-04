@@ -1,0 +1,43 @@
+name: .deploy.yaml
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'Image to deploy'
+        required: true
+        type: string
+      resource:
+        description: 'Resources to deploy'
+        required: true
+        type: string
+      vars:
+        description: 'Variables to deploy'
+        required: true
+        type: string
+      cluster:
+        description: 'Cluster to deploy to'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy app
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    if: ${{
+      ((inputs.cluster == 'dev-gcp' || inputs.cluster == 'dev-fss') && ((github.event_name == 'push' && github.ref == 'refs/heads/main' )  || github.event_name == 'workflow_dispatch' )) ||
+      ((inputs.cluster == 'prod-gcp' || inputs.cluster == 'prod-fss') && (github.event_name == 'push' && github.ref == 'refs/heads/main')) }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Deploy to ${{ inputs.cluster }}
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.resource }}
+          VAR: image=${{ inputs.image }}
+          VARS: ${{ inputs.vars }}

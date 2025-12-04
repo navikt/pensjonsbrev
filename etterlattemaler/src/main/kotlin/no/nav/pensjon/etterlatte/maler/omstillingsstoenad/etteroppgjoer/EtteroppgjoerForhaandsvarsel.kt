@@ -74,7 +74,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - Etteroppgjør",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
@@ -155,7 +154,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
             }
 
-            includePhrase(Felles.HvordanMelderDuFra)
+            includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEtteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(data.bosattUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }

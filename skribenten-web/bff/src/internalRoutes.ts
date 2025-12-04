@@ -7,11 +7,11 @@ import { jwtDecode } from "jwt-decode";
 import config from "./config.js";
 
 export const internalRoutes = (server: Express) => {
-  server.get("/bff/internal/logout", (request, response) => {
+  server.get("/bff/api/logout", (request, response) => {
     response.redirect("/oauth2/logout");
   });
 
-  server.get("/bff/internal/userinfo", (request, response): void => {
+  server.get("/bff/api/userinfo", (request, response): void => {
     const token = getToken(request);
 
     if (!token) {
@@ -32,26 +32,51 @@ export const internalRoutes = (server: Express) => {
   });
 
   const baseUrls = config.baseUrls;
-  server.get("/bff/internal/baseurls", (_, response) => {
+  server.get("/bff/api/baseurls", (request, response) => {
+    let psak = baseUrls.psak;
+
+    const requestHost = request.hostname;
+    if (requestHost.endsWith("ansatt.dev.nav.no")) {
+      psak = psak.replace("intern.dev.nav.no", "ansatt.dev.nav.no");
+    }
+
     response.json({
-      psak: baseUrls.psak,
+      psak,
     });
   });
 
-  server.post("/bff/internal/logg", bodyParser.json(), cookieParser(), (request, response) => {
+  function findLogLevel(status: number | undefined): string {
+    switch (status) {
+      case undefined:
+        return "ERROR";
+      case 401:
+      case 403:
+      case 404:
+      case 504:
+        return "WARN";
+      case 422:
+        return "INFO";
+      default:
+        return "ERROR";
+    }
+  }
+
+  server.post("/bff/api/logg", bodyParser.json(), cookieParser(), (request, response) => {
     if (request.cookies["use-local-vite-server"] === "true") {
       response.status(200).end();
       return;
     }
 
     const body = request.body;
+
     console.error(
       JSON.stringify({
-        level: "ERROR",
-        statusCode: "500",
+        level: findLogLevel(body.status),
+        statusCode: body.status,
         timestamp: body.jsonContent.timestamp,
-        message: body.message + ": " + body.jsonContent.url,
+        message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
+        x_correlationId: body.requestId,
       }),
     );
     response.status(200).end();

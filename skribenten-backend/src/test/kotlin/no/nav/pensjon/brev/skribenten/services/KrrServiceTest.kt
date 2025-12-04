@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.ConfigFactory
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.assertNull
 import kotlin.test.assertEquals
 
 class KrrServiceTest {
+    private val config = ConfigFactory.parseMap(mapOf("scope" to "test-scope", "url" to "http://krr.test"))
 
     @Test
     fun `kan hente foretrukket spraak fra KRR`() {
@@ -19,13 +19,13 @@ class KrrServiceTest {
             feil = mapOf()
         )
 
-        val service = KrrService(
-            config = ConfigFactory.parseMap(mapOf()),
-            authService = FakeAuthService,
-            client = settOppHttpClient(respons)
-        )
+        httpClientTest(respons) { engine ->
+            val service = KrrService(
+                config = config,
+                authService = FakeAuthService,
+                engine = engine,
+            )
 
-        runBlocking {
             val preferredLocale = service.getPreferredLocale("12345")
             assertNull(preferredLocale.failure)
             assertEquals(SpraakKode.NN, preferredLocale.spraakKode)
@@ -39,13 +39,13 @@ class KrrServiceTest {
             feil = mapOf("12345" to KrrService.Feiltype.person_ikke_funnet)
         )
 
-        val service = KrrService(
-            config = ConfigFactory.parseMap(mapOf()),
-            authService = FakeAuthService,
-            client = settOppHttpClient(respons)
-        )
+        httpClientTest(respons) { engine ->
+            val service = KrrService(
+                config = config,
+                authService = FakeAuthService,
+                engine = engine,
+            )
 
-        runBlocking {
             val preferredLocale = service.getPreferredLocale("12345")
             assertNull(preferredLocale.spraakKode)
             assertEquals(KontaktinfoResponse.FailureType.NOT_FOUND, preferredLocale.failure)
@@ -59,13 +59,13 @@ class KrrServiceTest {
             feil = mapOf("12345" to KrrService.Feiltype.skjermet)
         )
 
-        val service = KrrService(
-            config = ConfigFactory.parseMap(mapOf()),
-            authService = FakeAuthService,
-            client = settOppHttpClient(respons)
-        )
+        httpClientTest(respons) { engine ->
+            val service = KrrService(
+                config = config,
+                authService = FakeAuthService,
+                engine = engine
+            )
 
-        runBlocking {
             val preferredLocale = service.getPreferredLocale("12345")
             assertNull(preferredLocale.spraakKode)
             assertEquals(KontaktinfoResponse.FailureType.ERROR, preferredLocale.failure)

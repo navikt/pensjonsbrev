@@ -1,0 +1,61 @@
+name: .release.yaml
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: "Path to build"
+        required: true
+        type: string
+      release-common-result:
+        description: "Result from release-common"
+        required: true
+        type: string
+      changes:
+        description: "Changes"
+        required: true
+        type: string
+      dependsOnCommon:
+        description: "Depends on common"
+        required: false
+        type: boolean
+        default: true
+
+env:
+  JavaDistribution: "temurin"
+  JavaVersion: 21
+
+jobs:
+  release:
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    if: ${{ (inputs.release-common-result == 'success' || inputs.release-common-result == 'skipped' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-encryption-key: ${{ secrets.GRADLEKEY }}
+      - uses: actions/setup-java@v5
+        with:
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
+      - name: "publish common to Maven local"
+        if: ${{ inputs.dependsOnCommon }}
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+      - name: "compile and run tests"
+        run: |
+          ./gradlew :${{ inputs.path }}:build
+      - name: "Release maven artifact"
+        if: ${{ github.ref == 'refs/heads/main' && inputs.changes == 'true' }}
+        run: "./gradlew :${{ inputs.path }}:publish -Dorg.gradle.configuration-cache=false"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven manually"
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :${{ inputs.path }}:publish -Dorg.gradle.configuration-cache=false
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

@@ -19,23 +19,24 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
 
   switch (content.type) {
     case NEW_LINE: {
-      return <br />;
+      return <br data-literal-index={JSON.stringify(literalIndex)} />;
     }
     case VARIABLE: {
       return (
         <span
           css={css`
-            border-radius: 4px;
-            border: ${isFocused ? "2px" : "1px"} solid ${isFocused ? "blue" : "var(--a-border-default)"};
-            background: var(--a-gray-50);
-            padding: 1px 4px;
+            border-radius: var(--ax-radius-4);
+            outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral)"};
+            background: var(--ax-neutral-100);
+            padding: var(--ax-space-1) var(--ax-space-4);
             display: inline-block;
-            margin: 0 1px;
+            margin: 0 var(--ax-space-1);
             cursor: default;
 
             ${content.fontType === FontType.BOLD && "font-weight: bold;"}
             ${content.fontType === FontType.ITALIC && "font-style: italic;"}
           `}
+          data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
             setEditorState((oldState) => ({
               ...oldState,

@@ -50,7 +50,7 @@ class Felt() {
         muterbareFelt[this] = leggTilPaaAlleSpraak(str)
     }
 
-    infix fun String.to(verdi: Map<LanguageCode, String?>?) {
+    infix fun String.to(verdi: Map<LanguageCode, String?>) {
         muterbareFelt[this] = verdi
     }
 

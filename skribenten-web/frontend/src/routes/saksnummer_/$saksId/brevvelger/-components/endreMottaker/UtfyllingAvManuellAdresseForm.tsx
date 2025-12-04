@@ -1,10 +1,22 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Button,
+  Checkbox,
+  Heading,
+  HStack,
+  Link,
+  TextField,
+  UNSAFE_Combobox,
+  VStack,
+} from "@navikt/ds-react";
 import type { Control } from "react-hook-form";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
+import { ManueltAdressertTil } from "~/types/brev";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -23,8 +35,8 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   const isNorge = typeof land === "string" && land === "NO";
 
   return (
-    <VStack gap="6">
-      <VStack gap="4">
+    <VStack gap="space-24">
+      <VStack gap="space-16">
         <Alert size="small" variant="warning">
           <Heading size="xsmall">Manuell adresseendringsrutine</Heading>
           <Link
@@ -35,19 +47,22 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           </Link>
         </Alert>
 
-        {/* <Controller
+        <Controller
           control={properties.control}
-          name="manuellAdresse.adresse.erBrukersAdresse"
+          name="manuellAdresse.adresse.manueltAdressertTil"
           render={({ field }) => (
             <Checkbox
               {...field}
-              description="Kryss av hvis brevet skal til bruker, men til en annen adresse"
+              description="Brevet skal til en annen mottaker enn bruker"
+              onChange={(event) =>
+                field.onChange(event.target.checked ? ManueltAdressertTil.ANNEN : ManueltAdressertTil.BRUKER)
+              }
               size="small"
             >
-              Brukers adresse
+              Annen mottaker
             </Checkbox>
           )}
-        /> */}
+        />
 
         <Controller
           control={properties.control}
@@ -81,7 +96,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         />
         {isNorge && (
-          <HStack gap="4">
+          <HStack gap="space-16">
             <Controller
               control={properties.control}
               name="manuellAdresse.adresse.postnr"
@@ -138,7 +153,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                         siden input feltet er nederts på modalen, vil det å åpne den tvinge en scroll på modalen
                         vi setter den derfor til å åpne oppover
                       */
-                      .navds-combobox__list {
+                      .aksel-combobox__list {
                         bottom: 100%;
                         top: auto;
                       }
@@ -164,12 +179,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         </div>
       </VStack>
-      <HStack
-        css={css`
-          align-self: flex-end;
-        `}
-        gap="4"
-      >
+      <HStack gap="space-16" justify="end">
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>

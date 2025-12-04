@@ -16,6 +16,7 @@ const PDFViewer = (properties: {
   pdf: Blob;
   viewerHeight?: string;
   utenSlettKnapp?: boolean;
+  children?: React.ReactNode;
 }) => {
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
@@ -72,25 +73,28 @@ const PDFViewer = (properties: {
   return (
     <div
       css={css`
-        background: var(--a-gray-300);
+        background: var(--ax-neutral-400);
       `}
       ref={pdfContainerReference}
     >
       <PDFViewerTopBar
         brevId={properties.brevId}
-        currentPageNumber={currentPageNumber}
         sakId={properties.sakId}
-        scale={scale}
-        setCurrentPageNumber={setCurrentPageNumber}
-        setScale={setScale}
-        totalNumberOfPages={totalNumberOfPages}
         utenSlettKnapp={properties.utenSlettKnapp}
+        viewerControls={{
+          currentPageNumber,
+          setCurrentPageNumber,
+          totalNumberOfPages,
+          scale,
+          setScale,
+        }}
       />
+      {properties.children}
       <div
         css={css`
           display: flex;
           justify-content: space-around;
-          padding: var(--a-spacing-2);
+          padding: var(--ax-space-12);
           height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
           overflow: scroll;
         `}
@@ -104,7 +108,7 @@ const PDFViewer = (properties: {
             <div className={`pdf-page`} id={`page_${index + 1}`} key={`page_${index + 1}`}>
               <Page
                 css={css`
-                  margin-bottom: 1rem;
+                  margin-bottom: var(--ax-space-16);
                 `}
                 pageNumber={index + 1}
                 scale={scale}

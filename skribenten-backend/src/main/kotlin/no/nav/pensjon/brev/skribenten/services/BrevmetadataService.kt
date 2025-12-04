@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 interface BrevmetadataService {
+    suspend fun getAllBrev(): List<BrevdataDto>
     suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto>
     suspend fun getEblanketter(): List<BrevdataDto>
     suspend fun getMal(brevkode: String): BrevdataDto
@@ -36,6 +37,16 @@ class BrevmetadataServiceHttp(
             }
         }
         install(CallIdFromContext)
+    }
+
+    override suspend fun getAllBrev(): List<BrevdataDto> {
+        val httpResponse = httpClient.get("/api/brevdata/allBrev")
+        if (httpResponse.status.isSuccess()) {
+            return httpResponse.body<List<BrevdataDto>>()
+        } else {
+            logger.error("Feil ved henting av alle brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
+            return emptyList()
+        }
     }
 
     override suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {

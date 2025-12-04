@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures.felles
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.brev.brevbaker.template.toScope
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -203,15 +204,15 @@ class LetterRendererTest {
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel"), false) {
             paragraph { text(bokmal { + "Attachment #1"}) }
         }
-        val attachment2 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel2"), false) {
+        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel2"), false) {
             paragraph { text(bokmal { + "Attachment #2"}) }
         }
         val attachments = listOf(
-            createIncludeAttachment(Unit.expr(), attachment1, true.expr()),
-            createIncludeAttachment(Unit.expr(), attachment2, false.expr())
+            createIncludeAttachment(EmptyVedleggData.expr(), attachment1, true.expr()),
+            createIncludeAttachment(EmptyVedleggData.expr(), attachment2, false.expr())
         )
 
         val actualAttachments = mutableListOf<AttachmentTemplate<*, *>>()

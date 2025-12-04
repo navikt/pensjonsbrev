@@ -16,6 +16,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.testing.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.context.CoroutineContextValueException
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.hamcrest.MatcherAssert.assertThat
@@ -27,9 +28,11 @@ class PrincipalHasGroupTest {
 
     private val navIdent = NavIdent("månedens ansatt")
     private val creds = BasicAuthCredentials("test", "123")
+    private val principalNotInContextStatus = HttpStatusCode(418, "Plugin kjørte etter at call er håndtert")
 
     private fun basicAuthTestApplication(
         principal: MockPrincipal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
+        actualCreds: BasicAuthCredentials = creds,
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
         install(Authentication) {
@@ -43,6 +46,7 @@ class PrincipalHasGroupTest {
         }
         install(StatusPages) {
             exception<UnauthorizedException> { call, cause -> call.respond(HttpStatusCode.Unauthorized, cause.msg) }
+            exception<CoroutineContextValueException> { call, cause -> call.respond(principalNotInContextStatus, "Plugin kjørte etter at call er håndtert") }
         }
         routing {
             authenticate("my domain") {
@@ -82,7 +86,7 @@ class PrincipalHasGroupTest {
         val client = createClient {
             install(Auth) {
                 basic {
-                    credentials { creds }
+                    credentials { actualCreds }
                     sendWithoutRequest { true }
                 }
             }
@@ -156,5 +160,16 @@ class PrincipalHasGroupTest {
 
         assertThat(result.status, equalTo(HttpStatusCode.NotFound))
         assertThat(result.bodyAsText(), equalTo("Alternative rejection response"))
+    }
+
+    @Test
+    fun `hopper over plugin om call allerede er avvist og prosessert`() = basicAuthTestApplication(
+        principal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
+        actualCreds = BasicAuthCredentials("invalid", "credentials")
+    ) { client ->
+        val result = client.get("/singleGroupSet")
+
+        // Om man får 418 betyr det at pluginen prøvde å kjøre etter at kall allerede var håndtert
+        assertThat(result.status, equalTo(HttpStatusCode.Unauthorized))
     }
 }

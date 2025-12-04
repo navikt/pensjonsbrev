@@ -2,21 +2,22 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData> {
     data class PesysData(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
@@ -28,7 +29,8 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
         val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
         val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-    ) : BrevbakerBrevdata
+        val opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening: OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto?,
+    ) : FagsystemBrevdata
 
     data class Krav(
         val virkDatoFom: LocalDate,

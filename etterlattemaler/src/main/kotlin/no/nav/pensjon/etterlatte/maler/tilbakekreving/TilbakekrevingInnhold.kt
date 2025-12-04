@@ -23,7 +23,6 @@ object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDT
 		languages = languages(Bokmal, Nynorsk, English),
 		letterMetadata = LetterMetadata(
 			displayTitle = "Vedtak - Tilbakekreving",
-			isSensitiv = true,
 			distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
 			brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 		),

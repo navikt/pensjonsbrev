@@ -4,9 +4,10 @@ import io.ktor.client.*
 import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpRequestTimeoutException
-import io.ktor.client.request.HttpRequest
 import io.ktor.client.utils.unwrapCancellationException
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.http.isSuccess
 import kotlinx.io.IOException
 import no.nav.pensjon.brev.skribenten.auth.AuthService
@@ -24,7 +25,7 @@ fun HttpClientConfig<*>.callIdAndOnBehalfOfClient(scope: String, authService: Au
     }
 }
 
-fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((req: HttpRequest) -> Boolean) = { false } ) {
+fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((method: HttpMethod, url: Url, cause: Throwable?) -> Boolean) = { _,_,_ -> false } ) {
     install(HttpRequestRetry) {
         delayMillis {
             minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
@@ -32,18 +33,21 @@ fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shoul
         retryIf(maxRetries) { req, res ->
             when {
                 res.status.isSuccess() -> false
-                shouldNotRetry(req) -> false
+                shouldNotRetry(req.method, req.url, null) -> false
                 res.status in setOf(HttpStatusCode.GatewayTimeout, HttpStatusCode.RequestTimeout, HttpStatusCode.BadGateway) -> true
                 else -> false
             }
         }
-        retryOnExceptionIf { _, cause ->
+        retryOnExceptionIf { req, cause ->
+            if (shouldNotRetry(req.method, req.url.build(), cause)) {
+                return@retryOnExceptionIf false
+            }
             val actualCause = cause.unwrapCancellationException()
             val doRetry = actualCause is HttpRequestTimeoutException
                     || actualCause is ConnectTimeoutException
                     || actualCause is IOException
             if (!doRetry) {
-                logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                logger.error("Won't retry for exception for ${req.method} for ${req.url}: ${actualCause.message}", actualCause)
             }
             doRetry
         }

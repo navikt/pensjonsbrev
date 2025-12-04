@@ -31,7 +31,6 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Displaytittelen",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -50,6 +49,10 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
             title2 {
                 text(bokmal { +"Her er din title2" }, nynorsk { +"Her er din title2" })
+            }
+
+            title3 {
+                text(bokmal { +"Her er din title3" }, nynorsk { +"Her er din title3" })
             }
 
             paragraph {

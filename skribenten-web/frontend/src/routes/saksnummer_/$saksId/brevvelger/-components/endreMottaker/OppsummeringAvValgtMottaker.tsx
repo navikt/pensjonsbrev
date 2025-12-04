@@ -42,7 +42,7 @@ const OppsummeringAvValgtMottaker = (properties: {
   };
 }) => {
   return (
-    <VStack gap="4">
+    <VStack gap="space-16">
       {properties.onTilbake.plassering === "top" && (
         <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
       )}
@@ -50,12 +50,7 @@ const OppsummeringAvValgtMottaker = (properties: {
       {properties.onTilbake.plassering === "bottom" && (
         <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
       )}
-      <HStack
-        css={css`
-          align-self: flex-end;
-        `}
-        gap="4"
-      >
+      <HStack gap="space-16" justify="end">
         <Button onClick={properties.onAvbryt} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
@@ -90,7 +85,6 @@ const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Ad
         <InversedTableRow label="Postnummer" value={properties.adresse.postnr} />
         <InversedTableRow label="Poststed" value={properties.adresse.poststed} />
         <InversedTableRow label="Land" value={getCountryNameByKode(properties.adresse.land, landData || [])} />
-        {/* <InversedTableRow label="Brukers adresse" value={properties.adresse.erBrukersAdresse ? "Ja" : "Nei"} /> */}
       </Table.Body>
     </Table>
   );

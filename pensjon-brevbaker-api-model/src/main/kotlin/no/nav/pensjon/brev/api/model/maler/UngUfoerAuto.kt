@@ -15,7 +15,7 @@ data class UngUfoerAutoDto(
     val minsteytelseVedVirkSats: Double,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-) : BrevbakerBrevdata {
+) : AutobrevData {
     data class InnvilgetTillegg(val utbetalt: Boolean)
     data class Barnetillegg(
         val utbetalt: Boolean,

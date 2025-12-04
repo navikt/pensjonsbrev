@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -16,7 +16,7 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
     VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-        saksbehandlerValg = EmptyBrevdata,
+        saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData(
             krav = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.Krav(
                 virkDatoFom = LocalDate.of(2024, Month.MAY, 1),
@@ -40,6 +40,7 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             maanedligPensjonFoerSkatt = Fixtures.create(MaanedligPensjonFoerSkattDto::class),
             maanedligPensjonFoerSkattAP2025 = Fixtures.create(MaanedligPensjonFoerSkattAP2025Dto::class),
             opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
-            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto()
+            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
+            opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = null,
         )
     )

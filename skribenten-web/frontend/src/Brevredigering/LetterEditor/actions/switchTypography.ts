@@ -5,17 +5,18 @@ import {
   newTitle,
   removeElements,
 } from "~/Brevredigering/LetterEditor/actions/common";
-import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+import { PARAGRAPH, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { BlockContentIndex, LetterEditorState } from "../model/state";
+import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 
 export const switchTypography: Action<
   LetterEditorState,
-  [literalIndex: BlockContentIndex, typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
-> = withPatches((draft, literalIndex, typography) => {
+  [typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2 | typeof TITLE3]
+> = withPatches((draft, typography) => {
   const editedLetter = draft.redigertBrev;
+  const literalIndex = draft.focus;
   const block = editedLetter.blocks[literalIndex.blockIndex];
 
   if (!isTextContent(block.content[literalIndex.contentIndex])) {
@@ -36,7 +37,8 @@ export const switchTypography: Action<
     }
 
     case TITLE1:
-    case TITLE2: {
+    case TITLE2:
+    case TITLE3: {
       const { startIndex, count } = findAdjoiningContent(literalIndex.contentIndex, block.content, isTextContent);
 
       if (startIndex === 0 && count === block.content.length) {

@@ -26,7 +26,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
 
   if (samhandlerAdresse.isPending) {
     return (
-      <VStack gap="4">
+      <VStack gap="space-16">
         <Skeleton height={30} variant="rectangle" width="100%" />
         <Skeleton height={30} variant="rectangle" width="100%" />
         <Skeleton height={30} variant="rectangle" width="100%" />
@@ -41,7 +41,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
   }
 
   return (
-    <VStack gap="4">
+    <VStack gap="space-16">
       <OppsummeringAvValgtMottaker
         adresse={{
           navn: samhandlerAdresse.data?.navn,
@@ -51,6 +51,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
           postnr: samhandlerAdresse.data?.postnr,
           poststed: samhandlerAdresse.data?.poststed,
           land: samhandlerAdresse.data?.land,
+          manueltAdressertTil: samhandlerAdresse.data?.manueltAdressertTil ?? null,
         }}
         error={properties.error}
         isPending={properties.isPending}

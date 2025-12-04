@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 class TemplateRoutesTest {
 
     @Test
-    fun isAlive() = testBrevbakerApp { client ->
+    fun isAlive() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/isAlive")
 
         assertEquals(HttpStatusCode.OK, response.status)
@@ -31,14 +31,14 @@ class TemplateRoutesTest {
     }
 
     @Test
-    fun `can get names of all autobrev`() = testBrevbakerApp { client ->
+    fun `can get names of all autobrev`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/autobrev")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(alleAutobrevmaler.map { it.kode.kode() }.toSet(), response.body<Set<String>>())
     }
 
     @Test
-    fun `can get names of all redigerbar`() = testBrevbakerApp(enableAllToggles = true) { client ->
+    fun `can get names of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
         val response = client.get("/templates/redigerbar")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(
@@ -63,14 +63,14 @@ class TemplateRoutesTest {
 
 
     @Test
-    fun `can get description of all autobrev`() = testBrevbakerApp { client ->
+    fun `can get description of all autobrev`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/autobrev?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(alleAutobrevmaler.map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
     }
 
     @Test
-    fun `can get description of all redigerbar`() = testBrevbakerApp(enableAllToggles = true) { client ->
+    fun `can get description of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(alleRedigerbareMaler
@@ -78,28 +78,28 @@ class TemplateRoutesTest {
     }
 
     @Test
-    fun `can get description of autobrev`() = testBrevbakerApp { client ->
+    fun `can get description of autobrev`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/autobrev/${OmsorgEgenAuto.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(OmsorgEgenAuto.description(), response.body<TemplateDescription.Autobrev>())
     }
 
     @Test
-    fun `can get description of redigerbar`() = testBrevbakerApp { client ->
+    fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
     }
 
     @Test
-    fun `can get modelSpecification of autobrev`() = testBrevbakerApp { client ->
+    fun `can get modelSpecification of autobrev`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/autobrev/${OmsorgEgenAuto.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(OmsorgEgenAuto.template.modelSpecification(), response.body<TemplateModelSpecification>())
     }
 
     @Test
-    fun `can get modelSpecification of redigerbar`() = testBrevbakerApp { client ->
+    fun `can get modelSpecification of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response =
             client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -110,7 +110,7 @@ class TemplateRoutesTest {
     }
 
     @Test
-    fun `can get template documentation of autobrev`() = testBrevbakerApp { client ->
+    fun `can get template documentation of autobrev`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response =
             client.get("/templates/autobrev/${ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -124,7 +124,7 @@ class TemplateRoutesTest {
     }
 
     @Test
-    fun `can get template documentation of redigerbar`() = testBrevbakerApp { client ->
+    fun `can get template documentation of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(
@@ -138,7 +138,7 @@ class TemplateRoutesTest {
 
     @Test
     fun `filtrerer bort deaktiverte maler`() = runBlocking {
-        testBrevbakerApp(enableAllToggles = false) { client ->
+        testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar?includeMetadata=true")
             assertEquals(HttpStatusCode.OK, response.status)
             val body = response.body<List<LinkedHashMap<*, *>>>()

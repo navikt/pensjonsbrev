@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.render.modelSpecification
+import no.nav.pensjon.etterlatte.EtterlatteMaler
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -26,7 +27,8 @@ class AllTemplatesTest {
 
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
-        val malKoder = (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler())
+        val malKoder = (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + pensjonOgUfoereProductionTemplates.hentRedigerbareMaler()
+                + EtterlatteMaler.hentAutobrevmaler())
             .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->

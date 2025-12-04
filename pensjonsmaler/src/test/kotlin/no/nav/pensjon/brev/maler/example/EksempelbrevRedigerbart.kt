@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoAvslaatt
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoInnvilget
@@ -45,15 +45,14 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
     override val kode: Brevkode.Redigerbart = EksempelbrevRedigerbartBrevkode.TESTBREV_REDIGERBART
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems
-            isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK, // Brukes ved distribusjon av brevet
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
@@ -287,9 +286,9 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
 // This data class should normally be in the api-model. Placed here for test-purposes.
 data class EksempelRedigerbartDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, EksempelRedigerbartDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, EksempelRedigerbartDto.PesysData> {
     data class PesysData(
         val pensjonInnvilget: Boolean,
         val datoInnvilget: LocalDate,
@@ -297,5 +296,5 @@ data class EksempelRedigerbartDto(
         val tilleggEksempel: List<ExampleTilleggDto>,
         val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 }

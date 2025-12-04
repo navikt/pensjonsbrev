@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM --platform=linux/amd64 eclipse-temurin:21 AS jre-build
 RUN $JAVA_HOME/bin/jlink \
          --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management,jdk.localedata \
@@ -26,6 +27,9 @@ COPY containerFiles/fonts /usr/share/fonts
 RUN fc-cache /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
 COPY containerFiles/latex /app/pensjonsbrev_latex
 
+RUN mkdir -p /home/apprunner/.cache/fontconfig && chown -R apprunner:apprunner /home/apprunner
+RUN chown -R apprunner:apprunner /var/cache/fontconfig
 USER apprunner
-COPY build/libs/pdf-bygger.jar /app/app.jar
-CMD ["java", "-jar", "/app/app.jar"]
+COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
+COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
+ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]

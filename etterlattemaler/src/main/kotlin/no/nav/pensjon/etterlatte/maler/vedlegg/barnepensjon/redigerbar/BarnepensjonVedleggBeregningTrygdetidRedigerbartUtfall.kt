@@ -20,7 +20,6 @@ object BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall : EtterlatteTempla
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Beregning av trygdetid",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

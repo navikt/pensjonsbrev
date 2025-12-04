@@ -25,23 +25,36 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.JwtUserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
-import kotlin.apply
+import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
+import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
 fun main() {
+    try {
+        run()
+    } catch (e: Exception) {
+        logger.error(e.message, e)
+        throw e
+    }
+}
+
+private fun run() {
     val skribentenConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .resolveWith(
@@ -77,6 +90,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         filter {
             !ignorePaths.contains(it.request.path())
         }
+        mdc("x_userId") { call ->
+            call.principal<JwtUserPrincipal>()?.navIdent?.id
+        }
     }
     install(CallId) {
         header("X-Request-ID")
@@ -86,9 +102,11 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
+            call.application.log.info("Bad request, kunne ikke deserialisere json")
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
         }
         exception<UnauthorizedException> { call, cause ->
+            call.application.log.info(cause.message, cause)
             call.respond(HttpStatusCode.Unauthorized, cause.msg)
         }
         exception<BadRequestException> { call, cause ->
@@ -99,13 +117,17 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                     cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
                 )
             } else {
+                call.application.log.info("Bad request, men ikke knytta til deserialisering")
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
         exception<BrevredigeringException> { call, cause ->
+            call.application.log.info(cause.message, cause)
             when (cause) {
                 is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
+                    BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
+                is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
                 is HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
@@ -114,11 +136,12 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
             }
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
-            call.respond(HttpStatusCode.InternalServerError, "Ukjent intern feil")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
 
@@ -137,11 +160,19 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         }
     }
 
+    val valkeyConfig = skribentenConfig.getConfig("valkey")
+    val cache = if (valkeyConfig.getBoolean("enabled")) {
+        Valkey(valkeyConfig)
+    } else {
+        log.warn("Valkey is disabled, this is not recommended for production")
+        InMemoryCache()
+    }
+
     val azureADConfig = skribentenConfig.requireAzureADConfig()
     install(Authentication) {
         skribentenJwt(azureADConfig)
     }
-    configureRouting(azureADConfig, skribentenConfig)
+    configureRouting(azureADConfig, skribentenConfig, cache)
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
@@ -162,11 +193,13 @@ fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
         jackson {
             registerModule(JavaTimeModule())
-            registerModule(Edit.JacksonModule)
-            registerModule(BrevkodeModule)
-            registerModule(LetterMarkupModule)
+            registerModule(EditLetterJacksonModule)
+            registerModule(BrevkodeJacksonModule)
+            registerModule(LetterMarkupJacksonModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
+        // midlertidig løsning frem til frontend er oppdatert til å bruke application/json
+        register(ContentType.Application.Pdf, PdfResponseConverter)
     }
 }

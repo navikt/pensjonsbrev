@@ -29,7 +29,7 @@ class InnvilgelseAvAlderspensjonAutoTest {
         LetterTestImpl(
             InnvilgelseAvAlderspensjonAuto.template,
             Fixtures.create<InnvilgelseAvAlderspensjonAutoDto>(),
-            Language.Nynorsk,
+            Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml(InnvilgelseAvAlderspensjonAuto.kode.name)
     }

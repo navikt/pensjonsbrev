@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -24,7 +24,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
@@ -50,21 +50,21 @@ const VedtakWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <Box
-        background="bg-default"
+      <BoxNew
+        background="default"
         css={css`
           display: flex;
           flex-direction: column;
           flex: 1;
           align-items: center;
-          padding-top: var(--a-spacing-8);
+          padding-top: var(--ax-space-32);
         `}
       >
-        <VStack align="center" gap="1">
+        <VStack align="center" gap="space-4">
           <Loader size="3xlarge" title="henter brev..." />
           <Heading size="large">Henter brev....</Heading>
         </VStack>
-      </Box>
+      </BoxNew>
     ),
     error: (err) => {
       if (err.response?.status === 423 && err.response?.data) {
@@ -75,30 +75,50 @@ const VedtakWrapper = () => {
               navigate({
                 to: "/saksnummer/$saksId/brevbehandler",
                 params: { saksId },
-                search: { vedtaksId, enhetsId },
+                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
               })
             }
             reservasjon={err.response.data as ReservasjonResponse}
           />
         );
       }
+
       if (err.response?.status === 409) {
         return <ArkivertBrev saksId={saksId} />;
       }
 
+      if (err.response?.status === 403) {
+        const axiosError = err as AxiosError & { forbidReason?: AttestForbiddenReason };
+        const reason = axiosError.forbidReason;
+        if (reason) {
+          return (
+            <AttestForbiddenModal
+              onClose={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevbehandler",
+                  params: { saksId },
+                  search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                })
+              }
+              reason={reason}
+            />
+          );
+        }
+      }
+
       return (
-        <Box
-          background="bg-default"
+        <BoxNew
+          background="default"
           css={css`
             display: flex;
             flex-direction: column;
             flex: 1;
             align-items: center;
-            padding-top: var(--a-spacing-8);
+            padding-top: var(--ax-space-32);
           `}
         >
           <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
-        </Box>
+        </BoxNew>
       );
     },
     success: (brev) => (
@@ -212,9 +232,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         left={
           <FormProvider {...form}>
-            <VStack gap="8">
+            <VStack gap="space-32">
               <Heading size="small">{props.brev.info.brevtittel}</Heading>
-              <VStack gap="4">
+              <VStack gap="space-16">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
                 <VStack>
                   <Label size="small">Distribusjonstype</Label>
@@ -222,7 +242,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 </VStack>
               </VStack>
               <Divider />
-              <VStack gap="5">
+              <VStack gap="space-20">
                 <Switch
                   css={css`
                     display: none;

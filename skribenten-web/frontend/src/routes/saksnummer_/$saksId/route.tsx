@@ -1,20 +1,20 @@
 import { css } from "@emotion/react";
-import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
+import { BodyShort, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { z } from "zod";
 
 import {
   getFavoritterQuery,
   getKontaktAdresseQuery,
-  getNavnQuery,
   getPreferredLanguageQuery,
   getSakContextQuery,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakDto } from "~/types/apiTypes";
+import type { SakContextDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
-import { queryFold } from "~/utils/tanstackUtils";
+import { humanizeName } from "~/utils/stringUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { BrevInfoKlarTilAttesteringProvider } from "./kvittering/-components/KlarTilAttesteringContext";
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
       <div
         css={css`
           display: flex;
-          margin: var(--a-spacing-4);
+          margin: var(--ax-space-16);
           justify-content: space-around;
         `}
       >
@@ -63,7 +63,7 @@ function SakLayout() {
     <BrevInfoKlarTilAttesteringProvider>
       <SendtBrevProvider>
         <MottakerContextProvider>
-          {sakContext && <Subheader sak={sakContext.sak} />}
+          {sakContext && <Subheader sakContext={sakContext} />}
           <div className="page-margins">
             <Outlet />
           </div>
@@ -73,26 +73,40 @@ function SakLayout() {
   );
 }
 
-function Subheader({ sak }: { sak: SakDto }) {
+function Subheader({ sakContext }: { sakContext: SakContextDto }) {
+  const sak = sakContext.sak;
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const hentNavnQuery = useQuery(getNavnQuery(sak.saksId.toString()));
+  const dateOfBirth = useMemo(() => {
+    if (!sak.foedselsdato) return undefined;
+    const date = new Date(sak.foedselsdato);
+    return isNaN(date.valueOf())
+      ? undefined
+      : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
+  }, [sak.foedselsdato]);
+  const dateOfDeath = useMemo(() => {
+    if (!sakContext.doedsfall) return undefined;
+    const date = new Date(sakContext.doedsfall);
+    return isNaN(date.valueOf())
+      ? undefined
+      : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
+  }, [sakContext.doedsfall]);
 
   return (
     <div
       css={css`
         position: sticky;
         top: 48px;
-        z-index: var(--a-z-index-focus);
+        z-index: 10;
       `}
     >
       <div
         css={css`
           display: flex;
-          padding: var(--a-spacing-2) var(--a-spacing-8);
+          padding: var(--ax-space-8) var(--ax-space-32);
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid var(--a-gray-200);
-          background: var(--a-surface-default);
+          border-bottom: 1px solid var(--ax-neutral-300);
+          background: var(--ax-bg-default);
 
           p {
             display: flex;
@@ -101,7 +115,7 @@ function Subheader({ sak }: { sak: SakDto }) {
 
           p::after {
             content: "/";
-            margin: 0 var(--a-spacing-3);
+            margin: 0 var(--ax-space-12);
           }
 
           p:last-child::after {
@@ -113,13 +127,38 @@ function Subheader({ sak }: { sak: SakDto }) {
           <BodyShort size="small">
             {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
           </BodyShort>
-          {queryFold({
-            query: hentNavnQuery,
-            initial: () => null,
-            pending: () => <BodyShort size="small">Henter navn...</BodyShort>,
-            error: () => <BodyShort size="small">Feil ved henting av navn</BodyShort>,
-            success: (navn) => <BodyShort size="small">{navn}</BodyShort>,
-          })}
+          <BodyShort size="small">
+            {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
+          </BodyShort>
+          {/* Vil ikke vises for ugyldig dato, f.eks. dummy pnr med ugyldig månedsledd */}
+          {dateOfBirth && <BodyShort size="small">Født: {dateOfBirth}</BodyShort>}
+          {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
+          {sakContext.erSkjermet && (
+            <BodyShort>
+              <Tag css={css({ borderRadius: "var(--ax-radius-4)" })} icon={<FileIcon />} size="small" variant="neutral">
+                Egen ansatt
+              </Tag>
+            </BodyShort>
+          )}
+          {sakContext.vergemaal && (
+            <BodyShort>
+              <Tag css={css({ borderRadius: "var(--ax-radius-4)" })} icon={<FileIcon />} size="small" variant="neutral">
+                Vergemål
+              </Tag>
+            </BodyShort>
+          )}
+          {sakContext.adressebeskyttelse && (
+            <BodyShort>
+              <Tag
+                css={css({ borderRadius: "var(--ax-radius-4)" })}
+                icon={<ParagraphIcon />}
+                size="small"
+                variant="error-filled"
+              >
+                Diskresjon
+              </Tag>
+            </BodyShort>
+          )}
         </HStack>
         <HStack>
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>

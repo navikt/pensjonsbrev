@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
@@ -139,7 +140,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
 
 fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
     OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
-        virkningsdato = LocalDate.now(),
+        virkningsdato = vilkaarligDato,
         utbetalingsbeloep = Kroner(12345),
         etterbetaling = true,
         tidligereFamiliepleier = false,

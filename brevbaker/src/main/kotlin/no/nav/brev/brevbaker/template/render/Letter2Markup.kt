@@ -57,7 +57,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer,
                 annenMottakerNavn = scope.felles.annenMottakerNavn,
-                vergeNavn = scope.felles.vergeNavn,
                 saksnummer = scope.felles.saksnummer,
                 dokumentDato = scope.felles.dokumentDato,
             ),
@@ -103,6 +102,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> BlockImpl.Title1Impl(element.stableHashCode(), true, renderText(scope, element.text))
             is Element.OutlineContent.Title2 -> BlockImpl.Title2Impl(element.stableHashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title3 -> BlockImpl.Title3Impl(element.stableHashCode(), true, renderText(scope, element.text))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =

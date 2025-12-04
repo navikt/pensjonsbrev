@@ -5,7 +5,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.TjenestebussStatus
 
 interface ServiceStatus {
     val name: String
@@ -16,7 +15,6 @@ data class StatusResponse(
     val overall: Boolean,
     val services: Map<String, Boolean>,
     val errors: Map<String, String>,
-    val tjenestebuss: TjenestebussStatus?,
 )
 
 fun Route.setupServiceStatus(vararg services: ServiceStatus) {
@@ -54,6 +52,5 @@ private suspend fun Array<out ServiceStatus>.checkStatuses(): StatusResponse {
         overall = results.values.all { it },
         services = results,
         errors = errors,
-        tjenestebuss = this.filterIsInstance<TjenestebussIntegrasjonService>().firstOrNull()?.status()?.resultOrNull(),
     )
 }

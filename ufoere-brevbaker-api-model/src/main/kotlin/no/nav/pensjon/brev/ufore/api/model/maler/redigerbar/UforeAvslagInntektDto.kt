@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
@@ -15,7 +16,7 @@ data class UforeAvslagInntektDto(
         val VisVurderingFraVilkarvedtak: Boolean,
         @DisplayText("Vis vurdering 12-9 IFU")
         val visVurderingIFU: Boolean
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagInntektPendata(
         val kravMottattDato: LocalDate,
@@ -23,5 +24,5 @@ data class UforeAvslagInntektDto(
         val inntektForUforhet: Int,
         val inntektEtterUforhet: Int,
         val vurderingIFU: String,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 }

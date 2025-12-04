@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
@@ -55,7 +56,6 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtaksbrev - inntektsjustering",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
@@ -132,7 +132,7 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
                 includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
                 includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilAaKlage)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
 
@@ -147,6 +147,6 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 tidligereFamiliepleier.not(),
             )
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
-            includeAttachment(dineRettigheterOgPlikter, beregning)
+            includeAttachment(dineRettigheterOgPlikter)
         }
     }

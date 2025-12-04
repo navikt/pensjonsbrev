@@ -3,6 +3,7 @@ import type { Draft, WritableDraft } from "immer";
 import {
   addElements,
   getMergeIds,
+  isValidIndex,
   mergeLiteralsIfPossible,
   newLiteral,
   removeElements,
@@ -15,6 +16,7 @@ import type {
   ParagraphBlock,
   Title1Block,
   Title2Block,
+  Title3Block,
 } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
 
@@ -32,6 +34,11 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
 
 export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, target: MergeTarget) {
   if (literalIndex.blockIndex === TITLE_INDEX) {
+    return;
+  }
+  if (!isValidIndex(draft.redigertBrev, literalIndex)) {
+    // eslint-disable-next-line no-console
+    console.warn("Invalid index for merge", literalIndex);
     return;
   }
 
@@ -108,7 +115,11 @@ export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
 }
 
 function updateElementsWithPossiblyMergedLiterals(
-  block: WritableDraft<Title1Block> | WritableDraft<Title2Block> | WritableDraft<ParagraphBlock>,
+  block:
+    | WritableDraft<Title1Block>
+    | WritableDraft<Title2Block>
+    | WritableDraft<Title3Block>
+    | WritableDraft<ParagraphBlock>,
   contentIndex: number,
   firstLiteral: WritableDraft<LiteralValue>,
   secondLiteral: WritableDraft<LiteralValue>,

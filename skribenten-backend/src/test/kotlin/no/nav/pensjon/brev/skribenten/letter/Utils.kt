@@ -13,7 +13,6 @@ fun letter(vararg blocks: LetterMarkup.Block) =
         sakspart = SakspartImpl(
             gjelderNavn = "Test Testeson",
             gjelderFoedselsnummer = Foedselsnummer("1234568910"),
-            vergeNavn = null,
             annenMottakerNavn = null,
             saksnummer = "1234",
             dokumentDato = LocalDate.now()
@@ -33,7 +32,6 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         sakspart = SakspartImpl(
             gjelderNavn = "Test Testeson",
             gjelderFoedselsnummer = Foedselsnummer("1234568910"),
-            vergeNavn = null,
             annenMottakerNavn = null,
             saksnummer = "1234",
             dokumentDato = dokumentDato
@@ -53,6 +51,7 @@ private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
         is Edit.Block.Paragraph -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.Block.Title1 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.Block.Title2 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
+        is Edit.Block.Title3 -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
     }
 
 private fun Edit.ParagraphContent.fixParentIds(parentId: Int?): Edit.ParagraphContent =

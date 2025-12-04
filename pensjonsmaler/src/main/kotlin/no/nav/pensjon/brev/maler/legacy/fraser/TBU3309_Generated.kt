@@ -64,8 +64,8 @@ data class TBU3309_Generated(
 				}
 			}
 			text (
-				bokmal { + "Dersom vi reduserer etterbetalingsbeløpet fordi du har gjeld, mottar du et eget brev om dette. Refusjon fra en tjenestepensjonsordning ser du på utbetalingsmeldingen." },
-				nynorsk { + "Dersom vi reduserer etterbetalingsbeløpet fordi du har gjeld, får du eit eige brev om dette. Refusjon frå ei tenestepensjonsordning ser du på utbetalingsmeldinga." },
+				bokmal { + "Refusjon fra en tjenestepensjonsordning ser du på utbetalingsmeldingen." },
+				nynorsk { + "Refusjon frå ei tenestepensjonsordning ser du på utbetalingsmeldinga." },
 			)
 		}
     }

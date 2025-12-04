@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -28,7 +29,7 @@ val dineRettigheterOgPlikter = createAttachment(
     duHarRettTilInnsynISakenDin()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.meldFraOmEndringer() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.meldFraOmEndringer() {
     title2 {
         text(
             bokmal { +"Plikt til å opplyse om endringer - folketrygdloven § 21-3" },
@@ -61,7 +62,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                 text(
                     bokmal { +"du får innvilget andre stønader fra Nav" },
                     nynorsk { +"du får innvilga andre stønader frå Nav" },
-                    english { +"You are granted any other benefits by Nav " },
+                    english { +"You are granted any other benefits by Nav" },
+                )
+            }
+            item {
+                text(
+                    bokmal { +"du blir innvilget full uføretrygd (omstillingsstønaden skal stoppe)" },
+                    nynorsk { +"du blir innvilga full uføretrygd (omstillingsstønaden skal stoppe)" },
+                    english { +"you will be granted full disability benefit (the adjustment allowance will stop)" },
                 )
             }
             item {
@@ -120,7 +128,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.feilutbetaling() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.feilutbetaling() {
     title2 {
         text(
             bokmal { +"Feilutbetaling av stønad folketrygdloven § 22-15 og § 22-16" },
@@ -145,7 +153,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.straffeansvar() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.straffeansvar() {
     title2 {
         text(
             bokmal { +"Straffeansvar – folketrygdloven § 25-12" },
@@ -165,7 +173,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledningFraNavForvaltningsloven11() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
             bokmal { +"Veiledning fra Nav - forvaltningsloven § 11" },
@@ -188,7 +196,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.duHarRettTilInnsynISakenDin() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EmptyVedleggData>.duHarRettTilInnsynISakenDin() {
     title2 {
         text(
             bokmal { +"Du har rett til innsyn i saken din - forvaltningsloven § 18 " },

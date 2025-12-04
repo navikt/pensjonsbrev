@@ -3,8 +3,9 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -29,7 +30,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
-    ) : BrevbakerBrevdata
+    ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
 
@@ -55,7 +56,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
         val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
         val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 
     // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(

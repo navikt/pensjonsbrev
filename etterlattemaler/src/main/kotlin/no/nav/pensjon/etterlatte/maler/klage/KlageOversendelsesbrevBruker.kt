@@ -54,7 +54,6 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vi har sendt klagen din tiil Nav klageinstans Vest",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -159,10 +158,9 @@ fun sakUrl(sakType: Expression<SakType>): Expression<String> {
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterTekstlinjer(
     linjer: Expression<List<String>>
 ) {
-    paragraph {
-        forEach(linjer) { linje ->
+    forEach(linjer) { linje ->
+        paragraph {
             text(bokmal { +linje }, nynorsk { +linje }, english { +linje })
-            newline()
         }
     }
 }

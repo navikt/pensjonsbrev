@@ -22,7 +22,6 @@ object OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTem
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Utfall forhåndsvarsel",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

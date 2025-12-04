@@ -21,8 +21,8 @@ Bruk følgende for å bygge og kjøre:
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 
 ```bash
-(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff)
-(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
+(mkdir -p - skribenten-backend/secrets skribenten-web/bff)
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env skribenten-web/bff/.env)
 ```
 
 ```bash
@@ -37,11 +37,9 @@ docker-compose up -d --build
    - vault
    - gcloud cli
    - kjørende docker/colima
-   - naisdevice med standard dev-miljø tilganger og [tjenestebuss-q2](https://console.nav.cloud.nais.io/team/tjenestebuss-q2-naisdevice) gruppe-tilgang (optional - tilgangen trengs kun dersom du har behov for å kjøre hele backend i docker compose. Lokalt frontend kan kjøres mot q2)
-     - Legg til `155.55.2.73	tjenestebuss-q2.adeo.no` i /etc/hosts
+   - naisdevice med standard dev-miljø tilganger
 2. Hent alle secrets:
    ```bash
-   gcloud auth login --update-adc
    ./fetch-secrets.sh
    ```
 3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
@@ -53,7 +51,6 @@ docker-compose up -d --build
    (cd brevoppskrift-web/bff && npm i && npm run build)
    (cd brevoppskrift-web/frontend && npm i)
    ./gradlew build -x test
-
    ```
 
 5. Kjør alle backend-tjenester
@@ -84,7 +81,7 @@ environment:
 
 Vi har ikke noe bra oppsett for dette, men her er en oppskrift på hvordan man kan løse det.
 
-1. Endre PEN_URL environment variable i docker-compose.yaml for skribenten-backend til `http://host.docker.internal/pen/api/`
+1. Endre PEN_URL environment variable i docker-compose.yaml for skribenten-backend til `http://host.docker.internal:8089/pen/api/`
 
 Om du får ConnectTimeoutException på kall til PEN fra skribenten, så betyr det mest sannsynlig at du har en brannmur som blokkerer. Følgende oppskrift er for linux.
 

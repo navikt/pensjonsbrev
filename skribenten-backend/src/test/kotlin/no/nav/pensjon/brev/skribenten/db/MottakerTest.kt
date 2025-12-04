@@ -5,7 +5,9 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -22,7 +24,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class MottakerTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
+    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     @BeforeAll
     fun startDb() {
@@ -45,6 +47,7 @@ class MottakerTest {
             Mottaker.new(brevredigering.id.value) {
                 type = MottakerType.SAMHANDLER
                 tssId = "12345"
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
@@ -60,10 +63,12 @@ class MottakerTest {
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = "12345"
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = "123456"
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
         }
@@ -76,6 +81,7 @@ class MottakerTest {
             Mottaker.new(brevredigeringId) {
                 type = MottakerType.SAMHANDLER
                 tssId = "12345"
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         transaction { Brevredigering[brevredigeringId].mottaker?.tssId = "abc" }
@@ -103,7 +109,6 @@ class MottakerTest {
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
                     gjelderFoedselsnummer = Foedselsnummer("c"),
-                    vergeNavn = null,
                     annenMottakerNavn = null,
                     saksnummer = "d",
                     dokumentDato = LocalDate.now(),
@@ -119,5 +124,48 @@ class MottakerTest {
             )
             sistRedigertAvNavIdent = principal
         }
+    }
+
+    @Test
+    fun `gir feilmelding for norsk adresse med femsifra postnummer`() {
+        assertThrows<IllegalArgumentException> {
+            Dto.Mottaker.norskAdresse(
+                navn = "Peder Ås",
+                postnummer = NorskPostnummer("12345"),
+                poststed = "Lillevik",
+                adresselinje1 = null,
+                adresselinje2 = null,
+                adresselinje3 = null,
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+            )
+        }
+    }
+
+    @Test
+    fun `gir feilmelding for norsk adresse med tresifra postnummer`() {
+        assertThrows<IllegalArgumentException> {
+            Dto.Mottaker.norskAdresse(
+                navn = "Peder Ås",
+                postnummer = NorskPostnummer("123"),
+                poststed = "Lillevik",
+                adresselinje1 = null,
+                adresselinje2 = null,
+                adresselinje3 = null,
+                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+            )
+        }
+    }
+
+    @Test
+    fun `takler norsk adresse med firesifra postnummer`() {
+        Dto.Mottaker.norskAdresse(
+            navn = "Peder Ås",
+            postnummer = NorskPostnummer("1234"),
+            poststed = "Lillevik",
+            adresselinje1 = null,
+            adresselinje2 = null,
+            adresselinje3 = null,
+            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+        )
     }
 }

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.brev.brevbaker.*
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -22,12 +23,12 @@ class MaanedligPensjonFoerSkattITest {
 
     @Test
     fun testPdf() {
-        LetterTestImpl(template, Unit, Bokmal, Fixtures.fellesAuto).renderTestPDF("MaanedligPensjonFoerSkatt")
+        LetterTestImpl(template, EmptyAutobrevdata, Bokmal, Fixtures.fellesAuto).renderTestPDF("MaanedligPensjonFoerSkatt")
     }
 
     @Test
     fun testHtml() {
-        LetterTestImpl(template, Unit, Bokmal, Fixtures.fellesAuto).renderTestHtml("MaanedligPensjonFoerSkatt")
+        LetterTestImpl(template, EmptyAutobrevdata, Bokmal, Fixtures.fellesAuto).renderTestHtml("MaanedligPensjonFoerSkatt")
     }
 
 

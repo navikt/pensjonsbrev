@@ -28,7 +28,6 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.hamkrest)
 
-    testImplementation(testFixtures(libs.brevbaker.common))
     testImplementation(testFixtures(project(":brevbaker-dsl")))
 
     testFixturesImplementation(libs.ktor.serialization.jackson)
@@ -37,9 +36,10 @@ dependencies {
     testFixturesImplementation(libs.ktor.client.encoding)
     testFixturesImplementation(libs.ktor.server.callId)
 
-    testFixturesImplementation(testFixtures(libs.brevbaker.common))
     testFixturesImplementation(testFixtures(project(":brevbaker-dsl")))
     testFixturesImplementation(libs.bundles.logging)
+    testFixturesImplementation(libs.bundles.junit)
+    testFixturesImplementation(libs.testcontainers.core)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")

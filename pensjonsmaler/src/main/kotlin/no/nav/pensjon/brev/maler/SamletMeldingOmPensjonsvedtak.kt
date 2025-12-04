@@ -8,8 +8,8 @@ import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.vedlegg
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
 import no.nav.pensjon.brev.maler.vedlegg.pdf.p1Vedlegg
+import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -30,23 +30,22 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
     override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtak.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
-    override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
-    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val kategori = TemplateDescription.Brevkategori.SLUTTBEHANDLING
+    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Samlet melding om pensjonsvedtak",
-            isSensitiv = false,
+            displayTitle = "P1 med forsidebrev",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         title {
             text(
-                bokmal { + "Samlet melding om pensjonsvedtak" },
-                english { + "Summary of Pension Decisions" }
+                bokmal { +"Samlet melding om pensjonsvedtak" },
+                english { +"Summary of Pension Decisions" }
             )
         }
         outline {
@@ -54,44 +53,39 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
 
             title1 {
                 text(
-                    bokmal { + "P1 – Samlet melding om pensjonsvedtak" },
-                    english { + "P1 – Summary of Pension Decisions" }
+                    bokmal { +"P1 – Samlet melding om pensjonsvedtak" },
+                    english { +"P1 – Summary of Pension Decisions" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "I forbindelse med din søknad om " },
-                    english { + "Your application for " }
+                    bokmal { +"I forbindelse med din søknad om " },
+                    english { +"Your application for " }
                 )
                 eval(sakstype)
                 text(
-                    bokmal { + " fra EUs og EØS medlemsland legger vi ved" },
-                    english { + " from EU/EEA member countries, we enclose:" }
+                    bokmal { +" fra EUs og EØS medlemsland legger vi ved" },
+                    english { +" from EU/EEA member countries, we enclose:" }
                 )
                 list {
                     item {
                         text(
-                            bokmal { + "P1 – Samlet melding om pensjonsvedtak" },
-                            english { + "P1 – Summary of Pension Decisions" }
+                            bokmal { +"P1 – Samlet melding om pensjonsvedtak" },
+                            english { +"P1 – Summary of Pension Decisions" }
                         )
                     }
                     item {
                         text(
-                            bokmal { + "Informasjon om skjemaet P1 og hvordan det brukes" },
-                            english { + "Information about the P1 form and its use" }
+                            bokmal { +"Informasjon om skjemaet P1 og hvordan det brukes" },
+                            english { +"Information about the P1 form and its use" }
                         )
                     }
                 }
             }
             paragraph {
                 text(
-                    bokmal { + "P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om " },
-                    english { + "The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries." }
-                )
-                eval(sakstype)
-                text(
-                    bokmal { + "." },
-                    english { + "" }
+                    bokmal { +"P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om " + sakstype + "."},
+                    english { +"The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries." }
                 )
             }
         }

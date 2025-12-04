@@ -5,6 +5,8 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -18,12 +20,12 @@ class PraktiskInformasjonEtteroppgjoerTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd,
-            Unit.expr(),
+            EmptyVedleggData.expr(),
             languages(Bokmal)
         )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("PraktiskInformasjonEtteroppgjoer")

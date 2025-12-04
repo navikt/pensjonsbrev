@@ -97,13 +97,14 @@ dependencies {
     implementation(libs.bundles.metrics)
     implementation(libs.ktor.server.caching.headers.jvm)
 
+    // Caching
+    implementation(libs.valkey)
+
     // Test
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)
-
-    testImplementation(testFixtures(libs.brevbaker.common))
 
 }

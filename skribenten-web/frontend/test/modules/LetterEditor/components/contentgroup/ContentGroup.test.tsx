@@ -1,3 +1,11 @@
+// jsdom sammenklapper eventuelle tekstmarkeringer umiddelbart etter avfyring av
+// fokus-hendelse, som gjør at vår programmatiske markering av fritekstfelt i
+// fokus-hendelsen ikke blir stående i den påfølgende klikk-hendelsen:
+// https://github.com/jsdom/jsdom/blob/adb999a12912f2f5ceb49fde6b1c9f7051968dc8/lib/jsdom/living/nodes/HTMLOrSVGElement-impl.js#L73
+// happy-dom gjør ikke "collapse()" etter avfyring av "focus" og oppfører seg
+// derfor likt som i nettleseren, derfor bruker vi happy-dom i denne testen:
+// @vitest-environment happy-dom
+
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Mock } from "vitest";
@@ -237,6 +245,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
 
     await user.keyboard("{Home}{ArrowLeft}");
@@ -244,6 +253,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
   });
 
@@ -253,6 +263,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{Home}{ArrowLeft}");
@@ -268,6 +279,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
+      cursorPosition: 22,
     });
 
     await user.keyboard("{Home}{ArrowLeft}");
@@ -283,6 +295,7 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
+      cursorPosition: 7,
       itemIndex: 2,
       itemContentIndex: 0,
     });
@@ -302,12 +315,14 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowLeft}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowLeft}");
@@ -324,6 +339,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 4,
       contentIndex: 0,
+      cursorPosition: 32,
     });
 
     await user.keyboard("{ArrowRight}");
@@ -331,6 +347,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 4,
       contentIndex: 0,
+      cursorPosition: 32,
     });
   });
 
@@ -351,6 +368,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
 
     await user.keyboard("{End}{ArrowRight}");
@@ -360,6 +378,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 14,
     });
   });
   test("will skip over a block if it has no editable content", async () => {
@@ -368,6 +387,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowRight}");
@@ -376,6 +396,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
+      cursorPosition: 13,
     });
   });
   test("will skip an item if it is not editable", async () => {
@@ -384,6 +405,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
+      cursorPosition: 7,
       itemIndex: 2,
       itemContentIndex: 0,
     });
@@ -393,6 +415,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
+      cursorPosition: 7,
       itemIndex: 3,
       itemContentIndex: 0,
     });
@@ -403,18 +426,21 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowRight}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
 
     await user.keyboard("{ArrowRight}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
+      cursorPosition: 13,
     });
   });
 });
@@ -426,6 +452,20 @@ describe("onClickHandler", () => {
     await user.click(screen.getByText("andre literal"));
     const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
+    expect(selection?.toString()).toBe("andre literal");
+  });
+
+  test("double-clicking on a fritekst variable that has focus, but no selection, should select the whole element", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    await user.click(screen.getByText("andre literal"));
+    const selection = globalThis.getSelection();
+    expect(selection?.isCollapsed).toBeTruthy();
+    await user.click(screen.getByText("andre literal"));
+    expect(selection?.isCollapsed).toBeTruthy();
+    expect(selection?.toString()).toBe("");
+    await user.dblClick(screen.getByText("andre literal"));
+    expect(selection?.isCollapsed).toBeFalsy();
     expect(selection?.toString()).toBe("andre literal");
   });
 
@@ -451,10 +491,18 @@ describe("onFocusHandler", () => {
     const { user } = setupComplex();
 
     await user.click(screen.getByText("Dokumentet starter med variable"));
+    expect(globalThis.getSelection()?.isCollapsed).toBe(true);
     await user.tab();
     const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
+    expect(selection?.isCollapsed).toBe(false);
     expect(selection?.focusNode?.textContent).toBe("andre literal");
+    const fritekst = screen.getByText("andre literal");
+    expect(fritekst.textContent).toBe("andre literal");
+    expect(globalThis.getSelection()?.isCollapsed).toBe(false);
+    await user.keyboard("abcdef");
+    expect(fritekst.textContent).toBe("abcdef");
+    expect(globalThis.getSelection()?.isCollapsed).toBe(true);
   });
   test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
     const state = letter(

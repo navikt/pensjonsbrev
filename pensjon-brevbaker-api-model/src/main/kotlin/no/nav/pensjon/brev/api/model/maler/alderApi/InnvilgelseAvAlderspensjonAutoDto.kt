@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BorI
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -20,7 +20,7 @@ data class InnvilgelseAvAlderspensjonAutoDto(
     val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
     val erEOSLand: Boolean,  // v1.Land
     val erForstegangsbehandletNorgeUtland: Boolean,  // v3.Krav
-    val faktiskBostedsland: String,  // v3.Person
+    val faktiskBostedsland: String?,  // v3.Person
     val fullTrygdetid: Boolean,  // v4.AlderspensjonPerManed
     val inngangOgEksportVurdering: InngangOgEksportVurdering,
     val kravVirkDatoFom: LocalDate,
@@ -31,7 +31,7 @@ data class InnvilgelseAvAlderspensjonAutoDto(
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-) : BrevbakerBrevdata {
+) : AutobrevData {
 
     // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(

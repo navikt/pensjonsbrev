@@ -42,51 +42,55 @@ class LaTeXCompilerService(
 ) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = brevbakerJacksonObjectMapper()
-    private val httpClient = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            jackson {
-                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            }
-        }
-        HttpResponseValidator {
-            validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
-        }
-        install(ContentEncoding) {
-            gzip()
-        }
+    private val httpClientAuto = settOppHttpClient(maxRetries)
+    private val httpClientRedigerbar = settOppHttpClient(0)
 
-        engine {
-            requestTimeout = 0
-        }
-
-        if (maxRetries > 0) {
-            install(HttpRequestRetry) {
-                this.maxRetries = maxRetries
-                delayMillis {
-                    minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
+    private fun settOppHttpClient(maxRetries: Int): HttpClient = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                jackson {
+                    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 }
-                retryOnExceptionIf { _, cause ->
-                    val actualCause = cause.unwrapCancellationException()
-                    val doRetry = actualCause is HttpRequestTimeoutException
-                            || actualCause is ConnectTimeoutException
-                            || actualCause is ServerResponseException
-                            || actualCause is IOException
-                    if (!doRetry) {
-                        logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+            }
+            HttpResponseValidator {
+                validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
+            }
+            install(ContentEncoding) {
+                gzip()
+            }
+
+            engine {
+                requestTimeout = 0
+            }
+
+            if (maxRetries > 0) {
+                install(HttpRequestRetry) {
+                    this.maxRetries = maxRetries
+                    delayMillis {
+                        minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
                     }
-                    doRetry
+                    retryOnExceptionIf { _, cause ->
+                        val actualCause = cause.unwrapCancellationException()
+                        val doRetry = actualCause is HttpRequestTimeoutException
+                                || actualCause is ConnectTimeoutException
+                                || actualCause is ServerResponseException
+                                || actualCause is IOException
+                        if (!doRetry) {
+                            logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                        }
+                        doRetry
+                    }
+                }
+                install(HttpSend) {
+                    // It is important that maxSendCount exceeds maxRetries.
+                    // If not, the client will fail with SendCountExceeded-exception instead of the server response.
+                    maxSendCount = maxRetries + 20
                 }
             }
-            install(HttpSend) {
-                // It is important that maxSendCount exceeds maxRetries.
-                // If not the client will fail with SendCountExceeded-exception instead of the server response.
-                maxSendCount = maxRetries + 20
-            }
         }
-    }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
+            val httpClient = if (shouldRetry) httpClientAuto else httpClientRedigerbar
             httpClient.post("$pdfByggerUrl/$path") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
@@ -101,5 +105,5 @@ class LaTeXCompilerService(
             }.body()
         } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
-    suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
+    suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }

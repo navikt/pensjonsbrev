@@ -31,7 +31,7 @@ const SelectTypography = () => {
       hideLabel
       label="Tekst stil"
       onChange={(e) => {
-        applyAction(Actions.switchTypography, setEditorState, editorState.focus, e.target.value as Typography);
+        applyAction(Actions.switchTypography, setEditorState, e.target.value as Typography);
         //setter fokuset tilbake til editor etter valgt tekststil
         applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
       }}
@@ -59,18 +59,18 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) =>
   return (
     <div
       css={css`
-        border-bottom: 1px solid var(--a-gray-200);
-        background: var(--a-white);
-        padding-inline: var(--a-spacing-4);
+        border-bottom: 1px solid var(--ax-neutral-300);
+        background: var(--ax-bg-default);
+        padding-inline: var(--ax-space-16);
         min-height: 48px;
         display: flex;
-        gap: var(--a-spacing-1);
+        gap: var(--ax-space-4);
         align-self: stretch;
         align-items: center;
         justify-content: space-between;
       `}
     >
-      <HStack align="center" gap="4" margin-block="2">
+      <HStack align="center" gap="space-16" margin-block="2">
         <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
         <VerticalDivider />
         <EditorFonts />
@@ -91,7 +91,7 @@ const LagringStatus = () => {
   const { error, editorState, freeze } = useEditor();
   if (freeze || editorState.saveStatus === "SAVE_PENDING") {
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <BodyShort size="small">Lagrer...</BodyShort>
       </HStack>
     );
@@ -101,14 +101,14 @@ const LagringStatus = () => {
       : `Klarte ikke lagre. Sist lagret ${format(editorState.info.sistredigert, "dd.MM.yyyy HH:mm")}`;
 
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
         {tekst}
       </HStack>
     );
   } else if (editorState.saveStatus === "SAVED") {
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <BodyShort size="small">Lagret</BodyShort>
       </HStack>
     );

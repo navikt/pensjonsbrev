@@ -32,14 +32,26 @@ import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
+import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
 fun ApplicationConfig.getProperty(name: String): String =
     property(name).getString()
 
+private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.pdfbygger.PdfByggerApp")
+
 @Suppress("unused")
 fun Application.module() {
+    try {
+        setUp()
+    } catch (e: Exception) {
+        logger.error(e.message, e)
+        throw e
+    }
+}
+
+private fun Application.setUp() {
     monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
@@ -142,12 +154,12 @@ private suspend fun RoutingContext.handleResult(
     when (result) {
         is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
         is PDFCompilationResponse.Failure.Client -> {
-            logger.info("Client error: ${result.reason}")
+            logger.warn("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {
-                logger.info(result.output)
+                logger.warn(result.output)
             }
             if (result.error?.isNotBlank() == true) {
-                logger.info(result.error)
+                logger.warn(result.error)
             }
             call.respond(HttpStatusCode.BadRequest, result)
         }

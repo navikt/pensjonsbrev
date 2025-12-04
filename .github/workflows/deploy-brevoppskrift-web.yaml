@@ -8,75 +8,14 @@ name: "deploy: brevoppskrift-web"
       - brevoppskrift-web/**
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: brevoppskrift-web
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build:
-    name: build
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
-
-      - name: Install frontend
-        working-directory: brevoppskrift-web/frontend
-        run: npm install
-
-      - name: Build frontend
-        working-directory: brevoppskrift-web/frontend
-        run: npm run build
-
-      - name: Copy frontend dist into public directory of bff
-        working-directory: brevoppskrift-web/frontend
-        run: cp -r dist/ ../bff/public
-
-      - name: Install bff dependencies
-        working-directory: brevoppskrift-web/bff
-        run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: Build bff
-        working-directory: brevoppskrift-web/bff
-        run: npm run build
-
-      - name: Build and push Docker container
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
-        with:
-          team: pensjonsbrev
-          image_suffix: brevoppskrift-web
-          docker_context: brevoppskrift-web/bff
-          dockerfile: brevoppskrift-web/bff/Dockerfile
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-
-  deploy-dev:
-    name: Deploy app to dev
-    permissions:
-      contents: read
-      id-token: write
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Deploy to DEV
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: brevoppskrift-web/bff/.nais/nais.yaml
-          VAR: image=${{needs.build.outputs.image}}
-          VARS: "brevoppskrift-web/bff/.nais/bff-dev.yaml"
+    uses: ./.github/workflows/.build-frontend.yaml
+    secrets: inherit
+    with:
+      workingDir: brevoppskrift-web
+      deployToProd: false

@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.fixtures.alder
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BorI
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.fixtures.createBeregningsgrunnlagOrdinar
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
@@ -17,7 +17,7 @@ fun createInnvilgelseAvAlderspensjonAutoDto() =
         afpPrivatResultatFellesKontoret = false,
         alderspensjonVedVirk = InnvilgelseAvAlderspensjonAutoDto.AlderspensjonVedVirk(
             erEksportberegnet = false,
-            garantipensjonInnvilget = false,
+            garantipensjonInnvilget = true,
             garantitilleggInnvilget = false,
             gjenlevenderettAnvendt = false,
             gjenlevendetilleggKap19Innvilget = false,
@@ -35,8 +35,8 @@ fun createInnvilgelseAvAlderspensjonAutoDto() =
         erEOSLand = false,
         erForstegangsbehandletNorgeUtland = true,
         faktiskBostedsland = "Norge",
-        fullTrygdetid = true,
-        harFlereBeregningsperioder = true,
+        fullTrygdetid = false,
+        harFlereBeregningsperioder = false,
         inngangOgEksportVurdering = InnvilgelseAvAlderspensjonAutoDto.InngangOgEksportVurdering(
             eksportTrygdeavtaleAvtaleland = false,
             eksportTrygdeavtaleEOS = false,
@@ -54,11 +54,11 @@ fun createInnvilgelseAvAlderspensjonAutoDto() =
                 totalPensjon = Kroner(2000),
                 garantipensjon = Kroner(1000),
                 minstenivaIndividuell = Kroner(1000),
-                virkDatoFom = LocalDate.now(),
+                virkDatoFom = vilkaarligDato,
                 virkDatoTom = null,
             ),
             beregnetPensjonperManed = listOf(),
-            kravVirkFom = LocalDate.now()
+            kravVirkFom = vilkaarligDato
         ),
         opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),

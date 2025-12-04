@@ -1,14 +1,12 @@
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { hentPdfForJournalpostQuery } from "~/api/sak-api-endpoints";
-import { getNavnQuery } from "~/api/skribenten-api-endpoints";
+import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
 import type { BrevInfo } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { humanizeName } from "~/utils/stringUtils";
-import { queryFold } from "~/utils/tanstackUtils";
 
 import { ApiError } from "../ApiError";
 import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
@@ -38,24 +36,17 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
   });
 
-  const hentNavnQuery = useQuery(getNavnQuery(props.saksId.toString()));
+  const sakenGjelderNavn = useSakGjelderNavnFormatert({ saksId: props.saksId });
   const showOpenPdf =
     props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && props.brev.status.type !== "Attestering";
 
   return (
     <Accordion.Content data-cy={`journalpostId-${props.journalpostId}`}>
-      <VStack align={"start"} gap="4">
-        {props.brev.mottaker ? (
-          <Oppsummeringspar tittel={"Mottaker"} verdi={props.brev.mottaker.navn ?? "Fant ikke mottakerens navn"} />
-        ) : (
-          queryFold({
-            query: hentNavnQuery,
-            initial: () => <></>,
-            pending: () => <BodyShort>Henter mottaker navn...</BodyShort>,
-            error: (error) => <ApiError error={error} title={"Klarte ikke å hente mottaker"} />,
-            success: (navn) => <Oppsummeringspar tittel={"Mottaker"} verdi={humanizeName(navn)} />,
-          })
-        )}
+      <VStack align="start" gap="space-16">
+        <Oppsummeringspar
+          tittel={"Mottaker"}
+          verdi={props.brev?.mottaker?.navn ?? sakenGjelderNavn ?? "Fant ikke mottakerens navn"}
+        />
 
         <Oppsummeringspar tittel={"Distribueres via"} verdi={distribusjonstypeTilText(props.brev.distribusjonstype)} />
         {props.journalpostId && <Oppsummeringspar tittel={"Journalpost ID"} verdi={props.journalpostId!} />}
@@ -78,8 +69,8 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
 const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
   return (
     <Accordion.Content>
-      <VStack align="start" gap="3">
-        <VStack gap="5">
+      <VStack align="start" gap="space-12">
+        <VStack gap="space-20">
           <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
           <BodyShort size="small">Brevet ligger lagret i brevbehandler til brevet er sendt.</BodyShort>
         </VStack>

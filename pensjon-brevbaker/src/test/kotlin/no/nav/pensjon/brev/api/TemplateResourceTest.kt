@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api
 import io.ktor.http.ContentType
 import io.ktor.http.withCharset
 import kotlinx.coroutines.runBlocking
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -26,14 +26,18 @@ class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val pdf = pdfInnhold.encodeToByteArray()
     private val fakePDFBygger = object : PDFByggerService {
-        override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
+        override suspend fun producePDF(
+            pdfRequest: PDFRequest,
+            path: String,
+            shouldRetry: Boolean
+        ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger)
 
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,
         createLetterExampleDto(),
-        Fixtures.fellesAuto,
+        FellesFactory.fellesAuto,
         LanguageCode.BOKMAL
     )
 
@@ -86,4 +90,4 @@ private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetter
         language = this.language
     )
 
-data class SampleLetterData(val v1: Boolean) : BrevbakerBrevdata
+data class SampleLetterData(val v1: Boolean) : AutobrevData
