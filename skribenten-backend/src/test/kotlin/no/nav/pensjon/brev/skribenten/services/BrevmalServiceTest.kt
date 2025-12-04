@@ -184,7 +184,7 @@ class BrevmalServiceTest {
                 saksId: Long,
                 spraak: LanguageCode
             ): ServiceResult<Api.GeneriskBrevdata> {
-                TODO("Not yet implemented")
+                notYetStubbed()
             }
         }
 

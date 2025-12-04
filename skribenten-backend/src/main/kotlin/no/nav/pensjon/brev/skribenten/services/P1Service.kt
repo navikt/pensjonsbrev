@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import io.ktor.http.HttpStatusCode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.P1Data
@@ -12,6 +13,10 @@ import org.jetbrains.exposed.sql.transactions.transaction
 // Disse må være i sync med api-modellen
 const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
 const val P1_VEDLEGG_KEY = "p1Vedlegg"
+
+sealed class P1Exception(override val message: String): Exception(){
+    class ManglerDataException(message: String): P1Exception(message)
+}
 
 interface P1Service {
 
@@ -41,7 +46,14 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
         val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
             brevredigering.p1Data?.p1data
-                ?: penService.hentP1VedleggData(saksId, brevredigering.spraak).resultOrNull()
+                ?: penService.hentP1VedleggData(saksId, brevredigering.spraak)
+                    .onError { message, status ->
+                        if(status == HttpStatusCode.UnprocessableEntity) {
+                            throw P1Exception.ManglerDataException(message)
+                        } else {
+                            throw IllegalStateException(message)
+                        }
+                    }.resultOrNull()
         } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
     }
 
