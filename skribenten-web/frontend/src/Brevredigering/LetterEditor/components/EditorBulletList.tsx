@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BulletListIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 
