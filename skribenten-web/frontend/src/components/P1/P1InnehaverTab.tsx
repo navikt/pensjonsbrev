@@ -3,7 +3,11 @@ import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
 
-export const P1InnehaverTab = () => {
+type P1InnehaverTabProps = {
+  disabled?: boolean;
+};
+
+export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
   const { register } = useFormContext<P1Redigerbar>();
 
   return (
@@ -19,6 +23,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield"
+                disabled
                 hideLabel
                 label="Etternavn"
                 size="small"
@@ -31,6 +36,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Fornavn"
                 size="small"
@@ -43,6 +49,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Etternavn ved fødsel"
                 size="small"
@@ -55,6 +62,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Fødselsdato"
                 size="small"
@@ -67,6 +75,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Adresselinje"
                 size="small"
@@ -79,6 +88,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Poststed"
                 size="small"
@@ -91,6 +101,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Postnummer"
                 size="small"
@@ -103,6 +114,7 @@ export const P1InnehaverTab = () => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
+                disabled={disabled}
                 hideLabel
                 label="Landskode"
                 size="small"

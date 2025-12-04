@@ -115,11 +115,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   </Tabs.List>
 
                   <Tabs.Panel className="p1-tabs-panel" value="innehaver">
-                    <P1InnehaverTab />
+                    <P1InnehaverTab disabled />
                   </Tabs.Panel>
 
                   <Tabs.Panel className="p1-tabs-panel" value="forsikret">
-                    <P1ForsikredeTab />
+                    <P1ForsikredeTab disabled />
                   </Tabs.Panel>
 
                   <Tabs.Panel className="p1-tabs-panel" value="innvilget">
@@ -131,7 +131,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   </Tabs.Panel>
 
                   <Tabs.Panel className="p1-tabs-panel" value="institusjon">
-                    <P1InstitusjonTab />
+                    <P1InstitusjonTab disabled />
                   </Tabs.Panel>
                 </Tabs>
 
