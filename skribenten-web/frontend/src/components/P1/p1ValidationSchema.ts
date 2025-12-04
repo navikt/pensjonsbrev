@@ -75,26 +75,29 @@ const p1InnvilgetPensjonFormSchema = z
   .object({
     institusjon: p1InstitusjonFormSchema,
     pensjonstype: pensjonstypeEnum.nullable(),
-    datoFoersteUtbetaling: z.string().max(500, "Dato for første utbetaling kan ikke være lengre enn 500 tegn"),
+    datoFoersteUtbetaling: z
+      .string()
+      .max(10, "Dato kan ikke være lengre enn 10 tegn")
+      .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå"),
     utbetalt: z.string().max(500, "Bruttobeløp kan ikke være lengre enn 500 tegn"),
-    grunnlagInnvilget: grunnlagInnvilgetEnum.nullable(),
-    reduksjonsgrunnlag: reduksjonsgrunnlagEnum.nullable(),
+    grunnlagInnvilget: grunnlagInnvilgetEnum.nullable(), // Optional - null means "Ikke relevant"
+    reduksjonsgrunnlag: reduksjonsgrunnlagEnum.nullable(), // Optional - null means "Ikke relevant"
     vurderingsperiode: z.string().max(500, "Vurderingsperiode kan ikke være lengre enn 500 tegn"),
     adresseNyVurdering: z.string().max(500, "Adresse for ny vurdering kan ikke være lengre enn 500 tegn"),
   })
   .superRefine((data, ctx) => {
-    /* Only validate required fields if the row has any data */
+    // Only validate required fields if the row has any data
     if (isRowFilled(data)) {
-      /* Institusjonsnavn is required if row is filled */
+      // Institusjonsnavn is required if row is filled
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Institusjonsnavn er obligatorisk når raden er fylt ut",
           path: ["institusjon", "institusjonsnavn"],
         });
       }
 
-      /* Pensjonstype is required if row is filled */
+      // Pensjonstype is required if row is filled
       if (!data.pensjonstype) {
         ctx.addIssue({
           code: "custom",
@@ -103,23 +106,8 @@ const p1InnvilgetPensjonFormSchema = z
         });
       }
 
-      /* Grunnlag innvilget is required if row is filled */
-      if (!data.grunnlagInnvilget) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Grunnlag for innvilgelse må velges",
-          path: ["grunnlagInnvilget"],
-        });
-      }
-
-      /* Vedtaksdato should be a valid date format if provided */
-      if (data.institusjon.vedtaksdato && !/^\d{4}-\d{2}-\d{2}$/.test(data.institusjon.vedtaksdato)) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Vedtaksdato må være i formatet YYYY-MM-DD",
-          path: ["institusjon", "vedtaksdato"],
-        });
-      }
+      // NOTE: grunnlagInnvilget and reduksjonsgrunnlag are NOT required
+      // null means "Ikke relevant" which is a valid choice
     }
   });
 

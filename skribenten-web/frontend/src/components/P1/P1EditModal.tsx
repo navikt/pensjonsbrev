@@ -13,6 +13,7 @@ import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyP1 } from "./emptyP1";
+import { filledP1 } from "./filledP1";
 import { P1AvslagTab } from "./P1AvslagTab";
 import { P1ForsikredeTab } from "./P1ForsikredeTab";
 import { P1InnehaverTab } from "./P1InnehaverTab";
@@ -36,7 +37,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const queryClient = useQueryClient();
 
   const formMethods = useForm<P1RedigerbarForm>({
-    defaultValues: emptyP1,
+    defaultValues: filledP1,
     resolver: zodResolver(p1RedigerbarFormSchema),
     mode: "onBlur", // Validate on blur for better UX
   });
@@ -47,11 +48,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const { data: p1Override, isLoading: isP1Loading, isError: isP1Error } = useP1Override(saksId, brevId, open);
 
   // When P1 data arrives, reset form with mapped values
-  useEffect(() => {
-    if (p1Override) {
-      reset(mapP1DtoToForm(p1Override));
-    }
-  }, [p1Override, reset]);
+  // useEffect(() => {
+  //   if (p1Override) {
+  //     reset(mapP1DtoToForm(p1Override));
+  //   }
+  // }, [p1Override, reset]);
 
   const lagreMutation = useMutation({
     mutationFn: (formValues: P1RedigerbarForm) => {

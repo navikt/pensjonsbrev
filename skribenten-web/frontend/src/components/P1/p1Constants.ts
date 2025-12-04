@@ -8,11 +8,13 @@ export const GRUNNLAG_INNVILGET_OPTIONS = [
   { value: "IHenholdTilNasjonalLovgivning", label: "I henhold til nasjonal lovgivning" },
   { value: "ProRata", label: "Pro rata" },
   { value: "MindreEnnEttAar", label: "Mindre enn ett år" },
+  { value: "IKKE_RELEVANT", label: "Ikke relevant" },
 ] as const;
 
 export const REDUKSJONSGRUNNLAG_OPTIONS = [
   { value: "PaaGrunnAvAndreYtelserEllerAnnenInntekt", label: "Andre ytelser/inntekt" },
   { value: "PaaGrunnAvOverlappendeGodskrevnePerioder", label: "Overlappende perioder" },
+  { value: "IKKE_RELEVANT", label: "Ikke relevant" },
 ] as const;
 
 export const AVSLAGSBEGRUNNELSE_OPTIONS = [
