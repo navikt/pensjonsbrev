@@ -26,7 +26,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
 
   if (samhandlerAdresse.isPending) {
     return (
-      <VStack gap="4">
+      <VStack gap="space-16">
         <Skeleton height={30} variant="rectangle" width="100%" />
         <Skeleton height={30} variant="rectangle" width="100%" />
         <Skeleton height={30} variant="rectangle" width="100%" />
@@ -41,7 +41,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
   }
 
   return (
-    <VStack gap="4">
+    <VStack gap="space-16">
       <OppsummeringAvValgtMottaker
         adresse={{
           navn: samhandlerAdresse.data?.navn,

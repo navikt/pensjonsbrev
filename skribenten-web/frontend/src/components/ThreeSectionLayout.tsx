@@ -1,16 +1,14 @@
 import { css } from "@emotion/react";
-import { Box, HStack } from "@navikt/ds-react";
+import { HStack, VStack } from "@navikt/ds-react";
 
 const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
   return (
-    <Box
-      background="bg-default"
+    <VStack
       css={css`
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        flex: 1;
+        background: var(--ax-bg-default);
       `}
+      flexGrow="1"
+      justify="space-between"
     >
       <div
         css={css`
@@ -20,12 +18,12 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
 
           > :first-of-type {
             padding: 16px 24px;
-            border-right: 1px solid var(--a-gray-200);
+            border-right: 1px solid var(--ax-neutral-300);
           }
 
           @media (width <= 1024px) {
             > :first-of-type {
-              padding: var(--a-spacing-3);
+              padding: var(--ax-space-12);
             }
           }
         `}
@@ -39,16 +37,16 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
           bottom: 0;
           left: 0;
           width: 100%;
-          background: var(--a-white);
+          background: var(--ax-bg-default);
 
-          border-top: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-2) var(--a-spacing-4);
+          border-top: 1px solid var(--ax-neutral-300);
+          padding: var(--ax-space-8) var(--ax-space-16);
         `}
         justify={"end"}
       >
         {props.bottom}
       </HStack>
-    </Box>
+    </VStack>
   );
 };
 

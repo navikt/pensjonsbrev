@@ -26,7 +26,7 @@ const BrevmalFormWrapper = (props: {
           display: flex;
           flex-direction: column;
           flex: 1;
-          gap: 2rem;
+          gap: var(--ax-space-32);
         `}
       >
         {children}

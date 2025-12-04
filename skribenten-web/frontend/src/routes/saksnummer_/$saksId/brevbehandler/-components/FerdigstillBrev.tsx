@@ -61,7 +61,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
   if (!properties.valgtBrevId && properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b))) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
-        <HStack gap="2">
+        <HStack gap="space-8">
           {antallBrevSomErKlarTilSending === 1 ? (
             <Label>Send 1 ferdigstilt brev</Label>
           ) : (
@@ -99,7 +99,7 @@ const FerdigstillValgtBrev = (properties: {
         size="small"
         type="button"
       >
-        <HStack gap="2">
+        <HStack gap="space-8">
           <Label>Fortsett / Send {properties.antallBrevKlarTilSending} brev</Label>
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
@@ -114,7 +114,7 @@ const FerdigstillValgtBrev = (properties: {
         size="small"
         type="button"
       >
-        <HStack gap="2">
+        <HStack gap="space-8">
           <Label>Send {properties.antallBrevKlarTilSending} brev</Label>
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
@@ -135,7 +135,7 @@ const FerdigstillValgtBrev = (properties: {
         size="small"
         type="button"
       >
-        <HStack gap="2">
+        <HStack gap="space-8">
           <Label>Fortsett</Label>
           <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
         </HStack>
@@ -240,7 +240,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   return (
     <Modal
       css={css`
-        border-radius: 0.25rem;
+        border-radius: var(--ax-radius-4);
       `}
       header={{
         heading: "Vil du ferdigstille, og sende disse brevene?",
@@ -254,7 +254,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         <Modal.Body>
           <div
             css={css`
-              margin-bottom: 1rem;
+              margin-bottom: var(--ax-space-16);
             `}
           >
             {queryFold({
@@ -263,9 +263,9 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               pending: () => <Label>Henter alle ferdigstilte brev...</Label>,
               error: (error) => <ApiError error={error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />,
               success: () => (
-                <VStack gap="6">
+                <VStack gap="space-24">
                   {brevSending.length > 0 && (
-                    <VStack gap="1">
+                    <VStack gap="space-4">
                       <BodyLong>
                         Valgte brev du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke
                         angre denne handlingen.
@@ -309,7 +309,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <HStack gap="4">
+          <HStack gap="space-16">
             <Button onClick={properties.onClose} type="button" variant="tertiary">
               Avbryt
             </Button>

@@ -113,7 +113,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
                 <BodyShort spacing>
                   Endringer i Pesys påvirker innholdet i brevet. Oppdater brevet for å sikre korrekt innhold.
                 </BodyShort>
-                <HStack gap="3">
+                <HStack gap="space-12">
                   <Button
                     loading={oppdaterBrevTilKladd.isPending}
                     onClick={handleOppdater}

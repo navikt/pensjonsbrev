@@ -20,20 +20,20 @@ const tableStyles = css`
 
   td,
   th {
-    border: 1px solid #000;
+    border: 1px solid var(--ax-border-focus);
     padding: 2mm;
     overflow-wrap: break-word;
   }
 
   th {
-    background: var(--a-surface-subtle);
-    font-weight: 400;
+    background: var(--ax-bg-neutral-soft);
+    font-weight: var(--ax-font-weight-regular);
   }
 `;
 
 const selectedBackgroundStyle = css`
   && {
-    background: var(--a-surface-info-subtle, #d0e7ff);
+    background: var(--ax-bg-info-soft, #d0e7ff);
   }
 `;
 

@@ -20,10 +20,10 @@ export const SakspartView = ({
       css={css`
         display: grid;
         grid-template-columns: minmax(10rem, max-content) 1fr min-content;
-        gap: var(--a-spacing-1) var(--a-spacing-2);
+        gap: var(--ax-space-4) var(--ax-space-8);
         opacity: 0.5;
         font-size: 16.5px;
-        line-height: var(--a-font-line-height-heading-xsmall);
+        line-height: var(--ax-font-line-height-heading-xsmall);
         ${wrapperStyles}
       `}
     >

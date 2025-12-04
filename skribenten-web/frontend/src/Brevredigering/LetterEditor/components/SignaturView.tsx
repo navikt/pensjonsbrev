@@ -11,7 +11,7 @@ const Saksbehandler = ({ navn }: { navn?: string }) => {
     <div
       css={css`
         flex: 1;
-        margin-bottom: var(--a-spacing-6);
+        margin-bottom: var(--ax-space-24);
       `}
       data-cy="brev-editor-saksbehandler"
     >
@@ -27,7 +27,7 @@ export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; 
       display: flex;
       flex-direction: column;
       font-size: 16.5px;
-      line-height: var(--a-font-line-height-heading-xsmall);
+      line-height: var(--ax-font-line-height-heading-xsmall);
       ${wrapperStyles}
     `}
   >
@@ -37,7 +37,7 @@ export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; 
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        gap: var(--a-spacing-8);
+        gap: var(--ax-space-32);
       `}
     >
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} />

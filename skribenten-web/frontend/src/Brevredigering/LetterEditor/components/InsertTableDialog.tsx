@@ -24,13 +24,13 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
       width={360}
     >
       <Modal.Body style={{ paddingTop: "0.5rem" }}>
-        <VStack gap="4">
-          <HStack align="center" gap="4">
+        <VStack gap="space-16">
+          <HStack align="center" gap="space-16">
             <Label
               css={css`
                 min-width: 8rem;
                 text-align: right;
-                font-weight: 400;
+                font-weight: var(--ax-font-weight-regular);
               `}
               htmlFor="num-cols"
               size="small"
@@ -59,12 +59,12 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               value={columnCount}
             />
           </HStack>
-          <HStack gap="4">
+          <HStack gap="space-16">
             <Label
               css={css`
                 min-width: 8rem;
                 text-align: right;
-                font-weight: 400;
+                font-weight: var(--ax-font-weight-regular);
                 align-content: center;
               `}
               htmlFor="num-rows"
@@ -98,7 +98,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
       </Modal.Body>
 
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button data-cy="insert-table-cancel-btn" onClick={onCancel} size="small" type="button" variant="secondary">
             Avbryt
           </Button>

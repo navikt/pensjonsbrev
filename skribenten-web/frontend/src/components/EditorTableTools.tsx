@@ -15,7 +15,7 @@ const EditorTableTools = () => {
 
   return (
     <>
-      <HStack gap="2">
+      <HStack gap="space-8">
         <Button
           data-cy="toolbar-table-btn"
           disabled={freeze || editorState.focus.blockIndex < 0}

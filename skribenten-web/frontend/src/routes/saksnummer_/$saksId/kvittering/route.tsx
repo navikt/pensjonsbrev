@@ -49,16 +49,16 @@ function Kvittering() {
         display: grid;
         flex-grow: 1;
         grid-template-columns: 40% 1% 40%;
-        gap: 3rem;
-        padding: var(--a-spacing-5) 0;
-        background: var(--a-white);
+        gap: var(--ax-space-48);
+        padding: var(--ax-space-20) 0;
+        background: var(--ax-bg-default);
       `}
     >
       <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
       <div
         // This is a vertical line
         css={css`
-          background: var(--a-gray-200);
+          background: var(--ax-neutral-300);
           width: 1px;
         `}
       ></div>
@@ -66,7 +66,7 @@ function Kvittering() {
         css={css`
           justify-self: center;
         `}
-        gap="4"
+        gap="space-16"
       >
         <Heading size="medium">Hva vil du gjøre nå?</Heading>
         <Button

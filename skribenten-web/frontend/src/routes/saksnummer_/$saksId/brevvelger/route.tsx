@@ -72,7 +72,7 @@ export function BrevvelgerPage() {
         width: 100%;
         min-width: 944px;
         max-width: 1104px;
-        background-color: white;
+        background-color: var(--ax-bg-default);
       `}
     >
       <BrevvelgerMainContent
@@ -120,18 +120,18 @@ const BrevvelgerMainContent = (props: {
       css={css`
         display: grid;
         grid-template-columns: minmax(640px, 720px) minmax(304px, 384px);
-        background-color: white;
+        background-color: var(--ax-bg-default);
         height: var(--main-page-content-height);
       `}
     >
       <VStack
         css={css`
-          border-left: 1px solid var(--a-gray-200);
-          border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-5) var(--a-spacing-6);
+          border-left: 1px solid var(--ax-neutral-300);
+          border-right: 1px solid var(--ax-neutral-300);
+          padding: var(--ax-space-20) var(--ax-space-24);
           overflow-y: auto;
         `}
-        gap="6"
+        gap="space-24"
       >
         <Heading level="1" size="small">
           Brevvelger
@@ -216,7 +216,7 @@ function Brevmaler({
   ].flat();
 
   return (
-    <VStack gap="6">
+    <VStack gap="space-24">
       <Search
         data-cy="brevmal-search"
         hideLabel={false}
@@ -230,11 +230,10 @@ function Brevmaler({
         css={css`
           overflow-y: scroll;
 
-          .navds-accordion__content {
-            padding: 0;
+          .aksel-accordion__content {
+            margin: 0;
           }
         `}
-        headingSize="xsmall"
         indent={false}
         size="small"
       >
@@ -259,6 +258,7 @@ function Brevmaler({
                 css={css`
                   flex-direction: row-reverse;
                   justify-content: space-between;
+                  color: var(--ax-text-neutral);
                 `}
               >
                 <Label size="small">{type}</Label>
@@ -275,8 +275,8 @@ function Brevmaler({
                       extraStyles={
                         template.id === templateId
                           ? css`
-                              color: var(--a-text-on-action);
-                              background-color: var(--a-surface-action-selected-hover);
+                              color: var(--ax-text-accent-contrast);
+                              background-color: var(--ax-bg-accent-strong-hover);
                             `
                           : undefined
                       }
@@ -297,7 +297,7 @@ function Brevmaler({
                           css={css`
                             overflow: hidden;
                           `}
-                          gap="2"
+                          gap="space-8"
                           wrap={false}
                         >
                           <BrevSystemIcon brevsystem={template.brevsystem} />
@@ -337,9 +337,10 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
           css={css`
             flex-direction: row-reverse;
             justify-content: space-between;
+            color: var(--ax-text-neutral);
           `}
         >
-          <HStack gap="2">
+          <HStack gap="space-8">
             <Label size="small">Kladder</Label>
           </HStack>
         </Accordion.Header>
@@ -356,8 +357,8 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                 extraStyles={
                   brev.id === brevId
                     ? css`
-                        color: var(--a-text-on-action);
-                        background-color: var(--a-surface-action-selected-hover);
+                        color: var(--ax-text-accent-contrast);
+                        background-color: var(--ax-bg-accent-strong-hover);
                       `
                     : undefined
                 }
@@ -378,7 +379,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                     css={css`
                       overflow: hidden;
                     `}
-                    gap="2"
+                    gap="space-8"
                     wrap={false}
                   >
                     <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
@@ -433,13 +434,13 @@ const BrevmalButton = (props: {
     <Button
       css={css(
         css`
-          color: black;
+          color: var(--ax-text-neutral);
           justify-content: flex-start;
-          padding: var(--a-spacing-2) var(--a-spacing-3);
+          padding: var(--ax-space-8) var(--ax-space-12);
           border-radius: 0;
 
           span {
-            font-weight: var(--a-font-weight-regular);
+            font-weight: var(--ax-font-weight-regular);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
