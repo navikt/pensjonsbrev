@@ -34,7 +34,6 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag endring av uttaksgrad",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
         )

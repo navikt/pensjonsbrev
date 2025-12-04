@@ -97,7 +97,6 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - endring av alderspensjon (sivilstand)",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),

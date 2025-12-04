@@ -23,7 +23,6 @@ object AdHocVarselUgyldiggjoringFullmektig : AutobrevTemplate<FullmektigBprofAut
         letterDataType = FullmektigBprofAutoDto::class,
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om fullmakter for pensjon eller uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

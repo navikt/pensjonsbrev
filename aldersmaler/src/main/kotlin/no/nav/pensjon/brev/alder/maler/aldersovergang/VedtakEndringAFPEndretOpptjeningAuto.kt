@@ -45,7 +45,6 @@ object VedtakEndringAFPEndretOpptjeningAuto :
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - endring av AFP fordi opptjening er endret",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),

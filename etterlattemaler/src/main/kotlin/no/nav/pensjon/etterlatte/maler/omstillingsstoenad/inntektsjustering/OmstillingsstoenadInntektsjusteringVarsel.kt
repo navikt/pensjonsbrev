@@ -27,7 +27,6 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Varselbrev - inntektsjustering",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),

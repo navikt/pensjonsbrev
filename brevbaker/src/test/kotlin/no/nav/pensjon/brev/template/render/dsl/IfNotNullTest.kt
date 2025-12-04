@@ -32,7 +32,6 @@ class IfNotNullTest {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             "Jadda",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

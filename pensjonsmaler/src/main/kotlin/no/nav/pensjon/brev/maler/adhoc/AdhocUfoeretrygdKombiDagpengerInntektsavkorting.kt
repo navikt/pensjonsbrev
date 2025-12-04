@@ -19,7 +19,6 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyA
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om etterbetaling av dagpenger og betydningen for uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

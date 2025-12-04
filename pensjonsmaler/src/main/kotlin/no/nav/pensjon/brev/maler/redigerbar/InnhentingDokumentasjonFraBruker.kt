@@ -29,7 +29,6 @@ object InnhentingDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhente dokumentasjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

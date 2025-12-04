@@ -22,7 +22,6 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel om økt barnepensjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
 

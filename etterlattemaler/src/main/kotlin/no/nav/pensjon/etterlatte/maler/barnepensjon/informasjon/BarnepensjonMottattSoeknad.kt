@@ -37,7 +37,6 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vi har mottatt søknaden din om barnepensjon",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

@@ -22,7 +22,6 @@ object InfoFyller67AarSaerskiltSats : AutobrevTemplate<EmptyAutobrevdata> {
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Informasjon til deg som fyller 67 år",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

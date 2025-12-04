@@ -145,7 +145,6 @@ fun <AttachmentData : VedleggData, Lang : LanguageSupport> createVedleggTestTemp
     languages = languages,
     letterMetadata = LetterMetadata(
         "test mal",
-        isSensitiv = false,
         distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     ),
@@ -178,7 +177,6 @@ val bokmalTittel = newText(Bokmal to "test brev")
 
 val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
-    isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )

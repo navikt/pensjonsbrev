@@ -21,7 +21,6 @@ object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevMedTittelDTO>, H
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varselbrev omstillingsstønad",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),

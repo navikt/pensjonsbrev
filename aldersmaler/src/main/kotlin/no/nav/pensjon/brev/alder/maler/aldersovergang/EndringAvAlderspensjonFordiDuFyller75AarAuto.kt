@@ -39,7 +39,6 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - endring av alderspensjon fordi du fyller 75 år",
-                    isSensitiv = false,
                     distribusjonstype = Distribusjonstype.VEDTAK,
                     brevtype = Brevtype.VEDTAKSBREV
                 ),

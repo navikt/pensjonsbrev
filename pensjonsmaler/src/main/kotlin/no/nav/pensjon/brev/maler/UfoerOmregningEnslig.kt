@@ -62,7 +62,6 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = VEDTAKSBREV
         ),

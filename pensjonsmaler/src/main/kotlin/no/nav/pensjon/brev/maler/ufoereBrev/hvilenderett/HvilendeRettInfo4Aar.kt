@@ -16,7 +16,6 @@ object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyAutobrevdata> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om hvilende rett til uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

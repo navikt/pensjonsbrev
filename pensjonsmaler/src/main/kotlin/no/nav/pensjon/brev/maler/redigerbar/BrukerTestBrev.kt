@@ -36,7 +36,6 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "TEST brev skribenten 2025",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

@@ -19,7 +19,6 @@ object AdhocUfoeretrygdVarselOpphoerEktefelletillegg : AutobrevTemplate<EmptyAut
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om opphør av ektefelletillegg til uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

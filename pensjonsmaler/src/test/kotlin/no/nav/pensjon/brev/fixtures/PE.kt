@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Persongrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagAvdod
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Trygdeavtaler
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphfasteutgifterperiode.InstOpphFasteUtgifterPeriodeListe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeListe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOS
@@ -33,6 +35,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygde
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.kravhode.Kravlinje
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.VilkarsVedtakList
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.FortsattMedlemskap
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.ForutgaendeMedlemskap
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.MedlemskapForUTetterTrygdeavtaler
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.Vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtak
@@ -40,6 +43,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.Trygdetid
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtale
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtaleListe
+import no.nav.pensjon.brev.template.dsl.bokmal
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -117,11 +121,30 @@ fun createPersongrunnlag() =
         trygdetidsgrunnlaglistenor = createTrygdetidsgrunnlagListeNor(),
         uforetrygdetteroppgjor = createUforetrygdEtteroppgjor(),
         trygdeavtaler = createTrygdeavtaler(),
+        instopphfasteutgifterperiodeliste = createInstopphfasteutgifterperiodeliste(),
+        instopphreduksjonsperiodeliste = createInstopphreduksjonsperiodeliste()
+    )
+
+fun createInstopphfasteutgifterperiodeliste() =
+    InstOpphFasteUtgifterPeriodeListe(
+        instopphfasteutgifterperiode = listOf()
+    )
+
+fun createInstopphreduksjonsperiodeliste() =
+    InstOpphReduksjonsPeriodeListe(
+        instopphreduksjonsperiode = listOf(
+            no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriode(
+                forsorgeransvar = true,
+                fomDato = LocalDate.of(2020, 1, 1)
+            )
+        )
     )
 
 fun createTrygdeavtaler() =
     Trygdeavtaler(
-        avtaleland = "usa"
+        avtaleland = "usa",
+        avtaletype = "bilateral",
+        "bosted"
     )
 
 fun createPersongrunnlagAvdod() =
@@ -247,7 +270,9 @@ fun createVedtaksdata() = Vedtaksdata(
         resultatforrigeeo = "",
         tidligereeoiverksatt = true
     ),
-    trygdetidavdod = createTrygdetidAvdod()
+    trygdetidavdod = createTrygdetidAvdod(),
+    harLopendealderspensjon = true,
+    vedtakfattetdatominus1mnd = LocalDate.now().minusMonths(1),
 )
 
 fun createTrygdetidAvdod() =
@@ -303,14 +328,24 @@ fun createVilkar() =
         unguforbegrunnelse = "stdbegr_12_13_1_i_3",
         unguforresultat = "unguforresultat",
         fortsattmedlemskap = FortsattMedlemskap(
-            inngangunntak = "inngangunntak"
+            inngangunntak = "inngangunntak",
+            minst20arbotid = false
         ),
         medlemskapforutettertrygdeavtaler = MedlemskapForUTetterTrygdeavtaler(
             oppfyltvedsammenlegging = false
         ),
         yrkesskadebegrunnelse = "stdbegr_12_17_1_o_1",
         yrkesskaderesultat = "ikke_oppfylt",
+        forutgaendemedlemskap = createForutgaendeMedlemskap(),
     )
+
+fun createForutgaendeMedlemskap(): ForutgaendeMedlemskap {
+    return ForutgaendeMedlemskap(
+        unntakfraforutgaendemedlemskap = false,
+        inngangunntak = "false",
+        minsttrearsfmnorge = false
+    )
+}
 
 fun createBeregningsVilkar() =
     BeregningsVilkar(
@@ -324,6 +359,8 @@ fun createBeregningsVilkar() =
         uforetidspunkt = vilkaarligDato.minusYears(5),
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
         yrkesskadegrad = 29,
+        virkningbegrunnelse = "virkningbegrunnelse",
+        uforetidspunktbegrunnelse = "uforetidspunktbegrunnelse",
     )
 
 fun createTrygdetid() =
@@ -359,6 +396,7 @@ fun createKravhode() =
         onsketvirkningsdato = LocalDate.of(2020, 1, 1),
         kravmottattdato = LocalDate.of(2020, 1, 1),
         kravlinjeliste = listOf(createKravlinje()),
+        sokerbt = false,
     )
 
 fun createKravlinje() = Kravlinje(kravlinjetype = "ut")
@@ -367,7 +405,8 @@ fun createBeregningsData() =
     BeregningsData(
         beregningufore = createBeregningUfore(),
         beregningantallperioder = 1,
-        beregninguforeperiode = createBeregningUforePeriode()
+        beregninguforeperiode = createBeregningUforePeriode(),
+        beregningsresultattilrevurderingtotalnetto = Kroner(1000)
     )
 
 fun createBeregningUforePeriode() =
@@ -391,6 +430,7 @@ fun createBeregningUfore() =
         belopokt = true,
         beregningvirkningdatofom = LocalDate.of(2020, 1, 1),
         beregningbrukersivilstand = "gift",
+        oifuvirkningstidspunkt = Kroner(50000),
     )
 
 fun createUforetrygdberegning() =

@@ -65,7 +65,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt neste år (automatisk)",
-            isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
