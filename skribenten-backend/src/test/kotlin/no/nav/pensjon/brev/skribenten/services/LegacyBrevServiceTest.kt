@@ -38,7 +38,7 @@ class LegacyBrevServiceTest {
         synligForVeileder = true,
         prioritet = 1234,
         brevkodeIBrevsystem = "exstream",
-        brevsystem = BrevdataDto.BrevSystem.GAMMEL,
+        brevsystem = BrevSystem.GAMMEL,
         brevgruppe = "brevgruppe",
     )
 
@@ -57,7 +57,7 @@ class LegacyBrevServiceTest {
         synligForVeileder = true,
         prioritet = 1234,
         brevkodeIBrevsystem = "doksys",
-        brevsystem = BrevdataDto.BrevSystem.DOKSYS,
+        brevsystem = BrevSystem.DOKSYS,
         brevgruppe = null,
     )
 
@@ -131,7 +131,6 @@ class LegacyBrevServiceTest {
                     request = Api.BestillExstreamBrevRequest(
                         brevkode = "exstream",
                         spraak = SpraakKode.NB,
-                        isSensitive = false,
                         vedtaksId = null,
                         idTSSEkstern = null,
                         brevtittel = null,
@@ -152,7 +151,6 @@ class LegacyBrevServiceTest {
                     gjelderPid = "9999", request = Api.BestillExstreamBrevRequest(
                         brevkode = "exstream",
                         spraak = SpraakKode.NB,
-                        isSensitive = false,
                         vedtaksId = null,
                         idTSSEkstern = null,
                         brevtittel = null,
@@ -174,7 +172,6 @@ class LegacyBrevServiceTest {
                 legacyBrevService.bestillOgRedigerEblankett(
                     gjelderPid = "9999", request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
-                        isSensitive = false,
                         enhetsId = principalSinNAVEnhet.id,
                         mottakerText = "en tekst",
                         landkode = "NO",
@@ -194,7 +191,6 @@ class LegacyBrevServiceTest {
                 legacyBrevService.bestillOgRedigerEblankett(
                     gjelderPid = "9999", request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
-                        isSensitive = false,
                         enhetsId = "9999",
                         mottakerText = "en tekst",
                         landkode = "NO",

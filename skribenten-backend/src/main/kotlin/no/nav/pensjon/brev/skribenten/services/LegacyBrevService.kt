@@ -50,7 +50,6 @@ class LegacyBrevService(
                 enhetsId = request.enhetsId,
                 gjelderPid = gjelderPid,
                 idTSSEkstern = request.idTSSEkstern,
-                isSensitive = request.isSensitive,
                 metadata = brevMetadata,
                 saksId = saksId,
                 spraak = request.spraak,
@@ -81,7 +80,6 @@ class LegacyBrevService(
                 brevkode = request.brevkode,
                 enhetsId = request.enhetsId,
                 gjelderPid = gjelderPid,
-                isSensitive = request.isSensitive,
                 metadata = brevMetadata,
                 saksId = saksId,
                 spraak = SpraakKode.NB,
@@ -102,7 +100,6 @@ class LegacyBrevService(
         enhetsId: String,
         gjelderPid: String,
         idTSSEkstern: String? = null,
-        isSensitive: Boolean,
         metadata: BrevdataDto,
         saksId: Long,
         spraak: SpraakKode,
@@ -117,7 +114,7 @@ class LegacyBrevService(
 
         if (metadata.brevgruppe == null) {
             logger.warn("Fant ikke brevgruppe for exstream brev: $brevkode", HttpStatusCode.InternalServerError)
-            return Api.BestillOgRedigerBrevResponse(failureType = Api.BestillOgRedigerBrevResponse.FailureType.EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
+            return Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
 
         return if (!harTilgangTilEnhet(enhetsId)) {
@@ -144,8 +141,7 @@ class LegacyBrevService(
                     kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                     land = landkode.takeIf { isEblankett },
                     mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
-
-                    sensitivt = isSensitive
+                    sensitivt = false
                 ),
                 vedtaksInformasjon = vedtaksId?.toString()
             )
@@ -153,7 +149,7 @@ class LegacyBrevService(
             Api.BestillOgRedigerBrevResponse(journalpostId = it.journalpostId)
         }.catch { message, statusCode ->
             logger.error("Feil ved bestilling av brev fra exstream mot PEN: $message - status: $statusCode")
-            Api.BestillOgRedigerBrevResponse(failureType = Api.BestillOgRedigerBrevResponse.FailureType.EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
+            Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
         }
     }
 

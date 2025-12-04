@@ -73,7 +73,6 @@ function Brevmal({
 
   const defaultValues = useMemo(() => {
     return {
-      isSensitive: undefined,
       brevtittel: "",
       spraak: hentDefaultValueForSpråk(preferredLanguage, displayLanguages),
       enhetsId: enhetsId,
