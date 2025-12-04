@@ -27,14 +27,17 @@
   margin-top: 2rem;
 }
 
+/* ===========================================
+   Sticky Tabs (inside Modal.Body)
+   =========================================== */
 .p1-tabs-sticky {
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: var(--a-surface-default);
+  background-color: var(--a-bg-default, var(--a-surface-default, #fff));
   padding: 0.5rem 0;
   margin: 0 0 1rem 0;
-  border-bottom: 1px solid var(--a-border-default);
+  border-bottom: 1px solid var(--a-border-default, var(--a-gray-300, #c6c2bf));
 }
 
 /* ===========================================
@@ -45,19 +48,20 @@
   border-collapse: collapse;
   table-layout: fixed;
   margin-bottom: 1rem;
+  border: 1px solid var(--a-border-default, var(--a-gray-300, #c6c2bf));
 }
 
 .p1-table tbody tr:nth-of-type(even) {
-  background-color: #f2f3f5;
+  background-color: var(--a-bg-subtle, var(--a-surface-subtle, #f2f3f5));
 }
 
 .p1-table tbody tr:nth-of-type(odd) {
-  background-color: var(--a-surface-default);
+  background-color: var(--ax-bg-default);
 }
 
 .p1-table th,
 .p1-table td {
-  border: 1px solid var(--a-border-default);
+  border: 1px solid var(--ax-border-neutral);
   vertical-align: top;
   text-align: left;
   padding: 0.5rem;
@@ -134,32 +138,38 @@
   padding: 0;
   height: 3rem;
 }
-
 /* ===========================================
    Seamless Textarea (fills table cell)
    =========================================== */
-.p1-seamless-textarea {
+.p1-seamless-textarea,
+.p1-seamless-textarea.navds-textarea {
   width: 100%;
   height: 100%;
   margin: 0;
 }
 
-.p1-seamless-textarea .navds-form-field {
+.p1-seamless-textarea .navds-form-field,
+.p1-seamless-textarea.navds-textarea .navds-form-field {
   width: 100%;
   height: 100%;
   margin: 0;
 }
 
-.p1-seamless-textarea .navds-form-field__control {
+.p1-seamless-textarea .navds-form-field__control,
+.p1-seamless-textarea.navds-textarea .navds-form-field__control {
   width: 100%;
   height: 100%;
 }
 
-.p1-seamless-textarea .navds-textarea__wrapper {
+.p1-seamless-textarea .navds-textarea__wrapper,
+.p1-seamless-textarea.navds-textarea .navds-textarea__wrapper {
   height: 100%;
 }
 
-.p1-seamless-textarea .navds-textarea__input {
+.p1-seamless-textarea .navds-textarea__input,
+.p1-seamless-textarea.navds-textarea .navds-textarea__input,
+.p1-seamless-textarea textarea,
+.p1-seamless-textarea.navds-textarea textarea {
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -170,31 +180,40 @@
   resize: none;
 }
 
-.p1-seamless-textarea .navds-textarea__input:focus {
+.p1-seamless-textarea .navds-textarea__input:focus,
+.p1-seamless-textarea.navds-textarea .navds-textarea__input:focus,
+.p1-seamless-textarea textarea:focus,
+.p1-seamless-textarea.navds-textarea textarea:focus {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--a-border-focus);
+  box-shadow: inset 0 0 0 2px var(--a-border-focus, var(--ax-black-500, #090909));
 }
 
 /* ===========================================
    Seamless TextField (fills table cell)
    =========================================== */
-.p1-seamless-textfield {
+.p1-seamless-textfield,
+.p1-seamless-textfield.navds-text-field {
   width: 100%;
   height: 100%;
   margin: 0;
 }
 
-.p1-seamless-textfield .navds-form-field {
+.p1-seamless-textfield .navds-form-field,
+.p1-seamless-textfield.navds-text-field .navds-form-field {
   width: 100%;
   height: 100%;
   margin: 0;
 }
 
-.p1-seamless-textfield .navds-form-field__control {
+.p1-seamless-textfield .navds-form-field__control,
+.p1-seamless-textfield.navds-text-field .navds-form-field__control {
   height: 100%;
 }
 
-.p1-seamless-textfield .navds-text-field__input {
+.p1-seamless-textfield .navds-text-field__input,
+.p1-seamless-textfield.navds-text-field .navds-text-field__input,
+.p1-seamless-textfield input,
+.p1-seamless-textfield.navds-text-field input {
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -203,9 +222,19 @@
   height: 100%;
 }
 
-.p1-seamless-textfield .navds-text-field__input:focus {
+.p1-seamless-textfield .navds-text-field__input:focus,
+.p1-seamless-textfield.navds-text-field .navds-text-field__input:focus,
+.p1-seamless-textfield input:focus,
+.p1-seamless-textfield.navds-text-field input:focus {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--a-border-focus);
+  box-shadow: inset 0 0 0 2px var(--a-border-focus, var(--a-blue-500, #010101));
+}
+
+/* ===========================================
+   DatePicker styling
+   =========================================== */
+.p1-datepicker {
+  max-width: 170px;
 }
 
 /* ===========================================
@@ -218,16 +247,38 @@
 }
 
 /* ===========================================
-   DatePicker styling
-   =========================================== */
-.p1-datepicker {
-  max-width: 160px;
-}
-
-/* ===========================================
    Validation error styling
    =========================================== */
 .p1-cell-error {
-  border: 2px solid var(--a-surface-danger) !important;
-  /* background-color: var(--a-surface-danger-subtle); */
+  border: 2px solid var(--a-border-danger, var(--a-red-500, #c30000)) !important;
+  background-color: var(--a-bg-danger-subtle, var(--a-surface-danger-subtle, #fff5f5)) !important;
+}
+
+/* ===========================================
+   Disabled/Read-only styling
+   =========================================== */
+.p1-person-grid .navds-form-field--disabled {
+  opacity: 0.8;
+}
+
+.p1-person-grid .navds-form-field--disabled .navds-text-field__input,
+.p1-person-grid .navds-form-field--disabled input {
+  background-color: var(--a-bg-subtle, var(--a-surface-subtle, #f2f3f5));
+  cursor: not-allowed;
+}
+
+/* ===========================================
+   Tabs panel
+   =========================================== */
+.p1-tabs-panel {
+  margin-top: 1rem;
+}
+
+/* ===========================================
+   Person grid (for tabs 1, 2, 5)
+   =========================================== */
+.p1-person-grid {
+  display: grid;
+  gap: 1rem;
+  max-width: 600px;
 }
