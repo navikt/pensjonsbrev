@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Button, HStack, Label, Modal, TextField, VStack } from "@navikt/ds-react";
+import { Button, HStack, Modal, TextField, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 
 interface InsertTableDialogProps {
@@ -24,81 +24,63 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
       width={360}
     >
       <Modal.Body style={{ paddingTop: "0.5rem" }}>
-        <VStack gap="4">
-          <HStack align="center" gap="4">
-            <Label
-              css={css`
-                min-width: 8rem;
-                text-align: right;
-                font-weight: 400;
-              `}
-              htmlFor="num-cols"
-              size="small"
-            >
-              Antall kolonner:
-            </Label>
-            <TextField
-              css={css`
-                width: 5rem;
-              `}
-              data-cy="input-cols"
-              hideLabel
-              id="num-cols"
-              label="Antall kolonner"
-              max={20}
-              min={1}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || (/^\d+$/.test(value) && Number(value) <= 20)) {
-                  setColumnCount(value);
-                }
-              }}
-              size="small"
-              step={1}
-              type="number"
-              value={columnCount}
-            />
-          </HStack>
-          <HStack gap="4">
-            <Label
-              css={css`
-                min-width: 8rem;
-                text-align: right;
-                font-weight: 400;
-                align-content: center;
-              `}
-              htmlFor="num-rows"
-              size="small"
-            >
-              Antall rader:
-            </Label>
-            <TextField
-              css={css`
-                width: 5rem;
-              `}
-              data-cy="input-rows"
-              hideLabel
-              id="num-rows"
-              label="Antall rader"
-              max={20}
-              min={1}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || (/^\d+$/.test(value) && Number(value) <= 20)) {
-                  setRowCount(value);
-                }
-              }}
-              size="small"
-              step={1}
-              type="number"
-              value={rowCount}
-            />
-          </HStack>
+        <VStack gap="space-16">
+          {[
+            {
+              value: columnCount,
+              updateValue: setColumnCount,
+              label: "Antall kolonner:",
+              id: "num-cols",
+              cyTag: "input-cols",
+            },
+            {
+              value: rowCount,
+              updateValue: setRowCount,
+              label: "Antall rader:",
+              id: "num-rows",
+              cyTag: "input-rows",
+            },
+          ].map(({ value, updateValue, label, id, cyTag }) => (
+            <HStack align="center" gap="space-16" justify="space-between" key={id} paddingInline="space-40">
+              <TextField
+                css={css`
+                  align-items: center;
+                  display: flex;
+                  flex-grow: 1;
+                  justify-content: space-between;
+
+                  input {
+                    width: 5rem;
+                  }
+
+                  label {
+                    font-weight: 400;
+                  }
+                `}
+                data-cy={cyTag}
+                id={id}
+                inputMode="numeric"
+                label={label}
+                max={20}
+                min={1}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "" || (/^\d+$/.test(value) && Number(value) <= 20)) {
+                    updateValue(value);
+                  }
+                }}
+                size="small"
+                step={1}
+                type="number"
+                value={value}
+              />
+            </HStack>
+          ))}
         </VStack>
       </Modal.Body>
 
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button data-cy="insert-table-cancel-btn" onClick={onCancel} size="small" type="button" variant="secondary">
             Avbryt
           </Button>

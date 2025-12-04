@@ -132,7 +132,7 @@ function ToggleableObjectEditor({
             display: contents;
 
             > * {
-              margin-left: var(--a-spacing-4);
+              margin-left: var(--ax-space-16);
             }
           `}
         >

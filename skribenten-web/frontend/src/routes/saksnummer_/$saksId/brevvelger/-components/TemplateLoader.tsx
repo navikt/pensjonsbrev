@@ -31,7 +31,7 @@ export const TemplateLoader = (props: {
       css={css`
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: var(--ax-space-16);
       `}
     >
       <FavoriteButton onAddFavorittSuccess={props.onAddFavorittSuccess} templateId={props.templateId} />

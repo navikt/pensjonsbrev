@@ -194,7 +194,7 @@ export const EndreMottakerModal = (properties: {
   return (
     <Modal
       css={css`
-        border-radius: 0.25rem;
+        border-radius: var(--ax-radius-4);
       `}
       data-cy="endre-mottaker-modal"
       header={{
@@ -302,7 +302,7 @@ const ModalTabs = (properties: {
           </Tabs.List>
           <div
             css={css`
-              margin-top: 1rem;
+              margin-top: var(--ax-space-16);
             `}
           >
             <Tabs.Panel value="samhandler">

@@ -6,7 +6,7 @@ import { type LetterMetadata } from "~/types/apiTypes";
 
 export default function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
-    <VStack gap="2">
+    <VStack gap="space-8">
       <Heading level="2" size="small">
         {letterTemplate.name}
       </Heading>
@@ -14,7 +14,7 @@ export default function LetterTemplateHeading({ letterTemplate }: { letterTempla
         css={css`
           display: flex;
           align-items: center;
-          gap: var(--a-spacing-2);
+          gap: var(--ax-space-8);
         `}
       >
         <LetterTemplateTags letterTemplate={letterTemplate} />
