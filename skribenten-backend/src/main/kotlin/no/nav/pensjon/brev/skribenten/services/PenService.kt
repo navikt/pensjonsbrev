@@ -55,6 +55,8 @@ interface PenService {
     )
 }
 
+class PenServiceException(message: String) : ServiceException(message)
+
 class PenServiceHttp(config: Config, authService: AuthService) : PenService, ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
@@ -123,7 +125,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         } else {
             val errorBody = response.bodyAsText()
             logger.error("En feil oppstod i kall til PEN: $errorBody")
-            throw RuntimeException("Feil ved bestilling av doksysbrev: $errorBody")
+            throw PenServiceException("Feil ved bestilling av doksysbrev: $errorBody")
         }
     }
 
