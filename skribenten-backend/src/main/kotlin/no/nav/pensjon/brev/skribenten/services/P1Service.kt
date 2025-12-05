@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
@@ -9,6 +10,8 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
+import kotlin.math.log
 
 // Disse må være i sync med api-modellen
 const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
@@ -31,6 +34,8 @@ interface P1Service {
 }
 
 class P1ServiceImpl(private val penService: PenService) : P1Service {
+    private val logger = LoggerFactory.getLogger(P1ServiceImpl::class.java)
+
     override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: Long): P1Data? = transaction {
         val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
@@ -47,10 +52,12 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
         if (brevredigering != null) {
             brevredigering.p1Data?.p1data
                 ?: penService.hentP1VedleggData(saksId, brevredigering.spraak)
-                    .onError { message, status ->
+                    .onError { msg, status, tittel ->
+                        val message = "$tittel $msg"
                         if(status == HttpStatusCode.UnprocessableEntity) {
                             throw P1Exception.ManglerDataException(message)
                         } else {
+                            logger.error("Ukjent feil ved henting av P1 Data. Status: $status $message")
                             throw IllegalStateException(message)
                         }
                     }.resultOrNull()
@@ -62,11 +69,9 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
         brevkode: Brevkode.Redigerbart,
         brevId: Long,
         saksId: Long
-    ): BrevdataResponse.Data {
-        return if (brevkode.kode() == P1_BREVKODE) {
-            brevdataResponse.copy(
-                brevdata = brevdataResponse.brevdata.apply { put(P1_VEDLEGG_KEY, hentP1Data(brevId, saksId)) }
-            )
-        } else brevdataResponse
-    }
+    ): BrevdataResponse.Data = if (brevkode.kode() == P1_BREVKODE) {
+        brevdataResponse.copy(
+            brevdata = brevdataResponse.brevdata.apply { put(P1_VEDLEGG_KEY, hentP1Data(brevId, saksId)) }
+        )
+    } else brevdataResponse
 }
