@@ -94,7 +94,13 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            respondWithResult(pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr))
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+
+            if (adresse != null) {
+                call.respond(adresse)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
 
         get("/foretrukketSpraak") {
@@ -104,10 +110,11 @@ fun Route.sakRoute(
 
         get("/pdf/{journalpostId}") {
             val journalpostId = call.parameters.getOrFail("journalpostId")
-            safService.hentPdfForJournalpostId(journalpostId).onOk {
-                call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK)
-            }.onError { message, _ ->
-                call.respond(HttpStatusCode.InternalServerError, message)
+            val pdf = safService.hentPdfForJournalpostId(journalpostId)
+            if (pdf != null) {
+                call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
 
