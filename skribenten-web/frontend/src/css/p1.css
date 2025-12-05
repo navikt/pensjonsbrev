@@ -108,13 +108,14 @@
 }
 
 .p1-table--two-column td:first-of-type {
-  width: 232px;
+  width: 22%; /* ~232px of 1068px */
+  min-width: 150px;
   font-weight: 600;
   font-size: 1rem;
 }
 
 .p1-table--two-column td:last-of-type {
-  width: 836px;
+  width: 78%; /* ~836px of 1068px */
 }
 
 .p1-table--two-column .cell-seamless {
