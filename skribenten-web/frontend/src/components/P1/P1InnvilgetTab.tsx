@@ -303,7 +303,7 @@ export const P1InnvilgetTab = () => {
       </table>
 
       <div className="p1-add-row-container">
-        <Button icon={<PlusIcon />} onClick={addRow} size="small" type="button" variant="tertiary">
+        <Button icon={<PlusIcon />} onClick={addRow} size="small" type="button" variant="secondary">
           Legg til ny rad
         </Button>
       </div>

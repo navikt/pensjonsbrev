@@ -23,23 +23,6 @@
   transform: translate(-50%, -50%);
 }
 
-.p1-tabs-panel {
-  margin-top: 2rem;
-}
-
-/* ===========================================
-   Sticky Tabs (inside Modal.Body)
-   =========================================== */
-.p1-tabs-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: var(--a-bg-default, var(--a-surface-default, #fff));
-  padding: 0.5rem 0;
-  margin: 0 0 1rem 0;
-  border-bottom: 1px solid var(--a-border-default, var(--a-gray-300, #c6c2bf));
-}
-
 /* ===========================================
    Multi-column Tables (Tab 3 & 4)
    =========================================== */
@@ -48,11 +31,11 @@
   border-collapse: collapse;
   table-layout: fixed;
   margin-bottom: 1rem;
-  border: 1px solid var(--a-border-default, var(--a-gray-300, #c6c2bf));
+  border: 1px solid var(--ax-border-neutral);
 }
 
 .p1-table tbody tr:nth-of-type(even) {
-  background-color: var(--a-bg-subtle, var(--a-surface-subtle, #f2f3f5));
+  background-color: var(--ax-bg-neutral-soft);
 }
 
 .p1-table tbody tr:nth-of-type(odd) {
@@ -65,13 +48,13 @@
   vertical-align: top;
   text-align: left;
   padding: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
 .p1-table th {
-  background: #ebfcff;
+  background: var(--ax-bg-accent-soft);
 }
 
 .p1-table--innvilget {
@@ -85,14 +68,13 @@
 .p1-table .header-number {
   display: block;
   font-weight: 600;
-  font-size: 16px;
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
 }
 
 .p1-table .header-text {
   display: block;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .p1-table .cell-seamless {
@@ -115,7 +97,8 @@
    Two-column Tables (Tab 1, 2 & 5)
    =========================================== */
 .p1-table--two-column {
-  max-width: 800px;
+  max-width: 1068px;
+  width: 100%;
 }
 
 .p1-table--two-column td {
@@ -125,13 +108,13 @@
 }
 
 .p1-table--two-column td:first-of-type {
-  width: 35%;
+  width: 232px;
   font-weight: 600;
   font-size: 1rem;
 }
 
 .p1-table--two-column td:last-of-type {
-  width: 65%;
+  width: 836px;
 }
 
 .p1-table--two-column .cell-seamless {
@@ -185,7 +168,7 @@
 .p1-seamless-textarea textarea:focus,
 .p1-seamless-textarea.navds-textarea textarea:focus {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--a-border-focus, var(--ax-black-500, #090909));
+  box-shadow: inset 0 0 0 2px var(--ax-border-focus);
 }
 
 /* ===========================================
@@ -227,7 +210,7 @@
 .p1-seamless-textfield input:focus,
 .p1-seamless-textfield.navds-text-field input:focus {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--a-border-focus, var(--a-blue-500, #010101));
+  box-shadow: inset 0 0 0 2px var(--ax-border-focus);
 }
 
 /* ===========================================
@@ -245,13 +228,16 @@
   justify-content: center;
   margin-top: 1rem;
 }
+.p1-add-row-container .aksel-button {
+  width: 100%;
+}
 
 /* ===========================================
    Validation error styling
    =========================================== */
 .p1-cell-error {
-  border: 2px solid var(--a-border-danger, var(--a-red-500, #c30000)) !important;
-  background-color: var(--a-bg-danger-subtle, var(--a-surface-danger-subtle, #fff5f5)) !important;
+  border: 2px solid var(--ax-border-danger-strong) !important;
+  background-color: var(--ax-bg-danger-soft) !important;
 }
 
 /* ===========================================
@@ -271,7 +257,7 @@
    Tabs panel
    =========================================== */
 .p1-tabs-panel {
-  margin-top: 1rem;
+  margin-top: var(--ax-space-32);
 }
 
 /* ===========================================
