@@ -1,3 +1,4 @@
+import { PadlockLockedIcon } from "@navikt/aksel-icons";
 import { Heading, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
@@ -11,10 +12,13 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
   const { register } = useFormContext<P1Redigerbar>();
 
   return (
-    <div>
-      <Heading size="small" spacing>
-        1. Personopplysninger om innehaveren
-      </Heading>
+    <div className={disabled ? "p1-tab-disabled" : undefined}>
+      <div className="p1-tab-header">
+        <Heading size="small" spacing>
+          1. Personopplysninger om innehaveren
+        </Heading>
+        {disabled && <PadlockLockedIcon fontSize="1.5rem" title="Denne fanen er skrivebeskyttet" />}
+      </div>
 
       <table className="p1-table p1-table--two-column">
         <tbody>
@@ -23,7 +27,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield"
-                disabled
                 hideLabel
                 label="Etternavn"
                 size="small"
@@ -36,7 +39,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Fornavn"
                 size="small"
@@ -49,7 +51,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Etternavn ved fødsel"
                 size="small"
@@ -62,7 +63,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Fødselsdato"
                 size="small"
@@ -75,7 +75,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Adresselinje"
                 size="small"
@@ -88,7 +87,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Poststed"
                 size="small"
@@ -101,7 +99,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Postnummer"
                 size="small"
@@ -114,7 +111,6 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
             <td className="cell-seamless">
               <TextField
                 className="p1-seamless-textfield "
-                disabled={disabled}
                 hideLabel
                 label="Landskode"
                 size="small"
