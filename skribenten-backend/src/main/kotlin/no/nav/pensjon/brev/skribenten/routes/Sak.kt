@@ -94,7 +94,13 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            respondWithResult(pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr))
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+
+            if (adresse != null) {
+                call.respond(adresse)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
 
         get("/foretrukketSpraak") {
