@@ -39,6 +39,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
+import no.nav.pensjon.brev.skribenten.services.P1Exception
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -137,6 +138,12 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
+            }
+        }
+        exception<P1Exception> { call, cause ->
+            call.application.log.info(cause.message, cause)
+            when(cause) {
+                is P1Exception.ManglerDataException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
             }
         }
         exception<Exception> { call, cause ->

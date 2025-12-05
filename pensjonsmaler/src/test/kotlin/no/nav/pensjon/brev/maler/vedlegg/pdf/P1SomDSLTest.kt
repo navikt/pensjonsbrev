@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.vedlegg.pdf
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.fixtures.createP1Dto
+import no.nav.pensjon.brev.maler.vedlegg.pdf.P1PDFDto.p1Vedlegg
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr

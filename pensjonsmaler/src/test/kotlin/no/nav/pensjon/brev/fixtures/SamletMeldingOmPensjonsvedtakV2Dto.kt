@@ -1,59 +1,16 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
-import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
+import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.AvslaattPensjon
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
-
-class PDFVedleggTest {
-
-    @Tag(TestTags.INTEGRATION_TEST)
-    @Test
-    fun testPdf() {
-        val template = SamletMeldingOmPensjonsvedtakV2.template
-        val brevkode = SamletMeldingOmPensjonsvedtakV2.kode
-        val spraak = Language.Bokmal
-        if (!template.language.supports(spraak)) {
-            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
-            return
-        }
-        val letter = LetterTestImpl(
-            template,
-            createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto(),
-            spraak,
-            FellesFactory.felles
-        )
-
-        letter.renderTestPDF(
-            "${brevkode.kode()}_${spraak.javaClass.simpleName}",
-            pdfVedleggAppender = PDFVedleggAppenderImpl
-        )
-    }
-}
-
-fun createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto() =
-    SamletMeldingOmPensjonsvedtakV2Dto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
-        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
-            sakstype = Sakstype.ALDER,
-            p1Vedlegg = null
-        ),
-    )
 
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =
@@ -101,7 +58,7 @@ fun createP1VedleggDto() = P1RedigerbarDto(
         faksnummer = "12134412",
         telefonnummer = Telefonnummer("+123 45678901"),
         epost = Epost("lars.holm@tøys.nfp.no"),
-        dato = vilkaarligDato,
+        dato = LocalDate.now(),
     )
 )
 
@@ -134,3 +91,5 @@ private val avslaattPensjon = AvslaattPensjon(
     vurderingsperiode = "en måned",
     adresseNyVurdering = ADRESSE_EKSEMPEL,
 )
+
+
