@@ -8,6 +8,7 @@ on:
       - "gradle/libs.versions.toml"
       - "template-model-generator/**"
       - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/.deploy.yaml"
       - ".github/workflows/template-model-generator.yml"
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
