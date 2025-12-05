@@ -274,7 +274,7 @@
    Disabled Tab Content (read-only tabs)
    =========================================== */
 .p1-tab-disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   pointer-events: none;
   user-select: none;
 }

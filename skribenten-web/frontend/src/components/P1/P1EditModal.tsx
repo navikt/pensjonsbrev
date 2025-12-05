@@ -33,7 +33,7 @@ type P1EditingModalProps = {
 };
 
 export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalProps) => {
-  const [activeTab, setActiveTab] = useState<P1TabKey>("innehaver");
+  const [activeTab, setActiveTab] = useState<P1TabKey>("innvilget");
   const queryClient = useQueryClient();
 
   const formMethods = useForm<P1RedigerbarForm>({
