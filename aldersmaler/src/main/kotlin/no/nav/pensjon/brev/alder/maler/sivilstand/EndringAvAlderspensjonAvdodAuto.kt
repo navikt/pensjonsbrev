@@ -1,35 +1,31 @@
-package brev.auto
+package no.nav.pensjon.brev.alder.maler.sivilstand
 
-import brev.felles.Constants.DITT_NAV_URL
-import brev.felles.Constants.NAV_URL
-import brev.felles.ubestemtForm
-import no.nav.pensjon.brev.api.model.maler.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.maler.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.maler.Institusjon
-import no.nav.pensjon.brev.api.model.maler.SivilstandAvdoed
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDto
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.harEndretPensjon
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.avdodNavn
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.ektefelletilleggOpphort
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.gjenlevendesAlder
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.sivilstandAvdoed
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.BeregnetPensjonPerManedSelectors.erPerioderMedUttak
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.BeregnetPensjonPerManedSelectors.garantiPensjon
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.avdodInformasjon
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.beregnetPensjonPerManed
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.etterBetaling
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.harBarnUnder18
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdGjeldende
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdVedVirk
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.auto.EndringAvAlderspensjonAvdodAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
+import no.nav.pensjon.brev.alder.model.*
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.harEndretPensjon
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaIndividuellInnvilget
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.avdodNavn
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.ektefelletilleggOpphort
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.gjenlevendesAlder
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.sivilstandAvdoed
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.BeregnetPensjonPerManedSelectors.erPerioderMedUttak
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.BeregnetPensjonPerManedSelectors.garantiPensjon
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.avdodInformasjon
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.beregnetPensjonPerManed
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.etterBetaling
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.harBarnUnder18
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdGjeldende
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdVedVirk
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.sivilstand
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
@@ -38,6 +34,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
 
 @TemplateModelHelpers
 object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjonAvdodAutoDto> {
@@ -461,9 +458,9 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
 
                 paragraph {
                     text(
-                        bokmal { +"Du forsørger ikke lenger en "+ avdodInformasjon.sivilstandAvdoed.ubestemtForm() +". Derfor opphører ektefelletillegget ditt." }, //todo må lage formatter for pensjon også
-                        nynorsk { +"Du forsørgjer ikkje lenger for ein "+ avdodInformasjon.sivilstandAvdoed.ubestemtForm() +". Derfor vert ektefelletillegget ditt avslutta." },
-                        english { +"You no longer provide for a "+ avdodInformasjon.sivilstandAvdoed.ubestemtForm() +". Your spouse supplement will therefore end." }
+                        bokmal { +"Du forsørger ikke lenger en " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor opphører ektefelletillegget ditt." }, //todo må lage formatter for pensjon også
+                        nynorsk { +"Du forsørgjer ikkje lenger for ein " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor vert ektefelletillegget ditt avslutta." },
+                        english { +"You no longer provide for a " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Your spouse supplement will therefore end." }
                     )
                 }
 
@@ -672,8 +669,10 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                     text(
                         bokmal { +"Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd. Du finner søknadsskjema og mer informasjon om dette på $NAV_URL" },
                         nynorsk { +"Forsørgjer du barn under 18 år, kan du ha rett til utvida barnetrygd. Du finn søknadsskjema og meir informasjon om dette på $NAV_URL" },
-                        english { +"If you provide for children under the age of 18, you may be entitled to extended child benefit. " +
-                                "You will find the application form and more information about this at $NAV_URL" }
+                        english {
+                            +"If you provide for children under the age of 18, you may be entitled to extended child benefit. " +
+                                    "You will find the application form and more information about this at $NAV_URL"
+                        }
                     )
                 }
             }
@@ -688,21 +687,27 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du får etterbetalt pensjon fra " + virkFom.formatMonthYear() + ". " +
-                                "Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. " +
-                                "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel $NAV_URL eller tjenestepensjonsordninger. " +
-                                "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
-                                "Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV_URL" },
-                        nynorsk { +"Du får etterbetalt pensjon frå " + virkFom.formatMonthYear() + " . " +
-                                "Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. " +
-                                "Vi kan trekkje frå skatt og ytingar du har fått frå for eksempel $NAV_URL eller tenestepensjonsordningar. " +
-                                "Etterbetalinga di kan derfor bli forseinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. " +
-                                "Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV_URL" },
-                        english { +"You will receive retroactive pension payments from " + virkFom.formatMonthYear() + ". " +
-                                "The retroactive payments will normally be made in the course of seven working days. " +
-                                "We can make deductions for tax and benefits you have received, for example, from $NAV_URL or occupational pension schemes. " +
-                                "Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. " +
-                                "You can check if there are any deductions from the payment notice at $DITT_NAV_URL" }
+                        bokmal {
+                            +"Du får etterbetalt pensjon fra " + virkFom.formatMonthYear() + ". " +
+                                    "Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. " +
+                                    "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel $NAV_URL eller tjenestepensjonsordninger. " +
+                                    "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
+                                    "Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV"
+                        },
+                        nynorsk {
+                            +"Du får etterbetalt pensjon frå " + virkFom.formatMonthYear() + " . " +
+                                    "Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. " +
+                                    "Vi kan trekkje frå skatt og ytingar du har fått frå for eksempel $NAV_URL eller tenestepensjonsordningar. " +
+                                    "Etterbetalinga di kan derfor bli forseinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. " +
+                                    "Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV"
+                        },
+                        english {
+                            +"You will receive retroactive pension payments from " + virkFom.formatMonthYear() + ". " +
+                                    "The retroactive payments will normally be made in the course of seven working days. " +
+                                    "We can make deductions for tax and benefits you have received, for example, from $NAV_URL or occupational pension schemes. " +
+                                    "Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. " +
+                                    "You can check if there are any deductions from the payment notice at $DITT_NAV"
+                        }
                     )
                 }
 
@@ -726,19 +731,27 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 text(
                     bokmal { +"Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om. " },
                     nynorsk { +"Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om. " },
-                    english { +"If your circumstances change, you must inform Nav immediately. " +
-                            "The appendix specifies which changes you are obligated to notify us of. " }
+                    english {
+                        +"If your circumstances change, you must inform Nav immediately. " +
+                                "The appendix specifies which changes you are obligated to notify us of. "
+                    }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +"Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
-                            "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav." },
-                    nynorsk { +"Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
-                            "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav." },
-                    english { +"If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
-                            "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav" }
+                    bokmal {
+                        +"Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
+                                "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav."
+                    },
+                    nynorsk {
+                        +"Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
+                                "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav."
+                    },
+                    english {
+                        +"If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
+                                "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav"
+                    }
                 )
             }
 
