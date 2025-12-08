@@ -55,7 +55,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
                 text(bokmal { +"Du får ikke beregning som ung ufør fordi du har jobbet mer enn 50 prosent etter du fylte 26 år og du søkte om rettighet som ung ufør etter at du fylte 36 år." })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert. " })
+                text(bokmal { +"For å få uføretrygden beregnet med rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert. " })
             }
             paragraph {
                 text(bokmal { +"Søker du etter at du fylte 36 år, må du har jobbet mindre enn 50 prosent etter du fylte 26 år. Du har jobbet mer enn 50 prosent over en lengre periode etter at du fylte 26 år. " })
