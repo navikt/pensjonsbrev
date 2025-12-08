@@ -1,0 +1,11 @@
+= Skribenten
+
+Her kan du lese diverse dokumentasjon og annonseringer knyttet til applikasjonen Skribenten.
+
+== Sider
+
+* xref:skribenten/guider/skribenten-101.adoc[Skribenten 101]
+* xref:skribenten/produktoppdateringer/2025-09.adoc[September 2025]
+* xref:skribenten/produktoppdateringer/2025-10.adoc[Oktober 2025]
+* xref:skribenten/produktoppdateringer/2025-11.adoc[November 2025]
+* xref:skribenten/teknisk/skribenten.adoc[Original løsningsbeskrivelse]

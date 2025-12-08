@@ -1,9 +1,6 @@
+= Dokumentasjon fra Team Pensjonsbrev
 
-:toc:
-:toclevels: 2
+== Sider
 
-include::arkitektur.adoc[]
-include::brevbaker_pdfbygger_beskrivelse.adoc[]
-include::skribenten.adoc[]
-include::hvordan-utvikle-maler.adoc[]
-
+* link:brevbaker/index.adoc[Brevbaker]
+* link:skribenten/index.adoc[Skribenten]
