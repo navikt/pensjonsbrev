@@ -8,9 +8,9 @@ import java.time.LocalDate
 
 fun createUfoerOmregningEnsligDto() =
     UfoerOmregningEnsligDto(
-        opplysningerBruktIBeregningUT = Fixtures.create(),
-        orienteringOmRettigheterOgPlikter = Fixtures.create(),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
+        opplysningerBruktIBeregningUT = Fixtures.createVedlegg(),
+        orienteringOmRettigheterOgPlikter = Fixtures.createVedlegg(),
+        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
         minsteytelseVedvirk_sats = 0.0,
         avdoed = UfoerOmregningEnsligDto.Avdoed(
             navn = "Avdod Person",
