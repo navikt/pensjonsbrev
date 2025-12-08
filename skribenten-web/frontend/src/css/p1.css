@@ -109,6 +109,22 @@
   overflow-wrap: anywhere;
 }
 
+/* Reset styles for DatePicker popup table (React Day Picker) */
+.p1-table .rdp-table :is(th, td, &) {
+  border: none;
+  background: transparent;
+  padding: initial;
+  vertical-align: middle;
+  text-align: center;
+  word-break: normal;
+  overflow-wrap: normal;
+  height: auto;
+}
+
+.p1-table .rdp-table tbody tr:is(:nth-of-type(even), :nth-of-type(odd)) {
+  background-color: transparent;
+}
+
 .p1-table th {
   background: var(--ax-bg-accent-soft);
 }
@@ -247,7 +263,20 @@
    DatePicker styling
    =========================================== */
 .p1-datepicker {
-  max-width: 170px;
+  width: 100%;
+  max-width: none;
+}
+
+.p1-table td :where(.aksel-date__wrapper) {
+  width: 100%;
+}
+
+.p1-table td :where(.aksel-date__field-wrapper) {
+  width: 100%;
+}
+
+.p1-table td :where(.aksel-date__field-wrapper input) {
+  width: 100%;
 }
 
 /* ===========================================
@@ -257,6 +286,7 @@
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+  min-width: fit-content;
 }
 
 .p1-add-row-container :where(.aksel-button) {
