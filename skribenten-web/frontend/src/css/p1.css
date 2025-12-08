@@ -30,6 +30,7 @@
   overflow: hidden; /* Remove scroll from modal body */
   display: flex;
   flex-direction: column;
+  background: var(--ax-bg-default);
 }
 
 .p1-modal :where(.aksel-tabs) {
