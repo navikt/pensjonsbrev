@@ -223,13 +223,6 @@ class BrevredigeringServiceTest {
                 utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
             } ?: notYetStubbed("Mangler sendBrevResponse stub")
 
-        override suspend fun hentP1VedleggData(
-            saksId: Long,
-            spraak: LanguageCode
-        ): ServiceResult<Api.GeneriskBrevdata> {
-            TODO("Not yet implemented")
-        }
-
         fun verifyHentPesysBrevdata(
             saksId: Long,
             vedtaksId: Long?,
