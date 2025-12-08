@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagUngUfor36.fritekst
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -41,18 +42,17 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få uføretrygden beregnet etter reglene for yrkessykdom eller yrkesskade"})
+            text (bokmal { + "Nav har vurdert at vi ikke kan beregne uføretrygden din etter reglene for yrkesskade og yrkessykdom"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i måneden, slik det står i vedtaket av " + fritekst("dato") + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
             }
-
             paragraph {
-                text( bokmal { + "Vi avslår søknaden din fordi det er andre sykdomsforhold enn din godkjente yrkesskade som er årsaken til den nedsatte inntektsevnen din. " +
+                text( bokmal { + "Du får ikke beregning etter regler for yrkesskade eller yrkessykdom fordi det er andre sykdomsforhold enn din godkjente yrkesskade som er årsaken til den nedsatte inntektsevnen din. " +
                         "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaket ditt av " + fritekst("dato") + ". " })
             }
 
