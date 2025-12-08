@@ -24,7 +24,7 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     val featureToggle: FeatureToggle?
         get() = null
 
-    fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
+    fun <Lang : LanguageSupport, LetterData : BrevbakerBrevdata> createTemplate(
         letterDataType: KClass<LetterData>,
         languages: Lang,
         letterMetadata: LetterMetadata,
