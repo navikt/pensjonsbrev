@@ -18,16 +18,17 @@ interface PDFTemplate<out Lang : LanguageSupport, AttachmentData : PDFVedleggDat
 class IncludeAttachmentPDF<out Lang : LanguageSupport, AttachmentData : PDFVedleggData>(
     val data: Expression<AttachmentData>,
     val template: PDFTemplate<Lang, AttachmentData>,
+    val predicate: Expression<Boolean> = Expression.Literal(true)
 ) {
     fun eval(scope: ExpressionScope<*>) = template.createVedlegg(scope, data)
 
     override fun equals(other: Any?): Boolean {
         if (other !is IncludeAttachmentPDF<*, *>) return false
-        return data == other.data && template == other.template
+        return data == other.data && template == other.template && predicate == other.predicate
     }
 
     override fun hashCode() = Objects.hash(data, template)
-    override fun toString() = "IncludeAttachmentPDF(data=$data, template=$template)"
+    override fun toString() = "IncludeAttachmentPDF(data=$data, template=$template, predicate=$predicate)"
 }
 
 fun <Lang : LanguageSupport, AttachmentData : PDFVedleggData> createAttachmentPDF(
