@@ -53,7 +53,6 @@ fun createOmregningAlderUfore2016Dto() =
         maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
         opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerOmAvdoedBruktIBeregningDto = null,
-        maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
         opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto(),
         orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
         brukersSivilstand = Sivilstand.SEPARERT,
