@@ -128,6 +128,11 @@ data class OmregningAlderUfore2016Felles(
                 english { +" and " }
             )
             namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+            text(
+                bokmal { +"." },
+                nynorsk { +"." },
+                english { +"." }
+            )
         }
 
         ifNotNull(avdodNavn) { avdodNavn ->
@@ -316,6 +321,11 @@ data class OmregningAlderUfore2016Felles(
                     nynorsk { +brukersSivilstand.ubestemtForm() },
                     english { +brukersSivilstand.ubestemtForm() }
                 )
+            text(
+                bokmal { +"." },
+                nynorsk { +"." },
+                english { +"." }
+            )
             }
 
         showIf(brukersSivilstand.notEqualTo(Sivilstand.ENSLIG)){
@@ -360,6 +370,11 @@ data class OmregningAlderUfore2016Felles(
                 nynorsk { +"Du kan sjå meir om dette i vedlegget " },
                 english { +"You can find more information in the attachment " })
             namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+            text(
+                bokmal { +"." },
+                nynorsk { +"." },
+                english { +"." }
+            )
         }
 
         title2 {
