@@ -95,7 +95,7 @@ const p1InnvilgetPensjonFormSchema = z
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
           code: "custom",
-          message: "Institusjonsnavn er obligatorisk når raden er fylt ut",
+          message: "Institusjonsnavn er obligatorisk",
           path: ["institusjon", "institusjonsnavn"],
         });
       }
@@ -130,7 +130,7 @@ const p1AvslaattPensjonFormSchema = z
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
           code: "custom",
-          message: "Institusjonsnavn er obligatorisk når raden er fylt ut",
+          message: "Institusjonsnavn er obligatorisk ",
           path: ["institusjon", "institusjonsnavn"],
         });
       }
@@ -171,8 +171,8 @@ const p1UtfyllendeInstitusjonFormSchema = z.object({
     .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), "Ugyldig e-postformat"),
   dato: z
     .string()
-    .min(1, "Dato er obligatorisk")
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Dato må være i formatet YYYY-MM-DD"),
+    .max(10, "Dato kan ikke være lengre enn 10 tegn")
+    .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå"),
 });
 
 /* P1 Form Schema */
