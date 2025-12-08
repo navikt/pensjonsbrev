@@ -120,7 +120,7 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
         }
 }
 
-fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
+fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String, buildSubDir: String = "test_html"): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
             HTMLDocumentRenderer.render(
@@ -131,7 +131,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestHtml(htm
                 template.letterMetadata.brevtype
             )
         }
-        .also { writeTestHTML(htmlFileName, it) }
+        .also { writeTestHTML(htmlFileName, it, buildSubDir) }
 
     return this
 }
@@ -217,7 +217,6 @@ object VedleggPDFTestUtils {
             languages(Bokmal),
             LetterMetadata(
                 testName,
-                false,
                 LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype
             )

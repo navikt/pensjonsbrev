@@ -36,11 +36,7 @@ private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 
 interface PenService {
     suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection>
-    suspend fun bestillDoksysBrev(
-        request: Api.BestillDoksysBrevRequest,
-        enhetsId: String,
-        saksId: Long
-    ): ServiceResult<Pen.BestillDoksysBrevResponse>
+    suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse
     suspend fun bestillExstreamBrev(
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
     ): ServiceResult<BestillExstreamBrevResponse>
@@ -61,6 +57,8 @@ interface PenService {
 
     suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): ServiceResult<Api.GeneriskBrevdata>
 }
+
+class PenServiceException(message: String) : ServiceException(message)
 
 class PenServiceHttp(config: Config, authService: AuthService) : PenService, ServiceStatus {
     private val penUrl = config.getString("url")
@@ -111,12 +109,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                 }
         }
 
-    override suspend fun bestillDoksysBrev(
-        request: Api.BestillDoksysBrevRequest,
-        enhetsId: String,
-        saksId: Long
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> =
-        client.post("brev/skribenten/doksys/sak/$saksId") {
+    override suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse {
+        val response = client.post("brev/skribenten/doksys/sak/$saksId") {
             setBody(
                 BestillDoksysBrevRequest(
                     saksId = saksId,
@@ -127,7 +121,16 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult(::handlePenErrorResponse)
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            val errorBody = response.bodyAsText()
+            logger.error("En feil oppstod i kall til PEN: $errorBody")
+            throw PenServiceException("Feil ved bestilling av doksysbrev: $errorBody")
+        }
+    }
 
     override suspend fun bestillExstreamBrev(
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,

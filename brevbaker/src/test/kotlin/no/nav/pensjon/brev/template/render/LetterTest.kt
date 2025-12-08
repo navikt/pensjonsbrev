@@ -20,7 +20,6 @@ class LetterTest {
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
             "Test",
-            false,
             LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         ),

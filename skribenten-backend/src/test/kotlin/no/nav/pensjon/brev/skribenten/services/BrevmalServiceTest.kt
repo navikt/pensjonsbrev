@@ -27,7 +27,6 @@ class BrevmalServiceTest {
             languages = listOf(LanguageCode.BOKMAL),
             metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadata(
                 "brevbaker brev",
-                false,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
             ),

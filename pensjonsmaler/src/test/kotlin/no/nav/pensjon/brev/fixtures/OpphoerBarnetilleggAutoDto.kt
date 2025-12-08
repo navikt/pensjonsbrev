@@ -49,7 +49,7 @@ fun createOpphoerBarnetilleggAutoDto() =
             gjenlevendetilleggUtbetalt = null,
             harUtbetalingsgrad = false
         ),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
-        opplysningerBruktIBeregningUT = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create(),
+        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
+        opplysningerBruktIBeregningUT = Fixtures.createVedlegg(),
+        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
     )
