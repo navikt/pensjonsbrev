@@ -32,6 +32,12 @@ object Fixtures : LetterDataFactory {
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+        OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
+        else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+    }
+
     private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(
         pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
@@ -133,7 +139,7 @@ object Fixtures : LetterDataFactory {
         )
     )
 
-    private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr>? {
+    private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr> {
         return listOf(
             FeilutbetalingPerAr(
                 ar = 2023,

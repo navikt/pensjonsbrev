@@ -110,7 +110,7 @@ abstract class BrevmodulTest(
                         (((vedlegg.data as? Expression.UnaryInvoke<*, *>)?.operation as? UnaryOperation.Select<*, *>)?.selector?.propertyType)?.let {
                             Class.forName(it.removeSuffix("?"))
                         }
-                    dto?.let { Arguments.of(vedlegg.template, fixtures.create(dto.kotlin), spraak, dto.simpleName) }
+                    dto?.let { Arguments.of(vedlegg.template, fixtures.createVedlegg(dto.kotlin), spraak, dto.simpleName) }
                 }
             }
         }
@@ -183,7 +183,7 @@ abstract class BrevmodulTest(
                     it,
                     fixtures,
                     spraak,
-                    Fixtures.felles,
+                    FellesFactory.felles,
                 ).renderTestHtml("${clazzName}_$spraak", "test_vedlegg")
             }
     }

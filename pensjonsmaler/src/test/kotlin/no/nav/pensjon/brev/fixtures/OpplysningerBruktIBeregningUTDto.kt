@@ -8,18 +8,18 @@ import java.time.LocalDate
 
 fun createOpplysningerBruktIBeregningUTDto() =
     OpplysningerBruktIBeregningUTDto(
-        barnetilleggGjeldende = Fixtures.create(),
-        beregnetUTPerManedGjeldende = Fixtures.create(),
+        barnetilleggGjeldende = Fixtures.createVedlegg(),
+        beregnetUTPerManedGjeldende = Fixtures.createVedlegg(),
         grunnbeloep = Kroner(90000),
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
-        inntektFoerUfoereGjeldende = Fixtures.create(),
-        inntektsAvkortingGjeldende = Fixtures.create(),
+        inntektFoerUfoereGjeldende = Fixtures.createVedlegg(),
+        inntektsAvkortingGjeldende = Fixtures.createVedlegg(),
         minsteytelseGjeldende_sats = 0.0,
         sivilstand = Sivilstand.PARTNER,
-        trygdetidsdetaljerGjeldende = Fixtures.create(),
-        ufoeretrygdGjeldende = Fixtures.create(),
+        trygdetidsdetaljerGjeldende = Fixtures.createVedlegg(),
+        ufoeretrygdGjeldende = Fixtures.createVedlegg(),
         ungUfoerGjeldende_erUnder20Aar = false,
-        yrkesskadeGjeldende = Fixtures.create(),
+        yrkesskadeGjeldende = Fixtures.createVedlegg(),
         harKravaarsakEndringInntekt = true,
         fraOgMedDatoErNesteAar = false,
         borMedSivilstand = BorMedSivilstand.PARTNER,
@@ -27,8 +27,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
-        saerkullsbarn = Fixtures.create(),
-        fellesbarn = Fixtures.create(),
+        saerkullsbarn = Fixtures.createVedlegg(),
+        fellesbarn = Fixtures.createVedlegg(),
         foedselsdatoPaaBarnTilleggetGjelder = listOf(
             LocalDate.of(2000,1,1),
             LocalDate.of(2000,2,2),
@@ -109,7 +109,7 @@ fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() =
         samletTTNordiskKonv = 0,
         tellerTTEOS = 0,
         tellerTTNordiskKonv = 0,
-        utenforEOSogNorden = Fixtures.create(),
+        utenforEOSogNorden = Fixtures.createVedlegg(),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() =

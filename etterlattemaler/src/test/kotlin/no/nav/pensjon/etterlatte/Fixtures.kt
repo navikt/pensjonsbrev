@@ -179,13 +179,6 @@ object Fixtures : LetterDataFactory {
             AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
             KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T
 
-            // Vedlegg
-            BarnepensjonBeregning::class -> lagBeregning() as T
-            BeregningsVedleggData::class -> lagBeregningsVedleggData() as T
-            OmstillingsstoenadBeregning::class -> lagOmstillingsstoenadBeregning() as T
-            InformasjonOmOmstillingsstoenadData::class -> lagInformasjonOmOmstillingsstoenadData() as T
-            TilbakekrevingDTO::class -> lagTilbakekrevingDTO() as T
-
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T
             TomMal::class -> createTomMal() as T
@@ -194,6 +187,15 @@ object Fixtures : LetterDataFactory {
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+        BarnepensjonBeregning::class -> lagBeregning() as T
+        BeregningsVedleggData::class -> lagBeregningsVedleggData() as T
+        OmstillingsstoenadBeregning::class -> lagOmstillingsstoenadBeregning() as T
+        InformasjonOmOmstillingsstoenadData::class -> lagInformasjonOmOmstillingsstoenadData() as T
+        TilbakekrevingDTO::class -> lagTilbakekrevingDTO() as T
+        else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+    }
 
 
 }

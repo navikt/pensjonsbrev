@@ -23,8 +23,36 @@ fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptj
                 endretOpptjeningsAar = listOf(2023, 2020, 2021),
             ),
         maanedligPensjonFoerSkattAFP =
-            MaanedligPensjonFoerSkattAFPDto(
-                afpPrivatBeregningGjeldende =
+            createMaanedligPensjonFoerSkattAFPDto(),
+    )
+
+internal fun createMaanedligPensjonFoerSkattAFPDto(): MaanedligPensjonFoerSkattAFPDto = MaanedligPensjonFoerSkattAFPDto(
+    afpPrivatBeregningGjeldende =
+        MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
+            datoFom = LocalDate.of(2024, 7, 1),
+            datoTil = null,
+            afpLivsvarigNetto = Kroner(10),
+            kronetilleggNetto = Kroner(20),
+            komptilleggNetto = Kroner(30),
+            totalPensjon = Kroner(60),
+        ),
+    krav =
+        MaanedligPensjonFoerSkattAFPDto.Krav(
+            virkDatoFom = LocalDate.of(2024, 7, 1),
+        ),
+    afpPrivatBeregningListe =
+        MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregningListe(
+            antallBeregningsperioder = 2,
+            afpPrivatBeregningListe =
+                listOf(
+                    MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
+                        datoFom = LocalDate.of(2023, 6, 1),
+                        datoTil = LocalDate.of(2024, 7, 1),
+                        afpLivsvarigNetto = Kroner(100),
+                        kronetilleggNetto = Kroner(200),
+                        komptilleggNetto = Kroner(300),
+                        totalPensjon = Kroner(600),
+                    ),
                     MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
                         datoFom = LocalDate.of(2024, 7, 1),
                         datoTil = null,
@@ -33,34 +61,8 @@ fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptj
                         komptilleggNetto = Kroner(30),
                         totalPensjon = Kroner(60),
                     ),
-                krav =
-                    MaanedligPensjonFoerSkattAFPDto.Krav(
-                        virkDatoFom = LocalDate.of(2024, 7, 1),
-                    ),
-                afpPrivatBeregningListe =
-                    MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregningListe(
-                        antallBeregningsperioder = 2,
-                        afpPrivatBeregningListe =
-                            listOf(
-                                MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
-                                    datoFom = LocalDate.of(2023, 6, 1),
-                                    datoTil = LocalDate.of(2024, 7, 1),
-                                    afpLivsvarigNetto = Kroner(100),
-                                    kronetilleggNetto = Kroner(200),
-                                    komptilleggNetto = Kroner(300),
-                                    totalPensjon = Kroner(600),
-                                ),
-                                MaanedligPensjonFoerSkattAFPDto.AFPPrivatBeregning(
-                                    datoFom = LocalDate.of(2024, 7, 1),
-                                    datoTil = null,
-                                    afpLivsvarigNetto = Kroner(10),
-                                    kronetilleggNetto = Kroner(20),
-                                    komptilleggNetto = Kroner(30),
-                                    totalPensjon = Kroner(60),
-                                ),
-                            ),
-                    ),
-                opptjeningType = OpptjeningType.KORRIGERING,
-                belopEndring = BeloepEndring.ENDR_OKT,
-            ),
-    )
+                ),
+        ),
+    opptjeningType = OpptjeningType.KORRIGERING,
+    belopEndring = BeloepEndring.ENDR_OKT,
+)
