@@ -61,37 +61,39 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
                 maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025(),
-            opplysningerOmAvdoedBruktIBeregningDto = OpplysningerOmAvdoedBruktIBeregningDto(
-                bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
-                    foedselsdato = vilkaarligDato
-                ),
-                beregnetPensjonPerManedVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.BeregnetPensjonPerManedVedVirk(
-                    virkDatoFom = vilkaarligDato,
-                    avdoedFlyktningstatusErBrukt = true
-                ),
-                avdoedTrygdetidsdetaljerKap19VedVirk = null,
-                avdoed = OpplysningerOmAvdoedBruktIBeregningDto.Avdoed(
-                    navn = "Peder Ås",
-                    avdoedFnr = Foedselsnummer("01019878910")
-                ),
-                alderspensjonVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AlderspensjonVedVirk(
-                    regelverkType = AlderspensjonRegelverkType.AP2011,
-                    gjenlevenderettAnvendt = true,
-                    tilleggspensjonInnvilget = false
-                ),
-                avdoedTrygdetidsdetaljerVedVirkNokkelInfo = null,
-                tilleggspensjonVedVirk = null,
-                avdoedBeregningKap19VedVirk = null,
-                avdoedYrkesskadedetaljerVedVirk = null,
-                avdodBeregningKap3 = null,
-                avdoedTrygdetidNorge = listOf(),
-                avdoedTrygdetidEOS = listOf(),
-                avdoedTrygdetidAvtaleland = listOf(),
-                avdoedPoengrekkeVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AvdoedPoengrekkeVedVirk(
-                    inneholderFramtidigPoeng = false,
-                    inneholderOmsorgspoeng = true,
-                    pensjonspoeng = listOf()
-                )
-            )
+            opplysningerOmAvdoedBruktIBeregningDto = createOpplysningerOmAvdoedBruktIBeregningDto()
         ),
     )
+
+fun createOpplysningerOmAvdoedBruktIBeregningDto(): OpplysningerOmAvdoedBruktIBeregningDto = OpplysningerOmAvdoedBruktIBeregningDto(
+    bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
+                    foedselsdato = vilkaarligDato
+    ),
+    beregnetPensjonPerManedVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.BeregnetPensjonPerManedVedVirk(
+                    virkDatoFom = vilkaarligDato,
+        avdoedFlyktningstatusErBrukt = true
+    ),
+    avdoedTrygdetidsdetaljerKap19VedVirk = null,
+    avdoed = OpplysningerOmAvdoedBruktIBeregningDto.Avdoed(
+        navn = "Peder Ås",
+        avdoedFnr = Foedselsnummer("01019878910")
+    ),
+    alderspensjonVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AlderspensjonVedVirk(
+        regelverkType = AlderspensjonRegelverkType.AP2011,
+        gjenlevenderettAnvendt = true,
+        tilleggspensjonInnvilget = false
+    ),
+    avdoedTrygdetidsdetaljerVedVirkNokkelInfo = null,
+    tilleggspensjonVedVirk = null,
+    avdoedBeregningKap19VedVirk = null,
+    avdoedYrkesskadedetaljerVedVirk = null,
+    avdodBeregningKap3 = null,
+    avdoedTrygdetidNorge = listOf(),
+    avdoedTrygdetidEOS = listOf(),
+    avdoedTrygdetidAvtaleland = listOf(),
+    avdoedPoengrekkeVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AvdoedPoengrekkeVedVirk(
+        inneholderFramtidigPoeng = false,
+        inneholderOmsorgspoeng = true,
+        pensjonspoeng = listOf()
+    )
+)

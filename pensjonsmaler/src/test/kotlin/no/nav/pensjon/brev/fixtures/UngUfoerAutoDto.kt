@@ -14,6 +14,6 @@ fun createUngUfoerAutoDto() =
         fellesbarn = UngUfoerAutoDto.Barnetillegg(false, Kroner(10_000), gjelderFlereBarn = false),
         saerkullsbarn = UngUfoerAutoDto.Barnetillegg(true, Kroner(10_000), gjelderFlereBarn = true),
         minsteytelseVedVirkSats = 2.91,
-        maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create(),
+        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
+        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
     )
