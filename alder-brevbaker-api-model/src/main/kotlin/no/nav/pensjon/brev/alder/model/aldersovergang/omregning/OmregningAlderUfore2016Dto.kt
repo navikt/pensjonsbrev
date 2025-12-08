@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.model.aldersovergang.omregning
 
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
