@@ -100,7 +100,9 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
         .let {
             pdfVedleggAppender?.leggPaaVedlegg(
                 it,
-                this.template.pdfAttachments.map { a -> a.eval(this.toScope()) },
+                this.template.pdfAttachments
+                    .filter { a-> a.predicate.eval(this.toScope()) }
+                    .map { a -> a.eval(this.toScope()) },
                 this.language.toCode()
             ) ?: it
         }
