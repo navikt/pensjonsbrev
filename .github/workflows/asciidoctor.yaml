@@ -58,10 +58,9 @@ jobs:
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23
       with:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        FOLDER: "build"
-        BRANCH: 'gh-pages'
-        COMMIT_MESSAGE: "[CI] Publisere dokumentasjon"
+        folder: "build"
+        branch: 'gh-pages'
+        commit-message: "[CI] Publisere dokumentasjon"
 
   "klarTilMerge":
     name: "Klar til merge"
