@@ -18,15 +18,37 @@ const avslagsbegrunnelseEnum = z.enum([
 ]);
 const sakstypeEnum = z.enum(["ALDER", "UFORE", "ETTERLATTE"]);
 
+/* Shared date validation helper */
+const optionalDateField = (fieldName: string = "Dato") =>
+  z
+    .string()
+    .max(10, `${fieldName} kan ikke være lengre enn 10 tegn`)
+    .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå")
+    .refine((val) => {
+      if (!val) return true;
+      const [day, month, year] = val.split(".").map(Number);
+      const date = new Date(year, month - 1, day);
+      return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
+    }, "Ugyldig dato");
+
+const requiredDateField = (fieldName: string = "Dato") =>
+  z
+    .string()
+    .min(1, `${fieldName} er obligatorisk`)
+    .max(10, `${fieldName} kan ikke være lengre enn 10 tegn`)
+    .refine((val) => /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå")
+    .refine((val) => {
+      const [day, month, year] = val.split(".").map(Number);
+      const date = new Date(year, month - 1, day);
+      return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
+    }, "Ugyldig dato");
+
 /* Tab 1 & 2: Person validation (Innehaver & Forsikrede) */
 const p1PersonFormSchema = z.object({
   fornavn: z.string().min(1, "Fornavn er obligatorisk").max(100, "Fornavn kan ikke være lengre enn 100 tegn"),
   etternavn: z.string().min(1, "Etternavn er obligatorisk").max(100, "Etternavn kan ikke være lengre enn 100 tegn"),
   etternavnVedFoedsel: z.string().max(100, "Etternavn ved fødsel kan ikke være lengre enn 100 tegn"),
-  foedselsdato: z
-    .string()
-    .min(1, "Fødselsdato er obligatorisk")
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fødselsdato må være i formatet YYYY-MM-DD"),
+  foedselsdato: requiredDateField("Fødselsdato"),
   adresselinje: z.string().max(200, "Adresselinje kan ikke være lengre enn 200 tegn"),
   poststed: z.string().max(100, "Poststed kan ikke være lengre enn 100 tegn"),
   postnummer: z.string().max(20, "Postnummer kan ikke være lengre enn 20 tegn"),
@@ -38,50 +60,27 @@ const p1InstitusjonFormSchema = z.object({
   institusjonsnavn: z.string().max(200, "Institusjonsnavn kan ikke være lengre enn 200 tegn"),
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
-  vedtaksdato: z
-    .string()
-    .max(10, "Vedtaksdato kan ikke være lengre enn 10 tegn")
-    .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå"),
+  vedtaksdato: optionalDateField("Vedtaksdato"),
   land: z.string().max(3, "Landskode kan ikke være lengre enn 3 tegn"),
 });
 
 /* Helper to check if a row has any filled data */
-const isRowFilled = (row: {
-  institusjon: { institusjonsnavn: string; pin: string; saksnummer: string; vedtaksdato: string; land: string };
-  pensjonstype: string | null;
-  datoFoersteUtbetaling?: string;
-  utbetalt?: string;
-  grunnlagInnvilget?: string | null;
-  reduksjonsgrunnlag?: string | null;
-  avslagsbegrunnelse?: string | null;
-  vurderingsperiode: string;
-  adresseNyVurdering: string;
-}): boolean => {
-  return !!(
-    row.institusjon.institusjonsnavn ||
-    row.institusjon.pin ||
-    row.institusjon.saksnummer ||
-    row.institusjon.vedtaksdato ||
-    row.institusjon.land ||
-    row.pensjonstype ||
-    row.vurderingsperiode ||
-    row.adresseNyVurdering ||
-    row.datoFoersteUtbetaling ||
-    row.utbetalt ||
-    row.grunnlagInnvilget ||
-    row.reduksjonsgrunnlag ||
-    row.avslagsbegrunnelse
-  );
+const isRowFilled = (row: Record<string, unknown>): boolean => {
+  const checkValue = (value: unknown): boolean => {
+    if (value === null || value === undefined || value === "") return false;
+    if (typeof value === "object") {
+      return Object.values(value as Record<string, unknown>).some(checkValue);
+    }
+    return true;
+  };
+  return Object.values(row).some(checkValue);
 };
 
 const p1InnvilgetPensjonFormSchema = z
   .object({
     institusjon: p1InstitusjonFormSchema,
     pensjonstype: pensjonstypeEnum.nullable(),
-    datoFoersteUtbetaling: z
-      .string()
-      .max(10, "Dato kan ikke være lengre enn 10 tegn")
-      .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå"),
+    datoFoersteUtbetaling: optionalDateField("Dato for første utbetaling"),
     utbetalt: z.string().max(500, "Bruttobeløp kan ikke være lengre enn 500 tegn"),
     grunnlagInnvilget: grunnlagInnvilgetEnum.nullable(), // Optional - null means "Ikke relevant"
     reduksjonsgrunnlag: reduksjonsgrunnlagEnum.nullable(), // Optional - null means "Ikke relevant"
@@ -130,7 +129,7 @@ const p1AvslaattPensjonFormSchema = z
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
           code: "custom",
-          message: "Institusjonsnavn er obligatorisk ",
+          message: "Institusjonsnavn er obligatorisk",
           path: ["institusjon", "institusjonsnavn"],
         });
       }
@@ -169,10 +168,7 @@ const p1UtfyllendeInstitusjonFormSchema = z.object({
     .string()
     .max(100, "E-post kan ikke være lengre enn 100 tegn")
     .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), "Ugyldig e-postformat"),
-  dato: z
-    .string()
-    .max(10, "Dato kan ikke være lengre enn 10 tegn")
-    .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå"),
+  dato: optionalDateField("Dato"),
 });
 
 /* P1 Form Schema */
