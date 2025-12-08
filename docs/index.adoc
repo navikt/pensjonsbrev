@@ -1,4 +1,7 @@
 = Dokumentasjon fra Team Pensjonsbrev
+:toc: right
+:toclevels: 2
+:sectnums:
 
 == Sider
 

@@ -1,4 +1,7 @@
 = Brevbaker
+:toc: right
+:toclevels: 2
+:sectnums:
 
 Her kan du lese diverse dokumentasjon og annonseringer knyttet til applikasjonen Brevbaker.
 
