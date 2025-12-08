@@ -62,3 +62,13 @@ jobs:
         FOLDER: "build"
         BRANCH: 'gh-pages'
         COMMIT_MESSAGE: "[CI] Publisere dokumentasjon"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [build_site]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
