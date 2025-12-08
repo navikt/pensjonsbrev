@@ -1,2 +1,4 @@
 .Pensjonsbrev
 * xref:index.adoc[arkitektur ny brevløsning/brevbaker]
+
+test
