@@ -135,7 +135,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   </Tabs.Panel>
                 </Tabs>
 
-                {(isP1Error || lagreMutation.isError) && (
+                {/* {(isP1Error || lagreMutation.isError) && (
                   <Alert
                     css={css`
                       margin-top: 1rem;
@@ -145,7 +145,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   >
                     Noe gikk galt ved lasting eller lagring av P1.
                   </Alert>
-                )}
+                )} */}
               </>
             )}
           </Modal.Body>
