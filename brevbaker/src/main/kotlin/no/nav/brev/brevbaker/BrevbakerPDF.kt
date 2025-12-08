@@ -23,9 +23,9 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                 ),
                 shouldRetry = redigertBrev == null
             )
-        }.let {
+        }.let { pdf ->
             pdfVedleggAppender.leggPaaVedlegg(
-                it,
+                pdf,
                 letter.template.pdfAttachments
                     .filter { a -> a.predicate.eval(letter.toScope()) }
                     .map { a -> a.eval(letter.toScope()) },
