@@ -17,12 +17,18 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 private val objectMapper = brevbakerJacksonObjectMapper()
 
-class LetterFactory<Kode: Brevkode<Kode>>() {
+class LetterFactory<Kode : Brevkode<Kode>>() {
 
-    fun createLetter(brevbestilling: BestillBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-    with(brevbestilling) { createLetter(template,kode, letterData, language, felles) }
+    fun createLetter(
+        brevbestilling: BestillBrevRequest<Kode>,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
+    ) =
+        with(brevbestilling) { createLetter(template, kode, letterData, language, felles) }
 
-    fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
+    fun createLetter(
+        brevbestilling: BestillRedigertBrevRequest<Kode>,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
+    ) =
         with(brevbestilling) { createLetter(template, kode, letterData, language, felles) }
 
     private fun createLetter(
