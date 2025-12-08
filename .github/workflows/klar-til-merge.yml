@@ -12,7 +12,7 @@ on:
       - ".github/workflows/klar-til-merge.yml"
       - ".github/workflows/update-latex-image.yml"
       - "CODEOWNERS"
-      - "docs"
+      - "docs/**"
       - "fetch-secrets.sh"
       - "LICENCE.md"
       - "README.md"
