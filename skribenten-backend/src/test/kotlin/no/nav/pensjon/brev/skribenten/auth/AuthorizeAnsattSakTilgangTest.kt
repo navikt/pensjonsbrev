@@ -102,13 +102,6 @@ class AuthorizeAnsattSakTilgangTest {
                 "${generellSak0001.saksId}" to ServiceResult.Ok(generellSak0001),
                 "${generellSak0002.saksId}" to ServiceResult.Ok(generellSak0002)
             )[saksId] ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
-
-        override suspend fun hentP1VedleggData(
-            saksId: Long,
-            spraak: LanguageCode
-        ): ServiceResult<Api.GeneriskBrevdata> {
-            notYetStubbed()
-        }
     }
 
     private fun basicAuthTestApplication(

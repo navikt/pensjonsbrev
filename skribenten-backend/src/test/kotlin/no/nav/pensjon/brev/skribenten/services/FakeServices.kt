@@ -169,7 +169,7 @@ open class PenServiceStub : PenService {
         saksId: Long,
         spraak: LanguageCode
     ): ServiceResult<Api.GeneriskBrevdata> {
-        TODO("Not yet implemented")
+        notYetStubbed()
     }
 }
 
