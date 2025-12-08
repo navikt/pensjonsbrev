@@ -44,7 +44,11 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
     maanedligPensjonFoerSkatt = null,
     maanedligPensjonFoerSkattAP2025 = null,
     opplysningerOmAvdoedBruktIBeregning = null,
-    opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto(
+    opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto(),
+)
+
+fun createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto(): OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto =
+    OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto(
         alderspensjonVedVirk = OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.AlderspensjonVedVirk(
             uttaksgrad = 100,
             garantipensjonInnvilget = true,
@@ -96,5 +100,4 @@ fun createEndringPgaOpptjeningAutoDto() = EndringPgaOpptjeningAutoDto(
                 )
             ),
         )
-    ),
-)
+    )

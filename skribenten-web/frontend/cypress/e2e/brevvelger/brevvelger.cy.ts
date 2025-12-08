@@ -69,7 +69,6 @@ describe("Brevvelger spec", () => {
         brevkode: "PE_IY_05_027",
         idTSSEkstern: null,
         spraak: "NN",
-        isSensitive: false,
         brevtittel: "",
         enhetsId: "4405",
       });
@@ -87,8 +86,6 @@ describe("Brevvelger spec", () => {
 
     cy.get("select[name=spraak]").select("Nynorsk");
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-
-    cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
@@ -113,8 +110,6 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click().type("gjenlevende");
     cy.getDataCy("brevmal-button").click();
 
-    cy.getDataCy("is-sensitive").should("not.exist");
-
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
@@ -129,7 +124,6 @@ describe("Brevvelger spec", () => {
       expect(request.body).contains({
         brevkode: "PE_IY_03_156",
         spraak: "NB",
-        isSensitive: true,
         brevtittel: "GGMU",
         enhetsId: "4405",
       });
@@ -151,10 +145,6 @@ describe("Brevvelger spec", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
 
-    cy.getDataCy("is-sensitive").get(".aksel-error-message");
-    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
-
-    cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864212?token=1711023327721&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -168,7 +158,6 @@ describe("Brevvelger spec", () => {
         brevkode: "E001",
         landkode: "GBR",
         mottakerText: "Haaland",
-        isSensitive: true,
         enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevEblankett.json" });
@@ -185,10 +174,6 @@ describe("Brevvelger spec", () => {
 
     cy.getDataCy("order-letter").click();
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-
-    cy.getDataCy("is-sensitive").find(".aksel-error-message");
-    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
-    cy.getDataCy("is-sensitive").find(".aksel-error-message").should("not.exist");
 
     cy.get("label").contains("Land").parent().find(".aksel-error-message");
     cy.get("select[name=landkode]").select("Storbritannia");

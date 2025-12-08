@@ -49,11 +49,10 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
 
     override val template =
         createTemplate(
-            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            languages = languages(Language.Bokmal, Language.Nynorsk),
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - omregning av AFP til enslig pensjonist",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
@@ -62,7 +61,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                 text(
                     bokmal { +"Vi har regnet om den avtalefestede pensjonen din" },
                     nynorsk { +"Vi har rekna om den avtalefesta pensjonen din" },
-                    english { +"" },
                 )
             }
             outline {
@@ -86,7 +84,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                     kravVirkDatoFom.format() +
                                     " fordi du har blitt einsleg pensjonist. Vi vil også informere deg om kva rettar i folketrygda du kan ha etter avdøde."
                             },
-                            english { +"" },
                         )
                     }.orShowIf(!erEndret and antallBeregningsperioder.equalTo(1)) {
                         text(
@@ -98,7 +95,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 +"Vi har mottatt melding om at " + avdoed.navn +
                                     " er død. Din avtalefesta pensjon frå Statens pensjonskasse blir ikkje endra, men vi vil informera deg om kva rettar i folketrygda du kan ha etter avdøde."
                             },
-                            english { +"" },
                         )
                     }
                 }
@@ -114,7 +110,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                     +"Du får " + beregnetPensjonPerManedVedVirk.totalPensjon.format() +
                                         "  i AFP kvar månad før skatt."
                                 },
-                                english { +"" },
                             )
                         }
 
@@ -122,7 +117,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             text(
                                 bokmal { +" Du kan lese mer om andre beregningsperioder i vedlegget." },
                                 nynorsk { +" Du kan lese meir om andre utrekningsperiodar i vedlegget." },
-                                english { +"" },
                             )
                         }
                     }
@@ -134,7 +128,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             text(
                                 bokmal { +"Du får ikke utbetalt AFP på grunn av høy inntekt." },
                                 nynorsk { +"Du får ikkje utbetalt AFP på grunn av høg inntekt." },
-                                english { +"" },
                             )
                         }
 
@@ -142,7 +135,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             text(
                                 bokmal { +" Du kan lese mer om andre beregningsperioder i vedlegget." },
                                 nynorsk { +" Du kan lese meir om andre utrekningsperiodar i vedlegget." },
-                                english { +"" },
                             )
                         }
                     }
@@ -158,7 +150,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 nynorsk {
                                     +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3, jf. folketrygdlova §§ 3-2 og 3-3 og forskrift om omrekning av AFP § 3, jf. folketrygdlova § 19-8."
                                 },
-                                english { +"" },
                             )
                         }.orShow {
                             text(
@@ -168,7 +159,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 nynorsk {
                                     +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3, jf. folketrygdlova §§ 3-2 og 3-3."
                                 },
-                                english { +"" },
                             )
                         }
                     }.orShow {
@@ -180,7 +170,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 nynorsk {
                                     +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3, jf. folketrygdlova § 3-2 og forskrift om omrekning av AFP § 3, jf. folketrygdlova § 19-8."
                                 },
-                                english { +"" },
                             )
                         }.orShow {
                             text(
@@ -190,7 +179,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 nynorsk {
                                     +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3, jf. folketrygdlova § 3-2."
                                 },
-                                english { +"" },
                             )
                         }
                     }
@@ -209,7 +197,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             text(
                                 bokmal { +"Andre pensjonsordninger" },
                                 nynorsk { +"Andre pensjonsordningar" },
-                                english { +"Other pension schemes" },
                             )
                         }
 
@@ -221,9 +208,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 nynorsk {
                                     +"Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet."
                                 },
-                                english {
-                                    +"If the deceased was a member of a private or public pension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company."
-                                },
                             )
                         }
 
@@ -231,7 +215,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             text(
                                 bokmal { +"Rettigheter hvis avdøde har bodd eller arbeidet i utlandet" },
                                 nynorsk { +"Rettar når avdøde har budd eller arbeidd i utlandet" },
-                                english { +"Rights if the deceased has lived or worked abroad" },
                             )
                         }
 
@@ -243,7 +226,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                                 nynorsk {
                                     +"Dersom avdøde har budd eller arbeidd i utlandet kan dette få noko å seie for dine rettar etter avdøde. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rett til pensjon frå andre land. Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med."
                                 },
-                                english { +"" },
                             )
                         }
                     }
@@ -254,7 +236,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                         text(
                             bokmal { +"For deg som har barn under 18 år" },
                             nynorsk { +"For deg som har barn under 18 år" },
-                            english { +"If you have children under the age of 18" },
                         )
                     }
 
@@ -265,9 +246,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             },
                             nynorsk {
                                 +"Forsørgjer du barn under 18 år, kan du ha rett til utvida barnetrygd. I tillegg kan barn ha rett til barnepensjon. Du finn søknadsskjema og meir informasjon om dette på $NAV_URL"
-                            },
-                            english {
-                                +"If you provide for children under the age of 18, you may be entitled to extended child benefits. In addition, children may be entitled to a children’s pension. You will find the application form and more information about this at $NAV_URL"
                             },
                         )
                     }
@@ -285,7 +263,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                     text(
                         bokmal { +"Sjekk utbetalingene dine" },
                         nynorsk { +"Sjekk utbetalingane dine" },
-                        english { +"Information about your payments " },
                     )
                 }
 
@@ -297,7 +274,6 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                         nynorsk {
                             +"Du får pensjon utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. Du kan sjå alle utbetalingar du har fått på $DITT_NAV. Her kan du også endre kontonummeret ditt."
                         },
-                        english { +"" },
                     )
                 }
 

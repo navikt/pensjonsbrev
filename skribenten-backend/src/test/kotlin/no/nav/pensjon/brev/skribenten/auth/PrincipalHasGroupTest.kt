@@ -19,8 +19,7 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.context.CoroutineContextValueException
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.IsEqual.equalTo
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class PrincipalHasGroupTest {
@@ -105,7 +104,7 @@ class PrincipalHasGroupTest {
     ) { client ->
         val result = client.get("/singleGroupSet")
 
-        assertThat(result.status, equalTo(HttpStatusCode.OK))
+        assertThat(result.status).isEqualTo(HttpStatusCode.OK)
     }
 
     @Test
@@ -118,7 +117,7 @@ class PrincipalHasGroupTest {
     ) { client ->
         val result = client.get("/singleGroupSet")
 
-        assertThat(result.status, equalTo(HttpStatusCode.OK))
+        assertThat(result.status).isEqualTo(HttpStatusCode.OK)
     }
 
     @Test
@@ -127,7 +126,7 @@ class PrincipalHasGroupTest {
     ) { client ->
         val result = client.get("/singleGroupSet")
 
-        assertThat(result.status, equalTo(HttpStatusCode.Forbidden))
+        assertThat(result.status).isEqualTo(HttpStatusCode.Forbidden)
     }
 
     @Test
@@ -140,7 +139,7 @@ class PrincipalHasGroupTest {
     ) { client ->
         val result = client.get("/multipleGroupSets")
 
-        assertThat(result.status, equalTo(HttpStatusCode.OK))
+        assertThat(result.status).isEqualTo(HttpStatusCode.OK)
     }
 
     @Test
@@ -149,7 +148,7 @@ class PrincipalHasGroupTest {
     ) { client ->
         val result = client.get("/multipleGroupSets")
 
-        assertThat(result.status, equalTo(HttpStatusCode.Forbidden))
+        assertThat(result.status).isEqualTo(HttpStatusCode.Forbidden)
     }
 
     @Test
@@ -158,8 +157,8 @@ class PrincipalHasGroupTest {
     ) { client ->
         val result = client.get("/alternativeRejectResponse")
 
-        assertThat(result.status, equalTo(HttpStatusCode.NotFound))
-        assertThat(result.bodyAsText(), equalTo("Alternative rejection response"))
+        assertThat(result.status).isEqualTo(HttpStatusCode.NotFound)
+        assertThat(result.bodyAsText()).isEqualTo("Alternative rejection response")
     }
 
     @Test
@@ -170,6 +169,6 @@ class PrincipalHasGroupTest {
         val result = client.get("/singleGroupSet")
 
         // Om man får 418 betyr det at pluginen prøvde å kjøre etter at kall allerede var håndtert
-        assertThat(result.status, equalTo(HttpStatusCode.Unauthorized))
+        assertThat(result.status).isEqualTo(HttpStatusCode.Unauthorized)
     }
 }

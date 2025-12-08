@@ -132,9 +132,9 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                         // fortsattSkjermingstillegg
                         paragraph {
                             text(
-                                bokmal { +"Du får fortsatt utbetalt skjermingstillegget til uføre. Vedtaket er gjort etter folketrygdloven §§ 19-9a, 19-10 og 19-12." },
-                                nynorsk { +"Du får fortsatt utbetalt skjermingstillegget til uføre. Vedtaket er gjort etter folketrygdlova §§ 19-9a, 19-10 og 19-12." },
-                                english { +"You will still receive the supplement for disabled people. This decision was made pursuant to the provisions of §§ 19-9a, 19-10 and 19-12 of the National Insurance Act." }
+                                bokmal { +"Du får fortsatt utbetalt skjermingstillegget til uføre." },
+                                nynorsk { +"Du får fortsatt utbetalt skjermingstillegget til uføre." },
+                                english { +"You will still receive the supplement for disabled people." }
                             )
                         }
                     }
@@ -153,9 +153,21 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                     // endrUtaksgradAP2016
                     paragraph {
                         text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ " },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ " },
+                            english { +"This decision was made pursuant to the provisions of §§ " }
+                        )
+                        showIf(alderspensjonVedVirk.skjermingstilleggInnvilget) {
+                            text(
+                                bokmal { +"19-9a, " },
+                                nynorsk { +"19-9a, " },
+                                english { +"19-9a, " }
+                            )
+                        }
+                        text(
+                            bokmal { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                            nynorsk { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                            english { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
                         )
                     }
                 }.orShowIf(regelverkType.equalTo(AP2025)) {

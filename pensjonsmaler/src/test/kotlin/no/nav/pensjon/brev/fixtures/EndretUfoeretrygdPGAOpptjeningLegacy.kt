@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningL
 
 fun createEndretUforetrygdPGAOpptjeningLegacyDto() =
     EndretUforetrygdPGAOpptjeningLegacyDto(
-        pe = Fixtures.create(),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create(),
+        pe = Fixtures.createVedlegg(),
+        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
+        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
     )

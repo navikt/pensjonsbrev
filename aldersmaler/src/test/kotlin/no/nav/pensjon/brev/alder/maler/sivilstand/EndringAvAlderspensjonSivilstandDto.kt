@@ -51,20 +51,22 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                 sivilstand = MetaforceSivilstand.GIFT,
                 maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
                 maanedligPensjonFoerSkattAP2025Dto =
-                    MaanedligPensjonFoerSkattAP2025Dto(
-                        beregnetPensjonPerManedGjeldende =
-                            MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
-                                inntektspensjon = Kroner(1000),
-                                totalPensjon = Kroner(2000),
-                                garantipensjon = Kroner(1000),
-                                minstenivaIndividuell = Kroner(1000),
-                                virkDatoFom = vilkaarligDato,
-                                virkDatoTom = null,
-                            ),
-                        beregnetPensjonperManed = listOf(),
-                        kravVirkFom = vilkaarligDato,
-                    ),
+                    createMaanedligPensjonFoerSkattAP2025Dto(),
                 orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
                 beloepEndring = BeloepEndring.UENDRET,
             ),
     )
+
+internal fun createMaanedligPensjonFoerSkattAP2025Dto() = MaanedligPensjonFoerSkattAP2025Dto(
+    beregnetPensjonPerManedGjeldende =
+        MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
+            inntektspensjon = Kroner(1000),
+            totalPensjon = Kroner(2000),
+            garantipensjon = Kroner(1000),
+            minstenivaIndividuell = Kroner(1000),
+            virkDatoFom = vilkaarligDato,
+            virkDatoTom = null,
+        ),
+    beregnetPensjonperManed = listOf(),
+    kravVirkFom = vilkaarligDato,
+)
