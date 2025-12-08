@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
-    route("/${resource.name()}") {
+    route("/${resource.name}") {
 
         get {
             if (call.request.queryParameters["includeMetadata"] == "true") {
@@ -72,7 +72,7 @@ fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactor
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
 fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*,*>): Kode = parameters.getOrFail<String>("kode").let {
-    if (resource.name() == "autobrev") {
+    if (resource.name == "autobrev") {
         AutomatiskBrevkode(it)
     } else {
         RedigerbarBrevkode(it)

@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 fun Route.redigerbarRoutes(
     redigerbareBrev: RedigerbarTemplateResource<Brevkode.Redigerbart, RedigerbarTemplate<*>>,
 ) {
-    route("/${redigerbareBrev.name()}") {
+    route("/${redigerbareBrev.name}") {
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup") { brevbestilling ->
             val markup = redigerbareBrev.renderLetterMarkup(brevbestilling)
             call.respond(markup)

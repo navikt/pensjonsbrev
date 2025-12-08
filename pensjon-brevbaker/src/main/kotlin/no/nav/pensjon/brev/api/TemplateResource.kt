@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 interface TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>> {
 
-    fun name(): String
+    val name: String
 
     suspend fun renderPDF(brevbestilling: Request): LetterResponse
 

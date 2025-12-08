@@ -11,15 +11,13 @@ import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<AutobrevData, Kode>>(
-    val name: String,
+    override val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
     ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>> {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
     private val letterFactory: LetterFactory<Kode> = LetterFactory()
-
-    override fun name() = name
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderPDF(createLetter(brevbestilling))
