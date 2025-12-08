@@ -38,7 +38,10 @@ const p1InstitusjonFormSchema = z.object({
   institusjonsnavn: z.string().max(200, "Institusjonsnavn kan ikke være lengre enn 200 tegn"),
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
-  vedtaksdato: z.string().max(20, "Vedtaksdato kan ikke være lengre enn 20 tegn"),
+  vedtaksdato: z
+    .string()
+    .max(10, "Vedtaksdato kan ikke være lengre enn 10 tegn")
+    .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå"),
   land: z.string().max(3, "Landskode kan ikke være lengre enn 3 tegn"),
 });
 
@@ -147,15 +150,6 @@ const p1AvslaattPensjonFormSchema = z
           code: "custom",
           message: "Begrunnelse for avslag må velges",
           path: ["avslagsbegrunnelse"],
-        });
-      }
-
-      /* Vedtaksdato should be a valid date format if provided */
-      if (data.institusjon.vedtaksdato && !/^\d{4}-\d{2}-\d{2}$/.test(data.institusjon.vedtaksdato)) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Vedtaksdato må være i formatet YYYY-MM-DD",
-          path: ["institusjon", "vedtaksdato"],
         });
       }
     }
