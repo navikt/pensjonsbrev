@@ -54,6 +54,15 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         @Suppress("UNCHECKED_CAST")
         attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
     }
+
+    fun <AttachmentData : PDFVedleggData> includeAttachmentIfNotNull(
+        template: PDFTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData?>,
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+    }
+
 }
 
 

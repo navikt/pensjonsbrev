@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -61,6 +62,26 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
+}
+
+open class FakeP1Service(): P1Service {
+    override suspend fun lagreP1Data(
+        p1DataInput: Api.GeneriskBrevdata,
+        brevId: Long,
+        saksId: Long
+    ): P1Data? = notYetStubbed()
+
+    override suspend fun hentP1Data(
+        brevId: Long,
+        saksId: Long
+    ): Api.GeneriskBrevdata? = notYetStubbed()
+
+    override suspend fun patchMedP1DataOmP1(
+        brevdataResponse: BrevdataResponse.Data,
+        brevkode: Brevkode.Redigerbart,
+        brevId: Long,
+        saksId: Long
+    ): BrevdataResponse.Data = brevdataResponse
 }
 
 open class FakeBrevmetadataService(
@@ -140,6 +161,13 @@ open class PenServiceStub : PenService {
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
         distribuer: Boolean,
     ): ServiceResult<Pen.BestillBrevResponse> = notYetStubbed()
+
+    override suspend fun hentP1VedleggData(
+        saksId: Long,
+        spraak: LanguageCode
+    ): ServiceResult<Api.GeneriskBrevdata> {
+        notYetStubbed()
+    }
 }
 
 
