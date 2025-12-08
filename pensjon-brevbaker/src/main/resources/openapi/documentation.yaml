@@ -395,14 +395,11 @@ components:
       description: Se `no.nav.pensjon.brevbaker.api.model.LetterMetadata`
       required:
         - displayTitle
-        - isSensitiv
         - distribusjonstype
         - brevtype
       properties:
         displayTitle:
           type: string
-        isSensitiv:
-          type: boolean
         distribusjonstype:
           $ref: "#/components/schemas/Distribusjonstype"
         brevtype:

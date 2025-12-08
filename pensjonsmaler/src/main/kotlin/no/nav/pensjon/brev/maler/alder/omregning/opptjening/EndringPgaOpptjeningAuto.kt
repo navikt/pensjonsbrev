@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoS
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.maanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opptjeningType
@@ -42,7 +43,6 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av alderspensjon fordi opptjening er endret",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -92,7 +92,7 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             includePhrase(AvsnittArbeidsinntekt(beregnetPensjonPerMaanedVedVirk.uttaksgrad, uforeKombinertMedAlder))
             includePhrase(AvsnittLesMerOmAlderspensjon())
             includePhrase(AvsnittMeldFraOmEndringer())
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
@@ -102,6 +102,7 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder,opplysningerBruktIBeregningenAlder)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, opplysningerBruktIBeregningenAlderAP2025)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening, opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening)
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregning)
     }
 }

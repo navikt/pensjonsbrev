@@ -23,9 +23,10 @@ const BrevvelgerFooter = (props: {
   return (
     <HStack
       css={css`
-        padding: 8px 12px;
-        border-top: 1px solid var(--a-gray-200);
+        padding: var(--ax-space-8) var(--ax-space-16);
+        border-top: 1px solid var(--ax-neutral-300);
       `}
+      gap="space-8"
       justify={"end"}
     >
       <Button
@@ -38,7 +39,7 @@ const BrevvelgerFooter = (props: {
         }
         size="small"
         type="button"
-        variant="tertiary"
+        variant="secondary"
       >
         {harBrevKlarTilSending
           ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`

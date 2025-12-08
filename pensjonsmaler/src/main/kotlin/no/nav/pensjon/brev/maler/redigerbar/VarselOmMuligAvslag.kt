@@ -25,7 +25,6 @@ object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         languages = languages(Language.Bokmal, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om mulig avslag/opphør p.g.a. manglende opplysninger",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

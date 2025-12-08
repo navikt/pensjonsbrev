@@ -1,0 +1,11 @@
+query PdlSakPersonKontekst($ident: ID!) {
+    hentPerson(ident: $ident) {,
+        adressebeskyttelse{
+            gradering
+        }
+        doedsfall {
+            doedsdato
+        }
+    }
+}
+

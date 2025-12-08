@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -18,9 +19,16 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
     suspend fun RoutingContext.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) {
         brevResponse?.map { dto2ApiService.toApi(it) }
             ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
-            ?.onError { message, statusCode ->
-                logger.error("$statusCode - Feil ved oppdatering av brev: $message")
-                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+            ?.onError { message, statusCode, tittel ->
+                if (statusCode == HttpStatusCode.UnprocessableEntity) {
+                    logger.info("$statusCode - Feil ved oppdatering av brev: $message")
+                    call.respond(HttpStatusCode.UnprocessableEntity,
+                        BrevExceptionDto(tittel ?: "Feil ved oppdatering av brev", message)
+                    )
+                } else {
+                    logger.error("$statusCode - Feil ved oppdatering av brev: $message")
+                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
+                }
             }
             ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
     }

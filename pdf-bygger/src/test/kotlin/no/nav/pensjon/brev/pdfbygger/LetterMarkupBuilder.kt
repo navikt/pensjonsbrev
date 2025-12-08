@@ -135,6 +135,16 @@ class LetterMarkupBlocksBuilder {
         )
     }
 
+    fun title3(block: TextBuilder.() -> Unit) {
+        val content = TextBuilder().apply(block).build()
+        blocks.add(
+            LetterMarkupImpl.BlockImpl.Title3Impl(
+                id = content.fold(1) { hash, e -> 31 * hash + (e.id) },
+                content = content,
+            )
+        )
+    }
+
     fun paragraph(block: ParagraphBuilder.() -> Unit) {
         blocks.add(ParagraphBuilder().apply(block).build())
     }

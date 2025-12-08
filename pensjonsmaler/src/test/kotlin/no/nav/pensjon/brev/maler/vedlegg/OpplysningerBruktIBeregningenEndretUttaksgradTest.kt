@@ -3,9 +3,11 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -16,7 +18,6 @@ import no.nav.pensjon.brevbaker.api.model.Year
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.time.LocalDate
 
 class OpplysningerBruktIBeregningenEndretUttaksgradTest {
 
@@ -30,7 +31,7 @@ class OpplysningerBruktIBeregningenEndretUttaksgradTest {
         )
         LetterTestImpl(
             template,
-            Unit,
+            EmptyAutobrevdata,
             spraak,
             Fixtures.fellesAuto
         ).renderTestHtml(this::class.simpleName + "_${regelverk}_${spraak::class.simpleName}")
@@ -65,10 +66,10 @@ fun createOpplysningerBruktIBeregningenEndretUttaksgradDto(alderspensjonRegelver
             opptjeningTilfortKap20 = Kroner(234)
         ),
         bruker = OpplysningerBruktIBeregningenEndretUttaksgradDto.Bruker(
-            fodselsdato = LocalDate.now()
+            fodselsdato = vilkaarligDato
         ),
         krav = OpplysningerBruktIBeregningenEndretUttaksgradDto.Krav(
-            virkDatoFom = LocalDate.now()
+            virkDatoFom = vilkaarligDato
         ),
         trygdetidsdetaljerKap19VedVirk = OpplysningerBruktIBeregningenEndretUttaksgradDto.TrygdetidsdetaljerKap19VedVirk(
             anvendtTT = 40,

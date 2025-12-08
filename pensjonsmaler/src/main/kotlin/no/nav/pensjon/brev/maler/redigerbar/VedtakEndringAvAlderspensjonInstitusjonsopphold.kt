@@ -75,7 +75,6 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring ved institusjonsopphold",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -398,7 +397,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                 )
             }
 
-             includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+             includePhrase(Felles.RettTilAAKlage)
              includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
 
             includePhrase(Felles.HarDuSpoersmaal.alder)

@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoAvslaatt
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDtoSelectors.PesysDataSelectors.datoInnvilget
@@ -52,7 +52,6 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems
-            isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK, // Brukes ved distribusjon av brevet
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -297,5 +296,5 @@ data class EksempelRedigerbartDto(
         val tilleggEksempel: List<ExampleTilleggDto>,
         val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
-    ) : BrevbakerBrevdata
+    ) : FagsystemBrevdata
 }

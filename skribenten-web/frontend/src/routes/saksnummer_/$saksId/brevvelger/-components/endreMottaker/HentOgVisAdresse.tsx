@@ -28,7 +28,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
     <div
       css={css`
         h3 {
-          margin-bottom: var(--a-spacing-1);
+          margin-bottom: var(--ax-space-4);
         }
       `}
     >
@@ -81,7 +81,7 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
   return (
     <div>
       <BodyShort size="small">{navn}</BodyShort>
-      <VStack gap="0">
+      <VStack gap="space-0">
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">
             {humanizeName(linje)}
@@ -98,7 +98,7 @@ const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: 
       <BodyShort size="small">
         {properties.adresse.navn} {properties.erSamhandler && "(Samhandler)"}
       </BodyShort>
-      <VStack gap="0">
+      <VStack gap="space-0">
         <BodyShort size="small">{properties.adresse.linje1}</BodyShort>
         <BodyShort size="small">
           {properties.adresse.postnr} {properties.adresse.poststed}{" "}

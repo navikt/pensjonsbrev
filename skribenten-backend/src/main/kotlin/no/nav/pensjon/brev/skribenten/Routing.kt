@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
+import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Application.configureRouting(
@@ -22,16 +22,16 @@ fun Application.configureRouting(
 ) {
     val authService = AzureADService(authConfig, cache = cache)
     val servicesConfig = skribentenConfig.getConfig("services")
-    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopPreparing) { db.close() } }
+    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
+    val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
     val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
-    val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
@@ -62,12 +62,11 @@ fun Application.configureRouting(
                 brevbakerService,
                 brevmetadataService,
                 samhandlerService,
-                tjenestebussIntegrasjonService,
                 navansattService
             )
 
             landRoute()
-            brevmal(brevbakerService)
+            brevmal(brevbakerService, brevmalService)
             kodeverkRoute(penService)
             sakRoute(
                 dto2ApiService,
@@ -79,9 +78,10 @@ fun Application.configureRouting(
                 penService,
                 pensjonPersonDataService,
                 safService,
+                skjermingService,
             )
             brev(brevredigeringService, dto2ApiService, pdlService, penService)
-            tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
+            samhandlerRoute(samhandlerService)
             meRoute(navansattService)
 
         }

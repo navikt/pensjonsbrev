@@ -45,14 +45,12 @@ services:
       - NAIS_APP_NAME=skribenten-backend
       - DB_HOST=skribenten-backend-db
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017 -Dconfig.resource=application-local.conf
-      - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
-      - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
       - BREVBAKER_URL=http://pensjon-brevbaker:8080
 
   skribenten-backend-db:
     profiles:
       - skribenten
-    image: "postgres:14-alpine"
+    image: "postgres:17-alpine"
     ports:
       - "5432:5432"
     healthcheck:
@@ -61,20 +59,6 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: pass
-
-  tjenestebuss-integrasjon:
-    build: ./tjenestebuss-integrasjon
-    profiles:
-      - skribenten
-    ports:
-      - "8086:8080"
-      - "5018:5018"
-    env_file:
-      - tjenestebuss-integrasjon/secrets/docker.env
-    environment:
-      - STS_URL=https://security-token-service.dev.adeo.no
-      - SAMHANDLERSERVICE_URL=https://wasapp-q2.adeo.no/
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5018
 
   wonderwall:
     profiles:
@@ -95,6 +79,19 @@ services:
       - WONDERWALL_UPSTREAM_HOST=skribenten-bff:8084
       - WONDERWALL_LOG_LEVEL=debug
       - WONDERWALL_LOG_FORMAT=text
+  texas:
+    profiles:
+      - skribenten
+    image: ghcr.io/nais/texas:latest
+    environment:
+      BIND_ADDRESS: "0.0.0.0:3000"
+      AZURE_ENABLED: "true"
+      TEXAS_HTTP_CONNECT_TIMEOUT_MILLIS: "10000"
+      TEXAS_HTTP_READ_TIMEOUT_MILLIS: "10000"
+      TEXAS_HTTP_OVERALL_TIMEOUT_MILLIS: "10000"
+    env_file:
+      - skribenten-web/bff/.env
+
   skribenten-bff:
     profiles:
       - skribenten
@@ -113,6 +110,9 @@ services:
       SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
       PSAK_BASE_URL: "https://pensjon-psak-q2.intern.dev.nav.no"
+      NAIS_TOKEN_ENDPOINT: http://texas:3000/api/v1/token
+      NAIS_TOKEN_EXCHANGE_ENDPOINT: http://texas:3000/api/v1/token/exchange
+      NAIS_TOKEN_INTROSPECTION_ENDPOINT: http://texas:3000/api/v1/introspect
 
   brevoppskrift:
     profiles:

@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringAvUttaksgradAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
@@ -25,7 +24,6 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenEndretUttaksgrad
@@ -63,7 +61,6 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uttaksgrad (auto)",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = VEDTAKSBREV
         ),
@@ -235,13 +232,12 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                     includePhrase(MeldFraOmEndringer2)
                 }
 
-                includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(Felles.RettTilAAKlage)
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
-        includeAttachmentIfNotNull(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)  // V00001
-        includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)  // V00002
-        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)  // V00003
+            includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)  // V00002
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)  // V00003
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025Dto)  // V00010
             includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, opplysningerBruktIBeregningenEndretUttaksgradDto)  // V00005
         }

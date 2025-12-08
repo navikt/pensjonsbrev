@@ -1,15 +1,20 @@
 package no.nav.pensjon.brev.api.model.maler
 
 /**
- * Top-level interface for all Brevbaker Dto classes.
+ * Interface for toppnivå-mal-DTO.
+ * Ikke utvid denne direkte for en mal-dto, bruk heller de spesifikke interfacene under.
  */
 interface BrevbakerBrevdata
 
-interface RedigerbarBrevdata<SaksbehandlerValg : SaksbehandlerValgBrevdata, PesysData : BrevbakerBrevdata> : BrevbakerBrevdata {
-    val saksbehandlerValg: SaksbehandlerValg
-    val pesysData: PesysData
+interface RedigerbarBrevdata<Valg : SaksbehandlerValgBrevdata, Data : FagsystemBrevdata> : BrevbakerBrevdata {
+    val saksbehandlerValg: Valg
+    val pesysData: Data
 }
 
-interface SaksbehandlerValgBrevdata : BrevbakerBrevdata
+interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 
-interface VedleggData : BrevbakerBrevdata
+interface FagsystemBrevdata
+
+interface SaksbehandlerValgBrevdata
+
+interface VedleggData

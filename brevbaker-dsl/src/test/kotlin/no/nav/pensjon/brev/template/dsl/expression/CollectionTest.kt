@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import org.junit.jupiter.api.Assertions.*

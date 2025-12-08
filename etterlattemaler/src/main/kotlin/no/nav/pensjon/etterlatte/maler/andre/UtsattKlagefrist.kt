@@ -21,7 +21,6 @@ object UtsattKlagefrist : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Utsatt klagefrist",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),

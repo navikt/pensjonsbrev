@@ -3,20 +3,18 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import no.nav.brev.Landkode
-import no.nav.brev.Landkoder
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
@@ -60,7 +58,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
 class BrevredigeringServiceTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
+    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     init {
         KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
@@ -96,7 +94,6 @@ class BrevredigeringServiceTest {
         languages = listOf(LanguageCode.ENGLISH),
         metadata = LetterMetadata(
             displayTitle = "Et informasjonsbrev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
@@ -110,7 +107,6 @@ class BrevredigeringServiceTest {
         languages = listOf(LanguageCode.ENGLISH),
         metadata = LetterMetadata(
             displayTitle = "Et vedtaksbrev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
@@ -124,9 +120,9 @@ class BrevredigeringServiceTest {
     private val brevbakerService = BrevredigeringFakeBrevbakerService()
 
     private class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
-        lateinit var renderMarkupResultat: suspend ((f: Felles) -> ServiceResult<LetterMarkup>)
-        lateinit var renderPdfResultat: ServiceResult<LetterResponse>
-        lateinit var modelSpecificationResultat: ServiceResult<TemplateModelSpecification>
+        lateinit var renderMarkupResultat: suspend ((f: Felles) -> LetterMarkup)
+        lateinit var renderPdfResultat: LetterResponse
+        lateinit var modelSpecificationResultat: TemplateModelSpecification
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
@@ -136,10 +132,10 @@ class BrevredigeringServiceTest {
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
             felles: Felles
-        ): ServiceResult<LetterMarkupWithDataUsage> =
+        ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .map { LetterMarkupWithDataUsageImpl(it, emptySet()) }
+                .let { LetterMarkupWithDataUsageImpl(it, emptySet()) }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
@@ -167,9 +163,26 @@ class BrevredigeringServiceTest {
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = FellesFactory.lagFelles(
+        felles = Felles(
             dokumentDato = LocalDate.now(),
-            saksnummer = sak1.saksId.toString()
+            saksnummer = sak1.saksId.toString(),
+            avsenderEnhet =
+                NavEnhet(
+                    nettside = "nav.no",
+                    navn = "Nav Familie- og pensjonsytelser Porsgrunn",
+                    telefonnummer = Telefonnummer("55553334"),
+                ),
+            bruker = Bruker(
+                fornavn = "Test",
+                mellomnavn = "\"bruker\"",
+                etternavn = "Testerson",
+                foedselsnummer = Foedselsnummer("01019878910"),
+            ),
+            signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                saksbehandler = "Ole Saksbehandler",
+                attesterendeSaksbehandler = "Per Attesterende"
+            ),
+            annenMottakerNavn = null,
         ),
         brevdata = Api.GeneriskBrevdata()
     )
@@ -251,12 +264,9 @@ class BrevredigeringServiceTest {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupResultat = {
-            val signatur = it.signerendeSaksbehandlere
-            ServiceResult.Ok(
-                letter.medSignatur(
-                    saksbehandler = signatur?.saksbehandler,
-                    attestant = signatur?.attesterendeSaksbehandler
-                )
+            letter.medSignatur(
+                saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
+                attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
             )
         }
 
@@ -460,18 +470,17 @@ class BrevredigeringServiceTest {
     @Test
     fun `cannot create brevredigering for a NavEnhet without access to it`(): Unit = runBlocking {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
-        val result = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.opprettBrev(
-                sak = sak1,
-                vedtaksId = null,
-                brevkode = Testbrevkoder.INFORMASJONSBREV,
-                spraak = LanguageCode.ENGLISH,
-                avsenderEnhetsId = "The Matrix",
-                saksbehandlerValg = saksbehandlerValg
-            )
-        }
-        assertThat(result).isInstanceOfSatisfying<ServiceResult.Error<*>> {
-            assertThat(it.statusCode).isEqualTo(HttpStatusCode.Forbidden)
+        assertThrows<IkkeTilgangTilEnhetException> {
+            withPrincipal(saksbehandler1Principal) {
+                brevredigeringService.opprettBrev(
+                    sak = sak1,
+                    vedtaksId = null,
+                    brevkode = Testbrevkoder.INFORMASJONSBREV,
+                    spraak = LanguageCode.ENGLISH,
+                    avsenderEnhetsId = "The Matrix",
+                    saksbehandlerValg = saksbehandlerValg
+                )
+            }
         }
     }
 
@@ -514,7 +523,7 @@ class BrevredigeringServiceTest {
         val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
         val freshRender =
             letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph"))))
-        brevbakerService.renderMarkupResultat = { ServiceResult.Ok(freshRender) }
+        brevbakerService.renderMarkupResultat = { freshRender }
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.oppdaterBrev(
@@ -553,7 +562,7 @@ class BrevredigeringServiceTest {
 
         brevbakerService.renderMarkupResultat = {
             delay(10.minutes)
-            ServiceResult.Ok(letter)
+            letter
         }
 
         val result = withTimeout(10.seconds) {
@@ -602,7 +611,7 @@ class BrevredigeringServiceTest {
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
             }
-        ).isEqualTo(stagetPDF)
+        ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
@@ -689,8 +698,8 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
+            val response = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(response?.resultOrNull()).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
         }
     }
 
@@ -709,9 +718,67 @@ class BrevredigeringServiceTest {
 
             stagePdf("min andre pdf".encodeToByteArray())
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
-                ?.toString(Charsets.UTF_8)
 
-            assertEquals("min andre pdf", pdf)
+            assertThat(pdf).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+        }
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om pesysdata er endra`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+        }
+    }
+
+    @Test
+    fun `hentPdf informerer om at rendretBrev er endret pga pesysdata`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            brevbakerService.renderMarkupResultat = {
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"), LiteralImpl(99, "new text"))))
+                    .medSignatur(
+                        saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
+                        attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
+                    )
+            }
+            penService.pesysBrevdata =
+                brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(first).isNotEqualTo(second)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+        }
+    }
+
+    @Test
+    fun `hentPdf rendrer ny pdf om dokumentdato er endra`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        withPrincipal(saksbehandler1Principal) {
+            stagePdf("min første pdf".encodeToByteArray())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            stagePdf("min andre pdf".encodeToByteArray())
+            penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.copy(
+                dokumentDato = LocalDate.now().plusDays(2),
+                saksnummer = sak1.saksId.toString(),
+            ))
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+
+            assertThat(brevbakerService.renderPdfKall.last().sakspart.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
+            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
         }
     }
 
@@ -731,8 +798,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -761,8 +826,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -788,8 +851,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
-
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -812,7 +873,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan distribuere vedtaksbrev som er attestert`(): Unit = runBlocking {
-        Features.override(Features.attestant, true)
         brevbakerService.renderPdfKall.clear()
 
         val brev = opprettBrev(
@@ -841,8 +901,8 @@ class BrevredigeringServiceTest {
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
-        brevbakerService.renderPdfResultat = ServiceResult.Ok(letterResponse)
-        brevbakerService.renderMarkupResultat = { ServiceResult.Ok(letter) }
+        brevbakerService.renderPdfResultat = letterResponse
+        brevbakerService.renderMarkupResultat = { letter }
 
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
@@ -877,8 +937,8 @@ class BrevredigeringServiceTest {
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
         penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
-        brevbakerService.renderPdfResultat = ServiceResult.Ok(letterResponse)
-        brevbakerService.renderMarkupResultat = { ServiceResult.Ok(letter) }
+        brevbakerService.renderPdfResultat = letterResponse
+        brevbakerService.renderMarkupResultat = { letter }
 
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
@@ -964,7 +1024,7 @@ class BrevredigeringServiceTest {
 
             brevbakerService.renderMarkupResultat = {
                 delay(100)
-                ServiceResult.Ok(letter)
+                letter
             }
 
             val hentBrev = (0..10).map {
@@ -1119,7 +1179,7 @@ class BrevredigeringServiceTest {
             }
 
             withPrincipal(saksbehandler1Principal) {
-                assertThrows<BrevIkkeKlartTilSendingException> {
+                assertThrows<NyereVersjonFinsException> {
                     brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
                 }
             }
@@ -1231,7 +1291,7 @@ class BrevredigeringServiceTest {
     fun `oppdatering av redigertBrev endrer ogsaa redigertBrevHash`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true).resultOrNull()!!
         val hash1 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
-        assertThat(hash1.hexBytes).isEqualTo(WithEditLetterHash.hashBrev(letter.toEdit()))
+        assertThat(hash1.hexBytes).isEqualTo(WithHash.hash(letter.toEdit()))
 
         transaction {
             Brevredigering[brev.info.id].redigertBrev =
@@ -1265,7 +1325,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
+        val nyMottaker = Dto.Mottaker.norskAdresse("a", NorskPostnummer("1234"), "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
 
         val oppdatert = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(
@@ -1378,20 +1438,18 @@ class BrevredigeringServiceTest {
             )?.resultOrNull()!!
         }
 
-        brevbakerService.modelSpecificationResultat = ServiceResult.Ok(
-            TemplateModelSpecification(
-                types = mapOf(
-                    "BrevData1" to mapOf(
-                        "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
-                    ),
-                    "SaksbehandlerValg1" to mapOf(
-                        "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
-                        "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
-                        "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
-                    ),
+        brevbakerService.modelSpecificationResultat = TemplateModelSpecification(
+            types = mapOf(
+                "BrevData1" to mapOf(
+                    "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
                 ),
-                letterModelTypeName = "BrevData1",
-            )
+                "SaksbehandlerValg1" to mapOf(
+                    "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
+                    "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
+                    "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
+                ),
+            ),
+            letterModelTypeName = "BrevData1",
         )
 
         val tilbakestilt = withPrincipal(saksbehandler1Principal) {
@@ -1408,16 +1466,14 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan ikke markere brev klar til sending om ikke alle fritekst er fylt ut`(): Unit = runBlocking {
         brevbakerService.renderMarkupResultat = {
-            ServiceResult.Ok(
-                letter(
-                    ParagraphImpl(
-                        1,
-                        true,
-                        listOf(
-                            LiteralImpl(12, "Vi har "),
-                            LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
-                            LiteralImpl(14, " mottatt søknad.")
-                        )
+            letter(
+                ParagraphImpl(
+                    1,
+                    true,
+                    listOf(
+                        LiteralImpl(12, "Vi har "),
+                        LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
+                        LiteralImpl(14, " mottatt søknad.")
                     )
                 )
             )
@@ -1440,16 +1496,14 @@ class BrevredigeringServiceTest {
     @Test
     fun `kan markere brev klar til sending om alle fritekst er fylt ut`(): Unit = runBlocking {
         brevbakerService.renderMarkupResultat = {
-            ServiceResult.Ok(
-                letter(
-                    ParagraphImpl(
-                        1,
-                        true,
-                        listOf(
-                            LiteralImpl(12, "Vi har "),
-                            LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
-                            LiteralImpl(14, " mottatt søknad.")
-                        )
+            letter(
+                ParagraphImpl(
+                    1,
+                    true,
+                    listOf(
+                        LiteralImpl(12, "Vi har "),
+                        LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
+                        LiteralImpl(14, " mottatt søknad.")
                     )
                 )
             )
@@ -1515,16 +1569,13 @@ class BrevredigeringServiceTest {
     }
 
     private fun stagePdf(pdf: ByteArray) {
-        brevbakerService.renderPdfResultat = ServiceResult.Ok(
-            LetterResponse(
-                file = pdf,
-                contentType = ContentType.Application.Pdf.toString(),
-                letterMetadata = LetterMetadata(
-                    displayTitle = "En fin tittel",
-                    isSensitiv = false,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-                )
+        brevbakerService.renderPdfResultat = LetterResponse(
+            file = pdf,
+            contentType = ContentType.Application.Pdf.toString(),
+            letterMetadata = LetterMetadata(
+                displayTitle = "En fin tittel",
+                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
             )
         )
     }

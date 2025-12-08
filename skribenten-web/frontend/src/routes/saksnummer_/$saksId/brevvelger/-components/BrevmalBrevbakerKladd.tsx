@@ -22,7 +22,7 @@ import { Route } from "../route";
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
   brevId: number;
-  letterTemplates: LetterMetadata[];
+  brevmetadata: Record<string, LetterMetadata>;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const brevQuery = useQuery({
@@ -33,7 +33,7 @@ export const BrevmalBrevbakerKladd = (props: {
 
   const brev = brevQuery.data;
   const brevExists = brev !== undefined;
-  const letterMetadataForBrev = brevExists ? props.letterTemplates.find((l) => l.id === brev!.brevkode) : undefined;
+  const letterMetadataForBrev = brevExists ? props.brevmetadata[brev.brevkode] : undefined;
 
   return (
     <>
@@ -92,8 +92,8 @@ const Brevmal = (props: {
 
   return (
     <>
-      <VStack flexGrow="1" gap="4">
-        <VStack gap="4">
+      <VStack flexGrow="1" gap="space-16">
+        <VStack gap="space-16">
           {!erBrevArkivert(props.brev) && (
             <SlettBrev
               brevId={props.brev.id}
@@ -114,7 +114,7 @@ const Brevmal = (props: {
               sakId={props.saksId}
             />
           )}
-          <VStack gap="2">
+          <VStack gap="space-8">
             <Heading size="small">{props.brev.brevtittel}</Heading>
             {props.letterMetadata ? (
               <LetterTemplateTags letterTemplate={props.letterMetadata} />
@@ -124,7 +124,7 @@ const Brevmal = (props: {
           </VStack>
         </VStack>
         <Divider />
-        <VStack gap="8">
+        <VStack gap="space-32">
           {erBrevArkivert(props.brev) ? (
             <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
           ) : (

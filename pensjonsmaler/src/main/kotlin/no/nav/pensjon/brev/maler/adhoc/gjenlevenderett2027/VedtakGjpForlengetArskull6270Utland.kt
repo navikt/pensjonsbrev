@@ -40,7 +40,6 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Gjenlevendepensjonen din forlenges",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -159,7 +158,7 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {

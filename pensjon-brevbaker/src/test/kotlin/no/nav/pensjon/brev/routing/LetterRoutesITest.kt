@@ -9,7 +9,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -36,13 +36,13 @@ class LetterRoutesITest {
     private val autoBrevRequest = BestillBrevRequest(
         kode = LetterExample.kode,
         letterData = createLetterExampleDto(),
-        felles = Fixtures.fellesAuto,
+        felles = FellesFactory.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
         letterData = createEksempelbrevRedigerbartDto(),
-        felles = Fixtures.felles,
+        felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )
     private val redigertBestilling = LetterImpl(

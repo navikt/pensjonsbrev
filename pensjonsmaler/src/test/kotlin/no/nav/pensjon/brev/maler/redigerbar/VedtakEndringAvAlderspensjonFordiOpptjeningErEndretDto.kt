@@ -40,6 +40,7 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             maanedligPensjonFoerSkatt = Fixtures.create(MaanedligPensjonFoerSkattDto::class),
             maanedligPensjonFoerSkattAP2025 = Fixtures.create(MaanedligPensjonFoerSkattAP2025Dto::class),
             opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
-            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto()
+            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
+            opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = null,
         )
     )

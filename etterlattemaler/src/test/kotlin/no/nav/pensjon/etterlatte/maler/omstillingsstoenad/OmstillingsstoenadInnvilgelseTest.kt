@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
@@ -49,13 +50,13 @@ class OmstillingsstoenadInnvilgelseTest {
 
         assertEquals(false, dto.omsRettUtenTidsbegrensning)
     }
-    
+
 }
 
 
 fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = OmstillingsstoenadBeregning(
     innhold = listOf(),
-    virkningsdato = LocalDate.now(),
+        virkningsdato = vilkaarligDato,
     beregningsperioder = listOf(),
     sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
         datoFOM = LocalDate.of(2024, 2, 1),
@@ -82,7 +83,7 @@ fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = Omstillingss
         navnAvdoed = "Elvis Presley",
         trygdetidsperioder = emptyList(),
     ),
-    oppphoersdato = LocalDate.now(),
+        oppphoersdato = vilkaarligDato,
     opphoerNesteAar = false,
     erYrkesskade = false
 )

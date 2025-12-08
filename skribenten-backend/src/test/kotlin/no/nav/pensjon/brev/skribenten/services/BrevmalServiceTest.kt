@@ -28,7 +28,6 @@ class BrevmalServiceTest {
             languages = listOf(LanguageCode.BOKMAL),
             metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadata(
                 "brevbaker brev",
-                false,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
@@ -40,7 +39,10 @@ class BrevmalServiceTest {
 
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
-    private fun lagBrevmalService(service: PenService = object : PenServiceStub() {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    private fun lagBrevmalService(
+        service: PenService = PenServiceStub(),
+        brevmetadataService: BrevmetadataService = FakeBrevmetadataService()
+    ): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",

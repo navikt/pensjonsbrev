@@ -43,7 +43,6 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Klagebehandlingstid",
-                isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),

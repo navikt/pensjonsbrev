@@ -1,0 +1,1 @@
+UPDATE brevredigering SET "vedtaksId" = null where brevkode = 'P1_SAMLET_MELDING_OM_PENSJONSVEDTAK'

@@ -25,17 +25,20 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.JwtUserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -87,6 +90,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         filter {
             !ignorePaths.contains(it.request.path())
         }
+        mdc("x_userId") { call ->
+            call.principal<JwtUserPrincipal>()?.navIdent?.id
+        }
     }
     install(CallId) {
         header("X-Request-ID")
@@ -119,7 +125,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             call.application.log.info(cause.message, cause)
             when (cause) {
                 is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
+                    BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
+                is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
                 is HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
@@ -128,11 +136,12 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
+                is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
             }
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
-            call.respond(HttpStatusCode.InternalServerError, "Ukjent intern feil")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
 
@@ -184,11 +193,13 @@ fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
         jackson {
             registerModule(JavaTimeModule())
-            registerModule(Edit.JacksonModule)
-            registerModule(BrevkodeModule)
-            registerModule(LetterMarkupModule)
+            registerModule(EditLetterJacksonModule)
+            registerModule(BrevkodeJacksonModule)
+            registerModule(LetterMarkupJacksonModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
+        // midlertidig løsning frem til frontend er oppdatert til å bruke application/json
+        register(ContentType.Application.Pdf, PdfResponseConverter)
     }
 }

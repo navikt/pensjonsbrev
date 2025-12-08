@@ -1,24 +1,22 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyBrevdata> {
+object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_HVILENDE_RETT_MIDL_OPPHOER
-    override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
+    override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak midlertidig opphør hvilende rett 10 år",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -71,7 +69,7 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyBrevdata> {
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
 

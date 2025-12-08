@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag
 
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphfasteutgifterperiode.InstOpphFasteUtgifterPeriodeListe
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.instopphreduksjonsperiode.InstOpphReduksjonsPeriodeListe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOS
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNor
@@ -14,4 +16,6 @@ data class Persongrunnlag(
     val trygdetidsgrunnlaglisteeos: TrygdetidsgrunnlagListeEOS?,
     val trygdetidsgrunnlaglistenor: TrygdetidsgrunnlagListeNor?,
     val uforetrygdetteroppgjor: UforetrygdEtteroppgjor?,
+    val instopphfasteutgifterperiodeliste: InstOpphFasteUtgifterPeriodeListe? = null,
+    val instopphreduksjonsperiodeliste: InstOpphReduksjonsPeriodeListe? = null
 )

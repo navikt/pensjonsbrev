@@ -58,7 +58,7 @@ class Valkey(config: Config) : Cache() {
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
-        logger.warn("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
+        logger.info("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
         null
     }
 
@@ -77,7 +77,7 @@ class Valkey(config: Config) : Cache() {
             }
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            logger.warn("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
+            logger.info("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
         }
     }
 
@@ -123,6 +123,8 @@ enum class Cacheomraade(val prefix: String) {
     NAVANSATT("Navansatt"),
     NAVANSATTENHET("NavAnsattEnhet"),
     NORG("Norg"),
+    SKJERMING("Skjerming"),
     REDIGERBAR_MAL("Redigerbar"),
     SAMHANDLER("Samhandler"),
+    SAMHANDLER_ADRESSE("SamhandlerAdresse"),
 }

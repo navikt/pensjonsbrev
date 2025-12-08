@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +17,7 @@ class OversettelseAvDokumenterTest {
     fun testPdf() {
         LetterTestImpl(
             OversettelseAvDokumenter.template,
-            Fixtures.create<EmptyBrevdata>(),
+            Fixtures.create<EmptyAutobrevdata>(),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(OversettelseAvDokumenter.kode.name)
@@ -27,7 +27,7 @@ class OversettelseAvDokumenterTest {
     fun testHtml() {
         LetterTestImpl(
             OversettelseAvDokumenter.template,
-            Fixtures.create<EmptyBrevdata>(),
+            Fixtures.create<EmptyAutobrevdata>(),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(OversettelseAvDokumenter.kode.name)

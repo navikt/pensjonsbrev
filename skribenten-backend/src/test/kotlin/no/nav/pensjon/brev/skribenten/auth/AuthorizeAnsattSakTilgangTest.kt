@@ -84,6 +84,10 @@ class AuthorizeAnsattSakTilgangTest {
         override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
             adressebeskyttelser[Pair(fnr, behandlingsnummer)]
                 ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $fnr og behandlingsnummer $behandlingsnummer")
+
+        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> =
+            notYetStubbed("Mangler stub for hentBrukerContext")
+
     }
 
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(emptyList())))

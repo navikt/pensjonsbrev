@@ -1,0 +1,136 @@
+name: "Build and deploy brevbaker"
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradle/libs.versions.toml"
+      - "template-model-generator/**"
+      - "brevbaker/**"
+      - "brevbaker-dsl/**"
+      - "etterlattemaler/**"
+      - "pensjonsmaler/**"
+      - "aldersmaler/**"
+      - "ufoeremaler/**"
+      - "pensjon-brevbaker/**"
+      - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/brevbaker.yml"
+      - "!**/**.md"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradle/libs.versions.toml"
+      - "template-model-generator/**"
+      - "brevbaker/**"
+      - "brevbaker-dsl/**"
+      - "etterlattemaler/**"
+      - "pensjonsmaler/**"
+      - "aldersmaler/**"
+      - "ufoeremaler/**"
+      - "pensjon-brevbaker/**"
+      - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/brevbaker.yml"
+      - "!**/**.md"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+env:
+  JavaDistribution: "temurin"
+  JavaVersion: 21
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+jobs:
+  buildBrevbaker:
+    uses: ./.github/workflows/.build-backend.yaml
+    secrets: inherit
+    with:
+      image_suffix: brevbaker
+      path: pensjon-brevbaker
+      extraModulesToBuild: ':pensjon-brevbaker-api-model:publishToMavenLocal :alder-brevbaker-api-model:publishToMavenLocal :ufoere-brevbaker-api-model:publishToMavenLocal'
+      buildImage: true
+
+  salsa-brevbaker:
+    uses: ./.github/workflows/.salsa.yaml
+    needs: buildBrevbaker
+    secrets: inherit
+    with:
+      digest: ${{ needs.buildBrevbaker.outputs.digest }}
+      image: ${{ needs.buildBrevbaker.outputs.image }}
+
+  runIntegrationTests:
+    name: "Integration tests"
+    runs-on: ubuntu-latest-16-cores
+    permissions:
+      statuses: write
+      checks: write
+      pull-requests: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-encryption-key: ${{ secrets.GRADLEKEY }}
+      - uses: actions/setup-java@v5
+        with:
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
+      - name: "run integration tests"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
+          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
+          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
+          ./gradlew :pensjon-brevbaker:integrationTest
+        env:
+          "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
+        with:
+          fail_if_no_tests: true
+          fail_on_test_failures: true
+          report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+
+  deployBrevbakerToDev:
+    name: "Deploy brevbaker to dev"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: [runIntegrationTests, buildBrevbaker]
+    with:
+      cluster: "dev-gcp"
+      resource: "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      image: ${{needs.buildBrevbaker.outputs.image}}
+      vars: "pensjon-brevbaker/.nais/dev.yaml"
+
+  deployBrevbakerToProduction:
+    name: "Deploy brevbaker to production"
+    uses: ./.github/workflows/.deploy.yaml
+    secrets: inherit
+    needs: [runIntegrationTests, buildBrevbaker]
+    with:
+      cluster: "prod-gcp"
+      resource: "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      image: ${{needs.buildBrevbaker.outputs.image}}
+      vars: "pensjon-brevbaker/.nais/prod.yaml"
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [buildBrevbaker, runIntegrationTests]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

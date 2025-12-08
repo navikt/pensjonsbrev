@@ -31,16 +31,15 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
 
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
     override val kategori = TemplateDescription.Brevkategori.SLUTTBEHANDLING
-    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "P1 med forsidebrev",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         title {

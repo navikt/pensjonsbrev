@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepAarNetto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.borMedSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.fribeloep
@@ -17,14 +16,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.justeringsbeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.justeringsbeloepAar_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.samletInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.avkortningsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.beloepAarBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.beloepAarNetto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.fribeloepErPeriodisert
@@ -34,10 +31,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.justeringsbeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.SaerkullsbarnSelectors.justeringsbeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.fellesbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.bestemtForm
@@ -63,6 +59,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -77,19 +74,19 @@ data class OpplysningerOmBarnetillegg(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harAnvendtTrygdetidUnder40 = anvendtTrygdetid.lessThan(40)
-        val harInnvilgetBarnetilleggFellesbarn = barnetillegg.fellesbarn_safe.notNull()
-        val harInnvilgetBarnetilleggSaerkullsbarn = barnetillegg.saerkullsbarn_safe.notNull()
+        val harInnvilgetBarnetilleggFellesbarn = barnetillegg.fellesbarn.notNull()
+        val harInnvilgetBarnetilleggSaerkullsbarn = barnetillegg.saerkullsbarn.notNull()
 
-        val justeringsbeloepFelles = barnetillegg.fellesbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0))
-        val justeringsbeloepSaerkull = barnetillegg.saerkullsbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0))
+        val justeringsbeloepFelles = barnetillegg.fellesbarn.safe { justeringsbeloepAar }.ifNull(Kroner(0))
+        val justeringsbeloepSaerkull = barnetillegg.saerkullsbarn.safe { justeringsbeloepAar }.ifNull(Kroner(0))
         val harJusteringsbeloepFellesBarn = justeringsbeloepFelles.notEqualTo(0)
         val harJusteringsbeloepSaerkullsbarn = justeringsbeloepSaerkull.notEqualTo(0)
         val harJusteringsbeloep = harJusteringsbeloepFellesBarn or harJusteringsbeloepSaerkullsbarn
 
         val faarUtbetaltBarnetilleggFellesBarn =
-            barnetillegg.fellesbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
+            barnetillegg.fellesbarn.safe { beloepNetto }.ifNull(Kroner(0)).greaterThan(0)
         val faarUtbetaltbarnetilleggSaerkullsbarn =
-            barnetillegg.saerkullsbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
+            barnetillegg.saerkullsbarn.safe { beloepNetto }.ifNull(Kroner(0)).greaterThan(0)
         val faarUtbetaltBarnetillegg = faarUtbetaltBarnetilleggFellesBarn or faarUtbetaltbarnetilleggSaerkullsbarn
 
 
@@ -111,7 +108,7 @@ data class OpplysningerOmBarnetillegg(
 
         includePhrase(VedleggBeregnUTInnlednBT)
 
-        ifNotNull(barnetillegg.fellesbarn_safe, barnetillegg.saerkullsbarn_safe) { felles, saerkull ->
+        ifNotNull(barnetillegg.fellesbarn, barnetillegg.saerkullsbarn) { felles, saerkull ->
             includePhrase(
                 FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
                     harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40,
@@ -138,7 +135,7 @@ data class OpplysningerOmBarnetillegg(
         }
 
         showIf(harJusteringsbeloep or faarUtbetaltBarnetillegg) {
-            ifNotNull(barnetillegg.fellesbarn_safe, barnetillegg.saerkullsbarn_safe) { fellesTillegg, saerkullTillegg ->
+            ifNotNull(barnetillegg.fellesbarn, barnetillegg.saerkullsbarn) { fellesTillegg, saerkullTillegg ->
                 includePhrase(
                     EndringInntektFlereTillegg(
                         fellesTillegg = fellesTillegg,
@@ -146,7 +143,7 @@ data class OpplysningerOmBarnetillegg(
                         harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
                     )
                 )
-            }.orIfNotNull(barnetillegg.fellesbarn_safe) { fellesTillegg ->
+            }.orIfNotNull(barnetillegg.fellesbarn) { fellesTillegg ->
                 includePhrase(
                     EndringInntektEttVedlegg(
                         harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
@@ -157,7 +154,7 @@ data class OpplysningerOmBarnetillegg(
                         justeringsbeloep = fellesTillegg.justeringsbeloepAar,
                         borMedSivilstandFelles = fellesTillegg.borMedSivilstand,
                     ))
-            }.orIfNotNull(barnetillegg.saerkullsbarn_safe){ saerkullsTillegg->
+            }.orIfNotNull(barnetillegg.saerkullsbarn){ saerkullsTillegg->
                 includePhrase(
                     EndringInntektEttVedlegg(
                         harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
@@ -173,7 +170,7 @@ data class OpplysningerOmBarnetillegg(
             }
         }
 
-        ifNotNull(barnetillegg.fellesbarn_safe) { fellesTillegg ->
+        ifNotNull(barnetillegg.fellesbarn) { fellesTillegg ->
             showIf(fellesTillegg.erRedusertMotinntekt) {
                 title1 {
                     text(
@@ -230,7 +227,7 @@ data class OpplysningerOmBarnetillegg(
             }
         }
 
-        ifNotNull(barnetillegg.saerkullsbarn_safe) { saerkullTillegg ->
+        ifNotNull(barnetillegg.saerkullsbarn) { saerkullTillegg ->
             showIf(saerkullTillegg.erRedusertMotinntekt) {
                 title1 {
                     text(
@@ -584,14 +581,6 @@ data class OpplysningerOmBarnetillegg(
                         english { + " How much child supplement you receive depends on your period of national insurance cover. As your period of national insurance cover is less than 40 years, your child supplement will be reduced." }
                     )
                 }
-            }
-
-            paragraph {
-                text(
-                    bokmal { + "Dersom et barn får egen inntekt eller kapitalinntekt i løpet av et år som er høyere enn folketrygdens grunnbeløp, så har du ikke rett til barnetillegg for dette barnet." },
-                    nynorsk { + "Dersom eit barn får eiga inntekt eller kapitalinntekt som er høgare enn grunnbeløpet i folketrygda gjennom eit år, så har du ikkje rett til barnetillegg for dette barnet." },
-                    english { + "If a child has its own income or capital income in a year that is higher than the national insurance basic amount, you are not entitled to child supplement for this child." }
-                )
             }
         }
 

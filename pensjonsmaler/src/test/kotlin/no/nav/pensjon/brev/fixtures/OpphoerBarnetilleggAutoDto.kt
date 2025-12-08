@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.*
@@ -13,7 +14,7 @@ fun createOpphoerBarnetilleggAutoDto() =
             LocalDate.of(2001, 1, 2),
             LocalDate.of(2003, 2, 5),
         ),
-        oensketVirkningsDato = LocalDate.now(),
+        oensketVirkningsDato = vilkaarligDato,
         barnetilleggFellesbarn = BarnetilleggFellesbarn(
             gjelderFlereBarn = true,
             harFradrag = true,

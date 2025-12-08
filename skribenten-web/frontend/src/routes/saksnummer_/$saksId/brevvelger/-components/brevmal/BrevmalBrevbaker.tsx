@@ -1,9 +1,8 @@
-import { css } from "@emotion/react";
 import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
@@ -52,7 +51,7 @@ const EksisterendeKladdModal = (props: {
         <BodyShort>Du har en eksisterende kladd basert på samme brevmal.</BodyShort>
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button onClick={props.onFormSubmit} type="button" variant="secondary">
             Lag nytt brev
           </Button>
@@ -138,11 +137,20 @@ const BrevmalBrevbaker = (props: {
     },
   });
 
+  const mottaker = useWatch({ control: form.control, name: "mottaker" });
+
   useEffect(() => {
     if (enhetsId && enhetsId !== form.getValues("enhetsId")) {
       form.setValue("enhetsId", enhetsId);
     }
   }, [enhetsId, form]);
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    form.handleSubmit((values) => {
+      opprettBrevMutation.mutate(values);
+    })(event);
+  };
 
   const { setOnFormSubmitClick } = props;
   useEffect(() => {
@@ -162,12 +170,7 @@ const BrevmalBrevbaker = (props: {
   }, [setOnFormSubmitClick, harEksisterendeKladd, form]);
 
   return (
-    <VStack
-      css={css`
-        height: 100%;
-      `}
-      gap="4"
-    >
+    <VStack gap="space-16" height="100%">
       {åpnerNyttBrevOgHarKladd && (
         <EksisterendeKladdModal
           onClose={() => setÅpnerNyttBrevOgHarKladd(false)}
@@ -182,16 +185,11 @@ const BrevmalBrevbaker = (props: {
       <LetterTemplateHeading letterTemplate={props.letterTemplate} />
       <Divider />
       <FormProvider {...form}>
-        <BrevmalFormWrapper formRef={formRef} onSubmit={form.handleSubmit((v) => opprettBrevMutation.mutate(v))}>
-          <VStack
-            css={css`
-              flex: 1;
-            `}
-            gap="8"
-          >
-            <VStack gap="2">
+        <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
+          <VStack flexGrow="1" gap="space-32">
+            <VStack gap="space-8">
               <VStack>
-                <OppsummeringAvMottaker mottaker={form.watch("mottaker")} saksId={props.saksId} withTitle />
+                <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
 
                 {modalÅpen && (
                   <EndreMottakerModal
@@ -211,7 +209,7 @@ const BrevmalBrevbaker = (props: {
                 <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
                   Endre mottaker
                 </Button>
-                {form.watch("mottaker") !== null && (
+                {mottaker !== null && (
                   <Button onClick={() => form.setValue("mottaker", null)} size="small" type="button" variant="tertiary">
                     Tilbakestill mottaker
                   </Button>

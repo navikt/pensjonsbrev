@@ -41,7 +41,6 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhenting av opplysninger/dokumentasjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),

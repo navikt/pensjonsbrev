@@ -2,6 +2,7 @@ app-name: "skribenten-backend"
 
 database:
   auditlog: "off"
+  postgresVersion: POSTGRES_17
 
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
@@ -73,7 +74,6 @@ externalHosts:
   - pensjon-pen-q2.dev-fss-pub.nais.io
   - saf-q2.dev-fss-pub.nais.io
   - pensjon-persondata-q2.dev-fss-pub.nais.io
-  - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
   - navansatt.dev-fss-pub.nais.io
   - pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io
   - teampensjon-unleash-api.nav.cloud.nais.io
@@ -118,11 +118,6 @@ env:
   - name: PENSJON_PERSONDATA_SCOPE
     value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
 
-  - name: TJENESTEBUSS_INTEGRASJON_URL
-    value: "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
-  - name: TJENESTEBUSS_INTEGRASJON_SCOPE
-    value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"
-
   - name: NAVANSATT_URL
     value: "https://navansatt.dev-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE
@@ -138,3 +133,8 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
+
+  - name: SKJERMING_URL
+    value: "https://skjermede-personer-pip.intern.dev.nav.no/skjermet"
+  - name: SKJERMING_SCOPE
+    value: "api://dev-gcp.nom.skjermede-personer-pip/.default"

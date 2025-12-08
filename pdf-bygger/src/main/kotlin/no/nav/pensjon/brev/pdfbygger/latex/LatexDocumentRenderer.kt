@@ -67,7 +67,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", renderTextsToString(letter.title))
+        appendCmd("Title", renderTextsToString(letter.title), escape = false) // allerede escapet i renderTexts
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -218,6 +218,13 @@ internal object LatexDocumentRenderer {
                     appendCmd("lettersectiontitletwo", titleText, escape = false)  // allerede escapet over.
                 }
             }
+
+            is LetterMarkup.Block.Title3 -> renderTitleIfNonEmptyText(block.content) { titleText ->
+                if (!next.startsWithTable()) {
+                    appendCmd("lettersectiontitlethree", titleText, escape = false)  // allerede escapet over.
+                }
+            }
+
         }
 
     private fun LetterMarkup.Block?.startsWithTable(): Boolean =
@@ -271,7 +278,7 @@ internal object LatexDocumentRenderer {
             appendCmd(
                 "begin", "letterTable", columnHeadersLatexString(columnSpec),
                 titleTextOrNull(previous)?.let { "\\tabletitle $it" } ?: ""
-                , escape = false
+                , escape = false // allerede escapet over.
             )
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
 
@@ -287,6 +294,7 @@ internal object LatexDocumentRenderer {
         when (previous) {
             is LetterMarkup.Block.Title1 -> renderTextsToString(previous.content)
             is LetterMarkup.Block.Title2 -> renderTextsToString(previous.content)
+            is LetterMarkup.Block.Title3 -> renderTextsToString(previous.content)
             else -> null
         }?.takeIf { it.isNotBlank() }
 

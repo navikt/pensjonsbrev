@@ -22,6 +22,7 @@ import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTOSelectors.data
@@ -70,7 +71,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtak - Etteroppgjør",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
@@ -214,7 +214,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     )
                 }
 
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilAaKlage)
 
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {

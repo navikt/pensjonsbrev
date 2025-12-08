@@ -25,6 +25,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerD
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.forhaandsvarselFeilutbetalingBarnepensjonOpphoer
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
@@ -46,7 +47,6 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
@@ -73,7 +73,7 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
             showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
             }
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(Felles.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }

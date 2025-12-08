@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { ArrowRightLeftIcon, PlusIcon, TrashIcon } from "@navikt/aksel-icons";
 import { ActionMenu } from "@navikt/ds-react";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -20,20 +20,20 @@ const tableStyles = css`
 
   td,
   th {
-    border: 1px solid #000;
+    border: 1px solid var(--ax-border-focus);
     padding: 2mm;
     overflow-wrap: break-word;
   }
 
   th {
-    background: var(--a-surface-subtle);
-    font-weight: 400;
+    background: var(--ax-bg-neutral-soft);
+    font-weight: var(--ax-font-weight-regular);
   }
 `;
 
 const selectedBackgroundStyle = css`
   && {
-    background: var(--a-surface-info-subtle, #d0e7ff);
+    background: var(--ax-bg-info-soft, #d0e7ff);
   }
 `;
 
@@ -53,7 +53,7 @@ const TableView: React.FC<{
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
 
-  const menuTargetRef = useRef<{ rowIndex: number; colIndex: number } | null>(null);
+  const [menuTarget, setMenuTarget] = useState<{ rowIndex: number; colIndex: number } | null>(null);
 
   const headerHasContent = !isEmptyTableHeader(node.header);
   const canPromoteHeader = !headerHasContent;
@@ -61,7 +61,7 @@ const TableView: React.FC<{
   const headerColCount = node.header.colSpec.length;
   const onlyOneCol = headerColCount <= 1;
 
-  const clickedRow = menuTargetRef.current?.rowIndex;
+  const clickedRow = menuTarget?.rowIndex;
   const isHeaderCtx = clickedRow === -1;
 
   return (
@@ -90,7 +90,7 @@ const TableView: React.FC<{
               cellContentIndex: 0,
             },
           }));
-          menuTargetRef.current = { rowIndex, colIndex };
+          setMenuTarget({ rowIndex, colIndex });
           setHighlight({ row: rowIndex, col: colIndex });
           setMenuAnchor({ x: e.clientX, y: e.clientY });
         }}
@@ -154,7 +154,7 @@ const TableView: React.FC<{
         onClose={() => {
           setMenuAnchor(null);
           setHighlight(null);
-          menuTargetRef.current = null;
+          setMenuTarget(null);
         }}
       >
         {canPromoteHeader && typeof clickedRow === "number" && clickedRow >= 0 && (
@@ -162,17 +162,13 @@ const TableView: React.FC<{
             icon={<ArrowRightLeftIcon fontSize="1.25rem" />}
             onMouseEnter={() => setHighlight({ row: clickedRow, col: -1 })}
             onMouseLeave={() =>
-              setHighlight(
-                menuTargetRef.current
-                  ? { row: menuTargetRef.current.rowIndex, col: menuTargetRef.current.colIndex }
-                  : null,
-              )
+              setHighlight(menuTarget ? { row: menuTarget.rowIndex, col: menuTarget.colIndex } : null)
             }
             onSelect={() => {
-              const rowIdx = menuTargetRef.current?.rowIndex ?? -1;
+              const rowIdx = menuTarget?.rowIndex ?? -1;
               if (rowIdx >= 0) {
                 applyAction(Actions.promoteRowToHeader, setEditorState, blockIndex, contentIndex, rowIdx);
-                menuTargetRef.current = null;
+                setMenuTarget(null);
               }
             }}
           >
@@ -184,15 +180,11 @@ const TableView: React.FC<{
             icon={<ArrowRightLeftIcon fontSize="1.25rem" />}
             onMouseEnter={() => setHighlight({ row: -1, col: -1 })}
             onMouseLeave={() =>
-              setHighlight(
-                menuTargetRef.current
-                  ? { row: menuTargetRef.current.rowIndex, col: menuTargetRef.current.colIndex }
-                  : null,
-              )
+              setHighlight(menuTarget ? { row: menuTarget.rowIndex, col: menuTarget.colIndex } : null)
             }
             onSelect={() => {
               applyAction(Actions.demoteHeaderToRow, setEditorState, blockIndex, contentIndex);
-              menuTargetRef.current = null;
+              setMenuTarget(null);
             }}
           >
             Gjør overskrift til vanlig tekst

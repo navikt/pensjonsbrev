@@ -17,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -61,7 +62,6 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - Innvilget omstillingsstønad",
-                    isSensitiv = true,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
@@ -108,7 +108,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 includePhrase(OmstillingsstoenadFellesFraser.Inntektsendring)
                 includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
                 includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilAaKlage)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
             includeAttachment(

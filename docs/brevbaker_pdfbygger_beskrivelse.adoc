@@ -135,9 +135,6 @@ object EksempelBrev : StaticTemplate {
             // Visningstittel for ulike systemer.
             // F.eks saksbehandling brev oversikt, brukerens brev oversikt osv
             displayTitle = "Dette er ett eksempel-brev",
-
-            // Krever brevet bankid/ nivå 4 pålogging for å vises
-            isSensitiv = false,
         )
     ) {
         // Tekst-innholdet i malen

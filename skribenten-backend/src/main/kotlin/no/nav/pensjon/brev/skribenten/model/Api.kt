@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.skribenten.db.EditLetterHash
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
@@ -14,11 +15,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, SaksbehandlerValgBrevdata
+    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
 
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
@@ -91,7 +93,7 @@ object Api {
         data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: String,
-            val postnummer: String,
+            val postnummer: NorskPostnummer,
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
@@ -113,8 +115,8 @@ object Api {
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: EditLetterHash,
-        val saksbehandlerValg: BrevbakerBrevdata,
+        val redigertBrevHash: Hash<Edit.Letter>,
+        val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
     )
 
@@ -123,14 +125,40 @@ object Api {
         val reservertAv: NavAnsatt,
         val timestamp: Instant,
         val expiresIn: Duration,
-        val redigertBrevHash: EditLetterHash,
+        val redigertBrevHash: Hash<Edit.Letter>,
     )
+
+    data class PdfResponse(
+        val pdf: ByteArray,
+        val rendretBrevErEndret: Boolean,
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as PdfResponse
+
+            if (rendretBrevErEndret != other.rendretBrevErEndret) return false
+            if (!pdf.contentEquals(other.pdf)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = rendretBrevErEndret.hashCode()
+            result = 31 * result + pdf.contentHashCode()
+            return result
+        }
+    }
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)
 
     data class SakContext(
         val sak: Pen.SakSelection,
-        val brevMetadata: List<Brevmal>
+        val brevmalKoder: List<String>,
+        val adressebeskyttelse: Boolean,
+        val doedsfall: LocalDate?,
+        val erSkjermet: Boolean,
     )
 
     data class Brevmal(
@@ -154,7 +182,6 @@ object Api {
     data class BestillExstreamBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
-        val isSensitive: Boolean,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
@@ -165,7 +192,6 @@ object Api {
         val brevkode: String,
         val landkode: String,
         val mottakerText: String,
-        val isSensitive: Boolean,
         val enhetsId: String,
     )
 

@@ -38,6 +38,7 @@ object Ufoerebrevkoder {
         UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING,
         UT_VEDTAK_FEILUTBETALING_ETTERGITT_FORELDET,
         UT_VARSEL_FEILUTBETALING,
+        UT_AVSLAG_MEDLEMSKAP_UTLAND,
         ;
 
         override fun kode(): String = this.name

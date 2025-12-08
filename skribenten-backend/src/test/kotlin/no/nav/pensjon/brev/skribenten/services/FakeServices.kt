@@ -19,12 +19,14 @@ import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
+import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
+import java.time.LocalDate
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -36,7 +38,7 @@ open class FakeNavansattService(
     val navansatte: Map<String, String> = emptyMap(),
 ) : NavansattService {
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) =
-        ServiceResult.Ok(harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false))
+        harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false)
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
         Navansatt(
@@ -58,6 +60,7 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
+    override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
 }
 
 open class FakeBrevmetadataService(
@@ -65,6 +68,8 @@ open class FakeBrevmetadataService(
     val brevmaler: List<BrevdataDto> = listOf(),
     val maler: Map<String, BrevdataDto> = mapOf(),
 ) : BrevmetadataService {
+    override suspend fun getAllBrev(): List<BrevdataDto> = brevmaler + eblanketter
+
     override suspend fun getBrevmalerForSakstype(sakstype: Sakstype) = brevmaler
 
     override suspend fun getEblanketter() = eblanketter
@@ -77,24 +82,24 @@ open class FakeBrevbakerService(
     open var maler: List<TemplateDescription.Redigerbar> = listOf(),
     open var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf(),
 ) : BrevbakerService {
-    override suspend fun getTemplates() = ServiceResult.Ok(maler)
+    override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
 
-    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> = notYetStubbed()
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification = notYetStubbed()
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkupWithDataUsage> = notYetStubbed()
+    ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse> = notYetStubbed()
+    ): LetterResponse = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()
@@ -120,11 +125,8 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 
 open class PenServiceStub : PenService {
     override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = notYetStubbed()
-    override suspend fun bestillDoksysBrev(
-        request: Api.BestillDoksysBrevRequest,
-        enhetsId: String,
-        saksId: Long
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> = notYetStubbed()
+    override suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse =
+        notYetStubbed()
     override suspend fun bestillExstreamBrev(
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
     ): ServiceResult<BestillExstreamBrevResponse> = notYetStubbed()
@@ -143,10 +145,11 @@ open class PenServiceStub : PenService {
 
 open class PdlServiceStub : PdlService {
     override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> = notYetStubbed()
+    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> = notYetStubbed()
 }
 
 open class SafServiceStub : SafService {
     override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult = notYetStubbed()
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse> = notYetStubbed()
-    override suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> = notYetStubbed()
+    override suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse = notYetStubbed()
+    override suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray = notYetStubbed()
 }

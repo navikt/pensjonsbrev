@@ -19,10 +19,10 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
           registry-url: https://npm.pkg.github.com/
@@ -31,7 +31,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_TEMP }}
 
       - name: Run ESLint
         working-directory: ${{ inputs.workingDir }}/bff
@@ -51,10 +51,10 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: 'npm'
@@ -65,7 +65,7 @@ jobs:
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
+        uses: cypress-io/github-action@7ef72e250a9e564efb4ed4c2433971ada4cc38b4
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -75,7 +75,7 @@ jobs:
 
       - name: Cypress run component tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@b8ba51a856ba5f4c15cf39007636d4ab04f23e3c
+        uses: cypress-io/github-action@7ef72e250a9e564efb4ed4c2433971ada4cc38b4
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -100,18 +100,8 @@ jobs:
         run: npm run check-types
 
       - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ failure() && inputs.cypress}}
         with:
           name: cypress-screenshots
           path: ${{ inputs.workingDir }}/frontend/cypress/screenshots
-
-  "klarTilMerge":
-    name: "Klar til merge"
-    needs: [verify-bff, verify-frontend]
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: ./.github/pr

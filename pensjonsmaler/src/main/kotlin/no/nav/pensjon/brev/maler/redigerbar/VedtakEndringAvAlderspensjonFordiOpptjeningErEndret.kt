@@ -24,11 +24,13 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.YtelseskomponentInformasjonSelectors.belopEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
@@ -79,7 +81,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av alderspensjon fordi opptjening er endret",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -232,15 +233,13 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
-                showIf(pesysData.krav.arsakErEndretOpptjening) {
-                    // hjemmelAP2016Opptjening_001
-                    paragraph {
-                        text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19." },
-                            english { + "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act." }
-                        )
-                    }
+                // hjemmelAP2016Opptjening_001
+                paragraph {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19." },
+                        english { + "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act." }
+                    )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
                 showIf(not(pesysData.behandlingKontekst.konteksttypeErKorrigeringopptjening)) {
@@ -348,7 +347,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
@@ -358,5 +357,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlder)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderAP2025)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening,  pesysData.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening)
     }
 }

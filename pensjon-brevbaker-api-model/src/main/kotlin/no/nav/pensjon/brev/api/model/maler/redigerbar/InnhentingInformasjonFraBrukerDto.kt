@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -8,8 +8,8 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 @Suppress("unused")
 data class InnhentingInformasjonFraBrukerDto(
     override val saksbehandlerValg: SaksbehandlerValg,
-    override val pesysData: EmptyBrevdata
-) : RedigerbarBrevdata<InnhentingInformasjonFraBrukerDto.SaksbehandlerValg, EmptyBrevdata> {
+    override val pesysData: EmptyFagsystemdata
+) : RedigerbarBrevdata<InnhentingInformasjonFraBrukerDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
         @DisplayText("Bosatt i EØS-land. SED-er/EØS-blanketter")
         val bosattIEoesLandSedErEoesBlanketter: Boolean,

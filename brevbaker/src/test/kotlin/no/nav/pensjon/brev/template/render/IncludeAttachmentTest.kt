@@ -7,6 +7,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -21,7 +22,7 @@ import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 
 class IncludeAttachmentTest {
-    data class NullData(val vedlegg: VedleggData?)
+    data class NullData(val vedlegg: VedleggData?) : AutobrevData
     data class VedleggData(val test: String?) : no.nav.pensjon.brev.api.model.maler.VedleggData
 
     @TemplateModelHelpers

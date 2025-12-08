@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import java.time.LocalDate
+
 object Pdl {
     enum class Gradering {
         FORTROLIG,
@@ -14,4 +16,9 @@ object Pdl {
         B280,
         B359,
     }
+
+    data class PersonContext(
+        val adressebeskyttelse: Boolean,
+        val doedsdato: LocalDate?,
+    )
 }

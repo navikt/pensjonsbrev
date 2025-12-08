@@ -50,9 +50,9 @@ function SaksnummerPage() {
           display: flex;
           flex-direction: column;
           align-self: center;
-          gap: var(--a-spacing-6);
+          gap: var(--ax-space-24);
 
-          margin-top: var(--a-spacing-8);
+          margin-top: var(--ax-space-32);
 
           width: 340px;
         `}

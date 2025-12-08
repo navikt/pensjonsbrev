@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -63,7 +63,6 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
-            isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -327,7 +326,7 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
-) : BrevbakerBrevdata
+) : AutobrevData
 
 data class ExampleTilleggDto(
     val navn: String,

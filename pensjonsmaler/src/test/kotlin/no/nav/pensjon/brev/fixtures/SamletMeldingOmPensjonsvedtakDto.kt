@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1Dto
@@ -54,7 +55,7 @@ fun createP1Dto() = P1Dto(
         sakstype = Sakstype.ALDER,
         innvilgedePensjoner = listOf(
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -72,10 +73,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000",
@@ -93,10 +94,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -114,10 +115,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000",
@@ -138,7 +139,7 @@ fun createP1Dto() = P1Dto(
                 erNorskRad = true,
             ),
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -156,10 +157,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000.00",
@@ -177,11 +178,11 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
 
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -199,10 +200,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000",
@@ -220,10 +221,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -241,10 +242,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000",
@@ -262,10 +263,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -283,10 +284,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000",
@@ -304,10 +305,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay(),
+                institusjon = nay,
                 pensjonstype = Pensjonstype.Alder,
                 datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
                 bruttobeloepDesimal = "1000.00",
@@ -325,10 +326,10 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
             InnvilgetPensjon(
-                institusjon = nay2(),
+                institusjon = nay2,
                 pensjonstype = Pensjonstype.Ufoere,
                 datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
                 bruttobeloepDesimal = "2000",
@@ -346,11 +347,33 @@ fun createP1Dto() = P1Dto(
                 utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
                 valuta = "NOK",
                 vedtaksdato = "2020-01-01",
-                erNorskRad = false
+                erNorskRad = true
             ),
+            InnvilgetPensjon(
+                institusjon = svenskInst,
+                pensjonstype = Pensjonstype.Ufoere,
+                datoFoersteUtbetaling = LocalDate.of(2020, Month.JANUARY, 31),
+                bruttobeloepDesimal = "2000",
+                grunnlagInnvilget = GrunnlagInnvilget.ProRata,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
+                vurderingsperiode = null,
+                adresseNyVurdering = listOf(),
+                utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
+                valuta = "SEK",
+                vedtaksdato = "2020-01-01",
+                erNorskRad = false
+            )
         ),
         avslaattePensjoner =
-            (0..<11).map { avslaattPensjon() },
+            (0..<11).map { avslaattPensjon() }
+        + AvslaattPensjon(
+                institusjoner = svenskInst,
+                pensjonstype = Pensjonstype.Alder,
+                avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
+                vurderingsperiode = null,
+                adresseNyVurdering = emptyList(),
+                vedtaksdato = "2020-01-01"
+            ),
         utfyllendeInstitusjon = UtfyllendeInstitusjon(
             navn = "NFP",
             adresselinje = "Lilleviksgrenda",
@@ -361,47 +384,43 @@ fun createP1Dto() = P1Dto(
             faksnummer = "12134412",
             telefonnummer = Telefonnummer("+123 45678901"),
             epost = Epost("lars.holm@tøys.nfp.no"),
-            dato = LocalDate.now(),
+            dato = vilkaarligDato,
         )
     )
 
-private fun nay(): List<P1Dto.Institusjon> = listOf(
+private val nay = listOf(
     P1Dto.Institusjon(
-        institusjonsid = null,
+        institusjonsid = "NO:12345",
         institusjonsnavn = "NAY",
-        pin = null,
-        saksnummer = null,
-        land = null,
+        pin = "1234",
+        saksnummer = "1234",
+        land = "NO",
     )
 )
 
-private fun nay2(): List<P1Dto.Institusjon> = listOf(
+private val nay2 = listOf(
     P1Dto.Institusjon(
-        institusjonsid = null,
+        institusjonsid = "NO:12345",
         institusjonsnavn = "NAY2",
-        pin = null,
-        saksnummer = null,
-        land = null,
+        pin = "1234",
+        saksnummer = "1234",
+        land = "NO",
     )
 )
+
+private val svenskInst = listOf(
+    P1Dto.Institusjon(
+        institusjonsid = "SE:2345",
+        institusjonsnavn = "Godisfabrikken",
+        pin = "54321",
+        saksnummer = "4321",
+        land = "SE",
+    )
+)
+
 
 private fun avslaattPensjon() = AvslaattPensjon(
-    institusjon = P1Dto.Institusjon(
-        institusjonsid = null,
-        institusjonsnavn = "NAY 4",
-        pin = null,
-        saksnummer = null,
-        land = null,
-    ),
-    institusjoner = listOf(
-        P1Dto.Institusjon(
-            institusjonsid = null,
-            institusjonsnavn = "NAY 4",
-            pin = null,
-            saksnummer = null,
-            land = null,
-        ),
-    ),
+    institusjoner = nay,
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "en måned",

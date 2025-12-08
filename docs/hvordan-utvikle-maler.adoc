@@ -377,7 +377,7 @@ data class DuFaarUtbetalt(
 Det finnes 3 typer fraser, hvor de kan bli inkludert ulike steder:
 TextOnlyPhrase er ren tekst, og kan brukes alle steder text(...) og textExpr(...) kan brukes.
 ParagraphPhrase kan inneholde elementer som kan brukes inne i ett avsnitt. F.eks tabeller, tekster, lister osv.
-OutlinePhrase kan inneholde elementer som kan skrives i outline. F.eks title1, title2, paragraph.
+OutlinePhrase kan inneholde elementer som kan skrives i outline. F.eks title1, title2, title3 eller paragraph.
 
 == Vedlegg
 Brev har oftest vedlegg som kommer på egne ark i pdf etter ett brev og inkluderes i vedlegg listen.
@@ -451,7 +451,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
         languages = languages(Bokmal, Nynorsk, English), // Støttede språk som type-parameter. Disse brukes for å sjekke at du har inkludert innhold for alle språk-lag ved compile-time
         letterMetadata = LetterMetadata(
             displayTitle = "", //Tittel som settes i arkivet. Det er denne tittelen som vises for saksbehandler.
-            isSensitiv = false, // Setter brevet som sensitivt by default (false for auto-brev, kan hende det skal brukes for manuelle brev) Kan hende at dette feltet skal fjernes.
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG, // Distribusjonstype. Avgjør hvordan varslingen ved distribusjon blir. [VEDTAK,VIKTIG,ANNET]
             brevtype = VEDTAKSBREV, // VEDTAKSBREV,INFORMASJONSBREV fører til endringer i signatur/slutt-tekst og første-side
         )

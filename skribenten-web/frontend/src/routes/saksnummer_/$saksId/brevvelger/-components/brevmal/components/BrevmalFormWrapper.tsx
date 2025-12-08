@@ -6,10 +6,11 @@ import React from "react";
 import { ApiError } from "~/components/ApiError";
 
 const BrevmalFormWrapper = (props: {
-  onSubmit: () => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   formRef: React.RefObject<HTMLFormElement | null>;
   children: React.ReactNode;
 }) => {
+  const { onSubmit, formRef, children } = props;
   return (
     <form
       css={css`
@@ -17,18 +18,18 @@ const BrevmalFormWrapper = (props: {
         flex-direction: column;
         flex: 1;
       `}
-      onSubmit={props.onSubmit}
-      ref={props.formRef}
+      onSubmit={onSubmit}
+      ref={formRef}
     >
       <div
         css={css`
           display: flex;
           flex-direction: column;
           flex: 1;
-          gap: 2rem;
+          gap: var(--ax-space-32);
         `}
       >
-        {props.children}
+        {children}
       </div>
     </form>
   );
