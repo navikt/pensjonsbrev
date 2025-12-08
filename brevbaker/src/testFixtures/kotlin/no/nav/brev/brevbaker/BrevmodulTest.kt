@@ -184,7 +184,7 @@ abstract class BrevmodulTest(
                     fixtures,
                     spraak,
                     FellesFactory.felles,
-                ).renderTestHtml("${clazzName}_$spraak", "test_vedlegg")
+                ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_vedlegg")
             }
     }
 
