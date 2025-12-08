@@ -1,9 +1,3 @@
 = Dokumentasjon fra Team Pensjonsbrev
-:toc: right
-:toclevels: 2
-:sectnums:
 
-== Sider
-
-* link:brevbaker/index.adoc[Brevbaker]
-* link:skribenten/index.adoc[Skribenten]
+include::nav.adoc[]

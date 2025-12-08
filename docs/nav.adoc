@@ -1,5 +1,5 @@
 * xref:index.adoc[Hjemme]
-* xref:brevbaker/index.adoc[Brevbaker]]
+* xref:brevbaker/index.adoc[Brevbaker]
 ** xref:brevbaker/guider/hvordan-utvikle-maler.adoc[Malutvikling]
 ** xref:brevbaker/teknisk/arkitektur.adoc[Teknisk]
 ** xref:brevbaker/teknisk/brevbaker_pdfbygger_beskrivelse.adoc[Brevbaker og PDF-bygger]
