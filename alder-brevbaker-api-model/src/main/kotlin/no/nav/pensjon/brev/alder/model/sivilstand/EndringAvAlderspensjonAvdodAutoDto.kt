@@ -2,8 +2,16 @@ package no.nav.pensjon.brev.alder.model.sivilstand
 
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
+import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.Institusjon
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffentligDto
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -19,6 +27,14 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     val virkFom: LocalDate,
     val harBarnUnder18: Boolean,
     val etterBetaling: Boolean,
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
+    val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto,
+    val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto,
+    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto,
+    val maanedligPensjonFoerSkattAFPOffentligDto: MaanedligPensjonFoerSkattAFPOffentligDto,
+    val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
+
     ): AutobrevData {
 
     data class AlderspensjonVedVirk (

@@ -2,7 +2,16 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAFPOffentlig
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.*
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.harEndretPensjon
@@ -22,8 +31,15 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAut
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.beregnetPensjonPerManed
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.etterBetaling
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.harBarnUnder18
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdVedVirk
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattAFPOffentligDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.opplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.opplysningerOmAvdoedBruktIBeregningDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.model.format
@@ -754,10 +770,26 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 )
             }
 
+            includePhrase(RettTilAAKlage)
 
         }
-
-
+        includeAttachment(
+            vedleggOrienteringOmRettigheterOgPlikter,
+            orienteringOmRettigheterOgPlikterDto,
+        )
+        includeAttachmentIfNotNull(
+            vedleggMaanedligPensjonFoerSkatt,
+            maanedligPensjonFoerSkattDto,
+        )
+        includeAttachmentIfNotNull(
+            vedleggMaanedligPensjonFoerSkattAp2025,
+            maanedligPensjonFoerSkattAP2025Dto,
+        )
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder,opplysningerBruktIBeregningenAlderDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregningDto)
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAFPOffentlig, maanedligPensjonFoerSkattAFPOffentligDto)
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
     }
 
 }
