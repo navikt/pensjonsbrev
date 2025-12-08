@@ -42,17 +42,17 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om rettighet som ung ufør"})
+            text (bokmal { + "Nav har vurdert at du ikke har rett til beregning som ung ufør"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i måneden, slik det står i vedtaket av " + fritekst("dato") + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke rettighet som ung ufør" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden fordi du har jobbet mer enn 50 prosent etter du fylte 26 år og du søkte om rettighet som ung ufør etter at du fylte 36 år." })
+                text(bokmal { +"Du får ikke beregning som ung ufør fordi du har jobbet mer enn 50 prosent etter du fylte 26 år og du søkte om rettighet som ung ufør etter at du fylte 36 år." })
             }
             paragraph {
                 text(bokmal { +"For å få innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert. " })
