@@ -177,13 +177,6 @@ class BrevmalServiceTest {
 
             override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
                 if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
-
-            override suspend fun hentP1VedleggData(
-                saksId: Long,
-                spraak: LanguageCode
-            ): ServiceResult<Api.GeneriskBrevdata> {
-                notYetStubbed()
-            }
         }
 
         return runBlocking {
