@@ -119,37 +119,34 @@ class LegacyBrevService(
 
         return if (!harTilgangTilEnhet(enhetsId)) {
             Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
-        } else penService.bestillExstreamBrev(
-            Pen.BestillExstreamBrevRequest(
-                brevKode = brevkode,
-                brevGruppe = metadata.brevgruppe,
-                redigerbart = metadata.redigerbart,
-                sprakKode = spraak.toString(),
-                brevMottakerNavn = mottakerText?.takeIf { isEblankett },    // custom felt kun for sed/eblankett,
-                sakskontekst = Pen.BestillExstreamBrevRequest.Sakskontekst(
-                    journalenhet = enhetsId,                                // Nav org enhet nr som skriver brevet. Kommer med i signatur.
-                    gjelder = gjelderPid,                                   // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
-                    dokumentdato = LocalDateTime.now(),
-                    dokumenttype = metadata.dokType.toString(),
-                    fagsystem = "PEN",
-                    fagomradeKode = "PEN",                                  // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
-                    innhold = brevtittel,                                   // Visningsnavn
-                    kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
-                    saksid = saksId.toString(),
-                    saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
-                    saksbehandlerid = PrincipalInContext.require().navIdent.id,
-                    kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
-                    land = landkode.takeIf { isEblankett },
-                    mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
-                    sensitivt = false
-                ),
-                vedtaksInformasjon = vedtaksId?.toString()
-            )
-        ).map {
-            Api.BestillOgRedigerBrevResponse(journalpostId = it.journalpostId)
-        }.catch { message, statusCode ->
-            logger.error("Feil ved bestilling av brev fra exstream mot PEN: $message - status: $statusCode")
-            Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
+        } else {
+            penService.bestillExstreamBrev(
+                Pen.BestillExstreamBrevRequest(
+                    brevKode = brevkode,
+                    brevGruppe = metadata.brevgruppe,
+                    redigerbart = metadata.redigerbart,
+                    sprakKode = spraak.toString(),
+                    brevMottakerNavn = mottakerText?.takeIf { isEblankett },    // custom felt kun for sed/eblankett,
+                    sakskontekst = Pen.BestillExstreamBrevRequest.Sakskontekst(
+                        journalenhet = enhetsId,                                // Nav org enhet nr som skriver brevet. Kommer med i signatur.
+                        gjelder = gjelderPid,                                   // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
+                        dokumentdato = LocalDateTime.now(),
+                        dokumenttype = metadata.dokType.toString(),
+                        fagsystem = "PEN",
+                        fagomradeKode = "PEN",                                  // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
+                        innhold = brevtittel,                                   // Visningsnavn
+                        kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
+                        saksid = saksId.toString(),
+                        saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
+                        saksbehandlerid = PrincipalInContext.require().navIdent.id,
+                        kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
+                        land = landkode.takeIf { isEblankett },
+                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
+                        sensitivt = false
+                    ),
+                    vedtaksInformasjon = vedtaksId?.toString()
+                )
+            ).let { Api.BestillOgRedigerBrevResponse(journalpostId = it.journalpostId) }
         }
     }
 

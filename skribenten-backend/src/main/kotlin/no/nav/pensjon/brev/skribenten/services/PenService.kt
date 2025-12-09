@@ -37,9 +37,7 @@ private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 interface PenService {
     suspend fun hentSak(saksId: String): Pen.SakSelection?
     suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse
-    suspend fun bestillExstreamBrev(
-        bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
-    ): ServiceResult<BestillExstreamBrevResponse>
+    suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
     suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse>
     suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse>
     suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>>
@@ -131,17 +129,22 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         }
     }
 
-    override suspend fun bestillExstreamBrev(
-        bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
-    ): ServiceResult<BestillExstreamBrevResponse> =
-        client.post("brev/pjoark030/bestillbrev") {
+    override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse {
+        val response = client.post("brev/pjoark030/bestillbrev") {
             setBody(bestillExstreamBrevRequest)
             contentType(ContentType.Application.Json)
-        }.toServiceResult {
-            it.body<BestillExstreamBrevResponse.Error>().let { error ->
-                ServiceResult.Error("${error.type}: ${error.message}", HttpStatusCode.InternalServerError)
-            }
         }
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            val error = response.body<BestillExstreamBrevResponse.Error>().let {
+                "Feil ved bestilling av exstreambrev - ${it.type}: ${it.message}"
+            }
+            logger.info(error)
+            throw PenServiceException(error)
+        }
+    }
 
     override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
         client.get("brev/dokument/metaforce/$journalpostId/$dokumentId")

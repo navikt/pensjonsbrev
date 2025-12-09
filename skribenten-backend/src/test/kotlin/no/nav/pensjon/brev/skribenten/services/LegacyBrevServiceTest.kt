@@ -88,7 +88,7 @@ class LegacyBrevServiceTest {
         ): Pen.BestillDoksysBrevResponse = Pen.BestillDoksysBrevResponse(forventaJournalpostId)
 
         override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
-            ServiceResult.Ok(Pen.BestillExstreamBrevResponse(forventaJournalpostId))
+            Pen.BestillExstreamBrevResponse(forventaJournalpostId)
 
         override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String) =
             if(journalpostId == forventaJournalpostId && dokumentId == forventaDokumentId) {
