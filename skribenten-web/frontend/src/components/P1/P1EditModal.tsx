@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, p1OverrideKeys, saveP1Override } from "~/api/brev-queries";
+import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
@@ -33,6 +34,7 @@ type P1EditingModalProps = {
 export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalProps) => {
   const [activeTab, setActiveTab] = useState<P1TabKey>("innvilget");
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const queryClient = useQueryClient();
 
   const formMethods = useForm<P1RedigerbarForm>({
@@ -67,14 +69,18 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       return saveP1Override(saksId, brevId, dto);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
       queryClient.invalidateQueries({ queryKey: p1OverrideKeys.id(brevId) });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
-      onClose();
+      setSaveSuccess(true);
+      // Auto-hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000);
     },
   });
 
   const onSubmit = (values: P1RedigerbarForm) => {
     setValidationError(null);
+    setSaveSuccess(false);
     lagreMutation.mutate(values);
   };
 
@@ -144,6 +150,17 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
               <ApiError error={p1Error} title="Kunne ikke laste P1-data" />
             ) : (
               <>
+                {saveSuccess && (
+                  <Alert
+                    css={css`
+                      margin-bottom: 1rem;
+                    `}
+                    size="small"
+                    variant="success"
+                  >
+                    Endringene ble lagret
+                  </Alert>
+                )}
                 {validationError && (
                   <Alert
                     closeButton
