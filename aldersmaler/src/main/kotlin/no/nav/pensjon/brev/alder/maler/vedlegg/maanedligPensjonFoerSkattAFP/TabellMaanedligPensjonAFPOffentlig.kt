@@ -26,7 +26,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -40,8 +40,8 @@ import java.time.LocalDate
 
 data class TabellMaanedligPensjonAFPOffentlig(
     val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattAFPOffentligDto.AFPStatBeregning>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         title1 {
             includePhrase(
                 TabellOverskriftOffentlig(
@@ -67,8 +67,8 @@ data class TabellMaanedligPensjonAFPOffentlig(
 
 data class TabellDinMaanedligAFPOffentlig(
     val afpStatBeregning: Expression<MaanedligPensjonFoerSkattAFPOffentligDto.AFPStatBeregningListe>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         forEach(afpStatBeregning.afpStatBeregningListe) { beregning ->
 
             title2 {
@@ -93,14 +93,13 @@ data class TabellDinMaanedligAFPOffentlig(
 
 private data class TabellUnderskriftOffentlig(
     val beregning: Expression<MaanedligPensjonFoerSkattAFPOffentligDto.AFPStatBeregning>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         ifNotNull(beregning.fremtidigInntekt) { fremtidigInntekt ->
             paragraph {
                 text(
                     bokmal { +"Forventet årlig inntekt benyttet i beregningen er " + fremtidigInntekt.format() + "." },
                     nynorsk { +"Forventa årleg inntekt nytta i utrekninga er " + fremtidigInntekt.format() + "." },
-                    english { +"" },
                 )
             }
         }
@@ -110,19 +109,17 @@ private data class TabellUnderskriftOffentlig(
 private data class TabellOverskriftOffentlig(
     val datoFom: Expression<LocalDate>,
     val datoTil: Expression<LocalDate?>,
-) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : PlainTextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorsk, Unit>.template() {
         text(
             bokmal { +"Den månedlige AFP fra " + datoFom.format() },
             nynorsk { +"Den månadlege AFP frå " + datoFom.format() },
-            english { +"Your monthly AFP from " + datoFom.format() },
         )
 
         ifNotNull(datoTil) {
             text(
                 bokmal { +" til " + it.format() },
                 nynorsk { +" til " + it.format() },
-                english { +" to " + it.format() },
             )
         }
     }
@@ -131,19 +128,17 @@ private data class TabellOverskriftOffentlig(
 private data class TabellDetaljOverskriftOffentlig(
     val datoFom: Expression<LocalDate>,
     val datoTil: Expression<LocalDate?>,
-) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : PlainTextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorsk, Unit>.template() {
         text(
             bokmal { +"Den månedlige AFP fra " + datoFom.format() },
             nynorsk { +"Den månadlege AFP frå " + datoFom.format() },
-            english { +"Your monthly AFP from " + datoFom.format() },
         )
 
         ifNotNull(datoTil) {
             text(
                 bokmal { +" til " + it.format() },
                 nynorsk { +" til " + it.format() },
-                english { +" to " + it.format() },
             )
         }
     }
@@ -151,18 +146,17 @@ private data class TabellDetaljOverskriftOffentlig(
 
 data class TabellInnholdOffentligUtenAvkort(
     val afpStatBeregning: Expression<MaanedligPensjonFoerSkattAFPOffentligDto.AFPStatBeregning>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {
                 column {
-                    text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
+                    text(bokmal { +"" }, nynorsk { +"" })
                 }
                 column(alignment = RIGHT) {
                     text(
                         bokmal { +"Pensjon per måned" },
                         nynorsk { +"Pensjon per månad" },
-                        english { +"Pension per month" },
                     )
                 }
             }) {
@@ -172,7 +166,6 @@ data class TabellInnholdOffentligUtenAvkort(
                             text(
                                 bokmal { +"Grunnpensjon" },
                                 nynorsk { +"Grunnpensjon" },
-                                english { +"Basic pension" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -184,8 +177,7 @@ data class TabellInnholdOffentligUtenAvkort(
                         cell {
                             text(
                                 bokmal { +"Tilleggspensjon" },
-                                nynorsk { +"Tilleggspensjo" },
-                                english { +"Supplementary pension" },
+                                nynorsk { +"Tilleggspensjon" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -198,7 +190,6 @@ data class TabellInnholdOffentligUtenAvkort(
                             text(
                                 bokmal { +"Særtillegg" },
                                 nynorsk { +"Særtillegg" },
-                                english { +"Special supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -211,7 +202,6 @@ data class TabellInnholdOffentligUtenAvkort(
                             text(
                                 bokmal { +"AFP-tillegg" },
                                 nynorsk { +"AFP-tillegg" },
-                                english { +"" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -224,7 +214,6 @@ data class TabellInnholdOffentligUtenAvkort(
                             text(
                                 bokmal { +"Faste utgifter ved institusjonsopphold" },
                                 nynorsk { +"Faste utgifter ved institusjonsopphald" },
-                                english { +"Fixed costs when institutionalised" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -237,7 +226,6 @@ data class TabellInnholdOffentligUtenAvkort(
                             text(
                                 bokmal { +"Familietillegg ved institusjonsopphold" },
                                 nynorsk { +"Familietillegg ved institusjonsopphald" },
-                                english { +"Family supplement when institutionalised" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -250,7 +238,6 @@ data class TabellInnholdOffentligUtenAvkort(
                             text(
                                 bokmal { +"Minstenivåtillegg individuelt" },
                                 nynorsk { +"Minstenivåtillegg individuelt" },
-                                english { +"Minimum pension supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -262,7 +249,6 @@ data class TabellInnholdOffentligUtenAvkort(
                         text(
                             bokmal { +"Sum pensjon før skatt" },
                             nynorsk { +"Sum pensjon før skatt" },
-                            english { +"Total pension before tax" },
                             FontType.BOLD,
                         )
                     }
@@ -284,25 +270,23 @@ data class TabellInnholdOffentligUtenAvkort(
 
 data class TabellInnholdOffentligMedAvkort(
     val afpStatBeregning: Expression<MaanedligPensjonFoerSkattAFPOffentligDto.AFPStatBeregning>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {
                 column {
-                    text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
+                    text(bokmal { +"" }, nynorsk { +"" })
                 }
                 column(alignment = RIGHT) {
                     text(
                         bokmal { +"Pensjon per måned før fradrag for inntekt" },
                         nynorsk { +"Pensjon per månad før frådrag for inntekt" },
-                        english { +"Pension per month" },
                     )
                 }
                 column(alignment = RIGHT) {
                     text(
                         bokmal { +"Pensjon per måned etter fradrag for inntekt" },
                         nynorsk { +"Pensjon per månad etter frådrag for inntekt" },
-                        english { +"Pension per month" },
                     )
                 }
             }) {
@@ -312,7 +296,6 @@ data class TabellInnholdOffentligMedAvkort(
                             text(
                                 bokmal { +"Grunnpensjon" },
                                 nynorsk { +"Grunnpensjon" },
-                                english { +"Basic pension" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -333,8 +316,7 @@ data class TabellInnholdOffentligMedAvkort(
                         cell {
                             text(
                                 bokmal { +"Tilleggspensjon" },
-                                nynorsk { +"Tilleggspensjo" },
-                                english { +"Supplementary pension" },
+                                nynorsk { +"Tilleggspensjon" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -356,7 +338,6 @@ data class TabellInnholdOffentligMedAvkort(
                             text(
                                 bokmal { +"Særtillegg" },
                                 nynorsk { +"Særtillegg" },
-                                english { +"Special supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -378,7 +359,6 @@ data class TabellInnholdOffentligMedAvkort(
                             text(
                                 bokmal { +"AFP-tillegg" },
                                 nynorsk { +"AFP-tillegg" },
-                                english { +"" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -400,7 +380,6 @@ data class TabellInnholdOffentligMedAvkort(
                             text(
                                 bokmal { +"Faste utgifter ved institusjonsopphold" },
                                 nynorsk { +"Faste utgifter ved institusjonsopphald" },
-                                english { +"Fixed costs when institutionalised" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -422,7 +401,6 @@ data class TabellInnholdOffentligMedAvkort(
                             text(
                                 bokmal { +"Familietillegg ved institusjonsopphold" },
                                 nynorsk { +"Familietillegg ved institusjonsopphald" },
-                                english { +"Family supplement when institutionalised" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -444,7 +422,6 @@ data class TabellInnholdOffentligMedAvkort(
                             text(
                                 bokmal { +"Minstenivåtillegg individuelt" },
                                 nynorsk { +"Minstenivåtillegg individuelt" },
-                                english { +"Minimum pension supplement" },
                             )
                         }
                         cell { includePhrase(KronerText(it)) }
@@ -465,7 +442,6 @@ data class TabellInnholdOffentligMedAvkort(
                         text(
                             bokmal { +"Sum pensjon før skatt" },
                             nynorsk { +"Sum pensjon før skatt" },
-                            english { +"Total pension before tax" },
                             FontType.BOLD,
                         )
                     }
