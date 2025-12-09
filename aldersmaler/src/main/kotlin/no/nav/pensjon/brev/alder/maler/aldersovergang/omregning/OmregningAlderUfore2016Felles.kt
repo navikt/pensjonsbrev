@@ -310,29 +310,19 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
-        paragraph {
-            text(
-                bokmal { +"Du er registrert som " },
-                nynorsk { +"Du er registrert som " },
-                english { +" You are registered as " }
-            )
-                text(
-                    bokmal { +brukersSivilstand.ubestemtForm() },
-                    nynorsk { +brukersSivilstand.ubestemtForm() },
-                    english { +brukersSivilstand.ubestemtForm() }
-                )
-            text(
-                bokmal { +"." },
-                nynorsk { +"." },
-                english { +"." }
-            )
-            }
 
             ifNotNull(borMedSivilstand){ borMedSivilstand ->
                 paragraph {
                     text(
-                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " din har egen pensjon eller inntekt på " },
-                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " din har eigen pensjon eller inntekt på " },
+                        bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"."  },
+                        nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"."  },
+                        english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"."  }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " har inntekt " },
+                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " har inntekt " },
                         english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " has an income of " }
                     )
                 }
@@ -340,18 +330,26 @@ data class OmregningAlderUfore2016Felles(
                     showIf(over2G) {
                         paragraph {
                             text(
-                                bokmal { +"over " + kronebelop2G.format() + "." },
-                                nynorsk { +"over " + kronebelop2G.format() + "." },
-                                english { +"over " + kronebelop2G.format() + "." })
+                                bokmal { +"over " + kronebelop2G.format() + " eller egen pensjon." },
+                                nynorsk { +"over " + kronebelop2G.format() + " eller eigen pensjon." },
+                                english { +"over " + kronebelop2G.format() + " or their own pension." })
                         }
                     }.orShow {
                         paragraph {
                             text(
-                                bokmal { +"under " + kronebelop2G.format() + "." },
-                                nynorsk { +"under " + kronebelop2G.format() + "." },
-                                english { +"under " + kronebelop2G.format() + "." })
+                                bokmal { +"under " + kronebelop2G.format() + " og ikke egen pensjon." },
+                                nynorsk { +"under " + kronebelop2G.format() + " og ikkje eigen pensjon." },
+                                english { +"under " + kronebelop2G.format() + " and no own pension." })
                         }
                     }
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Du er registrert som enslig." },
+                        nynorsk { +"Du er registrert som einsleg." },
+                        english { +"You are registered as single." }
+                    )
                 }
             }
 
