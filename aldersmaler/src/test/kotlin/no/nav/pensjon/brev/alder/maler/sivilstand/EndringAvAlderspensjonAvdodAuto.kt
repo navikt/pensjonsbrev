@@ -1,6 +1,12 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.brev.brevbaker.vilkaarligDato
+import no.nav.pensjon.brev.alder.maler.aldersovergang.createMaanedligPensjonFoerSkattAFPDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAFPOffentligDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmAvdoedBruktIBeregningDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.Institusjon
@@ -32,5 +38,12 @@ fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto
     sivilstand = BorMedSivilstand.GIFT_LEVER_ADSKILT,
     virkFom = vilkaarligDato,
     harBarnUnder18 = true,
-    etterBetaling = true
+    etterBetaling = true,
+    orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
+    maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+    maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025Dto(),
+    maanedligPensjonFoerSkattAFPDto = createMaanedligPensjonFoerSkattAFPDto(),
+    opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
+    opplysningerOmAvdoedBruktIBeregningDto = createOpplysningerOmAvdoedBruktIBeregningDto(),
+    informasjonOmMedlemskap = null,
 )

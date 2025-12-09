@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.Institusjon
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffentligDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
@@ -32,7 +33,7 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto,
-    val maanedligPensjonFoerSkattAFPOffentligDto: MaanedligPensjonFoerSkattAFPOffentligDto,
+    val maanedligPensjonFoerSkattAFPDto: MaanedligPensjonFoerSkattAFPDto,
     val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
 
     ): AutobrevData {
