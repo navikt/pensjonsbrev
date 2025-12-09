@@ -144,28 +144,9 @@ export const p1OverrideKeys = {
 export const getP1OverrideQuery = (saksId: string, brevId: number) => ({
   queryKey: p1OverrideKeys.id(brevId),
   queryFn: async () =>
-    (await axios.get<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`)).data,
+    (await axios.get<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`)).data,
 });
 
-// POST: create override from Pesys data (first time)
-export async function createP1Override(saksId: string, brevId: number): Promise<P1Redigerbar> {
-  return (await axios.post<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`, {}))
-    .data;
-}
-
-// PUT: save edited override
 export async function saveP1Override(saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> {
-  return (
-    await axios.put<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1-overstyring`, payload)
-  ).data;
+  return (await axios.post<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`, payload)).data;
 }
-
-// Helper: ensure we always get a P1 override (GET or POST)
-export const getOrCreateP1OverrideQuery = (saksId: string, brevId: number) => ({
-  queryKey: p1OverrideKeys.id(brevId),
-  queryFn: async (): Promise<P1Redigerbar> => {
-    const existing = await getP1OverrideQuery(saksId, brevId).queryFn();
-    if (existing) return existing;
-    return createP1Override(saksId, brevId);
-  },
-});

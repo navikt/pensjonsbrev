@@ -39,6 +39,24 @@
   flex: 1;
   min-height: 0; /* Important for flex child to allow shrinking */
   overflow: auto;
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--ax-border-neutral) var(--ax-bg-neutral-soft);
+}
+/* Webkit scrollbar styling */
+.p1-modal :where(.aksel-tabs)::-webkit-scrollbar {
+  width: 10px;
+}
+
+.p1-modal :where(.aksel-tabs)::-webkit-scrollbar-track {
+  background: var(--ax-bg-neutral-soft);
+  border-radius: 8px;
+}
+
+.p1-modal :where(.aksel-tabs)::-webkit-scrollbar-thumb {
+  background-color: var(--ax-border-neutral);
+  border-radius: 8px;
+  border: 2px solid var(--ax-bg-neutral-soft);
 }
 
 .p1-modal :where(.aksel-tabs__tablist-wrapper) {
@@ -53,30 +71,6 @@
   flex: 1;
   min-height: 0;
   padding-right: 1rem;
-  /* Firefox scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: var(--ax-border-neutral) var(--ax-bg-neutral-soft);
-}
-
-/* Webkit scrollbar (Chrome, Safari, Edge) */
-.p1-modal .aksel-tabs__tabpanel::-webkit-scrollbar {
-  width: 10px;
-}
-
-.p1-modal .aksel-tabs__tabpanel::-webkit-scrollbar-track {
-  background: var(--ax-bg-neutral-soft);
-  border-radius: 8px;
-}
-
-.p1-modal .aksel-tabs__tabpanel::-webkit-scrollbar-thumb {
-  background-color: var(--ax-border-neutral);
-  border-radius: 8px;
-  border: 2px solid var(--ax-bg-neutral-soft);
-}
-
-.p1-modal :where(.aksel-tabs__tabpanel) {
-  scrollbar-width: thin;
-  scrollbar-color: var(--ax-border-neutral) var(--ax-bg-neutral-soft);
 }
 
 /* ===========================================
@@ -327,4 +321,20 @@
 
 .p1-tab-header :where(.aksel-heading--small.aksel-typo--spacing) {
   margin-bottom: 0;
+}
+
+/* Tab error indicator */
+
+.p1-tab-error {
+  position: relative;
+}
+
+.p1-tab-error-dot {
+  position: absolute;
+  top: -2px;
+  right: -10px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--ax-bg-danger);
+  border-radius: 50%;
 }
