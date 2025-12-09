@@ -13,7 +13,6 @@ export type SakDto = {
   readonly foedselsdato: string;
   readonly navn: { readonly fornavn: string; readonly mellomnavn: string | null; readonly etternavn: string };
   readonly sakType: SakType;
-  readonly enhetId: string;
 };
 
 export type SakContextDto = {
