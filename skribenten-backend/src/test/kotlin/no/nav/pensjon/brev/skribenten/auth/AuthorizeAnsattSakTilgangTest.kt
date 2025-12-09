@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
 import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PdlServiceException
 import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
@@ -82,17 +83,17 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val creds = BasicAuthCredentials("test", "123")
 
-    private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, ServiceResult<List<Pdl.Gradering>>> = mapOf()) = object : PdlServiceStub() {
+    private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
         override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
             adressebeskyttelser[Pair(fnr, behandlingsnummer)]
                 ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $fnr og behandlingsnummer $behandlingsnummer")
 
-        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> =
+        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
             notYetStubbed("Mangler stub for hentBrukerContext")
 
     }
 
-    private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(emptyList())))
+    private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to emptyList()))
 
     private val defaultPenService = object : PenServiceStub() {
         override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
@@ -121,6 +122,7 @@ class AuthorizeAnsattSakTilgangTest {
         }
         install(StatusPages) {
             exception<UnauthorizedException> { call, cause -> call.respond(HttpStatusCode.Unauthorized, cause.msg) }
+            exception<PdlServiceException> { call, cause -> call.respond(status = cause.status, message = cause.message) }
         }
         routing {
             authenticate("my domain") {
@@ -159,7 +161,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `bruker faar tilgang til sak naar krav er oppfylt`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(emptyList())))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to emptyList()))
     ) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -174,7 +176,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.FORTROLIG)))
     ) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -182,7 +184,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for StrengtFortroligAdresse`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
     ) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -190,7 +192,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for StrengtFortrolig for utland`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND)))
     ) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
@@ -200,7 +202,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for FortroligAdresse faar svar`() =
         basicAuthTestApplication(
             principal = MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.fortroligAdresse)),
-            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.FORTROLIG))))
+            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.FORTROLIG)))
         ) { client ->
             val response = client.get("/sak/${testSak.saksId}")
             assertEquals(HttpStatusCode.OK, response.status)
@@ -211,7 +213,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for StrengtFortroligAdresse faar svar`() =
         basicAuthTestApplication(
             principal = MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligAdresse)),
-            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))))
+            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
         ) { client ->
             val response = client.get("/sak/${testSak.saksId}")
             assertEquals(HttpStatusCode.OK, response.status)
@@ -222,7 +224,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for StrengtFortroligUtland faar svar`() =
         basicAuthTestApplication(
             principal = MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligAdresse)),
-            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))))
+            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND)))
         ) { client ->
             val response = client.get("/sak/${testSak.saksId}")
             assertEquals(HttpStatusCode.OK, response.status)
@@ -240,19 +242,18 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Error(
-            "En feil",
-            HttpStatusCode.InternalServerError
-        )))
+        pdlService = object : PdlServiceStub() {
+            override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
+                throw PdlServiceException("En feil", HttpStatusCode.InternalServerError)
+        }
     ) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
-        assertEquals("En feil oppstod ved validering av tilgang til sak", response.bodyAsText())
     }
 
     @Test
     fun `plugin lagrer sak som attribute tilgjengelig i route scope`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(emptyList())))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to emptyList()))
     ) { client ->
         val response = client.get("/sak/sakFromPlugin/${testSak.saksId}")
         assertEquals(HttpStatusCode.OK, response.status)
@@ -261,33 +262,11 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `svarer med not found for graderte brukere selv om saksbehandler mangler enhet vikafossen`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(sakVikafossen.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG))))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(sakVikafossen.foedselsnr, ALDER.behandlingsnummer) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
     ) { client ->
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertThat(response.bodyAsText()).isNullOrEmpty()
-    }
-
-    @Test
-    fun `forbidden fra PDL resulterer i not found svar`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(sakVikafossen.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Error(
-            "Ikke tilgang til person",
-            HttpStatusCode.Forbidden
-        )))
-    ) { client ->
-        val response = client.get("/sak/${sakVikafossen.saksId}")
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
-
-    @Test
-    fun `unauthorized fra PDL resulterer i internal server error svar`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(sakVikafossen.foedselsnr, ALDER.behandlingsnummer) to ServiceResult.Error(
-            "Ikke autentisert",
-            HttpStatusCode.Unauthorized
-        )))
-    ) { client ->
-        val response = client.get("/sak/${sakVikafossen.saksId}")
-        assertEquals(HttpStatusCode.InternalServerError, response.status)
     }
 
     private fun successResponse(saksId: String) =
