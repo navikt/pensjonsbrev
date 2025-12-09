@@ -244,7 +244,7 @@ data class TabellInnholdOffentligUtenAvkort(
                     }
                 }
 
-                ifNotNull(afpStatBeregning.familietillegg) {
+                ifNotNull(afpStatBeregning.minstenivaIndividuell) {
                     row {
                         cell {
                             text(
