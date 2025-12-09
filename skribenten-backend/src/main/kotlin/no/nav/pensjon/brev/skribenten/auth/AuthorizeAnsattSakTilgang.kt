@@ -63,23 +63,16 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
 }
 
 private fun sjekkAdressebeskyttelse(
-    adressebeskyttelse: ServiceResult<List<Pdl.Gradering>>,
+    adressebeskyttelse: List<Pdl.Gradering>?,
     principal: UserPrincipal,
 ): AuthAnsattSakTilgangResponse? =
-    adressebeskyttelse.map { gradering ->
-        val adGrupper = gradering.mapNotNull { it.toADGruppe() }
+    adressebeskyttelse.let { gradering ->
+        val adGrupper = gradering?.mapNotNull { it.toADGruppe() } ?: emptyList()
 
         if (adGrupper.any { !principal.isInGroup(it) }) {
             logger.warn("Tilgang til sak avvist for ${principal.navIdent}: har ikke tilgang til gradering")
             AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
         } else null // får tilgang
-    }.catch { _, status ->
-        when (status) {
-            HttpStatusCode.Forbidden -> AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
-            else -> {
-                AuthAnsattSakTilgangResponse("En feil oppstod ved validering av tilgang til sak", HttpStatusCode.InternalServerError)
-            }
-        }
     }
 
 private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
