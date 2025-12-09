@@ -31,7 +31,6 @@ export default function BrevmalForDoksys({
   preferredLanguage: SpraakKode | null;
   displayLanguages: SpraakKode[];
   defaultValues: {
-    isSensitive: undefined;
     brevtittel: string;
     spraak: SpraakKode;
     enhetsId: string;
@@ -86,7 +85,6 @@ export default function BrevmalForDoksys({
                 vedtaksId: vedtaksId ?? null,
                 formValues: {
                   enhetsId: submittedValues.enhetsId,
-                  isSensitive: submittedValues.isSensitive,
                   spraak: submittedValues.spraak ?? null,
                   brevtittel: submittedValues.brevtittel ?? null,
                 },

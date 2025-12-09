@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.routing
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
+import no.nav.pensjon.brev.api.countLetter
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -26,12 +27,12 @@ fun Route.redigerbarRoutes(
         post<BestillRedigertBrevRequest<Brevkode.Redigerbart>>("/pdf") { brevbestilling ->
             installBrevkodeInCallContext(brevbestilling.kode)
             call.respond(redigerbareBrev.renderPDF(brevbestilling))
-            redigerbareBrev.countLetter(brevbestilling.kode)
+            countLetter(brevbestilling.kode)
         }
 
         post<BestillRedigertBrevRequest<Brevkode.Redigerbart>>("/html") { brevbestilling ->
             call.respond(redigerbareBrev.renderHTML(brevbestilling))
-            redigerbareBrev.countLetter(brevbestilling.kode)
+            countLetter(brevbestilling.kode)
         }
     }
 }

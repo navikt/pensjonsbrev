@@ -39,7 +39,7 @@ data class MaanedligPensjonFoerSkattAFPOffentligDto(
         val familietillegg: Kroner?,
         val familietilleggForAvkort: Kroner?,
         val virkDatoFom: LocalDate,
-        val virkDatoTom: LocalDate,
+        val virkDatoTom: LocalDate?,
         val fremtidigInntekt: Kroner?,
     )
 

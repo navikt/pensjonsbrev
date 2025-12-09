@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
@@ -39,7 +38,6 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.innvilgetFor67
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.kronebelop2G
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.opplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.opplysningerBruktIBeregningenAlderDto
@@ -75,7 +73,6 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – Overgang fra uføretrygd til alderspensjon",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
         )
@@ -129,7 +126,6 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderDto)
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning,pesysData.opplysningerOmAvdoedBruktIBeregningDto)
-        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, pesysData.informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)

@@ -256,7 +256,8 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = FakeSamhandlerService()
+        samhandlerService = FakeSamhandlerService(),
+        p1Service = FakeP1Service()
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))

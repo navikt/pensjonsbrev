@@ -23,6 +23,7 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
+    p1Service: P1ServiceImpl,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
@@ -94,7 +95,13 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            respondWithResult(pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr))
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+
+            if (adresse != null) {
+                call.respond(adresse)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
 
         get("/foretrukketSpraak") {
@@ -104,13 +111,14 @@ fun Route.sakRoute(
 
         get("/pdf/{journalpostId}") {
             val journalpostId = call.parameters.getOrFail("journalpostId")
-            safService.hentPdfForJournalpostId(journalpostId).onOk {
-                call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK)
-            }.onError { message, _ ->
-                call.respond(HttpStatusCode.InternalServerError, message)
+            val pdf = safService.hentPdfForJournalpostId(journalpostId)
+            if (pdf != null) {
+                call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
 
-        sakBrev(dto2ApiService, brevredigeringService)
+        sakBrev(dto2ApiService, brevredigeringService, p1Service)
     }
 }
