@@ -155,13 +155,8 @@ class LegacyBrevService(
             ERROR -> Api.BestillOgRedigerBrevResponse(failureType = SAF_ERROR)
             NOT_READY -> Api.BestillOgRedigerBrevResponse(failureType = FERDIGSTILLING_TIMEOUT)
             READY -> {
-                penService.redigerExstreamBrev(journalpostId)
-                    .map {
-                        Api.BestillOgRedigerBrevResponse(url = it.uri)
-                    }.catch { message, httpStatusCode ->
-                        logger.error("Feil ved bestilling av redigering av exstream brev mot PEN: $message Status: $httpStatusCode")
-                        Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_REDIGERING_GENERELL)
-                    }
+                penService.redigerExstreamBrev(journalpostId)?.let {Api.BestillOgRedigerBrevResponse(url = it.uri) }
+                    ?: Api.BestillOgRedigerBrevResponse(failureType = SKRIBENTEN_INTERNAL_ERROR)
             }
         }
 
@@ -210,13 +205,8 @@ class LegacyBrevService(
         }
 
     private suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Api.BestillOgRedigerBrevResponse =
-        penService.redigerDoksysBrev(journalpostId, dokumentId)
-            .map {
-                Api.BestillOgRedigerBrevResponse(url = it.uri)
-            }.catch { message, httpStatusCode ->
-                logger.error("Feil ved redigering av doksys brev $message status: $httpStatusCode")
-                Api.BestillOgRedigerBrevResponse(failureType = SKRIBENTEN_INTERNAL_ERROR)
-            }
+        penService.redigerDoksysBrev(journalpostId, dokumentId)?.let { Api.BestillOgRedigerBrevResponse(url = it.uri) }
+            ?: Api.BestillOgRedigerBrevResponse(failureType = SKRIBENTEN_INTERNAL_ERROR)
 
     private suspend fun harTilgangTilEnhet(enhetsId: String): Boolean =
         navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)

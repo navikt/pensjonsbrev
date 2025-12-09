@@ -92,14 +92,14 @@ class LegacyBrevServiceTest {
 
         override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String) =
             if(journalpostId == forventaJournalpostId && dokumentId == forventaDokumentId) {
-                ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL))
+                Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL)
             } else {
                 notYetStubbed("Mangler stub for redigerDoksysBrev med journalpostId: $journalpostId og dokumentId: $dokumentId")
             }
 
         override suspend fun redigerExstreamBrev(journalpostId: String) =
             if (journalpostId == forventaJournalpostId) {
-                ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
+                Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL)
             } else {
                 notYetStubbed("Mangler stub for redigerExstreamBrev med journalpostId: $journalpostId")
             }

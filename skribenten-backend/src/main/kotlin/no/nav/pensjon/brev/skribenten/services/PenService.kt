@@ -38,8 +38,8 @@ interface PenService {
     suspend fun hentSak(saksId: String): Pen.SakSelection?
     suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
-    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse>
-    suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse>
+    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse?
+    suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean>
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult>
@@ -146,13 +146,13 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         }
     }
 
-    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse? =
         client.get("brev/dokument/metaforce/$journalpostId/$dokumentId")
-            .toServiceResult(::handlePenErrorResponse)
+            .bodyOrThrow()
 
-    override suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse? =
         client.get("brev/dokument/exstream/$journalpostId")
-            .toServiceResult(::handlePenErrorResponse)
+            .bodyOrThrow()
 
     override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> =
         client.get("brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
