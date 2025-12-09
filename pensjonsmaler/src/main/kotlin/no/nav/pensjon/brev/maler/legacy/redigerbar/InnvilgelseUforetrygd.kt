@@ -1450,7 +1450,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
             }
-            paragraph {
+            title1 {
                 text (
                     bokmal { + "Slik har vi fastsatt uføregraden din" },
                     nynorsk { + "Slik har vi fastsett uføregraden din" },
@@ -2405,7 +2405,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad >= 50 AND PE_Vedtaksdata_Kravhode_KravGjelder <> "f_bh_bo_utl") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().greaterThanOrEqual(50) and pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("f_bh_bo_utl"))){
-                title2 {
+                title1 {
                     text (
                         bokmal { + "Honnørkort" },
                         nynorsk { + "Honnørkort" },
@@ -2418,7 +2418,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
             }
-            title2 {
+            title1 {
                 text (
                     bokmal { + "Du må melde fra om endringer" },
                     nynorsk { + "Du må melde frå om endringar" },
@@ -2460,7 +2460,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-            title2 {
+            title1 {
                 text (
                     bokmal { + "Sjekk utbetalingene dine" },
                     nynorsk { + "Sjekk utbetalingane dine" },
@@ -2472,7 +2472,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     nynorsk { + "Du får uføretrygd betalt ut den 20. kvar månad eller seinast siste vyrkedag før denne datoen. Sjå alle utbetalingar du har fått: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
                 )
             }
-            title2 {
+            title1 {
                 text (
                     bokmal { + "Skattekort" },
                     nynorsk { + "Skattekort" },

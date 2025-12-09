@@ -1,32 +1,21 @@
 package no.nav.pensjon.brev
 
+import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.template.Language
-import org.junit.jupiter.api.Tag
-import no.nav.brev.Landkode
-import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.P1Dto
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
-import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Avslagsbegrunnelse
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Epost
-import no.nav.pensjon.brev.api.model.maler.P1Dto.GrunnlagInnvilget
-import no.nav.pensjon.brev.api.model.maler.P1Dto.InnvilgetPensjon
-import no.nav.pensjon.brev.api.model.maler.P1Dto.UtfyllendeInstitusjon
-import no.nav.pensjon.brev.api.model.maler.P1Dto.P1Person
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Pensjonstype
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Postnummer
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Poststed
-import no.nav.pensjon.brev.api.model.maler.P1Dto.Reduksjonsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak
+import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
+import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
@@ -36,8 +25,8 @@ class PDFVedleggTest {
     @Tag(TestTags.INTEGRATION_TEST)
     @Test
     fun testPdf() {
-        val template = SamletMeldingOmPensjonsvedtak.template
-        val brevkode = SamletMeldingOmPensjonsvedtak.kode
+        val template = SamletMeldingOmPensjonsvedtakV2.template
+        val brevkode = SamletMeldingOmPensjonsvedtakV2.kode
         val spraak = Language.Bokmal
         if (!template.language.supports(spraak)) {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
@@ -45,7 +34,7 @@ class PDFVedleggTest {
         }
         val letter = LetterTestImpl(
             template,
-            createSamletMeldingOmPensjonsvedtakDto(innvilget = 8, avslag = 6),
+            createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto(),
             spraak,
             FellesFactory.felles
         )
@@ -57,27 +46,30 @@ class PDFVedleggTest {
     }
 }
 
-fun createSamletMeldingOmPensjonsvedtakDto(innvilget: Int, avslag: Int) =
-    SamletMeldingOmPensjonsvedtakDto(
+fun createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto() =
+    SamletMeldingOmPensjonsvedtakV2Dto(
         saksbehandlerValg = EmptySaksbehandlerValg,
-        pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
+        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
             sakstype = Sakstype.ALDER,
-            vedlegg = createP1Dto(innvilget, avslag)
-        )
+            p1Vedlegg = null
+        ),
     )
 
-private val svenskInst =
-    P1Dto.Institusjon(
-        institusjonsid = "Namm",
-        institusjonsnavn = "Svenske godisfabrikken",
-        pin = "12345",
-        saksnummer = "1234",
-        land = "SE"
+
+fun createSamletMeldingOmPensjonsvedtakV2Dto() =
+    SamletMeldingOmPensjonsvedtakV2Dto(
+        saksbehandlerValg = EmptySaksbehandlerValg,
+        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
+            sakstype = Sakstype.ALDER,
+            p1Vedlegg = createP1VedleggDto(),
+        ),
     )
 
-fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
+private val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"
+
+fun createP1VedleggDto() = P1RedigerbarDto(
     innehaver = P1Person(
-        fornavn = "PederĀ",
+        fornavn = "Peder",
         etternavn = "Ås",
         etternavnVedFoedsel = "Aas",
         foedselsdato = null,
@@ -97,61 +89,8 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
         landkode = Landkode("NO"),
     ),
     sakstype = Sakstype.ALDER,
-    innvilgedePensjoner = (0..<innvilget).map {
-        InnvilgetPensjon(
-            institusjon = nay(),
-            pensjonstype = Pensjonstype.Alder,
-            datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-            bruttobeloepDesimal = "540.81",
-            grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
-            reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
-            vurderingsperiode = null,
-            adresseNyVurdering = emptyList(),
-            utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
-            valuta = "NOK",
-            vedtaksdato = "2020-01-01",
-            erNorskRad = true,
-        )
-    } + InnvilgetPensjon(
-        institusjon = listOf(svenskInst),
-        pensjonstype = Pensjonstype.Alder,
-        datoFoersteUtbetaling = LocalDate.of(2025, Month.JANUARY, 1),
-        bruttobeloepDesimal = "1234.81",
-        grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
-        reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
-        vurderingsperiode = null,
-        adresseNyVurdering = emptyList(),
-        utbetalingsHyppighet = P1Dto.Utbetalingshyppighet.Maaned12PerAar,
-        valuta = "SEK",
-        vedtaksdato = "2020-01-01",
-        erNorskRad = false,
-    ),
-    avslaattePensjoner =
-        (0..<avslag).map { avslaattPensjon(it) }
-                + AvslaattPensjon(
-            institusjoner = listOf(svenskInst),
-            pensjonstype = Pensjonstype.Etterlatte,
-            avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
-            vurderingsperiode = null,
-            adresseNyVurdering = emptyList(),
-            vedtaksdato = "2020-01-01"
-        ) + AvslaattPensjon( // teste at rar blanding ikke skal overstyres med norsk adresse.
-            institusjoner = listOf(svenskInst),
-            pensjonstype = Pensjonstype.Etterlatte,
-            avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
-            vurderingsperiode = null,
-            adresseNyVurdering = listOf(
-                Adresse(
-                    adresselinje1 = "Lillevik Torgvei 1",
-                    adresselinje2 = null,
-                    adresselinje3 = null,
-                    landkode = Landkode("NO"),
-                    postnummer = Postnummer("4321"),
-                    poststed = Poststed("Lillevik Østre")
-                )
-            ),
-            vedtaksdato = "2020-01-01"
-        ),
+    innvilgedePensjoner = (0..<6).map { innvilgetPensjon },
+    avslaattePensjoner = (0..<6).map { avslaattPensjon },
     utfyllendeInstitusjon = UtfyllendeInstitusjon(
         navn = "NFP",
         adresselinje = "Lilleviksgrenda",
@@ -166,21 +105,32 @@ fun createP1Dto(innvilget: Int, avslag: Int) = P1Dto(
     )
 )
 
-private fun nay(): List<P1Dto.Institusjon> = listOf(
-    P1Dto.Institusjon(
-        institusjonsid = "1234",
+private val nay =
+    Institusjon(
         institusjonsnavn = "NAY",
-        pin = "11111111",
-        saksnummer = null,
-        land = "NO",
+        pin = "1234",
+        saksnummer = "1234",
+        vedtaksdato = "1.Januar 2020",
+        land = "Norge"
     )
+
+
+private val innvilgetPensjon = InnvilgetPensjon(
+    institusjon = nay,
+    pensjonstype = Pensjonstype.Etterlatte,
+    vurderingsperiode = "en måned",
+    datoFoersteUtbetaling = vilkaarligDato,
+    utbetalt = "1000 Kroner fra en dato",
+    grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+    reduksjonsgrunnlag = null,
+    adresseNyVurdering = ADRESSE_EKSEMPEL,
 )
 
-private fun avslaattPensjon(i: Int) = AvslaattPensjon(
-    institusjoner = nay(),
+
+private val avslaattPensjon = AvslaattPensjon(
+    institusjon = nay,
     pensjonstype = Pensjonstype.Etterlatte,
     avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
-    vurderingsperiode = null,
-    adresseNyVurdering = emptyList(),
-    vedtaksdato = "2020-01-01"
+    vurderingsperiode = "en måned",
+    adresseNyVurdering = ADRESSE_EKSEMPEL,
 )
