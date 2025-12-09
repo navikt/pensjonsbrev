@@ -11,6 +11,7 @@ import { getBrev, p1OverrideKeys, saveP1Override } from "~/api/brev-queries";
 import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
+import { ApiError } from "../ApiError";
 import { P1AvslagTab } from "./P1AvslagTab";
 import { P1ForsikredeTab } from "./P1ForsikredeTab";
 import { P1InnehaverTab } from "./P1InnehaverTab";
@@ -46,7 +47,12 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   } = formMethods;
 
   // Load P1 data when modal is open
-  const { data: p1Override, isLoading: isP1Loading, isError: isP1Error } = useP1Override(saksId, brevId, open);
+  const {
+    data: p1Override,
+    isLoading: isP1Loading,
+    isError: isP1Error,
+    error: p1Error,
+  } = useP1Override(saksId, brevId, open);
 
   // When P1 data arrives, reset form with mapped values
   useEffect(() => {
@@ -135,7 +141,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                 <Loader size="3xlarge" title="Laster data for P1..." />
               </div>
             ) : isP1Error ? (
-              <Alert variant="error">Kunne ikke laste P1-data. Prøv igjen senere.</Alert>
+              <ApiError error={p1Error} title="Kunne ikke laste P1-data" />
             ) : (
               <>
                 {validationError && (
