@@ -18,41 +18,35 @@ const avslagsbegrunnelseEnum = z.enum([
 ]);
 const sakstypeEnum = z.enum(["ALDER", "UFORE", "ETTERLATTE"]);
 
-/* Shared date validation helper */
+/* Shared date validation helper - using yyyy-mm-dd format from backend */
 const optionalDateField = (fieldName: string = "Dato") =>
   z
     .string()
     .max(10, `${fieldName} kan ikke være lengre enn 10 tegn`)
-    .refine((val) => !val || /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå")
+    .refine((val) => !val || /^(\d{4})-(\d{2})-(\d{2})$/.test(val), "Dato må være i formatet yyyy-mm-dd")
     .refine((val) => {
       if (!val) return true;
-      const [day, month, year] = val.split(".").map(Number);
+      const [year, month, day] = val.split("-").map(Number);
       const date = new Date(year, month - 1, day);
       return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
     }, "Ugyldig dato");
 
-const requiredDateField = (fieldName: string = "Dato") =>
+const optionalDateFieldForPerson = (fieldName: string = "Dato") =>
   z
     .string()
-    .min(1, `${fieldName} er obligatorisk`)
     .max(10, `${fieldName} kan ikke være lengre enn 10 tegn`)
-    .refine((val) => /^(\d{2})\.(\d{2})\.(\d{4})$/.test(val), "Dato må være i formatet dd.mm.åååå")
-    .refine((val) => {
-      const [day, month, year] = val.split(".").map(Number);
-      const date = new Date(year, month - 1, day);
-      return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
-    }, "Ugyldig dato");
+    .refine((val) => !val || /^(\d{4})-(\d{2})-(\d{2})$/.test(val), "Dato må være i formatet yyyy-mm-dd");
 
-/* Tab 1 & 2: Person validation (Innehaver & Forsikrede) */
+/* Tab 1 & 2: Person validation (Innehaver & Forsikrede) - all fields optional for now */
 const p1PersonFormSchema = z.object({
-  fornavn: z.string().min(1, "Fornavn er obligatorisk").max(100, "Fornavn kan ikke være lengre enn 100 tegn"),
-  etternavn: z.string().min(1, "Etternavn er obligatorisk").max(100, "Etternavn kan ikke være lengre enn 100 tegn"),
+  fornavn: z.string().max(100, "Fornavn kan ikke være lengre enn 100 tegn"),
+  etternavn: z.string().max(100, "Etternavn kan ikke være lengre enn 100 tegn"),
   etternavnVedFoedsel: z.string().max(100, "Etternavn ved fødsel kan ikke være lengre enn 100 tegn"),
-  foedselsdato: requiredDateField("Fødselsdato"),
+  foedselsdato: optionalDateFieldForPerson("Fødselsdato"),
   adresselinje: z.string().max(200, "Adresselinje kan ikke være lengre enn 200 tegn"),
   poststed: z.string().max(100, "Poststed kan ikke være lengre enn 100 tegn"),
   postnummer: z.string().max(20, "Postnummer kan ikke være lengre enn 20 tegn"),
-  landkode: z.string().min(1, "Landskode er obligatorisk").max(3, "Landskode kan ikke være lengre enn 3 tegn"),
+  landkode: z.string().max(20, "Land navn kan ikke være lengre enn 20 tegn"),
 });
 
 /* Tab 3: Innvilget Pensjon validation */
@@ -61,7 +55,7 @@ const p1InstitusjonFormSchema = z.object({
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
   vedtaksdato: optionalDateField("Vedtaksdato"),
-  land: z.string().max(3, "Landskode kan ikke være lengre enn 3 tegn"),
+  land: z.string().max(20, "Land navn kan ikke være lengre enn 20 tegn"),
 });
 
 /* Helper to check if a row has any filled data */
@@ -82,15 +76,13 @@ const p1InnvilgetPensjonFormSchema = z
     pensjonstype: pensjonstypeEnum.nullable(),
     datoFoersteUtbetaling: optionalDateField("Dato for første utbetaling"),
     utbetalt: z.string().max(500, "Bruttobeløp kan ikke være lengre enn 500 tegn"),
-    grunnlagInnvilget: grunnlagInnvilgetEnum.nullable(), // Optional - null means "Ikke relevant"
-    reduksjonsgrunnlag: reduksjonsgrunnlagEnum.nullable(), // Optional - null means "Ikke relevant"
+    grunnlagInnvilget: grunnlagInnvilgetEnum.nullable(),
+    reduksjonsgrunnlag: reduksjonsgrunnlagEnum.nullable(),
     vurderingsperiode: z.string().max(500, "Vurderingsperiode kan ikke være lengre enn 500 tegn"),
     adresseNyVurdering: z.string().max(500, "Adresse for ny vurdering kan ikke være lengre enn 500 tegn"),
   })
   .superRefine((data, ctx) => {
-    // Only validate required fields if the row has any data
     if (isRowFilled(data)) {
-      // Institusjonsnavn is required if row is filled
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
           code: "custom",
@@ -98,8 +90,6 @@ const p1InnvilgetPensjonFormSchema = z
           path: ["institusjon", "institusjonsnavn"],
         });
       }
-
-      // Pensjonstype is required if row is filled
       if (!data.pensjonstype) {
         ctx.addIssue({
           code: "custom",
@@ -107,9 +97,6 @@ const p1InnvilgetPensjonFormSchema = z
           path: ["pensjonstype"],
         });
       }
-
-      // NOTE: grunnlagInnvilget and reduksjonsgrunnlag are NOT required
-      // null means "Ikke relevant" which is a valid choice
     }
   });
 
@@ -123,9 +110,7 @@ const p1AvslaattPensjonFormSchema = z
     adresseNyVurdering: z.string().max(500, "Adresse for ny vurdering kan ikke være lengre enn 500 tegn"),
   })
   .superRefine((data, ctx) => {
-    /* Only validate required fields if the row has any data */
     if (isRowFilled(data)) {
-      /* Institusjonsnavn is required if row is filled */
       if (!data.institusjon.institusjonsnavn) {
         ctx.addIssue({
           code: "custom",
@@ -133,8 +118,6 @@ const p1AvslaattPensjonFormSchema = z
           path: ["institusjon", "institusjonsnavn"],
         });
       }
-
-      /* Pensjonstype is required if row is filled */
       if (!data.pensjonstype) {
         ctx.addIssue({
           code: "custom",
@@ -142,8 +125,6 @@ const p1AvslaattPensjonFormSchema = z
           path: ["pensjonstype"],
         });
       }
-
-      /* Avslagsbegrunnelse is required if row is filled */
       if (!data.avslagsbegrunnelse) {
         ctx.addIssue({
           code: "custom",
@@ -154,13 +135,13 @@ const p1AvslaattPensjonFormSchema = z
     }
   });
 
-/* Tab 5: Utfyllende Institusjon validation */
+/* Tab 5: Utfyllende Institusjon validation - all fields optional for now */
 const p1UtfyllendeInstitusjonFormSchema = z.object({
-  navn: z.string().min(1, "Navn er obligatorisk").max(200, "Navn kan ikke være lengre enn 200 tegn"),
+  navn: z.string().max(200, "Navn kan ikke være lengre enn 200 tegn"),
   adresselinje: z.string().max(200, "Adresselinje kan ikke være lengre enn 200 tegn"),
   poststed: z.string().max(100, "Poststed kan ikke være lengre enn 100 tegn"),
   postnummer: z.string().max(20, "Postnummer kan ikke være lengre enn 20 tegn"),
-  landkode: z.string().min(1, "Landskode er obligatorisk").max(3, "Landskode kan ikke være lengre enn 3 tegn"),
+  landkode: z.string().max(3, "Landskode kan ikke være lengre enn 3 tegn"),
   institusjonsID: z.string().max(50, "Institusjons-ID kan ikke være lengre enn 50 tegn"),
   faksnummer: z.string().max(30, "Faksnummer kan ikke være lengre enn 30 tegn"),
   telefonnummer: z.string().max(30, "Telefonnummer kan ikke være lengre enn 30 tegn"),
@@ -182,7 +163,6 @@ export const p1RedigerbarFormSchema = z
     utfyllendeInstitusjon: p1UtfyllendeInstitusjonFormSchema,
   })
   .superRefine((data, ctx) => {
-    /* Validate that at least one innvilget or avslått row is filled */
     const hasFilledInnvilget = data.innvilgedePensjoner.some(isRowFilled);
     const hasFilledAvslaat = data.avslaattePensjoner.some(isRowFilled);
 
