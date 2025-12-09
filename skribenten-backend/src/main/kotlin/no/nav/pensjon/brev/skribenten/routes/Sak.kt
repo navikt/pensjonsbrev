@@ -45,19 +45,20 @@ fun Route.sakRoute(
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
             val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
-            pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
-                .onError { msg, status -> call.respond(status, msg) }
-                .onOk { person ->
-                    call.respond(
-                        Api.SakContext(
-                            sak = sak,
-                            brevmalKoder = brevmetadata.map { it.id },
-                            adressebeskyttelse = person.adressebeskyttelse,
-                            doedsfall = person.doedsdato,
-                            erSkjermet = erSkjermet
-                        )
+            val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
+            if (person != null) {
+                call.respond(
+                    Api.SakContext(
+                        sak = sak,
+                        brevmalKoder = brevmetadata.map { it.id },
+                        adressebeskyttelse = person.adressebeskyttelse,
+                        doedsfall = person.doedsdato,
+                        erSkjermet = erSkjermet
                     )
-                }
+                )
+            } else {
+                call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
+            }
         }
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
