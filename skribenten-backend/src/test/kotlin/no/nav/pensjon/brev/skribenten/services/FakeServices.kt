@@ -150,8 +150,8 @@ open class PenServiceStub : PenService {
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
     override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
-    override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> = notYetStubbed()
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> = notYetStubbed()
+    override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult> = notYetStubbed()
     override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> = notYetStubbed()
     override suspend fun sendbrev(

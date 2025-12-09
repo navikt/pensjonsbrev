@@ -40,8 +40,8 @@ interface PenService {
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
     suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse?
     suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
-    suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>>
-    suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean>
+    suspend fun hentAvtaleland(): List<Pen.Avtaleland>
+    suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult>
     suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data>
     suspend fun sendbrev(
@@ -154,8 +154,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         client.get("brev/dokument/exstream/$journalpostId")
             .bodyOrThrow()
 
-    override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> =
-        client.get("brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
+    override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
+        client.get("brev/skribenten/avtaleland").bodyOrThrow() ?: emptyList()
 
     override val name = "PEN"
     override suspend fun ping(): ServiceResult<Boolean> =
@@ -163,9 +163,9 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             .toServiceResult<String>()
             .map { true }
 
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> =
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk")
-            .toServiceResult<Boolean>(::handlePenErrorResponse)
+            .bodyOrThrow()
 
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<PenService.KravStoettetAvDatabyggerResult> =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger")

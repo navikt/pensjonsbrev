@@ -173,7 +173,7 @@ class BrevmalServiceTest {
 
         val penService = object : PenServiceStub() {
             override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
-                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(isKravPaaGammeltRegelverk) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
+                if (vedtaksId == TEST_VEDTAKS_ID) isKravPaaGammeltRegelverk else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
 
             override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
                 if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
