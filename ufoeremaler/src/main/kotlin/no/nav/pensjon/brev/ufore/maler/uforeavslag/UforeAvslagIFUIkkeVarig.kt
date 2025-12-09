@@ -41,22 +41,26 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om endring av inntekten din før uførhet"})
+            text (bokmal { + "Nav har avslått søknaden din om endring av inntektsgrensen din"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om å endre den fastsatte inntekten din før du ble ufør, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om å endre inntektsgrensen din, som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { + "Derfor endrer vi ikke inntekten din"})
+                text(bokmal { + "Derfor endrer vi ikke inntektsgrensen din"})
             }
             paragraph {
-                text(bokmal { + "Du har ikke hatt en varig inntektsøkning i din stilling på " + fritekst("prosentandel") + " prosent."})
+                text(bokmal { + "Du får ikke endring i inntektsgrensen din, fordi du ikke har hatt en varig inntektsøkning i din stilling på " + fritekst("prosentandel") + " prosent."})
             }
             paragraph {
-                text(bokmal { +"For å ha rett til å endre den fastsatte inntekten din før du ble ufør, " +
-                        "må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " +
-                        "Inntekt før uførhet kan bare endres dersom du mottar gradert uføretrygd." })
+                text(bokmal { +"For å ha rett til en høyere inntektsgrense, " +
+                        "må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " }
+                )
+            }
+            paragraph {
+                text( bokmal { +"Inntektsgrensen din er beregnet ut fra den inntekten du hadde før du ble ufør. " +
+                        "Når du søker om å endre inntektsgrensen din, må vi se om inntekten i dag er høyere enn inntekten du hadde før du ble ufør." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -69,10 +73,10 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkåret, og vi avslår derfor søknaden din om endring av inntekten din før uførhet."})
+                text(bokmal { + "Du oppfyller ikke vilkåret for å endre inntektsgrensen, og vi avslår derfor søknaden din."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-2." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-2." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)
