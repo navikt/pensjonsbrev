@@ -328,7 +328,6 @@ data class OmregningAlderUfore2016Felles(
             )
             }
 
-        showIf(brukersSivilstand.notEqualTo(Sivilstand.ENSLIG)){
             ifNotNull(borMedSivilstand){ borMedSivilstand ->
                 paragraph {
                     text(
@@ -355,7 +354,6 @@ data class OmregningAlderUfore2016Felles(
                     }
                 }
             }
-        }
 
         paragraph {
             text(
