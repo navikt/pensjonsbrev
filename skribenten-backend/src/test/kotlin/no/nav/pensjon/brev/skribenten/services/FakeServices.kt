@@ -153,10 +153,7 @@ open class PenServiceStub : PenService {
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult = notYetStubbed()
     override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> = notYetStubbed()
-    override suspend fun sendbrev(
-        sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
-        distribuer: Boolean,
-    ): ServiceResult<Pen.BestillBrevResponse> = notYetStubbed()
+    override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
 
     override suspend fun hentP1VedleggData(
         saksId: Long,

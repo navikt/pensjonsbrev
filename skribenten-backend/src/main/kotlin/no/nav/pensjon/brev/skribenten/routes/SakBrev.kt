@@ -167,10 +167,13 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]
 
-            brevredigeringService.sendBrev(saksId = sak.saksId, brevId = brevId)
-                ?.onOk { call.respond(HttpStatusCode.OK, it) }
-                ?.onError { error, _ -> call.respond(HttpStatusCode.InternalServerError, error) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
+            val resultat = brevredigeringService.sendBrev(saksId = sak.saksId, brevId = brevId)
+
+            if (resultat != null) {
+                call.respond(resultat)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
+            }
         }
 
         route("/{brevId}/p1") {
