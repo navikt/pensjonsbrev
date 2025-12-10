@@ -21,7 +21,7 @@ import kotlin.time.toDuration
 
 private const val WARMUP_RUNS = 5
 private const val NUMBER_OF_SAMPLES = 5
-private const val ELEMENT_COUNT = 5
+private const val ELEMENT_COUNT = 100
 
 // Brukes for å måle hvordan ulike typer innholds-elementer påvirker kompilerings-tiden
 @Tag(TestTags.MANUAL_TEST)
