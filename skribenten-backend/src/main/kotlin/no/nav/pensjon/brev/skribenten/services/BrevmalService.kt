@@ -43,11 +43,7 @@ class BrevmalService(
 
     // TODO rename vekk fra "krav..." når alle tolkninger er over i spring component data-bygger
     private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: String): KravStoettetAvDatabyggerResult =
-        penService.hentIsKravStoettetAvDatabygger(vedtaksId)
-            .catch { message, httpStatusCode ->
-                logger.error("Feil ved henting av felt \"hentIsKravStoettetAvDatabygger\" fra vedtak. Status: $httpStatusCode, message: $message")
-                KravStoettetAvDatabyggerResult()
-            }
+        penService.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
 
     private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: String): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype.ALDER) {

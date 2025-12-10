@@ -27,7 +27,6 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerRespon
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -152,7 +151,7 @@ open class PenServiceStub : PenService {
     override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult> = notYetStubbed()
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult = notYetStubbed()
     override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> = notYetStubbed()
     override suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,

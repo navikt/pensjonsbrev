@@ -42,7 +42,7 @@ interface PenService {
     suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean?
-    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult>
+    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data>
     suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
@@ -167,9 +167,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk")
             .bodyOrThrow()
 
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<PenService.KravStoettetAvDatabyggerResult> =
-        client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger")
-            .toServiceResult<PenService.KravStoettetAvDatabyggerResult>(::handlePenErrorResponse)
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): PenService.KravStoettetAvDatabyggerResult? =
+        client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger").bodyOrThrow()
 
     override suspend fun hentPesysBrevdata(
         saksId: Long,
