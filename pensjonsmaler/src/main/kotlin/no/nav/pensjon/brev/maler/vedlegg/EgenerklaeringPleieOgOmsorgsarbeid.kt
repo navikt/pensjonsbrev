@@ -78,11 +78,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
         )
 
         formChoice(
-            newText(
-                Bokmal to "Arbeidet har vart i:",
-                Nynorsk to "Arbeidet har vart i:",
-                English to "The work has lasted for:"
-            )
+            { text(
+                bokmal { +"Arbeidet har vart i:" },
+                nynorsk { +"Arbeidet har vart i:" },
+                english { +"The work has lasted for:" }
+            ) }
         ) {
             choice(
                 Bokmal to "minst seks måneder",

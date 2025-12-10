@@ -193,15 +193,13 @@ class TemplateTest {
 
     @Test
     fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
-        val prompt = newText(Language.Bokmal to "hei")
-
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
-            formChoice(prompt) {
+            formChoice({ text( bokmal {+"hei"}) }) {
                 choice(Language.Bokmal to "velg denne")
             }
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(newText(Language.Bokmal to "hei"), listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
 
         assertEquals(expected, element)
     }

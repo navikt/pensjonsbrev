@@ -105,7 +105,7 @@ class LatexVisualITest {
         render {
             title1 { text(bokmal { +"Form choice" }) }
             paragraph {
-                formChoice(prompt = newText(Bokmal to "Hvor lenge har du jobba?"), true) {
+                formChoice(prompt = { text (bokmal {+"Hvor lenge har du jobba?"})}, true) {
                     choice(Bokmal to "0 år")
                     choice(Bokmal to "1 år")
                     choice(Bokmal to "2 til 5 år")
@@ -132,7 +132,7 @@ class LatexVisualITest {
         render {
             title1 { text(bokmal { +"Form choice uten vspace" }) }
             paragraph {
-                formChoice(prompt = newText(Bokmal to "Hvor lenge vil du jobbe?"), false) {
+                formChoice(prompt = { text(bokmal {+"Hvor lenge vil du jobbe?"})}, false) {
                     choice(Bokmal to "0 år")
                     choice(Bokmal to "1 år")
                     choice(Bokmal to "2 til 5 år")
