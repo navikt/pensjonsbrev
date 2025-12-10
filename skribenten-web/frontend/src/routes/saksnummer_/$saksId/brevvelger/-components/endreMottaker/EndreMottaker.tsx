@@ -192,7 +192,6 @@ export const EndreMottakerModal = (properties: {
 
   return (
     <Modal
-      //TODO(stw): Søk opp alle radius og sjekk at modaler ihvertfall er standard 12
       data-cy="endre-mottaker-modal"
       header={{
         heading:
