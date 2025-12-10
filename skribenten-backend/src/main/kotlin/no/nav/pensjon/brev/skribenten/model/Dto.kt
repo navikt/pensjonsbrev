@@ -151,7 +151,7 @@ fun Api.OverstyrtMottaker.toDto() =
         is Api.OverstyrtMottaker.NorskAdresse -> norskAdresse(
             navn = navn,
             postnummer = postnummer,
-            poststed = poststed,
+            poststed = poststed.also { postnummer.valider() },
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
@@ -197,9 +197,11 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
 @JvmInline
 value class NorskPostnummer(val value: String) {
     init {
-        require(value.trim().matches(regex)) {
-            "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
-        }
+        valider()
+    }
+
+    fun valider() = require(value.trim().matches(regex)) {
+        "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
     }
 
     companion object {
