@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Alert, Heading, Link } from "@navikt/ds-react";
+import { Alert, Heading, Link, VStack } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 import React from "react";
 
@@ -12,26 +11,11 @@ const BrevmalFormWrapper = (props: {
 }) => {
   const { onSubmit, formRef, children } = props;
   return (
-    <form
-      css={css`
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-      `}
-      onSubmit={onSubmit}
-      ref={formRef}
-    >
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          gap: var(--ax-space-32);
-        `}
-      >
+    <VStack asChild gap="space-32">
+      <form onSubmit={onSubmit} ref={formRef}>
         {children}
-      </div>
-    </form>
+      </form>
+    </VStack>
   );
 };
 

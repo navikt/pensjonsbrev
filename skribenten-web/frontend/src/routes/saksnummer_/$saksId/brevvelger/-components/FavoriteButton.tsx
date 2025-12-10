@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { Button } from "@navikt/ds-react";
+import { BoxNew, Button } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { addFavoritt, deleteFavoritt, getFavoritterQuery } from "~/api/skribenten-api-endpoints";
@@ -23,33 +22,31 @@ export default function FavoriteButton(props: {
 
   if (isFavoritt) {
     return (
-      <Button
-        css={css`
-          width: fit-content;
-        `}
-        data-cy="remove-favorite-button"
-        icon={<StarFillIcon aria-hidden />}
-        onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
-        size="small"
-        variant="secondary"
-      >
-        Fjern som favoritt
-      </Button>
+      <BoxNew asChild width="fit-content">
+        <Button
+          data-cy="remove-favorite-button"
+          icon={<StarFillIcon aria-hidden />}
+          onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
+          size="small"
+          variant="secondary"
+        >
+          Fjern som favoritt
+        </Button>
+      </BoxNew>
     );
   }
 
   return (
-    <Button
-      css={css`
-        width: fit-content;
-      `}
-      data-cy="add-favorite-button"
-      icon={<StarIcon aria-hidden />}
-      onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
-      size="small"
-      variant="secondary-neutral"
-    >
-      Legg til som favoritt
-    </Button>
+    <BoxNew asChild width="fit-content">
+      <Button
+        data-cy="add-favorite-button"
+        icon={<StarIcon aria-hidden />}
+        onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
+        size="small"
+        variant="secondary-neutral"
+      >
+        Legg til som favoritt
+      </Button>
+    </BoxNew>
   );
 }

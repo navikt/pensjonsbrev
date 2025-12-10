@@ -25,13 +25,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
   });
 
   return (
-    <div
-      css={css`
-        h3 {
-          margin-bottom: var(--ax-space-4);
-        }
-      `}
-    >
+    <div>
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <>
@@ -65,13 +59,13 @@ const MottakerAdresseOppsummering = (properties: {
   erSamhandler?: boolean;
 }) => {
   return (
-    <div>
+    <>
       {erAdresseKontaktAdresse(properties.adresse) ? (
         <ValgtKontaktAdresseOppsummering adresse={properties.adresse} saksId={properties.saksId} />
       ) : (
         <ValgtAdresseOppsummering adresse={properties.adresse} erSamhandler={properties.erSamhandler ?? false} />
       )}
-    </div>
+    </>
   );
 };
 

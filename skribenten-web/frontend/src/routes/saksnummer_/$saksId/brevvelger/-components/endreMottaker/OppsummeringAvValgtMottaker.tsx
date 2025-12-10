@@ -1,7 +1,6 @@
-import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { PencilIcon } from "@navikt/aksel-icons";
-import { Button, HStack, Table, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, HStack, Table, VStack } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 
 import { ApiError } from "~/components/ApiError";
@@ -13,19 +12,11 @@ import { humanizeName } from "~/utils/stringUtils";
 
 const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
   return (
-    <Button
-      css={css`
-        width: fit-content;
-        align-self: flex-start;
-      `}
-      icon={properties.icon}
-      onClick={properties.onClick}
-      size="small"
-      type="button"
-      variant="tertiary"
-    >
-      {properties.text}
-    </Button>
+    <BoxNew asChild width="fit-content">
+      <Button icon={properties.icon} onClick={properties.onClick} size="small" type="button" variant="tertiary">
+        {properties.text}
+      </Button>
+    </BoxNew>
   );
 };
 
