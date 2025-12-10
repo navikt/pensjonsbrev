@@ -1,7 +1,7 @@
-import { css } from "@emotion/react";
-import { Button, Heading, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
+import { VerticalDivider } from "~/components/Divider";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -44,69 +44,59 @@ function Kvittering() {
   const kvitterteBrev: KvittertBrev[] = [...sendtBrevList, ...attestList];
 
   return (
-    <div
-      css={css`
-        display: grid;
-        flex-grow: 1;
-        grid-template-columns: 40% 1% 40%;
-        gap: var(--ax-space-48);
-        padding: var(--ax-space-20) 0;
-        background: var(--ax-bg-default);
-      `}
+    <BoxNew
+      asChild
+      background="default"
+      height="calc(var(--main-page-content-height) + 48px)"
+      marginInline="auto"
+      width="fit-content"
     >
-      <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
-      <div
-        // This is a vertical line
-        css={css`
-          background: var(--ax-neutral-300);
-          width: 1px;
-        `}
-      ></div>
-      <VStack
-        css={css`
-          justify-self: center;
-        `}
-        gap="space-16"
-      >
-        <Heading size="medium">Hva vil du gjøre nå?</Heading>
-        <Button
-          css={css`
-            width: fit-content;
-          `}
-          onClick={() => navigate({ to: "/saksnummer", search: { enhetsId } })}
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          Åpne annen sak
-        </Button>
-        <Button
-          css={css`
-            width: fit-content;
-          `}
-          onClick={() =>
-            navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId }, search: { enhetsId, vedtaksId } })
-          }
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          Lage nytt brev på denne saken
-        </Button>
-        <Button
-          css={css`
-            width: fit-content;
-          `}
-          onClick={() =>
-            navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId }, search: { enhetsId, vedtaksId } })
-          }
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          Gå til brevbehandler
-        </Button>
-      </VStack>
-    </div>
+      <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
+        <BoxNew overflow="auto" paddingBlock="space-20" paddingInline="space-16">
+          <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
+        </BoxNew>
+        <VerticalDivider />
+        <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+          <VStack gap="space-16">
+            <Heading size="medium">Hva vil du gjøre nå?</Heading>
+            <Button
+              css={{ width: "fit-content" }}
+              onClick={() => navigate({ to: "/saksnummer", search: { enhetsId } })}
+              size="small"
+              type="button"
+              variant="secondary"
+            >
+              Åpne annen sak
+            </Button>
+            <Button
+              css={{ width: "fit-content" }}
+              onClick={() =>
+                navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId }, search: { enhetsId, vedtaksId } })
+              }
+              size="small"
+              type="button"
+              variant="secondary"
+            >
+              Lage nytt brev på denne saken
+            </Button>
+            <Button
+              css={{ width: "fit-content" }}
+              onClick={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevbehandler",
+                  params: { saksId },
+                  search: { enhetsId, vedtaksId },
+                })
+              }
+              size="small"
+              type="button"
+              variant="secondary"
+            >
+              Gå til brevbehandler
+            </Button>
+          </VStack>
+        </HStack>
+      </HGrid>
+    </BoxNew>
   );
 }

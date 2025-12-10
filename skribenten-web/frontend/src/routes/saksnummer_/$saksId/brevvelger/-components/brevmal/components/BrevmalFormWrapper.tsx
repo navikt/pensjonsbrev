@@ -42,7 +42,7 @@ export const OrderLetterResult = (props: {
   data: string | undefined;
 }) => {
   return (
-    <div>
+    <>
       {props.error && <ApiError error={props.error} title="Bestilling feilet" />}
       {props.data && (
         <Alert data-cy="order-letter-success-message" size="small" variant="success">
@@ -54,6 +54,6 @@ export const OrderLetterResult = (props: {
           </span>
         </Alert>
       )}
-    </div>
+    </>
   );
 };

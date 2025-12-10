@@ -1,6 +1,18 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
+import {
+  Accordion,
+  Alert,
+  Bleed,
+  BodyShort,
+  BoxNew,
+  Button,
+  Heading,
+  HStack,
+  Label,
+  Search,
+  VStack,
+} from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -60,35 +72,23 @@ export function BrevvelgerPage() {
   });
 
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        align-self: center;
+    <BoxNew asChild background="default">
+      <VStack marginInline={{ sm: "0", lg: "auto" }} width="fit-content">
+        <BrevvelgerMainContent
+          alleSaksbrevQuery={alleSaksbrevQuery}
+          brevmalKoder={brevmalKoder}
+          brevmetadata={brevmetadata}
+          saksId={saksId}
+          setOnSubmitClick={setOnSubmitClick}
+        />
 
-        @media (width <= 1023px) {
-          align-self: start;
-        }
-        width: 100%;
-        min-width: 944px;
-        max-width: 1104px;
-        background-color: var(--ax-bg-default);
-      `}
-    >
-      <BrevvelgerMainContent
-        alleSaksbrevQuery={alleSaksbrevQuery}
-        brevmalKoder={brevmalKoder}
-        brevmetadata={brevmetadata}
-        saksId={saksId}
-        setOnSubmitClick={setOnSubmitClick}
-      />
-
-      <BrevvelgerFooter
-        antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
-        onSubmitClick={onSubmitClick}
-        saksId={saksId}
-      />
-    </div>
+        <BrevvelgerFooter
+          antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
+          onSubmitClick={onSubmitClick}
+          saksId={saksId}
+        />
+      </VStack>
+    </BoxNew>
   );
 }
 
@@ -116,46 +116,43 @@ const BrevvelgerMainContent = (props: {
   );
 
   return (
-    <div
-      css={css`
-        display: grid;
-        grid-template-columns: minmax(640px, 720px) minmax(304px, 384px);
-        background-color: var(--ax-bg-default);
-        height: var(--main-page-content-height);
-      `}
-    >
-      <VStack
-        css={css`
-          border-left: 1px solid var(--ax-neutral-300);
-          border-right: 1px solid var(--ax-neutral-300);
-          padding: var(--ax-space-20) var(--ax-space-24);
-          overflow-y: auto;
-        `}
-        gap="space-24"
-      >
-        <Heading level="1" size="small">
-          Brevvelger
-        </Heading>
-        <Brevmaler
-          alleSaksbrev={props.alleSaksbrevQuery}
-          brevmalKoder={brevmalKoder}
+    <BoxNew background="default" height="calc(var(--main-page-content-height)">
+      <HStack height="100%">
+        {/* Brevmal-liste */}
+        <BoxNew
+          asChild
+          borderColor="neutral-subtle"
+          borderWidth="0 1 0 0"
+          minWidth="640px"
+          paddingBlock="space-20 0"
+          paddingInline="space-24"
+        >
+          <VStack gap="space-24" height="100%">
+            <Heading level="1" size="small">
+              Brevvelger
+            </Heading>
+            <Brevmaler
+              alleSaksbrev={props.alleSaksbrevQuery}
+              brevmalKoder={brevmalKoder}
+              brevmetadata={brevmetadata}
+              handleOpenAccordionChange={(categoryKey) =>
+                setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
+              }
+              openAccordions={openAccordions}
+            />
+          </VStack>
+        </BoxNew>
+        <BrevmalPanel
+          brevId={brevId}
           brevmetadata={brevmetadata}
-          handleOpenAccordionChange={(categoryKey) =>
-            setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
-          }
-          openAccordions={openAccordions}
+          enhetsId={enhetsId ?? ""}
+          onAddFavorittSuccess={(templateId) => closeAccordionWhereTemplateWasAdded(templateId)}
+          saksId={props.saksId}
+          setOnFormSubmitClick={props.setOnSubmitClick}
+          templateId={templateId}
         />
-      </VStack>
-      <BrevmalPanel
-        brevId={brevId}
-        brevmetadata={brevmetadata}
-        enhetsId={enhetsId ?? ""}
-        onAddFavorittSuccess={(templateId) => closeAccordionWhereTemplateWasAdded(templateId)}
-        saksId={props.saksId}
-        setOnFormSubmitClick={props.setOnSubmitClick}
-        templateId={templateId}
-      />
-    </div>
+      </HStack>
+    </BoxNew>
   );
 };
 
@@ -216,7 +213,7 @@ function Brevmaler({
   ].flat();
 
   return (
-    <VStack gap="space-24">
+    <VStack gap="space-24" height="calc(100% - 51px)">
       <Search
         data-cy="brevmal-search"
         hideLabel={false}
@@ -226,101 +223,86 @@ function Brevmaler({
         value={searchTerm}
         variant="simple"
       />
-      <Accordion
-        css={css`
-          overflow-y: scroll;
+      <Bleed asChild marginInline="space-24">
+        <BoxNew asChild overflowY="auto" paddingInline="space-24">
+          <Accordion
+            css={css`
+              .aksel-accordion__content {
+                margin: 0;
+              }
+            `}
+            indent={false}
+            size="small"
+          >
+            {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} brevmetadata={brevmetadata} />}
 
-          .aksel-accordion__content {
-            margin: 0;
-          }
-        `}
-        indent={false}
-        size="small"
-      >
-        {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} brevmetadata={brevmetadata} />}
+            {Object.keys(brevmalerGroupedByType).length === 0 && (
+              <Alert data-cy="ingen-treff-alert" size="small" variant="info">
+                Ingen treff
+              </Alert>
+            )}
 
-        {Object.keys(brevmalerGroupedByType).length === 0 && (
-          <Alert data-cy="ingen-treff-alert" size="small" variant="info">
-            Ingen treff
-          </Alert>
-        )}
-
-        {sortedCategoryKeys.map((type) => {
-          return (
-            <Accordion.Item
-              data-cy="category-item"
-              defaultOpen={type === "Favoritter"}
-              key={type}
-              onOpenChange={() => handleOpenAccordionChange(type)}
-              open={searchTerm.length > 0 ? true : openAccordions[type]}
-            >
-              <Accordion.Header
-                css={css`
-                  flex-direction: row-reverse;
-                  justify-content: space-between;
-                  color: var(--ax-text-neutral);
-                `}
-              >
-                <Label size="small">{type}</Label>
-              </Accordion.Header>
-              <Accordion.Content>
-                <div
-                  css={css`
-                    display: flex;
-                    flex-direction: column;
-                  `}
+            {sortedCategoryKeys.map((type) => {
+              return (
+                <Accordion.Item
+                  data-cy="category-item"
+                  defaultOpen={type === "Favoritter"}
+                  key={type}
+                  onOpenChange={() => handleOpenAccordionChange(type)}
+                  open={searchTerm.length > 0 ? true : openAccordions[type]}
                 >
-                  {brevmalerGroupedByType[type].map((template) => (
-                    <BrevmalButton
-                      extraStyles={
-                        template.id === templateId
-                          ? css`
-                              color: var(--ax-text-accent-contrast);
-                              background-color: var(--ax-bg-accent-strong-hover);
-                            `
-                          : undefined
-                      }
-                      key={template.id}
-                      onClick={() =>
-                        navigate({
-                          to: "/saksnummer/$saksId/brevvelger",
-                          search: (s) => ({
-                            ...s,
-                            templateId: template.id,
-                            brevId: undefined,
-                          }),
-                        })
-                      }
-                      title={
-                        <HStack
-                          align={"center"}
-                          css={css`
-                            overflow: hidden;
-                          `}
-                          gap="space-8"
-                          wrap={false}
-                        >
-                          <BrevSystemIcon brevsystem={template.brevsystem} />
-                          <BodyShort
-                            css={css`
-                              overflow: hidden;
-                              text-overflow: ellipsis;
-                              max-width: 95%;
-                            `}
-                            size="small"
-                          >
-                            {template.name}
-                          </BodyShort>
-                        </HStack>
-                      }
-                    />
-                  ))}
-                </div>
-              </Accordion.Content>
-            </Accordion.Item>
-          );
-        })}
-      </Accordion>
+                  <Accordion.Header
+                    css={css`
+                      flex-direction: row-reverse;
+                      justify-content: space-between;
+                      color: var(--ax-text-neutral);
+                    `}
+                  >
+                    <Label size="small">{type}</Label>
+                  </Accordion.Header>
+                  <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
+                    <VStack>
+                      {brevmalerGroupedByType[type].map((template) => (
+                        <BrevmalButton
+                          extraStyles={
+                            template.id === templateId
+                              ? css`
+                                  color: var(--ax-text-accent-contrast);
+                                  background-color: var(--ax-bg-accent-strong-hover);
+                                `
+                              : undefined
+                          }
+                          key={template.id}
+                          onClick={() =>
+                            navigate({
+                              to: "/saksnummer/$saksId/brevvelger",
+                              search: (s) => ({
+                                ...s,
+                                templateId: template.id,
+                                brevId: undefined,
+                              }),
+                            })
+                          }
+                          title={
+                            <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
+                              <BrevSystemIcon brevsystem={template.brevsystem} />
+                              <BoxNew asChild maxWidth="calc(100% - var(--ax-space-24)">
+                                <BodyShort size="small" truncate>
+                                  {template.name}
+                                </BodyShort>
+                              </BoxNew>
+                            </HStack>
+                          }
+                        />
+                      ))}
+                    </VStack>
+                  </Accordion.Content>
+                </Accordion.Item>
+              );
+            })}
+          </Accordion>
+        </BoxNew>
+      </Bleed>
     </VStack>
   );
 }
@@ -344,13 +326,8 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
             <Label size="small">Kladder</Label>
           </HStack>
         </Accordion.Header>
-        <Accordion.Content>
-          <div
-            css={css`
-              display: flex;
-              flex-direction: column;
-            `}
-          >
+        <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
+          <VStack>
             {kladder.map((brev) => (
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
@@ -374,31 +351,18 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                   })
                 }
                 title={
-                  <HStack
-                    align={"center"}
-                    css={css`
-                      overflow: hidden;
-                    `}
-                    gap="space-8"
-                    wrap={false}
-                  >
+                  <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
                     <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
-
-                    <BodyShort
-                      css={css`
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        max-width: 90%;
-                      `}
-                      size="small"
-                    >
-                      {brev.brevtittel}
-                    </BodyShort>
+                    <BoxNew asChild maxWidth="calc(100% - var(--ax-space-24)">
+                      <BodyShort size="small" truncate>
+                        {brev.brevtittel}
+                      </BodyShort>
+                    </BoxNew>
                   </HStack>
                 }
               />
             ))}
-          </div>
+          </VStack>
         </Accordion.Content>
       </Accordion.Item>
     );
@@ -456,7 +420,7 @@ const BrevmalButton = (props: {
       onClick={props.onClick}
       variant="tertiary"
     >
-      <HStack justify={"space-between"} wrap={false}>
+      <HStack gap="space-8" justify="space-between" wrap={false}>
         {props.title}
         {props.description && <BodyShort size="small">{props.description}</BodyShort>}
       </HStack>

@@ -64,7 +64,7 @@ const OppsummeringAvValgtMottaker = (properties: {
           Bekreft ny mottaker
         </Button>
       </HStack>
-      {properties.error && <ApiError error={properties.error} title={"En feil skjedde"} />}
+      {properties.error && <ApiError error={properties.error} title="En feil skjedde" />}
     </VStack>
   );
 };

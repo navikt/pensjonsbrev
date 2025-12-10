@@ -261,7 +261,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               query: alleBrevResult,
               initial: () => null,
               pending: () => <Label>Henter alle ferdigstilte brev...</Label>,
-              error: (error) => <ApiError error={error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />,
+              error: (error) => <ApiError error={error} title="Klarte ikke å hente alle ferdigstilte for saken" />,
               success: () => (
                 <VStack gap="space-24">
                   {brevSending.length > 0 && (

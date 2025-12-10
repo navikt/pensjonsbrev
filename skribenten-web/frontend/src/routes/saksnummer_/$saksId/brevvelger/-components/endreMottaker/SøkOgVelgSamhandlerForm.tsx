@@ -39,7 +39,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
               size="small"
               value={field.value ?? ""}
             >
-              <option disabled value={""}>
+              <option disabled value="">
                 Klikk for å velge søketype
               </option>
               <option value={Søketype.DIREKTE_OPPSLAG}>Direkte oppslag</option>
@@ -80,7 +80,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
         </div>
       )}
       {properties.onFinnSamhandlerSubmit.isError && (
-        <ApiError error={properties.onFinnSamhandlerSubmit.error} title={"En feil skjedde"} />
+        <ApiError error={properties.onFinnSamhandlerSubmit.error} title="En feil skjedde" />
       )}
 
       <Button

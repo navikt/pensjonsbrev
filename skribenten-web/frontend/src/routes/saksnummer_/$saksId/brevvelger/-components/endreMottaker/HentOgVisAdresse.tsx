@@ -34,22 +34,22 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
     >
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
-        <div>
+        <>
           {adresseQuery.isSuccess && (
             <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} saksId={properties.sakId} />
           )}
           {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
-        </div>
+        </>
       )}
       {properties.samhandlerId && (
-        <div>
+        <>
           {samhandlerAdresse.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {samhandlerAdresse.isSuccess && (
             <MottakerAdresseOppsummering adresse={samhandlerAdresse.data} erSamhandler saksId={properties.sakId} />
           )}
           {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
-        </div>
+        </>
       )}
     </div>
   );
