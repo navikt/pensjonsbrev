@@ -109,8 +109,8 @@ class BrevredigeringService(
                         if (mottaker != null) {
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
                         }
-                    }
-                }.toDto(letter.letterDataUsage)
+                    }.toDto(letter.letterDataUsage)
+                }
             }
         }
 
