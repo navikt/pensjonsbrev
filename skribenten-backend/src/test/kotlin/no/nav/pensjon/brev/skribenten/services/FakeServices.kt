@@ -145,14 +145,11 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 }
 
 open class PenServiceStub : PenService {
-    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = notYetStubbed()
-    override suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse =
-        notYetStubbed()
-    override suspend fun bestillExstreamBrev(
-        bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
-    ): ServiceResult<BestillExstreamBrevResponse> = notYetStubbed()
-    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> = notYetStubbed()
-    override suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> = notYetStubbed()
+    override suspend fun hentSak(saksId: String): Pen.SakSelection? = notYetStubbed()
+    override suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse = notYetStubbed()
+    override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
+    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse = notYetStubbed()
+    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult> = notYetStubbed()
