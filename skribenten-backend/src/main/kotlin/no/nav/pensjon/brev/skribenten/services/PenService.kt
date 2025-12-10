@@ -109,13 +109,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             contentType(ContentType.Application.Json)
         }
 
-        return if (response.status.isSuccess()) {
-            response.body()
-        } else {
-            val errorBody = response.bodyAsText()
-            logger.error("En feil oppstod i kall til PEN: $errorBody")
-            throw PenServiceException("Feil ved bestilling av doksysbrev: $errorBody")
-        }
+        return response.bodyOrThrow()
+            ?: throw PenServiceException("Feil ved bestilling av doksysbrev: ${response.status.value} - ${response.bodyAsText()}")
     }
 
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse {
@@ -127,11 +122,9 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         return if (response.status.isSuccess()) {
             response.body()
         } else {
-            val error = response.body<BestillExstreamBrevResponse.Error>().let {
+            throw PenServiceException(response.body<BestillExstreamBrevResponse.Error>().let {
                 "Feil ved bestilling av exstreambrev - ${it.type}: ${it.message}"
-            }
-            logger.info(error)
-            throw PenServiceException(error)
+            })
         }
     }
 
