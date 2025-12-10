@@ -89,11 +89,11 @@ class LaTeXElementPerformanceTest {
     private fun timedRender(elementType: ElementType, count: Int) =
         measureTime {
             render(overrideName = "timing_${elementType.name}_$count") {
-                letterWithElementAndCount(elementType, count)
+                addElement(elementType, count)
             }
         }
 
-    private fun OutlineOnlyScope<LangBokmal, *>.letterWithElementAndCount(elementType: ElementType, count: Int) {
+    private fun OutlineOnlyScope<LangBokmal, *>.addElement(elementType: ElementType, count: Int) {
 
         when (elementType) {
             TITLE_1 -> repeat(count) { title1 { text(bokmal { +"bla" }) } }
