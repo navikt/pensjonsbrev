@@ -384,7 +384,7 @@ class BrevredigeringService(
             }
         }
 
-    suspend fun sendBrev(saksId: Long, brevId: Long): ServiceResult<Pen.BestillBrevResponse>? {
+    suspend fun sendBrev(saksId: Long, brevId: Long): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
@@ -402,10 +402,7 @@ class BrevredigeringService(
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
             if (template == null) {
-                ServiceResult.Error(
-                    "Mangler TemplateDescription for ${brev.info.brevkode}",
-                    HttpStatusCode.InternalServerError
-                )
+                throw BrevmalFinnesIkke("Mangler TemplateDescription for ${brev.info.brevkode}")
             } else {
                 validerVedtaksbrevAttestert(brev, template.metadata.brevtype)
                 penService.sendbrev(
@@ -420,7 +417,7 @@ class BrevredigeringService(
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
                     distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
-                ).onOk {
+                ).also {
                     transaction {
                         if (it.journalpostId != null) {
                             if (it.error == null) {

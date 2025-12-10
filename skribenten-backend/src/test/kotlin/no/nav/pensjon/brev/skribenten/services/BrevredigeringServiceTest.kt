@@ -191,7 +191,7 @@ class BrevredigeringServiceTest {
     class FakePenService(
         var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
         var pesysBrevdata: BrevdataResponse.Data? = null,
-        var sendBrevResponse: ServiceResult<Pen.BestillBrevResponse>? = null,
+        var sendBrevResponse: Pen.BestillBrevResponse? = null,
     ) : PenServiceStub() {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
 
@@ -257,7 +257,7 @@ class BrevredigeringServiceTest {
         p1Service = FakeP1Service()
     )
 
-    private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+    private val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
 
     @BeforeEach
     fun clearMocks() {
@@ -897,7 +897,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+        penService.sendBrevResponse = Pen.BestillBrevResponse(123, null)
 
         brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { letter }
@@ -933,7 +933,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+        penService.sendBrevResponse = Pen.BestillBrevResponse(123, null)
 
         brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { letter }
@@ -1080,14 +1080,12 @@ class BrevredigeringServiceTest {
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
 
-        penService.sendBrevResponse = ServiceResult.Ok(
-            Pen.BestillBrevResponse(
-                991,
-                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-            )
+        penService.sendBrevResponse = Pen.BestillBrevResponse(
+            991,
+            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()
+        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
 
         withPrincipal(saksbehandler1Principal) {
@@ -1193,20 +1191,18 @@ class BrevredigeringServiceTest {
             assertThat(pdf).isNotNull()
         }
 
-        penService.sendBrevResponse = ServiceResult.Ok(
-            Pen.BestillBrevResponse(
-                991,
-                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-            )
+        penService.sendBrevResponse = Pen.BestillBrevResponse(
+            991,
+            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
+        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
 
-        penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
+        penService.sendBrevResponse = Pen.BestillBrevResponse(991, null)
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 
