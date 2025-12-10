@@ -310,48 +310,46 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
-        paragraph {
-            text(
-                bokmal { +"Du er registrert som " },
-                nynorsk { +"Du er registrert som " },
-                english { +" You are registered as " }
-            )
-                text(
-                    bokmal { +brukersSivilstand.ubestemtForm() },
-                    nynorsk { +brukersSivilstand.ubestemtForm() },
-                    english { +brukersSivilstand.ubestemtForm() }
-                )
-            text(
-                bokmal { +"." },
-                nynorsk { +"." },
-                english { +"." }
-            )
-            }
 
             ifNotNull(borMedSivilstand){ borMedSivilstand ->
                 paragraph {
                     text(
-                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " din har egen pensjon eller inntekt på " },
-                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " din har eigen pensjon eller inntekt på " },
-                        english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " has an income of " }
+                        bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"."  },
+                        nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"."  },
+                        english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"."  }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " " },
+                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " " },
+                        english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " " }
                     )
                 }
                 ifNotNull(over2G) { over2G ->
                     showIf(over2G) {
                         paragraph {
                             text(
-                                bokmal { +"over " + kronebelop2G.format() + "." },
-                                nynorsk { +"over " + kronebelop2G.format() + "." },
-                                english { +"over " + kronebelop2G.format() + "." })
+                                bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon." },
+                                nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon." },
+                                english { +"has an income of over " + kronebelop2G.format() + " or their own pension." })
                         }
                     }.orShow {
                         paragraph {
                             text(
-                                bokmal { +"under " + kronebelop2G.format() + "." },
-                                nynorsk { +"under " + kronebelop2G.format() + "." },
-                                english { +"under " + kronebelop2G.format() + "." })
+                                bokmal { +"har ikke egen pensjon og heller ikke inntekt over  " + kronebelop2G.format() + "." },
+                                nynorsk { +"har ikkje eigen pensjon og heller ikkje inntekt over " + kronebelop2G.format() + "." },
+                                english { +"does not have their own pension nor an income of over " + kronebelop2G.format() + "." })
                         }
                     }
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Du er registrert som enslig." },
+                        nynorsk { +"Du er registrert som einsleg." },
+                        english { +"You are registered as single." }
+                    )
                 }
             }
 

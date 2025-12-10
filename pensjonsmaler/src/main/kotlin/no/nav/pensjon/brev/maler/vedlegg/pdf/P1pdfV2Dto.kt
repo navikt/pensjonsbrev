@@ -151,7 +151,7 @@ object P1pdfV2Dto {
             "PensjonInnvilget[$radnummer]" to innvilgelse.grunnlagInnvilget?.nummer?.let { "[$it]" },
             "PensjonRedusert[$radnummer]" to innvilgelse.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
             "Review_period[${radnummer * 2}]" to innvilgelse.vurderingsperiode,
-            "Where_to_adress_the_request[$radnummer]" to innvilgelse.vurderingsperiode,
+            "Where_to_adress_the_request[$radnummer]" to innvilgelse.adresseNyVurdering,
         )
     }
 
