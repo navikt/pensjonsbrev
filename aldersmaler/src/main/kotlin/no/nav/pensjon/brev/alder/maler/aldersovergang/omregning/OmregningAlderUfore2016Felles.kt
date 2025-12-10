@@ -321,25 +321,25 @@ data class OmregningAlderUfore2016Felles(
                 }
                 paragraph {
                     text(
-                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " har inntekt " },
-                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " har inntekt " },
-                        english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " has an income of " }
+                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " " },
+                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " " },
+                        english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " " }
                     )
                 }
                 ifNotNull(over2G) { over2G ->
                     showIf(over2G) {
                         paragraph {
                             text(
-                                bokmal { +"over " + kronebelop2G.format() + " eller egen pensjon." },
-                                nynorsk { +"over " + kronebelop2G.format() + " eller eigen pensjon." },
-                                english { +"over " + kronebelop2G.format() + " or their own pension." })
+                                bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon." },
+                                nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon." },
+                                english { +"has an income of over " + kronebelop2G.format() + " or their own pension." })
                         }
                     }.orShow {
                         paragraph {
                             text(
-                                bokmal { +"under " + kronebelop2G.format() + " og ikke egen pensjon." },
-                                nynorsk { +"under " + kronebelop2G.format() + " og ikkje eigen pensjon." },
-                                english { +"under " + kronebelop2G.format() + " and no own pension." })
+                                bokmal { +"har ikke egen pensjon og heller ikke inntekt over  " + kronebelop2G.format() + "." },
+                                nynorsk { +"har ikkje eigen pensjon og heller ikkje inntekt over " + kronebelop2G.format() + "." },
+                                english { +"does not have their own pension nor an income of over " + kronebelop2G.format() + "." })
                         }
                     }
                 }
