@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffen
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffentligDtoSelectors.tilleggspensjonAFPStatGjeldende
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -32,10 +32,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
-// V00008 i metaforce
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
-    createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattAFPOffentligDto>(
+    createAttachment<LangBokmalNynorsk, MaanedligPensjonFoerSkattAFPOffentligDto>(
         title =
             newText(
                 Bokmal to "Dette er din månedlige pensjon før skatt",
@@ -58,8 +57,7 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
         title1 {
             text(
                 bokmal { +"Slik er pensjonen din satt sammen" },
-                nynorsk { +"Slik er pensjonen din sett saman" },
-                english { +"This is how your pension is calculated" },
+                nynorsk { +"Slik er pensjonen din sett saman" }
             )
         }
 
@@ -72,8 +70,7 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         },
                         nynorsk {
                             +"Pensjonen er redusert fordi AFP ikkje kan utgjere meir enn 70 prosent av full AFP. Pensjonen vert òg redusert fordi du har ei forventa årleg inntekt over toleransebeløpet. Nedanfor vert komponentane som inngår i AFP før reduksjonen forklara."
-                        },
-                        english { +"" },
+                        }
                     )
                 }
             }.orShow {
@@ -84,8 +81,7 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         },
                         nynorsk {
                             +"Pensjonen din er redusert fordi du har ei forventa årleg inntekt over toleransebeløpet. Nedanfor vert komponentane som inngår i AFP før reduksjonen forklara."
-                        },
-                        english { +"" },
+                        }
                     )
                 }
             }
@@ -98,8 +94,7 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         },
                         nynorsk {
                             +"Pensjonen din er redusert fordi du har ei forventa årleg inntekt over toleransebeløpet. Nedanfor vert komponentane som inngår i AFP før reduksjonen forklara."
-                        },
-                        english { +"" },
+                        }
                     )
                 }
             }
@@ -110,7 +105,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                 text(
                     bokmal { +"Grunnpensjon" },
                     nynorsk { +"Grunnpensjon" },
-                    english { +"" },
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
 
@@ -122,9 +116,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     nynorsk {
                         +" blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbelop.format() +
                             ". Full grunnpensjon for einslege pensjonistar utgjer 100 prosent av grunnbeløpet."
-                    },
-                    english {
-                        +" "
                     },
                 )
             }
@@ -138,9 +129,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         nynorsk {
                             +"Som flyktning får du grunnpensjonen din rekna ut som om du har full trygdetid i Noreg. Ver merksam på at alderspensjonen din vil bli omrekna etter faktisk trygdetid dersom du flyttar til eit land utanfor EØS-området."
                         },
-                        english {
-                            +"As a refugee, your basic pension is calculated as if you had a full period of national insurance cover in Norway. Please note that your retirement pension will be recalculated according to your actual period of national insurance cover if you move to a country outside the EEA region."
-                        },
                     )
                 }
             }
@@ -149,7 +137,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                 text(
                     bokmal { +"Grunnpensjon" },
                     nynorsk { +"Grunnpensjon" },
-                    english { +"" },
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
 
@@ -162,9 +149,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         +" blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbelop.format() +
                             ".  Full grunnpensjon for einslege pensjonistar utgjer 100 prosent av grunnbeløpet før reduksjon på grunn av trygdetid. Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Fordi du har mindre enn 40 års trygdetid, vil grunnpensjonen bli redusert tilsvarande."
                     },
-                    english {
-                        +" "
-                    },
                 )
             }
         }
@@ -175,7 +159,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     text(
                         bokmal { +"Tilleggspensjonen" },
                         nynorsk { +"Tilleggspensjonen" },
-                        english { +"Your supplementary pension" },
                         Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                     )
 
@@ -186,9 +169,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         nynorsk {
                             +" din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda. Du får ikkje full tilleggspensjon fordi du har tent opp pensjonspoeng i mindre enn 40 år."
                         },
-                        english {
-                            +" depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G). You do not qualify for a full supplementary pension because you have earned pension points for less than 40 years."
-                        },
                     )
                 }
             }.orShow {
@@ -196,7 +176,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     text(
                         bokmal { +"Tilleggspensjonen" },
                         nynorsk { +"Tilleggspensjonen" },
-                        english { +"Your supplementary pension" },
                         Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                     )
 
@@ -206,9 +185,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                         },
                         nynorsk {
                             +" din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda."
-                        },
-                        english {
-                            +" depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G)."
                         },
                     )
                 }
@@ -220,7 +196,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                 text(
                     bokmal { +"Særtillegget" },
                     nynorsk { +"Særtillegget" },
-                    english { +"" },
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
 
@@ -230,9 +205,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     },
                     nynorsk {
                         +" skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer 100 prosent av grunnbeløpet. Denne gis til einslege pensjonistar som ikkje har rett til tilleggspensjon eller som har ein tilleggspensjon som er mindre enn særtillegget."
-                    },
-                    english {
-                        +" "
                     },
                 )
             }
@@ -247,9 +219,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                             nynorsk {
                                 +"Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen."
                             },
-                            english {
-                                +"The supplementary pension will be deducted from the special supplement so that you will be paid the difference."
-                            },
                         )
                     }
                 }.orShow {
@@ -260,9 +229,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                             },
                             nynorsk {
                                 +"]Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen. Det blir også avkorta mot trygdetid på same måte som for grunnpensjonen."
-                            },
-                            english {
-                                +"The supplementary pension will be deducted from the special supplement so that you will be paid the difference. It is also calculated on the same period of national insurance cover as the basic pension."
                             },
                         )
                     }
@@ -275,7 +241,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                 text(
                     bokmal { +"AFP-tillegg" },
                     nynorsk { +"AFP-tillegg" },
-                    english { +"" },
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
 
@@ -286,9 +251,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     nynorsk {
                         +" er eit tillegg som blir gitt til alle som mottek AFP, når dette er avtalt i tariffavtale."
                     },
-                    english {
-                        +" "
-                    },
                 )
             }
         }
@@ -296,15 +258,8 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
         ifNotNull(beregnetPensjonPerManedGjeldende.minstenivaIndividuell) {
             paragraph {
                 text(
-                    bokmal { +"" },
-                    nynorsk { +"" },
-                    english { +"You have been granted " },
-                )
-
-                text(
                     bokmal { +"Minstenivåtillegg individuelt" },
                     nynorsk { +"Minstenivåtillegg individuelt" },
-                    english { +"a minimum pension supplement" },
                     Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
 
@@ -315,9 +270,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     nynorsk {
                         +" er gitt fordi pensjonen elles ville ha vore lågare enn minste pensjonsnivå."
                     },
-                    english {
-                        +" because your pension otherwise would be lower than the minimum pension level."
-                    },
                 )
             }
         }
@@ -326,7 +278,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
             text(
                 bokmal { +"Regulering av AFP under utbetaling" },
                 nynorsk { +"Regulering av AFP under utbetaling" },
-                english { +"" },
             )
         }
 
@@ -338,7 +289,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                 nynorsk {
                     +"Pensjonen, bortsett frå AFP-tillegget, blir årleg regulert. Reguleringa skjer med verknad frå 1. mai, og sjølve auken blir vanlegvis etterbetalt i juni. Du får informasjon om dette på utbetalingsmeldinga di. På nav.no kan du lese meir om korleis pensjonane blir regulerte."
                 },
-                english { +"" },
             )
         }
 
@@ -347,7 +297,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                 text(
                     bokmal { +"Oversikt over pensjonen fra " + kravVirkDatoFom.format() },
                     nynorsk { +"Oversikt over pensjonen frå " + kravVirkDatoFom.format() },
-                    english { +"Pension specifications as of " + kravVirkDatoFom.format() },
                 )
             }
 
@@ -358,9 +307,6 @@ val vedleggMaanedligPensjonFoerSkattAFPOffentlig =
                     },
                     nynorsk {
                         +"Dersom det har vore endringar i nokre av opplysningane som ligg til grunn for utrekninga eller pensjonen har vore regulert, kan det føre til ei endring i kor mykje du får utbetalt. Nedanfor fylgjer ei oversikt over dei månadlege pensjonsbeløpa dine."
-                    },
-                    english {
-                        +"If there have been changes affecting how your pension is calculated in the period or amendments in the National Insurance basic amount, your pension may be adjusted accordingly. Below is a list of your monthly pension payments."
                     },
                 )
             }

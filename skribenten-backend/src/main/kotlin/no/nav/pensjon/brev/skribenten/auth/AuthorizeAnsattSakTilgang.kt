@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.slf4j.LoggerFactory
 
 const val SAKSID_PARAM = "saksId"
@@ -48,41 +47,36 @@ val AuthorizeAnsattSakTilgangForBrev =
         }
     }
 
-private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(call: ApplicationCall, saksId: String) {
+private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(
+    call: ApplicationCall,
+    saksId: String
+) {
     val pdlService = pluginConfig.pdlService
     val penService = pluginConfig.penService
 
-    val ikkeTilgang = penService.hentSak(saksId).map { sak ->
-        call.attributes.put(SakKey, sak)
-        sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
-    }.catch(::AuthAnsattSakTilgangResponse)
+    val sak = penService.hentSak(saksId)
 
-    if (ikkeTilgang != null) {
-        call.respond(ikkeTilgang.status, ikkeTilgang.melding)
+    if (sak != null) {
+        call.attributes.put(SakKey, sak)
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer)
+            ?.saksbehandlerHarTilgangTilGradering()
+            ?: true
+
+        if (!harTilgang) {
+            logger.warn("Tilgang til sak avvist: sak med id $saksId har adressebeskyttelse")
+            call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+        }
+    } else {
+        logger.info("Tilgang til sak avvist: sak med id $saksId ikke funnet")
+        call.respond(status = HttpStatusCode.NotFound, "Sak ikke funnet")
     }
 }
 
-private fun sjekkAdressebeskyttelse(
-    adressebeskyttelse: ServiceResult<List<Pdl.Gradering>>,
-    principal: UserPrincipal,
-): AuthAnsattSakTilgangResponse? =
-    adressebeskyttelse.map { gradering ->
-        val adGrupper = gradering.mapNotNull { it.toADGruppe() }
+private suspend fun List<Pdl.Gradering>.saksbehandlerHarTilgangTilGradering(): Boolean {
+    val principal = PrincipalInContext.require()
 
-        if (adGrupper.any { !principal.isInGroup(it) }) {
-            logger.warn("Tilgang til sak avvist for ${principal.navIdent}: har ikke tilgang til gradering")
-            AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
-        } else null // får tilgang
-    }.catch { _, status ->
-        when (status) {
-            HttpStatusCode.Forbidden -> AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
-            else -> {
-                AuthAnsattSakTilgangResponse("En feil oppstod ved validering av tilgang til sak", HttpStatusCode.InternalServerError)
-            }
-        }
-    }
-
-private data class AuthAnsattSakTilgangResponse(val melding: String, val status: HttpStatusCode)
+    return mapNotNull { it.toADGruppe() }.all { principal.isInGroup(it) }
+}
 
 private fun Pdl.Gradering?.toADGruppe(): ADGroup? =
     when (this) {

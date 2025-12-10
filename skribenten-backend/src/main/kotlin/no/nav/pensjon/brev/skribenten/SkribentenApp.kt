@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
 import no.nav.pensjon.brev.skribenten.services.P1Exception
+import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -145,6 +146,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             when(cause) {
                 is P1Exception.ManglerDataException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
             }
+        }
+        exception<ServiceException> { call, cause ->
+            call.application.log.error(cause.message, cause)
+            call.respond(status = cause.status, message = cause.message)
         }
         exception<Exception> { call, cause ->
             call.application.log.error(cause.message, cause)
