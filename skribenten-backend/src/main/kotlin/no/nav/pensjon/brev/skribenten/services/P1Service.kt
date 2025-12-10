@@ -36,7 +36,7 @@ interface P1Service {
 class P1ServiceImpl(private val penService: PenService) : P1Service {
     private val logger = LoggerFactory.getLogger(P1ServiceImpl::class.java)
 
-    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: Long): P1Data? = transaction {
+    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: Long): P1Data = transaction {
         val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
             P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
