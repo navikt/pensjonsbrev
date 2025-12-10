@@ -73,10 +73,8 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         throw e
     }
 
-    override val name = "Nav Ansatt"
-
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("ping-authenticated").toServiceResult<String>().map { true }
+    override suspend fun ping() =
+        ping("NAV Ansatt") { client.get("ping-authenticated") }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

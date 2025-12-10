@@ -96,9 +96,8 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
         }
     }
 
-    override val name = "SamhandlerService"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        samhandlerProxyClient.get("/api/samhandler/ping").toServiceResult<String>().map { true }
+    override suspend fun ping() =
+        ping("SamhandlerService") { samhandlerProxyClient.get("/api/samhandler/ping") }
 
     private fun lagRequest(requestDto: FinnSamhandlerRequestDto) =
         when (requestDto) {

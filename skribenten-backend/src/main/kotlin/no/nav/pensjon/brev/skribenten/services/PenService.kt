@@ -73,14 +73,6 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         callIdAndOnBehalfOfClient(penScope, authService)
     }
 
-    private suspend fun <R> handlePenErrorResponse(response: HttpResponse): ServiceResult<R> =
-        if (response.status == HttpStatusCode.InternalServerError) {
-            logger.error("En feil oppstod i kall til PEN: ${response.bodyAsText()}")
-            ServiceResult.Error("Ukjent feil oppstod i kall til PEN", HttpStatusCode.InternalServerError)
-        } else {
-            ServiceResult.Error(response.bodyAsText(), response.status)
-        }
-
     private suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T? =
         when {
             status.isSuccess() -> body()
@@ -154,11 +146,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
         client.get("brev/skribenten/avtaleland").bodyOrThrow() ?: emptyList()
 
-    override val name = "PEN"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/pen/actuator/health/readiness")
-            .toServiceResult<String>()
-            .map { true }
+    override suspend fun ping() =
+        ping("PEN") { client.get("/pen/actuator/health/readiness") }
 
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk")

@@ -74,9 +74,8 @@ class BrevmetadataServiceHttp(
         }.body<BrevdataDto>()
     }
 
-    override val name = "Brevmetadata"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
+    override suspend fun ping() =
+        ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }
 
 }
 

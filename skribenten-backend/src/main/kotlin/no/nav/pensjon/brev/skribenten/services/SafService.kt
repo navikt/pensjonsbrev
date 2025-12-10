@@ -173,7 +173,6 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
     private suspend fun hentFoersteDokumentInfoIdFraJournalpost(journalpostId: String): String? =
         getDocumentsInJournal(journalpostId).data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId
 
-    override val name = "SAF"
     override suspend fun ping() =
-        client.options("").toServiceResult<String>().map { true }
+        ping("SAF") { client.options("") }
 }
