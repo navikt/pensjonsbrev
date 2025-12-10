@@ -65,6 +65,7 @@
   z-index: 10;
   background-color: var(--ax-bg-default);
   flex-shrink: 0;
+  min-width: 1200px;
 }
 
 .p1-modal .aksel-tabs__tabpanel {

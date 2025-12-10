@@ -224,7 +224,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           <HStack align="center">
             <BodyShort
               css={css`
-                margin-right: 7rem;
+                margin-right: auto;
               `}
               size="small"
             >
