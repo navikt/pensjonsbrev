@@ -146,7 +146,7 @@ class LatexVisualITest {
     fun `short form text med vspace`() {
         render {
             title1 { text(bokmal { +"Form text short med vspace" }) }
-            paragraph { formText(Size.SHORT, newText(Bokmal to "test"), true) }
+            paragraph { formText(Size.SHORT, { text(bokmal{+"test"}) }, true) }
         }
     }
 
@@ -154,7 +154,7 @@ class LatexVisualITest {
     fun `long form text med vspace`() {
         render {
             title1 { text(bokmal { +"Form text long med vspace" }) }
-            paragraph { formText(Size.LONG, newText(Bokmal to "test"), true) }
+            paragraph { formText(Size.LONG, { text(bokmal{+"test"}) }, true) }
         }
     }
 
@@ -162,7 +162,7 @@ class LatexVisualITest {
     fun `short form text uten vspace`() {
         render {
             title1 { text(bokmal { +"Form text short uten vspace" }) }
-            paragraph { formText(Size.SHORT, newText(Bokmal to "test"), false) }
+            paragraph { formText(Size.SHORT, { text(bokmal{+"test"}) }, false) }
         }
     }
 
@@ -170,7 +170,7 @@ class LatexVisualITest {
     fun `long form text uten vspace`() {
         render {
             title1 { text(bokmal { +"Form text long uten vspace" }) }
-            paragraph { formText(Size.LONG, newText(Bokmal to "test"), false) }
+            paragraph { formText(Size.LONG, { text(bokmal{+"test"}) }, false) }
         }
     }
 

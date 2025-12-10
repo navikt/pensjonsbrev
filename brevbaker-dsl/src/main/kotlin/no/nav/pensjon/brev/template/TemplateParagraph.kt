@@ -70,10 +70,11 @@ sealed interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : Text
             .also { addParagraphContent(it) }
     }
 
-    fun formText(size: Element.OutlineContent.ParagraphContent.Form.Text.Size, prompt: TextElement<Lang>, vspace: Boolean = true) {
-        Element.OutlineContent.ParagraphContent.Form.Text(prompt, size, vspace)
-            .let { Content(it) }
-            .also { addParagraphContent(it) }
+    fun formText(size: Element.OutlineContent.ParagraphContent.Form.Text.Size, prompt: PlainTextOnlyScope<Lang, LetterData>.() -> Unit, vspace: Boolean = true) {
+        PlainTextOnlyScope<Lang, LetterData>().apply(prompt).elements
+            .map { Element.OutlineContent.ParagraphContent.Form.Text(it, size, vspace) }
+            .map { Content(it) }
+            .forEach { addParagraphContent(it) }
     }
 
     fun formChoice(

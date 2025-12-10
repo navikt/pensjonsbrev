@@ -70,11 +70,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
 
     paragraph {
         formText(
-            Size.LONG, newText(
-                Bokmal to "Navn på pleietrengende:",
-                Nynorsk to "Namn på pleietrengande:",
-                English to "I have provided care work for:",
-            )
+            Size.LONG, { text(
+                bokmal { +"Navn på pleietrengende:" },
+                nynorsk { +"Namn på pleietrengande:" },
+                english { +"I have provided care work for:" }
+            ) }
         )
 
         formChoice(
@@ -108,27 +108,29 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
         formText(
             size = Size.SHORT,
             vspace = false,
-            prompt = newText(
-                Bokmal to "Oppgi dato for opphøret:",
-                Nynorsk to "Dato for opphøyr:",
-                English to "State date if ceased:"
-            )
+            prompt = {
+                text (
+                    bokmal { +"Oppgi dato for opphøret:" },
+                    nynorsk { +"Dato for opphøyr:" },
+                    english { +"State date if ceased:" }
+                )
+            }
         )
         formText(
             size = Size.LONG,
             vspace = false,
-            prompt = newText(
-                Bokmal to "Oppgi årsaken til opphøret:",
-                Nynorsk to "Grunnen til opphøyr: ",
-                English to "State reason if ceased"
-            )
+            prompt = { text(
+                bokmal { +"Oppgi årsaken til opphøret:" },
+                nynorsk { +"Grunnen til opphøyr: " },
+                english { +"State reason if ceased" }
+            ) }
         )
 
-        formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
+        formText(size = Size.SHORT, prompt = { text(bokmal { +"Dato:" }, nynorsk { +"Dato:" }, english { +"Date" }) })
         formText(
             size = Size.LONG,
             vspace = false,
-            prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
+            prompt = { text(bokmal { +"Underskrift:" }, nynorsk { +"Underskrift:" }, english { +"Signature:" }) }
         )
     }
 
