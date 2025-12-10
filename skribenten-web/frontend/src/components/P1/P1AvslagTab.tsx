@@ -29,6 +29,7 @@ export const P1AvslagTab = () => {
       errors.avslaattePensjoner?.[index]?.institusjon?.land ||
       errors.avslaattePensjoner?.[index]?.institusjon?.institusjonsnavn ||
       errors.avslaattePensjoner?.[index]?.institusjon?.pin ||
+      errors.avslaattePensjoner?.[index]?.institusjon?.saksnummer ||
       errors.avslaattePensjoner?.[index]?.institusjon?.vedtaksdato
     );
 
@@ -99,9 +100,18 @@ export const P1AvslagTab = () => {
                 />
                 <TextField
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.pin?.message}
-                  label="PIN/saksnummer"
+                  label="PIN"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.pin` as const)}
+                  css={css`
+                    margin-bottom: 0.5rem;
+                  `}
+                />
+                <TextField
+                  error={errors.avslaattePensjoner?.[index]?.institusjon?.saksnummer?.message}
+                  label="Saksnummer"
+                  size="small"
+                  {...register(`avslaattePensjoner.${index}.institusjon.saksnummer` as const)}
                   css={css`
                     margin-bottom: 0.5rem;
                   `}

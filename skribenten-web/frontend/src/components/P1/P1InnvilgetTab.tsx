@@ -28,6 +28,7 @@ export const P1InnvilgetTab = () => {
       errors.innvilgedePensjoner?.[index]?.institusjon?.land ||
       errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn ||
       errors.innvilgedePensjoner?.[index]?.institusjon?.pin ||
+      errors.innvilgedePensjoner?.[index]?.institusjon?.saksnummer ||
       errors.innvilgedePensjoner?.[index]?.institusjon?.vedtaksdato
     );
 
@@ -116,9 +117,18 @@ export const P1InnvilgetTab = () => {
                 />
                 <TextField
                   error={errors.innvilgedePensjoner?.[index]?.institusjon?.pin?.message}
-                  label="PIN/saksnummer"
+                  label="PIN"
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.institusjon.pin` as const)}
+                  css={css`
+                    margin-bottom: 0.5rem;
+                  `}
+                />
+                <TextField
+                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.saksnummer?.message}
+                  label="Saksnummer"
+                  size="small"
+                  {...register(`innvilgedePensjoner.${index}.institusjon.saksnummer` as const)}
                   css={css`
                     margin-bottom: 0.5rem;
                   `}
