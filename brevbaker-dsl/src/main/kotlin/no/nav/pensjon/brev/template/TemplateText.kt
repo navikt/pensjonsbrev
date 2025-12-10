@@ -94,10 +94,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     addTextContent(Content(createTextContent(lang1, lang2, lang3, fontType)))
 }
 
-// PlainTextScope.text()
-//
-//
-
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
     lang1: Pair<Lang1, LiteralOrExpression>,
 ) {
