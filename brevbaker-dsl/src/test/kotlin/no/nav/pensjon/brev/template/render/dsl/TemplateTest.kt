@@ -195,7 +195,7 @@ class TemplateTest {
     fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
             formChoice({ text( bokmal {+"hei"}) }) {
-                choice(Language.Bokmal to "velg denne")
+                choice(bokmal{+ "velg denne"})
             }
         }.elements.first()
 

@@ -70,7 +70,7 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 }
                 formText(size = Size.LONG, { text(bokmal { +"Formtittel1" }, nynorsk { +"Formtittel1" }) })
                 formChoice({text(bokmal{+"Formtittel2"}, nynorsk{+"Formtittel 2"})}) {
-                    choice(Bokmal to "Valg1", Nynorsk to "Valg1")
+                    choice(bokmal{+"Valg1"}, nynorsk{+"Valg1"})
                 }
             }
 

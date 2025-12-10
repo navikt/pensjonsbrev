@@ -85,14 +85,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
             ) }
         ) {
             choice(
-                Bokmal to "minst seks måneder",
-                Nynorsk to "minst seks månader",
-                English to "at least six months"
+                bokmal { +"minst seks måneder" },
+                nynorsk { +"minst seks månader" },
+                english { +"at least six months" }
             )
             choice(
-                Bokmal to "under seks måneder",
-                Nynorsk to "under seks månader",
-                English to "less than six months"
+                bokmal { +"under seks måneder" },
+                nynorsk { +"under seks månader" },
+                english { +"less than six months" }
             )
         }
     }
