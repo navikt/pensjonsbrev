@@ -158,7 +158,7 @@ object MottakerTable : IdTable<Long>() {
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<String?> = varchar("navn", 128).nullable()
-    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
     val poststed: Column<String?> = varchar("poststed", 50).nullable()
     val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
     val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
@@ -176,7 +176,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var type by MottakerTable.type
     var tssId by MottakerTable.tssId
     var navn by MottakerTable.navn
-    var postnummer by MottakerTable.postnummer.wrap(::NorskPostnummer, NorskPostnummer::value)
+    var postnummer by MottakerTable.postnummer
     var poststed by MottakerTable.poststed
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2
