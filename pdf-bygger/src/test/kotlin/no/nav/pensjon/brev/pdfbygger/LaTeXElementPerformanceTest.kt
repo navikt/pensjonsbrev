@@ -19,50 +19,52 @@ import kotlin.time.DurationUnit
 import kotlin.time.measureTime
 import kotlin.time.toDuration
 
+private const val WARMUP_RUNS = 5
+private const val NUMBER_OF_SAMPLES = 5
+private const val ELEMENT_COUNT = 5
 
 // Brukes for å måle hvordan ulike typer innholds-elementer påvirker kompilerings-tiden
-@Tag(TestTags.INTEGRATION_TEST)
+@Tag(TestTags.MANUAL_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LaTeXElementPerformanceTest {
 
     val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
 
-    private data class TimingResult(val elementType: ElementType, val time: Duration, val count: Int) {
-
-    }
+    private data class TimingResult(val elementType: ElementType, val time: Duration, val count: Int)
 
     @Test
     fun performanceTest() {
 
-        // warmup the application
-
-        repeat(5) { timedRender(BLANK, 0) }
+        // warmup the application to get to a consistent performance
+        repeat(WARMUP_RUNS) { timedRender(BLANK, 0) }
 
         val results = mutableListOf<TimingResult>()
-        val dataPointsPerType = 5
+        val dataPointsPerType = NUMBER_OF_SAMPLES
 
         repeat(dataPointsPerType) {
             entries.forEach { elementType ->
                 results.add(
                     TimingResult(
                         elementType = elementType,
-                        time = timedRender(elementType, 100),
-                        count = 100
+                        time = timedRender(elementType, ELEMENT_COUNT),
+                        count = ELEMENT_COUNT
                     )
                 )
             }
         }
 
         val (baseline, other) = results.partition { it.elementType == BLANK }
-        val baselineTime = baseline.averaged().first()
+        val baselineTime = baseline.averaged().first().time
+
+        println("Ytelse for blankt dokument var: ${baselineTime.toIsoString()}")
 
         other.averaged().forEach {
             println(
                 """Ytelse for element med type ${it.elementType.name}
                     | Count: ${it.count}
                     | Time: ${it.time.toIsoString()}
-                    | Time over baseline: ${baselineTime.time.minus(it.time).toIsoString()}
+                    | Time over baseline: ${baselineTime.minus(it.time).toIsoString()}
                 """.trimMargin()
             )
         }
@@ -86,7 +88,7 @@ class LaTeXElementPerformanceTest {
 
     private fun timedRender(elementType: ElementType, count: Int) =
         measureTime {
-            render {
+            render(overrideName = "timing_${elementType.name}_$count") {
                 letterWithElementAndCount(elementType, count)
             }
         }
