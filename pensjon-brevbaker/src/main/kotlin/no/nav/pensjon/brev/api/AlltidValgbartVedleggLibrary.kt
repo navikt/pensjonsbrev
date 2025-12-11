@@ -11,5 +11,5 @@ class AlltidValgbartVedleggLibrary(vedlegg: Set<AlltidValgbartVedlegg<*>>) {
     fun getVedlegg(koder: List<AlltidValgbartVedleggKode>, felles: Felles) = koder.map { getVedlegg(it, felles) }
 
     private fun getVedlegg(kode: AlltidValgbartVedleggKode, felles: Felles) =
-        vedlegg[kode.kode()]?.asIncludeAttachment(felles) ?: throw NotFoundException("Vedlegg '$kode' doesn't exist")
+        vedlegg[kode.kode()]?.asIncludeAttachment() ?: throw NotFoundException("Vedlegg '$kode' doesn't exist")
 }

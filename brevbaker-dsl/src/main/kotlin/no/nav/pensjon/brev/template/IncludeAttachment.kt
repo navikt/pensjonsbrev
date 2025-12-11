@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.FellesVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
-import no.nav.pensjon.brevbaker.api.model.Felles
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
@@ -57,10 +57,10 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggDat
 }
 
 class AlltidValgbartVedlegg<out Lang : LanguageSupport>(
-    val vedlegg: AttachmentTemplate<Lang, FellesVedleggData>,
+    val vedlegg: AttachmentTemplate<Lang, EmptyVedleggData>,
     val kode: AlltidValgbartVedleggKode
 ) : HasModel<FellesVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode())) {
-    fun asIncludeAttachment(felles: Felles) = IncludeAttachment(FellesVedleggData(felles).expr(), vedlegg)
+    fun asIncludeAttachment() = IncludeAttachment(EmptyVedleggData.expr(), vedlegg)
     override fun equals(other: Any?): Boolean {
         if (other !is AlltidValgbartVedlegg<*>) return false
         return vedlegg == other.vedlegg && kode == other.kode
