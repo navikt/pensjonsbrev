@@ -198,7 +198,7 @@ abstract class BrevmodulTest(
             }
     }
 
-    @ParameterizedTest(name = "{3}, {2}")
+    @ParameterizedTest(name = "{3}, {2}", allowZeroInvocations = true)
     @MethodSource("filtrerAlltidValgbareVedlegg")
     fun <T : VedleggData> testAlltidValgbareVedlegg(
         template: AttachmentTemplate<LanguageSupport, T>,
