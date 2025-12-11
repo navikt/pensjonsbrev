@@ -605,7 +605,7 @@ class BrevredigeringService(
             type = mottaker.type
             tssId = mottaker.tssId
             navn = mottaker.navn
-            postnummer = mottaker.postnummer
+            postnummer = mottaker.postnummer?.also { it.valider() }
             poststed = mottaker.poststed
             adresselinje1 = mottaker.adresselinje1
             adresselinje2 = mottaker.adresselinje2
