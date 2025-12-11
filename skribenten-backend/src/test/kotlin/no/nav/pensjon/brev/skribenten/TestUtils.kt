@@ -17,9 +17,6 @@ import org.assertj.core.api.AbstractAssert
 import java.time.LocalDate
 import java.util.function.Consumer
 
-inline fun <reified T> AbstractAssert<*, *>.isInstanceOfSatisfying(block: Consumer<T>) =
-    isInstanceOfSatisfying(T::class.java, block)!!
-
 data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
     override val accessToken: UserAccessToken
         get() = throw NotImplementedError("Not implemented in mock class")
