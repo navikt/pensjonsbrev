@@ -1,4 +1,4 @@
-import { Alert, BoxNew, Button, HStack, Select, TextField, VStack } from "@navikt/ds-react";
+import { Alert, Button, HStack, Select, TextField, VStack } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller, useWatch } from "react-hook-form";

@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { BodyShort } from "@navikt/ds-react";
 
 import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
@@ -23,7 +24,8 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
     }
     case VARIABLE: {
       return (
-        <span
+        <BodyShort
+          as="span"
           css={css`
             border-radius: var(--ax-radius-4);
             outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral)"};
@@ -45,7 +47,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
           }}
         >
           {content.text}
-        </span>
+        </BodyShort>
       );
     }
   }

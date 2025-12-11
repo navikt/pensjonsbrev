@@ -1,6 +1,6 @@
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { PencilIcon } from "@navikt/aksel-icons";
-import { BoxNew, Button, HStack, Table, VStack } from "@navikt/ds-react";
+import { Button, HStack, Table, VStack } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 
 import { ApiError } from "~/components/ApiError";
