@@ -115,18 +115,6 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
             )
         }
-
-        post<Api.OpprettPDFRequest>("/{brevId}/pdf") { request ->
-            val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[SakKey]
-
-            brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId, request.alltidValgbareVedlegg)
-                ?.onOk { call.respond(it) }
-                ?.onError { message, _ -> call.respond(HttpStatusCode.InternalServerError, message) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
-        }
-
-        // TODO: Slett når frontend har starta å bruke post-varianten
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]

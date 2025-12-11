@@ -342,7 +342,6 @@ class BrevredigeringServiceTest {
                 brevredigeringService.hentEllerOpprettPdf(
                     saksId = sak1.saksId + 1,
                     brevId = brev.info.id,
-                    alltidValgbareVedlegg = listOf()
                 )
             ).isNull()
 
@@ -350,7 +349,6 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(
                 saksId = sak1.saksId,
                 brevId = brev.info.id,
-                alltidValgbareVedlegg = listOf()
             )
             assertThat(
                 brevredigeringService.sendBrev(
@@ -602,7 +600,7 @@ class BrevredigeringServiceTest {
 
         assertThat(
             withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+                brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
             }
         ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
 
@@ -619,7 +617,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
         transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
 
@@ -640,7 +638,6 @@ class BrevredigeringServiceTest {
                     brevredigeringService.hentEllerOpprettPdf(
                         sak1.saksId,
                         brev.info.id,
-                        listOf()
                     )
                 }
             }
@@ -655,11 +652,11 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
             val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
             transaction { Brevredigering[brev.info.id].document.first().delete() }
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
             val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
             assertThat(firstHash).isEqualTo(secondHash)
@@ -671,7 +668,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
@@ -680,7 +677,7 @@ class BrevredigeringServiceTest {
                 letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
         val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
@@ -692,7 +689,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            val response = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val response = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
             assertThat(response).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
         }
     }
@@ -703,7 +700,7 @@ class BrevredigeringServiceTest {
         stagePdf("min første pdf".encodeToByteArray())
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
                 Brevredigering[brev.info.id].redigertBrev =
@@ -711,7 +708,7 @@ class BrevredigeringServiceTest {
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
-            val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             assertThat(pdf).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
         }
@@ -722,11 +719,11 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             stagePdf("min andre pdf".encodeToByteArray())
             penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             assertThat(first).isNotEqualTo(second)
             assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
@@ -738,7 +735,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             stagePdf("min andre pdf".encodeToByteArray())
             brevbakerService.renderMarkupResultat = {
@@ -750,7 +747,7 @@ class BrevredigeringServiceTest {
             }
             penService.pesysBrevdata =
                 brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             assertThat(first).isNotEqualTo(second)
             assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
@@ -762,14 +759,14 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             stagePdf("min andre pdf".encodeToByteArray())
             penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.copy(
                 dokumentDato = LocalDate.now().plusDays(2),
                 saksnummer = sak1.saksId.toString(),
             ))
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             assertThat(brevbakerService.renderPdfKall.last().sakspart.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
             assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
@@ -781,10 +778,10 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             stagePdf("min andre pdf".encodeToByteArray())
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             assertThat(first).isEqualTo(second)
         }
@@ -810,7 +807,7 @@ class BrevredigeringServiceTest {
                 laastForRedigering = true,
                 distribusjonstype = SENTRALPRINT
             )
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())!!
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
         }
         assertThat(attesteringsResultat?.info?.attestertAv).isEqualTo(attestantPrincipal.navIdent)
@@ -834,7 +831,7 @@ class BrevredigeringServiceTest {
                 laastForRedigering = true,
                 distribusjonstype = SENTRALPRINT
             )
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())!!
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             assertThrows<HarIkkeAttestantrolleException> {
                 brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
             }
@@ -851,7 +848,7 @@ class BrevredigeringServiceTest {
             vedtaksId = 1,
         )
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             brevredigeringService.delvisOppdaterBrev(
                 brev.info.saksId,
                 brev.info.id,
@@ -885,7 +882,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(attestantPrincipal) {
             brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             assertThat(brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)).isEqualTo(bestillBrevresponse)
         }
         assertEquals(brevbakerService.renderPdfKall.first().signatur.attesterendeSaksbehandlerNavn, attestantPrincipal.fullName)
@@ -909,7 +906,7 @@ class BrevredigeringServiceTest {
                 laastForRedigering = true,
                 distribusjonstype = SENTRALPRINT
             )
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())!!
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
 
@@ -945,7 +942,7 @@ class BrevredigeringServiceTest {
                 laastForRedigering = true,
                 distribusjonstype = Distribusjonstype.LOKALPRINT,
             )
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())!!
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
 
@@ -1071,7 +1068,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id, listOf())
+            val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             assertThat(pdf).isNotNull()
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
@@ -1146,7 +1143,7 @@ class BrevredigeringServiceTest {
     fun `kan ikke sende brev som ikke er markert klar til sending`(): Unit = runBlocking {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
         }
 
         assertThrows<BrevIkkeKlartTilSendingException> {
@@ -1160,7 +1157,7 @@ class BrevredigeringServiceTest {
             val brev = opprettBrev()
 
             withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id, listOf())
+                brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
                 brevredigeringService.oppdaterSignatur(brev.info.id, "en ny signatur")
                 brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
             }
@@ -1183,7 +1180,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id, listOf())
+            val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             assertThat(pdf).isNotNull()
         }
 
@@ -1363,7 +1360,7 @@ class BrevredigeringServiceTest {
         val mottaker = Dto.Mottaker.samhandler("987")
         val brev = opprettBrev(mottaker = mottaker)
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id, listOf())
+            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
 
