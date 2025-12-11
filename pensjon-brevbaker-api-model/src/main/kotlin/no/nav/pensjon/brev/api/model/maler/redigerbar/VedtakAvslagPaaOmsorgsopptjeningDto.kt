@@ -29,6 +29,7 @@ data class VedtakAvslagPaaOmsorgsopptjeningDto(
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
+        val navEnhet: String,
         val omsorgGodskrevetAar: List<String>,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ) : FagsystemBrevdata
