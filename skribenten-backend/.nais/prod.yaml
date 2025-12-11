@@ -65,6 +65,7 @@ externalHosts:
   - pensjon-samhandler-proxy.prod-fss-pub.nais.io
   - teampensjon-unleash-api.nav.cloud.nais.io
   - norg2.intern.nav.no
+  - pensjon-representasjon.intern.nav.no
 
 env:
   - name: CORS_ALLOW_HOST
@@ -108,7 +109,7 @@ env:
   - name: PENSJON_REPRESENTASJON_URL
     value: "https://pensjon-representasjon.intern.nav.no"
   - name: PENSJON_REPRESENTASJON_SCOPE
-    value: "api://prod-gcp.pensjon-person.pensjon-representasjon/.default"
+    value: "api://prod-fss.pensjon-person.pensjon-representasjon/.default"
 
   - name: NAVANSATT_URL
     value: "https://navansatt.prod-fss-pub.nais.io/"
