@@ -110,9 +110,6 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
         }
     }
 
-    override val name = "KRR"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/internal/health/readiness")
-            .toServiceResult<String>()
-            .map { true }
+    override suspend fun ping() =
+        ping("KRR") { client.get("/internal/health/readiness") }
 }

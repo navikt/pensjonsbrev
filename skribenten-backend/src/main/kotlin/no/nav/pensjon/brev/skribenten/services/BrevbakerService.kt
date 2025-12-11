@@ -85,7 +85,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         val response = client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification")
 
         return when (response.status) {
-            HttpStatusCode.OK -> return response.body()
+            HttpStatusCode.OK -> response.body()
             HttpStatusCode.NotFound -> null
             else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }
@@ -183,11 +183,6 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override val name = "Brevbaker"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/ping_authorized")
-            .toServiceResult<String>()
-            .map { true }
-
+    override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") }
 }
 

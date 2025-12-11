@@ -25,8 +25,9 @@ open class AuthorizeAnsattSakTilgangConfiguration {
 val AuthorizeAnsattSakTilgang =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
         on(PrincipalInContext.Hook) { call ->
-            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+            if (call.isHandled) return@on
 
+            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
             validerTilgangTilSak(call, saksId)
         }
     }
