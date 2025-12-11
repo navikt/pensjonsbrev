@@ -150,7 +150,7 @@ fun Api.OverstyrtMottaker.toDto() =
         is Api.OverstyrtMottaker.Samhandler -> samhandler(tssId)
         is Api.OverstyrtMottaker.NorskAdresse -> norskAdresse(
             navn = navn,
-            postnummer = postnummer.also { postnummer.valider() },
+            postnummer = postnummer.also { it.valider() },
             poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
