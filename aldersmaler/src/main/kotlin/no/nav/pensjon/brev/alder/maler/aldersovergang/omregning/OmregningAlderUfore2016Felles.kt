@@ -167,7 +167,7 @@ data class OmregningAlderUfore2016Felles(
             }
         }
         ifNotNull(avdodNavn) { avdodNavn ->
-            showIf(gjenlevenderettAnvendt and avdodFnr.notNull()) {
+            showIf(gjenlevenderettAnvendt.not() and avdodFnr.notNull()) {
                 title2 {
                     text(
                         bokmal { +"Gjenlevenderett i alderspensjon" },
@@ -325,21 +325,19 @@ data class OmregningAlderUfore2016Felles(
                         nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " " },
                         english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " " }
                     )
-                }
-                ifNotNull(over2G) { over2G ->
-                    showIf(over2G) {
-                        paragraph {
-                            text(
-                                bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon." },
-                                nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon." },
-                                english { +"has an income of over " + kronebelop2G.format() + " or their own pension." })
-                        }
-                    }.orShow {
-                        paragraph {
-                            text(
-                                bokmal { +"har ikke egen pensjon og heller ikke inntekt over  " + kronebelop2G.format() + "." },
-                                nynorsk { +"har ikkje eigen pensjon og heller ikkje inntekt over " + kronebelop2G.format() + "." },
-                                english { +"does not have their own pension nor an income of over " + kronebelop2G.format() + "." })
+                    ifNotNull(over2G) { over2G ->
+                        showIf(over2G) {
+                                text(
+                                    bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon." },
+                                    nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon." },
+                                    english { +"has an income of over " + kronebelop2G.format() + " or their own pension." })
+
+                        }.orShow {
+                                text(
+                                    bokmal { +"har ikke egen pensjon og heller ikke inntekt over  " + kronebelop2G.format() + "." },
+                                    nynorsk { +"har ikkje eigen pensjon og heller ikkje inntekt over " + kronebelop2G.format() + "." },
+                                    english { +"does not have their own pension nor an income of over " + kronebelop2G.format() + "." })
+
                         }
                     }
                 }
