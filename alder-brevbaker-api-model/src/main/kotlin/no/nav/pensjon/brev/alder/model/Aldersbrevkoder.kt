@@ -55,7 +55,8 @@ object Aldersbrevkoder {
     }
 
     enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
-        SKJEMA_FOR_BANKOPPLYSNINGER
+        SKJEMA_FOR_BANKOPPLYSNINGER,
+        UTTAKSSKJEMA
         ;
 
         override fun kode() = name
