@@ -24,7 +24,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
 
 
     fun createLetter(brevbestilling: BestillBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-    with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
+        with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
 
     fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
         with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
