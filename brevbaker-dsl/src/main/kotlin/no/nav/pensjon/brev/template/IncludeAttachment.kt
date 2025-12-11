@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.api.model.maler.FellesVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
@@ -59,7 +58,7 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggDat
 class AlltidValgbartVedlegg<out Lang : LanguageSupport>(
     val vedlegg: AttachmentTemplate<Lang, EmptyVedleggData>,
     val kode: AlltidValgbartVedleggKode
-) : HasModel<FellesVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode())) {
+) : HasModel<EmptyVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode())) {
     fun asIncludeAttachment() = IncludeAttachment(EmptyVedleggData.expr(), vedlegg)
     override fun equals(other: Any?): Boolean {
         if (other !is AlltidValgbartVedlegg<*>) return false

@@ -16,3 +16,5 @@ interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 interface FagsystemBrevdata
 
 interface SaksbehandlerValgBrevdata
+
+interface VedleggData
