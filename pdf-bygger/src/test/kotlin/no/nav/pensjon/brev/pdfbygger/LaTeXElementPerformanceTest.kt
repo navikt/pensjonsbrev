@@ -39,17 +39,12 @@ class LaTeXElementPerformanceTest {
         // warmup the application to get to a consistent performance
         repeat(WARMUP_RUNS) { timedRender(BLANK, 0) }
 
-        val results = mutableListOf<TimingResult>()
-        val dataPointsPerType = NUMBER_OF_SAMPLES
-
-        repeat(dataPointsPerType) {
-            entries.forEach { elementType ->
-                results.add(
-                    TimingResult(
-                        elementType = elementType,
-                        time = timedRender(elementType, ELEMENT_COUNT),
-                        count = ELEMENT_COUNT
-                    )
+        val results = (0..NUMBER_OF_SAMPLES).flatMap {
+            ElementType.entries.map { elementType ->
+                TimingResult(
+                    elementType = elementType,
+                    time = timedRender(elementType, ELEMENT_COUNT),
+                    count = ELEMENT_COUNT
                 )
             }
         }
@@ -68,8 +63,6 @@ class LaTeXElementPerformanceTest {
                 """.trimMargin()
             )
         }
-
-
     }
 
     private fun List<TimingResult>.averaged(): List<TimingResult> =
