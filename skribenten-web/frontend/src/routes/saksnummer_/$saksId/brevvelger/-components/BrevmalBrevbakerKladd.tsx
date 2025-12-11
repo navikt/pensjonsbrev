@@ -114,7 +114,7 @@ const Brevmal = (props: {
               sakId={props.saksId}
             />
           )}
-          <VStack gap="space-8">
+          <VStack align="start" gap="space-8">
             <Heading size="small">{props.brev.brevtittel}</Heading>
             {props.letterMetadata ? (
               <LetterTemplateTags letterTemplate={props.letterMetadata} />

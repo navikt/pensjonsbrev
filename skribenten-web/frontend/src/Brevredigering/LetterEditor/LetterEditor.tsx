@@ -1,7 +1,7 @@
 import "./editor.css";
 
 import { css } from "@emotion/react";
-import { Box, BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { BoxNew, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";

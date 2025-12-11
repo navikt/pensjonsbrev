@@ -1,5 +1,5 @@
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Box, BoxNew, CopyButton, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, BoxNew, CopyButton, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
@@ -48,7 +48,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             <Heading level="2" size="small">
               {tittel ?? title}
             </Heading>
-            {melding && <Box marginBlock="space-4 0">{melding}</Box>}
+            {melding && <BoxNew marginBlock="space-4 0">{melding}</BoxNew>}
           </Alert>
         </HStack>
       );
@@ -72,7 +72,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                 </div>
                 <BoxNew asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">
                   <HGrid align="center" columns="auto max-content" paddingInline="space-8 0">
-                    <BodyShort truncate>{correlationId + "aksdjflka sdlkja sdlkj alkjsad lfkaj"}</BodyShort>
+                    <BodyShort truncate>{correlationId}</BodyShort>
                     <BoxNew asChild borderRadius="4">
                       <CopyButton
                         copyText={correlationId}

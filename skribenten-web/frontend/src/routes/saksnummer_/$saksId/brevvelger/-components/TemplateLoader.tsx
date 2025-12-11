@@ -27,7 +27,7 @@ export const TemplateLoader = (props: {
   const preferredLanguage = useQuery(getPreferredLanguageQuery(props.saksId.toString()))?.data?.spraakKode ?? null;
 
   return (
-    <VStack gap="space-16">
+    <VStack align="start" gap="space-16">
       <FavoriteButton onAddFavorittSuccess={props.onAddFavorittSuccess} templateId={props.templateId} />
       <Brevmal
         enhetsId={props.enhetsId}

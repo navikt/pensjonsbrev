@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 

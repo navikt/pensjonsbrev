@@ -50,12 +50,10 @@ const VedtakWrapper = () => {
     initial: () => null,
     pending: () => (
       <BoxNew asChild background="default" paddingBlock="space-32 0">
-        <HStack flexGrow="1" justify="center">
-          <VStack align="center" gap="space-4">
-            <Loader size="3xlarge" title="henter brev..." />
-            <Heading size="large">Henter brev....</Heading>
-          </VStack>
-        </HStack>
+        <VStack align="center" flexGrow="1" gap="space-4" justify="center">
+          <Loader size="3xlarge" title="henter brev..." />
+          <Heading size="large">Henter brev....</Heading>
+        </VStack>
       </BoxNew>
     ),
     error: (err) => {
@@ -75,7 +73,7 @@ const VedtakWrapper = () => {
         );
       }
 
-      if (err.response?.status === 404) {
+      if (err.response?.status === 409) {
         return <ArkivertBrev saksId={saksId} />;
       }
 

@@ -116,8 +116,8 @@ const BrevvelgerMainContent = (props: {
   );
 
   return (
-    <BoxNew background="default" height="calc(var(--main-page-content-height)">
-      <HStack height="100%">
+    <BoxNew asChild height="calc(var(--main-page-content-height)">
+      <HStack>
         {/* Brevmal-liste */}
         <BoxNew
           asChild
@@ -260,6 +260,7 @@ function Brevmaler({
                   >
                     <Label size="small">{type}</Label>
                   </Accordion.Header>
+                  {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
                   <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
                     <VStack>
                       {brevmalerGroupedByType[type].map((template) => (

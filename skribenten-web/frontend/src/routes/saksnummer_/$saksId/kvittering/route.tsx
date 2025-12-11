@@ -57,10 +57,9 @@ function Kvittering() {
         </BoxNew>
         <VerticalDivider />
         <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
-          <VStack gap="space-16">
+          <VStack align="start" gap="space-16">
             <Heading size="medium">Hva vil du gjøre nå?</Heading>
             <Button
-              css={{ width: "fit-content" }}
               onClick={() => navigate({ to: "/saksnummer", search: { enhetsId } })}
               size="small"
               type="button"
@@ -69,7 +68,6 @@ function Kvittering() {
               Åpne annen sak
             </Button>
             <Button
-              css={{ width: "fit-content" }}
               onClick={() =>
                 navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId }, search: { enhetsId, vedtaksId } })
               }
@@ -80,7 +78,6 @@ function Kvittering() {
               Lage nytt brev på denne saken
             </Button>
             <Button
-              css={{ width: "fit-content" }}
               onClick={() =>
                 navigate({
                   to: "/saksnummer/$saksId/brevbehandler",

@@ -1,6 +1,6 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { Box, HStack, VStack } from "@navikt/ds-react";
+import { BoxNew, HStack, VStack } from "@navikt/ds-react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
@@ -9,9 +9,9 @@ const Saksbehandler = ({ navn }: { navn?: string }) => {
     return <></>;
   }
   return (
-    <Box data-cy="brev-editor-saksbehandler" flexGrow="1" marginBlock="0 space-24">
+    <BoxNew data-cy="brev-editor-saksbehandler" flexGrow="1" marginBlock="0 space-24">
       {navn}
-    </Box>
+    </BoxNew>
   );
 };
 

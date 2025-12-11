@@ -24,7 +24,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
 
   return (
     <VStack gap="space-24">
-      <VStack gap="space-24">
+      <VStack align="start" gap="space-24">
         <Controller
           control={properties.control}
           name="finnSamhandler.søketype"
@@ -54,15 +54,9 @@ const SøkOgVelgSamhandlerForm = (properties: {
       </VStack>
 
       {watchedSøketype && (
-        <BoxNew asChild width="fit-content">
-          <Button
-            data-cy="endre-mottaker-søk-button"
-            loading={properties.onFinnSamhandlerSubmit.isPending}
-            size="small"
-          >
-            Søk
-          </Button>
-        </BoxNew>
+        <Button data-cy="endre-mottaker-søk-button" loading={properties.onFinnSamhandlerSubmit.isPending} size="small">
+          Søk
+        </Button>
       )}
 
       {properties.onFinnSamhandlerSubmit.isSuccess && (

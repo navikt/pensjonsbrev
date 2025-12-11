@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { ArrowCirclepathReverseIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
@@ -34,7 +33,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
-import TilbakestillMalModal from "~/components/TilbakestillBrev";
+import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
@@ -272,17 +271,7 @@ function RedigerBrev({
   return (
     <FormProvider {...form}>
       <BoxNew asChild background="default" maxWidth="1106px" minWidth="945px">
-        <VStack
-          asChild
-          css={css`
-            align-self: center;
-
-            @media (width <= 1023px) {
-              align-self: start;
-            }
-          `}
-          flexGrow="1"
-        >
+        <VStack asChild flexGrow="1" marginInline="auto">
           <form onSubmit={guardedSubmit}>
             <WarnModal
               count={warn?.count ?? 0}
@@ -307,30 +296,23 @@ function RedigerBrev({
                 åpen={vilTilbakestilleMal}
               />
             )}
-            <HGrid
-              columns="minmax(304px, 384px) minmax(640px, 694px)"
-              css={css`
-                > :first-of-type {
-                  padding: var(--ax-space-24);
-                  border-right: 1px solid var(--ax-border-neutral-subtle);
-                  height: var(--main-page-content-height);
-                  overflow-y: auto;
-                }
-
-                @media (width <= 1024px) {
-                  > :first-of-type {
-                    padding: var(--ax-space-12);
-                  }
-                }
-              `}
-            >
-              <VStack gap="space-12">
-                <Heading size="small" spacing>
-                  {brevmal.data?.name}
-                </Heading>
-                <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
-                <UnderskriftTextField of="Saksbehandler" />
-              </VStack>
+            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)">
+              <BoxNew
+                asChild
+                borderColor="neutral-subtle"
+                borderWidth="0 1 0 0"
+                height="var(--main-page-content-height)"
+                overflowY="auto"
+                padding={{ sm: "space-12", lg: "space-24" }}
+              >
+                <VStack gap="space-12">
+                  <Heading size="small" spacing>
+                    {brevmal.data?.name}
+                  </Heading>
+                  <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+                  <UnderskriftTextField of="Saksbehandler" />
+                </VStack>
+              </BoxNew>
               <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
             </HGrid>
             <BoxNew
@@ -396,16 +378,6 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 
-  const panelStyle = css`
-    /* stylelint-disable-next-line nesting-selector-no-missing-scoping-root */
-    &[data-state="active"] {
-      display: flex;
-    }
-    flex-direction: column;
-    gap: var(--ax-space-20);
-    margin-top: var(--ax-space-20);
-  `;
-
   if (!hasOptional && !hasRequired) {
     return (
       <SaksbehandlerValgModelEditor
@@ -447,45 +419,32 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
   const defaultTab = BrevSidemenyTabs.TEKSTVALG;
 
   return (
-    <Tabs
-      css={css`
-        width: 100%;
-
-        .aksel-tabs__scroll-button {
-          /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
-          display: none;
-        }
-      `}
-      defaultValue={defaultTab}
-      fill
-      size="small"
-    >
-      <Tabs.List
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-        `}
-      >
+    <Tabs defaultValue={defaultTab} fill size="small">
+      <Tabs.List>
         <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
         <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
       </Tabs.List>
 
-      <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.TEKSTVALG}>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="optional"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
+      <Tabs.Panel value={BrevSidemenyTabs.TEKSTVALG}>
+        <BoxNew marginBlock="space-20 0">
+          <SaksbehandlerValgModelEditor
+            brevkode={brev.info.brevkode}
+            fieldsToRender="optional"
+            specificationFormElements={specificationFormElements}
+            submitOnChange={submitOnChange}
+          />
+        </BoxNew>
       </Tabs.Panel>
 
-      <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.OVERSTYRING}>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="required"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
+      <Tabs.Panel value={BrevSidemenyTabs.OVERSTYRING}>
+        <BoxNew marginBlock="space-20 0">
+          <SaksbehandlerValgModelEditor
+            brevkode={brev.info.brevkode}
+            fieldsToRender="required"
+            specificationFormElements={specificationFormElements}
+            submitOnChange={submitOnChange}
+          />
+        </BoxNew>
       </Tabs.Panel>
     </Tabs>
   );

@@ -12,11 +12,9 @@ import { humanizeName } from "~/utils/stringUtils";
 
 const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
   return (
-    <BoxNew asChild width="fit-content">
-      <Button icon={properties.icon} onClick={properties.onClick} size="small" type="button" variant="tertiary">
-        {properties.text}
-      </Button>
-    </BoxNew>
+    <Button icon={properties.icon} onClick={properties.onClick} size="small" type="button" variant="tertiary">
+      {properties.text}
+    </Button>
   );
 };
 
@@ -35,7 +33,9 @@ const OppsummeringAvValgtMottaker = (properties: {
   return (
     <VStack gap="space-16">
       {properties.onTilbake.plassering === "top" && (
-        <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
+        <HStack justify="start">
+          <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
+        </HStack>
       )}
       <OppsummeringAvAdresse adresse={properties.adresse} type={properties.samhandlerType} />
       {properties.onTilbake.plassering === "bottom" && (

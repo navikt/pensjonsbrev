@@ -68,9 +68,9 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     query: hentPdfQuery,
     initial: () => <></>,
     pending: () => (
-      <VStack align="center" justify="center">
-        <Loader size="3xlarge" title="Henter brev..." />
-        <Label>Henter brev...</Label>
+      <VStack align="center" gap="space-4" justify="center">
+        <Loader size="3xlarge" title="henter brev..." />
+        <Heading size="large">Henter brev....</Heading>
       </VStack>
     ),
     error: () => (
