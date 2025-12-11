@@ -105,6 +105,11 @@ env:
   - name: PENSJON_PERSONDATA_SCOPE
     value: "api://prod-fss.pensjon-person.pensjon-persondata/.default"
 
+  - name: PENSJON_REPRESENTASJON_URL
+    value: "https://pensjon-representasjon.intern.nav.no"
+  - name: PENSJON_REPRESENTASJON_SCOPE
+    value: "api://prod-gcp.pensjon-person.pensjon-representasjon/.default"
+
   - name: NAVANSATT_URL
     value: "https://navansatt.prod-fss-pub.nais.io/"
   - name: NAVANSATT_SCOPE

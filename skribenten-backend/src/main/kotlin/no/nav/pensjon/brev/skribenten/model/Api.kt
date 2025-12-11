@@ -159,6 +159,7 @@ object Api {
         val adressebeskyttelse: Boolean,
         val doedsfall: LocalDate?,
         val erSkjermet: Boolean,
+        val vergemaal: Boolean,
     )
 
     data class Brevmal(
