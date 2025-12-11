@@ -24,6 +24,7 @@ fun Route.sakRoute(
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
     p1Service: P1ServiceImpl,
+    pensjonRepresentasjonService: PensjonRepresentasjonService,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
@@ -45,6 +46,7 @@ fun Route.sakRoute(
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
             val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
+            val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr)
             val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
             if (person != null) {
                 call.respond(
@@ -53,7 +55,8 @@ fun Route.sakRoute(
                         brevmalKoder = brevmetadata.map { it.id },
                         adressebeskyttelse = person.adressebeskyttelse,
                         doedsfall = person.doedsdato,
-                        erSkjermet = erSkjermet
+                        erSkjermet = erSkjermet,
+                        vergemaal = harVerge
                     )
                 )
             } else {
