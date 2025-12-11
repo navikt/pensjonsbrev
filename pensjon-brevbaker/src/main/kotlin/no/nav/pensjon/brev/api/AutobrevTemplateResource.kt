@@ -16,7 +16,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     pdfByggerService: PDFByggerService,
     ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
-    private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
+    private val letterFactory: LetterFactory<Kode> = LetterFactory(emptySet())
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderPDF(createLetter(brevbestilling))
