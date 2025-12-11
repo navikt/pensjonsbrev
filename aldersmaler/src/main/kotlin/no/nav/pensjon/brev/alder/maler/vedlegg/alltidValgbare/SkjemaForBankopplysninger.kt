@@ -19,7 +19,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
     outline = {
         paragraph {
             formText(
-                Size.SHORT,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"Norsk personnummer (11 siffer):" },
@@ -30,7 +30,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"Navn:" },
@@ -41,7 +41,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"Adresse:" },
@@ -52,7 +52,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"IBAN-nummer/ kontonummer:" },
@@ -63,7 +63,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"SWIFT/BIC-kode:" },
@@ -80,7 +80,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"Bankens navn:" },
@@ -91,7 +91,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"Bankens adresse:" },
@@ -102,7 +102,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         }
         paragraph {
             formText(
-                Size.LONG,
+                Size.FILL,
                 {
                     text(
                         bokmal { +"Underskrift:" },
