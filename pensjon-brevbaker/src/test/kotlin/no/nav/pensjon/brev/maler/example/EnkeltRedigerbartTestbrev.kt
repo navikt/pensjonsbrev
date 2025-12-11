@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -69,9 +68,9 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                         text(bokmal { +"Test1" }, nynorsk { +"Test1" })
                     }
                 }
-                formText(size = Size.LONG, newText(Bokmal to "Formtittel1", Nynorsk to "Formtittel1"))
-                formChoice(newText(Bokmal to "Formtittel2", Nynorsk to "Formtittel 2")) {
-                    choice(Bokmal to "Valg1", Nynorsk to "Valg1")
+                formText(size = Size.LONG, { text(bokmal { +"Formtittel1" }, nynorsk { +"Formtittel1" }) })
+                formChoice({text(bokmal{+"Formtittel2"}, nynorsk{+"Formtittel 2"})}) {
+                    choice(bokmal{+"Valg1"}, nynorsk{+"Valg1"})
                 }
             }
 

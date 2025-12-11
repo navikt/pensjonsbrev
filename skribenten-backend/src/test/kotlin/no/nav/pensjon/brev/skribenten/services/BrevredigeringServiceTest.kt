@@ -42,7 +42,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -155,12 +155,11 @@ class BrevredigeringServiceTest {
 
 
     private val sak1 = Pen.SakSelection(
-        1234L,
-        "12345678910",
-        LocalDate.now().minusYears(42),
-        Pen.SakSelection.Navn("a", "b", "c"),
-        Pen.SakType.ALDER,
-        "rabbit"
+        saksId = 1234L,
+        foedselsnr = "12345678910",
+        foedselsdato = LocalDate.now().minusYears(42),
+        navn = Pen.SakSelection.Navn("a", "b", "c"),
+        sakType = Pen.SakType.ALDER,
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
@@ -206,9 +205,7 @@ class BrevredigeringServiceTest {
 
         val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
 
-        override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
-            saker[saksId]?.let { ServiceResult.Ok(it) }
-                ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
+        override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
 
         override suspend fun hentPesysBrevdata(
             saksId: Long,

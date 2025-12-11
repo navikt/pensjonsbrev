@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.*
+import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 
 @LetterTemplateMarker
 class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
@@ -94,10 +95,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     addTextContent(Content(createTextContent(lang1, lang2, lang3, fontType)))
 }
 
-// PlainTextScope.text()
-//
-//
-
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
     lang1: Pair<Lang1, LiteralOrExpression>,
 ) {
@@ -119,67 +116,68 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     addTextContent(Content(createTextContent(lang1, lang2, lang3, FontType.PLAIN)))}
 
 
+internal object TextContentCreator {
+    internal fun <Lang1 : Language> createTextContent(
+        lang1: Pair<Lang1, LiteralOrExpression>,
+        fontType: FontType
+    ): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Single<Lang1>> = when (val value = lang1.second) {
+        is ExpressionWrapper ->
+            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr, fontType)
 
-private fun <Lang1 : Language> createTextContent(
-    lang1: Pair<Lang1, LiteralOrExpression>,
-    fontType: FontType
-): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Single<Lang1>> = when (val value = lang1.second) {
-    is ExpressionWrapper ->
-        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1.first to value.expr, fontType)
-
-    is LiteralWrapper ->
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
-}
-
-private fun <Lang1 : Language, Lang2 : Language> createTextContent(
-    lang1: Pair<Lang1, LiteralOrExpression>,
-    lang2: Pair<Lang2, LiteralOrExpression>,
-    fontType: FontType
-): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Double<Lang1, Lang2>> {
-    val lang1Value = lang1.second
-    val lang2Value = lang2.second
-
-    val textContent = if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper) {
-        Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            lang1.first to lang1Value.str,
-            lang2.first to lang2Value.str,
-            fontType
-        )
-    } else {
-        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-            lang1.first to lang1.second.expr,
-            lang2.first to lang2.second.expr,
-            fontType
-        )
+        is LiteralWrapper ->
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1.first to value.str, fontType)
     }
-    return textContent
-}
 
-private fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> createTextContent(
-    lang1: Pair<Lang1, LiteralOrExpression>,
-    lang2: Pair<Lang2, LiteralOrExpression>,
-    lang3: Pair<Lang3, LiteralOrExpression>,
-    fontType: FontType
-): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Triple<Lang1, Lang2, Lang3>> {
-    val lang1Value = lang1.second
-    val lang2Value = lang2.second
-    val lang3Value = lang3.second
+    internal fun <Lang1 : Language, Lang2 : Language> createTextContent(
+        lang1: Pair<Lang1, LiteralOrExpression>,
+        lang2: Pair<Lang2, LiteralOrExpression>,
+        fontType: FontType
+    ): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Double<Lang1, Lang2>> {
+        val lang1Value = lang1.second
+        val lang2Value = lang2.second
 
-    val textContent =
-        if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper && lang3Value is LiteralWrapper) {
+        val textContent = if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper) {
             Element.OutlineContent.ParagraphContent.Text.Literal.create(
                 lang1.first to lang1Value.str,
                 lang2.first to lang2Value.str,
-                lang3.first to lang3Value.str,
                 fontType
             )
         } else {
             Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-                lang1.first to lang1Value.expr,
-                lang2.first to lang2Value.expr,
-                lang3.first to lang3Value.expr,
+                lang1.first to lang1.second.expr,
+                lang2.first to lang2.second.expr,
                 fontType
             )
         }
-    return textContent
+        return textContent
+    }
+
+    internal fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> createTextContent(
+        lang1: Pair<Lang1, LiteralOrExpression>,
+        lang2: Pair<Lang2, LiteralOrExpression>,
+        lang3: Pair<Lang3, LiteralOrExpression>,
+        fontType: FontType
+    ): Element.OutlineContent.ParagraphContent.Text<LanguageSupport.Triple<Lang1, Lang2, Lang3>> {
+        val lang1Value = lang1.second
+        val lang2Value = lang2.second
+        val lang3Value = lang3.second
+
+        val textContent =
+            if (lang1Value is LiteralWrapper && lang2Value is LiteralWrapper && lang3Value is LiteralWrapper) {
+                Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                    lang1.first to lang1Value.str,
+                    lang2.first to lang2Value.str,
+                    lang3.first to lang3Value.str,
+                    fontType
+                )
+            } else {
+                Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+                    lang1.first to lang1Value.expr,
+                    lang2.first to lang2Value.expr,
+                    lang3.first to lang3Value.expr,
+                    fontType
+                )
+            }
+        return textContent
+    }
 }

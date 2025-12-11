@@ -189,12 +189,18 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
             post<Api.GeneriskBrevdata>{ p1Data ->
                 val brevId = call.parameters.getOrFail<Long>("brevId")
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                p1Service.lagreP1Data(p1Data, brevId, sak.saksId)
+                call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId))
             }
             get {
                 val brevId = call.parameters.getOrFail<Long>("brevId")
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                p1Service.hentP1Data(brevId, sak.saksId)
+                val p1Data = p1Service.hentP1Data(brevId, sak.saksId)
+                if(p1Data != null) {
+                    call.respond(p1Data)
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+
             }
         }
     }

@@ -19,7 +19,6 @@ import io.ktor.server.testing.testApplication
 import io.ktor.server.util.getOrFail
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.initADGroups
-import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -30,10 +29,7 @@ import no.nav.pensjon.brev.skribenten.services.PdlServiceException
 import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
-import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -41,38 +37,34 @@ import java.time.Month
 
 private val navIdent = NavIdent("månedens ansatt")
 private val testSak = Pen.SakSelection(
-    1337,
-    "12345",
-    LocalDate.of(1990, 1, 1),
-    Pen.SakSelection.Navn("a", "b", "c"),
-    ALDER,
-    "en veldig bra enhet"
+    saksId = 1337,
+    foedselsnr = "12345",
+    foedselsdato = LocalDate.of(1990, 1, 1),
+    navn = Pen.SakSelection.Navn("a", "b", "c"),
+    sakType = ALDER,
 )
 private val sakVikafossen = Pen.SakSelection(
-    7007,
-    "007",
-    LocalDate.of(1920, Month.NOVEMBER, 11),
-    Pen.SakSelection.Navn("a", "b", "c"),
-    ALDER,
-    "vikafossen"
+    saksId = 7007,
+    foedselsnr = "007",
+    foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
+    navn = Pen.SakSelection.Navn("a", "b", "c"),
+    sakType = ALDER,
 )
 
 private val generellSak0001 = Pen.SakSelection(
-    7008,
-    "12345",
-    LocalDate.of(1920, Month.NOVEMBER, 11),
-    Pen.SakSelection.Navn("a", "b", "c"),
-    GENRL,
-    "0001"
+    saksId = 7008,
+    foedselsnr = "12345",
+    foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
+    navn = Pen.SakSelection.Navn("a", "b", "c"),
+    sakType = GENRL,
 )
 
 private val generellSak0002 = Pen.SakSelection(
-    7009,
-    "12345",
-    LocalDate.of(1920, Month.NOVEMBER, 11),
-    Pen.SakSelection.Navn("a", "b", "c"),
-    GENRL,
-    "0002"
+    saksId = 7009,
+    foedselsnr = "12345",
+    foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
+    navn = Pen.SakSelection.Navn("a", "b", "c"),
+    sakType = GENRL,
 )
 
 
@@ -96,13 +88,8 @@ class AuthorizeAnsattSakTilgangTest {
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, ALDER.behandlingsnummer) to emptyList()))
 
     private val defaultPenService = object : PenServiceStub() {
-        override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
-            mapOf(
-                "${testSak.saksId}" to ServiceResult.Ok(testSak),
-                "${sakVikafossen.saksId}" to ServiceResult.Ok(sakVikafossen),
-                "${generellSak0001.saksId}" to ServiceResult.Ok(generellSak0001),
-                "${generellSak0002.saksId}" to ServiceResult.Ok(generellSak0002)
-            )[saksId] ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
+        private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId.toString() }
+        override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
     }
 
     private fun basicAuthTestApplication(
@@ -233,11 +220,11 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenServiceStub() {
-        override suspend fun hentSak(saksId: String) = ServiceResult.Error<Pen.SakSelection>("Sak finnes ikke", HttpStatusCode.NotFound)
+        override suspend fun hentSak(saksId: String) = null
     }) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertEquals("Sak finnes ikke", response.bodyAsText())
+        assertEquals("Sak ikke funnet", response.bodyAsText())
     }
 
     @Test
@@ -266,7 +253,6 @@ class AuthorizeAnsattSakTilgangTest {
     ) { client ->
         val response = client.get("/sak/${sakVikafossen.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
-        assertThat(response.bodyAsText()).isNullOrEmpty()
     }
 
     private fun successResponse(saksId: String) =

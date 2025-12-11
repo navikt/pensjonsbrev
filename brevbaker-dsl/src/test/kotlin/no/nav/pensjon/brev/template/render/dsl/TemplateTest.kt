@@ -182,27 +182,24 @@ class TemplateTest {
 
     @Test
     fun `TemplateContainerScope_formText adds Form$Text element`() {
-        val prompt = newText(Language.Bokmal to "hei")
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
-            formText(Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt)
+            formText(Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, { text(bokmal { +"hei" }) })
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(newText(Language.Bokmal to "hei"), Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
 
         assertEquals(expected, element)
     }
 
     @Test
     fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
-        val prompt = newText(Language.Bokmal to "hei")
-
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
-            formChoice(prompt) {
-                choice(Language.Bokmal to "velg denne")
+            formChoice({ text( bokmal {+"hei"}) }) {
+                choice(bokmal{+ "velg denne"})
             }
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(newText(Language.Bokmal to "hei"), listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
 
         assertEquals(expected, element)
     }
