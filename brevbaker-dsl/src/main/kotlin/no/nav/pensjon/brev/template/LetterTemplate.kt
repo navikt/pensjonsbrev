@@ -35,7 +35,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     override fun toString() =
         "LetterTemplate(title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
     
-    fun medEkstraVedlegg(attachments: List<IncludeAttachment<*, *>>): LetterTemplate<LanguageSupport, LetterData> =
+    fun medEkstraVedlegg(attachments: List<IncludeAttachment<*, *>>) =
         if (attachments.isEmpty()) {
             this
         } else {
