@@ -507,6 +507,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size : java/lang/Enum {
+	public static final field FILL Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
 	public static final field LONG Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
 	public static final field NONE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
 	public static final field SHORT Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;

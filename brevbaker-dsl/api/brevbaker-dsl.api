@@ -328,6 +328,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size : java/lang/Enum {
+	public static final field FILL Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 	public static final field LONG Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 	public static final field NONE Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 	public static final field SHORT Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;

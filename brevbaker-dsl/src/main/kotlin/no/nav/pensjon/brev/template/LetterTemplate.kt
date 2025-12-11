@@ -528,7 +528,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     val size: Size,
                     val vspace: Boolean = true,
                 ) : Form<Lang>(), StableHash by StableHash.of(prompt, StableHash.of(size), StableHash.of(vspace)) {
-                    enum class Size { NONE, SHORT, LONG }
+                    enum class Size { NONE, SHORT, LONG, FILL }
 
                     override fun equals(other: Any?): Boolean {
                         if (other !is Text<*>) return false
