@@ -49,31 +49,37 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
 
     private val logger = LoggerFactory.getLogger(SamhandlerServiceHttp::class.java)
 
-    override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
-        samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {
+    override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
+        val response = samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
             setBody(lagRequest(requestDto))
-        }.toServiceResult<FinnSamhandlerResponse>()
-            .map { it.toFinnSamhandlerResponseDto() }
-            .catch { message, status ->
-                logger.error("Feil ved samhandler søk. Status: $status Melding: $message")
-                FinnSamhandlerResponseDto("Feil ved henting av samhandler")
-            }
+        }
 
-    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
-        samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
+        return if (response.status.isSuccess()) {
+            response.body<FinnSamhandlerResponse>().toFinnSamhandlerResponseDto()
+        } else {
+            logger.error("Feil ved samhandler søk. Status: ${response.status}. Melding: ${response.bodyAsText()}")
+            FinnSamhandlerResponseDto("Feil ved henting av samhandler")
+        }
+    }
+
+    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto {
+        val response = samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
             url {
                 appendPathSegments(idTSSEkstern)
             }
             contentType(Json)
             accept(Json)
-        }.toServiceResult<SamhandlerEnkel>()
-            .map { it.toHentSamhandlerResponseDto() }
-            .catch { message, status ->
-                logger.error("Feil ved henting av samhandler fra tjenestebuss-integrasjon. Status: $status Melding: $message")
-                HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
-            }
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body<SamhandlerEnkel>().toHentSamhandlerResponseDto()
+        } else {
+            logger.error("Feil ved henting av samhandler. Status: ${response.status}. Melding: ${response.bodyAsText()}")
+            HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
+        }
+    }
 
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached(Cacheomraade.SAMHANDLER, idTSSEkstern) {
         hentSamhandler(idTSSEkstern).success?.navn
