@@ -4,33 +4,20 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
-import org.slf4j.LoggerFactory
-
-private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.Brev")
 
 fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto2ApiService, pdlService: PdlService, penService: PenService) {
 
-    suspend fun RoutingContext.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) {
-        brevResponse?.map { dto2ApiService.toApi(it) }
-            ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
-            ?.onError { message, statusCode, tittel ->
-                if (statusCode == HttpStatusCode.UnprocessableEntity) {
-                    logger.info("$statusCode - Feil ved oppdatering av brev: $message")
-                    call.respond(HttpStatusCode.UnprocessableEntity,
-                        BrevExceptionDto(tittel ?: "Feil ved oppdatering av brev", message)
-                    )
-                } else {
-                    logger.error("$statusCode - Feil ved oppdatering av brev: $message")
-                    call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
-                }
-            }
-            ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+    suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
+        if (brevResponse != null) {
+            call.respond(dto2ApiService.toApi(brevResponse))
+        } else {
+            call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+        }
     }
 
     route("/brev/{brevId}") {

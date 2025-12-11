@@ -43,17 +43,17 @@ interface PenService {
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult?
-    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data>
+    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data
+    suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): Api.GeneriskBrevdata
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
     data class KravStoettetAvDatabyggerResult(
         val kravStoettet: Map<String, Boolean> = emptyMap()
     )
-
-    suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): ServiceResult<Api.GeneriskBrevdata>
 }
 
 class PenServiceException(message: String) : ServiceException(message)
+class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 
 class PenServiceHttp(config: Config, authService: AuthService) : PenService, ServiceStatus {
     private val penUrl = config.getString("url")
@@ -154,7 +154,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         vedtaksId: Long?,
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: String?
-    ): ServiceResult<BrevdataResponse.Data> =
+    ): BrevdataResponse.Data =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
             if (avsenderEnhetsId != null) {
                 url {
@@ -162,42 +162,21 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                     vedtaksId?.let { parameters.append("vedtaksId", it.toString()) }
                 }
             }
-        }.toServiceResult<BrevdataResponse>(::handlePenErrorBrevdataResponse)
-            .then {
-                if (it.data != null) {
-                    ServiceResult.Ok(it.data)
-                } else {
-                    ServiceResult.Error("Fikk hverken data eller feilmelding fra Pesys", HttpStatusCode.InternalServerError)
-                }
-            }
+        }.brevdataOrThrow()
 
-    data class P1VedleggDataResponse(val data: Api.GeneriskBrevdata?, val feil: BrevExceptionDto? = null)
-
-    override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): ServiceResult<Api.GeneriskBrevdata> {
-        val response = client.get("brev/skribenten/sak/$saksId/p1data") {
+    override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): P1VedleggDataResponse =
+        client.get("brev/skribenten/sak/$saksId/p1data") {
             url {
                 parameters.append("spraak", spraak.name)
             }
-        }
-        return if (response.status.isSuccess()) {
-            ServiceResult.Ok(response.body<P1VedleggDataResponse>().data!!)
-        } else {
-            val feil = response.body<P1VedleggDataResponse?>()?.feil
-            logger.error("En feil oppstod i kall til PEN: ${feil?.tittel}: ${feil?.melding}")
-            ServiceResult.Error(feil?.melding ?: "Ukjent feil oppstod i kall til PEN", response.status, feil?.tittel)
-        }
-    }
+        }.brevdataOrThrow()
 
-
-    private suspend fun handlePenErrorBrevdataResponse(response: HttpResponse): ServiceResult<BrevdataResponse> {
-        val body = response.body<BrevdataResponse>()
-        return if (response.status == HttpStatusCode.InternalServerError) {
-            logger.error("En feil oppstod i kall til PEN: ${body.feil?.let { "${it.tittel}: ${it.melding}" }}")
-            ServiceResult.Error("Ukjent feil oppstod i kall til PEN",  HttpStatusCode.InternalServerError, body.feil?.tittel)
-        } else {
-            ServiceResult.Error(body.feil?.melding ?: "Ukjent feil oppstod i kall til PEN", response.status, body.feil?.tittel)
+    private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(): Data =
+        when {
+            status.isSuccess() -> body<BrevdataResponseWrapper<Data>>().data
+            status == HttpStatusCode.UnprocessableEntity -> throw PenDataException(body<BrevdataFeilResponse>().feil)
+            else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}")
         }
-    }
 
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse =
         client.post("brev/skribenten/sendbrev") {
@@ -227,6 +206,10 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
     }
 }
 
-data class BrevdataResponse(val data: Data?, val feil: BrevExceptionDto? = null) {
+data class BrevdataFeilResponse(val feil: BrevExceptionDto)
+data class BrevdataResponseWrapper<T : Any>(val data: T)
+
+typealias P1VedleggDataResponse = Api.GeneriskBrevdata
+object BrevdataResponse {
     data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
 }
