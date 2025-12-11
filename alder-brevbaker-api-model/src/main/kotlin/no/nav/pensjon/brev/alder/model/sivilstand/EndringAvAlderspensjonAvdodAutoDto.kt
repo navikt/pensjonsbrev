@@ -29,11 +29,11 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     val harBarnUnder18: Boolean,
     val etterBetaling: Boolean,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
-    val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto,
-    val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto,
-    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto,
-    val maanedligPensjonFoerSkattAFPDto: MaanedligPensjonFoerSkattAFPDto,
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+    val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+    val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
+    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
+    val maanedligPensjonFoerSkattAFPDto: MaanedligPensjonFoerSkattAFPDto?,
     val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
 
     ): AutobrevData {
@@ -49,7 +49,7 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     data class BeregnetPensjonPerManed(
         val antallBeregningsperioderPensjon: Int,
         val erPerioderMedUttak: Boolean,
-        val garantiPensjon: Kroner,
+        val garantiPensjon: Kroner?,
 
     )
 
