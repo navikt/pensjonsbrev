@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.VedleggData
@@ -98,7 +99,7 @@ abstract class BrevmodulTest(
     }
 
     @Suppress("unused") // Brukt i MethodSource
-    private fun filtrerPdf() = finnMaler( { filterForPDF.isEmpty() || filterForPDF.contains(it.kode) })
+    private fun filtrerPdf() = finnMaler { filterForPDF.isEmpty() || filterForPDF.contains(it.kode) }
 
     @Suppress("unused") // Brukt i MethodSource
     private fun filtrerVedlegg() = (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
@@ -117,9 +118,18 @@ abstract class BrevmodulTest(
         .filterNotNull()
         .distinctBy { it.get()[2].toString() + it.get()[3] }
 
+    @Suppress("unused") // Brukt i MethodSource
+    private fun filtrerAlltidValgbareVedlegg() =
+        listOf(Language.Bokmal, Language.English)
+            .flatMap { spraak ->
+                templates.hentAlltidValgbareVedlegg()
+                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, spraak, it.kode.kode()) }
+                    .distinctBy { it.get()[2].toString() + it.get()[3] }
+            }
+
 
     @Suppress("unused") // Brukt i MethodSource
-    protected fun alleMalene() = finnMaler({ true })
+    protected fun alleMalene() = finnMaler { true }
 
     protected fun finnMaler(shouldInclude: (BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>) -> Boolean = { true }): List<Arguments> {
         FeatureToggleSingleton.init(FeatureToggleDummy)
@@ -185,6 +195,25 @@ abstract class BrevmodulTest(
                     spraak,
                     FellesFactory.felles,
                 ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_vedlegg")
+            }
+    }
+
+    @ParameterizedTest(name = "{3}, {2}")
+    @MethodSource("filtrerAlltidValgbareVedlegg")
+    fun <T : VedleggData> testAlltidValgbareVedlegg(
+        template: AttachmentTemplate<LanguageSupport, T>,
+        fixtures: T,
+        spraak: Language,
+        clazzName: String,
+    ) {
+        createVedleggTestTemplate(template, fixtures.expr(), languages(spraak))
+            .let {
+                LetterTestImpl(
+                    it,
+                    fixtures,
+                    spraak,
+                    FellesFactory.felles,
+                ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_alltid_valgbare_vedlegg")
             }
     }
 
