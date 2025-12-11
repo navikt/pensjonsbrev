@@ -23,8 +23,8 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
@@ -38,7 +38,6 @@ import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
 import no.nav.pensjon.brev.skribenten.services.P1Exception
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
@@ -188,7 +187,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
-        async {
+        launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
                 // Sett opp evt. jobber her
@@ -211,7 +210,5 @@ fun Application.skribentenContenNegotiation() {
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
-        // midlertidig løsning frem til frontend er oppdatert til å bruke application/json
-        register(ContentType.Application.Pdf, PdfResponseConverter)
     }
 }
