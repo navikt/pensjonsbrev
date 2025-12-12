@@ -120,6 +120,7 @@ object Api {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
     )
 
     data class ReservasjonResponse(
