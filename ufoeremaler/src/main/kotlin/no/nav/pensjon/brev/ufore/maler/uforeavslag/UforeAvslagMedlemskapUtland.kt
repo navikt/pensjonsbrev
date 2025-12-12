@@ -5,11 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -26,7 +22,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.artikkel
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.avtaletype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.eosNordisk
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravGjelder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.trygdetidListe
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.pesysData
@@ -259,7 +254,9 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
             }
 
             showIf( saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
-                title1 { "Supplerende stønad for uføre flyktninger" }
+                title1 {
+                    text(bokmal { +"Supplerende stønad for uføre flyktninger" })
+                }
                 paragraph {
                     text(bokmal { +"Har du godkjent flyktningstatus fra utlendingsmyndighetene, kan du søke om supplerende stønad til uføre flyktninger. " +
                             "Du kan lese om supplerende stønad til uføre flyktninger på vår nettside ${Constants.NAV_URL}" })
