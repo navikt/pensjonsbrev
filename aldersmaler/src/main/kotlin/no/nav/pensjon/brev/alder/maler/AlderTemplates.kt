@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoe
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUnder5AartrygdetidAuto
+import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandAuto
@@ -57,6 +58,7 @@ object AlderTemplates : AllTemplates {
             AvslagUttakFoerNormertPensjonsalderAP2016Auto,
             AvslagUttakFoerNormertPensjonsalderAuto,
             AvslagUnder5AartrygdetidAuto,
+            EndringAvAlderspensjonAvdodAuto,
             EndringAvAlderspensjonSivilstandAuto,
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
             OmregningAlderUfore2016Auto,
