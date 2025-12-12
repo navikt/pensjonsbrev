@@ -35,29 +35,35 @@ fun Route.sakRoute(
         }
 
         get {
+            val sak: Pen.SakSelection = call.attributes[SakKey]
+            val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
+            val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
+            val brevmetadata = if (vedtaksId != null) {
+                brevmalService.hentBrevmalerForVedtak(
+                    sakstype = sak.sakType.toBrevbaker(),
+                    includeEblanketter = hasAccessToEblanketter,
+                    vedtaksId = vedtaksId
+                )
+            } else {
+                brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
+            }
+            call.respond(
+                Api.SakContext(
+                    sak = sak,
+                    brevmalKoder = brevmetadata.map { it.id },
+                )
+            )
+        }
+
+        get("/brukerstatus") {
             coroutineScope {
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
-                val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
-                val brevmetadata = async {
-                    if (vedtaksId != null) {
-                        brevmalService.hentBrevmalerForVedtak(
-                            sakstype = sak.sakType.toBrevbaker(),
-                            includeEblanketter = hasAccessToEblanketter,
-                            vedtaksId = vedtaksId
-                        )
-                    } else {
-                        brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
-                    }
-                }
                 val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
                 val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
                 val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
                 if (person != null) {
                     call.respond(
-                        Api.SakContext(
-                            sak = sak,
-                            brevmalKoder = brevmetadata.await().map { it.id },
+                        Api.BrukerStatus(
                             adressebeskyttelse = person.adressebeskyttelse,
                             doedsfall = person.doedsdato,
                             erSkjermet = erSkjermet.await(),
@@ -69,6 +75,7 @@ fun Route.sakRoute(
                 }
             }
         }
+
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[SakKey]
