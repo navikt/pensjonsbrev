@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
