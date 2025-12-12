@@ -117,7 +117,7 @@ const BrevvelgerMainContent = (props: {
 
   return (
     <BoxNew asChild height="calc(var(--main-page-content-height)">
-      <HStack>
+      <HStack wrap={false}>
         {/* Brevmal-liste */}
         <BoxNew
           asChild
