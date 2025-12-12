@@ -5,10 +5,14 @@ import com.auth0.jwt.interfaces.Payload
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.module.kotlin.*
 import com.typesafe.config.Config
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpHeaders.Authorization
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.response.respond
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -66,6 +70,13 @@ fun AuthenticationConfig.skribentenJwt(config: JwtConfig) =
                 withClaimPresence("nbf")
                 withClaimPresence("iat")
             }
+        }
+        challenge { defaultScheme, realm ->
+            call.request.headers[Authorization]?.let { authHeader ->
+                logger.info("Received invalid token: ${authHeader}...")
+            } ?: logger.info("No Authorization header found in request")
+            logger.info("Authentication failed for realm: $realm, scheme: $defaultScheme")
+            call.respond(HttpStatusCode.Forbidden, "Token is not valid or has expired")
         }
         validate {
             val azp = it["azp"]
