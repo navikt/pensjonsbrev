@@ -29,14 +29,14 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
         post<Api.OpprettBrevRequest> { request ->
             val sak: Pen.SakSelection = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
-            val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
+//            val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
             val brev = brevredigeringService.opprettBrev(
                 sak = sak,
                 vedtaksId = request.vedtaksId,
                 brevkode = request.brevkode,
                 spraak = spraak,
-                avsenderEnhetsId = avsenderEnhetsId,
+                avsenderEnhetsId = null,//avsenderEnhetsId,
                 saksbehandlerValg = request.saksbehandlerValg,
                 reserverForRedigering = true,
                 mottaker = request.mottaker?.toDto(),
