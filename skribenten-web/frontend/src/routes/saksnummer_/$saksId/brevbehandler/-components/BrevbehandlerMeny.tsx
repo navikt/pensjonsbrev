@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
@@ -24,6 +24,7 @@ import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { P1EditModal } from "~/components/P1/P1EditModal";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -162,6 +163,8 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
+  const [modalopen, setModalopen] = useState<boolean>(false);
+
   const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
     onSuccess: (response) => {
@@ -212,6 +215,35 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           )}
           saksId={props.saksId}
         />
+
+        <VStack gap="space-8">
+          <BodyShort size="small" weight="semibold">
+            Vedlegg
+          </BodyShort>
+
+          <HStack align="center">
+            <BodyShort
+              css={css`
+                margin-right: auto;
+              `}
+              size="small"
+            >
+              1. P1
+            </BodyShort>
+            {!erLaast && (
+              <Button
+                css={css`
+                  padding: 0;
+                `}
+                icon={<PencilIcon fontSize="24px" />}
+                onClick={() => setModalopen(true)}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
+            )}
+          </HStack>
+        </VStack>
 
         <Switch
           checked={erLaast}
@@ -289,6 +321,15 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
       </div>
+
+      {modalopen && (
+        <P1EditModal
+          brevId={props.brev.id}
+          onClose={() => setModalopen(false)}
+          open={modalopen}
+          saksId={props.saksId}
+        />
+      )}
     </div>
   );
 };
