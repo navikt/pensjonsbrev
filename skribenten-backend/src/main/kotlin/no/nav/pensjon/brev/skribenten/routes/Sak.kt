@@ -124,13 +124,6 @@ fun Route.sakRoute(
             }
         }
 
-        route("/alltidValgbareVedlegg") {
-            get {
-                val sak = call.attributes[SakKey]
-                call.respond(brevbakerService.getAlltidValgbareVedlegg(sak.saksId))
-            }
-        }
-
-        sakBrev(dto2ApiService, brevredigeringService, p1Service)
+        sakBrev(dto2ApiService, brevbakerService, brevredigeringService, p1Service)
     }
 }

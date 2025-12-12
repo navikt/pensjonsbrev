@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable.brevkode
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
 import no.nav.pensjon.brevbaker.api.model.*
@@ -52,7 +51,7 @@ interface BrevbakerService {
     ): LetterResponse
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(saksId: Long): Set<AlltidValgbartVedleggKode>
+    suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode>
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
@@ -185,16 +184,16 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(saksId: Long): Set<AlltidValgbartVedleggKode> =
-        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, saksId) {
-            val response = client.get("/templates/redigerbar/alltidValgbareVedlegg/$saksId")
+    override suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
+            val response = client.get("/templates/redigerbar/alltidValgbareVedlegg/$brevId")
 
             if (response.status.isSuccess()) {
                 response.body()
             } else {
                 throw BrevbakerServiceException(
                     response.bodyAsText().takeIf { it.isNotBlank() }
-                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for sak $saksId"
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for sak $brevId"
                 )
             }
         }

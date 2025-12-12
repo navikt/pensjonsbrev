@@ -41,7 +41,8 @@ object Api {
     data class DelvisOppdaterBrevRequest(
         val laastForRedigering: Boolean? = null,
         val distribusjonstype: Distribusjonstype? = null,
-        val mottaker: OverstyrtMottaker? = null
+        val mottaker: OverstyrtMottaker? = null,
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     )
 
     data class OppdaterAttesteringRequest(

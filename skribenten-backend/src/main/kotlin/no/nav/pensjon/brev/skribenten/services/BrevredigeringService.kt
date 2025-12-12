@@ -151,6 +151,7 @@ class BrevredigeringService(
         laastForRedigering: Boolean? = null,
         distribusjonstype: Distribusjonstype? = null,
         mottaker: Dto.Mottaker? = null,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
             // Før brevet kan markeres som `laastForRedigering` (klar til sending) så må det valideres at brevet faktisk er klar til sending.
@@ -172,6 +173,8 @@ class BrevredigeringService(
                     brevDb.mottaker?.oppdater(mottaker) ?: Mottaker.new(brevId) { oppdater(mottaker) }
                     brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
                 }
+
+                brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg)
 
                 brevDb.redigeresAvNavIdent = null
 
@@ -587,7 +590,7 @@ class BrevredigeringService(
                 .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
             redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),
-            alltidValgbareVedlegg = emptyList() // TODO: Erstatt med databasekall for å hente opp
+            alltidValgbareVedlegg = brevredigering.valgteVedlegg ?: emptyList(),
         )
 
         return transaction {
@@ -616,6 +619,17 @@ class BrevredigeringService(
             landkode = mottaker.landkode
             manueltAdressertTil = mottaker.manueltAdressertTil
         } else delete()
+
+    private fun ValgteVedlegg?.oppdater(valgte: List<AlltidValgbartVedleggKode>?) {
+        if (this == null) {
+            return
+        }
+        if (valgte == null || valgte.isEmpty()) {
+            delete()
+        } else {
+            valgteVedlegg = valgte
+        }
+    }
 
     /**
      * Krever vedtaksId om brevet er vedtaksbrev, men forkaster om ikke.
@@ -710,6 +724,7 @@ private fun Brevredigering.toDto(coverage: Set<LetterMarkupWithDataUsage.Propert
         redigertBrevHash = redigertBrevHash,
         saksbehandlerValg = saksbehandlerValg,
         propertyUsage = coverage,
+        valgteVedlegg = valgteVedlegg?.valgteVedlegg
     )
 
 private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
