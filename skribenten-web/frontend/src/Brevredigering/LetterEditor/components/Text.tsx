@@ -25,15 +25,16 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
       return (
         <span
           css={css`
-            border-radius: var(--ax-radius-4);
-            outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral)"};
             background: var(--ax-neutral-100);
-            padding: var(--ax-space-1) var(--ax-space-4);
-            display: inline-block;
-            margin: 0 var(--ax-space-1);
+            border-radius: var(--ax-radius-4);
             cursor: default;
+            display: inline-block;
+            line-height: var(--ax-font-line-height-medium);
+            margin: 0 var(--ax-space-1);
+            outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"};
+            padding: 0 var(--ax-space-2);
 
-            ${content.fontType === FontType.BOLD && "font-weight: bold;"}
+            ${content.fontType === FontType.BOLD && "font-weight: var(--ax-font-weight-bold);"}
             ${content.fontType === FontType.ITALIC && "font-style: italic;"}
           `}
           data-literal-index={JSON.stringify(literalIndex)}
