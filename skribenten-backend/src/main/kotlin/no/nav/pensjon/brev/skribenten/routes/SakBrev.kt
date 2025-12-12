@@ -186,11 +186,9 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevbakerService: BrevbakerSer
             }
         }
 
-        route("/alltidValgbareVedlegg") {
-            get {
-                val brevId = call.parameters.getOrFail<Long>("brevId")
-                call.respond(brevbakerService.getAlltidValgbareVedlegg(brevId))
-            }
+        get("/{brevId}/alltidValgbareVedlegg") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            call.respond(brevbakerService.getAlltidValgbareVedlegg(brevId))
         }
     }
 
