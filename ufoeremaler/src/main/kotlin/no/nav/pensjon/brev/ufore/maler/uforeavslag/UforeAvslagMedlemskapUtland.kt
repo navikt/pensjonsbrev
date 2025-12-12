@@ -257,7 +257,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
-            showIf( saksbehanderValg.visSupplerendeStonadUforeFlykninger) {
+            showIf( saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
                 title1 { "Supplerende stønad for uføre flyktninger" }
                 paragraph {
                     text(bokmal { +"Har du godkjent flyktningstatus fra utlendingsmyndighetene, kan du søke om supplerende stønad til uføre flyktninger. " +
