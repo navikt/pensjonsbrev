@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Button, Label } from "@navikt/ds-react";
+import { BodyShort, Button } from "@navikt/ds-react";
 import type { ReactNode } from "react";
 
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -22,7 +21,7 @@ const EditorFonts = () => {
         onClick={() => {
           applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
         }}
-        text={<Label>F</Label>}
+        text={<BodyShort weight="semibold">F</BodyShort>}
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
@@ -32,13 +31,9 @@ const EditorFonts = () => {
           applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
         }}
         text={
-          <Label
-            css={css`
-              font-style: italic;
-            `}
-          >
+          <BodyShort css={{ fontStyle: "italic" }} weight="semibold">
             K
-          </Label>
+          </BodyShort>
         }
       />
     </>

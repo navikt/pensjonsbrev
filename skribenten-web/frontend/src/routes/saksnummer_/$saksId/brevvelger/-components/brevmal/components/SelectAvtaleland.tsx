@@ -11,7 +11,7 @@ function SelectAvtalelandComponent() {
 
   return (
     <Select {...register("landkode")} error={formState.errors.landkode?.message?.toString()} label="Land" size="small">
-      <option value={""}>Velg land</option>
+      <option value="">Velg land</option>
       {options.map((option) => (
         <option key={option.kode} value={option.kode}>
           {option.navn}

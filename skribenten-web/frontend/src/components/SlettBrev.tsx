@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { BodyLong, Button, ErrorMessage, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,11 +21,7 @@ export const SlettBrev = (properties: {
   const [vilSletteBrev, setVilSletteBrev] = useState(false);
 
   return (
-    <div
-      css={css`
-        height: 32px;
-      `}
-    >
+    <HStack flexGrow="1" justify="end">
       {vilSletteBrev && (
         <SlettBrevModal
           brevId={properties.brevId}
@@ -42,7 +37,7 @@ export const SlettBrev = (properties: {
           <TrashIcon fontSize="1.5rem" title="slett-ikon" /> {properties.buttonText}
         </HStack>
       </Button>
-    </div>
+    </HStack>
   );
 };
 
@@ -99,7 +94,7 @@ const SlettBrevModal = (properties: {
             </Button>
           ) : (
             <Button onClick={() => properties.onSlettSuccess()} type="button" variant="primary">
-              {"Gå til brevbehandler"}
+              "Gå til brevbehandler"
             </Button>
           )}
         </HStack>

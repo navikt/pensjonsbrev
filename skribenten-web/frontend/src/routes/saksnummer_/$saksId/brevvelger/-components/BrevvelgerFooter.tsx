@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Button, HStack } from "@navikt/ds-react";
+import { BoxNew, Button, HStack } from "@navikt/ds-react";
 import { useMutationState } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -21,47 +20,39 @@ const BrevvelgerFooter = (props: {
   const mutationState = useMutationState({ filters: { status: "pending" } });
 
   return (
-    <HStack
-      css={css`
-        padding: var(--ax-space-8) var(--ax-space-16);
-        border-top: 1px solid var(--ax-neutral-300);
-      `}
-      gap="space-8"
-      justify={"end"}
-    >
-      <Button
-        onClick={() =>
-          navigate({
-            to: "/saksnummer/$saksId/brevbehandler",
-            params: { saksId: props.saksId.toString() },
-            search: { enhetsId, vedtaksId },
-          })
-        }
-        size="small"
-        type="button"
-        variant="secondary"
-      >
-        {harBrevKlarTilSending
-          ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
-          : "Gå til brevbehandler"}
-      </Button>
-      {props.onSubmitClick && (
+    <BoxNew asChild borderColor="neutral-subtle" borderWidth="1 0 0 0">
+      <HStack gap="space-8" justify="end" paddingBlock="space-8" paddingInline="space-16">
         <Button
-          css={css`
-            width: fit-content;
-          `}
-          data-cy="order-letter"
-          icon={<ArrowRightIcon />}
-          iconPosition="right"
-          loading={mutationState.at(-1)?.status === "pending"}
-          onClick={props.onSubmitClick.onClick}
+          onClick={() =>
+            navigate({
+              to: "/saksnummer/$saksId/brevbehandler",
+              params: { saksId: props.saksId.toString() },
+              search: { enhetsId, vedtaksId },
+            })
+          }
           size="small"
-          variant="primary"
+          type="button"
+          variant="secondary"
         >
-          Åpne brev
+          {harBrevKlarTilSending
+            ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
+            : "Gå til brevbehandler"}
         </Button>
-      )}
-    </HStack>
+        {props.onSubmitClick && (
+          <Button
+            data-cy="order-letter"
+            icon={<ArrowRightIcon />}
+            iconPosition="right"
+            loading={mutationState.at(-1)?.status === "pending"}
+            onClick={props.onSubmitClick.onClick}
+            size="small"
+            variant="primary"
+          >
+            Åpne brev
+          </Button>
+        )}
+      </HStack>
+    </BoxNew>
   );
 };
 

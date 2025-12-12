@@ -54,7 +54,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
                   }
 
                   label {
-                    font-weight: 400;
+                    font-weight: var(--ax-font-weight-regular);
                   }
                 `}
                 data-cy={cyTag}

@@ -18,7 +18,7 @@ export const UnderskriftTextField = ({ of }: { of: "Saksbehandler" | "Attestant"
 
   return (
     <TextField
-      autoComplete={"on"}
+      autoComplete="on"
       error={(value?.length ?? 0) > 0 ? undefined : "Underskrift må oppgis"}
       label="Underskrift"
       onChange={update}

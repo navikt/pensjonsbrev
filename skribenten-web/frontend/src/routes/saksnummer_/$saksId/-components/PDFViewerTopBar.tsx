@@ -1,7 +1,7 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
 import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, HStack, TextField } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 
@@ -29,36 +29,29 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
   const navigate = useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
-    <HStack
-      align="center"
-      css={css`
-        background: var(--ax-bg-default);
-        border-bottom: 1px solid var(--ax-neutral-300);
-        padding: var(--ax-space-8) var(--ax-space-16);
-        height: 48px;
-        position: sticky;
-        top: 0;
-        z-index: 3;
-      `}
-      justify="space-between"
-    >
-      {viewerControls && (
-        <HStack align="center" gap="space-16">
-          <TopBarNavigation
-            currentPageNumber={viewerControls.currentPageNumber}
-            setCurrentPageNumber={viewerControls.setCurrentPageNumber}
-            totalNumberOfPages={viewerControls.totalNumberOfPages}
-          />
-          <VerticalDivider />
-          <TopBarZoom scale={viewerControls.scale} setScale={viewerControls.setScale} />
-        </HStack>
-      )}
-      {!utenSlettKnapp && (
-        <div
-          css={css`
-            margin-left: auto;
-          `}
-        >
+    <BoxNew asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0">
+      <HStack
+        align="center"
+        css={{ zIndex: 3 }}
+        height="48px"
+        justify="space-between"
+        paddingBlock="space-8"
+        paddingInline="space-16"
+        position="sticky"
+        top="0"
+      >
+        {viewerControls && (
+          <HStack align="center" gap="space-16">
+            <TopBarNavigation
+              currentPageNumber={viewerControls.currentPageNumber}
+              setCurrentPageNumber={viewerControls.setCurrentPageNumber}
+              totalNumberOfPages={viewerControls.totalNumberOfPages}
+            />
+            <VerticalDivider />
+            <TopBarZoom scale={viewerControls.scale} setScale={viewerControls.setScale} />
+          </HStack>
+        )}
+        {!utenSlettKnapp && (
           <SlettBrev
             brevId={brevId}
             buttonText="Slett"
@@ -71,9 +64,9 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
             }
             sakId={sakId}
           />
-        </div>
-      )}
-    </HStack>
+        )}
+      </HStack>
+    </BoxNew>
   );
 };
 
@@ -175,14 +168,7 @@ const TopBarNavigation = (properties: {
           value={textFieldValue}
         />
 
-        <BodyShort
-          css={css`
-            width: 27px;
-            align-self: center;
-          `}
-        >
-          / {properties.totalNumberOfPages}
-        </BodyShort>
+        <BodyShort css={{ width: "27px", alignSelf: "center" }}>/ {properties.totalNumberOfPages}</BodyShort>
       </HStack>
     </HStack>
   );

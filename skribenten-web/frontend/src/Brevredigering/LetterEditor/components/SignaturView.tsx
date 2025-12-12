@@ -1,5 +1,6 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
+import { BoxNew, HStack, VStack } from "@navikt/ds-react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
@@ -8,41 +9,26 @@ const Saksbehandler = ({ navn }: { navn?: string }) => {
     return <></>;
   }
   return (
-    <div
-      css={css`
-        flex: 1;
-        margin-bottom: var(--ax-space-24);
-      `}
-      data-cy="brev-editor-saksbehandler"
-    >
+    <BoxNew data-cy="brev-editor-saksbehandler" flexGrow="1" marginBlock="0 space-24">
       {navn}
-    </div>
+    </BoxNew>
   );
 };
 
 export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; wrapperStyles?: SerializedStyles }) => (
-  <div
+  <VStack
     css={css`
       opacity: 0.5;
-      display: flex;
-      flex-direction: column;
       font-size: 16.5px;
-      line-height: var(--ax-font-line-height-heading-xsmall);
+      line-height: var(--ax-font-line-height-large);
       ${wrapperStyles}
     `}
   >
     <div>{signatur.hilsenTekst}</div>
-    <div
-      css={css`
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: var(--ax-space-32);
-      `}
-    >
+    <HStack gap="space-32" justify="space-between">
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} />
       <Saksbehandler navn={signatur.saksbehandlerNavn} />
-    </div>
+    </HStack>
     <div>{signatur.navAvsenderEnhet}</div>
-  </div>
+  </VStack>
 );

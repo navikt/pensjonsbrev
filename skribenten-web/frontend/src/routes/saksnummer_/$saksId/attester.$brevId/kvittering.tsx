@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { BodyShort, Button, Heading, HGrid, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -36,60 +35,66 @@ const Kvittering = () => {
 
   if (sendteBrevLista.length === 0) {
     return (
-      <HGrid
-        columns="40% 1% 40%"
-        css={css`
-          background: var(--ax-bg-default);
-          justify-items: center;
-        `}
-        flexGrow="1"
-        gap="space-48"
-        paddingBlock="space-20"
+      <BoxNew
+        asChild
+        background="default"
+        height="calc(var(--main-page-content-height) + 48px)"
+        marginInline="auto"
+        width="fit-content"
       >
-        <VStack width="350px">
-          <BodyShort>Ingen informasjon om brevsending</BodyShort>
-          <Link
-            params={{ saksId, brevId }}
-            search={{ vedtaksId, enhetsId }}
-            to={"/saksnummer/$saksId/attester/$brevId/forhandsvisning"}
-          >
-            Tilbake til forhåndsvisning
-          </Link>
-        </VStack>
-        <VerticalDivider />
-        {urlReady && (
-          <VStack gap="space-8">
-            <Heading size="medium">Hva vil du gjøre nå?</Heading>
-            <NavButtons psak={psak} saksId={saksId} />
-          </VStack>
-        )}
-      </HGrid>
+        <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
+          <HStack justify="start" overflow="auto" paddingBlock="space-20" paddingInline="space-16">
+            <VStack>
+              <BodyShort>Ingen informasjon om brevsending</BodyShort>
+              <Link
+                params={{ saksId, brevId }}
+                search={{ vedtaksId, enhetsId }}
+                to="/saksnummer/$saksId/attester/$brevId/forhandsvisning"
+              >
+                Tilbake til forhåndsvisning
+              </Link>
+            </VStack>
+          </HStack>
+          <VerticalDivider />
+          {urlReady && (
+            <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+              <VStack gap="space-8" marginInline="auto">
+                <Heading size="medium">Hva vil du gjøre nå?</Heading>
+                <NavButtons psak={psak} saksId={saksId} />
+              </VStack>
+            </HStack>
+          )}
+        </HGrid>
+      </BoxNew>
     );
   }
 
   return (
-    <HGrid
-      columns="40% 1% 40%"
-      css={css`
-        background: var(--ax-bg-default);
-        justify-items: center;
-      `}
-      flexGrow="1"
-      gap="space-48"
-      paddingBlock="space-20"
+    <BoxNew
+      asChild
+      background="default"
+      height="calc(var(--main-page-content-height) + 48px)"
+      marginInline="auto"
+      width="fit-content"
     >
-      <VStack gap="space-20" width="350px">
-        <Heading size="medium">Kvittering</Heading>
-        <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
-      </VStack>
-      <VerticalDivider />
-      {urlReady && (
-        <VStack gap="space-8">
-          <Heading size="medium">Hva vil du gjøre nå?</Heading>
-          <NavButtons psak={psak} saksId={saksId} />
-        </VStack>
-      )}
-    </HGrid>
+      <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
+        <HStack justify="start" overflow="auto" paddingBlock="space-20" paddingInline="space-16">
+          <VStack gap="space-20">
+            <Heading size="medium">Kvittering</Heading>
+            <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
+          </VStack>
+        </HStack>
+        <VerticalDivider />
+        {urlReady && (
+          <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+            <VStack gap="space-8" marginInline="auto">
+              <Heading size="medium">Hva vil du gjøre nå?</Heading>
+              <NavButtons psak={psak} saksId={saksId} />
+            </VStack>
+          </HStack>
+        )}
+      </HGrid>
+    </BoxNew>
   );
 };
 

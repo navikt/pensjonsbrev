@@ -44,12 +44,12 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
     <Accordion.Content data-cy={`journalpostId-${props.journalpostId}`}>
       <VStack align="start" gap="space-16">
         <Oppsummeringspar
-          tittel={"Mottaker"}
+          tittel="Mottaker"
           verdi={props.brev?.mottaker?.navn ?? sakenGjelderNavn ?? "Fant ikke mottakerens navn"}
         />
 
-        <Oppsummeringspar tittel={"Distribueres via"} verdi={distribusjonstypeTilText(props.brev.distribusjonstype)} />
-        {props.journalpostId && <Oppsummeringspar tittel={"Journalpost ID"} verdi={props.journalpostId!} />}
+        <Oppsummeringspar tittel="Distribueres via" verdi={distribusjonstypeTilText(props.brev.distribusjonstype)} />
+        {props.journalpostId && <Oppsummeringspar tittel="Journalpost ID" verdi={props.journalpostId!} />}
         {showOpenPdf && (
           <Button
             loading={pdfForJournalpost.isPending}
@@ -60,7 +60,7 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
             Åpne PDF i ny fane
           </Button>
         )}
-        {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title={"Klarte ikke å hente PDF"} />}
+        {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title="Klarte ikke å hente PDF" />}
       </VStack>
     </Accordion.Content>
   );

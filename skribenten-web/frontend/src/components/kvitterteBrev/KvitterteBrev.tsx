@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { Accordion } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -20,13 +19,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
   );
 
   return (
-    <Accordion
-      css={css`
-        /* fastsetter bredden slik at innholdet ikke 'hopper' når man åpner/lukker. Dette skjer når parent container er flex */
-        width: 350px;
-        justify-self: center;
-      `}
-    >
+    <Accordion>
       {sorted.map((kvittertBrev, index) => {
         return (
           <AccordionItem

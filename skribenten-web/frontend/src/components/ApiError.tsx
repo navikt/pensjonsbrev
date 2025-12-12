@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, CopyButton, Heading, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, BoxNew, CopyButton, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
@@ -39,78 +38,65 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
       const { tittel, melding } = error.response!.data;
 
       return (
-        <Alert
-          css={css`
-            align-self: center;
-            width: 100%;
-            max-width: 512px;
-          `}
-          data-cy="functional-error-alert"
-          size="medium"
-          variant="error"
-        >
-          <Heading level="2" size="small">
-            {tittel ?? title}
-          </Heading>
-          {melding && (
-            <div
-              css={css`
-                margin-top: 4px;
-              `}
-            >
-              {melding}
-            </div>
-          )}
-        </Alert>
+        <HStack align="center" justify="center" marginBlock="space-12">
+          <Alert
+            css={{ width: "100%", maxWidth: "512px" }}
+            data-cy="functional-error-alert"
+            size="medium"
+            variant="error"
+          >
+            <Heading level="2" size="small">
+              {tittel ?? title}
+            </Heading>
+            {melding && <BoxNew marginBlock="space-4 0">{melding}</BoxNew>}
+          </Alert>
+        </HStack>
       );
     }
 
     const correlationId = error.response?.headers["x-request-id"];
     return (
-      <Alert
-        css={css`
-          align-self: center;
-          width: 100%;
-          max-width: 512px;
-        `}
-        size="small"
-        variant="error"
-      >
-        <Heading level="2" size="small">
-          {title}
-        </Heading>
-        {correlationId && (
-          <VStack gap="space-4">
-            <div>
-              <span>{mapErrorMessage(error.message)}</span>
-              <span>
-                Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
-              </span>
-            </div>
-            <CopyButton
-              copyText={correlationId}
-              css={css`
-                border-radius: var(--ax-radius-4);
-                background: var(--ax-bg-default);
-                width: fit-content;
-                box-shadow: inset 0 0 0 2px var(--ax-border-neutral);
-              `}
-              icon={<FilesIcon />}
-              size="small"
-              text="Kopier ID"
-              variant="neutral"
-            />
-          </VStack>
-        )}
-      </Alert>
+      <HStack align="center" justify="center" marginBlock="space-12">
+        <HStack maxWidth="512px" width="100%">
+          <Alert size="small" variant="error">
+            <Heading level="2" size="small">
+              {title}
+            </Heading>
+            {correlationId && (
+              <VStack gap="space-4">
+                <div>
+                  <span>{mapErrorMessage(error.message)}</span>
+                  <span>
+                    Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
+                  </span>
+                </div>
+                <BoxNew asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">
+                  <HGrid align="center" columns="auto max-content" paddingInline="space-8 0">
+                    <BodyShort truncate>{correlationId}</BodyShort>
+                    <BoxNew asChild borderRadius="4">
+                      <CopyButton
+                        copyText={correlationId}
+                        data-color="accent"
+                        icon={<FilesIcon />}
+                        size="small"
+                        text="Kopier ID"
+                      />
+                    </BoxNew>
+                  </HGrid>
+                </BoxNew>
+              </VStack>
+            )}
+          </Alert>
+        </HStack>
+      </HStack>
     );
   }
 
   // If the error is not an axios error, then there is a programming error. Fallback to simple handling
   return (
-    <div>
-      <Alert variant={"error"}>En feil har oppstått og blitt logget. Prøv igjen litt senere.</Alert>
-    </div>
+    <HStack align="center" justify="center" marginBlock="space-12">
+      <Alert variant="error">En feil har oppstått og blitt logget. Prøv igjen litt senere.</Alert>
+    </HStack>
   );
 }
 
