@@ -118,32 +118,38 @@ export function fineAdjustCoordinates({ x, y }: Coordinates) {
   // Get the most specific clicked element.
   const [clickedElement] = document.elementsFromPoint(x, y);
 
-  // The point might have been outside the editable element and the element we have is a parent.
+  // Unwrap a possible parent to its contenteditable child
   const editableChildElement = clickedElement.querySelector(":scope > [contenteditable]");
 
-  const seekedElement = editableChildElement || clickedElement;
+  const targetElement = editableChildElement || clickedElement;
 
-  const seekedElementIsContenteditable = seekedElement.hasAttribute("contenteditable");
+  const targetElementIsContenteditable = targetElement.hasAttribute("contenteditable");
 
-  // If the seekedElement is editable we use the existing coordinates.
-  if (seekedElementIsContenteditable) {
+  // If the targetElement is editable we use the existing coordinates.
+  if (targetElementIsContenteditable) {
     return { x, y };
   }
 
-  // The element we clicked is likely a variable, or another not editable element. Now we attempt to find its most adjacent sibling that is editable.
-  const editableSiblings = seekedElement.parentElement
-    ? [...seekedElement.parentElement.querySelectorAll(":scope [contenteditable]")]
+  // The clicked element is likely a variable, or another non-editable element.
+  // Find its most adjacent sibling that is editable.
+  const editableSiblings = targetElement.parentElement
+    ? [...targetElement.parentElement.querySelectorAll(":scope [contenteditable]")]
     : [];
 
-  const currentFocusRect = seekedElement.getBoundingClientRect();
+  const targetRect = targetElement.getBoundingClientRect();
 
-  // ASSUMPTION: variable blocks are taller than editable elements.
-  // Attempt to find editableSiblings that are on the same line. The caveat is that a variable block have different top/bottom that normal editable lines.
-  // Therefore, we check if the editable element lies within the height of the seekedElement.
+  // Attempt to find editableSiblings at least partially on the same line:
+  // ASSUMPTION: variable blocks are not as tall as editable elements
+  // ASSUMPTION: variable blocks do not span multiple lines
+  // CAVEAT: getBoundingClientRect on block elements may span multiple lines
+  // getClientRects on inline elements returns a list of line-by-line rects
+  // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+  // https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects
   const rectsOnTheSameLine = editableSiblings
-    .map((s) => s.getBoundingClientRect())
-    .filter((b) => inRange(b.bottom, currentFocusRect.top, currentFocusRect.bottom));
+    .flatMap((sibling) => Array.from(sibling.getClientRects()))
+    .filter((siblingRect) => inRange(siblingRect.top + targetRect.height / 2, targetRect.top, targetRect.bottom));
 
+  // Get the rect that has an edge closes to x
   const closestRect = minBy(rectsOnTheSameLine, (b) => {
     const distanceFromTheLeft = Math.abs(b.left - x);
     const distanceFromTheRight = Math.abs(b.right - x);
