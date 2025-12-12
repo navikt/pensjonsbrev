@@ -151,6 +151,7 @@ class BrevredigeringService(
         laastForRedigering: Boolean? = null,
         distribusjonstype: Distribusjonstype? = null,
         mottaker: Dto.Mottaker? = null,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
             // Før brevet kan markeres som `laastForRedigering` (klar til sending) så må det valideres at brevet faktisk er klar til sending.
@@ -171,6 +172,10 @@ class BrevredigeringService(
                 if (mottaker != null) {
                     brevDb.mottaker?.oppdater(mottaker) ?: Mottaker.new(brevId) { oppdater(mottaker) }
                     brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
+                }
+
+                if (alltidValgbareVedlegg != null) {
+                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) }
                 }
 
                 brevDb.redigeresAvNavIdent = null
@@ -299,7 +304,9 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): Api.PdfResponse? {
+    suspend fun hentEllerOpprettPdf(
+        saksId: Long, brevId: Long
+    ): Api.PdfResponse? {
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
@@ -335,7 +342,7 @@ class BrevredigeringService(
                 }
 
                 Api.PdfResponse(
-                    pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
+                            pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
                     rendretBrevErEndret = rendretBrevErEndret
                 )
             }
@@ -585,6 +592,7 @@ class BrevredigeringService(
                 .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
             redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),
+            alltidValgbareVedlegg = brevredigering.valgteVedlegg ?: emptyList(),
         )
 
         return transaction {
@@ -613,6 +621,17 @@ class BrevredigeringService(
             landkode = mottaker.landkode
             manueltAdressertTil = mottaker.manueltAdressertTil
         } else delete()
+
+    private fun ValgteVedlegg?.oppdater(valgte: List<AlltidValgbartVedleggKode>?) {
+        if (this == null) {
+            return
+        }
+        if (valgte == null || valgte.isEmpty()) {
+            delete()
+        } else {
+            valgteVedlegg = valgte
+        }
+    }
 
     /**
      * Krever vedtaksId om brevet er vedtaksbrev, men forkaster om ikke.
@@ -707,6 +726,7 @@ private fun Brevredigering.toDto(coverage: Set<LetterMarkupWithDataUsage.Propert
         redigertBrevHash = redigertBrevHash,
         saksbehandlerValg = saksbehandlerValg,
         propertyUsage = coverage,
+        valgteVedlegg = valgteVedlegg?.valgteVedlegg
     )
 
 private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =

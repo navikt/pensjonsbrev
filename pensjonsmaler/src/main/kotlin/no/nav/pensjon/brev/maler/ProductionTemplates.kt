@@ -77,6 +77,7 @@ import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -172,4 +173,6 @@ object ProductionTemplates : AllTemplates {
     override fun hentAutobrevmaler() = autobrev
 
     override fun hentRedigerbareMaler() = redigerbare
+
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
 }

@@ -22,9 +22,12 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
@@ -52,6 +55,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(EditLetterJacksonModule)
     registerModule(LetterMarkupJacksonModule)
+    registerModule(BrevkodeJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
@@ -120,6 +124,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
+    val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
@@ -207,6 +212,19 @@ object OneShotJobTable : IdTable<String>() {
     val completedAt: Column<Instant> = timestamp("completedAt")
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
+
+object ValgteVedleggTable : IdTable<Long>() {
+    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
+}
+
+class ValgteVedlegg(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+    var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
+    companion object : LongEntityClass<ValgteVedlegg>(ValgteVedleggTable)
+}
+
 
 fun initDatabase(config: Config) =
     config.getConfig("database").let {

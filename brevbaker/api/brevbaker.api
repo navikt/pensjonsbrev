@@ -1,4 +1,5 @@
 public abstract interface class no/nav/brev/brevbaker/AllTemplates {
+	public abstract fun hentAlltidValgbareVedlegg ()Ljava/util/Set;
 	public abstract fun hentAutobrevmaler ()Ljava/util/Set;
 	public abstract fun hentRedigerbareMaler ()Ljava/util/Set;
 }

@@ -141,10 +141,12 @@ class BrevredigeringServiceTest {
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
             felles: Felles,
-            redigertBrev: LetterMarkup
+            redigertBrev: LetterMarkup,
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
         ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
+        override suspend fun getAlltidValgbareVedlegg(brevId: Long) = notYetStubbed()
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }
@@ -340,12 +342,15 @@ class BrevredigeringServiceTest {
             assertThat(
                 brevredigeringService.hentEllerOpprettPdf(
                     saksId = sak1.saksId + 1,
-                    brevId = brev.info.id
+                    brevId = brev.info.id,
                 )
             ).isNull()
 
             // Må generere pdf nå, slik at sendBrev ikke returnerer null pga. manglende dokument
-            brevredigeringService.hentEllerOpprettPdf(saksId = sak1.saksId, brevId = brev.info.id)
+            brevredigeringService.hentEllerOpprettPdf(
+                saksId = sak1.saksId,
+                brevId = brev.info.id,
+            )
             assertThat(
                 brevredigeringService.sendBrev(
                     saksId = sak1.saksId + 1,
@@ -633,7 +638,7 @@ class BrevredigeringServiceTest {
                 withPrincipal(saksbehandler1Principal) {
                     brevredigeringService.hentEllerOpprettPdf(
                         sak1.saksId,
-                        brev.info.id
+                        brev.info.id,
                     )
                 }
             }

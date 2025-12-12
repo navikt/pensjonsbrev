@@ -34,6 +34,21 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     override fun hashCode() = Objects.hash(title, letterDataType, language, outline, attachments, letterMetadata)
     override fun toString() =
         "LetterTemplate(title=$title, letterDataType=$letterDataType, language=$language, outline=$outline, attachments=$attachments, letterMetadata=$letterMetadata)"
+    
+    fun medEkstraVedlegg(attachments: List<IncludeAttachment<*, *>>) =
+        if (attachments.isEmpty()) {
+            this
+        } else {
+            LetterTemplate(
+                title = this.title,
+                letterDataType = this.letterDataType,
+                language = this.language,
+                outline = this.outline,
+                attachments = this.attachments + attachments,
+                pdfAttachments = this.pdfAttachments,
+                letterMetadata = this.letterMetadata
+            )
+        }
 }
 
 sealed class Expression<out Out> : StableHash {
@@ -518,7 +533,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     val size: Size,
                     val vspace: Boolean = true,
                 ) : Form<Lang>(), StableHash by StableHash.of(prompt, StableHash.of(size), StableHash.of(vspace)) {
-                    enum class Size { NONE, SHORT, LONG }
+                    enum class Size { NONE, SHORT, LONG, FILL }
 
                     override fun equals(other: Any?): Boolean {
                         if (other !is Text<*>) return false

@@ -374,9 +374,14 @@ internal object LatexDocumentRenderer {
                             Form.Text.Size.NONE -> 0
                             Form.Text.Size.SHORT -> 25
                             Form.Text.Size.LONG -> 60
+                            Form.Text.Size.FILL -> null
                         }
                         renderText(element.prompt)
-                        append(" ${".".repeat(size)}")
+                        if (size != null) {
+                            append(" ${". ".repeat(size)}")
+                        } else {
+                            appendCmd("dotfill")
+                        }
                     }
                 }
             }

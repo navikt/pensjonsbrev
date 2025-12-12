@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Pesysbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -94,6 +95,12 @@ object Pesysbrevkoder {
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+        ;
+
+        override fun kode(): String = name
     }
 }
 

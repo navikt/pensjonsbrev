@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object BrevkodeModule : SimpleModule() {
     private fun readResolve(): Any = BrevkodeModule
@@ -14,6 +16,7 @@ object BrevkodeModule : SimpleModule() {
     init {
         addDeserializer(Brevkode.Automatisk::class.java, BrevkodeDeserializerAutomatisk)
         addDeserializer(Brevkode.Redigerbart::class.java, BrevkodeDeserializerRedigerbart)
+        addDeserializer(AlltidValgbartVedleggKode::class.java, AlltidValgbartVedleggKodeDeserializer)
     }
 
     private object BrevkodeDeserializerAutomatisk : JsonDeserializer<Brevkode.Automatisk>() {
@@ -24,5 +27,10 @@ object BrevkodeModule : SimpleModule() {
     private object BrevkodeDeserializerRedigerbart : JsonDeserializer<Brevkode.Redigerbart>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): Brevkode.Redigerbart =
             RedigerbarBrevkode(ctxt.readValue(parser, String::class.java))
+    }
+
+    private object AlltidValgbartVedleggKodeDeserializer : JsonDeserializer<AlltidValgbartVedleggKode>() {
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): AlltidValgbartVedleggKode =
+            AlltidValgbartVedleggBrevkode(ctxt.readValue(parser, String::class.java))
     }
 }
