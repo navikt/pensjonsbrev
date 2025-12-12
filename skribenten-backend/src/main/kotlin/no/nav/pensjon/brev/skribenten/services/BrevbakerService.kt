@@ -186,7 +186,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
 
     override suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
-            val response = client.get("/templates/redigerbar/alltidValgbareVedlegg/$brevId")
+            val response = client.get("/templates/redigerbar/alltidValgbareVedlegg")
 
             if (response.status.isSuccess()) {
                 response.body()

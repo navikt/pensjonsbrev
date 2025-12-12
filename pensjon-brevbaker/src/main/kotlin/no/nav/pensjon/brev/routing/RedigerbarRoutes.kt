@@ -35,7 +35,7 @@ fun Route.redigerbarRoutes(
             countLetter(brevbestilling.kode)
         }
 
-        get("alltidValgbareVedlegg/{brevId}") {
+        get("/alltidValgbareVedlegg") {
             call.respond(redigerbareBrev.alltidValgbareVedlegg)
         }
     }
