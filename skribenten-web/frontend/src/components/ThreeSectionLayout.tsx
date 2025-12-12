@@ -8,6 +8,8 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
           <BoxNew
             borderColor="neutral-subtle"
             borderWidth="0 1 0 0"
+            height="var(--main-page-content-height)"
+            overflowY="auto"
             padding={{ xs: "space-12" }}
             paddingBlock={{ lg: "space-16" }}
             paddingInline={{ lg: "space-24" }}

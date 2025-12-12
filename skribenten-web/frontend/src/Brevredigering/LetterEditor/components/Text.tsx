@@ -28,14 +28,15 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
           as="span"
           css={css`
             background: var(--ax-bg-neutral-moderate);
-            border-radius: var(--ax-radius-2);
+            border-radius: var(--ax-radius-4);
             cursor: default;
             display: inline-block;
             ${content.fontType === FontType.BOLD && "font-weight: var(--ax-font-weight-bold);"}
             ${content.fontType === FontType.ITALIC && "font-style: italic;"}
-            line-height: var(--ax-font-line-height-medium);
+            line-height: var(--ax-font-line-height-large);
+            margin: 0 var(--ax-space-1);
             outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"};
-            padding: 0 var(--ax-space-2);
+            padding: var(--ax-space-1) var(--ax-space-4);
           `}
           data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
