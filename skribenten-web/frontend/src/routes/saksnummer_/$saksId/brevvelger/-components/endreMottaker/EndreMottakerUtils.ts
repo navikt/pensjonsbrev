@@ -105,10 +105,7 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
         ManueltAdressertTil.ANNEN,
         ManueltAdressertTil.IKKE_RELEVANT,
       ]),
-      postnr: z
-        .string()
-        .length(4, "Postnummer må være 4 siffer")
-        .nullable(),
+      postnr: z.string().length(4, "Postnummer må være 4 siffer").nullable(),
       poststed: z.string().max(50, "Poststed kan ikke være lengre enn 50 tegn").nullable(),
       land: z.string().min(1, "Obligatorisk"),
     })
