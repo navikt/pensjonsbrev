@@ -50,10 +50,6 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
-    data class OpprettPDFRequest(
-        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
-    )
-
     data class BrevInfo(
         val id: Long,
         val saksId: Long,
