@@ -22,9 +22,11 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
@@ -53,6 +55,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(EditLetterJacksonModule)
     registerModule(LetterMarkupJacksonModule)
+    registerModule(BrevkodeJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
