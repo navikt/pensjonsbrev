@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
     dto2ApiService: Dto2ApiService,
+    brevbakerService: BrevbakerService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     krrService: KrrService,
@@ -120,6 +121,13 @@ fun Route.sakRoute(
                 call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        route("/alltidValgbareVedlegg") {
+            get {
+                val sak = call.attributes[SakKey]
+                call.respond(brevbakerService.getAlltidValgbareVedlegg(sak.saksId))
             }
         }
 

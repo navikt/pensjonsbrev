@@ -17,7 +17,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     override val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
+    val alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
