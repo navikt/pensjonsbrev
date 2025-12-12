@@ -120,7 +120,7 @@ env:
     value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
 
   - name: PENSJON_REPRESENTASJON_URL
-    value: "https://pensjon-representasjon-q2.intern.dev.nav.no"
+    value: "https://pensjon-representasjon-q2.dev-fss-pub.nais.io"
   - name: PENSJON_REPRESENTASJON_SCOPE
     value: "api://dev-fss.pensjon-person.pensjon-representasjon-q2/.default"
 

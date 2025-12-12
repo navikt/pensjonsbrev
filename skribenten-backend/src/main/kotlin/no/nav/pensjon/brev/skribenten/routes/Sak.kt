@@ -4,6 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
@@ -33,34 +35,38 @@ fun Route.sakRoute(
         }
 
         get {
-            val sak: Pen.SakSelection = call.attributes[SakKey]
-            val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
-            val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
-            val brevmetadata = if (vedtaksId != null) {
-                brevmalService.hentBrevmalerForVedtak(
-                    sakstype = sak.sakType.toBrevbaker(),
-                    includeEblanketter = hasAccessToEblanketter,
-                    vedtaksId = vedtaksId
-                )
-            } else {
-                brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
-            }
-            val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
-            //val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr) // TODO FIX
-            val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
-            if (person != null) {
-                call.respond(
-                    Api.SakContext(
-                        sak = sak,
-                        brevmalKoder = brevmetadata.map { it.id },
-                        adressebeskyttelse = person.adressebeskyttelse,
-                        doedsfall = person.doedsdato,
-                        erSkjermet = erSkjermet,
-                        vergemaal = false
+            coroutineScope {
+                val sak: Pen.SakSelection = call.attributes[SakKey]
+                val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
+                val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
+                val brevmetadata = async {
+                    if (vedtaksId != null) {
+                        brevmalService.hentBrevmalerForVedtak(
+                            sakstype = sak.sakType.toBrevbaker(),
+                            includeEblanketter = hasAccessToEblanketter,
+                            vedtaksId = vedtaksId
+                        )
+                    } else {
+                        brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
+                    }
+                }
+                val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
+                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
+                val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
+                if (person != null) {
+                    call.respond(
+                        Api.SakContext(
+                            sak = sak,
+                            brevmalKoder = brevmetadata.await().map { it.id },
+                            adressebeskyttelse = person.adressebeskyttelse,
+                            doedsfall = person.doedsdato,
+                            erSkjermet = erSkjermet.await(),
+                            vergemaal = harVerge.await()
+                        )
                     )
-                )
-            } else {
-                call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
+                } else {
+                    call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
+                }
             }
         }
         route("/bestillBrev") {
