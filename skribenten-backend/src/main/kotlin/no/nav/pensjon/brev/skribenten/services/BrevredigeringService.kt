@@ -174,7 +174,9 @@ class BrevredigeringService(
                     brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
                 }
 
-                brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg)
+                if (alltidValgbareVedlegg != null) {
+                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) }
+                }
 
                 brevDb.redigeresAvNavIdent = null
 
