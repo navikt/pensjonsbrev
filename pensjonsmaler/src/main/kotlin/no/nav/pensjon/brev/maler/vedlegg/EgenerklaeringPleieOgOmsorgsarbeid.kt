@@ -13,12 +13,16 @@ import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.choice
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
@@ -26,11 +30,13 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 @TemplateModelHelpers
 val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringOmsorgsarbeidDto>(
-    title = newText(
-        Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
-        Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
-        English to "Personal declaration that nursing and care work has been provided",
-    ),
+    title = {
+        text(
+            bokmal { +"Egenerklæring om pleie- og omsorgsarbeid" },
+            nynorsk { +"Eigenmelding om pleie- og omsorgsarbeid" },
+            english { +"Personal declaration that nursing and care work has been provided" },
+        )
+    },
     includeSakspart = true
 ) {
     vedlegg(returadresse, aarEgenerklaringOmsorgspoeng.format())
@@ -40,11 +46,13 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
 @TemplateModelHelpers
 val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynorskEnglish, OmsorgEgenManuellDto>(
-    title = newText(
-        Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
-        Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
-        English to "Personal declaration that nursing and care work has been provided",
-    ),
+    title = {
+        text(
+            bokmal { +"Egenerklæring om pleie- og omsorgsarbeid" },
+            nynorsk { +"Eigenmelding om pleie- og omsorgsarbeid" },
+            english { +"Personal declaration that nursing and care work has been provided" },
+        )
+    },
     includeSakspart = true
 ) {
     vedlegg(pesysData.returadresse, saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format())

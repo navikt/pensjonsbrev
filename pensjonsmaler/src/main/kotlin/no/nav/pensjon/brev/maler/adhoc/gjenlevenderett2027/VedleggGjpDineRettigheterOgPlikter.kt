@@ -7,22 +7,22 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEF
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 
 
 @TemplateModelHelpers
 val vedleggGjpDineRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Rettane og pliktene dine",
-        English to "Your rights and obligations"
-    ),
+    title = {
+        text(
+            bokmal { +"Dine rettigheter og plikter" },
+            nynorsk { +"Rettane og pliktene dine" },
+            english { +"Your rights and obligations" }
+        )
+    },
     includeSakspart = false,
 ) {
     title1 {

@@ -192,9 +192,7 @@ object VedleggPDFTestUtils {
         outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
         val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
-            title = newText(
-                Bokmal to (title ?: testName)
-            ),
+            title = { text(bokmal { +(title ?: testName) }) },
             includeSakspart = includeSakspart,
         ) {
             outlineInit()

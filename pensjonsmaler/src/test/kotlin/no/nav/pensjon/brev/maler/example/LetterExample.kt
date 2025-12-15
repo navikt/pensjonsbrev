@@ -18,29 +18,13 @@ import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.ParagraphPhrase
-import no.nav.pensjon.brev.template.TextOnlyPhrase
-import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.enabled
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
@@ -394,10 +378,12 @@ data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : Vedl
 
 @TemplateModelHelpers
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
-    title = newText(
-        Bokmal to "Test vedlegg",
-        Nynorsk to "Test vedlegg",
-    ),
+    title = {
+        text(
+            bokmal { +"Test vedlegg" },
+            nynorsk { +"Test vedlegg" },
+        )
+    },
     includeSakspart = true
 ) {
     paragraph {

@@ -51,11 +51,13 @@ import no.nav.pensjon.brev.template.dsl.text
 
 val opplysningerBruktIBeregningenAP2016Vedlegg =
     createAttachment(
-        title = newText(
-            Bokmal to "Opplysninger brukt i beregningen",
-            Nynorsk to "Opplysningar brukt i berekninga",
-            English to "Information used in the calculation"
-        ),
+        title = {
+            text(
+                bokmal { +"Opplysninger brukt i beregningen" },
+                nynorsk { +"Opplysningar brukt i berekninga" },
+                english { +"Information used in the calculation" }
+            )
+        },
     ) {
         ifNotNull(opplysningerKap19) { opplysningerKap19 ->
             showIf(opplysningerKap19.avslattKap19.not()) {

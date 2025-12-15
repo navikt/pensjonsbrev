@@ -16,25 +16,30 @@ import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSele
 import no.nav.pensjon.brev.maler.fraser.common.KonteringTypeYtelseTextMappingStorBokstav
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 @TemplateModelHelpers
 val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, OversiktOverFeilutbetalingPEDto>(
-    title = newText(
-        Bokmal to "Oversikt over feilutbetalinger",
-        Nynorsk to "Oversikt over feilutbetalingar",
-        English to "Overview of incorrect payments"
-    ),
+    title = {
+        text(
+            bokmal { +"Oversikt over feilutbetalinger" },
+            nynorsk { +"Oversikt over feilutbetalingar" },
+            english { +"Overview of incorrect payments" }
+        )
+    },
     includeSakspart = true,
 ) {
     includePhrase(

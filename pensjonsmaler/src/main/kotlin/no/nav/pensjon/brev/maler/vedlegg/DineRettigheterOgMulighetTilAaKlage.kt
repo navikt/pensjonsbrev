@@ -4,23 +4,14 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.sakstype
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggHjelpFraAndre
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakPensjon
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakUfoeretrygdPesysNoenDokumenter
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakUnder18
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggKlagePaaVedtaket
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggVeiledning
+import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.nettside
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
@@ -29,11 +20,13 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 @TemplateModelHelpers
 val vedleggDineRettigheterOgMulighetTilAaKlage =
     createAttachment<LangBokmalNynorskEnglish, DineRettigheterOgMulighetTilAaKlageDto>(
-        title = newText(
-            Bokmal to "Dine rettigheter og mulighet til å klage",
-            Nynorsk to "Rettane dine og høve til å klage",
-            English to "Your rights and how to appeal",
-        ),
+        title = {
+            text(
+                bokmal { +"Dine rettigheter og mulighet til å klage" },
+                nynorsk { +"Rettane dine og høve til å klage" },
+                english { +"Your rights and how to appeal" },
+            )
+        },
         includeSakspart = false
     ) {
         includePhrase(VedleggVeiledning)

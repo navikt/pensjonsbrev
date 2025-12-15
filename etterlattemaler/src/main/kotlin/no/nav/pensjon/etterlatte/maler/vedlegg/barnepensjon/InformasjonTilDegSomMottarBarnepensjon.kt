@@ -1,26 +1,25 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
 val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som mottar barnepensjon",
-        Nynorsk to "Informasjon til deg som får barnepensjon",
-        English to "Information to recipients of children’s pensions",
-    ),
+    title = {
+        text(
+            bokmal { +"Informasjon til deg som mottar barnepensjon" },
+            nynorsk { +"Informasjon til deg som får barnepensjon" },
+            english { +"Information to recipients of children’s pensions" },
+        )
+    },
     includeSakspart = false,
 ) {
     informasjon()
@@ -30,11 +29,13 @@ val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
 
 @TemplateModelHelpers
 val informasjonTilDegSomMottarBarnepensjonUtland = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som mottar barnepensjon",
-        Nynorsk to "Informasjon til deg som får barnepensjon",
-        English to "Information to recipients of children’s pensions",
-    ),
+    title = {
+        text(
+            bokmal { +"Informasjon til deg som mottar barnepensjon" },
+            nynorsk { +"Informasjon til deg som får barnepensjon" },
+            english { +"Information to recipients of children’s pensions" },
+        )
+    },
     includeSakspart = false,
 ) {
     informasjon()
