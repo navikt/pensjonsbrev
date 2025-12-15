@@ -1,9 +1,0 @@
-= Brevbaker
-
-Her kan du lese diverse dokumentasjon og annonseringer knyttet til applikasjonen Brevbaker.
-
-== Sider
-
-* xref:guider/hvordan-utvikle-maler.adoc[Malutvikling]
-* xref:teknisk/arkitektur.adoc[Arkitektur]
-* xref:teknisk/brevbaker_pdfbygger_beskrivelse.adoc[Brevbaker og PDFbygger]

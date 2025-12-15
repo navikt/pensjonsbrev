@@ -1,3 +1,0 @@
-= Dokumentasjon fra Team Pensjonsbrev
-
-include::nav.adoc[]

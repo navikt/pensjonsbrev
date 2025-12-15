@@ -1,6 +1,6 @@
 name: pensjonsbrev
 title: Pensjonsbrev
 version: main
-start_page: ./index.adoc
+start_page: ROOT:index.adoc
 nav:
-    - ./antora-menyvalg.adoc
+    - modules/ROOT/nav.adoc
