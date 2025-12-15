@@ -201,6 +201,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                         ParagraphContent.Form.Text.Size.NONE -> "none"
                         ParagraphContent.Form.Text.Size.SHORT -> "short"
                         ParagraphContent.Form.Text.Size.LONG -> "long"
+                        ParagraphContent.Form.Text.Size.FILL -> "fill"
                     }
                     div(classes("form-line-$size")) { }
                 }

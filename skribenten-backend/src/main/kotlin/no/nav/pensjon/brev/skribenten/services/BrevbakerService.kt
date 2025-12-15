@@ -47,9 +47,11 @@ interface BrevbakerService {
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
     ): LetterResponse
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
+    suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode>
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
@@ -128,6 +130,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -137,7 +140,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     letterData = brevdata,
                     felles = felles,
                     language = spraak,
-                    letterMarkup = redigertBrev
+                    letterMarkup = redigertBrev,
+                    alltidValgbareVedlegg = alltidValgbareVedlegg,
                 )
             )
         }
@@ -177,6 +181,20 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             } else {
                 logger.error("Feilet ved henting av templateDescription for $brevkode: ${response.status.value} - ${response.bodyAsText()}")
                 null
+            }
+        }
+
+    override suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
+            val response = client.get("/templates/redigerbar/alltidValgbareVedlegg")
+
+            if (response.status.isSuccess()) {
+                response.body()
+            } else {
+                throw BrevbakerServiceException(
+                    response.bodyAsText().takeIf { it.isNotBlank() }
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for sak $brevId"
+                )
             }
         }
 

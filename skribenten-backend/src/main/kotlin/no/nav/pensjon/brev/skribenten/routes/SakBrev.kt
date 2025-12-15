@@ -10,13 +10,14 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
+import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: BrevredigeringService, p1Service: P1ServiceImpl) =
+fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevbakerService: BrevbakerService, brevredigeringService: BrevredigeringService, p1Service: P1ServiceImpl) =
     route("/brev") {
         suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
             if (brevResponse != null) {
@@ -71,6 +72,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 laastForRedigering = request.laastForRedigering,
                 distribusjonstype = request.distribusjonstype,
                 mottaker = request.mottaker?.toDto(),
+                alltidValgbareVedlegg = request.alltidValgbareVedlegg,
             )
 
             respond(brev)
@@ -114,7 +116,6 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
             )
         }
-
         get("/{brevId}/pdf") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             val sak: Pen.SakSelection = call.attributes[SakKey]
@@ -183,6 +184,11 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 }
 
             }
+        }
+
+        get("/{brevId}/alltidValgbareVedlegg") {
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            call.respond(brevbakerService.getAlltidValgbareVedlegg(brevId))
         }
     }
 
