@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
@@ -16,14 +17,14 @@ import java.util.*
 private const val RADER_PER_SIDE = 5
 object P1pdfV2Dto {
     val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1RedigerbarDto>(
-        title = {
+        title =
             listOf(
-                text(
-                Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                Language.English to "P1 – Summary of Pension Decisions"
+                newText(
+                    Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
+                    Language.English to "P1 – Summary of Pension Decisions"
+                )
             )
-            )
-        }
+
     ) { data, felles ->
         with(data) {
 

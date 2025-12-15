@@ -24,13 +24,11 @@ import no.nav.pensjon.brev.template.dsl.text
 val maanedligPensjonFoerSkattAlderspensjon =
     createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattAlderspensjonDto>(
         title = {
-            {
             text(
                 bokmal { + "Oversikt over pensjonen fra " + krav.virkDatoFom.format() },
                 nynorsk { + "Oversikt over pensjonen frå " + krav.virkDatoFom.format() },
                 english { + "Pension specifications as of " + krav.virkDatoFom.format() },
             )
-            }
         },
         includeSakspart = false,
         outline = {
