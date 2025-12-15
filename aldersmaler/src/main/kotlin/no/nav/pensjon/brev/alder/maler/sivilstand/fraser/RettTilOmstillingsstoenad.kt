@@ -112,7 +112,7 @@ data object RettTilOmstillingsstoenad : OutlinePhrase<LangBokmalNynorsk>() {
         title3 {
             text(
                 bokmal { +"Hvordan søker du?" },
-                nynorsk { +"Korleis søkjar du?" },
+                nynorsk { +"Korleis søkjer du?" },
             )
         }
 

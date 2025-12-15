@@ -81,7 +81,7 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             },
                             nynorsk {
                                 +"Vi har mottatt melding om at " + avdoed.navn +
-                                    " er død, og vi har rekna om avtalefesta pensjonen (AFP) din frå Statens Pensjonskasse frå " +
+                                    " er død, og vi har rekna om den avtalefesta pensjonen (AFP) din frå Statens Pensjonskasse frå " +
                                     kravVirkDatoFom.format() +
                                     " fordi du har blitt einsleg pensjonist. Vi vil også informere deg om kva rettar i folketrygda du kan ha etter avdøde."
                             },
