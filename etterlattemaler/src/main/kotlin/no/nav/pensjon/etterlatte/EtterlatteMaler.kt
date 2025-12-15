@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -146,6 +147,8 @@ object EtterlatteMaler : AllTemplates {
     override fun hentAutobrevmaler() = prodAutobrevTemplates
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf()
+
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
 
     fun somSlate(letterMarkup: LetterMarkup) = BlockTilSlateKonverterer.konverter(letterMarkup)
 }

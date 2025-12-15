@@ -220,6 +220,7 @@ export const EndreMottakerModal = (properties: {
                 properties.resetOnBekreftState();
                 setTab("oppsummering");
               }
+              form.reset(values);
             })(event);
           }}
         >

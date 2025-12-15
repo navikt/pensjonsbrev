@@ -96,7 +96,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
         </VStack>
       ) : (
         <PDFViewer brevId={properties.brevId} pdf={pdfResponse.pdf} sakId={properties.saksId}>
-          {!pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert ? (
+          {pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert ? (
             <Alert fullWidth variant="warning">
               <Heading size="xsmall">Brevet må oppdateres</Heading>
               <BodyShort spacing>
