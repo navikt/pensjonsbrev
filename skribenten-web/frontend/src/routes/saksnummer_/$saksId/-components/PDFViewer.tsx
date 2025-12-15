@@ -92,32 +92,14 @@ const PDFViewer = (properties: {
             onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
           >
             {Array.from({ length: totalNumberOfPages }, (_, index) => (
-              <>
-                <BoxNew
-                  className={`pdf-page`}
-                  id={`page_${index + 1}`}
-                  key={`page_${index + 1}`}
-                  marginBlock="0 space-16"
-                >
-                  <PDFPage pageNumber={index + 1} scale={scale} />
-                </BoxNew>
-                <BoxNew
-                  className={`pdf-page`}
-                  id={`page_${index + 2}`}
-                  key={`page_${index + 2}`}
-                  marginBlock="0 space-16"
-                >
-                  <PDFPage pageNumber={index + 1} scale={scale} />
-                </BoxNew>
-                <BoxNew
-                  className={`pdf-page`}
-                  id={`page_${index + 3}`}
-                  key={`page_${index + 3}`}
-                  marginBlock="0 space-16"
-                >
-                  <PDFPage pageNumber={index + 1} scale={scale} />
-                </BoxNew>
-              </>
+              <BoxNew
+                className={`pdf-page`}
+                id={`page_${index + 1}`}
+                key={`page_${index + 1}`}
+                marginBlock="0 space-16"
+              >
+                <PDFPage pageNumber={index + 1} scale={scale} />
+              </BoxNew>
             ))}
           </Document>
         </HStack>
