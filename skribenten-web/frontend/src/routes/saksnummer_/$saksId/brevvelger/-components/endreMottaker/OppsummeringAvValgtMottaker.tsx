@@ -39,7 +39,9 @@ const OppsummeringAvValgtMottaker = (properties: {
       )}
       <OppsummeringAvAdresse adresse={properties.adresse} type={properties.samhandlerType} />
       {properties.onTilbake.plassering === "bottom" && (
-        <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
+        <HStack justify="start">
+          <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
+        </HStack>
       )}
       <HStack gap="space-16" justify="end">
         <Button onClick={properties.onAvbryt} size="small" type="button" variant="tertiary">
