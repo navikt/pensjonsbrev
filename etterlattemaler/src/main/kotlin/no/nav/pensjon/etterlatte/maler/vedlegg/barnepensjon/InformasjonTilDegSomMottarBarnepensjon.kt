@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -15,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
-val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
+val informasjonTilDegSomMottarBarnepensjonNasjonal: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> = createAttachment(
     title = newText(
         Bokmal to "Informasjon til deg som mottar barnepensjon",
         Nynorsk to "Informasjon til deg som får barnepensjon",
@@ -29,7 +31,8 @@ val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
 }
 
 @TemplateModelHelpers
-val informasjonTilDegSomMottarBarnepensjonUtland = createAttachment(
+val informasjonTilDegSomMottarBarnepensjonUtland: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> =
+    createAttachment(
     title = newText(
         Bokmal to "Informasjon til deg som mottar barnepensjon",
         Nynorsk to "Informasjon til deg som får barnepensjon",

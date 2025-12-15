@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -13,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikter = createAttachment(
+val dineRettigheterOgPlikter: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Dine rettar og plikter",

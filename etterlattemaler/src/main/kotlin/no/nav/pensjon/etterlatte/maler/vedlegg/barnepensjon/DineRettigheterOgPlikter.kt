@@ -19,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterBosattUtland = createAttachment(
+val dineRettigheterOgPlikterBosattUtland = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Rettane og pliktene dine",
@@ -35,7 +35,7 @@ val dineRettigheterOgPlikterBosattUtland = createAttachment(
 }
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterNasjonal = createAttachment(
+val dineRettigheterOgPlikterNasjonal = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Rettane og pliktene dine",
