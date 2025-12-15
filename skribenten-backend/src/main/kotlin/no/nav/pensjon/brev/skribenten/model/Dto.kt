@@ -152,7 +152,7 @@ fun Api.OverstyrtMottaker.toDto() =
         is Api.OverstyrtMottaker.Samhandler -> samhandler(tssId)
         is Api.OverstyrtMottaker.NorskAdresse -> norskAdresse(
             navn = navn,
-            postnummer = postnummer.also { it.valider() },
+            postnummer = postnummer,
             poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
@@ -202,7 +202,7 @@ value class NorskPostnummer(val value: String) {
         valider()
     }
 
-    fun valider() = require(value.trim().matches(regex)) {
+    fun valider() = require(value.matches(regex)) {
         "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
     }
 

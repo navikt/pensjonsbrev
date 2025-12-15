@@ -47,7 +47,7 @@ fun Route.sakRoute(
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
             val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
-            val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr)
+            //val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr) // TODO FIX
             val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
             if (person != null) {
                 call.respond(
@@ -57,7 +57,7 @@ fun Route.sakRoute(
                         adressebeskyttelse = person.adressebeskyttelse,
                         doedsfall = person.doedsdato,
                         erSkjermet = erSkjermet,
-                        vergemaal = harVerge
+                        vergemaal = false
                     )
                 )
             } else {

@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Alert, Button, Select, TextField, VStack } from "@navikt/ds-react";
+import { Alert, Button, HStack, Select, TextField, VStack } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller, useWatch } from "react-hook-form";
@@ -25,7 +24,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
 
   return (
     <VStack gap="space-24">
-      <VStack gap="space-24">
+      <VStack align="start" gap="space-24">
         <Controller
           control={properties.control}
           name="finnSamhandler.søketype"
@@ -39,7 +38,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
               size="small"
               value={field.value ?? ""}
             >
-              <option disabled value={""}>
+              <option disabled value="">
                 Klikk for å velge søketype
               </option>
               <option value={Søketype.DIREKTE_OPPSLAG}>Direkte oppslag</option>
@@ -55,14 +54,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
       </VStack>
 
       {watchedSøketype && (
-        <Button
-          css={css`
-            align-self: flex-start;
-          `}
-          data-cy="endre-mottaker-søk-button"
-          loading={properties.onFinnSamhandlerSubmit.isPending}
-          size="small"
-        >
+        <Button data-cy="endre-mottaker-søk-button" loading={properties.onFinnSamhandlerSubmit.isPending} size="small">
           Søk
         </Button>
       )}
@@ -80,20 +72,14 @@ const SøkOgVelgSamhandlerForm = (properties: {
         </div>
       )}
       {properties.onFinnSamhandlerSubmit.isError && (
-        <ApiError error={properties.onFinnSamhandlerSubmit.error} title={"En feil skjedde"} />
+        <ApiError error={properties.onFinnSamhandlerSubmit.error} title="En feil skjedde" />
       )}
 
-      <Button
-        css={css`
-          align-self: flex-end;
-        `}
-        onClick={properties.onCloseIntent}
-        size="small"
-        type="button"
-        variant="tertiary"
-      >
-        Avbryt
-      </Button>
+      <HStack justify="end">
+        <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
+          Avbryt
+        </Button>
+      </HStack>
     </VStack>
   );
 };

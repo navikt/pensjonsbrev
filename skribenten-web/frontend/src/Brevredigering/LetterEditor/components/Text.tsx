@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { BodyShort } from "@navikt/ds-react";
 
 import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
@@ -23,18 +24,19 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
     }
     case VARIABLE: {
       return (
-        <span
+        <BodyShort
+          as="span"
           css={css`
+            background: var(--ax-bg-neutral-moderate);
             border-radius: var(--ax-radius-4);
-            outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral)"};
-            background: var(--ax-neutral-100);
-            padding: var(--ax-space-1) var(--ax-space-4);
-            display: inline-block;
-            margin: 0 var(--ax-space-1);
             cursor: default;
-
-            ${content.fontType === FontType.BOLD && "font-weight: bold;"}
+            display: inline-block;
+            ${content.fontType === FontType.BOLD && "font-weight: var(--ax-font-weight-bold);"}
             ${content.fontType === FontType.ITALIC && "font-style: italic;"}
+            line-height: var(--ax-font-line-height-large);
+            margin: 0 var(--ax-space-1);
+            outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"};
+            padding: var(--ax-space-1) var(--ax-space-4);
           `}
           data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
@@ -45,7 +47,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
           }}
         >
           {content.text}
-        </span>
+        </BodyShort>
       );
     }
   }
