@@ -70,9 +70,6 @@ class PensjonPersonDataService(config: Config, authService: AuthService, clientE
         }
     }
 
-    override val name = "Pensjon PersonData"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/actuator/health/liveness")
-            .toServiceResult<String>()
-            .map { true }
+    override suspend fun ping() =
+        ping("Pensjon Persondata") { client.get("/actuator/health/liveness") }
 }

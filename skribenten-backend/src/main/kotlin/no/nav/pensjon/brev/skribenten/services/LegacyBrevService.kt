@@ -12,8 +12,6 @@ import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
-class LegacyBrevException(message: String) : Exception(message)
-
 class LegacyBrevService(
     private val brevmetadataService: BrevmetadataService,
     private val safService: SafService,

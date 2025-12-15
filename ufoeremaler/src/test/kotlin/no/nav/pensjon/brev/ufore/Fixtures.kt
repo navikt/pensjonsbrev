@@ -99,6 +99,7 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = UforeAvslagUtlandDto.Saksbehandlervalg(
             visInnvilgetPensjonEOSLand = true,
             visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning = true,
+            visSupplerendeStonadUforeFlykninger = true,
         )
     )
 

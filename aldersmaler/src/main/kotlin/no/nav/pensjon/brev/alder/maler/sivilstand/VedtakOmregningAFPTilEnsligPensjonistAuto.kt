@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
+import no.nav.pensjon.brev.alder.maler.sivilstand.fraser.RettTilOmstillingsstoenad
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAFPOffentlig
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
@@ -80,7 +81,7 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                             },
                             nynorsk {
                                 +"Vi har mottatt melding om at " + avdoed.navn +
-                                    " er død, og vi har rekna om avtalefesta pensjonen (AFP) din frå Statens Pensjonskasse frå " +
+                                    " er død, og vi har rekna om den avtalefesta pensjonen (AFP) din frå Statens Pensjonskasse frå " +
                                     kravVirkDatoFom.format() +
                                     " fordi du har blitt einsleg pensjonist. Vi vil også informere deg om kva rettar i folketrygda du kan ha etter avdøde."
                             },
@@ -183,6 +184,8 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                         }
                     }
                 }
+
+                includePhrase(RettTilOmstillingsstoenad)
 
                 ifNotNull(avdoed.sivilstand) { sivilstand ->
                     showIf(

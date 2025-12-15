@@ -1,42 +1,8 @@
-import { css } from "@emotion/react";
-import { ArrowCirclepathIcon } from "@navikt/aksel-icons";
 import { BodyLong, Button, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
 
 import { getBrev, tilbakestillBrev } from "~/api/brev-queries";
 import type { BrevResponse } from "~/types/brev";
-
-const TilbakestillBrev = (props: { brevId: number; resetEditor: (brevResponse: BrevResponse) => void }) => {
-  const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
-
-  return (
-    <>
-      {vilTilbakestilleMal && (
-        <TilbakestillMalModal
-          brevId={props.brevId}
-          onClose={() => setVilTilbakestilleMal(false)}
-          resetEditor={props.resetEditor}
-          åpen={vilTilbakestilleMal}
-        />
-      )}
-      <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-        <HStack align="center" gap="space-4">
-          <ArrowCirclepathIcon
-            css={css`
-              transform: scaleX(-1);
-            `}
-            fontSize="1.5rem"
-            title="Tilbakestill mal"
-          />
-          Tilbakestill malen
-        </HStack>
-      </Button>
-    </>
-  );
-};
-
-export default TilbakestillBrev;
 
 const TilbakestillMalModal = (props: {
   brevId: number;
@@ -56,9 +22,6 @@ const TilbakestillMalModal = (props: {
 
   return (
     <Modal
-      css={css`
-        border-radius: var(--ax-radius-4);
-      `}
       header={{
         heading: "Vil du tilbakestille brevmalen?",
       }}
@@ -90,3 +53,5 @@ const TilbakestillMalModal = (props: {
     </Modal>
   );
 };
+
+export default TilbakestillMalModal;

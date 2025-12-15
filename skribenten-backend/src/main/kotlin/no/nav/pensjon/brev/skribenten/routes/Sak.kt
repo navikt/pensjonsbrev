@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
     dto2ApiService: Dto2ApiService,
+    brevbakerService: BrevbakerService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     krrService: KrrService,
@@ -24,6 +25,7 @@ fun Route.sakRoute(
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
     p1Service: P1ServiceImpl,
+    pensjonRepresentasjonService: PensjonRepresentasjonService,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
@@ -45,6 +47,7 @@ fun Route.sakRoute(
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
             val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
+            //val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr) // TODO FIX
             val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
             if (person != null) {
                 call.respond(
@@ -53,7 +56,8 @@ fun Route.sakRoute(
                         brevmalKoder = brevmetadata.map { it.id },
                         adressebeskyttelse = person.adressebeskyttelse,
                         doedsfall = person.doedsdato,
-                        erSkjermet = erSkjermet
+                        erSkjermet = erSkjermet,
+                        vergemaal = false
                     )
                 )
             } else {
@@ -120,6 +124,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(dto2ApiService, brevredigeringService, p1Service)
+        sakBrev(dto2ApiService, brevbakerService, brevredigeringService, p1Service)
     }
 }

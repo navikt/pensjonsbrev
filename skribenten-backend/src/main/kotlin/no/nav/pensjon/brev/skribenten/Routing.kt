@@ -27,6 +27,7 @@ fun Application.configureRouting(
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
+    val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
@@ -71,6 +72,7 @@ fun Application.configureRouting(
             kodeverkRoute(penService)
             sakRoute(
                 dto2ApiService,
+                brevbakerService,
                 brevmalService,
                 brevredigeringService,
                 krrService,
@@ -81,6 +83,7 @@ fun Application.configureRouting(
                 safService,
                 skjermingService,
                 p1ServiceImpl,
+                pensjonRepresentasjonService,
             )
             brev(brevredigeringService, dto2ApiService, pdlService, penService)
             samhandlerRoute(samhandlerService)

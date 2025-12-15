@@ -70,20 +70,24 @@ sealed interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : Text
             .also { addParagraphContent(it) }
     }
 
-    fun formText(size: Element.OutlineContent.ParagraphContent.Form.Text.Size, prompt: TextElement<Lang>, vspace: Boolean = true) {
-        Element.OutlineContent.ParagraphContent.Form.Text(prompt, size, vspace)
-            .let { Content(it) }
-            .also { addParagraphContent(it) }
+    fun formText(size: Element.OutlineContent.ParagraphContent.Form.Text.Size, prompt: PlainTextOnlyScope<Lang, LetterData>.() -> Unit, vspace: Boolean = true) {
+        PlainTextOnlyScope<Lang, LetterData>().apply(prompt).elements
+            .map { Element.OutlineContent.ParagraphContent.Form.Text(it, size, vspace) }
+            .map { Content(it) }
+            .forEach { addParagraphContent(it) }
     }
 
     fun formChoice(
-        prompt: TextElement<Lang>,
+        prompt: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
         vspace: Boolean = true,
         init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit
     ) {
         TemplateFormChoiceScope<Lang, LetterData>().apply(init)
-            .let { Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, it.choices, vspace) }
-            .let { Content(it) }
-            .also { addParagraphContent(it) }
+            .let { choice ->
+                PlainTextOnlyScope<Lang, LetterData>().apply(prompt).elements
+                    .map { Element.OutlineContent.ParagraphContent.Form.MultipleChoice(it, choice.choices, vspace) }
+                    .map { Content(it) }
+                    .forEach { addParagraphContent(it) }
+            }
     }
 }

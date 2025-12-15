@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
@@ -21,6 +22,7 @@ object Dto {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?
     )
 
     data class BrevInfo(
@@ -197,9 +199,11 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
 @JvmInline
 value class NorskPostnummer(val value: String) {
     init {
-        require(value.trim().matches(regex)) {
-            "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
-        }
+        valider()
+    }
+
+    fun valider() = require(value.matches(regex)) {
+        "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
     }
 
     companion object {

@@ -4,6 +4,7 @@ import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.alder.maler.AlderTemplates
 import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.ufore.maler.UfoereTemplates
 import org.slf4j.LoggerFactory
 
@@ -26,4 +27,5 @@ val pensjonOgUfoereProductionTemplates = object : AllTemplates {
     override fun hentRedigerbareMaler() =
         ProductionTemplates.hentRedigerbareMaler() + AlderTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
 
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = ProductionTemplates.hentAlltidValgbareVedlegg() + AlderTemplates.hentAlltidValgbareVedlegg() + UfoereTemplates.hentAlltidValgbareVedlegg()
 }

@@ -12,11 +12,12 @@
     "preview": "vite preview",
     "check-types": "tsc --noemit",
     "test": "vitest --config ./vite.config.ts",
+    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run cypress:component && ${npm_execpath} run cypress:e2e",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "stylelint": "stylelint '**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
-    "lint-and-check-types": "npm run check-types && npm run lint && npm run stylelint",
+    "lint-and-check-types": "${npm_execpath} run check-types && ${npm_execpath} run lint && ${npm_execpath} run stylelint",
     "tsc:watch": "tsc --watch"
   },
   "dependencies": {

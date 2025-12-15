@@ -58,7 +58,8 @@ class BrevtekstITest {
                     letterData = EmptyRedigerbarBrevdata,
                     felles = felles,
                     language = LanguageCode.BOKMAL,
-                    letterMarkup = markup
+                    letterMarkup = markup,
+                    alltidValgbareVedlegg = listOf()
                 )
             )
         }.body()
