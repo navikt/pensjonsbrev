@@ -54,9 +54,15 @@ const SøkOgVelgSamhandlerForm = (properties: {
       </VStack>
 
       {watchedSøketype && (
-        <Button data-cy="endre-mottaker-søk-button" loading={properties.onFinnSamhandlerSubmit.isPending} size="small">
-          Søk
-        </Button>
+        <HStack align="start">
+          <Button
+            data-cy="endre-mottaker-søk-button"
+            loading={properties.onFinnSamhandlerSubmit.isPending}
+            size="small"
+          >
+            Søk
+          </Button>
+        </HStack>
       )}
 
       {properties.onFinnSamhandlerSubmit.isSuccess && (
