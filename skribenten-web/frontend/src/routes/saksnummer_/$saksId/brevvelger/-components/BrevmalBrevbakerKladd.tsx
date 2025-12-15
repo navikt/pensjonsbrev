@@ -93,7 +93,7 @@ const Brevmal = (props: {
   return (
     <>
       <VStack flexGrow="1" gap="space-16">
-        <VStack gap="space-16">
+        <VStack align="start" gap="space-16">
           {!erBrevArkivert(props.brev) && (
             <SlettBrev
               brevId={props.brev.id}
@@ -114,7 +114,7 @@ const Brevmal = (props: {
               sakId={props.saksId}
             />
           )}
-          <VStack gap="space-8">
+          <VStack align="start" gap="space-8">
             <Heading size="small">{props.brev.brevtittel}</Heading>
             {props.letterMetadata ? (
               <LetterTemplateTags letterTemplate={props.letterMetadata} />
@@ -138,10 +138,10 @@ const Brevmal = (props: {
           <Oppsummeringspar
             boldedTitle
             size="small"
-            tittel={"Avsenderenhet"}
+            tittel="Avsenderenhet"
             verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
           />
-          <Oppsummeringspar boldedTitle size="small" tittel={"Språk"} verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+          <Oppsummeringspar boldedTitle size="small" tittel="Språk" verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
         </VStack>
       </VStack>
     </>
