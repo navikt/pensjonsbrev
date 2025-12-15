@@ -1,21 +1,8 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.alder.model.Institusjon.FENGSEL
-import no.nav.pensjon.brev.alder.model.Institusjon.HELSE
-import no.nav.pensjon.brev.alder.model.Institusjon.SYKEHJEM
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.ENKE
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.ENSLIG
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.GIFT
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.GLAD_EKT
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.GLAD_PART
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.PARTNER
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.SAMBOER_1_5
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.SAMBOER_3_2
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.SEPARERT
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.SEPARERT_PARTNER
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.UKJENT
+import no.nav.pensjon.brev.alder.model.Institusjon.*
+import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.borSammenMedBruker
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerBorINorge
@@ -26,22 +13,11 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.nettside
@@ -52,11 +28,13 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 @TemplateModelHelpers
 val vedleggOrienteringOmRettigheterOgPlikter =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterOgPlikterDto>(
-        title = newText(
-            Bokmal to "Dine rettigheter og plikter",
-            Nynorsk to "Dine rettar og plikter",
-            English to "Your rights and obligations",
-        ),
+        title = {
+            text(
+                bokmal { +"Dine rettigheter og plikter" },
+                nynorsk { +"Dine rettar og plikter" },
+                english { +"Your rights and obligations" },
+            )
+        },
         includeSakspart = false
     ) {
         val erIkkePaaInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)

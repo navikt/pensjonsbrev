@@ -24,9 +24,7 @@ class IncludeAttachmentTest {
     @Test
     fun `attachment is included in template`() {
         val testVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
-            title = newText(
-                Nynorsk to "Test vedlegg",
-            ),
+            title = { text(nynorsk { +"Test vedlegg" }) },
             includeSakspart = true
         ) {
             paragraph {
@@ -65,9 +63,11 @@ class IncludeAttachmentTest {
     @Nested
     inner class IncludeIfNotNull{
         private val testVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
-            title = newText(
-                Nynorsk to "Test vedlegg",
-            ),
+            title = {
+                text(
+                    nynorsk { +"Test vedlegg" },
+                )
+            },
             includeSakspart = true
         ) {
             paragraph {

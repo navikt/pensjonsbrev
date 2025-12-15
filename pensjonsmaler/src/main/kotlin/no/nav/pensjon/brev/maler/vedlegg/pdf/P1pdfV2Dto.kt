@@ -12,17 +12,19 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
+import java.util.*
 
 private const val RADER_PER_SIDE = 5
 object P1pdfV2Dto {
     val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1RedigerbarDto>(
-        title = listOf(
-            newText(
-                Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                Language.English to "P1 – Summary of Pension Decisions"
+        title =
+            listOf(
+                newText(
+                    Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
+                    Language.English to "P1 – Summary of Pension Decisions"
+                )
             )
-        )
+
     ) { data, felles ->
         with(data) {
 

@@ -41,12 +41,14 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 // Spesialtilpasset V00011 i metaforce for endring pga. opptjening.
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening =
-    createAttachment(
-        title = newText(
-            Bokmal to "Slik har vi beregnet pensjonen din",
-            Nynorsk to "Slik har vi berekna pensjonen din",
-            English to "This is how we have calculated your pension",
-        ),
+    createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto>(
+        title = {
+            text(
+                bokmal { +"Slik har vi beregnet pensjonen din" },
+                nynorsk { +"Slik har vi berekna pensjonen din" },
+                english { +"This is how we have calculated your pension" },
+            )
+        },
         includeSakspart = false
     ) {
         paragraph {

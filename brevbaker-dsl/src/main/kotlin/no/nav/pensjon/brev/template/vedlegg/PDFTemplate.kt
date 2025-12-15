@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.TextElement
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import java.util.Objects

@@ -3,23 +3,21 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
 // V00009 i metaforce
 @TemplateModelHelpers
 val vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES =
     createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-        title = newText(
-            Bokmal to "Informasjon om medlemskap og rett til helsetjenester - for alderspensjonister som bosetter seg utenfor EØS-området",
-            Nynorsk to "Informasjon om medlemskap og rett til helsetenester - for alderspensjonistar som buset seg utanfor EØS-området",
-            English to "Information about membership and entitlement to health services - for retirement pensioners who take up residence outside the EEA",
-        ),
+        title = {
+            text(
+                bokmal { +"Informasjon om medlemskap og rett til helsetjenester - for alderspensjonister som bosetter seg utenfor EØS-området" },
+                nynorsk { +"Informasjon om medlemskap og rett til helsetenester - for alderspensjonistar som buset seg utanfor EØS-området" },
+                english { +"Information about membership and entitlement to health services - for retirement pensioners who take up residence outside the EEA" },
+            )
+        },
         includeSakspart = false
     ) {
         title2 {

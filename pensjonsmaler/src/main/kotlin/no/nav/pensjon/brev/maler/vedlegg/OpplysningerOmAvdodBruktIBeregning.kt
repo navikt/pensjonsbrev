@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.Beregningsmetode.EOS
 import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
@@ -35,24 +33,11 @@ import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenald
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.TabellPoengrekke
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningeromavdodbruktiberegning.OpplysningerOmAvdodTabell
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.safe
-import no.nav.pensjon.brev.template.dsl.expression.size
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
@@ -61,11 +46,13 @@ import java.time.LocalDate
 @TemplateModelHelpers
 val vedleggOpplysningerOmAvdoedBruktIBeregning =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>(
-        title = newText(
-            Bokmal to "Opplysninger om avdøde brukt i beregningen",
-            Nynorsk to "Opplysningar om avdøde brukte i berekninga",
-            English to "Information regarding the deceased that provides the basis for the calculation",
-        ),
+        title = {
+            text(
+                bokmal { +"Opplysninger om avdøde brukt i beregningen" },
+                nynorsk { +"Opplysningar om avdøde brukte i berekninga" },
+                english { +"Information regarding the deceased that provides the basis for the calculation" },
+            )
+        },
         includeSakspart = false,
     ) {
         val regelverkstype = alderspensjonVedVirk.regelverkType
