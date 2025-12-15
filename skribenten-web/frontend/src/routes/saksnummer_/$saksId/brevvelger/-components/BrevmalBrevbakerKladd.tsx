@@ -91,59 +91,57 @@ const Brevmal = (props: {
   }, [setOnFormSubmitClick, saksId, brev, navigate, enhetsId, vedtaksId]);
 
   return (
-    <>
-      <VStack flexGrow="1" gap="space-16">
-        <VStack align="start" gap="space-16">
-          {!erBrevArkivert(props.brev) && (
-            <SlettBrev
-              brevId={props.brev.id}
-              buttonText="Slett kladd"
-              modalTexts={{
-                heading: "Vil du slette kladden?",
-                body: "Kladden vil bli slettet, og du kan ikke angre denne handlingen.",
-                buttonYes: "Ja, slett kladden",
-                buttonNo: "Nei, behold kladden",
-              }}
-              onSlettSuccess={() =>
-                navigate({
-                  to: "/saksnummer/$saksId/brevvelger",
-                  params: { saksId: props.saksId },
-                  search: { enhetsId, vedtaksId },
-                })
-              }
-              sakId={props.saksId}
-            />
-          )}
-          <VStack align="start" gap="space-8">
-            <Heading size="small">{props.brev.brevtittel}</Heading>
-            {props.letterMetadata ? (
-              <LetterTemplateTags letterTemplate={props.letterMetadata} />
-            ) : (
-              <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
-            )}
-          </VStack>
-        </VStack>
-        <Divider />
-        <VStack gap="space-32">
-          {erBrevArkivert(props.brev) ? (
-            <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
-          ) : (
-            <EndreMottakerMedOppsummeringOgApiHåndtering
-              brev={props.brev}
-              saksId={props.saksId}
-              withGap
-              withOppsummeringTitle
-            />
-          )}
-          <Oppsummeringspar
-            boldedTitle
-            size="small"
-            tittel="Avsenderenhet"
-            verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
+    <VStack flexGrow="1" gap="space-16">
+      <VStack align="start" gap="space-16">
+        {!erBrevArkivert(props.brev) && (
+          <SlettBrev
+            brevId={props.brev.id}
+            buttonText="Slett kladd"
+            modalTexts={{
+              heading: "Vil du slette kladden?",
+              body: "Kladden vil bli slettet, og du kan ikke angre denne handlingen.",
+              buttonYes: "Ja, slett kladden",
+              buttonNo: "Nei, behold kladden",
+            }}
+            onSlettSuccess={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevvelger",
+                params: { saksId: props.saksId },
+                search: { enhetsId, vedtaksId },
+              })
+            }
+            sakId={props.saksId}
           />
-          <Oppsummeringspar boldedTitle size="small" tittel="Språk" verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+        )}
+        <VStack align="start" gap="space-8">
+          <Heading size="small">{props.brev.brevtittel}</Heading>
+          {props.letterMetadata ? (
+            <LetterTemplateTags letterTemplate={props.letterMetadata} />
+          ) : (
+            <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
+          )}
         </VStack>
       </VStack>
-    </>
+      <Divider />
+      <VStack gap="space-32">
+        {erBrevArkivert(props.brev) ? (
+          <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
+        ) : (
+          <EndreMottakerMedOppsummeringOgApiHåndtering
+            brev={props.brev}
+            saksId={props.saksId}
+            withGap
+            withOppsummeringTitle
+          />
+        )}
+        <Oppsummeringspar
+          boldedTitle
+          size="small"
+          tittel="Avsenderenhet"
+          verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
+        />
+        <Oppsummeringspar boldedTitle size="small" tittel="Språk" verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
+      </VStack>
+    </VStack>
   );
 };
