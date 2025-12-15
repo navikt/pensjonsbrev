@@ -13,19 +13,19 @@ data class VedtakAvslagPaaOmsorgsopptjeningDto(
 ) : RedigerbarBrevdata<VedtakAvslagPaaOmsorgsopptjeningDto.SaksbehandlerValg, VedtakAvslagPaaOmsorgsopptjeningDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Omsorgsarbeid utført for en syk, funksjonshemmet eller eldre person før 1992")
-        val omsorgsarbeidFoer1992: String,
+        val omsorgsarbeidFoer1992: Boolean,
         @DisplayText("Omsorgsarbeid utført etter 69 år")
-        val omsorgsarbeidEtter69Aar: String,
+        val omsorgsarbeidEtter69Aar: Boolean,
         @DisplayText("Pleie- og omsorgsarbeid mindre enn 6 måneder")
-        val omsorgsarbeidMindreEnn6mnd: String,
+        val omsorgsarbeidMindreEnn6mnd: Boolean,
         @DisplayText("Hvis søknad om AFP privat er avslått av Fellesordningen")
-        val privatAFPavslaat: String,
+        val privatAFPavslaat: Boolean,
         @DisplayText("Hvis det søkes om omsorgsopptjeningen for omsorg for barn under 7 år før 1992 uten at det er søkt om AFP privat")
-        val omsorgsarbeidForBarnUnder7aarFoer1992: String,
+        val omsorgsarbeidForBarnUnder7aarFoer1992: Boolean,
         @DisplayText("Hvis omsorgsopptjening før 1992 allerede er godskrevet ektefellen")
-        val omsorgsopptjeningenGodskrevetEktefellen: String,
+        val omsorgsopptjeningenGodskrevetEktefellen: Boolean,
         @DisplayText("Hvis bruker er født før 1948")
-        val brukerFoedtFoer1948: String,
+        val brukerFoedtFoer1948: Boolean,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
