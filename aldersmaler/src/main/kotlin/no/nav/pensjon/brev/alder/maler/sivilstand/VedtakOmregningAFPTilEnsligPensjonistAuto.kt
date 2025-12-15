@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
+import no.nav.pensjon.brev.alder.maler.sivilstand.fraser.RettTilOmstillingsstoenad
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAFPOffentlig
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
@@ -183,6 +184,8 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                         }
                     }
                 }
+
+                includePhrase(RettTilOmstillingsstoenad)
 
                 ifNotNull(avdoed.sivilstand) { sivilstand ->
                     showIf(
