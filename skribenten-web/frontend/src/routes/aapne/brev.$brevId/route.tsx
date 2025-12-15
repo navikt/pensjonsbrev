@@ -96,5 +96,5 @@ function BrevOpenError({ error }: { error: unknown }) {
     );
   }
 
-  return <ApiError error={error as AxiosError} title={`Kunne ikke åpnerkl brev ${brevId}`} />;
+  return <ApiError error={error as AxiosError} title={`Kunne ikke åpne brev ${brevId}`} />;
 }
