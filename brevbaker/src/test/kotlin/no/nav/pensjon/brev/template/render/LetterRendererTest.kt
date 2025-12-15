@@ -204,10 +204,10 @@ class LetterRendererTest {
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(title = {bokmal {+"tittel"}}, false) {
             paragraph { text(bokmal { + "Attachment #1"}) }
         }
-        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel2"), false) {
+        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(title = {bokmal {+"tittel2"}}, false) {
             paragraph { text(bokmal { + "Attachment #2"}) }
         }
         val attachments = listOf(

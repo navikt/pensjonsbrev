@@ -9,6 +9,16 @@ import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
+    title: TextElement<Lang>,
+    includeSakspart: Boolean = false,
+    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
+) = AttachmentTemplate<Lang, LetterData>(
+    listOf(title),
+    OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
+    includeSakspart
+)
+
+fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
     title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit

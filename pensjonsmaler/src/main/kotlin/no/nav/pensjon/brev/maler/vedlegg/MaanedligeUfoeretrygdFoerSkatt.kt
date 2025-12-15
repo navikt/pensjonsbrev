@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.ufoeretrygdPerioder
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggMaanedligeUfoeretrgdFoerSkatt
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.text
 
 val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto>(
     title = {
