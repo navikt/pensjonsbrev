@@ -41,3 +41,8 @@ build
 #Graphql
 # graphql-schema (bør kun hentes lokalt for å bygge opp queries)
 *-schema.graphql
+
+# Node and Antora things
+node_modules/
+build/
+.DS_Store

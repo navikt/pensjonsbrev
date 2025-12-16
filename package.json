@@ -11,5 +11,8 @@
     "@antora/site-generator": "3.1",
     "http-server": "^14.1.0",
     "onchange": "^7.1.0"
+  },
+  "dependencies": {
+    "asciidoctor-kroki": "^0.18.1"
   }
 }

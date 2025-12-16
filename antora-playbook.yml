@@ -1,5 +1,6 @@
 site:
   title: Systemdokumentasjon for Team Pensjonsbrev
+  url: https://navikt.github.io/pensjonsbrev/
   start_page: pensjonsbrev::index.adoc
 
 content:
@@ -15,3 +16,9 @@ ui:
 
 output:
   dir: ./build/site
+
+asciidoc:
+  extensions:
+    - asciidoctor-kroki
+  attributes:
+    kroki-fetch-diagram: true

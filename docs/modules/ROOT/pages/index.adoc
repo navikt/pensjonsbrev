@@ -10,5 +10,3 @@ Familien inkluderer følgende applikasjoner:
 * Skribenten
 * PDFbygger
 * Brevoppskriften
-
-include::nav.adoc[]

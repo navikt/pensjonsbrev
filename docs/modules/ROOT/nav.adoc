@@ -1,4 +1,4 @@
-* xref:index.adoc[Hjemme]
+* xref:index.adoc[Startside]
 ** xref:brevbaker-arkitektur.adoc[Brevbaker - Arkitektur]
 ** xref:brevbaker-hvordan-utvikle-maler.adoc[Hvordan utvikle maler?]
 ** xref:brevbaker-pdfbygger-beskrivelse.adoc[Brevbaker og PDFbygger - Teknisk beskrivelse]

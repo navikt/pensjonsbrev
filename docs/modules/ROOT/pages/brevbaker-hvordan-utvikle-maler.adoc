@@ -544,7 +544,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
 For å lage ett brev i brevbakeren må man:
 
 1. Oppdatere api-modell med data-klasse som definerer informasjonsbehovet til malen
-1. Oppdatere api-modell med ny brevkode i Brevkode enum klassen
-1. Midlertidig publisere api-modellen (kjør publish to maven local), bump api-model versjon og oppdater apiModelVersion i gradle.properties
-1. Lage en fil ett fornuftig sted under maler-pakken i brevbakeren med en brevmal.
-
+2. Oppdatere api-modell med ny brevkode i Brevkode enum klassen
+3. Midlertidig publisere api-modellen (kjør publish to maven local), bump api-model versjon og oppdater apiModelVersion i gradle.properties
+4. Lage en fil ett fornuftig sted under maler-pakken i brevbakeren med en brevmal.
