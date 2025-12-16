@@ -1,12 +1,17 @@
 site:
   title: Systemdokumentasjon for Team Pensjonsbrev
   start_page: pensjonsbrev::index.adoc
+
 content:
   sources:
-  - url: .
-    branches: HEAD
-    start_path: .
+    - url: .
+      start_path: docs
+      branches: HEAD
+
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
+
+output:
+  dir: ./build/site

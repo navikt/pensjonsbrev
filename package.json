@@ -1,0 +1,15 @@
+{
+  "name": "pensjonsbrev",
+  "private": true,
+  "scripts": {
+    "build": "antora antora-playbook.yml",
+    "serve": "http-server build/site -c-1",
+    "dev": "onchange 'docs/**/*' 'antora-playbook.yml' -- npm run build"
+  },
+  "devDependencies": {
+    "@antora/cli": "3.1",
+    "@antora/site-generator": "3.1",
+    "http-server": "^14.1.0",
+    "onchange": "^7.1.0"
+  }
+}
