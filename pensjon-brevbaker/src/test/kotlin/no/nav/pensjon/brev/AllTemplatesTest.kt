@@ -66,14 +66,12 @@ class AllTemplatesTest {
     private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}.json"
 
-
-    val path = Path.of("build", "mal_sammenligning")
-
     // Brukes for å sammenligne maler ved f.eks større refactoring for å se at alt innhold er som før.
     // For å se forskjellene, diff mappene for å se at alt er likt
     @Tag(MANUAL_TEST)
     @Test
     fun lagSammenligninsgrunnlag() {
+        val path = Path.of("build", "mal_sammenligning")
         (ProductionTemplates.hentAutobrevmaler() +
                 ProductionTemplates.hentRedigerbareMaler())
             .forEach { template ->
