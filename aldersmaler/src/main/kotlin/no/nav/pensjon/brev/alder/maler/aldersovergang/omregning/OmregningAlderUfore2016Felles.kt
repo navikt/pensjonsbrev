@@ -313,11 +313,19 @@ data class OmregningAlderUfore2016Felles(
 
             ifNotNull(borMedSivilstand){ borMedSivilstand ->
                 paragraph {
-                    text(
+                    showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.EKTEFELLE)) {
+                        text(
+                            bokmal { +"Du er registrert som gift."  },
+                            nynorsk { +"Du er registrert som gift."  },
+                            english { +" You are registered as married."  }
+                        )
+                    }.orShow {
+                        text(
                         bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"."  },
                         nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"."  },
                         english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"."  }
-                    )
+                        )
+                    }
                 }
                 paragraph {
                     text(
@@ -328,15 +336,15 @@ data class OmregningAlderUfore2016Felles(
                     ifNotNull(over2G) { over2G ->
                         showIf(over2G) {
                                 text(
-                                    bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon." },
-                                    nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon." },
-                                    english { +"has an income of over " + kronebelop2G.format() + " or their own pension." })
+                                    bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon, uføretrygd eller omstillingsstønad." },
+                                    nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon, uføretrygd eller omstillingsstønad." },
+                                    english { +"has an income of over " + kronebelop2G.format() + " or their own pension, disability benefit or adjustment allowance." })
 
                         }.orShow {
                                 text(
-                                    bokmal { +"har ikke egen pensjon og heller ikke inntekt over  " + kronebelop2G.format() + "." },
-                                    nynorsk { +"har ikkje eigen pensjon og heller ikkje inntekt over " + kronebelop2G.format() + "." },
-                                    english { +"does not have their own pension nor an income of over " + kronebelop2G.format() + "." })
+                                    bokmal { +"har ikke egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
+                                    nynorsk { +"har ikkje eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
+                                    english { +"does not have their own pension, disability benefit or adjustment allowance nor an income of over " + kronebelop2G.format() + "." })
 
                         }
                     }
