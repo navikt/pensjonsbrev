@@ -124,46 +124,39 @@ data class FikkSkulleFaattTabell(
                 }
             ) {
                 fun avviksResultatRad(
-                    typeStoenad: TextElement<LangBokmalNynorskEnglish>,
-                    resultat: Expression<OpplysningerOmEtteroppgjoeretDto.AvviksResultat?>
+                    resultat: Expression<OpplysningerOmEtteroppgjoeretDto.AvviksResultat?>,
+                    textInit: TextOnlyScope<LangBokmalNynorskEnglish, *>.() -> Unit,
                 ) {
                     ifNotNull(resultat) {
                         row {
-                            cell { addTextContent(typeStoenad) }
+                            cell { apply(textInit) }
                             cell { includePhrase(KronerText(it.skulleFaatt)) }
                             cell { includePhrase(KronerText(it.fikk)) }
                             cell { includePhrase(KronerText(it.avvik)) }
                         }
                     }
                 }
-                avviksResultatRad(
-                    newTextExpr(
-                        Bokmal to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
-                        Nynorsk to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                        English to "Disability benefit".expr() + ifElse(
-                            harGjenlevendeTillegg,
-                            " and survivor supplement",
-                            ""
-                        ),
-                    ),
-                    ufoeretrygd,
-                )
-                avviksResultatRad(
-                    newText(
-                        Bokmal to "Barnetillegg særkullsbarn",
-                        Nynorsk to "Barnetillegg særkullsbarn",
-                        English to "Child supplement, children from a previous relationship"
-                    ),
-                    barnetillegg.safe { saerkull }.safe { resultat },
-                )
-                avviksResultatRad(
-                    newText(
-                        Bokmal to "Barnetillegg fellesbarn",
-                        Nynorsk to "Barnetillegg fellesbarn",
-                        English to "Child supplement, joint children"
-                    ),
-                    barnetillegg.safe { felles }.safe { resultat },
-                )
+                avviksResultatRad(ufoeretrygd) {
+                    text(
+                        bokmal { +"Uføretrygd" + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "")},
+                        nynorsk { +"Uføretrygd" + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", "") },
+                        english { + "Disability benefit" + ifElse(harGjenlevendeTillegg, " and survivor supplement", "") },
+                    )
+                }
+                avviksResultatRad(barnetillegg.safe { saerkull }.safe { resultat }) {
+                    text(
+                        bokmal { +"Barnetillegg særkullsbarn" },
+                        nynorsk { +"Barnetillegg særkullsbarn" },
+                        english { +"Child supplement, children from a previous relationship" },
+                    )
+                }
+                avviksResultatRad(barnetillegg.safe { felles }.safe { resultat }) {
+                    text(
+                        bokmal { +"Barnetillegg fellesbarn" },
+                        nynorsk { +"Barnetillegg fellesbarn" },
+                        english { +"Child supplement, joint children" },
+                    )
+                }
                 row {
                     cell {
                         text(
@@ -445,17 +438,14 @@ data class OmBeregningAvBarnetillegg(
             )
         }
         paragraph {
-            includePhrase(
-                InntektTabell(
-                    barnetillegg.personinntekt.inntekt,
-                    newText(
-                        Bokmal to "Total personinntekt",
-                        Nynorsk to "Samla personinntekt",
-                        English to "Total personal income",
-                        fontType = FontType.BOLD,
-                    ),
+            includePhrase(InntektTabell(barnetillegg.personinntekt.inntekt) {
+                text(
+                    bokmal { +"Total personinntekt" },
+                    nynorsk { +"Samla personinntekt" },
+                    english { +"Total personal income" },
+                    fontType = FontType.BOLD
                 )
-            )
+            })
         }
 
         title2 {
@@ -467,17 +457,14 @@ data class OmBeregningAvBarnetillegg(
         }
         paragraph {
             showIf(barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty()) {
-                includePhrase(
-                    FratrekkTabell(
-                        barnetillegg.personinntekt.fratrekk,
-                        newText(
-                            Bokmal to "Totalbeløp som er trukket fra personinntekten din",
-                            Nynorsk to "Totalbeløp som er trekt frå personinntekta di",
-                            English to "Total amount deducted from your personal income",
-                            fontType = FontType.BOLD,
-                        ),
+                includePhrase(FratrekkTabell(barnetillegg.personinntekt.fratrekk) {
+                    text(
+                        bokmal { +"Totalbeløp som er trukket fra personinntekten din" },
+                        nynorsk { +"Totalbeløp som er trekt frå personinntekta di" },
+                        english { +"Total amount deducted from your personal income" },
+                        fontType = FontType.BOLD
                     )
-                )
+                })
             } orShow {
                 text(
                     bokmal { + "Du har ikke hatt inntekter som er trukket fra personinntekten din i " + periode.format() +
@@ -500,15 +487,14 @@ data class OmBeregningAvBarnetillegg(
             }
             paragraph {
                 includePhrase(
-                    InntektTabell(
-                        fellesbarn.personinntektAnnenForelder.inntekt,
-                        newText(
-                            Bokmal to "Total personinntekt til annen forelder",
-                            Nynorsk to "Den samla personinntekta til den andre forelderen",
-                            English to "Total personal income for the other parent",
+                    InntektTabell(fellesbarn.personinntektAnnenForelder.inntekt){
+                        text(
+                            bokmal { +"Total personinntekt til annen forelder" },
+                            nynorsk { +"Den samla personinntekta til den andre forelderen" },
+                            english { +"Total personal income for the other parent" },
                             fontType = FontType.BOLD,
-                        ),
-                    )
+                        )
+                    }
                 )
             }
             paragraph {
@@ -529,15 +515,14 @@ data class OmBeregningAvBarnetillegg(
                 }
                 paragraph {
                     includePhrase(
-                        FratrekkTabell(
-                            fellesbarn.personinntektAnnenForelder.fratrekk,
-                            newText(
-                                Bokmal to "Totalbeløp som er trukket fra personinntekten til annen forelder",
-                                Nynorsk to "Totalbeløp som er trekt frå personinntekta til den andre forelderen",
-                                English to "Total amount deducted from the other parent's personal income",
+                        FratrekkTabell(fellesbarn.personinntektAnnenForelder.fratrekk){
+                            text(
+                                bokmal { +"Totalbeløp som er trukket fra personinntekten til annen forelder" },
+                                nynorsk { +"Totalbeløp som er trekt frå personinntekta til den andre forelderen" },
+                                english { +"Total amount deducted from the other parent's personal income" },
                                 fontType = FontType.BOLD,
-                            ),
-                        )
+                            )
+                        }
                     )
                 }
 
@@ -807,16 +792,15 @@ data class OmBeregningAvUfoeretrygd(
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
             paragraph {
                 includePhrase(
-                    InntektTabell(
-                        pensjonsgivendeInntekt.inntekt,
-                        newText(
-                            Bokmal to "Total pensjonsgivende inntekt",
-                            Nynorsk to "Samla pensjonsgivande inntekt",
-                            English to "Total pensionable income",
+                    InntektTabell(pensjonsgivendeInntekt.inntekt){
+                        text(
+                            bokmal { +"Total pensjonsgivende inntekt" },
+                            nynorsk { +"Samla pensjonsgivande inntekt" },
+                            english { +"Total pensionable income" },
                             fontType = FontType.BOLD,
-                        ),
-                    ),
-                )
+                        )
+                    },
+                    )
             }
 
             title1 {
@@ -829,15 +813,14 @@ data class OmBeregningAvUfoeretrygd(
             paragraph {
                 showIf(pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
                     includePhrase(
-                        FratrekkTabell(
-                            pensjonsgivendeInntekt.fratrekk,
-                            newText(
-                                Bokmal to "Totalbeløp som er trukket fra",
-                                Nynorsk to "Totalbeløp som er trekt frå",
-                                English to "Total amount deducted",
+                        FratrekkTabell(pensjonsgivendeInntekt.fratrekk) {
+                            text(
+                                bokmal { +"Totalbeløp som er trukket fra" },
+                                nynorsk { +"Totalbeløp som er trekt frå" },
+                                english { +"Total amount deducted" },
                                 fontType = FontType.BOLD,
                             )
-                        )
+                        }
                     )
                 } orShow {
                     text(
@@ -943,8 +926,8 @@ data class ErOpplysningeneOmInntektFeil(
 
 data class FratrekkTabell(
     val fratrekk: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk>,
-    val sumText: TextElement<LangBokmalNynorskEnglish>
-) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+    val sumTextInit: TextOnlyScope<LangBokmalNynorskEnglish, *>.() -> Unit,
+    ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         table(
@@ -986,7 +969,7 @@ data class FratrekkTabell(
                 }
             }
             row {
-                cell { addTextContent(sumText) }
+                cell { apply(sumTextInit) }
                 cell { }
                 cell { includePhrase(KronerText(fratrekk.sum, fontType = FontType.BOLD)) }
             }
@@ -1101,7 +1084,7 @@ data class FratrekkTabell(
 
 data class InntektTabell(
     val inntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt>,
-    val sumText: TextElement<LangBokmalNynorskEnglish>
+    val sumTextInit: TextOnlyScope<LangBokmalNynorskEnglish, *>.() -> Unit,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -1144,7 +1127,7 @@ data class InntektTabell(
                 }
             }
             row {
-                cell { addTextContent(sumText) }
+                cell { apply(sumTextInit) }
                 cell { }
                 cell { includePhrase(KronerText(inntekt.sum, fontType = FontType.BOLD)) }
             }

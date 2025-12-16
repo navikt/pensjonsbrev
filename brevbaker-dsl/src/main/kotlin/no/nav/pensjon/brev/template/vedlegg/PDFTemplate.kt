@@ -33,11 +33,11 @@ class IncludeAttachmentPDF<out Lang : LanguageSupport, AttachmentData : PDFVedle
 }
 
 fun <Lang : LanguageSupport, AttachmentData : PDFVedleggData> createAttachmentPDF(
-    title: List<TextElement<Lang>>,
+    title: PlainTextOnlyScope<Lang, PDFVedleggData>.() -> Unit,
     init: PDFVedlegg.(data: AttachmentData, felles: Felles) -> Unit,
 ): PDFTemplate<Lang, AttachmentData> =
     object : PDFTemplate<Lang, AttachmentData> {
-        override val title = title
+        override val title = PlainTextOnlyScope<Lang, PDFVedleggData>().apply(title).elements
         override fun template(data: AttachmentData, felles: Felles): PDFVedlegg =
             PDFVedlegg().apply { init(data, felles) }
     }

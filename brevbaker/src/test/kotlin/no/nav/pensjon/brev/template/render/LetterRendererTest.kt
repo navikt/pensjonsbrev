@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.dsl.bokmal
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -233,7 +234,7 @@ class LetterRendererTest {
     @Test
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {
         var attachmentScopedExpr: Expression<String>? = null
-        val attachment1 = createAttachment(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment(title = { text(bokmal { +"tittel" }) }, false) {
             paragraph { text(bokmal { +testVerdi1 }) }
             attachmentScopedExpr = testVerdi1
         }
