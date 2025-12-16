@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { BoxNew, Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -93,9 +92,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
         {props.brev.mottaker && props.kanTilbakestilleMottaker && (
           <HStack>
             <Button
-              css={css`
-                padding: 0.5rem 0;
-              `}
+              css={{ padding: "var(--ax-space-8) 0" }}
               loading={fjernMottakerMutation.isPending}
               onClick={() => fjernMottakerMutation.mutate()}
               size="small"
@@ -106,10 +103,10 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
             </Button>
             {fjernMottakerMutation.isError && (
               <XMarkOctagonFillIcon
-                css={css`
-                  align-self: center;
-                  color: var(--ax-text-logo);
-                `}
+                css={{
+                  alignSelf: "center",
+                  color: "var(--ax-text-logo)",
+                }}
                 title="error"
               />
             )}

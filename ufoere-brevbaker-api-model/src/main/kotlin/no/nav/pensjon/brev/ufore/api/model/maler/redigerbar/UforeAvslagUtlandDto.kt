@@ -24,7 +24,10 @@ data class UforeAvslagUtlandDto(
         @DisplayText("Vedtak fra andre land")
         val visVedtakFraAndreLand: Boolean = false,
 
-    ) : SaksbehandlerValgBrevdata
+        @DisplayText("Supplerende stønad til uføre flyktninger")
+        val visSupplerendeStonadUforeFlykninger: Boolean,
+
+        ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,

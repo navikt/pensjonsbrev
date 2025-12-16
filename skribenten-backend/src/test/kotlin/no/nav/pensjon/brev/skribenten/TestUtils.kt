@@ -13,12 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.assertj.core.api.AbstractAssert
 import java.time.LocalDate
-import java.util.function.Consumer
-
-inline fun <reified T> AbstractAssert<*, *>.isInstanceOfSatisfying(block: Consumer<T>) =
-    isInstanceOfSatisfying(T::class.java, block)!!
 
 data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
     override val accessToken: UserAccessToken

@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -105,11 +104,11 @@ class LatexVisualITest {
         render {
             title1 { text(bokmal { +"Form choice" }) }
             paragraph {
-                formChoice(prompt = newText(Bokmal to "Hvor lenge har du jobba?"), true) {
-                    choice(Bokmal to "0 år")
-                    choice(Bokmal to "1 år")
-                    choice(Bokmal to "2 til 5 år")
-                    choice(Bokmal to "6 år eller mer")
+                formChoice(prompt = { text (bokmal {+"Hvor lenge har du jobba?"})}, true) {
+                    choice(bokmal{+"0 år"})
+                    choice(bokmal{+"1 år"})
+                    choice(bokmal{+"2 til 5 år"})
+                    choice(bokmal{+"6 år eller mer"})
                 }
             }
         }
@@ -132,11 +131,11 @@ class LatexVisualITest {
         render {
             title1 { text(bokmal { +"Form choice uten vspace" }) }
             paragraph {
-                formChoice(prompt = newText(Bokmal to "Hvor lenge vil du jobbe?"), false) {
-                    choice(Bokmal to "0 år")
-                    choice(Bokmal to "1 år")
-                    choice(Bokmal to "2 til 5 år")
-                    choice(Bokmal to "6 år eller mer")
+                formChoice(prompt = { text(bokmal {+"Hvor lenge vil du jobbe?"})}, false) {
+                    choice(bokmal{+"0 år"})
+                    choice(bokmal{+"1 år"})
+                    choice(bokmal{+"2 til 5 år"})
+                    choice(bokmal{+"6 år eller mer"})
                 }
             }
         }
@@ -146,7 +145,7 @@ class LatexVisualITest {
     fun `short form text med vspace`() {
         render {
             title1 { text(bokmal { +"Form text short med vspace" }) }
-            paragraph { formText(Size.SHORT, newText(Bokmal to "test"), true) }
+            paragraph { formText(Size.SHORT, { text(bokmal{+"test"}) }, true) }
         }
     }
 
@@ -154,7 +153,7 @@ class LatexVisualITest {
     fun `long form text med vspace`() {
         render {
             title1 { text(bokmal { +"Form text long med vspace" }) }
-            paragraph { formText(Size.LONG, newText(Bokmal to "test"), true) }
+            paragraph { formText(Size.LONG, { text(bokmal{+"test"}) }, true) }
         }
     }
 
@@ -162,7 +161,7 @@ class LatexVisualITest {
     fun `short form text uten vspace`() {
         render {
             title1 { text(bokmal { +"Form text short uten vspace" }) }
-            paragraph { formText(Size.SHORT, newText(Bokmal to "test"), false) }
+            paragraph { formText(Size.SHORT, { text(bokmal{+"test"}) }, false) }
         }
     }
 
@@ -170,7 +169,7 @@ class LatexVisualITest {
     fun `long form text uten vspace`() {
         render {
             title1 { text(bokmal { +"Form text long uten vspace" }) }
-            paragraph { formText(Size.LONG, newText(Bokmal to "test"), false) }
+            paragraph { formText(Size.LONG, { text(bokmal{+"test"}) }, false) }
         }
     }
 

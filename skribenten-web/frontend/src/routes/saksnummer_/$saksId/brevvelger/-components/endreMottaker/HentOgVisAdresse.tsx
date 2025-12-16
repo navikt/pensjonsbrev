@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -25,13 +24,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
   });
 
   return (
-    <div
-      css={css`
-        h3 {
-          margin-bottom: var(--ax-space-4);
-        }
-      `}
-    >
+    <div>
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <>

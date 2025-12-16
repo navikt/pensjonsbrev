@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
@@ -27,13 +27,7 @@ export const TemplateLoader = (props: {
   const preferredLanguage = useQuery(getPreferredLanguageQuery(props.saksId.toString()))?.data?.spraakKode ?? null;
 
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        gap: var(--ax-space-16);
-      `}
-    >
+    <VStack align="start" gap="space-16">
       <FavoriteButton onAddFavorittSuccess={props.onAddFavorittSuccess} templateId={props.templateId} />
       <Brevmal
         enhetsId={props.enhetsId}
@@ -43,7 +37,7 @@ export const TemplateLoader = (props: {
         setOnFormSubmitClick={props.setOnFormSubmitClick}
         templateId={props.templateId}
       />
-    </div>
+    </VStack>
   );
 };
 

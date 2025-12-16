@@ -4,7 +4,7 @@ import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
 
 function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
-    <div>
+    <>
       {(() => {
         switch (letterTemplate.brevsystem) {
           case BrevSystem.Brevbaker: {
@@ -30,7 +30,7 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
           }
         }
       })()}
-    </div>
+    </>
   );
 }
 

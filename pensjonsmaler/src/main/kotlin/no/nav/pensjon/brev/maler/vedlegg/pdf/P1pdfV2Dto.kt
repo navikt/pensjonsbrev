@@ -146,7 +146,7 @@ object P1pdfV2Dto {
         return mapOf(
             "Institution_awarding_the_pension[$radnummer]" to innvilgelse.institusjon?.let { formatInstitusjon(it) },
             "Pensjonstype[$radnummer]" to innvilgelse.pensjonstype?.nummer?.toString()?.let { "[$it]" },
-            "Date_of_first_payment[$radnummer]" to innvilgelse.datoFoersteUtbetaling,
+            "Date_of_first_payment[$radnummer]" to formaterDato(innvilgelse.datoFoersteUtbetaling),
             "Gross_amount[$radnummer]" to innvilgelse.utbetalt,
             "PensjonInnvilget[$radnummer]" to innvilgelse.grunnlagInnvilget?.nummer?.let { "[$it]" },
             "PensjonRedusert[$radnummer]" to innvilgelse.reduksjonsgrunnlag?.nummer?.let { "[$it]" },

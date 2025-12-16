@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Alert, Heading } from "@navikt/ds-react";
+import { Alert, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 
@@ -85,36 +84,15 @@ function BrevOpenError({ error }: { error: unknown }) {
 
   if (error instanceof Error && error.message.includes("Ugyldig brev-ID")) {
     return (
-      <div
-        css={css`
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-top: var(--ax-space-16);
-        `}
-      >
-        <Alert
-          css={css`
-            width: 100%;
-            max-width: 512px;
-          `}
-          size="medium"
-          variant="error"
-        >
-          <Heading level="2" size="small">
+      <VStack align="center" marginBlock="space-12">
+        <Alert css={{ width: "100%", maxWidth: "512px" }} size="medium" variant="error">
+          <Heading level="2" size="small" spacing>
             Ugyldig lenke fra Pesys
           </Heading>
-
-          <div
-            css={css`
-              margin-top: 4px;
-            `}
-          >
-            {error.message}
-          </div>
-          <div>Brev-ID som ble mottatt: {brevId}</div>
+          <p>{error.message}</p>
+          <p>Brev-ID som ble mottatt: {brevId}</p>
         </Alert>
-      </div>
+      </VStack>
     );
   }
 

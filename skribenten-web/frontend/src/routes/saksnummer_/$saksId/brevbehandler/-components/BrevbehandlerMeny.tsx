@@ -136,11 +136,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
 
   return (
-    <VStack
-      css={css`
-        gap: 18px;
-      `}
-    >
+    <VStack gap="space-16">
       {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
       <div>
         <Detail textColor="subtle">Mottaker</Detail>
@@ -189,34 +185,28 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
-    <div>
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: 18px;
-        `}
-      >
-        <EndreMottakerMedOppsummeringOgApiHåndtering
-          brev={props.brev}
-          endreAsIcon
-          kanTilbakestilleMottaker={!erLaast}
-          overrideOppsummering={(edit) => (
-            <VStack flexGrow="1">
-              <HStack justify="space-between" wrap={false}>
-                <BodyShort size="small" weight="semibold">
-                  Mottaker
-                </BodyShort>
-                {!erLaast && edit}
-              </HStack>
-              <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
-            </VStack>
-          )}
-          saksId={props.saksId}
-        />
+    <VStack gap="space-16">
+      <EndreMottakerMedOppsummeringOgApiHåndtering
+        brev={props.brev}
+        endreAsIcon
+        kanTilbakestilleMottaker={!erLaast}
+        overrideOppsummering={(edit) => (
+          <VStack flexGrow="1">
+            <HStack justify="space-between" wrap={false}>
+              <BodyShort size="small" weight="semibold">
+                Mottaker
+              </BodyShort>
+              {!erLaast && edit}
+            </HStack>
+            <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
+          </VStack>
+        )}
+        saksId={props.saksId}
+      />
 
-        {/* Only show the attacment section if P1 (until more attacments are available) */}
-        {props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2" && (
+      {/* Only show the attacment section if P1 (until more attacments are available) */}
+      {props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2" && (
+        <>
           <VStack gap="space-8">
             <BodyShort size="small" weight="semibold">
               Vedlegg
@@ -237,94 +227,74 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
               )}
             </HStack>
           </VStack>
-        )}
 
-        <Switch
-          checked={erLaast}
-          loading={laasForRedigeringMutation.isPending}
-          onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
-          size="small"
-        >
-          {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
-            ? "Brevet er klart for attestering"
-            : "Brevet er klart for sending"}
-        </Switch>
-
-        {laasForRedigeringMutation.isError && (
-          <Alert size="small" variant="error">
-            {getErrorMessage(laasForRedigeringMutation.error)}
-          </Alert>
-        )}
-
-        {!erLaast && (
-          <VStack align="start" gap="space-16">
-            <Button
-              onClick={() =>
-                navigate({
-                  to: "/saksnummer/$saksId/brev/$brevId",
-                  params: { brevId: props.brev.id, saksId: props.saksId },
-                  search: { enhetsId, vedtaksId },
-                })
-              }
-              size="small"
-              variant="secondary-neutral"
-            >
-              Fortsett redigering
-            </Button>
-          </VStack>
-        )}
-
-        {erLaast && (
-          <RadioGroup
-            data-cy="brevbehandler-distribusjonstype"
-            description={
-              <div
-                css={css`
-                  display: flex;
-                  gap: var(--ax-space-8);
-                `}
-              >
-                Distribusjon
-                <span
-                  css={css`
-                    display: flex;
-                  `}
-                >
-                  {distribusjonstypeMutation.isPending && <Loader size="small" />}
-                  {distribusjonstypeMutation.isError && (
-                    <XMarkOctagonFillIcon
-                      css={css`
-                        align-self: center;
-                        color: var(--ax-text-logo);
-                      `}
-                      title="error"
-                    />
-                  )}
-                </span>
-              </div>
-            }
-            legend=""
-            onChange={(v) => distribusjonstypeMutation.mutate(v)}
-            size="small"
-            value={props.brev.distribusjonstype}
-          >
-            <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
-            <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
-          </RadioGroup>
-        )}
-
-        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
-      </div>
-
-      {modalopen && (
-        <P1EditModal
-          brevId={props.brev.id}
-          onClose={() => setModalopen(false)}
-          open={modalopen}
-          saksId={props.saksId}
-        />
+          {modalopen && (
+            <P1EditModal
+              brevId={props.brev.id}
+              onClose={() => setModalopen(false)}
+              open={modalopen}
+              saksId={props.saksId}
+            />
+          )}
+        </>
       )}
-    </div>
+
+      <Switch
+        checked={erLaast}
+        loading={laasForRedigeringMutation.isPending}
+        onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
+        size="small"
+      >
+        {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
+          ? "Brevet er klart for attestering"
+          : "Brevet er klart for sending"}
+      </Switch>
+      {laasForRedigeringMutation.isError && (
+        <Alert size="small" variant="error">
+          {getErrorMessage(laasForRedigeringMutation.error)}
+        </Alert>
+      )}
+      {!erLaast && (
+        <VStack align="start" gap="space-16">
+          <Button
+            onClick={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brev/$brevId",
+                params: { brevId: props.brev.id, saksId: props.saksId },
+                search: { enhetsId, vedtaksId },
+              })
+            }
+            size="small"
+            variant="secondary-neutral"
+          >
+            Fortsett redigering
+          </Button>
+        </VStack>
+      )}
+
+      {erLaast && (
+        <RadioGroup
+          data-cy="brevbehandler-distribusjonstype"
+          description={
+            <HStack align="center">
+              Distribusjon
+              {distribusjonstypeMutation.isPending && <Loader size="small" />}
+              {distribusjonstypeMutation.isError && (
+                <XMarkOctagonFillIcon color="var(--ax-text-danger-decoration)" title="error" />
+              )}
+            </HStack>
+          }
+          legend=""
+          onChange={(v) => distribusjonstypeMutation.mutate(v)}
+          size="small"
+          value={props.brev.distribusjonstype}
+        >
+          <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
+          <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
+        </RadioGroup>
+      )}
+      {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
+    </VStack>
   );
 };
 
@@ -346,19 +316,13 @@ const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjelden
 
 const LokalPrintInfoAlerts = () => {
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        gap: var(--ax-space-20);
-      `}
-    >
+    <VStack gap="space-20">
       <Alert size="small" variant="warning">
         Du må åpne PDF og skrive ut brevet etter du har ferdigstilt.
       </Alert>
       <Alert size="small" variant="info">
         Skribenten-brev som skal til samhandler kan sendes via sentralprint.
       </Alert>
-    </div>
+    </VStack>
   );
 };

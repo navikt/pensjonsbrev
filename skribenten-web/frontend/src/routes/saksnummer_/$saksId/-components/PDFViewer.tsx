@@ -1,10 +1,10 @@
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
-import { css } from "@emotion/react";
+import { BoxNew, HStack, VStack } from "@navikt/ds-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { pdfjs } from "react-pdf";
-import { Document, Page } from "react-pdf";
+import { Document, Page as PDFPage } from "react-pdf";
 
 import PDFViewerTopBar from "./PDFViewerTopBar";
 
@@ -14,7 +14,6 @@ const PDFViewer = (properties: {
   sakId: string;
   brevId: number;
   pdf: Blob;
-  viewerHeight?: string;
   utenSlettKnapp?: boolean;
   children?: React.ReactNode;
 }) => {
@@ -71,53 +70,41 @@ const PDFViewer = (properties: {
   }, [totalNumberOfPages, handleScroll]);
 
   return (
-    <div
-      css={css`
-        background: var(--ax-neutral-400);
-      `}
-      ref={pdfContainerReference}
-    >
-      <PDFViewerTopBar
-        brevId={properties.brevId}
-        sakId={properties.sakId}
-        utenSlettKnapp={properties.utenSlettKnapp}
-        viewerControls={{
-          currentPageNumber,
-          setCurrentPageNumber,
-          totalNumberOfPages,
-          scale,
-          setScale,
-        }}
-      />
-      {properties.children}
-      <div
-        css={css`
-          display: flex;
-          justify-content: space-around;
-          padding: var(--ax-space-12);
-          height: ${properties.viewerHeight ? `calc(${properties.viewerHeight} - 48px)` : "auto"};
-          overflow: scroll;
-        `}
-      >
-        <Document
-          file={properties.pdf}
-          loading="Henter brev..."
-          onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
-        >
-          {Array.from({ length: totalNumberOfPages }, (_, index) => (
-            <div className={`pdf-page`} id={`page_${index + 1}`} key={`page_${index + 1}`}>
-              <Page
-                css={css`
-                  margin-bottom: var(--ax-space-16);
-                `}
-                pageNumber={index + 1}
-                scale={scale}
-              />
-            </div>
-          ))}
-        </Document>
-      </div>
-    </div>
+    <BoxNew asChild background="neutral-soft" overflow="auto" ref={pdfContainerReference}>
+      <VStack>
+        <PDFViewerTopBar
+          brevId={properties.brevId}
+          sakId={properties.sakId}
+          utenSlettKnapp={properties.utenSlettKnapp}
+          viewerControls={{
+            currentPageNumber,
+            setCurrentPageNumber,
+            totalNumberOfPages,
+            scale,
+            setScale,
+          }}
+        />
+        {properties.children}
+        <HStack justify="space-around" overflow="scroll" padding="space-12">
+          <Document
+            file={properties.pdf}
+            loading="Henter brev..."
+            onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
+          >
+            {Array.from({ length: totalNumberOfPages }, (_, index) => (
+              <BoxNew
+                className={`pdf-page`}
+                id={`page_${index + 1}`}
+                key={`page_${index + 1}`}
+                marginBlock="0 space-16"
+              >
+                <PDFPage pageNumber={index + 1} scale={scale} />
+              </BoxNew>
+            ))}
+          </Document>
+        </HStack>
+      </VStack>
+    </BoxNew>
   );
 };
 

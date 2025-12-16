@@ -1,9 +1,9 @@
-import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
   BodyShort,
+  BoxNew,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -239,9 +239,6 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
 
   return (
     <Modal
-      css={css`
-        border-radius: var(--ax-radius-4);
-      `}
       header={{
         heading: "Vil du ferdigstille, og sende disse brevene?",
       }}
@@ -252,16 +249,12 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     >
       <form onSubmit={form.handleSubmit(onSendValgteBrev)}>
         <Modal.Body>
-          <div
-            css={css`
-              margin-bottom: var(--ax-space-16);
-            `}
-          >
+          <BoxNew marginBlock="0 space-16">
             {queryFold({
               query: alleBrevResult,
               initial: () => null,
               pending: () => <Label>Henter alle ferdigstilte brev...</Label>,
-              error: (error) => <ApiError error={error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />,
+              error: (error) => <ApiError error={error} title="Klarte ikke å hente alle ferdigstilte for saken" />,
               success: () => (
                 <VStack gap="space-24">
                   {brevSending.length > 0 && (
@@ -306,7 +299,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                 </VStack>
               ),
             })}
-          </div>
+          </BoxNew>
         </Modal.Body>
         <Modal.Footer>
           <HStack gap="space-16">
