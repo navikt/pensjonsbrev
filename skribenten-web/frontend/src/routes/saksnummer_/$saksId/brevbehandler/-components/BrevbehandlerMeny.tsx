@@ -4,6 +4,7 @@ import {
   Accordion,
   Alert,
   BodyShort,
+  BoxNew,
   Button,
   Detail,
   HStack,
@@ -201,49 +202,42 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           endreAsIcon
           kanTilbakestilleMottaker={!erLaast}
           overrideOppsummering={(edit) => (
-            <div>
-              <Detail textColor="subtle">Mottaker</Detail>
-              <HStack align="start" gap="space-32" wrap={false}>
-                <OppsummeringAvMottaker
-                  mottaker={props.brev.mottaker ?? null}
-                  saksId={props.saksId}
-                  withTitle={false}
-                />
+            <VStack flexGrow="1">
+              <HStack justify="space-between" wrap={false}>
+                <BodyShort size="small" weight="semibold">
+                  Mottaker
+                </BodyShort>
                 {!erLaast && edit}
               </HStack>
-            </div>
+              <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
+            </VStack>
           )}
           saksId={props.saksId}
         />
 
-        <VStack gap="space-8">
-          <BodyShort size="small" weight="semibold">
-            Vedlegg
-          </BodyShort>
-
-          <HStack align="center">
-            <BodyShort
-              css={css`
-                margin-right: auto;
-              `}
-              size="small"
-            >
-              1. P1
+        {/* Only show the attacment section if P1 (until more attacments are available) */}
+        {props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2" && (
+          <VStack gap="space-8">
+            <BodyShort size="small" weight="semibold">
+              Vedlegg
             </BodyShort>
-            {!erLaast && (
-              <Button
-                css={css`
-                  padding: 0;
-                `}
-                icon={<PencilIcon fontSize="24px" />}
-                onClick={() => setModalopen(true)}
-                size="xsmall"
-                type="button"
-                variant="tertiary"
-              />
-            )}
-          </HStack>
-        </VStack>
+
+            <HStack align="center" justify="space-between">
+              <BodyShort size="small">P1</BodyShort>
+              {!erLaast && (
+                <BoxNew asChild borderRadius="4">
+                  <Button
+                    icon={<PencilIcon />}
+                    onClick={() => setModalopen(true)}
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                  />
+                </BoxNew>
+              )}
+            </HStack>
+          </VStack>
+        )}
 
         <Switch
           checked={erLaast}
