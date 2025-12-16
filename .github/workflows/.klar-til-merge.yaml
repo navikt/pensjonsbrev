@@ -1,0 +1,15 @@
+name: .klar-til-merge.yaml
+
+on:
+  workflow_call:
+
+jobs:
+  klarTilMerge:
+    name: "Klar til merge"
+    runs-on: "ubuntu-latest"
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - id: ok
+        shell: bash
+        run: |
+          echo "Klar til merge"
