@@ -24,7 +24,7 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     val avdodInformasjon: AvdodInformasjon,
     val institusjonsoppholdVedVirk: Institusjon,
     val institusjonsoppholdGjeldende: Institusjon,
-    val sivilstand: BorMedSivilstand,
+    val sivilstand: BorMedSivilstand?,
     val virkFom: LocalDate,
     val harBarnUnder18: Boolean,
     val etterBetaling: Boolean,
