@@ -70,7 +70,7 @@ const PDFViewer = (properties: {
   }, [totalNumberOfPages, handleScroll]);
 
   return (
-    <BoxNew asChild background="neutral-soft" overflow="auto" ref={pdfContainerReference}>
+    <BoxNew asChild background="neutral-soft" height="var(--main-page-content-height)" ref={pdfContainerReference}>
       <VStack>
         <PDFViewerTopBar
           brevId={properties.brevId}
@@ -85,7 +85,7 @@ const PDFViewer = (properties: {
           }}
         />
         {properties.children}
-        <HStack justify="space-around" overflow="scroll" padding="space-12">
+        <HStack justify="space-around" overflow="auto" padding="space-12">
           <Document
             file={properties.pdf}
             loading="Henter brev..."
