@@ -1388,12 +1388,6 @@ public final class no/nav/pensjon/brev/template/dsl/UtilsKt {
 	public static final fun languages (Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/LanguageSupport$Single;
 	public static final fun languages (Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/LanguageSupport$Double;
 	public static final fun languages (Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/LanguageSupport$Triple;
-	public static final fun newText (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newText (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newText (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newText$default (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newText$default (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newText$default (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
