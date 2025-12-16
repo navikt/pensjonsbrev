@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.EmptyPDFVedleggData
 import no.nav.pensjon.brev.template.FellesFactory
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ class PDFDSLTest {
 
     @Test
     fun `tolk dsl`() {
-        val vedlegg = createAttachmentPDF<LangBokmal, EmptyPDFVedleggData>(listOf(newText(Language.Bokmal to "Hei"))) {
+        val vedlegg = createAttachmentPDF<LangBokmal, EmptyPDFVedleggData>(title = { text(bokmal { +"Hei" }) }) {
             data, felles ->
             side("Side1.pdf") {
                 felt {

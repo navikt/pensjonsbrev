@@ -2,26 +2,25 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
 val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-    title = newText(
-        Bokmal to "Informasjon til deg som handler på vegne av barnet",
-        Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
-        English to "Information for those acting on behalf of the child",
-    ),
+    title = {
+        text(
+            bokmal { +"Informasjon til deg som handler på vegne av barnet" },
+            nynorsk { +"Informasjon til deg som handlar på vegner av barnet" },
+            english { +"Information for those acting on behalf of the child" },
+        )
+    },
     includeSakspart = false,
 ) {
     informasjon()
@@ -31,11 +30,13 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment<LangB
 
 @TemplateModelHelpers
 val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-    title = newText(
-        Bokmal to "Informasjon til deg som handler på vegne av barnet",
-        Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
-        English to "Information for those acting on behalf of the child",
-    ),
+    title = {
+        text(
+            bokmal { +"Informasjon til deg som handler på vegne av barnet" },
+            nynorsk { +"Informasjon til deg som handlar på vegner av barnet" },
+            english { +"Information for those acting on behalf of the child" },
+        )
+    },
     includeSakspart = false,
 ) {
     informasjon()

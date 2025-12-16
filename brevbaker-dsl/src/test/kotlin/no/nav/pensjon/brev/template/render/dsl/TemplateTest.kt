@@ -58,11 +58,13 @@ class TemplateTest {
     @Test
     fun `createTemplate adds attachment`() {
         val attachment = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-            title = newText(
-                Language.Bokmal to "asdf",
-                Language.Nynorsk to "asdf",
-                Language.English to "asdf",
-            ),
+            title = {
+                text(
+                    bokmal { +"asdf" },
+                    nynorsk { +"asdf" },
+                    english { +"asdf" },
+                )
+            },
         ) {
             paragraph {
                 text(

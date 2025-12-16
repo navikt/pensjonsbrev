@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.*
@@ -41,11 +40,13 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 @TemplateModelHelpers
 val beregningAvBarnepensjonGammeltOgNyttRegelverk: AttachmentTemplate<LangBokmalNynorskEnglish, BarnepensjonBeregning> = createAttachment(
-    title = newText(
-        Bokmal to "Beregning av barnepensjon",
-        Nynorsk to "Utrekning av barnepensjon",
-        English to "Calculation of Children’s Pension",
-    ),
+    title = {
+        text(
+            bokmal { +"Beregning av barnepensjon" },
+            nynorsk { +"Utrekning av barnepensjon" },
+            english { +"Calculation of Children’s Pension" },
+        )
+    },
     includeSakspart = false
 ) {
     paragraph {
@@ -82,11 +83,13 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk: AttachmentTemplate<LangBokmal
 
 @TemplateModelHelpers
 val beregningAvBarnepensjonNyttRegelverk: AttachmentTemplate<LangBokmalNynorskEnglish, BarnepensjonBeregning> = createAttachment(
-    title = newText(
-        Bokmal to "Beregning av barnepensjon",
-        Nynorsk to "Utrekning av barnepensjon",
-        English to "Calculation of Children’s Pension",
-    ),
+    title = {
+        text(
+            bokmal { +"Beregning av barnepensjon" },
+            nynorsk { +"Utrekning av barnepensjon" },
+            english { +"Calculation of Children’s Pension" },
+        )
+    },
     includeSakspart = false
 ) {
     paragraph {

@@ -1,17 +1,15 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
@@ -19,12 +17,14 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterBosattUtland = createAttachment(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Rettane og pliktene dine",
-        English to "Your rights and obligations",
-    ),
+val dineRettigheterOgPlikterBosattUtland: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> = createAttachment(
+    title = {
+        text(
+            bokmal { +"Dine rettigheter og plikter" },
+            nynorsk { +"Rettane og pliktene dine" },
+            english { +"Your rights and obligations" },
+        )
+    },
     includeSakspart = false,
 ) {
     meldFraOmEndringer()
@@ -35,12 +35,14 @@ val dineRettigheterOgPlikterBosattUtland = createAttachment(
 }
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterNasjonal = createAttachment(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Rettane og pliktene dine",
-        English to "Your rights and obligations",
-    ),
+val dineRettigheterOgPlikterNasjonal: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> = createAttachment(
+    title = {
+        text(
+            bokmal { +"Dine rettigheter og plikter" },
+            nynorsk { +"Rettane og pliktene dine" },
+            english { +"Your rights and obligations" },
+        )
+    },
     includeSakspart = false,
 ) {
     meldFraOmEndringer()

@@ -2,23 +2,10 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AttachmentTemplate
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BrevDTO
@@ -64,12 +51,13 @@ data class EtteroppgjoerGrunnlagDTO(
 @TemplateModelHelpers
 val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVedleggData> =
     createAttachment(
-        title =
-        newText(
-            Bokmal to "Opplysninger om etteroppgjøret",
-            Nynorsk to "Opplysningar om etteroppgjeret",
-            English to "Information concerning final settlement",
-        ),
+        title = {
+            text(
+                bokmal { +"Opplysninger om etteroppgjøret" },
+                nynorsk { +"Opplysningar om etteroppgjeret" },
+                english { +"Information concerning final settlement" },
+            )
+        },
         includeSakspart = false,
     ) {
         opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar)
