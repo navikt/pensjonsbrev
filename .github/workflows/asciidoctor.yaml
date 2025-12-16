@@ -28,39 +28,43 @@ jobs:
         shell: bash
         working-directory: "docs"
     steps:
-    - uses: actions/checkout@v6
-      with:
-        persist-credentials: false
-    - uses: actions/setup-java@v5
-      with:
-        distribution: ${{ env.JavaDistribution }}
-        java-version: ${{ env.JavaVersion }}
-    - uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71
-      with:
-        ruby-version: '2.6'
-    - name: Install plantuml
-      run: "sudo gem install asciidoctor-diagram asciidoctor-diagram-plantuml"
-    - name: Install asciidoctor
-      run: "sudo apt-get install asciidoctor"
-    - name: Install graphviz
-      run: "sudo apt-get install graphviz"
-    - name: Compile using asciidoctor
-      run: "asciidoctor -D ${{ github.workspace }}/build -r asciidoctor-diagram index.adoc"
-    - name: Print working directory for test
-      run: "pwd"
-    - name: Upload generated site
-      uses: actions/upload-artifact@v5
-      with:
-        name: site
-        path: "${{ github.workspace }}/build"
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-    - name: Deploy to GitHub Pages
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23
-      with:
-        folder: "build"
-        branch: 'gh-pages'
-        commit-message: "[CI] Publisere dokumentasjon"
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Antora Site
+        run: npm run build
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/site
+      
+      - name: Print working directory for test
+        run: "pwd"
+      
+      - name: Upload generated site
+        uses: actions/upload-artifact@v5
+        with:
+          name: site
+          path: "${{ github.workspace }}/build"
+
+      - name: Deploy to GitHub Pages
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23
+        with:
+          folder: "build"
+          branch: "gh-pages"
+          commit-message: "[CI] Publisere dokumentasjon"
 
   "klarTilMerge":
     name: "Klar til merge"
