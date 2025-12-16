@@ -65,6 +65,7 @@ jobs:
   "klarTilMerge":
     name: "Klar til merge"
     needs: [build_site]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v6
