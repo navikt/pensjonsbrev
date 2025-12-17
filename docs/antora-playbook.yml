@@ -1,7 +1,7 @@
 site:
   title: Systemdokumentasjon for Team Pensjonsbrev
   url: https://navikt.github.io/pensjonsbrev/
-  start_page: pensjonsbrev::index.adoc
+  start_page: docs::index.adoc
 
 content:
   sources:
