@@ -63,7 +63,6 @@ ktlint_standard_parameter-list-spacing = disabled
 ktlint_standard_parameter-list-wrapping = disabled
 ktlint_standard_paren-spacing = disabled
 ktlint_standard_property-naming = disabled
-ktlint_standard_range-spacing = disabled # denne er trolig enkel å fase ut
 ktlint_standard_spacing-around-angle-brackets = disabled
 ktlint_standard_spacing-between-declarations-with-annotations = disabled
 ktlint_standard_spacing-between-declarations-with-comments = disabled
