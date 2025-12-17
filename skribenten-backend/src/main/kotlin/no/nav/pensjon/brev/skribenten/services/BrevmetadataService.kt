@@ -125,11 +125,11 @@ data class BrevdataDto(
                 || (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
 
     enum class BrevregeltypeCode {
-        GG,     //Gammelt regelverk
-        GN,     //Nytt regelverk med gammel opptjening
-        NN,     //Nytt regelverk
-        ON,     //Overgangsordning med ny og gammel opptjening
-        OVRIGE;  //vrige brev, ikke knyttet til gammelt eller nytt regelverk.
+        GG, //Gammelt regelverk
+        GN, //Nytt regelverk med gammel opptjening
+        NN, //Nytt regelverk
+        ON, //Overgangsordning med ny og gammel opptjening
+        OVRIGE; //Øvrige brev, ikke knyttet til gammelt eller nytt regelverk.
 
         fun gjelderGammeltRegelverk() =
             when (this) {

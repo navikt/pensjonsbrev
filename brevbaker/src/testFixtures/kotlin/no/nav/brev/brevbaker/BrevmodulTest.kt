@@ -76,7 +76,7 @@ abstract class BrevmodulTest(
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
-            .filterNot { it.template.letterDataType in setOf(EmptyAutobrevdata::class, EmptyRedigerbarBrevdata::class)  }
+            .filterNot { it.template.letterDataType in setOf(EmptyAutobrevdata::class, EmptyRedigerbarBrevdata::class) }
             .forEach {
                 assertTrue(
                     it.javaClass.declaredAnnotations.any { annotation -> annotation.annotationClass == TemplateModelHelpers::class },

@@ -82,7 +82,7 @@ object Fixtures : LetterDataFactory {
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             eosNordisk = false,
             avtaletype = "USA",
-            artikkel =  "8",
+            artikkel = "8",
             trygdetidListe = listOf(
                 UforeAvslagUtlandDto.Trygdetid(
                     land = "Norge",

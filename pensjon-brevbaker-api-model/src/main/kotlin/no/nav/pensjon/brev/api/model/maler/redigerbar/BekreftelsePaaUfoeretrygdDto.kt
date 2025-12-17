@@ -10,7 +10,7 @@ data class BekreftelsePaaUfoeretrygdDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, BekreftelsePaaUfoeretrygdDto.PesysData> {
 
     data class PesysData(
-        val foedselsdato: LocalDate,  // PE_PersonSak_PSfødselsdato
-        val navn: String  // PE_PersonSak_PSNavn
+        val foedselsdato: LocalDate, // PE_PersonSak_PSfødselsdato
+        val navn: String // PE_PersonSak_PSNavn
     ) : FagsystemBrevdata
 }

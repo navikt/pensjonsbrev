@@ -1813,7 +1813,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     .format(false) },
                             )
                         }
-                        cell {  }
+                        cell { }
                     }
 
 
@@ -1831,7 +1831,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     english { + "Exemption amount applied in calculation of reduction in child supplement are NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(false) },
                                 )
                             }
-                            cell {  }
+                            cell { }
                         }
                     }
 
@@ -1847,7 +1847,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     english { + "Income exceeding the exemption amount NOK " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(false) },
                                 )
                             }
-                            cell {  }
+                            cell { }
                         }
                     }
 
@@ -1948,7 +1948,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             }
                             cell {
                                 text(
-                                    bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false)  + " kr" },
+                                    bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) + " kr" },
                                     english { + "NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) },
                                     FontType.BOLD
