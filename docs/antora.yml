@@ -1,5 +1,5 @@
 name: pensjonsbrev
-version: ~
+version: true
 title: Pensjonsbrev
 nav:
     - modules/ROOT/nav.adoc

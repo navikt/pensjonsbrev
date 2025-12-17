@@ -12,17 +12,18 @@ on:
       - "docs/**"
       - ".github/workflows/asciidoctor.yaml"
 
-env:
-  JavaDistribution: "temurin"
-  JavaVersion: 21
+permissions:
+  contents: read
+  pages: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build_site:
     name: "build asciidoc for github pages"
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      contents: write
     defaults:
       run:
         shell: bash
@@ -48,23 +49,18 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/site
-      
-      - name: Print working directory for test
-        run: "pwd"
-      
-      - name: Upload generated site
-        uses: actions/upload-artifact@v5
-        with:
-          name: site
-          path: "${{ github.workspace }}/build"
-
+  deploy:
+    name: "deploy to github pages"
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build_site
+    steps:
       - name: Deploy to GitHub Pages
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23
-        with:
-          folder: "build"
-          branch: "gh-pages"
-          commit-message: "[CI] Publisere dokumentasjon"
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   "klarTilMerge":
     name: "Klar til merge"
