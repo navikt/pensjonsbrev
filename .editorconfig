@@ -35,7 +35,6 @@ ktlint_standard_final-newline = disabled
 ktlint_standard_function-expression-body = disabled
 ktlint_standard_function-literal = disabled
 ktlint_standard_function-naming = disabled
-ktlint_standard_function-return-type-spacing = disabled
 ktlint_standard_function-signature = disabled
 ktlint_standard_function-start-of-body-spacing = disabled
 ktlint_standard_if-else-bracing = disabled
