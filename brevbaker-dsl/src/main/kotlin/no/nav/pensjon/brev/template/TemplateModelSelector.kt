@@ -14,9 +14,9 @@ interface TemplateModelSelector<Model : Any, Property> : StableHash {
     }
 }
 
-data class SimpleSelector<A : Any, B>(
+data class SimpleSelector<Model : Any, Property>(
     override val className: String,
     override val propertyName: String,
     override val propertyType: String,
-    override val selector: (A) -> B
-) : TemplateModelSelector<A, B>
+    override val selector: Model.() -> Property
+) : TemplateModelSelector<Model, Property>
