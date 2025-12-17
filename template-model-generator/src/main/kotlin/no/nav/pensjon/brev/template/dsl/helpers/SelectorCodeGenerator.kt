@@ -83,7 +83,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 |        className = "$dataClassName",
                 |        propertyName = "$propertyName",
                 |        propertyType = "$type",
-                |        selector = { it.$propertyName }
+                |        selector = $dataClassName::$propertyName
                 |    )
                 |
                 |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
