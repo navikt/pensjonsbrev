@@ -25,10 +25,6 @@ jobs:
   build_site:
     name: "build asciidoc for github pages"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: "docs"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -41,15 +37,18 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
+        working-directory: docs
         run: npm ci
 
       - name: Build Antora Site
+        working-directory: docs
         run: npm run build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/site
+          path: docs/build/site
+
   deploy:
     name: "deploy to github pages"
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
