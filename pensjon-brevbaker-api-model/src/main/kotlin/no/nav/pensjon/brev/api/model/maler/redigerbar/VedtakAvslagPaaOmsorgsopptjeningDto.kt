@@ -17,6 +17,8 @@ data class VedtakAvslagPaaOmsorgsopptjeningDto(
         val omsorgsarbeidFoer1992: Boolean,
         @DisplayText("Omsorgsarbeid utført etter 69 år")
         val omsorgsarbeidEtter69Aar: Boolean,
+        @DisplayText("Pleie- og omsorgsarbeid mindre enn 22 timer  og mindre enn 6 måneder")
+        val omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder: Boolean,
         @DisplayText("Pleie- og omsorgsarbeid mindre enn 22 timer")
         val omsorgsarbeidMindreEnn22Timer: Boolean,
         @DisplayText("Pleie- og omsorgsarbeid mindre enn 6 måneder")

@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsoppt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidEtter69Aar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidFoer1992
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn22Timer
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn6Maaneder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsopptjeningenGodskrevetEktefellen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.privatAFPavslaat
@@ -26,12 +27,9 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // PE_IY_04_010
@@ -70,7 +68,11 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                             "pleie- og omsorgsarbeid/omsorg for barn under 7 år før 1992"
                         ) + " for følgende år:"
                     },
-                    nynorsk { +"" },
+                    nynorsk {
+                        +pesysData.navEnhet + "viser til søknaden din om å få godskriven pensjonsopptening for " + fritekst(
+                            "pleie- og omsorgsarbeid/omsorg for barn under 7 år før 1992"
+                        ) + " for følgjande år:"
+                    },
                     english {
                         +pesysData.navEnhet + " refers to your application to be accredited pension rights for " + fritekst(
                             "nursing and care work/care work for children under 7 years of age before 1992 "
@@ -97,22 +99,24 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
-            paragraph {
-                val hjemmel = fritekst(
-                    "Velg et alternativ eller fyller inn tekst selv. "
-                            + "Vær oppmerksom på at hjemmelen for avslag kan være § 3-16 og tilhørende forskrift, "
-                            + "men også § 20-21 (for personer født etter 1953 og opptjeningsår før 2009) "
-                            + "eller § 20-8 (for personer født etter 1953 og opptjeningsår fom 2010). "
-                            + "Benyttes hjemlene i kapittel 20 skal OMSORGSPOENG erstattes med OMSORGSOPPTJENING. "
-                            + "Hjemmelen kan også være AFP-tilskottsloven hvis vedtaket gjelder pensjonsopptjening for omsorg for barn under 7 år før 1992."
-                )
-            }
+            /*            paragraph {
+                            val hjemmel = fritekst(
+                                "Velg et alternativ eller fyller inn tekst selv. "
+                                        + "Vær oppmerksom på at hjemmelen for avslag kan være § 3-16 og tilhørende forskrift, "
+                                        + "men også § 20-21 (for personer født etter 1953 og opptjeningsår før 2009) "
+                                        + "eller § 20-8 (for personer født etter 1953 og opptjeningsår fom 2010). "
+                                        + "Benyttes hjemlene i kapittel 20 skal OMSORGSPOENG erstattes med OMSORGSOPPTJENING. "
+                                        + "Hjemmelen kan også være AFP-tilskottsloven hvis vedtaket gjelder pensjonsopptjening for omsorg for barn under 7 år før 1992."
+                            )
+                        }
+                        */
+
             showIf(saksbehandlerValg.omsorgsarbeidFoer1992) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter forskriften til folketrygdloven § 3-16 fjerdeledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for en syk, en funksjonshemmet eller en eldre person." },
-                        nynorsk { +"Vedtaket er gjort etter forskrifta til folketrygdlova § 3-16 fjerde ledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for ein sjuk, ein funksjonshemma eller ein eldre person." },
-                        english { +"The decision is made in aacordance with the National Insurance act § 3-15 fourth sub-section on the accreditng of acquired rights for care work for an ill, disabled or elderly person." }
+                        bokmal { +"Vedtaket er gjort etter forskriften til folketrygdloven paragraf 3-16 fjerdeledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for en syk, en funksjonshemmet eller en eldre person." },
+                        nynorsk { +"Vedtaket er gjort etter forskrifta til folketrygdlova paragraf 3-16 fjerde ledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for ein sjuk, ein funksjonshemma eller ein eldre person." },
+                        english { +"The decision is made inn accordance with the National Insurance Act paragraph 3-16 fourth sub-section on the accreditng of acquired rights for care work for an ill, disabled or old person." }
                     )
                 }
                 paragraph {
@@ -123,6 +127,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
             }
+
             showIf(saksbehandlerValg.omsorgsarbeidEtter69Aar) {
                 paragraph {
                     text(
@@ -144,12 +149,51 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
             }
+
+            showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven § 3-16 første led bokstav b og forskriften til § 3-16." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova § 3-16 første ledd bokstav b og forskrifta til § 3-16." },
+                        english { +"The decision has been made pursuant to the National Insurance Act § 3-16, first paragraph, letter b, and the regulations to § 3-16." }
+                    )
+                }
+            }
+            paragraph {
+                text(
+                    bokmal { +"I følge disse bestemmelsene må du ha utført pleie- og omsorgsarbeid i minst 22 timer per uke inkludert reisetid, " +
+                            "for å få godskrevet pensjonspoeng for pleie- og omsorgsarbeid for eldre, syke eller funksjonshemmede. " +
+                            "Arbeidet må som hovedregel også ha vart i til sammen minst seks måneder i kalenderåret." },
+                    nynorsk { +"Ifølgje desse føresegnene må du ha utført pleie- og omsorgsarbeid i minst 22 timar per veke, inkludert reisetid, " +
+                            "for å få godskrive pensjonspoeng for pleie- og omsorgsarbeid for eldre, sjuke eller funksjonshemma. " +
+                            "Arbeidet må som hovudregel òg ha vara i til saman minst seks månader i kalenderåret." },
+                    english { +"In accordance with these provisions, you must have carried out care work for at least 22 hours per week, " +
+                            "including travel time, in order to have pension points credited for the care of the elderly, sick or disabled. " +
+                            "As a general rule, the work must also have totaled at least six months in the calendar year." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"På bakgrunn av opplysningene som vi har mottatt fra kommunen, " +
+                            "finner vi at pleie- og omsorgsarbeidet ikke har utgjort minst 22 timer per uke inkludert reisetid. " +
+                            "Det har heller ikke vart i til sammen minst 6 måneder i " + fritekst("år") + ". " +
+                            "Kommunen oppgir at omsorgsarbeidet har hatt et omfang på om lag " + fritekst("antall timer") +
+                            " timer per uke og har vart i om lag <måneder> måneder i " + fritekst("år") + "." },
+                    nynorsk { +"" },
+                    english { +"Based on the information we have received from the local authority, " +
+                            "we conclude that the care work has not amounted to at least 22 hours per week, including travel time. " +
+                            "Furthermore, we find that the care work has not been carried out for a minimum of 6 months during " + fritekst("år") + ". " +
+                            "The local authority states that the extent of the care work has been about " + fritekst("timer") +
+                            " per week and was carried out for about " + fritekst("månder") + " months during " + fritekst("år") + "." },
+                )
+            }
+
             showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22Timer) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven § 3-16 første led bokstav b og forskriften til § 3-16." },
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova § 3-16 første ledd bokstav b og forskrifta til § 3-16." },
-                        english { +"The decision has been taken under § 3-16, first paragraph letter b of the National Insurance Act, and regulations to § 3-16." }
+                        english { +"The decision has been made pursuant to the National Insurance Act § 3-16, first paragraph, letter b, and the regulations to § 3-16." }
                     )
                 }
                 paragraph {
@@ -165,9 +209,9 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                                     "Arbeidet må som hovudregel òg ha vara i til saman minst seks månader i kalenderåret."
                         },
                         english {
-                            +"In accordance with these provisions, you must have carried out nursing and care work for at least 22 hours per week, including travelling time, " +
-                                    "in order to have pension points credited for the nursing and care of the elderly, ill or disabled. " +
-                                    "As a general rule, the work must have lasted for at least six months of the calendar year in all."
+                            +"In accordance with these provisions, you must have carried out care work for at least 22 hours per week, including travel time, " +
+                                    "in order to have pension points credited for the care of the elderly, ill or disabled. " +
+                                    "As a general rule, the work must also have totaled at least six months in the calendar year."
                         }
                     )
                 }
@@ -185,50 +229,70 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                         },
                         english {
                             +"Based on the information we have received from the local authority, " +
-                                    "we find that the nursing and care work has not amounted to at least 22 hours per week including travelling time. " +
-                                    "In total, it has not lasted at least six months during " + fritekst("år") + ". " +
-                                    "The local authority states that the extent of the care work has been " + fritekst("antall timer") + " hours per week and has lasted for " + fritekst(
-                                "antall måneder"
-                            ) + " months during " + fritekst("år") + "."
+                                    "we find that the care work has not amounted to at least 22 hours per week including travel time. " +
+                                    "The local authority states that the extent of the care work has been " + fritekst("antall timer") + " hours per week."
                         },
                     )
                 }
             }
+
             showIf(saksbehandlerValg.omsorgsarbeidMindreEnn6Maaneder) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven § 3-16 første led bokstav b og forskriften til § 3-16." },
-                        nynorsk { +"" },
-                        english { +"" }
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova § 3-16 første ledd bokstav b og forskrifta til § 3-16." },
+                        english { +"The decision has been made pursuant to the National Insurance Act § 3-16, first paragraph, letter b, and the regulations to § 3-16." }
                     )
                 }
                 paragraph {
                     text(
                         bokmal {
-                            +"I følge disse bestemmelsene må du ha utført pleie- og omsorgsarbeid i minst 6 måneder, " +
+                            +"I følge disse bestemmelsene må du må ha utført pleie- og omsorgsarbeid i minst 22 timer per uke inkludert reisetid, " +
                                     "for å få godskrevet pensjonspoeng for pleie- og omsorgsarbeid for eldre, syke eller funksjonshemmede. " +
                                     "Arbeidet må som hovedregel også ha vart i til sammen minst seks måneder i kalenderåret."
                         },
-                        nynorsk { +"" },
-                        english { +"" }
+                        nynorsk {
+                            +"Ifølgje desse føresegnene må du ha utført pleie- og omsorgsarbeid i minst 22 timar per veke inkludert reisetid, " +
+                                    "for å få godskrive pensjonspoeng for pleie- og omsorgsarbeid for eldre, sjuke eller funksjonshemma. " +
+                                    "Arbeidet må som hovudregel òg ha vara i til saman minst seks månader i kalenderåret."
+                        },
+                        english {
+                            +"In accordance with these provisions, you must have carried out care work for at least 22 hours per week including travel time, " +
+                                    "in order to have pension points credited for the care of the elderly, ill or disabled. " +
+                                    "As a general rule, the work must also have totaled at least six months in the calendar year."
+                        }
                     )
                 }
                 paragraph {
                     text(
                         bokmal {
-                            +"På bakgrunn av opplysninger som vi har mottatt fra kommunen, " +
-                                    "finner vi at pleie- og omsorgsarbeidet ikke har vart i til sammen seks måneder i " + fritekst(
+                            +"På bakgrunn av opplysningene som vi har mottatt fra kommunen, " +
+                                    "finner vi at pleie- og omsorgsarbeidet ikke har vart i til sammen minst seks måneder i " + fritekst(
                                 "år"
                             ) + ". " +
                                     "Kommunen oppgir at omsorgsarbeidet bare har vart i cirka " + fritekst("antall måneder") + " måneder i " + fritekst(
                                 "år"
                             ) + "."
                         },
-                        nynorsk { +"" },
-                        english { +"" }
+                        nynorsk {
+                            +"På bakgrunn av opplysningar som vi har motteke frå kommunen, " +
+                                    "finn vi at pleie- og omsorgsarbeidet ikkje har vara i til saman seks månader i " + fritekst(
+                                "år"
+                            ) + ". " +
+                                    "Kommunen oppgjev at omsorgsarbeidet berre har vara i om lag " + fritekst("antall måneder") + " månader i " + fritekst(
+                                "år"
+                            ) + "."
+                        },
+                        english {
+                            +"Based on the information we have received from the local authority, we find that the care work has not amounted to at least 6 months during " + fritekst(
+                                "år"
+                            ) + ". " +
+                                    "The local authority states that the extent of the care work has been about " + fritekst("antall måneder") + " months during " + fritekst("år") + "."
+                        }
                     )
                 }
             }
+
             showIf(saksbehandlerValg.privatAFPavslaat) {
                 paragraph {
                     text(
@@ -248,6 +312,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
             }
+
             showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {
                 paragraph {
                     text(
@@ -267,6 +332,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
             }
+
             showIf(saksbehandlerValg.brukerFoedtFoer1948) {
                 paragraph {
                     text(
@@ -283,10 +349,12 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
             }
+
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.omsorg)
         }
+
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
     }
 }
