@@ -56,7 +56,6 @@ ktlint_standard_no-trailing-spaces = disabled
 ktlint_standard_no-unused-imports = disabled
 ktlint_standard_no-wildcard-imports = disabled
 ktlint_standard_op-spacing = disabled
-ktlint_standard_parameter-list-spacing = disabled
 ktlint_standard_parameter-list-wrapping = disabled
 ktlint_standard_paren-spacing = disabled
 ktlint_standard_property-naming = disabled
