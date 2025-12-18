@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
@@ -32,6 +33,8 @@ allprojects {
         compilerOptions {
             freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
         }
+    }
+    tasks.withType<KtLintCheckTask> {
         dependsOn("ktlintFormat")
     }
     tasks.withType<Test>{
