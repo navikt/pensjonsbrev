@@ -55,10 +55,10 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-        val kravAarsak: KravArsakType,  //v3.Krav
-        val kravVirkDatoFom: LocalDate,  //v3.Krav
+        val kravAarsak: KravArsakType, //v3.Krav
+        val kravVirkDatoFom: LocalDate, //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
-        val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
+        val saerskiltSatsErBrukt: Boolean, //saerskiltSatsVedVirk
         val sivilstand: MetaforceSivilstand,
         val beloepEndring: BeloepEndring,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
@@ -75,7 +75,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val grunnbelop: Kroner,  // beregnetPensjonPerManedVedVirk
-        val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
+        val grunnbelop: Kroner, // beregnetPensjonPerManedVedVirk
+        val totalPensjon: Kroner, //beregnetPensjonPerManedVedVirk
     )
 }

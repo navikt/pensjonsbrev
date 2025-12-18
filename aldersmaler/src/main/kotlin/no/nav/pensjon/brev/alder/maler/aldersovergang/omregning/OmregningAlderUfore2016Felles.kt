@@ -189,9 +189,9 @@ data class OmregningAlderUfore2016Felles(
             showIf(eksportTrygdeavtaleEOS) {
                 paragraph {
                     text(
-                        bokmal { +"Vi forutsetter at du bor i " + faktiskBostedsland + "Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon." },
-                        nynorsk { +"Vi føreset at du bur i " + faktiskBostedsland + "Dersom du skal flytte til eit land utanfor EØS-området, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon." },
-                        english { +"We presume that you live in " + faktiskBostedsland + "If you are moving to a country outside the EEA region, it is important that you contact Nav We will then reassess your eligibility for retirement pension." }
+                        bokmal { +"Vi forutsetter at du bor i " + faktiskBostedsland + ". Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon." },
+                        nynorsk { +"Vi føreset at du bur i " + faktiskBostedsland + ". Dersom du skal flytte til eit land utanfor EØS-området, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon." },
+                        english { +"We presume that you live in " + faktiskBostedsland + ". If you are moving to a country outside the EEA region, it is important that you contact Nav We will then reassess your eligibility for retirement pension." }
                     )
                 }
             }
@@ -199,9 +199,9 @@ data class OmregningAlderUfore2016Felles(
             showIf(eksportTrygdeavtaleAvtaleland) {
                 paragraph {
                     text(
-                        bokmal { +"Vi forutsetter at du bor i " + faktiskBostedsland + "Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon." },
-                        nynorsk { +"Vi føreset at du bur i " + faktiskBostedsland + "Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon." },
-                        english { +"We presume that you live in " + faktiskBostedsland + "If you are moving to another country, it is important that you contact Nav We will then reassess your eligibility for retirement pension." }
+                        bokmal { +"Vi forutsetter at du bor i " + faktiskBostedsland + ". Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon." },
+                        nynorsk { +"Vi føreset at du bur i " + faktiskBostedsland + ". Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon." },
+                        english { +"We presume that you live in " + faktiskBostedsland + ". If you are moving to another country, it is important that you contact Nav We will then reassess your eligibility for retirement pension." }
                     )
                 }
             }
@@ -315,15 +315,15 @@ data class OmregningAlderUfore2016Felles(
                 paragraph {
                     showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.EKTEFELLE)) {
                         text(
-                            bokmal { +"Du er registrert som gift."  },
-                            nynorsk { +"Du er registrert som gift."  },
-                            english { +" You are registered as married."  }
+                            bokmal { +"Du er registrert som gift." },
+                            nynorsk { +"Du er registrert som gift." },
+                            english { +" You are registered as married." }
                         )
                     }.orShow {
                         text(
-                        bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"."  },
-                        nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"."  },
-                        english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"."  }
+                        bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"." },
+                        nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"." },
+                        english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"." }
                         )
                     }
                 }
@@ -342,8 +342,8 @@ data class OmregningAlderUfore2016Felles(
 
                         }.orShow {
                                 text(
-                                    bokmal { +"har ikke egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
-                                    nynorsk { +"har ikkje eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
+                                    bokmal { +"ikke har egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
+                                    nynorsk { +"ikkje har eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
                                     english { +"does not have their own pension, disability benefit or adjustment allowance nor an income of over " + kronebelop2G.format() + "." })
 
                         }

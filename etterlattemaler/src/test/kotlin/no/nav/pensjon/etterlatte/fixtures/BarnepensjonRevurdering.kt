@@ -15,7 +15,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import java.time.LocalDate
 import java.time.Month
 
-fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
+fun createBarnepensjonRevurderingDTO(): BarnepensjonRevurderingDTO {
     val bruktTrygdetid = Trygdetid(
         trygdetidsperioder = listOf(
             Trygdetidsperiode(

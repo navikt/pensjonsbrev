@@ -15,6 +15,7 @@ jacksonJsr310Version = "2.20.1"
 jupiterVersion = "6.0.1"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
+ktlintVersion = "14.0.1"
 logbackVersion = "1.5.21"
 logstashVersion = "9.0"
 micrometerVersion = "1.16.0"
@@ -28,6 +29,7 @@ valkeyVersion = "5.5.0"
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }

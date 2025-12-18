@@ -42,8 +42,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
         val epsVedVirk: EpsVedVirk?,
-        val kravAarsak: KravArsakType,  //v3.Krav
-        val kravVirkDatoFom: LocalDate,  //v3.Krav
+        val kravAarsak: KravArsakType, //v3.Krav
+        val kravVirkDatoFom: LocalDate, //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sivilstand: MetaforceSivilstand,
         val beloepEndring: BeloepEndring,
@@ -71,7 +71,7 @@ data class EndringAvAlderspensjonSivilstandDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
-        val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
+        val grunnpensjon: Kroner?, //beregnetPensjonPerManedVedVirk
+        val totalPensjon: Kroner, //beregnetPensjonPerManedVedVirk
     )
 }

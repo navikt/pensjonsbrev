@@ -210,7 +210,7 @@ class BrevredigeringServiceTest {
         override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
-            }  ?: notYetStubbed("Mangler pesysBrevdata stub")
+            } ?: notYetStubbed("Mangler pesysBrevdata stub")
 
         override suspend fun sendbrev(sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean) =
             sendBrevResponse?.also {

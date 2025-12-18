@@ -31,7 +31,7 @@ import java.time.YearMonth
 data class BeregningsVedleggData(
     override val innhold: List<no.nav.pensjon.etterlatte.maler.Element>,
     val etteroppgjoersAar: Int,
-    val utbetalingData : EtteroppgjoerUtbetalingDTO,
+    val utbetalingData: EtteroppgjoerUtbetalingDTO,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
     val erVedtak: Boolean = false
 ) : VedleggData, BrevDTO

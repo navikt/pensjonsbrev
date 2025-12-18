@@ -298,7 +298,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"Grunnpensjon" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -308,6 +307,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -319,7 +319,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"Tilleggspensjon" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -329,6 +328,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -340,7 +340,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"Særtillegg" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -350,6 +349,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -361,7 +361,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"AFP-tillegg" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -371,6 +370,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -382,7 +382,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"Faste utgifter ved institusjonsopphald" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -392,6 +391,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -403,7 +403,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"Familietillegg ved institusjonsopphald" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -413,6 +412,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -424,7 +424,6 @@ data class TabellInnholdOffentligMedAvkort(
                                 nynorsk { +"Minstenivåtillegg individuelt" },
                             )
                         }
-                        cell { includePhrase(KronerText(it)) }
                         cell {
                             includePhrase(
                                 KronerText(
@@ -434,6 +433,7 @@ data class TabellInnholdOffentligMedAvkort(
                                 ),
                             )
                         }
+                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -448,7 +448,7 @@ data class TabellInnholdOffentligMedAvkort(
                     cell {
                         includePhrase(
                             KronerText(
-                                afpStatBeregning.totalPensjon.ifNull(
+                                afpStatBeregning.totalPensjonForAvkort.ifNull(
                                     Kroner(0),
                                 ),
                                 FontType.BOLD,
@@ -458,7 +458,7 @@ data class TabellInnholdOffentligMedAvkort(
                     cell {
                         includePhrase(
                             KronerText(
-                                afpStatBeregning.totalPensjonForAvkort.ifNull(
+                                afpStatBeregning.totalPensjon.ifNull(
                                     Kroner(0),
                                 ),
                                 FontType.BOLD,
