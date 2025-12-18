@@ -11,8 +11,6 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.borIUtlandet
 
 object OmstillingsstoenadFellesFraser {
 

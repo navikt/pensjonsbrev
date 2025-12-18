@@ -18,7 +18,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonFore
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
 import java.time.LocalDate
 import java.time.Month
-import java.time.YearMonth
 
 fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
     val tt2 = Trygdetid(

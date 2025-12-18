@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.template.vedlegg
 
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.EmptyPDFVedleggData
 import no.nav.pensjon.brev.template.FellesFactory
 import no.nav.pensjon.brev.template.dsl.text

@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.brev.InternKonstruktoer
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType

@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUnder5AarTrygdetidAutoDto
 import no.nav.pensjon.brev.alder.model.vedlegg.Trygdetid
-import java.time.LocalDate
 
 fun createUnder5AarTrygdetidAutoDto() = AvslagUnder5AarTrygdetidAutoDto(
     regelverkType = no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011,

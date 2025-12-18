@@ -1,7 +1,5 @@
 package no.nav.brev.brevbaker
 
-import java.util.Objects
-
 @Suppress("unused")
 class PDFCompilationOutput(val bytes: ByteArray) {
     override fun equals(other: Any?): Boolean {
