@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.HasModel
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 internal val testLetterMetadata = LetterMetadata(
