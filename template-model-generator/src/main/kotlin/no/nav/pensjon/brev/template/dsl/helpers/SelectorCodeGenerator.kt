@@ -54,7 +54,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             writer.println()
             node.children.values.forEach { generateSelectors(it, indent + INDENT, writer) }
 
-            writer.println("${indent}}")
+            writer.println("$indent}")
         }
 
         private fun generateSelectors(

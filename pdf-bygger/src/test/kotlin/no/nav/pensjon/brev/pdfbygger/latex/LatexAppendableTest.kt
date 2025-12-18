@@ -109,7 +109,7 @@ class LatexAppendableTest {
         val cmd = "mycommand"
         val body = """\othercmd{hei_sann}"""
         appendable.appendNewCmd(cmd, body, escape = false)
-        assertThat(printedString()).startsWith("""\newcommand{\$cmd}{${body}}""")
+        assertThat(printedString()).startsWith("""\newcommand{\$cmd}{$body}""")
     }
 
     @Test

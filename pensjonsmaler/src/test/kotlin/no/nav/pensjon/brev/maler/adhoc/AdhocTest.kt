@@ -20,13 +20,13 @@ import org.junit.jupiter.api.Test
 class AdhocTest {
     fun testHtml(template: LetterTemplate<*, EmptyAutobrevdata>, htmlName: String, vararg language: Language) {
         language.forEach {
-            LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
+            LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_$it")
         }
     }
 
     fun testAdhocPdf(template: LetterTemplate<*, EmptyAutobrevdata>, pdfName: String, vararg language: Language) {
         language.forEach {
-            LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
+            LetterTestImpl(template, EmptyAutobrevdata, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_$it")
         }
     }
 
@@ -116,7 +116,7 @@ class AdhocTest {
         LetterTestImpl(
             AdHocVarselUgyldiggjoringFullmaktsgiver.template,
             Fixtures.create<FullmaktsgiverBprofAutoDto>(),
-            Language.Bokmal,
+            Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF(AdHocVarselUgyldiggjoringFullmaktsgiver.kode.name)
 

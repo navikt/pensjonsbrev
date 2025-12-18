@@ -38,11 +38,11 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         valgteVedlegg: List<AlltidValgbartVedleggKode>
     ): Letter<BrevbakerBrevdata> {
         val template =
-            brevTemplate?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+            brevTemplate?.template ?: throw NotFoundException("Template '$brevkode' doesn't exist")
 
         val language = spraak.toLanguage()
         if (!template.language.supports(language)) {
-            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
+            throw BadRequestException("Template '$brevkode' doesn't support language: ${template.language}")
         }
 
         @OptIn(InterneDataklasser::class)

@@ -50,7 +50,7 @@ internal object VedleggAppender {
     }
 
     private fun lesInnPDF(filnavn: String, spraak: LanguageCode) =
-        javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
+        javaClass.getResource("/vedlegg/$filnavn-${spraak.name}.pdf")
             ?.let { Loader.loadPDF(it.readBytes()) }
             ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
 

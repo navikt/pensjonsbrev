@@ -42,7 +42,7 @@ internal object LatexDocumentRenderer {
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
             attachments.forEachIndexed { id, attachment ->
-                newLatexFile("attachment_${id}.tex") { renderAttachment(attachment) }
+                newLatexFile("attachment_$id.tex") { renderAttachment(attachment) }
             }
         }
 

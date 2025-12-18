@@ -69,7 +69,7 @@ class BrevmetadataServiceHttp(
     }
 
     override suspend fun getMal(brevkode: String): BrevdataDto {
-        return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
+        return httpClient.get("/api/brevdata/brevForBrevkode/$brevkode") {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
     }
