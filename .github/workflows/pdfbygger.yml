@@ -34,7 +34,7 @@ env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
   "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger:main"
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 permissions:
   contents: read

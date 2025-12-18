@@ -41,7 +41,7 @@ on:
       - "gradle/wrapper/gradle-wrapper.properties"
 env:
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 permissions:
   contents: read
