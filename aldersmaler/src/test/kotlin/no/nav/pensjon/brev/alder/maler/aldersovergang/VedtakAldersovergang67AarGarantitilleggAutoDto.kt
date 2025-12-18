@@ -2,10 +2,10 @@ package no.nav.pensjon.brev.alder.maler.aldersovergang
 
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.alder.model.aldersovergang.AlderspensjonVedVirk
 import no.nav.pensjon.brev.alder.model.aldersovergang.BeregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 

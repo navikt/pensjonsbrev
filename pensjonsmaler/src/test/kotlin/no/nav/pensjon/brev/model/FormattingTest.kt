@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.model
 
-import no.nav.pensjon.brev.template.ExpressionScope
-import no.nav.pensjon.brev.template.Language
-import org.junit.jupiter.api.Test
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import org.junit.jupiter.api.Test
 
 
 class FormattingTest {

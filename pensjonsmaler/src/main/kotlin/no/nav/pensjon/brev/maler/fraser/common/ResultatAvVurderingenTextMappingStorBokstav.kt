@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler.fraser.common
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.Language.*
 
 
 data class ResultatAvVurderingenTextMappingStorBokstav(

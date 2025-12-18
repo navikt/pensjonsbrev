@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.alder.maler.stans
 
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.EksportForbudKode
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.Sakstype
 import java.time.LocalDate
 
 fun createVedtakStansAlderspensjonFlyttingMellomLandDto() =

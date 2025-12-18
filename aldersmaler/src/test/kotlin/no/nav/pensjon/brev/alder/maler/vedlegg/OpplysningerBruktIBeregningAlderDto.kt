@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.Beregningsmetode
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.PoengTallsType
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 fun createOpplysningerBruktIBeregningAlderDto() =

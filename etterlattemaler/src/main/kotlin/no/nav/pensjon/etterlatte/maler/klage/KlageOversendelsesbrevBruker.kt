@@ -20,9 +20,9 @@ import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
-import no.nav.pensjon.etterlatte.maler.fraser.common.mottakersFoedselsnummer
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
+import no.nav.pensjon.etterlatte.maler.fraser.common.mottakersFoedselsnummer
 import no.nav.pensjon.etterlatte.maler.fraser.common.saksbehandlingstiderUrl
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.bosattIUtlandet
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.harVerge

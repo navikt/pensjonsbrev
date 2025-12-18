@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template.dsl.helpers.testcases
 
-import no.nav.pensjon.brev.template.HasModel
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.HasModel
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.FirstSelectors.second
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.FourthSelectors.value
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.SecondSelectors.third

@@ -2,17 +2,13 @@ package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap19
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.virkFom
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.avtaleland
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.borINorge
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland
@@ -22,7 +18,9 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksport
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.erEksportberegnet
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingFemArKap19
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingFemArKap20
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap19
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap20
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.antallBeregningsperioder
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.borMedSivilstand
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.brukersSivilstand
@@ -34,6 +32,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskap
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.innvilgetFor67
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.kronebelop2G
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattDto
@@ -47,6 +46,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.skjermingstilleggInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.totalPensjon
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.uttaksgrad
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.virkFom
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdodSelectors.avdodNavn
 import no.nav.pensjon.brev.template.AutobrevTemplate

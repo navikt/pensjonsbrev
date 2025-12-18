@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template.vedlegg
 
-import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brevbaker.api.model.EmptyPDFVedleggData
 import no.nav.pensjon.brev.template.FellesFactory
+import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.EmptyPDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

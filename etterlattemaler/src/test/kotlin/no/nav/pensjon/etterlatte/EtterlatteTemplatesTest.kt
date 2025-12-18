@@ -1,9 +1,9 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.instanceOf
+import no.nav.brev.brevbaker.BrevmodulTest
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
-import no.nav.brev.brevbaker.BrevmodulTest
 import no.nav.brev.brevbaker.jacksonObjectMapper
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode

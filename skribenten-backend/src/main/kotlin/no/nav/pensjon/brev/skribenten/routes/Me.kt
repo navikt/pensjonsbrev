@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.db.FavouritesRepository
+import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
 fun Route.meRoute(navansattService: NavansattService) {

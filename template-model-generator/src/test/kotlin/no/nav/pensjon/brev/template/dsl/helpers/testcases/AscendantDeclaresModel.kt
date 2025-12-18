@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.template.dsl.helpers.testcases
 
-import no.nav.pensjon.brev.template.HasModel
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.AscendantDeclaresModelSelectors.TheModelSelectors
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.AscendantDeclaresModelSelectors.TheModelSelectors.navn
 
@@ -24,9 +24,9 @@ object AscendantDeclaresModel {
     @OptIn(InternKonstruktoer::class)
     object MyClass : AThirdInterface<Int> {
         fun someusage() {
-            val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
-            val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
-            val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
+            SimpleTemplateScope<TheModel>().navn
+            Expression.Literal(TheModel("jadda")).navn
+            TheModelSelectors.navnSelector
         }
     }
 }

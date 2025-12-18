@@ -2,10 +2,10 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
