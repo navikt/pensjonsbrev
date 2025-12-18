@@ -315,15 +315,15 @@ data class OmregningAlderUfore2016Felles(
                 paragraph {
                     showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.EKTEFELLE)) {
                         text(
-                            bokmal { +"Du er registrert som gift."  },
-                            nynorsk { +"Du er registrert som gift."  },
-                            english { +" You are registered as married."  }
+                            bokmal { +"Du er registrert som gift." },
+                            nynorsk { +"Du er registrert som gift." },
+                            english { +" You are registered as married." }
                         )
                     }.orShow {
                         text(
-                        bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"."  },
-                        nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"."  },
-                        english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"."  }
+                        bokmal { +"Du er registrert som " +borMedSivilstand.ubestemtForm()+"." },
+                        nynorsk { +"Du er registrert som "+borMedSivilstand.ubestemtForm()+"." },
+                        english { +" You are registered as "+borMedSivilstand.ubestemtForm()+"." }
                         )
                     }
                 }

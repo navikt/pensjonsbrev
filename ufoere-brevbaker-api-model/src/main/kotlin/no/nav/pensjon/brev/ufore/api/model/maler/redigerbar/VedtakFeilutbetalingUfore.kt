@@ -14,7 +14,7 @@ import java.time.Month
 data class VedtakFeilutbetalingUforeIngenTilbakekrevingDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: EmptySaksbehandlerValg,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData> {}
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData>
 
 data class VedtakFeilutbetalingUforeDto(
     override val pesysData: PesysData, override val saksbehandlerValg: Saksbehandlervalg

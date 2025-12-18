@@ -25,7 +25,7 @@ fun HttpClientConfig<*>.callIdAndOnBehalfOfClient(scope: String, authService: Au
     }
 }
 
-fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((method: HttpMethod, url: Url, cause: Throwable?) -> Boolean) = { _,_,_ -> false } ) {
+fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 10, shouldNotRetry: ((method: HttpMethod, url: Url, cause: Throwable?) -> Boolean) = { _, _, _ -> false}) {
     install(HttpRequestRetry) {
         delayMillis {
             minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)

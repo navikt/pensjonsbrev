@@ -312,7 +312,7 @@ class LatexVisualITest {
             title1 {
                 text(bokmal { +"Test-tittel" })
             }
-            paragraph { testTable(5) }        }
+            paragraph { testTable(5) } }
     }
 
     @Test

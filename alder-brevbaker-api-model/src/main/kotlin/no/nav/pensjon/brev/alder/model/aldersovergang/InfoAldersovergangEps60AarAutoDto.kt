@@ -8,5 +8,5 @@ data class InfoAldersovergangEps60AarAutoDto(
 
 enum class Ytelse {
     ALDER,
-    AFP;
+    AFP
 }

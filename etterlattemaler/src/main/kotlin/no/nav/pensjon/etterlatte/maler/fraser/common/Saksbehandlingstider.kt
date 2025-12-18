@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 
-fun saksbehandlingstiderUrl(sakType: Expression<SakType>) : Expression<String> =
+fun saksbehandlingstiderUrl(sakType: Expression<SakType>): Expression<String> =
     Expression.BinaryInvoke(
         first = sakType,
         second = Expression.FromScope.Language,
