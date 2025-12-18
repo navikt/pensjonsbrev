@@ -32,6 +32,7 @@ allprojects {
         compilerOptions {
             freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
         }
+        dependsOn("ktlintFormat")
     }
     tasks.withType<Test>{
         testLogging {
