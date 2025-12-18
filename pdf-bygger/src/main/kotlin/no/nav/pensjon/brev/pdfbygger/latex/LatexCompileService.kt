@@ -95,8 +95,7 @@ class LatexCompileService(
         texFilename: String = "letter",
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
-    ): Execution {
-        return withContext(Dispatchers.IO) {
+    ): Execution = withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
                 process = ProcessBuilder(latexCommand)
@@ -122,7 +121,6 @@ class LatexCompileService(
                 process?.destroyForcibly()
             }
         }
-    }
 }
 
 private sealed class Execution {

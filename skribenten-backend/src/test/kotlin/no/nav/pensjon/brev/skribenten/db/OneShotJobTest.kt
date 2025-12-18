@@ -37,9 +37,7 @@ class OneShotJobTest {
     }
 
     // Util function to avoid silly name collisions in tests
-    private fun jobName(name: String): String {
-        return "${jobnameCounter.incrementAndGet()}-$name"
-    }
+    private fun jobName(name: String): String = "${jobnameCounter.incrementAndGet()}-$name"
 
     @Test
     fun `will execute the job and record it as completed`() {

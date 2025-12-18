@@ -12,11 +12,9 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 object LetterResponseFileConverter : ContentConverter {
     override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? = null
 
-    override suspend fun serialize(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any?): OutgoingContent? {
-        return if (value is LetterResponse) {
+    override suspend fun serialize(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any?): OutgoingContent? = if (value is LetterResponse) {
             ContentType.parse(value.contentType)
                 .takeIf { contentType.withCharset(charset).match(it) }
                 ?.let { ByteArrayContent(value.file, it) }
         } else null
-    }
 }

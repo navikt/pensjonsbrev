@@ -43,12 +43,10 @@ object ADGroups {
     }
 }
 
-private class LateinitStringBackingField() {
+private class LateinitStringBackingField {
     private lateinit var value: String
 
-    operator fun getValue(thisRef: ADGroups, property: KProperty<*>): ADGroup {
-        return ADGroup(value)
-    }
+    operator fun getValue(thisRef: ADGroups, property: KProperty<*>): ADGroup = ADGroup(value)
     operator fun setValue(thisRef: ADGroups, property: KProperty<*>, value: ADGroup) {
         this.value = value.id
     }

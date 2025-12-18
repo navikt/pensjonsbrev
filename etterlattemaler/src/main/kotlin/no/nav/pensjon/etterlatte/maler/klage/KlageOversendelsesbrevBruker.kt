@@ -151,9 +151,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
     }
 }
 
-fun sakUrl(sakType: Expression<SakType>): Expression<String> {
-    return ifElse(sakType.equalTo(SakType.BARNEPENSJON), Constants.BARNEPENSJON_URL.expr(), Constants.OMS_URL.expr())
-}
+fun sakUrl(sakType: Expression<SakType>): Expression<String> = ifElse(sakType.equalTo(SakType.BARNEPENSJON), Constants.BARNEPENSJON_URL.expr(), Constants.OMS_URL.expr())
 
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterTekstlinjer(
     linjer: Expression<List<String>>

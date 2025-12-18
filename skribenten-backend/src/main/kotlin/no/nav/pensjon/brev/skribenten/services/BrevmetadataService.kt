@@ -61,18 +61,14 @@ class BrevmetadataServiceHttp(
         }
     }
 
-    override suspend fun getEblanketter(): List<BrevdataDto> {
-        return httpClient.get("/api/brevdata/eblanketter") {
+    override suspend fun getEblanketter(): List<BrevdataDto> = httpClient.get("/api/brevdata/eblanketter") {
             contentType(ContentType.Application.Json)
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
-    }
 
-    override suspend fun getMal(brevkode: String): BrevdataDto {
-        return httpClient.get("/api/brevdata/brevForBrevkode/$brevkode") {
+    override suspend fun getMal(brevkode: String): BrevdataDto = httpClient.get("/api/brevdata/brevForBrevkode/$brevkode") {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
-    }
 
     override suspend fun ping() =
         ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }

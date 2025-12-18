@@ -11,11 +11,9 @@ class ValueClassWrapper<Wrapped : Any, Unwrapped: Any>(private val column: Colum
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Wrapped {
-        return with(thisRef) {
+    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Wrapped = with(thisRef) {
             wrap(column.getValue(thisRef, property))
         }
-    }
 }
 
 class ValueClassWrapperNullable<Wrapped : Any, Unwrapped: Any>(private val column: Column<Unwrapped?>, private val wrap: (Unwrapped) -> Wrapped, private val unwrap: (Wrapped) -> Unwrapped) {
@@ -25,11 +23,9 @@ class ValueClassWrapperNullable<Wrapped : Any, Unwrapped: Any>(private val colum
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Wrapped? {
-        return with(thisRef) {
+    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Wrapped? = with(thisRef) {
             column.getValue(thisRef, property)?.let(wrap)
         }
-    }
 }
 fun <Unwrapped : Any, Wrapped : Any> Column<Unwrapped>.wrap(wrap: (Unwrapped) -> Wrapped, unwrap: (Wrapped) -> Unwrapped) =
     ValueClassWrapper(this, wrap, unwrap)

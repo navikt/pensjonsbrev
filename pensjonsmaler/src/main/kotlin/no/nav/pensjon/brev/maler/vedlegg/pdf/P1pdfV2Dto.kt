@@ -143,8 +143,7 @@ object P1pdfV2Dto {
         ENGLISH to "See previous decisions from the relevant country",
     )
 
-    fun innvilgetPensjon(radnummer: Int, innvilgelse: P1RedigerbarDto.InnvilgetPensjon): Map<String, Any?> {
-        return mapOf(
+    fun innvilgetPensjon(radnummer: Int, innvilgelse: P1RedigerbarDto.InnvilgetPensjon): Map<String, Any?> = mapOf(
             "Institution_awarding_the_pension[$radnummer]" to innvilgelse.institusjon?.let { formatInstitusjon(it) },
             "Pensjonstype[$radnummer]" to innvilgelse.pensjonstype?.nummer?.toString()?.let { "[$it]" },
             "Date_of_first_payment[$radnummer]" to formaterDato(innvilgelse.datoFoersteUtbetaling),
@@ -154,12 +153,11 @@ object P1pdfV2Dto {
             "Review_period[${radnummer * 2}]" to innvilgelse.vurderingsperiode,
             "Where_to_adress_the_request[$radnummer]" to innvilgelse.adresseNyVurdering,
         )
-    }
 
     fun vurderingsperiode(
         erNorskRad: Boolean,
         vurderingsperiode: String?
-    ): Any? = if (erNorskRad) {
+    ): Any = if (erNorskRad) {
         vurderingsperiodeSeksUker
     } else vurderingsperiode ?: seTidligereVedtakFraLand
 
@@ -208,8 +206,7 @@ object P1pdfV2Dto {
         "Date of the decision: $formattertDato"
     }
 
-    fun avslaattPensjon(radnummer: Int, avslag: P1RedigerbarDto.AvslaattPensjon): Map<String, Any?> {
-        return mapOf(
+    fun avslaattPensjon(radnummer: Int, avslag: P1RedigerbarDto.AvslaattPensjon): Map<String, Any?> = mapOf(
             "Institution_rejecting_the_pension[$radnummer]" to
                     avslag.institusjon?.let {
                         formatInstitusjon(it)
@@ -223,7 +220,6 @@ object P1pdfV2Dto {
 
             "Where_to_adress_the_request[$radnummer]" to avslag.adresseNyVurdering,
         )
-    }
 
     fun LanguageCode.locale(): Locale =
         when (this) {

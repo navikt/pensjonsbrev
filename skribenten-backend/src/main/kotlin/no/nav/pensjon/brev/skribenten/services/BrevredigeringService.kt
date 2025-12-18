@@ -221,8 +221,7 @@ class BrevredigeringService(
      * Slett brev med id.
      * @return `true` om brevet ble slettet, false om brevet ikke eksisterer,
      */
-    fun slettBrev(saksId: Long, brevId: Long): Boolean {
-        return transaction {
+    fun slettBrev(saksId: Long, brevId: Long): Boolean = transaction {
             val brev = Brevredigering.findByIdAndSaksId(brevId, saksId)
             if (brev != null) {
                 brev.delete()
@@ -231,7 +230,6 @@ class BrevredigeringService(
                 false
             }
         }
-    }
 
     fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
         transaction { Brevredigering.findById(brevId)?.toBrevInfo() }

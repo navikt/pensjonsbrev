@@ -338,13 +338,11 @@ fun createVilkar() =
         forutgaendemedlemskap = createForutgaendeMedlemskap(),
     )
 
-fun createForutgaendeMedlemskap(): ForutgaendeMedlemskap {
-    return ForutgaendeMedlemskap(
+fun createForutgaendeMedlemskap(): ForutgaendeMedlemskap = ForutgaendeMedlemskap(
         unntakfraforutgaendemedlemskap = false,
         inngangunntak = "false",
         minsttrearsfmnorge = false
     )
-}
 
 fun createBeregningsVilkar() =
     BeregningsVilkar(

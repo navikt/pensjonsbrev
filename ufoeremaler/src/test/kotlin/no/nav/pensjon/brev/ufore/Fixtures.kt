@@ -140,8 +140,7 @@ object Fixtures : LetterDataFactory {
         )
     )
 
-    private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr> {
-        return listOf(
+    private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr> = listOf(
             FeilutbetalingPerAr(
                 ar = 2023,
                 feilutbetalingManed = lagFeilutbetalingPerManed()
@@ -151,10 +150,8 @@ object Fixtures : LetterDataFactory {
                 feilutbetalingManed = lagFeilutbetalingPerManed()
             )
         )
-    }
 
-    private fun lagFeilutbetalingPerManed(): List<FeilutbetalingManed> {
-        return listOf(
+    private fun lagFeilutbetalingPerManed(): List<FeilutbetalingManed> = listOf(
             FeilutbetalingManed(
                 maned = Month.MAY,
                 feilutbetaltBelop = 1000,
@@ -174,7 +171,6 @@ object Fixtures : LetterDataFactory {
                 opprinneligBrutto = 5000
             )
         )
-    }
 
     private fun lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() = VedtakFeilutbetalingUforeIngenTilbakekrevingDto(
         pesysData = PesysData(

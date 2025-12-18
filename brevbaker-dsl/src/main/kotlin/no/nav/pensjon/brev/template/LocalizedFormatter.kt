@@ -29,33 +29,25 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     }
 
     object MonthYearFormatter : LocalizedFormatter<LocalDate>() {
-        override fun apply(first: LocalDate, second: Language): String {
-            return first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
-        }
+        override fun apply(first: LocalDate, second: Language): String = first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
 
         override fun stableHashCode(): Int = StableHash.of("MaanedAarFormatter").hashCode()
     }
 
     object MonthFormatter : LocalizedFormatter<Month>() {
-        override fun apply(first: Month, second: Language): String {
-            return first.getDisplayName(TextStyle.FULL, second.locale())
-        }
+        override fun apply(first: Month, second: Language): String = first.getDisplayName(TextStyle.FULL, second.locale())
 
         override fun stableHashCode(): Int = StableHash.of("MaanedFormatter").hashCode()
     }
 
     object MonthFormatterShort : LocalizedFormatter<Month>() {
-        override fun apply(first: Month, second: Language): String {
-            return first.getDisplayName(TextStyle.SHORT, second.locale())
-        }
+        override fun apply(first: Month, second: Language): String = first.getDisplayName(TextStyle.SHORT, second.locale())
 
         override fun stableHashCode(): Int = StableHash.of("MaanedFormatterKort").hashCode()
     }
 
     object YearMonthFormatter : LocalizedFormatter<YearMonth>() {
-        override fun apply(first: YearMonth, second: Language): String {
-            return MonthYearFormatter.apply(first.atDay(1), second)
-        }
+        override fun apply(first: YearMonth, second: Language): String = MonthYearFormatter.apply(first.atDay(1), second)
 
         override fun stableHashCode(): Int = StableHash.of("MaanedAarFormatter").hashCode()
     }
@@ -106,8 +98,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
 
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {
         override fun stableHashCode(): Int = "CollectionFormat".hashCode()
-        override fun apply(first: Collection<String>, second: Language): String {
-            return if (first.size == 1) {
+        override fun apply(first: Collection<String>, second: Language): String = if (first.size == 1) {
                 first.first()
             } else {
                 val lastSeparator = when (second) {
@@ -117,7 +108,6 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
                 }
                 first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
             }
-        }
 
     }
 }

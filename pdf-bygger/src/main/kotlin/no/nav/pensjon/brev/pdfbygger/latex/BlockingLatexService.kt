@@ -26,8 +26,7 @@ class BlockingLatexService(
     private val logger = LoggerFactory.getLogger(BlockingLatexService::class.java)
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
-    suspend fun producePDF(latexFiles: List<DocumentFile>): PDFCompilationResponse {
-        return if (parallelismSemaphore != null) {
+    suspend fun producePDF(latexFiles: List<DocumentFile>): PDFCompilationResponse = if (parallelismSemaphore != null) {
             val permit = withTimeoutOrNull(queueWaitTimeout) {
                 parallelismSemaphore.acquire()
             }
@@ -44,5 +43,4 @@ class BlockingLatexService(
         } else {
             latexCompileService.createLetter(latexFiles)
         }
-    }
 }

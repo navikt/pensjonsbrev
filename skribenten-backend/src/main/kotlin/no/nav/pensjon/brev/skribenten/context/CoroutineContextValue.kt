@@ -13,13 +13,9 @@ class ContextValueProvider<V, E : CoroutineContext.Element, K : CoroutineContext
     private val name: String,
     private val value: E.() -> V
 ) : ContextValue<V> {
-    override suspend fun get(): V? {
-        return currentCoroutineContext()[key]?.value()
-    }
+    override suspend fun get(): V? = currentCoroutineContext()[key]?.value()
 
-    override suspend fun require(): V {
-        return get() ?: throw CoroutineContextValueException(name)
-    }
+    override suspend fun require(): V = get() ?: throw CoroutineContextValueException(name)
 }
 
 class CoroutineContextValueException(keyName: String) : Exception("$keyName is not in CoroutineContext")

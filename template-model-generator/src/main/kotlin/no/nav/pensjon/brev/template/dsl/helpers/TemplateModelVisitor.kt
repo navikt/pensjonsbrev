@@ -33,9 +33,7 @@ internal class TemplateModelVisitor(
     private val dependency: KSFile?,
 ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
 
-    override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels {
-        throw MissingImplementation("Couldn't process node $node at: ${node.location}", node)
-    }
+    override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels = throw MissingImplementation("Couldn't process node $node at: ${node.location}", node)
 
     private fun KSClassDeclaration.notInPackage(name: String): Boolean {
         val pkg = this.packageName.asString()
@@ -64,8 +62,7 @@ internal class TemplateModelVisitor(
         }
     }
 
-    private fun findModel(resolvedType: KSType): KSClassDeclaration? {
-        return when (val typeDeclaration = resolvedType.declaration) {
+    private fun findModel(resolvedType: KSType): KSClassDeclaration? = when (val typeDeclaration = resolvedType.declaration) {
             is KSClassDeclaration -> {
                 if (typeDeclaration.typeParameters.isEmpty()) {
                     logger.info("Processed type $typeDeclaration: it's a class, we may need a generator for it")
@@ -89,6 +86,5 @@ internal class TemplateModelVisitor(
                 throw MissingImplementation("Processed type $typeDeclaration: property type kind ${typeDeclaration::class} is not supported", typeDeclaration)
             }
         }
-    }
 }
 

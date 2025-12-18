@@ -48,15 +48,13 @@ class NaisLeaderService(
             null
         }
 
-    override suspend fun electedLeader(): LeaderElection? {
-        return fetchLeader()?.name?.let {
+    override suspend fun electedLeader(): LeaderElection? = fetchLeader()?.name?.let {
             LeaderElection(
                 isThisInstanceLeader = it == thisInstanceName,
                 thisInstanceName = thisInstanceName,
                 leaderName = it
             )
         }
-    }
 
     companion object {
         fun thisInstanceName(): String = InetAddress.getLocalHost().hostName

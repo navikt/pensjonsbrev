@@ -11,8 +11,7 @@ enum class SakType {
 }
 
 object SaktypeFormatter : LocalizedFormatter<SakType>() {
-    override fun apply(sakType: SakType, spraak: Language): String {
-        return when (spraak) {
+    override fun apply(sakType: SakType, spraak: Language): String = when (spraak) {
             Language.Bokmal, Language.Nynorsk -> when (sakType) {
                 SakType.BARNEPENSJON -> "barnepensjon"
                 SakType.OMSTILLINGSSTOENAD -> "omstillingsstønad"
@@ -23,7 +22,6 @@ object SaktypeFormatter : LocalizedFormatter<SakType>() {
                 SakType.OMSTILLINGSSTOENAD -> "adjustment allowance"
             }
         }
-    }
 
     override fun stableHashCode(): Int = "SaktypeFormatter".hashCode()
 }

@@ -14,9 +14,7 @@ import java.time.LocalDate
 fun letterMarkup(block: LetterMarkupBuilder.() -> Unit): LetterMarkup =
     LetterMarkupBuilder().apply(block).build()
 
-fun attachment(block: AttachmentBuilder.() -> Unit): LetterMarkup.Attachment {
-    return AttachmentBuilder().apply(block).build()
-}
+fun attachment(block: AttachmentBuilder.() -> Unit): LetterMarkup.Attachment = AttachmentBuilder().apply(block).build()
 
 
 @DslMarker
@@ -45,14 +43,12 @@ class LetterMarkupBuilder {
         signatur = SignaturBuilder().apply(block).build()
     }
 
-    fun build(): LetterMarkup {
-        return LetterMarkupImpl(
+    fun build(): LetterMarkup = LetterMarkupImpl(
             title = title,
             sakspart = sakspart,
             blocks = blocks,
             signatur = signatur
         )
-    }
 }
 
 @LetterMarkupBuilderDsl

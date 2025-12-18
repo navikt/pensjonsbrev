@@ -119,12 +119,10 @@ object TemplateDocumentationRenderer {
             is Element.OutlineContent.ParagraphContent.Text -> renderText(element, lang)
         }
 
-    private fun renderTable(table: Element.OutlineContent.ParagraphContent.Table<*>, lang: Language): TemplateDocumentation.Element.ParagraphContent {
-        return TemplateDocumentation.Element.ParagraphContent.Table(
+    private fun renderTable(table: Element.OutlineContent.ParagraphContent.Table<*>, lang: Language): TemplateDocumentation.Element.ParagraphContent = TemplateDocumentation.Element.ParagraphContent.Table(
             header = renderRow(table.header.colSpec.map { it.headerContent }, lang),
             rows = renderContentOrStructure(table.rows) { listOf(renderRow(it.cells, lang)) }
         )
-    }
 
     private fun renderRow(
         cells: List<Element.OutlineContent.ParagraphContent.Table.Cell<*>>,

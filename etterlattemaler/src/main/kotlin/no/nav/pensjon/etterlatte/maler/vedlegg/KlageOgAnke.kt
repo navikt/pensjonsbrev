@@ -15,8 +15,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 fun klageOgAnke(
 	bosattUtland: Boolean,
 	tilbakekreving: Boolean = false,
-): AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> {
-	return createAttachment(
+): AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> = createAttachment(
         title = {
             text(
                 bokmal { +"Informasjon om klage og anke" },
@@ -36,7 +35,6 @@ fun klageOgAnke(
 		}
 		duKanFaaDekketUtgifter()
 	}
-}
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, EmptyVedleggData>.duKanFaaDekketUtgifter() {
     title2 {

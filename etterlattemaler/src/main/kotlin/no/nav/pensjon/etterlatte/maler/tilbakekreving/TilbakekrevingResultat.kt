@@ -14,8 +14,7 @@ enum class TilbakekrevingResultat {
 }
 
 object TilbakekrevingResultatFormatter : LocalizedFormatter<TilbakekrevingResultat>() {
-	override fun apply(resultat: TilbakekrevingResultat, spraak: Language): String {
-		return when (spraak) {
+	override fun apply(resultat: TilbakekrevingResultat, spraak: Language): String = when (spraak) {
 			Language.Bokmal -> when (resultat) {
 				TilbakekrevingResultat.FULL_TILBAKEKREV-> "Full tilbakekreving"
 				TilbakekrevingResultat.DELVIS_TILBAKEKREV -> "Delvis tilbakekreving"
@@ -40,7 +39,6 @@ object TilbakekrevingResultatFormatter : LocalizedFormatter<TilbakekrevingResult
 				TilbakekrevingResultat.FEILREGISTRERT -> "Incorrectly registered"
 			}
 		}
-	}
 
 	override fun stableHashCode(): Int = "TilbakekrevingResultatFormatter".hashCode()
 }

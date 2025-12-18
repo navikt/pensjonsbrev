@@ -56,9 +56,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
     ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
         private val hasModelTypeParameter = hasModelType.declaration.typeParameters.first { it.simpleName.asString() == HAS_MODEL_TYPE_PARAMETER_NAME }
 
-        override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels {
-            throw UnsupportedAnnotationTarget("Annotation $ANNOTATION_NAME does not support target $node at: ${node.location}", node)
-        }
+        override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels = throw UnsupportedAnnotationTarget("Annotation $ANNOTATION_NAME does not support target $node at: ${node.location}", node)
 
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels {
             if (classDeclaration.containingFile == null) {
@@ -105,8 +103,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
                 .accept(TemplateModelVisitor(iterableDeclaration, logger, property.containingFile), data)
         }
 
-        private fun KSAnnotated.getAdditionalModelsFromAnnotation(): Sequence<KSClassDeclaration> {
-            return annotations.filter {
+        private fun KSAnnotated.getAdditionalModelsFromAnnotation(): Sequence<KSClassDeclaration> = annotations.filter {
                 it.shortName.getShortName() == TemplateModelHelpers::class.simpleName &&
                         it.annotationType.resolve().declaration.qualifiedName?.asString() == TemplateModelHelpers::class.qualifiedName
             }.flatMap { it.arguments }
@@ -116,7 +113,6 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
                 .flatMap { it.filterIsInstance<KSType>() }
                 .map { it.declaration }
                 .filterIsInstance<KSClassDeclaration>()
-        }
 
         private fun KSClassDeclaration.findModelTypeFromHasModelInterface(): KSType {
             if (!hasModelType.isAssignableFrom(asStarProjectedType())) {
@@ -129,8 +125,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
             return searchTypeHierarchyForModelType(simpleName.asString(), superTypeThatExtendsHasModel()).resolve()
         }
 
-        private fun searchTypeHierarchyForModelType(targetName: String, type: KSTypeReference): KSTypeReference {
-            return if (type.resolve().declaration == hasModelType.declaration) {
+        private fun searchTypeHierarchyForModelType(targetName: String, type: KSTypeReference): KSTypeReference = if (type.resolve().declaration == hasModelType.declaration) {
                 type.getTypeArgument(hasModelTypeParameter)?.type
                     ?: throw InvalidObjectTarget("Could not resolve type argument of $HAS_MODEL_TYPE_PARAMETER_NAME type parameter for $hasModelType in declaration of $targetName", type)
             } else {
@@ -155,7 +150,6 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
                     else -> throw MissingImplementation("Don't know how to handle a model of type ${typeDeclaration::class}: $type", type)
                 }
             }
-        }
 
         private fun KSTypeReference.getTypeArgument(typeParameter: KSTypeParameter): KSTypeArgument? =
             resolve().let {

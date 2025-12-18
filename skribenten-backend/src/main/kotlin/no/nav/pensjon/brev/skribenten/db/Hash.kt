@@ -35,11 +35,9 @@ class WithHash<T>(private val letter: Column<T>, private val hash: Column<Hash<T
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): T {
-        return with(thisRef) {
+    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): T = with(thisRef) {
             letter.getValue(thisRef, property)
         }
-    }
 
     companion object {
         fun <T> hash(obj: T): ByteArray =

@@ -6,9 +6,7 @@ import java.util.Locale
 sealed class Language : StableHash {
     val name: String = this::class.java.name
 
-    override fun toString(): String {
-        return this::class.qualifiedName!!
-    }
+    override fun toString(): String = this::class.qualifiedName!!
 
     fun locale(): Locale =
         when (this) {

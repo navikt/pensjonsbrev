@@ -47,8 +47,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet> {
-        return cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
+    override suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet> = cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
             val response = client.get("navansatt/$ansattId/enheter")
 
             if (response.status.isSuccess()) {
@@ -57,7 +56,6 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
                 throw NavansattServiceException("Fant ikke navansattenhet $ansattId: ${response.status} - ${response.bodyAsText()}")
             }
         }
-    }
 
     override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): Boolean =
         hentNavAnsattEnhetListe(ansattId).any { enhet -> enhet.id == enhetsId }

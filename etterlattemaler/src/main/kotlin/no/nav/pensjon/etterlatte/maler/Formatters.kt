@@ -24,24 +24,18 @@ object IntBroekFormatter : LocalizedFormatter<IntBroek?>(), StableHash by Stable
 fun Expression<LocalDate>.formatMaanedAar(): Expression<String> = this.format(MaanedAarFormatter)
 
 object MaanedAarFormatter : LocalizedFormatter<LocalDate>(), StableHash by StableHash.of("MaanedAarFormatter") {
-    override fun apply(date: LocalDate, second: Language): String {
-       return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
-    }
+    override fun apply(date: LocalDate, second: Language): String = date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
 }
 
 fun Expression<LocalDate>.formatAar(): Expression<String> = this.format(AarFormatter)
 
 object AarFormatter : LocalizedFormatter<LocalDate>(), StableHash by StableHash.of("AarFormatter") {
-    override fun apply(date: LocalDate, second: Language): String {
-        return date.format(DateTimeFormatter.ofPattern("yyyy", second.locale()))
-    }
+    override fun apply(date: LocalDate, second: Language): String = date.format(DateTimeFormatter.ofPattern("yyyy", second.locale()))
 }
 
 fun Expression<Number>.formatTall(): Expression<String> = this.format(TallFormatter)
 
 object TallFormatter : LocalizedFormatter<Number>(), StableHash by StableHash.of("TallFormatter") {
-    override fun apply(first: Number, second: Language): String {
-        return NumberFormat.getNumberInstance(second.locale()).format(first)
-    }
+    override fun apply(first: Number, second: Language): String = NumberFormat.getNumberInstance(second.locale()).format(first)
 }
 

@@ -15,9 +15,7 @@ class LatexAppendableTest {
         appendable = LatexAppendable(output)
     }
 
-    private fun printedString(): String {
-        return String(output)
-    }
+    private fun printedString(): String = String(output)
 
     @Test
     fun `print writes the string`() {

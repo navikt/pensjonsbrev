@@ -18,8 +18,7 @@ data class InformasjonOmOmstillingsstoenadData(
     val bosattUtland: Boolean = false,
 ) : VedleggData
 
-fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
-    return createAttachment(
+fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> = createAttachment(
         title = {
             text(
                 bokmal { +"Informasjon til deg som mottar omstillingsstønad" },
@@ -39,7 +38,6 @@ fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEngli
         utbetalingTilKontonummer()
         skatt(argument.bosattUtland)
     }
-}
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.aktivitet(
     tidligereFamiliepleier: Expression<Boolean>

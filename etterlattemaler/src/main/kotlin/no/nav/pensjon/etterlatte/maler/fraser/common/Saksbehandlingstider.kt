@@ -12,8 +12,7 @@ fun saksbehandlingstiderUrl(sakType: Expression<SakType>): Expression<String> =
     )
 
 object Saksbehandlingstider: BinaryOperation<SakType, Language, String>() {
-    override fun apply(first: SakType, second: Language): String {
-        return if (first == SakType.BARNEPENSJON)
+    override fun apply(first: SakType, second: Language): String = if (first == SakType.BARNEPENSJON)
             when(second) {
                 is Language.English -> Constants.Engelsk.SAKSBEHANDLINGSTIDER_BP
                 else -> Constants.SAKSBEHANDLINGSTIDER_BP
@@ -23,9 +22,6 @@ object Saksbehandlingstider: BinaryOperation<SakType, Language, String>() {
                 is Language.English -> Constants.Engelsk.SAKSBEHANDLINGSTIDER_OMS
                 else -> Constants.SAKSBEHANDLINGSTIDER_OMS
             }
-    }
 
-    override fun stableHashCode(): Int {
-        return "BinaryOperation.Saksbehandlingstider".hashCode()
-    }
+    override fun stableHashCode(): Int = "BinaryOperation.Saksbehandlingstider".hashCode()
 }
