@@ -327,26 +327,36 @@ data class OmregningAlderUfore2016Felles(
                         )
                     }
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " " },
-                        nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " " },
-                        english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " " }
-                    )
-                    ifNotNull(over2G) { over2G ->
-                        showIf(over2G) {
-                                text(
-                                    bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon, uføretrygd eller omstillingsstønad." },
-                                    nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon, uføretrygd eller omstillingsstønad." },
-                                    english { +"has an income of over " + kronebelop2G.format() + " or their own pension, disability benefit or adjustment allowance." })
+                showIf(borMedSivilstand.isNotAnyOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " " },
+                            nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " " },
+                            english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " " }
+                        )
+                        ifNotNull(over2G) { over2G ->
+                            showIf(over2G) {
+                                    text(
+                                        bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon, uføretrygd eller omstillingsstønad." },
+                                        nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon, uføretrygd eller omstillingsstønad." },
+                                        english { +"has an income of over " + kronebelop2G.format() + " or their own pension, disability benefit or adjustment allowance." })
 
-                        }.orShow {
-                                text(
-                                    bokmal { +"ikke har egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
-                                    nynorsk { +"ikkje har eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
-                                    english { +"does not have their own pension, disability benefit or adjustment allowance nor an income of over " + kronebelop2G.format() + "." })
+                            }.orShow {
+                                    text(
+                                        bokmal { +"ikke har egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
+                                        nynorsk { +"ikkje har eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
+                                        english { +"does not have their own pension, disability benefit or adjustment allowance nor an income of over " + kronebelop2G.format() + "." })
 
+                            }
                         }
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har beregnet alderspensjonen din ut ifra at du og ektefellen din er registrert med forskjellig bosted, eller en av dere bor på institusjon." },
+                            nynorsk { +"Vi har berekna alderspensjonen din ut ifra at du og ektefellen din er registrerte med forskjellig bustad, eller ein av dykk bur på institusjon." },
+                            english { +"We have calculated your retirement pension based on the fact that you and your spouse are registered at different residences, or that one of you is living in an institution." }
+                        )
                     }
                 }
             }.orShow {
