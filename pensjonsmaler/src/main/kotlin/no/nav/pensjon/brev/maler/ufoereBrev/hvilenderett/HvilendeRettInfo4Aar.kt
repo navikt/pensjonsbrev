@@ -60,7 +60,7 @@ object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyAutobrevdata> {
                 text(
                     bokmal { + "Hvis du ønsker å motta uføretrygd igjen eller forventer lavere inntekt fremover gjelder følgende:" },
                 )
-                list { 
+                list {
                     item {
                         text(
                             bokmal { + "Du korrigerer selv forventet inntekt i Inntektsplanleggeren din. Denne finner du på Ditt NAV // Din Uføretrygd // Inntektsplanlegger." },

@@ -51,4 +51,3 @@ data class TBU3307_Generated(
 		}
     }
 }
-        

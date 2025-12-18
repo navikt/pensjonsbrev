@@ -49,4 +49,3 @@ data class TBU2261_Generated(
 
     }
 }
-        

@@ -141,4 +141,3 @@ object AvslagUnder5AartrygdetidAuto : AutobrevTemplate<AvslagUnder5AarTrygdetidA
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)
     }
 }
-    

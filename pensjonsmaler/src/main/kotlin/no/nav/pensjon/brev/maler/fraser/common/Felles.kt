@@ -204,11 +204,11 @@ object Felles {
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di." },
-                    english { + 
+                    english { +
                         "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case." },
                 )
             }

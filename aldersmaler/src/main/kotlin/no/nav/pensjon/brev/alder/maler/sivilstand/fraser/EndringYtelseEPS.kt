@@ -17,10 +17,10 @@ data class EndringYtelseEPS(
         // endringYtelseEPS
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Pensjonen eller uføretrygden til " + sivilstandBestemtLitenBokstav + " din er endret." },
                 nynorsk { + "Pensjonen eller uføretrygda til " + sivilstandBestemtLitenBokstav + " din er endra." },
-                english { + 
+                english { +
                     "Your " + sivilstandBestemtLitenBokstav + "'s pension or disability benefit has been changed." },
             )
         }

@@ -61,4 +61,3 @@ data class TBU2280_Generated(
 		}
     }
 }
-        

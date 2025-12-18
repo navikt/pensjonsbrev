@@ -28,17 +28,17 @@ data class OmsorgEgenerklaeringOutline(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                         "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i "
                         + aarEgenerklaringOmsorgspoeng
                         + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker." },
 
-                nynorsk { + 
+                nynorsk { +
                         "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i "
                         + aarEgenerklaringOmsorgspoeng
                         + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker." },
 
-                english { + 
+                english { +
                         "We need you to confirm that you have provided nursing and care work in "
                         + aarEgenerklaringOmsorgspoeng
                         + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks." },

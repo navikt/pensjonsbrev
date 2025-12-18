@@ -22,4 +22,3 @@ data class TBU4024_Generated(
 		}
     }
 }
-        

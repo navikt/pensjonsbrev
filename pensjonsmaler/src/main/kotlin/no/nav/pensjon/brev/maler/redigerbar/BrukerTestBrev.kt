@@ -46,7 +46,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             )
         }
         outline {
-            title1 { 
+            title1 {
                 text(bokmal { + "Vedtak" })
             }
             paragraph {

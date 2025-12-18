@@ -20,7 +20,7 @@ data class OpphoerYtelseEPS(
             text(
                 bokmal { + sivilstandBestemtStorBokstav + " din mottar ikke lenger egen pensjon eller uføretrygd." },
                 nynorsk { + sivilstandBestemtStorBokstav + " din får ikkje lenger eigen pensjon eller eiga uføretrygd." },
-                english { + 
+                english { +
                     "Your " + sivilstandBestemtLitenBokstav + " no longer receives a pension or disability benefit." },
             )
         }

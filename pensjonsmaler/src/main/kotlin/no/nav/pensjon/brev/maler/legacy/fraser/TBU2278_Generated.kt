@@ -36,4 +36,3 @@ data class TBU2278_Generated(val pe: Expression<PE>) : OutlinePhrase<LangBokmalN
 		}
     }
 }
-        

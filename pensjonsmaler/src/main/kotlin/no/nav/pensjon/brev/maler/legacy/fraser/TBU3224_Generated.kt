@@ -28,4 +28,3 @@ data class TBU3224_Generated(
 		}
     }
 }
-        

@@ -44,13 +44,13 @@ data class InnledningInfoYtelse(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, " +
                         "så finner du søknadsskjema for alderspensjon på $NAV_URL." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løysinga, " +
                         "så finn du søknadsskjema  for alderspensjon på $NAV_URL." },
-                    english { + 
+                    english { +
                         "You can apply electronically by logging on to $DIN_PENSJON_URL, or use the application form " +
                         "for retirement pension, which is also found at $NAV_URL." },
                 )
@@ -64,13 +64,13 @@ data class InnledningInfoYtelse(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Du kan velge å ta ut hele eller deler av alderspensjonen din (20, 40, 50, 60, 80 eller 100 prosent). " +
                         "Du kan også vente med å ta ut alderspensjon." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Du kan  velje å ta ut heile eller delar av alderspensjonen din (20, 40, 50, 60, 80 eller 100 prosent). " +
                         "Du kan også vente med å ta ut alderspensjon." },
-                    english { + 
+                    english { +
                         "You can start drawing all or a part of your retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent. " +
                         "You can also postpone drawing your retirement pension." },
                 )
@@ -78,11 +78,11 @@ data class InnledningInfoYtelse(
         }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.GJP_AVKORT)) {
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Gjenlevendepensjonen din opphører fra og med måneden etter at du fyller 67 år. " +
                         "Fra samme tidspunkt har alle som hovedregel rett til å ta ut alderspensjon. " +
                         "Dersom du velger å ta ut alderspensjon vil den bli beregnet med dine gjenlevenderettigheter." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Attlevandepensjonen din blir avslutta frå og med månaden etter at du fyller 67 år. " +
                         "Frå same tidspunkt har alle som hovudregel rett til å ta ut alderspensjon. " +
                         "Dersom du vel å ta ut alderspensjon vil den bli berekna med dine attlevanderettar." },
@@ -95,13 +95,13 @@ data class InnledningInfoYtelse(
         }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT)) {
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Uføretrygden din opphører og regnes om til 100 prosent alderspensjon måneden etter at " +
                         "du fyller 67 år. Du trenger ikke søke om dette." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Uføretrygda di blir avslutta og rekna om til 100 prosent alderspensjon månaden etter at " +
                         "du fyller 67 år. Du treng ikkje søkje om dette." },
-                    english { + 
+                    english { +
                         "The month after you turn 67 years of age, your disability benefit will cease and you " +
                         "will instead receive full retirement pension. You do not need to apply for this." },
                 )
@@ -115,14 +115,14 @@ data class InnledningInfoYtelse(
             showIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT_GRAD)) {
                 paragraph {
                     text(
-                        bokmal { + 
+                        bokmal { +
                             "Uføretrygden din stopper og regnes om til alderspensjon måneden etter at du " +
                             "fyller 67 år. Hvis du ikke melder fra om noe annet, får du automatisk alderspensjon " +
                             "etter en uttaksgrad som tilsvarer det du får i uføretrygd i dag." },
                         nynorsk { + "Uføretrygda di stoppar og blir rekna om til alderspensjon månaden etter at du " +
                             "fyller 67 år. Om du ikkje melder frå om noko anna, får du automatisk alderspensjon " +
                             "etter ein uttaksgrad som svarer til det du får i uføretrygd i dag." },
-                        english { + 
+                        english { +
                             "Your disability benefit will cease and be converted into retirement pension the month " +
                             "after you turn 67. Unless we receive further information from you, you will " +
                             "automatically receive retirement pension at a withdrawal rate corresponding to " +
@@ -132,14 +132,14 @@ data class InnledningInfoYtelse(
             }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT_AP_GRAD)) {
                 paragraph {
                     text(
-                        bokmal { + 
+                        bokmal { +
                             "Uføretrygden din stopper og regnes om til alderspensjon måneden etter at du fyller 67 år. " +
                             "Hvis du ikke melder fra om noe annet, får du automatisk alderspensjon etter en uttaksgrad som tilsvarer " +
                             "det du får i uføretrygd og alderspensjon i dag." },
                         nynorsk { + "Uføretrygda di stoppar og blir rekna om til alderspensjon månaden etter at du " +
                             "fyller 67 år. Om du ikke melder fra om noko anna, får du automatisk alderspensjon " +
                             "etter ein uttaksgrad som svarer til det du får i uføretrygd og alderspensjoni dag." },
-                        english { + 
+                        english { +
                             "Your disability benefit will cease and be converted into retirement pension the month after " +
                             "you turn 67. Unless we receive further information from you, you will automatically receive " +
                             "retirement pension at a withdrawal rate corresponding to what you currently receive in " +
@@ -149,13 +149,13 @@ data class InnledningInfoYtelse(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Alle som har rett til alderspensjon, kan velge å ta ut hel (100 prosent) " +
                         "alderspensjon fra måneden etter fylte 67 år." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Alle som har rett til alderspensjon, kan velje å ta ut heil (100 prosent) " +
                         "alderspensjon frå månaden etter fylte 67 år." },
-                    english { + 
+                    english { +
                         "Everyone entitled to retirement pension can choose to withdraw a full (100 percent) " +
                         "retirement pension from the month after turning 67." },
                 )
@@ -207,15 +207,15 @@ data class InnledningInfoYtelse(
         }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.FAM_PL)) {
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Din pensjon som tidligere familiepleier opphører og regnes om til 100 prosent " +
                         "alderspensjon måneden etter at du fyller 67 år. " +
                         "Du trenger ikke søke om dette." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Pensjonen din som tidlegare familiepleiar blir avslutta og rekna om til 100 prosent " +
                         "alderspensjon månaden etter at du fyller 67 år. " +
                         "Du treng ikkje å søkje om dette." },
-                    english { + 
+                    english { +
                         "The month after you turn 67, the pension you currently receive as a former family " +
                         "carer will cease, and you will instead receive a full retirement pension. " +
                         "You do not need to apply for this." },
@@ -330,17 +330,17 @@ data class InfoOenskeSokeAP(
         ) {
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Ønsker du å vente med å ta ut alderspensjonen eller en annen uttaksgrad enn hva " +
                         "du vil få etter omregning, må du søke om dette. " +
                         "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, " +
                         "så finner du søknadsskjema for alderspensjon på $NAV_URL." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Ønskjer du å vente med å ta ut alderspensjonen, eller ønskjer du ein annan " +
                         "uttaksgrad enn det du får etter omrekninga, må du søkje om dette. " +
                         "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løysinga, " +
                         "så finn du søknadsskjema for alderspensjon på $NAV_URL." },
-                    english { + 
+                    english { +
                         "If you do not want to start drawing your retirement pension yet, or if you want " +
                         "to draw your pension at a different rate than the one allocated after recalculation, " +
                         "you must submit an application. You can apply electronically by logging on to " +
@@ -350,7 +350,7 @@ data class InfoOenskeSokeAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Ønsker du å endre alderspensjonen, må vi ha mottatt søknaden senest måneden før den måneden du søker endring fra." },
                     nynorsk { + "Ønskjer du å endre alderspensjonen, må vi få søknaden seinast månaden før du ønskjer endringa." },
                     english { + "Any change will be implemented at the earliest the month after we have received the application." },
@@ -387,17 +387,17 @@ data class InfoSivilstandAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Hvis din ektefelle, partner eller samboer ikke har egen pensjon eller uføretrygd, " +
                         "vil vi i de fleste saker ikke ha korrekte inntektsopplysninger. " +
                         "Vi vil derfor legge til grunn en inntekt på 2 ganger folketrygdens grunnbeløp " +
                         "når vi beregner alderspensjonen." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Dersom ektefellen, partnaren eller sambuaren din ikkje har eigen pensjon eller " +
                         "eiga uføretrygd, vil vi i dei fleste sakene ikkje ha korrekte inntektsopplysningar. " +
                         "Vi vil derfor leggje til grunn ei inntekt på 2 gonger grunnbeløpet i folketrygda " +
                         "når vi bereknar alderspensjonen." },
-                    english { + 
+                    english { +
                         "If your spouse/partner/cohabitant does not receive a separate pension or disability " +
                         "benefit, in most cases we will not have the correct income information. " +
                         "We will therefore use an income of two times the National Insurance basic amount (" },
@@ -410,15 +410,15 @@ data class InfoSivilstandAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Hvis du har en ektefelle, partner eller samboer som har en inntekt som er lavere " +
                         "enn 2 ganger folketrygdens grunnbeløp, er det viktig at du gir beskjed om beløpet på $KONTAKT_URL. " +
                         "Da kan du ha rett til høyere alderspensjon." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Dersom du har ein ektefelle, partnar eller sambuar som har ei inntekt som er " +
                         "lågare enn 2 gonger grunnbeløpet i folketrygda, er det viktig at du gir beskjed om beløpet på $KONTAKT_URL. " +
                         "Då kan du ha rett til høgare alderspensjon." },
-                    english { + 
+                    english { +
                         "If you have a spouse, partner, or cohabitant whose income is lower than twice " +
                         "the National Insurance basic amount, it is important that you report the amount " +
                         "at $KONTAKT_URL as you may be entitled to a higher retirement pension." },
@@ -449,13 +449,13 @@ data class InfoFTAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Fra 1. januar 2022 er regelverket om forsørgingstillegg endret, og du vil derfor " +
                         "ikke få ektefelletillegg og/eller barnetillegg i alderspensjonen din." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Frå 1. januar 2022 er regelverket om forsørgingstillegg endra, og du vil derfor " +
                         "ikkje få ektefelletillegg og/eller barnetillegg i alderspensjonen din." },
-                    english { + 
+                    english { +
                         "From 1 January 2022, the regulations regarding dependant supplement were changed. " +
                         "Therefore, you will no longer receive a dependant supplement for your spouse or child " +
                         "in your retirement pension." },
@@ -492,13 +492,13 @@ data class InfoAFPprivatAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Hvis du er ansatt i en privat virksomhet og har rett til AFP, må du søke om " +
                         "dette samtidig med alderspensjonen fra folketrygden." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Dersom du er tilsett i ei privat verksemd og har rett til AFP, må du søkje om " +
                         "dette samtidig med alderspensjonen frå folketrygda." },
-                    english { + 
+                    english { +
                         "If you are employed in a private business and are entitled to a contractual early " +
                         "retirement pension (AFP), you must apply for it at the same time as you apply " +
                         "for retirement pension from the National Insurance Scheme." },
@@ -541,13 +541,13 @@ data class InfoSoekeAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Vi kan tidligst innvilge søknaden din fra og med måneden etter at du søkte. " +
                         "Du bør søke i god tid, men tidligst fire måneder før du ønsker at utbetalingen skal starte." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Vi kan tidlegast innvilge søknaden din frå og med månaden etter at du søkte. " +
                         "Du bør derfor søkje i god tid, men tidlegast fire månader før du ønskjer at utbetalinga skal starte." },
-                    english { + 
+                    english { +
                         "Retirement pension from the National Insurance Scheme can, at the earliest, " +
                         "be paid out the month after we receive your application. " +
                         "Therefore, you should apply well in advance of the month that you want to start " +
@@ -556,13 +556,13 @@ data class InfoSoekeAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Eksempel: Hvis du ønsker første utbetaling av alderspensjon i august, kan du " +
                         "tidligst sende søknaden i april." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Eksempel: Dersom du ønskjer første utbetaling av alderspensjon i august, kan du " +
                         "tidlegast sende søknaden i april." },
-                    english { + 
+                    english { +
                         "Example: If you want to start receiving your retirement pension in August you " +
                         "can at the earliest send your application in April." },
                 )
@@ -576,13 +576,13 @@ data class InfoSoekeAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Du kan søke elektronisk via $DIN_PENSJON_URL_INNLOGGET eller bruke søknadsskjema for " +
                         "alderspensjon som du også finner på $NAV_URL." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Du kan søkje elektronisk via $DIN_PENSJON_URL_INNLOGGET eller bruke søknadsskjemaet om " +
                         "alderspensjon som du også finn på $NAV_URL." },
-                    english { + 
+                    english { +
                         "You can apply electronically by logging on to $DIN_PENSJON_URL_INNLOGGET, or use the " +
                         "application form for retirement pension, which is also found at $NAV_URL." },
                 )
@@ -591,7 +591,7 @@ data class InfoSoekeAP(
                 text(
                     bokmal { + "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL_INNLOGGET til å beregne alderspensjonen din." },
                     nynorsk { + "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL_INNLOGGET til å berekne alderspensjon din." },
-                    english { + 
+                    english { +
                         "You can use the pension calculator at $DIN_PENSJON_URL_INNLOGGET to calculate your future retirement pension." },
                 )
             }
@@ -616,7 +616,7 @@ data class InfoSoekeAnnenGradAP(
                 text(
                     bokmal { + "Vi regner om uføretrygden din til 100 prosent alderspensjon. Du kan likevel velge" },
                     nynorsk { + "Vi reknar om uføretrygda di til 100 prosent alderspensjon. Du kan likevel velje" },
-                    english { + 
+                    english { +
                         "Your disability benefit will be converted into a 100 percent retirement " +
                         "pension. You can nevertheless select one of the following options:" },
                 )
@@ -646,15 +646,15 @@ data class InfoSoekeAnnenGradAP(
             }
             paragraph {
                 text(
-                    bokmal { + 
+                    bokmal { +
                         "Hvis du ønsker en annen uttaksgrad enn 100 prosent alderspensjon, kan du søke " +
                         "om dette elektronisk via $DIN_PENSJON_URL_INNLOGGET. " +
                         "Hvis du ikke kan benytte denne løsningen, finner du søknadsskjema for alderspensjon på $NAV_URL." },
-                    nynorsk { + 
+                    nynorsk { +
                         "Dersom du ønskjer ein annan uttaksgrad enn 100 prosent alderspensjon, kan du " +
                         "søkje om dette elektronisk via $DIN_PENSJON_URL_INNLOGGET. " +
                         "Dersom du ikkje kan bruke denne løysinga, så finn du søknadsskjema  for alderspensjon på $NAV_URL." },
-                    english { + 
+                    english { +
                         "If you want to draw retirement pension at another rate than 100 percent, you " +
                         "can apply electronically by logging on to $DIN_PENSJON_URL_INNLOGGET. " +
                         "Or you can use the application form for retirement pension, which is also found at $NAV_URL." },
@@ -683,17 +683,17 @@ object InfoSkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Ellers trekkes det " +
                     "30 prosent skatt av alderspensjonen. Du kan endre skattekortet og få mer informasjon " +
                     "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
                     "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss." },
-                nynorsk { + 
+                nynorsk { +
                     "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Elles blir det " +
                     "trekt 30 prosent skatt av alderspensjonen. Du kan endre skattekortet og få meir informasjon " +
                     "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
                     "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss." },
-                english { + 
+                english { +
                     "When you start drawing retirement pension, you should change your tax deduction card. " +
                     "Otherwise, 30 percent of the pension will be deducted from your pension. You can change " +
                     "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
@@ -706,7 +706,7 @@ object InfoSkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                     "Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der." },
                 nynorsk { + "På $SKATTEETATEN_PENSJONIST_URL finn du også informasjon om skatt når du bur utanfor Noreg. " +
                     "Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der." },
-                english { + 
+                english { +
                     "At $SKATTEETATEN_PENSJONIST_URL, you will also find information about tax liability to Norway after moving abroad. " +
                     "You must clarify questions about tax liability to your country of residence with the local tax authorities." },
             )
@@ -729,7 +729,7 @@ object InfoBoddArbeidetUtlandet : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 bokmal { + "Hvis du har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får utbetalt i pensjon. " +
                     "Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
                     "Derfor kan du også ha rett til pensjon fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med." },
-                nynorsk { + 
+                nynorsk { +
                     "Dersom du har budd eller arbeidd i utlandet, kan dette få noko å seie for kor mykje du får utbetalt i pensjon. " +
                     "Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
                     "Derfor kan du også ha rett til pensjon frå andre land. " +
@@ -755,13 +755,13 @@ object InfoPensjonFraAndreAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Mange er tilknyttet en eller flere offentlige eller private pensjonsordninger som de har pensjonsrettigheter fra. " +
                     "Du bør kontakte dem du har slike ordninger med for å undersøke hvilke rettigheter du kan ha. Du kan også undersøke med siste arbeidsgiver. " },
-                nynorsk { + 
+                nynorsk { +
                     "Mange er knytte til ei eller fleire offentlege eller private pensjonsordningar som de har pensjonsrettar frå. " +
                     "Du bør kontakte dei du har slike ordningar med for å undersøke kva for rettar du har. Du kan også undersøkje med siste arbeidsgivar." },
-                english { + 
+                english { +
                     "Many people are also members of one or more public or private pension schemes where they also have pension rights. " +
                     "You must contact the company/ies you have pension arrangements with, if you have any questions about this. You can also contact your most recent employer." },
             )

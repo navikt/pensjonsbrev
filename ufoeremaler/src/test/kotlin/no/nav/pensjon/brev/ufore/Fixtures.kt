@@ -193,7 +193,7 @@ object Fixtures : LetterDataFactory {
         sakstype = Sakstype.UFOREP,
         brukerUnder18Ar = false
     )
-    
+
     private fun createOversiktOverFeilutbetalingPEDto() = OversiktOverFeilutbetalingPEDto(
         bruttoTilbakekrevdTotalbelop = 1,
         nettoUtenRenterTilbakekrevdTotalbelop = 2,

@@ -42,4 +42,3 @@ data class TBU1139_Generated(
 		}
     }
 }
-        

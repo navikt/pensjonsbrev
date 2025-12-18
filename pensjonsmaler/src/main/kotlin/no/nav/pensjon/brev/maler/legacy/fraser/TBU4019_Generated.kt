@@ -31,4 +31,3 @@ data class TBU4019_Generated(
 		}
     }
 }
-        

@@ -58,7 +58,7 @@ private fun leggPaaBlankPartallsside(
 ) {
     if (originaltDokument.pages.count % 2 == 1) {
         target.addPage(PDPage())
-    } 
+    }
 }
 
 internal fun PDFMergerUtility.leggTilSide(destionation: PDDocument, source: PDDocument) =

@@ -17,13 +17,13 @@ data class DuFaarAP(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Du får " + totalPensjon.format() + " hver måned før skatt fra " +
                     kravVirkDatoFom.format() + " i alderspensjon fra folketrygden." },
-                nynorsk { + 
+                nynorsk { +
                     "Du får " + totalPensjon.format() + " kvar månad før skatt frå " +
                     kravVirkDatoFom.format() + " i alderspensjon frå folketrygda." },
-                english { + 
+                english { +
                     "You will receive " + totalPensjon.format() + " every month before tax from " +
                     kravVirkDatoFom.format() + " as retirement pension from the National Insurance Scheme." },
             )

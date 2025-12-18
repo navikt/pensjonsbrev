@@ -421,7 +421,7 @@ object Barnetillegg {
 
                         showIf(harFradragForEnBarnetilleggYtelse) {
                             text(
-                                bokmal { + 
+                                bokmal { +
                                         " Dette barnetillegget er derfor" +
                                         ifElse(barnetilleggFellesbarnIkkeRedusert, " ikke ", " ") +
                                         "redusert ut fra inntekt." },

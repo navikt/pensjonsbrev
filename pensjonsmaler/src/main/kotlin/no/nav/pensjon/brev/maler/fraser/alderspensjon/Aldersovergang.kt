@@ -17,13 +17,13 @@ object InfoPensjonFraAndreAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + 
+                bokmal { +
                     "Mange er tilknyttet en eller flere offentlige eller private pensjonsordninger som de har pensjonsrettigheter fra. " +
                     "Du bør kontakte dem du har slike ordninger med for å undersøke hvilke rettigheter du kan ha. Du kan også undersøke med siste arbeidsgiver. " },
-                nynorsk { + 
+                nynorsk { +
                     "Mange er knytte til ei eller fleire offentlege eller private pensjonsordningar som de har pensjonsrettar frå. " +
                     "Du bør kontakte dei du har slike ordningar med for å undersøke kva for rettar du har. Du kan også undersøkje med siste arbeidsgivar." },
-                english { + 
+                english { +
                     "Many people are also members of one or more public or private pension schemes where they also have pension rights. " +
                     "You must contact the company/ies you have pension arrangements with, if you have any questions about this. You can also contact your most recent employer." },
             )

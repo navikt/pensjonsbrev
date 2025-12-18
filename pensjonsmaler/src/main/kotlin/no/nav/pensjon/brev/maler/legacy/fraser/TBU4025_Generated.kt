@@ -40,4 +40,3 @@ data class TBU4025_Generated(
 		}
     }
 }
-        
