@@ -3,12 +3,14 @@ import { Heading, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
+
+import { DateField } from "./P1DateField";
 type P1InstitusjonTabProps = {
   disabled?: boolean;
 };
 
 export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
-  const { register } = useFormContext<P1Redigerbar>();
+  const { getValues, register } = useFormContext<P1Redigerbar>();
 
   return (
     <div className={disabled ? "p1-tab-disabled" : undefined}>
@@ -132,13 +134,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
           <tr>
             <td>5.10 Dato</td>
             <td className="cell-seamless">
-              <TextField
-                className="p1-seamless-textfield "
-                hideLabel
-                label="Dato"
-                size="small"
-                {...register("utfyllendeInstitusjon.dato")}
-              />
+              <DateField date={getValues("utfyllendeInstitusjon.dato")} hideLabel label="Dato" />
             </td>
           </tr>
         </tbody>

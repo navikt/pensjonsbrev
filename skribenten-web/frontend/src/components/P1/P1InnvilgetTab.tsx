@@ -1,13 +1,13 @@
 import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Button, DatePicker, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
+import { Button, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
 import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
-const currentYear = new Date().getFullYear();
+import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
 export const P1InnvilgetTab = () => {
   const {
@@ -137,30 +137,7 @@ export const P1InnvilgetTab = () => {
                   control={control}
                   name={`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const}
                   render={({ field: dateField, fieldState }) => (
-                    <DatePicker
-                      dropdownCaption
-                      fromDate={new Date(`1 Jan ${currentYear - 50}`)}
-                      onSelect={(date) => {
-                        if (date) {
-                          const day = String(date.getDate()).padStart(2, "0");
-                          const month = String(date.getMonth() + 1).padStart(2, "0");
-                          const year = date.getFullYear();
-                          dateField.onChange(`${day}.${month}.${year}`);
-                        } else {
-                          dateField.onChange("");
-                        }
-                      }}
-                      toDate={new Date(`31 Dec ${currentYear + 5}`)}
-                    >
-                      <DatePicker.Input
-                        className="p1-datepicker"
-                        error={fieldState.error?.message}
-                        label="Vedtaksdato"
-                        placeholder="dd.mm.åååå"
-                        size="small"
-                        {...dateField}
-                      />
-                    </DatePicker>
+                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} label="Vedtaksdato" />
                   )}
                 />
               </td>
@@ -194,31 +171,12 @@ export const P1InnvilgetTab = () => {
                   control={control}
                   name={`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const}
                   render={({ field: dateField, fieldState }) => (
-                    <DatePicker
-                      dropdownCaption
-                      fromDate={new Date(`1 Jan ${currentYear - 50}`)}
-                      onSelect={(date) => {
-                        if (date) {
-                          const day = String(date.getDate()).padStart(2, "0");
-                          const month = String(date.getMonth() + 1).padStart(2, "0");
-                          const year = date.getFullYear();
-                          dateField.onChange(`${day}.${month}.${year}`);
-                        } else {
-                          dateField.onChange("");
-                        }
-                      }}
-                      toDate={new Date(`31 Dec ${currentYear + 5}`)}
-                    >
-                      <DatePicker.Input
-                        className="p1-datepicker"
-                        error={fieldState.error?.message}
-                        hideLabel
-                        label="Dato for første utbetaling"
-                        placeholder="dd.mm.åååå"
-                        size="small"
-                        {...dateField}
-                      />
-                    </DatePicker>
+                    <ManagedDatePicker
+                      dateField={dateField}
+                      fieldState={fieldState}
+                      hideLabel
+                      label="Dato for første utbetaling"
+                    />
                   )}
                 />
               </td>

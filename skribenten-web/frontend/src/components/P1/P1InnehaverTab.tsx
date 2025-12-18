@@ -4,12 +4,14 @@ import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
 
+import { DateField } from "./P1DateField";
+
 type P1InnehaverTabProps = {
   disabled?: boolean;
 };
 
 export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
-  const { register } = useFormContext<P1Redigerbar>();
+  const { getValues, register } = useFormContext<P1Redigerbar>();
 
   return (
     <div className={disabled ? "p1-tab-disabled" : undefined}>
@@ -61,13 +63,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
           <tr>
             <td>1.4 Fødselsdato</td>
             <td className="cell-seamless">
-              <TextField
-                className="p1-seamless-textfield "
-                hideLabel
-                label="Fødselsdato"
-                size="small"
-                {...register("innehaver.foedselsdato")}
-              />
+              <DateField date={getValues("innehaver.foedselsdato")} hideLabel label="Fødselsdato" />
             </td>
           </tr>
           <tr>

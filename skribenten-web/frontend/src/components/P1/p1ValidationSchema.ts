@@ -19,30 +19,14 @@ const avslagsbegrunnelseEnum = z.enum([
 const sakstypeEnum = z.enum(["ALDER", "UFORE", "ETTERLATTE"]);
 
 /* Shared date validation helper - using yyyy-mm-dd format from backend */
-const optionalDateField = (fieldName: string = "Dato") =>
-  z
-    .string()
-    .max(10, `${fieldName} kan ikke være lengre enn 10 tegn`)
-    .refine((val) => !val || /^(\d{4})-(\d{2})-(\d{2})$/.test(val), "Dato må være i formatet yyyy-mm-dd")
-    .refine((val) => {
-      if (!val) return true;
-      const [year, month, day] = val.split("-").map(Number);
-      const date = new Date(year, month - 1, day);
-      return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
-    }, "Ugyldig dato");
-
-const optionalDateFieldForPerson = (fieldName: string = "Dato") =>
-  z
-    .string()
-    .max(10, `${fieldName} kan ikke være lengre enn 10 tegn`)
-    .refine((val) => !val || /^(\d{4})-(\d{2})-(\d{2})$/.test(val), "Dato må være i formatet yyyy-mm-dd");
+const optionalDateField = () => z.date("Ugyldig dato").optional();
 
 /* Tab 1 & 2: Person validation (Innehaver & Forsikrede) - all fields optional for now */
 const p1PersonFormSchema = z.object({
   fornavn: z.string().max(100, "Fornavn kan ikke være lengre enn 100 tegn"),
   etternavn: z.string().max(100, "Etternavn kan ikke være lengre enn 100 tegn"),
   etternavnVedFoedsel: z.string().max(100, "Etternavn ved fødsel kan ikke være lengre enn 100 tegn"),
-  foedselsdato: optionalDateFieldForPerson("Fødselsdato"),
+  foedselsdato: optionalDateField(),
   adresselinje: z.string().max(200, "Adresselinje kan ikke være lengre enn 200 tegn"),
   poststed: z.string().max(100, "Poststed kan ikke være lengre enn 100 tegn"),
   postnummer: z.string().max(20, "Postnummer kan ikke være lengre enn 20 tegn"),
@@ -54,7 +38,7 @@ const p1InstitusjonFormSchema = z.object({
   institusjonsnavn: z.string().max(200, "Institusjonsnavn kan ikke være lengre enn 200 tegn"),
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
-  vedtaksdato: optionalDateField("Vedtaksdato"),
+  vedtaksdato: optionalDateField(),
   land: z.string().max(20, "Land navn kan ikke være lengre enn 20 tegn"),
 });
 
@@ -74,7 +58,7 @@ const p1InnvilgetPensjonFormSchema = z
   .object({
     institusjon: p1InstitusjonFormSchema,
     pensjonstype: pensjonstypeEnum.nullable(),
-    datoFoersteUtbetaling: optionalDateField("Dato for første utbetaling"),
+    datoFoersteUtbetaling: optionalDateField(),
     utbetalt: z.string().max(500, "Bruttobeløp kan ikke være lengre enn 500 tegn"),
     grunnlagInnvilget: grunnlagInnvilgetEnum.nullable(),
     reduksjonsgrunnlag: reduksjonsgrunnlagEnum.nullable(),
@@ -149,7 +133,7 @@ const p1UtfyllendeInstitusjonFormSchema = z.object({
     .string()
     .max(100, "E-post kan ikke være lengre enn 100 tegn")
     .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), "Ugyldig e-postformat"),
-  dato: optionalDateField("Dato"),
+  dato: optionalDateField(),
 });
 
 /* P1 Form Schema */

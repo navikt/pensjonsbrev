@@ -59,7 +59,7 @@ export type P1UtfyllendeInstitusjon = {
   faksnummer: string | null;
   telefonnummer: string | null;
   epost: string | null;
-  dato: string;
+  dato: string | null;
 };
 
 export type P1Redigerbar = {

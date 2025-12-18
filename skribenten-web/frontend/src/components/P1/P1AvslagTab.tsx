@@ -1,14 +1,13 @@
 import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Button, DatePicker, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
+import { Button, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyAvslaattRow } from "./emptyP1";
 import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
-
-const currentYear = new Date().getFullYear();
+import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
 export const P1AvslagTab = () => {
   const {
@@ -120,30 +119,7 @@ export const P1AvslagTab = () => {
                   control={control}
                   name={`avslaattePensjoner.${index}.institusjon.vedtaksdato` as const}
                   render={({ field: dateField, fieldState }) => (
-                    <DatePicker
-                      dropdownCaption
-                      fromDate={new Date(`1 Jan ${currentYear - 50}`)}
-                      onSelect={(date) => {
-                        if (date) {
-                          const day = String(date.getDate()).padStart(2, "0");
-                          const month = String(date.getMonth() + 1).padStart(2, "0");
-                          const year = date.getFullYear();
-                          dateField.onChange(`${day}.${month}.${year}`);
-                        } else {
-                          dateField.onChange("");
-                        }
-                      }}
-                      toDate={new Date(`31 Dec ${currentYear + 5}`)}
-                    >
-                      <DatePicker.Input
-                        className="p1-datepicker"
-                        error={fieldState.error?.message}
-                        label="Vedtaksdato"
-                        placeholder="dd.mm.åååå"
-                        size="small"
-                        {...dateField}
-                      />
-                    </DatePicker>
+                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} hideLabel label="Vedtaksdato" />
                   )}
                 />
               </td>
