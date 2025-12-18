@@ -201,7 +201,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                         text(
                             bokmal { + "Pensjonsopptjening etter kapittel 19 (gamle regler)" },
                             nynorsk { + "Pensjonsopptening etter kapittel 19 (gamle reglar)" },
-                            english { + "Accumulation of pension rights on the basis of the old provisions of Chapter 19)" },
+                            english { + "Accumulation of pension rights on the basis of the old provisions of Chapter 19" },
                         )
                     }
 
@@ -244,7 +244,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                         text(
                             bokmal { + "Pensjonsopptjening etter kapittel 20 (nye regler)" },
                             nynorsk { + "Pensjonsopptening etter kapittel 20 (nye reglar)" },
-                            english { + "Accumulation of pension rights on the basis of the new provisions of Chapter 20)" },
+                            english { + "Accumulation of pension rights on the basis of the new provisions of Chapter 20" },
                         )
                     }
                     paragraph {
