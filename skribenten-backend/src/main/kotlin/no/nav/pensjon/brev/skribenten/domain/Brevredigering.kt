@@ -38,9 +38,9 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
-    var redigeresAv by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent.wrap(::NavIdent, NavIdent::id)
+    var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
+    var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
+    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
@@ -49,7 +49,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val mottaker by Mottaker.Companion optionalBackReferencedOn MottakerTable.id
     val p1Data by P1Data.Companion optionalBackReferencedOn P1DataTable.id
     val valgteVedlegg by ValgteVedlegg.Companion optionalBackReferencedOn ValgteVedleggTable.id
-    var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
+    var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
