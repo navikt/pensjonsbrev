@@ -60,7 +60,7 @@ fun Route.sakBrev(
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
             val result = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Command(
+                UpdateLetterHandler.Request(
                     brevId = brevId,
                     saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = request.saksbehandlerValg,
