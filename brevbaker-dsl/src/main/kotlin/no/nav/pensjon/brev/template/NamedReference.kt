@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.dsl.TextScope
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
 
 private val startQuote: TextElement<BaseLanguages> = newText(
     Language.Bokmal to QuotationMarks.BokmalNynorsk.start,
@@ -31,3 +33,11 @@ fun TextScope<LangBokmalEnglish, *>.namedReference(attachment: AttachmentTemplat
     }
     addTextContentBaseLanguages(endQuote)
 }
+
+private fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> newText(
+    lang1: Pair<Lang1, String>,
+    lang2: Pair<Lang2, String>,
+    lang3: Pair<Lang3, String>,
+    fontType: FontType = PLAIN,
+): TextElement<LanguageSupport.Triple<Lang1, Lang2, Lang3>> =
+    Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType))
