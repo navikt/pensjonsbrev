@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsoppt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.brukerFoedtFoer1948
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidEtter69Aar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidFoer1992
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidForBarnUnder7aarFoer1992
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn22Timer
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn6Maaneder
@@ -314,6 +315,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 }
             }
 
+            showIf(saksbehandlerValg.privatAFPavslaat or saksbehandlerValg)
             showIf(saksbehandlerValg.privatAFPavslaat) {
                 paragraph {
                     text(
@@ -339,6 +341,10 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                                 "Your application for credited acquired rights for the care of children under the age of seven prior to 1992 therefore can not be granted." }
                     )
                 }
+            }
+
+            showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992) {
+
             }
 
             showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {

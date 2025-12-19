@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsoppt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.brukerFoedtFoer1948
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidEtter69Aar
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidFoer1992
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidForBarnUnder7aarFoer1992
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn22Timer
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.omsorgsarbeidMindreEnn6Maaneder
@@ -258,71 +259,117 @@ object VedtakAvslagPaaOmsorgsopptjeningNY : RedigerbarTemplate<VedtakAvslagPaaOm
                 }
             }
 
-            showIf(saksbehandlerValg.privatAFPavslaat) {
+            showIf(saksbehandlerValg.privatAFPavslaat or saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992 or saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen or saksbehandlerValg.brukerFoedtFoer1948) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter AFP-tilskottsloven § 6 og forskrift til denne bestemmelsen." },
-                        nynorsk { +"" },
-                        english { +"" }
+                        nynorsk { +"Vedtaket er gjort etter AFP‑tilskotslova § 6 og forskrift til denne føresegna." },
+                        english { +"This decision is made in accordance with the Contractual Pension Subsidy Act (AFP-tilskottsloven) paragraph 6 and the regulations for this provision." }
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vi har mottatt melding fra Fellesordningen om at du har fått avslag på søknaden din om AFP i privat sektor. " +
-                                    "Søknaden din om pensjonsopptjening for omsorg for barn under sju år før 1992 kan derfor ikke innvilges."
-                        },
-                        nynorsk { +"" },
-                        english { +"" }
-                    )
+
+                showIf(saksbehandlerValg.privatAFPavslaat) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Vi har mottatt melding fra Fellesordningen om at du har fått avslag på søknaden din om AFP i privat sektor. " +
+                                        "Søknaden din om pensjonsopptjening for omsorg for barn under 7 år før 1992 kan derfor ikke innvilges."
+                            },
+                            nynorsk {
+                                +"Vi har motteke melding frå Fellesordninga om at du har fått avslag på søknaden din om AFP i privat sektor. " +
+                                        "Søknaden din om pensjonsopptening for omsorg for barn under 7 år før 1992 kan difor ikkje innvilgast."
+                            },
+                            english {
+                                +"We have received notification from Fellesordningen (the 'Common Scheme') that your application for a contractual pension in the private sector has been denied. " +
+                                        "Consequently, your application to be credited acquired pension rights for the care of children under the age of 7 before 1992 cannot be granted."
+                            }
+                        )
+                    }
                 }
+
+                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992) {
+                    paragraph {
+                        text(
+                            bokmal { +"For personer som er født i 1948 eller senere kan pensjonsopptjening for omsorg for barn under 7 år før 1992 benyttes til beregning av avtalefestet pensjon (AFP) i privat sektor. " +
+                                    "Dette forutsetter at Fellesordningen har innvilget AFP i privat sektor." },
+                            nynorsk { +"or personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast til utrekning av avtalefesta pensjon (AFP) i privat sektor. " +
+                                    "Dette føreset at Fellesordninga har innvilga AFP i privat sektor." },
+                            english { +"If you were born in or after 1948, care for children under the age of 7 before 1992 may be included when calculating a contractual pension in the private sector. " +
+                                    "This applies only if Fellesordningen (the ‘Common Scheme’) has granted you such a pension." }
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Vi kan ikke se at du har søkt om AFP i privat sektor. " +
+                                    "Søknaden din om pensjonsopptjening for omsorg for barn under 7 år før 1992 kan derfor ikke innvilges."},
+                            nynorsk { +"Vi kan ikkje sjå at du har søkt om AFP i privat sektor. " +
+                                    "Søknaden din om pensjonsopptening for omsorg for barn under 7 år før 1992 kan difor ikkje innvilgast." },
+                            english { +"We have no information indicating that you have applied for AFP in the private sector. " +
+                                    "Your application to be accredited with acquired pension rights for the care of children under the age of 7 before 1992 cannot be granted." },
+                        )
+                    }
+                }
+
+                showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {
+                    paragraph {
+                        text(
+                            bokmal { +"For personer som er født i 1948 eller senere kan pensjonsopptjening for omsorg for barn under 7 år før 1992 benyttes til beregning av avtalefestet pensjon (AFP) i privat sektor." },
+                            nynorsk { +"For personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast til utrekning av avtalefesta pensjon (AFP) i privat sektor." },
+                            english { +"If you were born in or after 1948, care for children under the age of 7 before 1992 can be used to calculate a contractual pension in the private sector." }
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Det er bare en av foreldrene som kan få godskrevet omsorgsopptjening for hvert enkelt år. " +
+                                    "Foreldrene kan be om at omsorgspoeng blir godskrevet den andre forelderen hvis de var sammen om omsorgen for barna. " +"" +
+                                    "Dette gjelder likevel ikke når det inngår i beregningsgrunnlaget for en avtalefestet pensjon som allerede har blitt eller blir utbetalt." },
+                        nynorsk { +"Det er berre éin av foreldra som kan få godskrive omsorgsopptening for kvart enkelt år. " +
+                                "Foreldra kan be om at omsorgspoeng blir godskrivne den andre av dei dersom dei hadde felles omsorg for barna. " +
+                                "Dette gjeld likevel ikkje når poenga inngår i berekningsgrunnlaget for ei avtalefesta pensjon som allereie er eller blir utbetalt." },
+                        english { +"Only one parent may acquire rights for care work in any given year. " +
+                                "The parents may choose which of them the rights are assigned to, provided they both participated in child care. " +
+                                "This does not apply, however, when the rights are included in the calculation of a contractual pension that has already been paid or will be paid." }
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Omsorgsopptjening for " + fritekst("år") + " inngår allerede i beregningsgrunnlaget for AFP i privat sektor til ektefellen din. " +
+                                    "Søknaden din om pensjonsopptjening for omsorg for barn under 7 år før 1992 kan derfor ikke innvilges." },
+                            nynorsk { +"Omsorgsopptening for " + fritekst("år") + " inngår allereie i berekningsgrunnlaget for AFP i privat sektor til ektefellen din. " +
+                                    "Søknaden din om pensjonsopptening for omsorg for barn under 7 år før 1992 kan difor ikkje innvilgast." },
+                            english { +"Acquired pension rights for " + fritekst("år") + " are already included in the calculation of the contractual pension in the private sector that your spouse receives. " +
+                                    "Your application to be accredited with acquired pensjon rights for the care of children under the age of 7 prior to 1992 therefore cannot be granted." }
+                        )
+                    }
+                }
+
+                showIf(saksbehandlerValg.brukerFoedtFoer1948) {
+                    paragraph {
+                        text(
+                            bokmal { +"For personer som er født i 1948 eller senere kan pensjonsopptjening for omsorg for barn under 7 år før 1992 benyttes til beregning av avtalefestet pensjon (AFP) i privat sektor" },
+                            nynorsk { +"For personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast til utrekning av avtalefesta pensjon (AFP) i privat sektor." },
+                            english { +"If you were born in or after 1948, care for children under the age of 7 before 1992 can be used to calculate AFP in the private sector." },
+                        )
+                    }
+                }
+                    paragraph {
+                        text(
+                            bokmal { +"Du er født tidligere enn 1948 og vilkårene for å få pensjonsopptjening for omsorg for barn under 7 år før 1992 er derfor ikke oppfylt." },
+                            nynorsk { +"Du er fødd før 1948, og vilkåra for å få pensjonsopptening for omsorg for barn under 7 år før 1992 er difor ikkje oppfylte." },
+                            english { +"You were born prior to 1948, and the requirements for acquiring pension rights for the care of children under the age of 7 before 1992 have therefore not been met." }
+                        )
+                    }
+
+                }
+
+                includePhrase(Felles.RettTilAAKlage)
+                includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(Felles.HarDuSpoersmaal.omsorg)
             }
 
-            showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter AFP - tilskottsloven § 6 og forskrift til denne bestemmelsen." },
-                        nynorsk { +"" },
-                        english { +"" }
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Omsorgsopptjening for " + fritekst("år") + " inngår allerede i beregningsgrunnlaget for AFP i privat sektor til ektefellen din. " +
-                                    "Søknaden din om pensjonsopptjening for omsorg for barn under sju år før 1992 kan derfor ikke innvilges."
-                        },
-                        nynorsk { +"" },
-                        english { +"" }
-                    )
-                }
-            }
-
-            showIf(saksbehandlerValg.brukerFoedtFoer1948) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter AFP - tilskottsloven § 6 og forskrift til denne bestemmelsen." },
-                        nynorsk { +"" },
-                        english { +"" }
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du er født tidligere enn 1948 og vilkårene for å få pensjonsopptjening for omsorg for barn under 7 år før 1992 er derfor ikke oppfylt." },
-                        nynorsk { +"" },
-                        english { +"" }
-                    )
-                }
-            }
-
-            includePhrase(Felles.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(Felles.HarDuSpoersmaal.omsorg)
+            includeAttachment(
+                vedleggDineRettigheterOgMulighetTilAaKlage,
+                pesysData.dineRettigheterOgMulighetTilAaKlageDto
+            )
         }
-
-        includeAttachment(
-            vedleggDineRettigheterOgMulighetTilAaKlage,
-            pesysData.dineRettigheterOgMulighetTilAaKlageDto
-        )
     }
-}
