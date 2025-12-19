@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081")
 
     private fun render(
         overrideName: String? = null,
@@ -80,7 +80,7 @@ class LatexVisualITest {
     fun fonts() {
         render {
             paragraph {
-                text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.PLAIN)
+                text(bokmal { +"The quick brown fox jumps over the lazy dog. nav.no/uføre-ettersende-post" }, FontType.PLAIN)
                 text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.ITALIC)
                 text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.BOLD)
             }

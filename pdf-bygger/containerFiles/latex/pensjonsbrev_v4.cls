@@ -31,11 +31,18 @@
 \setmainfont{Source Sans 3}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
-    LetterSpace=0.2,
-    Color=000000,
-    BoldFont={Source Sans 3 Bold},
-    SemiBoldFont={Source Sans 3 SemiBold},
-    ItalicFont={Source Sans 3 Italic}]{Source Sans 3}
+    Path = /usr/share/fonts/opentype/sourcesans3/,
+    Extension = .otf,
+    UprightFont = SourceSans3-Regular,
+    BoldFont = SourceSans3-Bold,
+    SemiBoldFont = SourceSans3-Semibold,
+    ItalicFont = SourceSans3-It,
+    BoldItalicFont = SourceSans3-BoldIt,
+    % These features are crucial to stop the hyphen from "stretching"
+    Contextuals=NoAlternate,
+    Mapping=,
+    RawFeature={-liga;-clig} % Disables standard and contextual ligatures
+]{SourceSans3-Regular}
 
 
 % Global font commands.

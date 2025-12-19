@@ -8,6 +8,16 @@
     \renewcommand{\previouselement}{#1}
 }
 
+% macro for å erstatte hyphen symbol med symbol fra annen font (åpen font inkludert i latex)
+\begingroup
+  \catcode`\-=13
+  \gdef\StartMinusErstatning{%
+    \catcode`\-=13
+    \def-{\leavevmode\hbox{\fontencoding{OT1}\fontfamily{cmr}\selectfont\char45}}
+  }
+  \gdef\StopMinusErstatning{\catcode`\-=12}
+\endgroup
+
 % Several elements use the \addvspace command. When two elements next to each other uses this kind of space, the highest value is chosen.
  % For example:
     % some paragraph text

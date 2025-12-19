@@ -1,6 +1,10 @@
 % Used for table(...){...} element
 
-\newfontfamily\tablecolumnheadertext[LetterSpace=0.2]{Source Sans 3 SemiBold}
+\newfontface\tablecolumnheadertext[
+    Path = /usr/share/fonts/opentype/sourcesans3/,
+    Extension = .otf,
+    LetterSpace=0.2,
+]{SourceSans3-Semibold}
 \newcommand{\tablecolumnheader}{\tablecolumnheadertext\fontsize{\standardtextsize}{\standardtextspacing}\selectfont}
 
 % uses the same spacing between titles and non-titles and formatting as title two.
