@@ -14,6 +14,7 @@ on:
       - "fetch-secrets.sh"
       - "LICENCE.md"
       - "README.md"
+      - ".tool-versions"
 
 jobs:
   klarTilMerge:
