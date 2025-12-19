@@ -57,7 +57,6 @@ fun Route.sakBrev(
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[SakKey]
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
             val result = brevredigeringFacade.oppdaterBrev(
