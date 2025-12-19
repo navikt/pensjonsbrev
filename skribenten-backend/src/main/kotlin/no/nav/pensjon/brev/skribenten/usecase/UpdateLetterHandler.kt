@@ -21,7 +21,7 @@ class UpdateLetterHandler(
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
 ) {
-    data class Command(
+    data class Request(
         val brevId: Long,
         val saksbehandler: NavIdent,
         val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
@@ -29,7 +29,7 @@ class UpdateLetterHandler(
         val frigiReservasjon: Boolean = false,
     )
 
-    suspend fun handle(cmd: Command): Result<Dto.Brevredigering, BrevedigeringError>? {
+    suspend fun handle(cmd: Request): Result<Dto.Brevredigering, BrevedigeringError>? {
         val brev = Brevredigering.findById(cmd.brevId) ?: return null
 
         brev.reserver(Instant.now(), cmd.saksbehandler, brevreservasjonPolicy).onError { return failure(it) }
