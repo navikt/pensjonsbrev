@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 
+context(dto2ApiService: Dto2ApiService)
 fun Route.brev(
     brevredigeringService: BrevredigeringService,
-    dto2ApiService: Dto2ApiService,
     pdlService: PdlService,
     penService: PenService,
     brevredigeringFacade: BrevredigeringFacade,
@@ -57,7 +57,7 @@ fun Route.brev(
                     frigiReservasjon = frigiReservasjon,
                 )
             )
-            dto2ApiService.respond(call, resultat)
+            apiRespond(resultat)
         }
 
         put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
@@ -71,7 +71,7 @@ fun Route.brev(
                     frigiReservasjon = frigiReservasjon,
                 )
             )
-            dto2ApiService.respond(call, resultat)
+            apiRespond(resultat)
         }
 
         put<String>("/signatur") { signatur ->
