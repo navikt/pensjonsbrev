@@ -26,6 +26,7 @@ fun Route.sakRoute(
     skjermingService: SkjermingServiceHttp,
     p1Service: P1ServiceImpl,
     pensjonRepresentasjonService: PensjonRepresentasjonService,
+    brevredigeringFacade: BrevredigeringFacade,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
@@ -124,6 +125,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(dto2ApiService, brevbakerService, brevredigeringService, p1Service)
+        sakBrev(dto2ApiService, brevbakerService, brevredigeringService, p1Service, brevredigeringFacade)
     }
 }
