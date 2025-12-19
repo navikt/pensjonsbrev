@@ -49,7 +49,7 @@ fun Route.brev(
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Command(
+                UpdateLetterHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = null,
@@ -63,7 +63,7 @@ fun Route.brev(
         put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Command(
+                UpdateLetterHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = request,

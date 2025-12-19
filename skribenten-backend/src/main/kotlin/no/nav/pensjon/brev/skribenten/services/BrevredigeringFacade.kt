@@ -17,7 +17,7 @@ class BrevredigeringFacade(
     val brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ) {
 
-    suspend fun oppdaterBrev(cmd: UpdateLetterHandler.Command): Result<Dto.Brevredigering, BrevedigeringError>? =
+    suspend fun oppdaterBrev(cmd: UpdateLetterHandler.Request): Result<Dto.Brevredigering, BrevedigeringError>? =
         newSuspendedTransaction {
             UpdateLetterHandler(redigerBrevPolicy, brevreservasjonPolicy, renderService, brevdataService).handle(cmd)
         }
