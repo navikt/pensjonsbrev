@@ -70,7 +70,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
                 vellykket = true,
                 reservertAv = reservertAv,
                 timestamp = sistReservert,
-                expiresIn = BrevreservasjonPolicy().timeout,
+                expiresIn = BrevreservasjonPolicy.timeout,
                 redigertBrevHash = this.redigertBrevHash,
             )
         }
