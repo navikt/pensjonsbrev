@@ -17,16 +17,15 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
-import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
@@ -100,43 +99,6 @@ object BrevredigeringTable : LongIdTable() {
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
     val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
-}
-
-class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
-    var saksId by BrevredigeringTable.saksId
-    // Det er forventet at vedtaksId kun har verdi om brevet er Vedtaksbrev
-    var vedtaksId by BrevredigeringTable.vedtaksId
-    var brevkode by BrevredigeringTable.brevkode
-    var spraak by BrevredigeringTable.spraak
-    var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
-    var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
-    val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
-    var laastForRedigering by BrevredigeringTable.laastForRedigering
-    var distribusjonstype by BrevredigeringTable.distribusjonstype
-    var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var sistRedigertAvNavIdent by BrevredigeringTable.sistRedigertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var opprettet by BrevredigeringTable.opprettet
-    var sistredigert by BrevredigeringTable.sistredigert
-    var sistReservert by BrevredigeringTable.sistReservert
-    var journalpostId by BrevredigeringTable.journalpostId
-    val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
-    val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
-    val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
-    val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
-    var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-
-    companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: Long, saksId: Long?) =
-            if (saksId == null) {
-                findById(id)
-            } else {
-                find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
-            }
-    }
-
-    val isVedtaksbrev get() = vedtaksId != null
 }
 
 object DocumentTable : LongIdTable() {
