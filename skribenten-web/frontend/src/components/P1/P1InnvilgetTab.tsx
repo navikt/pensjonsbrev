@@ -7,9 +7,10 @@ import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
 import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
+import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
-export const P1InnvilgetTab = () => {
+export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string; navn: string }> }) => {
   const {
     control,
     register,
@@ -97,14 +98,12 @@ export const P1InnvilgetTab = () => {
             <tr key={field.id}>
               {/* 3.1 Institusjon */}
               <td className={hasInstitusjonError(index) ? "p1-cell-error" : ""}>
-                <TextField
+                <P1CountryField
+                  control={control}
                   error={errors.innvilgedePensjoner?.[index]?.institusjon?.land?.message}
-                  label="Land"
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.institusjon.land` as const)}
-                  css={css`
-                    margin-bottom: 0.5rem;
-                  `}
+                  index={index}
+                  landListe={landListe}
+                  name={`innvilgedePensjoner.${index}.institusjon.land` as const}
                 />
                 <TextField
                   error={errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn?.message}

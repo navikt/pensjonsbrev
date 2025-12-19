@@ -9,6 +9,7 @@ import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, p1OverrideKeys, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { useLandData } from "~/hooks/useLandData";
 import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
@@ -62,6 +63,8 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       reset(mapP1DtoToForm(p1Override));
     }
   }, [p1Override, reset]);
+
+  const { data: landListe } = useLandData();
 
   const lagreMutation = useMutation({
     mutationFn: (formValues: P1RedigerbarForm) => {
@@ -210,11 +213,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   </Tabs.Panel>
 
                   <Tabs.Panel className="p1-tabs-panel" value="innvilget">
-                    <P1InnvilgetTab />
+                    <P1InnvilgetTab landListe={landListe || []} />
                   </Tabs.Panel>
 
                   <Tabs.Panel className="p1-tabs-panel" value="avslag">
-                    <P1AvslagTab />
+                    <P1AvslagTab landListe={landListe || []} />
                   </Tabs.Panel>
 
                   <Tabs.Panel className="p1-tabs-panel" value="institusjon">

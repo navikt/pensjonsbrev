@@ -7,9 +7,10 @@ import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyAvslaattRow } from "./emptyP1";
 import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
+import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
-export const P1AvslagTab = () => {
+export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; navn: string }> }) => {
   const {
     control,
     register,
@@ -79,14 +80,12 @@ export const P1AvslagTab = () => {
             <tr key={field.id}>
               {/* 4.1 Institusjon + PIN/saksnr + vedtaksdato */}
               <td className={hasInstitusjonError(index) ? "p1-cell-error" : ""}>
-                <TextField
+                <P1CountryField
+                  control={control}
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.land?.message}
-                  label="Land"
-                  size="small"
-                  {...register(`avslaattePensjoner.${index}.institusjon.land` as const)}
-                  css={css`
-                    margin-bottom: 0.5rem;
-                  `}
+                  index={index}
+                  landListe={landListe}
+                  name={`avslaattePensjoner.${index}.institusjon.land` as const}
                 />
                 <TextField
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.institusjonsnavn?.message}

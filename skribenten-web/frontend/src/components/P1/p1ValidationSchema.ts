@@ -35,11 +35,11 @@ const p1PersonFormSchema = z.object({
 
 /* Tab 3: Innvilget Pensjon validation */
 const p1InstitusjonFormSchema = z.object({
+  land: z.string().max(20, "Land navn kan ikke være lengre enn 20 tegn"),
   institusjonsnavn: z.string().max(200, "Institusjonsnavn kan ikke være lengre enn 200 tegn"),
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
   vedtaksdato: optionalDateField(),
-  land: z.string().max(20, "Land navn kan ikke være lengre enn 20 tegn"),
 });
 
 /* Helper to check if a row has any filled data */
