@@ -20,8 +20,8 @@ import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
+context(dto2ApiService: Dto2ApiService)
 fun Route.sakBrev(
-    dto2ApiService: Dto2ApiService,
     brevbakerService: BrevbakerService,
     brevredigeringService: BrevredigeringService,
     p1Service: P1ServiceImpl,
@@ -69,7 +69,7 @@ fun Route.sakBrev(
                 )
             )
 
-            dto2ApiService.respond(call, result)
+            apiRespond(result)
         }
 
         patch<Api.DelvisOppdaterBrevRequest>("/{brevId}") { request ->
