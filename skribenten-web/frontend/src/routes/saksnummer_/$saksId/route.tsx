@@ -69,14 +69,14 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const dateOfBirth = useMemo(() => {
     if (!sak.foedselsdato) return undefined;
     const date = new Date(sak.foedselsdato);
-    return isNaN(date.valueOf())
+    return Number.isNaN(date.getTime())
       ? undefined
       : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
   }, [sak.foedselsdato]);
   const dateOfDeath = useMemo(() => {
     if (!sakContext.doedsfall) return undefined;
     const date = new Date(sakContext.doedsfall);
-    return isNaN(date.valueOf())
+    return Number.isNaN(date.getTime())
       ? undefined
       : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
   }, [sakContext.doedsfall]);

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
   loader: async ({ params: { brevId } }) => {
     const brevIdNum = Number(brevId);
 
-    if (isNaN(brevIdNum) || !Number.isInteger(brevIdNum) || brevIdNum <= 0) {
+    if (Number.isNaN(brevIdNum) || !Number.isInteger(brevIdNum) || brevIdNum <= 0) {
       throw new Error("Ugyldig brev-ID mottatt fra Pesys. Gå tilbake til Pesys og prøv igjen.");
     }
 

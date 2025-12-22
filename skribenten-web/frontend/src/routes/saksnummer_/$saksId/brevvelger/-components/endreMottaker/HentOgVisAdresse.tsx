@@ -28,20 +28,20 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <>
+          {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
+          {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
           {adresseQuery.isSuccess && (
             <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} saksId={properties.sakId} />
           )}
-          {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
-          {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
         </>
       )}
       {properties.samhandlerId && (
         <>
           {samhandlerAdresse.isPending && <BodyShort size="small">Henter...</BodyShort>}
+          {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
           {samhandlerAdresse.isSuccess && (
             <MottakerAdresseOppsummering adresse={samhandlerAdresse.data} erSamhandler saksId={properties.sakId} />
           )}
-          {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
         </>
       )}
     </div>
@@ -72,7 +72,7 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
   const navn = useSakGjelderNavnFormatert(properties);
 
   return (
-    <div>
+    <>
       <BodyShort size="small">{navn}</BodyShort>
       <VStack gap="space-0">
         {properties.adresse.adresselinjer.map((linje) => (
@@ -81,13 +81,13 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
           </BodyShort>
         ))}
       </VStack>
-    </div>
+    </>
   );
 };
 
 const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: boolean }) => {
   return (
-    <div>
+    <>
       <BodyShort size="small">
         {properties.adresse.navn} {properties.erSamhandler && "(Samhandler)"}
       </BodyShort>
@@ -98,7 +98,7 @@ const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: 
           {properties.adresse.land === "NOR" ? "" : `, ${properties.adresse.land}`}
         </BodyShort>
       </VStack>
-    </div>
+    </>
   );
 };
 
