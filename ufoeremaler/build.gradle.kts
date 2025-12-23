@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val ufoereApiModelVersion = 55
+val ufoereApiModelVersion = 56
 
 val apiModelJavaTarget: String by System.getProperties()
 
