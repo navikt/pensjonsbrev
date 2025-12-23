@@ -100,7 +100,7 @@ jobs:
         run: npm run check-types
 
       - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ failure() && inputs.cypress}}
         with:
           name: cypress-screenshots
