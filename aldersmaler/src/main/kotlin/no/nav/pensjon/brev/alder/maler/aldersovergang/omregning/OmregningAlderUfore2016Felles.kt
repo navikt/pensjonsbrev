@@ -185,7 +185,7 @@ data class OmregningAlderUfore2016Felles(
                 paragraph {
                     text(
                         bokmal { +"I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter " + avdodNavn + "." },
-                        nynorsk { +"I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter " + avdodNavn  + "."},
+                        nynorsk { +"I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter " + avdodNavn + "."},
                         english { +"We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after " + avdodNavn + "." }
                     )
                 }
