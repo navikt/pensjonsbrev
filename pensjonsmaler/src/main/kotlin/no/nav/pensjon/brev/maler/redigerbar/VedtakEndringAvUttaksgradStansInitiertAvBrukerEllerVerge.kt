@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.krav
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -29,8 +28,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge :
     RedigerbarTemplate<VedtakEndringAvUttaksgradStansBrukerEllerVergeDto> {
-
-    override val featureToggle = FeatureToggles.vedtakEndringAvUttaksgradStans.toggle
 
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

@@ -71,8 +71,6 @@ import java.time.Month
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto> {
 
-    override val featureToggle = FeatureToggles.vedtakEndringOpptjeningEndret.toggle
-
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)

@@ -31,7 +31,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
@@ -67,8 +66,6 @@ import no.nav.pensjon.brevbaker.api.model.Percent
 @TemplateModelHelpers
 // 00100 i doksys
 object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradDto> {
-
-    override val featureToggle = FeatureToggles.vedtakEndringAvUttaksgrad.toggle
 
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

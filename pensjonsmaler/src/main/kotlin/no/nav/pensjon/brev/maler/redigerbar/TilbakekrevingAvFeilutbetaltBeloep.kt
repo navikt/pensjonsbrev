@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbeta
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -34,8 +33,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // If an incorrect pension benefit payment is to be repaid, in full or in part -> TilbakekrevingResultat = FULL_TILBAKEKREV || DELVIS_TILBAKEKREV
 
 object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvFeilutbetaltBeloepDto> {
-
-    override val featureToggle = FeatureToggles.vedtakTilbakekrevingAvFeilutbetaltBeloep.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELOEP
     override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
