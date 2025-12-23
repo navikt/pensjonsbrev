@@ -14,6 +14,8 @@ import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
+import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 
 fun Application.configureRouting(
     authConfig: JwtConfig,
@@ -42,55 +44,58 @@ fun Application.configureRouting(
         BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService, p1ServiceImpl)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
+    val brevredigeringFacade = BrevredigeringFacade(RenderService(brevbakerService), BrevdataService(penService))
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
-    routing {
-        healthRoute()
-        swaggerUI("/swagger", "openapi/external-api.yaml")
+    context(dto2ApiService) {
+        routing {
+            healthRoute()
+            swaggerUI("/swagger", "openapi/external-api.yaml")
 
-        authenticate(authConfig.name) {
-            install(PrincipalInContext)
-            install(PrincipalHasGroup) {
-                requireOneOf(ADGroups.alleBrukergrupper)
+            authenticate(authConfig.name) {
+                install(PrincipalInContext)
+                install(PrincipalHasGroup) {
+                    requireOneOf(ADGroups.alleBrukergrupper)
+                }
+
+                setupServiceStatus(
+                    safService,
+                    penService,
+                    pensjonPersonDataService,
+                    pdlService,
+                    krrService,
+                    brevbakerService,
+                    brevmetadataService,
+                    samhandlerService,
+                    navansattService
+                )
+
+                landRoute()
+                brevmal(brevbakerService, brevmalService)
+                kodeverkRoute(penService)
+                sakRoute(
+                    brevbakerService,
+                    brevmalService,
+                    brevredigeringService,
+                    krrService,
+                    legacyBrevService,
+                    pdlService,
+                    penService,
+                    pensjonPersonDataService,
+                    safService,
+                    skjermingService,
+                    p1ServiceImpl,
+                    pensjonRepresentasjonService,
+                    brevredigeringFacade,
+                )
+                brev(brevredigeringService, pdlService, penService, brevredigeringFacade)
+                samhandlerRoute(samhandlerService)
+                meRoute(navansattService)
+
             }
 
-            setupServiceStatus(
-                safService,
-                penService,
-                pensjonPersonDataService,
-                pdlService,
-                krrService,
-                brevbakerService,
-                brevmetadataService,
-                samhandlerService,
-                navansattService
-            )
-
-            landRoute()
-            brevmal(brevbakerService, brevmalService)
-            kodeverkRoute(penService)
-            sakRoute(
-                dto2ApiService,
-                brevbakerService,
-                brevmalService,
-                brevredigeringService,
-                krrService,
-                legacyBrevService,
-                pdlService,
-                penService,
-                pensjonPersonDataService,
-                safService,
-                skjermingService,
-                p1ServiceImpl,
-                pensjonRepresentasjonService,
-            )
-            brev(brevredigeringService, dto2ApiService, pdlService, penService)
-            samhandlerRoute(samhandlerService)
-            meRoute(navansattService)
-
+            externalAPI(authConfig, externalAPIService)
         }
-
-        externalAPI(authConfig, externalAPIService)
     }
 }

@@ -1,12 +1,20 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respond
 import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.domain.BrevedigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brev.skribenten.usecase.Result
 
 class Dto2ApiService(
     private val brevbakerService: BrevbakerService,
@@ -58,6 +66,33 @@ class Dto2ApiService(
             journalpostId = info.journalpostId,
             vedtaksId = info.vedtaksId,
         )
+    }
+
+    suspend fun toApi(reservasjon: Reservasjon): Api.ReservasjonResponse = with(reservasjon) {
+        Api.ReservasjonResponse(
+            vellykket = vellykket,
+            reservertAv = NavAnsatt(reservertAv, navansattService.hentNavansatt(reservertAv.id)!!.navn),
+            timestamp = timestamp,
+            expiresIn = expiresIn,
+            redigertBrevHash = redigertBrevHash,
+        )
+    }
+
+    suspend fun respond(call: ApplicationCall, result: Result<Dto.Brevredigering, BrevedigeringError>?) {
+        when (result) {
+            is Result.Success -> call.respond(toApi(result.value))
+            is Result.Failure -> when (result.error) {
+                is BrevreservasjonPolicy.ReservertAvAnnen ->
+                    call.respond(HttpStatusCode.Locked, toApi(result.error.eksisterende))
+                is RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev ->
+                    call.respond(HttpStatusCode.Conflict, "Brev er arkivert med journalpostId: ${result.error.journalpostId}")
+                is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
+                    call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
+                is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
+                    call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
+            }
+            null -> call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+        }
     }
 
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {

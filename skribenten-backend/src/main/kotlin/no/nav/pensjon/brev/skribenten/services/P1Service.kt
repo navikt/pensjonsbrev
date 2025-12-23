@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
