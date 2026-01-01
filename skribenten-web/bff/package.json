@@ -25,7 +25,7 @@
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.39.1",
     "@types/cookie-parser": "^1.4.10",
-    "@types/express": "5.0.5",
+    "@types/express": "5.0.6",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
     "@typescript-eslint/eslint-plugin": "8.48.0",
