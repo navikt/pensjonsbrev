@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, BoxNew, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,36 +29,14 @@ const VedtakForhåndsvisningWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <BoxNew
-        background="default"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          align-items: center;
-          padding-top: var(--ax-space-32);
-        `}
-      >
-        <VStack align="center" gap="space-4">
+      <BoxNew asChild background="default" paddingBlock="space-32 0">
+        <VStack align="center" flexGrow="1" gap="space-4" justify="center">
           <Loader size="3xlarge" title="henter brev..." />
           <Heading size="large">Henter brev....</Heading>
         </VStack>
       </BoxNew>
     ),
-    error: (err) => (
-      <BoxNew
-        background="default"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          align-items: center;
-          padding-top: var(--ax-space-32);
-        `}
-      >
-        <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
-      </BoxNew>
-    ),
+    error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
     success: (brev) => <VedtaksForhåndsvisning brev={brev} saksId={saksId} />,
   });
 };

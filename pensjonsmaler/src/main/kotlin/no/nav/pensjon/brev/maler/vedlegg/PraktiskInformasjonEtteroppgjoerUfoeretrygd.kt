@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 
 // TODO: Conditional - this attachment is mandatory with letter UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
 // The conditional for showing the letter is: ResultatEO or ResultatForrigeEO = 'tilbakekr'
@@ -17,11 +17,13 @@ import no.nav.pensjon.brev.template.dsl.newText
 @TemplateModelHelpers
 val vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd =
     createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-        title = newText(
-            Bokmal to "Praktisk informasjon om etteroppgjøret",
-            Nynorsk to "Praktisk informasjon om etteroppgjeret",
-            English to "Practical information about the settlement"
-        ),
+        title = {
+            text(
+                bokmal { +"Praktisk informasjon om etteroppgjøret" },
+                nynorsk { +"Praktisk informasjon om etteroppgjeret" },
+                english { +"Practical information about the settlement" }
+            )
+        },
         includeSakspart = false,
     ) {
         includePhrase(InnledningPraktiskInformasjon)

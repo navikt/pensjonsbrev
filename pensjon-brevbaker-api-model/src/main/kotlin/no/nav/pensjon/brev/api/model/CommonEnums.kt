@@ -84,12 +84,12 @@ enum class MetaforceSivilstand {
     EKTEFELLE, ENKE, ENSLIG,
     FELLES_BARN, FORELDER, GIFT, GLAD_EKT, GLAD_PART, PARTNER, SAMBOER,
     SAMBOER_1_5,
-    SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
+    SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT
 }
 
 enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }
 
-enum class TilbakekrevingResultat  {
+enum class TilbakekrevingResultat {
     DELVIS_TILBAKEKREV,
     FEILREGISTRERT,
     FORELDET,
@@ -229,7 +229,7 @@ enum class InformasjonOmMedlemskap {
 }
 
 enum class BorI {
-    AVTALELAND,  // v3.Person - if borIAvtaleland is true and borIEOS is false and borINorge is false
-    EOS,  // v3.Person - if borIEOS is true and borIAvaleland i false and borINorge is false
-    NORGE,  // v3.Person - if BorI Norge is true and borIAvtaleland is false and borIEOS is false
+    AVTALELAND, // v3.Person - if borIAvtaleland is true and borIEOS is false and borINorge is false
+    EOS, // v3.Person - if borIEOS is true and borIAvaleland i false and borINorge is false
+    NORGE, // v3.Person - if BorI Norge is true and borIAvtaleland is false and borIEOS is false
 }

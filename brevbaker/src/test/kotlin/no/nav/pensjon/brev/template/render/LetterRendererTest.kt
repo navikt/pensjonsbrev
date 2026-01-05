@@ -23,10 +23,10 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.dsl.bokmal
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -204,10 +204,10 @@ class LetterRendererTest {
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(title = {bokmal {+"tittel"}}, false) {
             paragraph { text(bokmal { + "Attachment #1"}) }
         }
-        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel2"), false) {
+        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(title = {bokmal {+"tittel2"}}, false) {
             paragraph { text(bokmal { + "Attachment #2"}) }
         }
         val attachments = listOf(
@@ -233,7 +233,7 @@ class LetterRendererTest {
     @Test
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {
         var attachmentScopedExpr: Expression<String>? = null
-        val attachment1 = createAttachment(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment(title = { text(bokmal { +"tittel" }) }, false) {
             paragraph { text(bokmal { +testVerdi1 }) }
             attachmentScopedExpr = testVerdi1
         }

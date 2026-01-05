@@ -1,0 +1,85 @@
+= Produktoppdateringer
+
+== November 2025
+
+=== Nye ting vi har laget
+* Validering av adresser, postnummer og poststed når man legger til adresse manuelt
+* Personlinjen inneholder nå mer informasjon om bruker når vi har den informasjonen. Inkludert vergemål, skjerming o.l.
+
+=== Ting vi har forbedret
+* Oppdatering av data fra Pesys ved flere tilfeller for å sikre at siste endringer er med. Henter også ny PDF i forhåndsvisning når data er oppdatert, og vi gir beskjed i Skribenten hvis dette skjer
+* Forbedret tekstmarkering
+* Forbedret feilhåndtering og feilmeldinger slik at de gir mer informasjon
+* Bedre søk i Brevvelger. Det trenger ikke lenger være fullstendig match med tekst i tittel på brev. Søk på kategori slik som "Skribenten" fungerer også
+
+=== Ting vi har fikset
+* P1 gjort om til informasjonsbrev, og dermed tilgjengelig fra brukeroversikten i Pesys også
+* Rettet flere utfordringer med datakvalitet i P1 ved automatisk utfylling
+* Fjernet lenke til Teams i "Meld feil" meldingen da denne lenken ikke fungerte for alle brukere
+* Man kunne ikke redigere fritekstfelt hvis man brukte hurtigtasten "tab" for å tabbe seg til neste felt
+
+=== Ting vi jobber med
+* Redigering av P1. Vi jobber med å få ut redigering av P1 slik at saksbehandler kan justere data fra utland som er manglende eller feil før utsendelse
+* Legge til vedlegg for innhenting av opplysninger ved behov
+* Tekstmarkering forsvinner etter at man legger på formatering
+
+=== Kjente problemer
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
+
+== Oktober 2025
+
+=== Nye ting vi har laget
+* Tastatursnarveier for kopier og lim inn (ctrl+c og ctrl+v)
+* Viser kun tekstvalg i venstremenyen som er relevante for valgt mal og sakskontekst
+* P1 automatisk utfylling av data basert på alle P6000 SED'er som er valgt inn i P7000 i EESSI-pensjon og data fra Pesys
+* Ved endring av mottaker kan man nå markere at brevet skal til en annen mottaker enn bruker
+* Mulighet til å sette markøren inn i fritekstfelt ved behov
+
+=== Ting vi har forbedret
+* Redigering av titler i brev. Nå kan tittelen til brev også redigeres i Skribenten
+* Rolle vises ikke lenger i signatur. Dette er endret slik at vi følger brevstandard
+* Håndtering av utenlandske adresser ved manuell endring av mottaker
+* Saksbehandler kan nå selv sette vedtaksbrev tilbake til status "kladd" fra "Klar til attestering"
+
+=== Ting vi har fikset
+* Avsnitt om etterbetaling er nå et valg i venstremenyen slik som før. Det kom stadig tilfeller der avsnittet var uønsket og vi har derfor gjemt det bak et tekstvalg for å unngå problemer. Det kan nå velges inn ved behov
+* Fikset slik at attestant får litt bedre respons når de sletter en kladd fra skjermbildet "Brevbehandler". Tidligere skjedde det ingenting når man trykket slett brev
+* Henter nå ny PDF selv når dokumentdato er ulik dagens dato
+* Viser kun relevante hurtigtaster for overskrifter
+* Vise slett knappen hvis vi ikke klarer å hente PDF slik at kladden kan slettes ved behov
+
+=== Ting vi jobber med
+Ingenting spesielt å nevne her denne måneden
+
+=== Kjente problemer og behov vi tenker på
+* Ikke mulig å slette kladder med ett trykk fra dokumentoversikten
+* Legge ved skjema for innhenting av opplysninger som vedlegg til brev ved behov
+* Datakvaliteten til brevet P1 med forsidebrev er svak. Krever høyst sannsynlig redigering av noen felt
+
+== September 2025
+
+=== Nye ting vi har laget
+Ingeting helt nytt denne måneden!
+
+=== Ting vi har forbedret
+* Anførselstegn kan fjernes ved behov
+
+=== Ting vi har fikset
+* Knappene som brukes til navigering er nå synlig uavhengig av størrelse på skjerm og vindu
+* Utfordring med visning av titler i forhåndsvisningen av brev
+* Tekstvalg i venstremenyen kunne overskrive tekst som var skrevet inn i brevet
+
+=== Ting vi jobber med
+* Redigering av titler
+* Markering av flere avsnitt + overskrifter for enklere sletting av tekst
+* Bedre håndtering av adresser utenfor Norge når disse legges til manuelt
+* Tastatursnarveier for kopier og lim inn(ctrl+c og ctrl+v)
+* P1. Automatisk utfylling av P1 PDF for å forenkle prosessen ved utsendelse
+* Bevaring av format på tekst ved innliming (her må vi ha litt hjelp av gjengen som jobber med digital arbeidsflate for å kunne bevare original formatering på ting som er kopiert, så her kan vi ikke løse problemet helt selv dessverre)
+* Sletting av brev når brevet er satt til status "klar til attestering"
+
+=== Kjente problemer og behov vi tenker på
+* Vanskelig å få brev tilbake til status "kladd" hvis attestant finner noe som saksbehandler skal endre på
+* Vanskelig å slette brev som er satt "klar til attestering"
+* Ikke mulig å slette kladder med ett trykk fra dokumentoversikten
+* Legge ved skjema for innhenting av opplysninger som vedlegg til brev ved behov

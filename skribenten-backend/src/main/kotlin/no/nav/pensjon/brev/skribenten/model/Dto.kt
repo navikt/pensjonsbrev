@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
@@ -21,6 +22,7 @@ object Dto {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?
     )
 
     data class BrevInfo(
@@ -150,7 +152,7 @@ fun Api.OverstyrtMottaker.toDto() =
         is Api.OverstyrtMottaker.Samhandler -> samhandler(tssId)
         is Api.OverstyrtMottaker.NorskAdresse -> norskAdresse(
             navn = navn,
-            postnummer = postnummer.also { it.valider() },
+            postnummer = postnummer,
             poststed = poststed,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
@@ -200,7 +202,7 @@ value class NorskPostnummer(val value: String) {
         valider()
     }
 
-    fun valider() = require(value.trim().matches(regex)) {
+    fun valider() = require(value.matches(regex)) {
         "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
     }
 

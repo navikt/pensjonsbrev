@@ -205,7 +205,7 @@ data class Omregning2016Hjemler(
                     and oppfyltVedSammenleggingFemArKap20.not()
                     and eksportTrygdeavtaleEOS
                     and borINorge.not()
-                    and erEOSLand.not()
+                    and erEOSLand
         ) {
             paragraph {
                 text(

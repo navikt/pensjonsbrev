@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.testcases.CanReuseModelsDto2Sele
 import no.nav.pensjon.brev.template.dsl.helpers.testcases.CanReuseModelsDto2Selectors.child
 
 data class CanReuseModelsDto1(val name: String) {
-    data class ChildModel(val childName: String) {}
+    data class ChildModel(val childName: String)
 }
 data class CanReuseModelsDto2(val child: ChildModel) {
     data class ChildModel(val uncle: CanReuseModelsDto1.ChildModel)

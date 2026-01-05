@@ -26,7 +26,7 @@ const BrevmalAlternativer = (props: {
       return (
         <ApiError
           error={specificationFormElements.error}
-          title={"Feil oppstod ved henting av alternativer for brevmal"}
+          title="Feil oppstod ved henting av alternativer for brevmal"
         />
       );
     }
@@ -50,7 +50,7 @@ const BrevmalAlternativer = (props: {
             {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <SaksbehandlerValgModelEditor
               brevkode={props.brevkode}
-              fieldsToRender={"required"}
+              fieldsToRender="required"
               specificationFormElements={specificationFormElements}
               submitOnChange={props.submitOnChange}
             />
@@ -63,7 +63,7 @@ const BrevmalAlternativer = (props: {
               {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
-                fieldsToRender={"required"}
+                fieldsToRender="required"
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
@@ -77,7 +77,7 @@ const BrevmalAlternativer = (props: {
               {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
-                fieldsToRender={"optional"}
+                fieldsToRender="optional"
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
@@ -124,7 +124,7 @@ const BrevmalAlternativer = (props: {
               >
                 <SaksbehandlerValgModelEditor
                   brevkode={props.brevkode}
-                  fieldsToRender={"optional"}
+                  fieldsToRender="optional"
                   specificationFormElements={specificationFormElements}
                   submitOnChange={props.submitOnChange}
                 />
@@ -139,7 +139,7 @@ const BrevmalAlternativer = (props: {
               >
                 <SaksbehandlerValgModelEditor
                   brevkode={props.brevkode}
-                  fieldsToRender={"required"}
+                  fieldsToRender="required"
                   specificationFormElements={specificationFormElements}
                   submitOnChange={props.submitOnChange}
                 />

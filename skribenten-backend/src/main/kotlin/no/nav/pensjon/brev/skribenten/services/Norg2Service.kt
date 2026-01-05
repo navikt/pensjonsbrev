@@ -53,6 +53,6 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
 }
 
 data class NavEnhet(
-    val enhetNr:String,
+    val enhetNr: String,
     val navn: String
 )

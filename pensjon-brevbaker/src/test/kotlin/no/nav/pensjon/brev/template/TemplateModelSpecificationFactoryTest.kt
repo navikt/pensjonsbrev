@@ -113,7 +113,7 @@ class TemplateModelSpecificationFactoryTest {
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
         @Suppress("unused")
         enum class AnEnum {
-            @DisplayText("Flag 1") FLAG1, @DisplayText("Flag 2") FLAG2;
+            @DisplayText("Flag 1") FLAG1, @DisplayText("Flag 2") FLAG2
         }
     }
 

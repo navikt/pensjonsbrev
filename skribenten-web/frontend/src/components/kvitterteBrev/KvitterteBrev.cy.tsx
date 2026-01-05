@@ -82,7 +82,7 @@ describe("<KvitterteBrev />", () => {
       sendBrevSuccessSentralprint,
     ];
 
-    cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId={"123456"} />);
+    cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId="123456" />);
 
     cy.get('span:contains("Kunne ikke sende brev")').eq(0).should("be.visible");
     cy.get('span:contains("Kunne ikke sende brev")').eq(0);
@@ -139,7 +139,7 @@ describe("<KvitterteBrev />", () => {
       sendBrevError,
       attesteringSuccess,
     ];
-    cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId={"123456"} />);
+    cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId="123456" />);
 
     cy.get(".aksel-accordion__item").should("have.length", 6);
     cy.get(".aksel-accordion__item").eq(0).contains("Kunne ikke sende brev");

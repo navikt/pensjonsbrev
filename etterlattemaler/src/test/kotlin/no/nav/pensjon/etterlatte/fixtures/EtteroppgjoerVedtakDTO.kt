@@ -41,7 +41,7 @@ fun createEtteroppgjoerVedtakRedigerbartUtfallBrevDTO() =
     EtteroppgjoerVedtakRedigerbartUtfallBrevDTO(
         data = EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO(
             etteroppgjoersAar = 2024,
-            forhaandsvarselSendtDato = LocalDate.of(2024,6,25),
+            forhaandsvarselSendtDato = null,
             mottattSvarDato = LocalDate.of(2024, 7,15)
         )
     )

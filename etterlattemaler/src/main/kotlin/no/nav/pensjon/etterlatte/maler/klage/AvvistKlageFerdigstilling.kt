@@ -66,7 +66,7 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = true),  data.bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
 
         // Bosatt utland
         includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())

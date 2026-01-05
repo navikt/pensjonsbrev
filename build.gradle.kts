@@ -1,14 +1,18 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.binary.compatibility.validator) apply false
+    alias(libs.plugins.ktlint)
 }
 
 allprojects {
+
     repositories {
         mavenCentral()
         mavenLocal()
@@ -30,10 +34,29 @@ allprojects {
             freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
         }
     }
+    tasks.withType<KtLintCheckTask> {
+        dependsOn("ktlintFormat")
+    }
     tasks.withType<Test>{
         testLogging {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
             exceptionFormat = TestExceptionFormat.FULL
+        }
+    }
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        outputToConsole.set(true)
+        reporters {
+            reporter(ReporterType.JSON)
+        }
+        filter {
+            exclude { element ->
+                val path = element.file.path
+                path.contains("generated/") || path.contains("build.gradle.kts")
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { BodyShort, HStack, Select } from "@navikt/ds-react";
+import { BodyShort, BoxNew, HStack, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -57,33 +56,23 @@ type EditorMenuProps = {
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) => {
   return (
-    <div
-      css={css`
-        border-bottom: 1px solid var(--ax-neutral-300);
-        background: var(--ax-bg-default);
-        padding-inline: var(--ax-space-16);
-        min-height: 48px;
-        display: flex;
-        gap: var(--ax-space-4);
-        align-self: stretch;
-        align-items: center;
-        justify-content: space-between;
-      `}
-    >
-      <HStack align="center" gap="space-16" margin-block="2">
-        <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-        <VerticalDivider />
-        <EditorFonts />
-        <VerticalDivider />
-        <EditorBulletList />
-        <VerticalDivider />
-        <EditorTableTools />
-        <VerticalDivider />
-        <SelectTypography />
-      </HStack>
+    <BoxNew background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
+      <HStack align="center" gap="space-4" justify="space-between" minHeight="48px" paddingInline="space-16">
+        <HStack align="center" gap="space-16" margin-block="2">
+          <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+          <VerticalDivider />
+          <EditorFonts />
+          <VerticalDivider />
+          <EditorBulletList />
+          <VerticalDivider />
+          <EditorTableTools />
+          <VerticalDivider />
+          <SelectTypography />
+        </HStack>
 
-      <LagringStatus />
-    </div>
+        <LagringStatus />
+      </HStack>
+    </BoxNew>
   );
 };
 

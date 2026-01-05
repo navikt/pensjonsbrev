@@ -3,23 +3,21 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
 // V00009 i metaforce
 @TemplateModelHelpers
 val vedleggInformasjonOmMedlemskapOgHelserettigheterEOES =
     createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-        title = newText(
-            Bokmal to "Informasjon om medlemskap og rett til helsetjenester - for alderspensjonister som flytter til et EØS-land og er omfattet av EØS-avtalens regler om trygd",
-            Nynorsk to "Informasjon om medlemskap og rett til helsetenester - for alderspensjonistar som flyttar til eit EØS-land og er omfatta av reglane om trygd i EØS-avtalen",
-            English to "Information about membership and entitlement to health services - for retirement pensioners who move to an EEA country and are covered by the EEA Agreement's social security rules",
-        ),
+        title = {
+            text(
+                bokmal { +"Informasjon om medlemskap og rett til helsetjenester - for alderspensjonister som flytter til et EØS-land og er omfattet av EØS-avtalens regler om trygd" },
+                nynorsk { +"Informasjon om medlemskap og rett til helsetenester - for alderspensjonistar som flyttar til eit EØS-land og er omfatta av reglane om trygd i EØS-avtalen" },
+                english { +"Information about membership and entitlement to health services - for retirement pensioners who move to an EEA country and are covered by the EEA Agreement's social security rules" },
+            )
+        },
         includeSakspart = false
     ) {
         title2 {

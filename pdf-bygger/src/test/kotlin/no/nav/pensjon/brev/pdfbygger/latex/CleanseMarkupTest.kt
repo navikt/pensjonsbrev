@@ -120,7 +120,7 @@ class CleanseMarkupTest {
     fun `newline kan ikke starte i en blokk`() {
         val cleansed = letterMarkup {
             outline {
-                paragraph {  }
+                paragraph { }
                 paragraph {
                     newLine()
                     text("Innhold etter newLine")

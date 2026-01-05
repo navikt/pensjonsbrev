@@ -1,9 +1,8 @@
-import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, Heading, HGrid, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
@@ -35,8 +34,6 @@ function Brevbehandler() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
-  const brevPdfContainerReference = useRef<HTMLDivElement>(null);
-
   //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
   //Vi kan muligens gjøre en load i route-loader slik at brevene laster litt fortere
   const alleBrevForSak = useQuery({
@@ -45,92 +42,79 @@ function Brevbehandler() {
   });
 
   return (
-    <div
-      css={css`
-        display: grid;
-        grid-template:
-          "meny pdf" 1fr
-          "footer footer" auto / minmax(304px, 384px) minmax(640px, 720px);
-        align-self: center;
-        align-items: start;
-
-        @media (width <= 1023px) {
-          align-self: start;
-        }
-
-        width: 100%;
-        min-width: 944px;
-        max-width: 1104px;
-
-        background-color: var(--ax-bg-default);
-      `}
-    >
-      {modalÅpen && <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />}
-      <VStack
-        css={css`
-          padding: var(--ax-space-24);
-          border-right: 1px solid var(--ax-neutral-300);
-          height: var(--main-page-content-height);
-          overflow-y: auto;
-        `}
-        gap="space-12"
-      >
-        <Heading level="1" size="small">
-          Brevbehandler
-        </Heading>
-
-        {alleBrevForSak.isPending && (
-          <VStack
-            css={css`
-              padding: var(--ax-space-16);
-            `}
+    <BoxNew asChild background="default">
+      <VStack height="calc(var(--main-page-content-height) + 48px)" marginInline="auto">
+        {modalÅpen && (
+          <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />
+        )}
+        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="calc(100% - 48px)">
+          {/* Meny */}
+          <BoxNew
+            asChild
+            borderColor="neutral-subtle"
+            borderWidth="0 1 0 0"
+            height="100%"
+            overflowY="auto"
+            padding="space-24"
           >
-            <Skeleton height={80} variant="rectangle" width="100%" />
-          </VStack>
-        )}
-        {alleBrevForSak.isError && (
-          <ApiError error={alleBrevForSak.error} title={"Klarte ikke å hente alle brev for saken"} />
-        )}
-        {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
-      </VStack>
+            <VStack gap="space-12">
+              <Heading level="1" size="small">
+                Brevbehandler
+              </Heading>
 
-      <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}</div>
+              {alleBrevForSak.isPending && (
+                <VStack padding="space-16">
+                  <Skeleton height={80} variant="rectangle" width="100%" />
+                </VStack>
+              )}
+              {alleBrevForSak.isError && (
+                <ApiError error={alleBrevForSak.error} title="Klarte ikke å hente alle brev for saken" />
+              )}
+              {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
+            </VStack>
+          </BoxNew>
 
-      <HStack
-        css={css`
-          padding: var(--ax-space-8) var(--ax-space-12);
-          grid-area: footer;
-          border-top: 1px solid var(--ax-neutral-300);
-        `}
-        justify="space-between"
-      >
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/saksnummer/$saksId/brevvelger",
-              params: { saksId: saksId },
-              search: { enhetsId, vedtaksId },
-            })
-          }
-          size="small"
-          type="button"
-          variant="secondary"
+          {/* Pdf */}
+          {brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}
+        </HGrid>
+
+        {/* Footer */}
+        <BoxNew
+          asChild
+          borderColor="neutral-subtle"
+          borderWidth="1 0 0 0"
+          paddingBlock="space-8"
+          paddingInline="space-12"
         >
-          <HStack>
-            <PlusIcon fontSize="1.5rem" title="pluss-ikon" />
-            <Label>Lag nytt brev</Label>
+          <HStack gridColumn="footer" justify="space-between">
+            <Button
+              onClick={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brevvelger",
+                  params: { saksId: saksId },
+                  search: { enhetsId, vedtaksId },
+                })
+              }
+              size="small"
+              type="button"
+              variant="secondary"
+            >
+              <HStack>
+                <PlusIcon fontSize="1.5rem" title="pluss-ikon" />
+                <Label>Lag nytt brev</Label>
+              </HStack>
+            </Button>
+            {alleBrevForSak.isSuccess && (
+              <FerdigstillOgSendBrevButton
+                brevInfo={alleBrevForSak.data}
+                sakId={saksId}
+                valgtBrevId={brevId}
+                åpneFerdigstillModal={() => setModalÅpen(true)}
+              />
+            )}
           </HStack>
-        </Button>
-        {alleBrevForSak.isSuccess && (
-          <FerdigstillOgSendBrevButton
-            brevInfo={alleBrevForSak.data}
-            sakId={saksId}
-            valgtBrevId={brevId}
-            åpneFerdigstillModal={() => setModalÅpen(true)}
-          />
-        )}
-      </HStack>
-      {/* </div> */}
-    </div>
+        </BoxNew>
+      </VStack>
+    </BoxNew>
   );
 }

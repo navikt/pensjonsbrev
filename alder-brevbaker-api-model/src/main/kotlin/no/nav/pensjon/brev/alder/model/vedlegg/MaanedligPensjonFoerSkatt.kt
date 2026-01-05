@@ -42,9 +42,9 @@ data class MaanedligPensjonFoerSkattDto(
     data class InstitusjonsoppholdGjeldende(
         val ensligPaInst: Boolean,
         val aldersEllerSykehjem: Boolean,
-        val epsPaInstitusjon : Boolean,
-        val fengsel : Boolean,
-        val helseinstitusjon : Boolean,
+        val epsPaInstitusjon: Boolean,
+        val fengsel: Boolean,
+        val helseinstitusjon: Boolean,
     )
 
     data class AlderspensjonGjeldende(

@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Button, TextField } from "@navikt/ds-react";
+import { Button, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
@@ -45,18 +44,7 @@ function SaksnummerPage() {
     //derfor styler vi komponenten selv her, og ikke i parent.
     //merk at saksnummer/$saksId, også har håndtering for styles og sine children.
     <form className="page-margins" onSubmit={handleSubmit((values) => hentSakContextMutation.mutate(values))}>
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          align-self: center;
-          gap: var(--ax-space-24);
-
-          margin-top: var(--ax-space-32);
-
-          width: 340px;
-        `}
-      >
+      <VStack gap="space-24" marginBlock="space-32 0" marginInline="auto" width="340px">
         <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
         {hentSakContextMutation.error && (
           <ApiError
@@ -67,7 +55,7 @@ function SaksnummerPage() {
         <Button loading={hentSakContextMutation.isPending} type="submit">
           Åpne brevvelger
         </Button>
-      </div>
+      </VStack>
     </form>
   );
 }

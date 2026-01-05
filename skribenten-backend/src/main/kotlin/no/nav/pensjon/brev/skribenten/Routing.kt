@@ -72,6 +72,7 @@ fun Application.configureRouting(
             kodeverkRoute(penService)
             sakRoute(
                 dto2ApiService,
+                brevbakerService,
                 brevmalService,
                 brevredigeringService,
                 krrService,

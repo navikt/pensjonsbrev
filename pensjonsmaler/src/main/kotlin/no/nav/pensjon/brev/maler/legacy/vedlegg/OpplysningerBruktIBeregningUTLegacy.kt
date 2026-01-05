@@ -17,21 +17,21 @@ import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
     createAttachment<LangBokmalNynorskEnglish, PE>(
-        title = newText(
-            Bokmal to "Opplysninger om beregningen",
-            Nynorsk to "Opplysningar om utrekninga",
-            English to "Information about calculations"
-        ),
+        title = {
+            text(
+                bokmal { +"Opplysninger om beregningen" },
+                nynorsk { +"Opplysningar om utrekninga" },
+                english { +"Information about calculations" }
+            )
+        },
         includeSakspart = false,
     ) {
         val pe = argument

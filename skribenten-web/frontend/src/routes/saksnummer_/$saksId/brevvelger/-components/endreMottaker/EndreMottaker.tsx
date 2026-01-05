@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, HStack, Modal, Tabs } from "@navikt/ds-react";
+import { BoxNew, Button, HStack, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -193,9 +192,6 @@ export const EndreMottakerModal = (properties: {
 
   return (
     <Modal
-      css={css`
-        border-radius: var(--ax-radius-4);
-      `}
       data-cy="endre-mottaker-modal"
       header={{
         heading:
@@ -224,6 +220,7 @@ export const EndreMottakerModal = (properties: {
                 properties.resetOnBekreftState();
                 setTab("oppsummering");
               }
+              form.reset(values);
             })(event);
           }}
         >
@@ -300,11 +297,7 @@ const ModalTabs = (properties: {
               <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
             )}
           </Tabs.List>
-          <div
-            css={css`
-              margin-top: var(--ax-space-16);
-            `}
-          >
+          <BoxNew marginBlock="space-16 0">
             <Tabs.Panel value="samhandler">
               <SøkOgVelgSamhandlerForm
                 control={properties.control}
@@ -326,7 +319,7 @@ const ModalTabs = (properties: {
                 }}
               />
             </Tabs.Panel>
-          </div>
+          </BoxNew>
         </Tabs>
       )}
     </div>

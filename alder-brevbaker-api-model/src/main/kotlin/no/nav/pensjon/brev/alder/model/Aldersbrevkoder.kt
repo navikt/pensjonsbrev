@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.model
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Aldersbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -51,5 +52,13 @@ object Aldersbrevkoder {
         ;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER,
+        UTTAKSSKJEMA
+        ;
+
+        override fun kode() = name
     }
 }

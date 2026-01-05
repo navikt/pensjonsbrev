@@ -245,8 +245,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     // eksportAPUnder20aarAvdod_001
                     paragraph {
                         text(
-                            bokmal { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du flytter til dette landet." },
-                            nynorsk { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år. Da har du ikkje rett til å få utbetalt heila alderspensjon din når du flyttar til dette landet." },
+                            bokmal { + "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du flytter til dette landet." },
+                            nynorsk { + "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du flyttar til dette landet." },
                             english { + "Neither you or the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years. Therefore, you are not eligible for your full retirement pension when you move to this country." }
                         )
                     }

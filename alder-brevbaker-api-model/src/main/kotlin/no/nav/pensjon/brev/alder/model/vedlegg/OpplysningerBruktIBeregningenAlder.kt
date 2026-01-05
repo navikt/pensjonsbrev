@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Suppress("unused")
 data class OpplysningerBruktIBeregningenAlderDto(
     val beregnetPensjonPerManedVedVirk: AlderspensjonPerManed,
-    val beregnetSomEnsligPgaInstitusjon : Boolean,
+    val beregnetSomEnsligPgaInstitusjon: Boolean,
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
@@ -73,18 +73,18 @@ data class OpplysningerBruktIBeregningenAlderDto(
     data class TrygdetidsdetaljerKap19VedVirk(
         val beregningsmetode: Beregningsmetode,
         val anvendtTT: Int,
-        val tellerTTEOS : Int?,
-        val nevnerTTEOS : Int?,
-        val tellerProRata : Int?,
-        val nevnerProRata : Int?,
+        val tellerTTEOS: Int?,
+        val nevnerTTEOS: Int?,
+        val tellerProRata: Int?,
+        val nevnerProRata: Int?,
 
         )
     data class TrygdetidsdetaljerKap20VedVirk(
         val anvendtTT: Int,
-        val tellerTTEOS : Int?,
-        val nevnerTTEOS : Int?,
-        val tellerProRata : Int?,
-        val nevnerProRata : Int?,
+        val tellerTTEOS: Int?,
+        val nevnerTTEOS: Int?,
+        val tellerProRata: Int?,
+        val nevnerProRata: Int?,
 
         val beregningsmetode: Beregningsmetode?,
 
@@ -98,8 +98,8 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val andelKap19: Int?,
         val andelKap20: Int?,
         val uttaksgrad: Int,
-        val skjermingstilleggInnvilget : Boolean,
-        val erEksportberegnet : Boolean,
+        val skjermingstilleggInnvilget: Boolean,
+        val erEksportberegnet: Boolean,
     )
 
     data class EPSvedVirk(

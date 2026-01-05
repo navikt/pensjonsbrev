@@ -148,27 +148,27 @@ object SakstypeNavn : BinaryOperation<Sakstype, Language, String?>() {
             }
             Sakstype.ALDER -> when(language) {
                 Bokmal -> "alderspensjon"
-                Nynorsk ->  "alderspensjon"
+                Nynorsk -> "alderspensjon"
                 English -> "retirement pension"
             }
             Sakstype.BARNEP -> when(language) {
                 Bokmal -> "barnepensjon"
-                Nynorsk ->  "barnepensjon"
+                Nynorsk -> "barnepensjon"
                 English -> "children’s pension"
             }
             Sakstype.FAM_PL -> when(language) {
                 Bokmal -> "ytelse til tidligere familiepleier"
-                Nynorsk ->  "yting til tidligare familiepleiarar"
+                Nynorsk -> "yting til tidligare familiepleiarar"
                 English -> "previous family carers benefits"
             }
             Sakstype.GJENLEV -> when(language) {
                 Bokmal -> "gjenlevendepensjon"
-                Nynorsk ->  "attlevandepensjon"
+                Nynorsk -> "attlevandepensjon"
                 English -> "survivor's pension"
             }
             Sakstype.UFOREP -> when(language) {
                 Bokmal -> "uføretrygd"
-                Nynorsk ->  "uføretrygd"
+                Nynorsk -> "uføretrygd"
                 English -> "disability benefit"
             }
 
