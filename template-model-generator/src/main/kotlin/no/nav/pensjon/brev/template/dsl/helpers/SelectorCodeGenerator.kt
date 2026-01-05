@@ -3,11 +3,8 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-import no.nav.pensjon.brev.template.TemplateModelSelector
 import java.io.PrintWriter
 
-private val templateModelSelectorName = TemplateModelSelector::class.qualifiedName
-    ?: throw InitializationError("Couldn't determine qualified name of ${TemplateModelSelector::class.simpleName}")
 private const val INDENT = "    "
 
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
@@ -140,6 +137,5 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 }
             }
 
-        private fun nullable(type: String): String = if (type.endsWith('?')) type else "$type?"
     }
 }
