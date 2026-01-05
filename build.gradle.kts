@@ -35,7 +35,7 @@ allprojects {
         }
     }
     tasks.withType<KtLintCheckTask> {
-        if (System.getenv("CI")?.toBoolean() == true) {
+        if (System.getenv("CI")?.toBoolean() != true) {
             dependsOn("ktlintFormat")
         }
     }
