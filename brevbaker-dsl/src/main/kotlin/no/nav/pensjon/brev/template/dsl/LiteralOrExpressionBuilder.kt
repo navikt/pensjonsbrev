@@ -15,7 +15,7 @@ internal fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression
 internal fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
     Language.English to LiteralOrExpressionBuilder(QuotationMarks.English).block()
 
-class LiteralOrExpressionBuilder(private val quotation: QuotationMarks) {
+class LiteralOrExpressionBuilder internal constructor(private val quotation: QuotationMarks) {
     // brukes for å bruke unary plus som plus. Kan skje om plus er på ny linje.
     private var previous: LiteralOrExpression? = null
     sealed class LiteralOrExpression {

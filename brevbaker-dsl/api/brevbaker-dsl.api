@@ -1044,7 +1044,6 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder {
-	public fun <init> (Lno/nav/pensjon/brev/template/dsl/QuotationMarks;)V
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 	public final fun quoted (Ljava/lang/String;)Ljava/lang/String;
