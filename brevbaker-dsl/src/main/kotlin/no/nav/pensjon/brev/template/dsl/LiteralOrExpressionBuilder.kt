@@ -6,27 +6,27 @@ import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpr
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 
-fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
+internal fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
     Language.Bokmal to LiteralOrExpressionBuilder(QuotationMarks.BokmalNynorsk).block()
 
-fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
+internal fun nynorsk(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Nynorsk, LiteralOrExpression> =
     Language.Nynorsk to LiteralOrExpressionBuilder(QuotationMarks.BokmalNynorsk).block()
 
-fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
+internal fun english(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.English, LiteralOrExpression> =
     Language.English to LiteralOrExpressionBuilder(QuotationMarks.English).block()
 
-class LiteralOrExpressionBuilder(private val quotation: QuotationMarks) {
+class LiteralOrExpressionBuilder internal constructor(private val quotation: QuotationMarks) {
     // brukes for å bruke unary plus som plus. Kan skje om plus er på ny linje.
     private var previous: LiteralOrExpression? = null
-    sealed class LiteralOrExpression() {
+    sealed class LiteralOrExpression {
         abstract val expr: StringExpression
     }
-    class LiteralWrapper(val str: String) : LiteralOrExpression() {
+    class LiteralWrapper internal constructor(val str: String) : LiteralOrExpression() {
         override val expr: StringExpression
             get() = str.expr()
     }
 
-    class ExpressionWrapper(override val expr: StringExpression) : LiteralOrExpression()
+    class ExpressionWrapper internal constructor(override val expr: StringExpression) : LiteralOrExpression()
 
     operator fun StringExpression.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this).also { previous = it }
 
