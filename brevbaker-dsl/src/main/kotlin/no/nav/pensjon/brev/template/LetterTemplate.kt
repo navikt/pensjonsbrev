@@ -147,7 +147,7 @@ sealed class Expression<out Out> : StableHash {
         val application: Expression<Out?>,
     ) : Expression<Out?>(), StableHash by StableHash.of(input, assigned, application) {
 
-        companion object {
+        internal companion object {
             operator fun <In: Any, Out> invoke(value: Expression<In?>, block: Expression<In>.() -> Expression<Out>): NullSafeApplication<In, Out> =
                 FromScope.Assigned<In>(value.stableHashCode()).let {
                     NullSafeApplication(value, it, it.block())

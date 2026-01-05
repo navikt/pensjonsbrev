@@ -544,7 +544,6 @@ public final class no/nav/pensjon/brev/template/Expression$Literal : no/nav/pens
 }
 
 public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication : no/nav/pensjon/brev/template/Expression, no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/Expression$NullSafeApplication$Companion;
 	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
@@ -553,10 +552,6 @@ public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication :
 	public final fun getInput ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication$Companion {
-	public final fun invoke (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/Expression$NullSafeApplication;
 }
 
 public final class no/nav/pensjon/brev/template/Expression$UnaryInvoke : no/nav/pensjon/brev/template/Expression, no/nav/pensjon/brev/template/StableHash {
