@@ -111,11 +111,9 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                     """
                 ${if (pkg.isNotBlank()) "package $pkg" else ""}
 
-                import $templateModelSelectorName
                 import no.nav.pensjon.brev.template.Expression
                 import no.nav.pensjon.brev.template.UnaryOperation
                 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
-                import no.nav.pensjon.brev.template.ExpressionScope
                 import no.nav.brev.InternKonstruktoer
                 import no.nav.pensjon.brev.template.SimpleSelector
 
