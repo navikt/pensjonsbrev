@@ -153,7 +153,8 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     return (
       <Modal header={{ heading: "Vil du sende brevet?" }} onClose={props.onClose} open={props.åpen} portal width={450}>
         <Modal.Body>
-          <BodyShort>Klarte ikke å hente brev­informasjon – prøv på nytt senere.</BodyShort>
+          {/* TODO(stw): Verify necessity of using U+00ad for invisible breakpoint here, would - be better? */}
+          <BodyShort>Klarte ikke å hente brev­informasjon - prøv på nytt senere.</BodyShort>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onClose}>Lukk</Button>

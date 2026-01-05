@@ -33,17 +33,15 @@ export const ManagedDatePicker = ({
   });
 
   return (
-    <DatePicker dropdownCaption mode="single" {...datepickerProps}>
+    <DatePicker dropdownCaption mode="single" {...datepickerProps} wrapperClassName="p1-date-picker-full-width">
       <DatePicker.Input
         ref={inputRef}
         {...inputProps}
-        className="p1-datepicker"
         error={fieldState.error?.message}
         hideLabel={hideLabel}
         label={label}
         placeholder="dd.mm.åååå"
         size="small"
-        // type="date"
       />
     </DatePicker>
   );

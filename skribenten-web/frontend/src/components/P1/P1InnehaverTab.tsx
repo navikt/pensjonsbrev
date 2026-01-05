@@ -1,32 +1,36 @@
 import { PadlockLockedIcon } from "@navikt/aksel-icons";
-import { Heading, TextField } from "@navikt/ds-react";
+import { Heading, HStack, Table, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
-
-import { DateField } from "./P1DateField";
 
 type P1InnehaverTabProps = {
   disabled?: boolean;
 };
 
 export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
-  const { getValues, register } = useFormContext<P1Redigerbar>();
+  const { register } = useFormContext<P1Redigerbar>();
 
-  return (
-    <div className={disabled ? "p1-tab-disabled" : undefined}>
-      <div className="p1-tab-header">
+  const tabContent = (
+    <>
+      <HStack gap="space-8">
         <Heading size="small" spacing>
-          1. Personopplysninger om innehaveren
+          1. Personopplysninger om innehaveren (låst for redigering)
         </Heading>
-        {disabled && <PadlockLockedIcon fontSize="1.5rem" title="Denne fanen er skrivebeskyttet" />}
-      </div>
+        {disabled && (
+          <PadlockLockedIcon fontSize="var(--ax-font-size-heading-medium)" title="Denne fanen er skrivebeskyttet" />
+        )}
+      </HStack>
 
-      <table className="p1-table p1-table--two-column">
-        <tbody>
-          <tr>
-            <td>1.1 Etternavn</td>
-            <td className="cell-seamless">
+      <Table
+        className="p1-table p1-table--two-column p1-table--zebra-stripes"
+        css={{ maxWidth: "1068px" }}
+        size="small"
+      >
+        <Table.Body>
+          <Table.Row>
+            <Table.DataCell css={{ width: "250px" }}>1.1 Etternavn</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield"
                 hideLabel
@@ -34,11 +38,11 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 size="small"
                 {...register("innehaver.etternavn")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>1.2 Fornavn</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.2 Fornavn</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -46,11 +50,11 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 size="small"
                 {...register("innehaver.fornavn")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>1.3 Etternavn ved fødsel (*)</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.3 Etternavn ved fødsel (*)</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -58,29 +62,29 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 size="small"
                 {...register("innehaver.etternavnVedFoedsel")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>1.4 Fødselsdato</td>
-            <td className="cell-seamless">
-              <DateField date={getValues("innehaver.foedselsdato")} hideLabel label="Fødselsdato" />
-            </td>
-          </tr>
-          <tr>
-            <td>1.4.1 Gatenavn og -nummer</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.4 Gjeldende adresse</Table.DataCell>
+            <Table.DataCell>
+              <TextField className="p1-seamless-textfield " hideLabel label="Gjeldende adresse" />
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.4.1 Gatenavn og -nummer</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
-                label="Adresselinje"
+                label="Gatenavn og -nummer"
                 size="small"
                 {...register("innehaver.adresselinje")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>1.4.2 Poststed</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.4.2 Poststed</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -88,11 +92,11 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 size="small"
                 {...register("innehaver.poststed")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>1.4.3 Postnummer</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.4.3 Postnummer</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -100,11 +104,11 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 size="small"
                 {...register("innehaver.postnummer")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>1.4.4 Landskode</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>1.4.4 Landskode</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -112,10 +116,11 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 size="small"
                 {...register("innehaver.landkode")}
               />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            </Table.DataCell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    </>
   );
+  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : <>{tabContent}</>;
 };

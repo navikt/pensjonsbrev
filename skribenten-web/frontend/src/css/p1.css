@@ -1,96 +1,45 @@
-/* ===========================================
-   P1 Modal Styles
-   =========================================== */
+/* =========================================== 
+ * Scrollbars
+ * =========================================== */
+
+/* Firefox scrollbar */
 .p1-modal {
-  max-width: 85vw;
-  width: 85vw;
-  max-height: 85vh;
-  height: 85vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.p1-modal-body {
-  flex: 1 1 auto;
-  overflow: auto;
-  position: relative;
-}
-
-.p1-loader-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* ===========================================
-   Sticky Tabs with content scroll
-   =========================================== */
-.p1-modal.aksel-modal .aksel-modal__body {
-  overflow: hidden; /* Remove scroll from modal body */
-  display: flex;
-  flex-direction: column;
-  background: var(--ax-bg-default);
-}
-
-.p1-modal :where(.aksel-tabs) {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0; /* Important for flex child to allow shrinking */
-  overflow: auto;
-  /* Firefox scrollbar */
   scrollbar-width: thin;
   scrollbar-color: var(--ax-border-neutral) var(--ax-bg-neutral-soft);
 }
+
 /* Webkit scrollbar styling */
-.p1-modal :where(.aksel-tabs)::-webkit-scrollbar {
+.p1-modal::-webkit-scrollbar {
   width: 10px;
 }
-
-.p1-modal :where(.aksel-tabs)::-webkit-scrollbar-track {
+.p1-modal::-webkit-scrollbar-track {
   background: var(--ax-bg-neutral-soft);
   border-radius: 8px;
 }
-
-.p1-modal :where(.aksel-tabs)::-webkit-scrollbar-thumb {
+.p1-modal::-webkit-scrollbar-thumb {
   background-color: var(--ax-border-neutral);
   border-radius: 8px;
   border: 2px solid var(--ax-bg-neutral-soft);
 }
 
-.p1-modal :where(.aksel-tabs__tablist-wrapper) {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: var(--ax-bg-default);
-  flex-shrink: 0;
-  min-width: 1200px;
-}
-
-.p1-modal .aksel-tabs__tabpanel {
-  flex: 1;
-  min-height: 0;
-  padding-right: 1rem;
+/* ===========================================
+ * Tabs panel
+ * =========================================== */
+.p1-tabs-panel {
+  overflow: auto;
+  padding-inline: var(--ax-space-20);
+  padding-block: var(--ax-space-32) var(--ax-space-16);
 }
 
 /* ===========================================
-   Multi-column Tables (Tab 3 & 4)
-   =========================================== */
+ * Multi-column Tables (Tab 3 & 4)
+ * =========================================== */
 .p1-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  margin-bottom: 1rem;
+  /* border-collapse: collapse; */
   border: 1px solid var(--ax-border-neutral);
-}
-
-.p1-table tbody tr:nth-of-type(even) {
-  background-color: var(--ax-bg-neutral-soft);
-}
-
-.p1-table tbody tr:nth-of-type(odd) {
-  background-color: var(--ax-bg-default);
+  margin-bottom: 1rem;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .p1-table th,
@@ -98,115 +47,63 @@
   border: 1px solid var(--ax-border-neutral);
   vertical-align: top;
   text-align: left;
-  padding: 0.5rem;
-  font-size: 1rem;
+  /* padding: 0.5rem; */
+  /* font-size: 1rem; */
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
-/* Reset styles for DatePicker popup table (React Day Picker) */
-.p1-table .rdp-table :is(th, td, &) {
-  border: none;
-  background: transparent;
-  padding: initial;
-  vertical-align: middle;
-  text-align: center;
-  word-break: normal;
-  overflow-wrap: normal;
-  height: auto;
-}
-
-.p1-table .rdp-table tbody tr:is(:nth-of-type(even), :nth-of-type(odd)) {
-  background-color: transparent;
-}
-
-.p1-table th {
-  background: var(--ax-bg-accent-soft);
-}
-
-.p1-table--innvilget {
-  min-width: 1200px;
-}
-
-.p1-table--avslag {
-  min-width: 988px;
-}
-
-.p1-table .header-number {
+.p1-table th span {
   display: block;
   font-weight: 600;
   font-size: 1rem;
 }
 
-.p1-table .header-text {
-  display: block;
-  font-weight: 600;
-  font-size: 1rem;
+.p1-table--zebra-stripes tbody tr:nth-of-type(even) {
+  background-color: var(--ax-bg-neutral-soft);
+}
+
+.p1-table--zebra-stripes tbody tr:nth-of-type(odd) {
+  background-color: var(--ax-bg-default);
 }
 
 .p1-table .cell-seamless {
   padding: 0;
-  height: 212px;
+  height: 242px;
 }
 
 .p1-table td :where(.aksel-radio-group) {
-  margin: 0;
-  gap: 0.25rem;
+  /* margin: 0;
+  gap: 0.25rem; */
 }
 
 .p1-table td :where(.aksel-error-message) {
-  font-size: 1rem;
-  margin-top: 0.15rem;
-  white-space: normal;
+  /* font-size: 1rem; */
+  /* margin-top: 0.15rem; */
+  /* white-space: normal; */
 }
 
 /* ===========================================
-   Two-column Tables (Tab 1, 2 & 5)
-   =========================================== */
-.p1-table--two-column {
-  max-width: 1068px;
-  width: 100%;
-}
-
-.p1-table--two-column td {
-  vertical-align: middle;
-  padding: 0.75rem 1rem;
-  height: 3rem;
-}
-
+ * Two-column Tables (Tab 1, 2 & 5)
+ * =========================================== */
 .p1-table--two-column td:first-of-type {
-  width: 22%; /* ~232px of 1068px */
-  min-width: 150px;
   font-weight: 600;
   font-size: 1rem;
 }
 
-.p1-table--two-column td:last-of-type {
-  width: 78%; /* ~836px of 1068px */
-}
-
-.p1-table--two-column .cell-seamless {
-  padding: 0;
-  height: 3rem;
-}
-
 /* ===========================================
-   Seamless Textarea (fills table cell)
-   =========================================== */
+ * Seamless Textarea (fills table cell)
+ * =========================================== */
 .p1-seamless-textarea {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   height: 100%;
-  margin: 0;
 }
 
-.p1-seamless-textarea :where(.aksel-form-field) {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
-.p1-seamless-textarea :where(.aksel-textarea__wrapper) {
-  height: 100%;
+.p1-seamless-textarea :where(label) {
+  padding-inline: var(--ax-space-8);
+  padding-block: var(--ax-space-4) 0;
 }
 
 .p1-seamless-textarea :where(textarea, .aksel-textarea__input) {
@@ -214,9 +111,8 @@
   border-radius: 0;
   box-shadow: none;
   background-color: transparent;
-  padding: 0.5rem;
-  width: 100%;
-  height: 100%;
+  flex-grow: 1;
+  padding: var(--ax-space-8);
   resize: none;
 }
 
@@ -226,8 +122,8 @@
 }
 
 /* ===========================================
-   Seamless TextField (fills table cell)
-   =========================================== */
+ * Seamless TextField (fills table cell)
+ * =========================================== */
 .p1-seamless-textfield {
   width: 100%;
   height: 100%;
@@ -255,87 +151,32 @@
 }
 
 /* ===========================================
-   DatePicker styling
-   =========================================== */
-.p1-datepicker {
-  width: 100%;
-  max-width: none;
-}
-
-.p1-table td :where(.aksel-date__wrapper) {
-  width: 100%;
-}
-
-.p1-table td :where(.aksel-date__field-wrapper) {
-  width: 100%;
-}
-
-.p1-table td :where(.aksel-date__field-wrapper input) {
-  width: 100%;
-}
-
-/* ===========================================
-   Buttons
-   =========================================== */
-.p1-add-row-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-  min-width: fit-content;
-}
-
-.p1-add-row-container :where(.aksel-button) {
-  width: 100%;
-}
-
-/* ===========================================
-   Validation error styling
-   =========================================== */
+ * Validation error styling
+ * =========================================== */
 .p1-table tbody td.p1-cell-error {
   border: 2px solid var(--ax-border-danger-strong);
   background-color: var(--ax-bg-danger-soft);
 }
 
 /* ===========================================
-   Tabs panel
-   =========================================== */
-.p1-tabs-panel {
-  margin-top: var(--ax-space-32);
-  padding-bottom: 1rem;
-}
-
-/* ===========================================
-   Disabled Tab Content (read-only tabs)
-   =========================================== */
+ * Disabled Tab Content (read-only tabs)
+ * =========================================== */
 .p1-tab-disabled {
   opacity: 0.7;
   pointer-events: none;
   user-select: none;
 }
 
-.p1-tab-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
+/* ===========================================
+ * Aksel DatePicker width-override
+ * =========================================== */
 
-.p1-tab-header :where(.aksel-heading--small.aksel-typo--spacing) {
-  margin-bottom: 0;
-}
-
-/* Tab error indicator */
-
-.p1-tab-error {
-  position: relative;
-}
-
-.p1-tab-error-dot {
-  position: absolute;
-  top: -2px;
-  right: -10px;
-  width: 8px;
-  height: 8px;
-  background-color: var(--ax-bg-danger);
-  border-radius: 50%;
+.p1-date-picker-full-width {
+  width: 100%;
+  div:has(input) {
+    width: 100%;
+  }
+  input {
+    width: 100%;
+  }
 }

@@ -1,10 +1,11 @@
 import { PadlockLockedIcon } from "@navikt/aksel-icons";
-import { Heading, TextField } from "@navikt/ds-react";
+import { Heading, HStack, Table, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
 import type { P1Redigerbar } from "~/types/p1";
 
 import { DateField } from "./P1DateField";
+
 type P1InstitusjonTabProps = {
   disabled?: boolean;
 };
@@ -12,20 +13,26 @@ type P1InstitusjonTabProps = {
 export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
   const { getValues, register } = useFormContext<P1Redigerbar>();
 
-  return (
-    <div className={disabled ? "p1-tab-disabled" : undefined}>
-      <div className="p1-tab-header">
+  const tabContent = (
+    <>
+      <HStack gap="space-8">
         <Heading size="small" spacing>
-          5. Institusjonen som har fylt ut skjemaet
+          5. Institusjonen som har fylt ut skjemaet (låst for redigering)
         </Heading>
-        {disabled && <PadlockLockedIcon fontSize="1.5rem" title="Denne fanen er skrivebeskyttet" />}
-      </div>
+        {disabled && (
+          <PadlockLockedIcon fontSize="var(--ax-font-size-heading-medium)" title="Denne fanen er skrivebeskyttet" />
+        )}
+      </HStack>
 
-      <table className="p1-table p1-table--two-column ">
-        <tbody>
-          <tr>
-            <td>5.1 Navn</td>
-            <td className="cell-seamless">
+      <Table
+        className="p1-table p1-table--two-column p1-table--zebra-stripes"
+        css={{ maxWidth: "1068px" }}
+        size="small"
+      >
+        <Table.Body>
+          <Table.Row>
+            <Table.DataCell css={{ width: "250px" }}>5.1 Navn</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -33,23 +40,23 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.navn")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.2 Gatenavn og -nummer</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.2 Gatenavn og -nummer</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
-                label="Adresselinje"
+                label="Gatenavn og -nummer"
                 size="small"
                 {...register("utfyllendeInstitusjon.adresselinje")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.3 Poststed</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.3 Poststed</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -57,11 +64,11 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.poststed")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.4 Postnummer</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.4 Postnummer</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -69,11 +76,11 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.postnummer")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.5 Landskode</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.5 Landskode</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -81,11 +88,11 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.landkode")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.6 Institusjons-ID</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.6 Institusjons-ID</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -93,11 +100,11 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.institusjonsID")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.7 Faksnummer</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.7 Faksnummer</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -105,11 +112,11 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.faksnummer")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.8 Telefonnummer</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.8 Telefonnummer</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -117,11 +124,11 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.telefonnummer")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.9 E-post</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.9 E-post</Table.DataCell>
+            <Table.DataCell>
               <TextField
                 className="p1-seamless-textfield "
                 hideLabel
@@ -129,16 +136,17 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 size="small"
                 {...register("utfyllendeInstitusjon.epost")}
               />
-            </td>
-          </tr>
-          <tr>
-            <td>5.10 Dato</td>
-            <td className="cell-seamless">
+            </Table.DataCell>
+          </Table.Row>
+          <Table.Row>
+            <Table.DataCell>5.10 Dato</Table.DataCell>
+            <Table.DataCell>
               <DateField date={getValues("utfyllendeInstitusjon.dato")} hideLabel label="Dato" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            </Table.DataCell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    </>
   );
+  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : <>{tabContent}</>;
 };

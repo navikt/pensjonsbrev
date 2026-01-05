@@ -1,12 +1,12 @@
 import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Button, Heading, Radio, RadioGroup, Textarea, TextField } from "@navikt/ds-react";
+import { BoxNew, Button, Heading, Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyAvslaattRow } from "./emptyP1";
-import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
+import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS, SOFT_HYPHEN } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
@@ -42,44 +42,49 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
   const hasAdresseError = (index: number) => !!errors.avslaattePensjoner?.[index]?.adresseNyVurdering;
 
   return (
-    <div>
+    <>
       <Heading size="small" spacing>
         4. Avslått pensjon
       </Heading>
 
-      <table className="p1-table p1-table--avslag">
-        <thead>
-          <tr>
-            <th>
-              <span className="header-number">4.1</span>
-              <span className="header-text">
-                Institusjon som har avslått søknaden – med PIN/saksnummer og dato for vedtaket
-              </span>
-            </th>
-            <th>
-              <span className="header-number">4.2</span>
-              <span className="header-text">Pensjonstype (1), (2), (3)</span>
-            </th>
-            <th>
-              <span className="header-number">4.3</span>
-              <span className="header-text">Begrunnelse for avslag (4), (5), (6), (7), (8), (9), (10)</span>
-            </th>
-            <th>
-              <span className="header-number">4.4</span>
-              <span className="header-text">Vurderingsperiode (starter den datoen samlet melding ble mottatt)</span>
-            </th>
-            <th>
-              <span className="header-number">4.5</span>
-              <span className="header-text">Hvor kravet om ny vurdering skal sendes</span>
-            </th>
-          </tr>
-        </thead>
+      <Table
+        border={2}
+        className="p1-table p1-table--zebra-stripes"
+        css={{ minWidth: "988px", tableLayout: "fixed" }}
+        size="small"
+      >
+        <BoxNew asChild background="accent-soft">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>
+                <span>4.1</span>
+                <span>Institusjon som har avslått søknaden - med PIN/saksnummer og dato for vedtaket</span>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <span>4.2</span>
+                <span>Pensjonstype (1), (2), (3)</span>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <span>4.3</span>
+                <span>Begrunnelse for avslag (4), (5), (6), (7), (8), (9), (10)</span>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <span>4.4</span>
+                <span>Vurderings{SOFT_HYPHEN}periode (starter den datoen samlet melding ble mottatt)</span>
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <span>4.5</span>
+                <span>Hvor kravet om ny vurdering skal sendes</span>
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+        </BoxNew>
 
-        <tbody>
+        <Table.Body>
           {fields.map((field, index) => (
-            <tr key={field.id}>
+            <Table.Row key={field.id}>
               {/* 4.1 Institusjon + PIN/saksnr + vedtaksdato */}
-              <td className={hasInstitusjonError(index) ? "p1-cell-error" : ""}>
+              <Table.DataCell className={hasInstitusjonError(index) ? "p1-cell-error" : ""}>
                 <P1CountryField
                   control={control}
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.land?.message}
@@ -107,31 +112,36 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                 />
                 <TextField
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.saksnummer?.message}
-                  label="Saksnummer"
+                  label={`Saks${SOFT_HYPHEN}nummer`}
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.saksnummer` as const)}
                   css={css`
                     margin-bottom: 0.5rem;
                   `}
                 />
+                {/* TODO(stw): Skal det være vedtaksdato på avslag? */}
                 <Controller
                   control={control}
                   name={`avslaattePensjoner.${index}.institusjon.vedtaksdato` as const}
                   render={({ field: dateField, fieldState }) => (
-                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} hideLabel label="Vedtaksdato" />
+                    <ManagedDatePicker
+                      dateField={dateField}
+                      fieldState={fieldState}
+                      label={`Vedtaks${SOFT_HYPHEN}dato`}
+                    />
                   )}
                 />
-              </td>
+              </Table.DataCell>
 
               {/* 4.2 Pensjonstype */}
-              <td className={hasPensjonstypeError(index) ? "p1-cell-error" : ""}>
+              <Table.DataCell className={hasPensjonstypeError(index) ? "p1-cell-error" : ""}>
                 <Controller
                   control={control}
                   name={`avslaattePensjoner.${index}.pensjonstype` as const}
                   render={({ field: radioField, fieldState }) => (
                     <RadioGroup
                       error={fieldState.error?.message}
-                      legend="Velg"
+                      legend="Pensjonstype"
                       onChange={(val) => radioField.onChange(val || null)}
                       size="small"
                       value={radioField.value ?? ""}
@@ -144,17 +154,17 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                     </RadioGroup>
                   )}
                 />
-              </td>
+              </Table.DataCell>
 
               {/* 4.3 Avslagsbegrunnelse */}
-              <td className={hasAvslagsbegrunnelseError(index) ? "p1-cell-error" : ""}>
+              <Table.DataCell className={hasAvslagsbegrunnelseError(index) ? "p1-cell-error" : ""}>
                 <Controller
                   control={control}
                   name={`avslaattePensjoner.${index}.avslagsbegrunnelse` as const}
                   render={({ field: radioField, fieldState }) => (
                     <RadioGroup
                       error={fieldState.error?.message}
-                      legend="Velg"
+                      legend={`Avslags${SOFT_HYPHEN}begrunnelse`}
                       onChange={(val) => radioField.onChange(val || null)}
                       size="small"
                       value={radioField.value ?? ""}
@@ -167,22 +177,22 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                     </RadioGroup>
                   )}
                 />
-              </td>
+              </Table.DataCell>
 
               {/* 4.4 Vurderingsperiode */}
-              <td className={`cell-seamless ${hasVurderingsperiodeError(index) ? "p1-cell-error" : ""}`}>
+              <Table.DataCell className={`cell-seamless ${hasVurderingsperiodeError(index) ? "p1-cell-error" : ""}`}>
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.avslaattePensjoner?.[index]?.vurderingsperiode?.message}
                   hideLabel
-                  label="Vurderingsperiode"
+                  label={`Vurderings${SOFT_HYPHEN}periode`}
                   size="small"
                   {...register(`avslaattePensjoner.${index}.vurderingsperiode` as const)}
                 />
-              </td>
+              </Table.DataCell>
 
               {/* 4.5 Adresse ny vurdering */}
-              <td className={`cell-seamless ${hasAdresseError(index) ? "p1-cell-error" : ""}`}>
+              <Table.DataCell className={`cell-seamless ${hasAdresseError(index) ? "p1-cell-error" : ""}`}>
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.avslaattePensjoner?.[index]?.adresseNyVurdering?.message}
@@ -191,17 +201,17 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                   size="small"
                   {...register(`avslaattePensjoner.${index}.adresseNyVurdering` as const)}
                 />
-              </td>
-            </tr>
+              </Table.DataCell>
+            </Table.Row>
           ))}
-        </tbody>
-      </table>
+        </Table.Body>
+      </Table>
 
-      <div className="p1-add-row-container">
+      <BoxNew asChild marginBlock="space-16 0" minWidth="fit-content" width="100%">
         <Button icon={<PlusIcon />} onClick={addRow} size="small" type="button" variant="secondary">
           Legg til ny rad
         </Button>
-      </div>
-    </div>
+      </BoxNew>
+    </>
   );
 };

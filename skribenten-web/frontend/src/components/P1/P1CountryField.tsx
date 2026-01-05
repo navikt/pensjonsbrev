@@ -25,6 +25,7 @@ export const P1CountryField = ({ control, name, index, landListe, error }: P1Cou
         options.unshift({ label: ZERO_WIDTH_SPACE, value: "" });
         return (
           <UNSAFE_Combobox
+            css={{ marginBottom: "var(--ax-space-8)" }}
             data-cy={`land-combobox-${index}`}
             defaultValue={field.value ? landListe.find((option) => option.kode === field.value)?.navn : undefined}
             error={error}

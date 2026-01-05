@@ -1,8 +1,7 @@
 import "~/css/p1.css";
 
-import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
-import { Alert, Button, Heading, Loader, Modal, Tabs } from "@navikt/ds-react";
+import { Alert, BoxNew, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
@@ -124,161 +123,147 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const isInitialLoading = isP1Loading && !p1Override;
 
   return (
-    <Modal aria-label="Rediger vedlegg P1" className="p1-modal" onClose={handleCancel} open={open} size="medium">
-      <Modal.Header>
-        <Heading size="medium">Overstyring av vedlegg – P1 samlet melding om pensjonsvedtak</Heading>
-      </Modal.Header>
+    <VStack asChild height="85vh" maxHeight="85vh" maxWidth="85vw" width="85vw">
+      <Modal aria-label="Rediger vedlegg P1" className="p1-modal" onClose={handleCancel} open={open} size="medium">
+        <Modal.Header>
+          <Heading size="small">Overstyring av vedlegg - P1 samlet melding om pensjonsvedtak</Heading>
+        </Modal.Header>
 
-      <FormProvider {...formMethods}>
-        <form
-          css={css`
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            min-height: 0;
-          `}
-          onSubmit={handleSubmit(onSubmit, onValidationError)}
-        >
-          <Modal.Body
-            css={css`
-              flex: 1 1 auto;
-              overflow: auto;
-            `}
-          >
-            {isInitialLoading ? (
-              <div className="p1-loader-container">
-                <Loader size="3xlarge" title="Laster data for P1..." />
-              </div>
-            ) : isP1Error ? (
-              <ApiError error={p1Error} title="Kunne ikke laste P1-data" />
-            ) : (
-              <>
-                {saveSuccess && (
-                  <Alert
-                    css={css`
-                      margin-bottom: 1rem;
-                    `}
-                    size="small"
-                    variant="success"
+        <FormProvider {...formMethods}>
+          <VStack asChild flexGrow="1" minHeight="0">
+            <form onSubmit={handleSubmit(onSubmit, onValidationError)}>
+              <VStack asChild flexGrow="1" overflow="hidden" padding="0">
+                <Modal.Body>
+                  {isInitialLoading ? (
+                    <VStack align="center" flexGrow="1" justify="center">
+                      <Loader size="3xlarge" title="Laster data for P1..." />
+                    </VStack>
+                  ) : isP1Error ? (
+                    <VStack align="center" flexGrow="1" justify="center">
+                      <ApiError error={p1Error} title="Kunne ikke laste P1-data" />
+                    </VStack>
+                  ) : (
+                    <>
+                      {saveSuccess && (
+                        <BoxNew asChild marginBlock="0 space-8" marginInline="space-20">
+                          <Alert size="small" variant="success">
+                            Endringene ble lagret
+                          </Alert>
+                        </BoxNew>
+                      )}
+                      {validationError && (
+                        <BoxNew asChild marginBlock="0 space-8" marginInline="space-20">
+                          <Alert closeButton onClose={() => setValidationError(null)} size="small" variant="error">
+                            {validationError}
+                          </Alert>
+                        </BoxNew>
+                      )}
+
+                      <VStack asChild overflow="hidden">
+                        <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} size="small" value={activeTab}>
+                          <BoxNew asChild paddingInline="space-20">
+                            <Tabs.List>
+                              <Tabs.Tab
+                                label={
+                                  <TabLabel hasError={hasInnehaverError} label="1. Personopplysninger om innehaveren" />
+                                }
+                                value="innehaver"
+                              />
+                              <Tabs.Tab
+                                label={
+                                  <TabLabel
+                                    hasError={hasForsikredeError}
+                                    label="2. Personopplysninger om den forsikrede"
+                                  />
+                                }
+                                value="forsikret"
+                              />
+                              <Tabs.Tab
+                                label={<TabLabel hasError={hasInnvilgetError} label="3. Innvilget pensjon" />}
+                                value="innvilget"
+                              />
+                              <Tabs.Tab
+                                label={<TabLabel hasError={hasAvslagError} label="4. Avslag på pensjon" />}
+                                value="avslag"
+                              />
+                              <Tabs.Tab
+                                label={
+                                  <TabLabel
+                                    hasError={hasInstitusjonError}
+                                    label="5. Institusjonen som har fylt ut skjemaet"
+                                  />
+                                }
+                                value="institusjon"
+                              />
+                            </Tabs.List>
+                          </BoxNew>
+
+                          <Tabs.Panel className="p1-tabs-panel" value="innehaver">
+                            <P1InnehaverTab disabled />
+                          </Tabs.Panel>
+
+                          <Tabs.Panel className="p1-tabs-panel" value="forsikret">
+                            <P1ForsikredeTab disabled />
+                          </Tabs.Panel>
+
+                          <Tabs.Panel className="p1-tabs-panel" value="innvilget">
+                            <P1InnvilgetTab landListe={landListe || []} />
+                          </Tabs.Panel>
+
+                          <Tabs.Panel className="p1-tabs-panel" value="avslag">
+                            <P1AvslagTab landListe={landListe || []} />
+                          </Tabs.Panel>
+
+                          <Tabs.Panel className="p1-tabs-panel" value="institusjon">
+                            <P1InstitusjonTab disabled />
+                          </Tabs.Panel>
+                        </Tabs>
+                      </VStack>
+
+                      {lagreMutation.isError && (
+                        <BoxNew asChild marginBlock="space-16 0" marginInline="space-20">
+                          <Alert size="small" variant="error">
+                            Noe gikk galt ved lagring av P1. Prøv igjen.
+                          </Alert>
+                        </BoxNew>
+                      )}
+                    </>
+                  )}
+                </Modal.Body>
+              </VStack>
+
+              <HStack asChild justify="space-between">
+                <Modal.Footer>
+                  <Button disabled={lagreMutation.isPending} onClick={handleCancel} type="button" variant="tertiary">
+                    Avbryt
+                  </Button>
+                  <Button
+                    disabled={isInitialLoading || isP1Error}
+                    loading={lagreMutation.isPending}
+                    size="medium"
+                    type="submit"
+                    variant="primary"
                   >
-                    Endringene ble lagret
-                  </Alert>
-                )}
-                {validationError && (
-                  <Alert
-                    closeButton
-                    css={css`
-                      margin-bottom: 1rem;
-                    `}
-                    onClose={() => setValidationError(null)}
-                    size="small"
-                    variant="error"
-                  >
-                    {validationError}
-                  </Alert>
-                )}
-
-                <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} value={activeTab}>
-                  <Tabs.List>
-                    <Tabs.Tab
-                      label={<TabLabel hasError={hasInnehaverError} label="1. Personopplysninger om innehaveren" />}
-                      value="innehaver"
-                    />
-                    <Tabs.Tab
-                      label={<TabLabel hasError={hasForsikredeError} label="2. Personopplysninger om den forsikrede" />}
-                      value="forsikret"
-                    />
-                    <Tabs.Tab
-                      label={<TabLabel hasError={hasInnvilgetError} label="3. Innvilget pensjon" />}
-                      value="innvilget"
-                    />
-                    <Tabs.Tab
-                      label={<TabLabel hasError={hasAvslagError} label="4. Avslag på pensjon" />}
-                      value="avslag"
-                    />
-                    <Tabs.Tab
-                      label={
-                        <TabLabel hasError={hasInstitusjonError} label="5. Institusjonen som har fylt ut skjemaet" />
-                      }
-                      value="institusjon"
-                    />
-                  </Tabs.List>
-
-                  <Tabs.Panel className="p1-tabs-panel" value="innehaver">
-                    <P1InnehaverTab disabled />
-                  </Tabs.Panel>
-
-                  <Tabs.Panel className="p1-tabs-panel" value="forsikret">
-                    <P1ForsikredeTab disabled />
-                  </Tabs.Panel>
-
-                  <Tabs.Panel className="p1-tabs-panel" value="innvilget">
-                    <P1InnvilgetTab landListe={landListe || []} />
-                  </Tabs.Panel>
-
-                  <Tabs.Panel className="p1-tabs-panel" value="avslag">
-                    <P1AvslagTab landListe={landListe || []} />
-                  </Tabs.Panel>
-
-                  <Tabs.Panel className="p1-tabs-panel" value="institusjon">
-                    <P1InstitusjonTab disabled />
-                  </Tabs.Panel>
-                </Tabs>
-
-                {lagreMutation.isError && (
-                  <Alert
-                    css={css`
-                      margin-top: 1rem;
-                    `}
-                    size="small"
-                    variant="error"
-                  >
-                    Noe gikk galt ved lagring av P1. Prøv igjen.
-                  </Alert>
-                )}
-              </>
-            )}
-          </Modal.Body>
-
-          <Modal.Footer
-            css={css`
-              justify-content: space-between;
-              flex-shrink: 0;
-            `}
-          >
-            <Button
-              disabled={isInitialLoading || isP1Error}
-              loading={lagreMutation.isPending}
-              size="medium"
-              type="submit"
-              variant="primary"
-            >
-              Lagre
-            </Button>
-            <Button
-              css={css`
-                && {
-                  margin-left: 0;
-                }
-              `}
-              disabled={lagreMutation.isPending}
-              onClick={handleCancel}
-              type="button"
-              variant="tertiary"
-            >
-              Avbryt
-            </Button>
-          </Modal.Footer>
-        </form>
-      </FormProvider>
-    </Modal>
+                    Lagre
+                  </Button>
+                </Modal.Footer>
+              </HStack>
+            </form>
+          </VStack>
+        </FormProvider>
+      </Modal>
+    </VStack>
   );
 };
 
 // Helper component for tab labels with error indicator
 const TabLabel = ({ label, hasError }: { label: string; hasError: boolean }) => (
-  <span className={hasError ? "p1-tab-error" : ""}>
-    {label}
-    {hasError && <span aria-label="Har feil" className="p1-tab-error-dot" />}
-  </span>
+  <>
+    <BoxNew as="span" width={hasError ? "calc(100% - 8px)" : "100%"}>
+      {label}
+    </BoxNew>
+    {hasError && (
+      <BoxNew aria-label="Har feil" as="div" background="danger-strong" borderRadius="full" height="8px" width="8px" />
+    )}
+  </>
 );
