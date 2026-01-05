@@ -57,26 +57,6 @@ sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any,
             )
         }
 
-    fun <E1 : Any, E2 : Any, E3 : Any> ifNotNull(
-        expr1: Expression<E1?>,
-        expr2: Expression<E2?>,
-        expr3: Expression<E3?>,
-        scope: Scope.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit
-    ): ShowElseScope<Lang, LetterData, C, Scope> =
-        ShowElseScope(::scopeFactory).also { elseScope ->
-            addControlStructure(
-                ContentOrControlStructure.Conditional(
-                    expr1.notNull() and expr2.notNull() and expr3.notNull(),
-                    scopeFactory().apply {
-                        // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
-                        @Suppress("UNCHECKED_CAST")
-                        scope(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
-                    }.elements,
-                    elseScope.scope.elements,
-                )
-            )
-        }
-
     fun <Item : Any> forEach(items: Expression<Collection<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
         val nextExpr = Expression.FromScope.Assigned<Item>(items.stableHashCode())
         addControlStructure(ContentOrControlStructure.ForEach(items, scopeFactory().apply { body(nextExpr) }.elements, nextExpr))

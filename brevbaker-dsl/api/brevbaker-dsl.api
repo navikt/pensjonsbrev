@@ -1007,7 +1007,6 @@ public abstract interface class no/nav/pensjon/brev/template/dsl/ControlStructur
 	public abstract fun getElements ()Ljava/util/List;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public abstract fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
@@ -1020,7 +1019,6 @@ public final class no/nav/pensjon/brev/template/dsl/ControlStructureScope$Defaul
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public static fun showIf (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
@@ -1035,7 +1033,6 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun item (Lkotlin/jvm/functions/Function1;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
@@ -1078,7 +1075,6 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/OutlinePhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
@@ -1121,7 +1117,6 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/ParagraphPhrase;)V
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
@@ -1171,7 +1166,6 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextOnlyScope : no/nav/
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
@@ -1250,7 +1244,6 @@ public final class no/nav/pensjon/brev/template/dsl/TableScope : no/nav/pensjon/
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun row (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
@@ -1340,7 +1333,6 @@ public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensj
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
 	public fun newline ()V
