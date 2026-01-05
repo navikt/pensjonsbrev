@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.Feilu
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysDataSelectors.feilutbetaltBrutto
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
@@ -57,7 +58,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             paragraph {
                 text(
                     bokmal { + "Vi vurderer at " + navn + " kan ha fått utbetalt for mye i uføretrygd fra og med " +
-                        dato + " til og med " + dato + " . Grunnen til det, er at vi har fått opplysninger om at " + navn + " døde " + dato + ". " },
+                        dato + " til og med " + dato + ". Grunnen til det, er at vi har fått opplysninger om at " + navn + " døde " + dato + ". " },
                     nynorsk { + "Vi vurderer at " + navn + " kan ha fått utbetalt for mykje i uføretrygd frå og med " +
                             dato + " til og med " + dato + ". Grunnen til det er at vi har fått opplysningar om at " + navn + " døydde " + dato + ". "}
                 )
@@ -72,7 +73,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             }
             paragraph {
                 text(
-                    bokmal { + "I folketrygdloven paragraf 22-12 sjette ledd første punktum kan du lese mer om hvordan dødsfall påvirker utbetalingen av uføretrygd. " },
+                    bokmal { + "I folketrygdloven § 22-12 sjette ledd første punktum kan du lese mer om hvordan dødsfall påvirker utbetalingen av uføretrygd. " },
                     nynorsk { + "I folketrygdlova § 22-12 sjette ledd første punktum kan du lese meir om korleis dødsfall påverkar utbetalinga av uføretrygd. "}
                     )
             }
@@ -85,9 +86,9 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             paragraph {
                 text(
                     bokmal { + "Dødsboet har rett til å uttale seg og gi oss nye opplysninger før vi fatter et vedtak. " +
-                        "Dette må gjøres innen 14 dager etter at dette varselet er mottatt, se avsnittet \"Slik uttaler du deg\" for mer informasjon. " },
+                        "Dette må gjøres innen 14 dager etter at dette varselet er mottatt, se avsnittet «Slik uttaler du deg» for mer informasjon. " },
                     nynorsk { + "Dødsbuet har rett til å uttale seg og gi oss nye opplysningar før vi fattar eit vedtak. " +
-                            "Dette må gjerast innan 14 dagar etter at dette varselet er mottatt. Sjå avsnittet \"Slik uttaler du deg\" for meir informasjon. "}
+                            "Dette må gjerast innan 14 dagar etter at dette varselet er mottatt. Sjå avsnittet «Slik uttaler du deg» for meir informasjon. "}
                     )
             }
             paragraph {
@@ -98,7 +99,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
                             "Dødsbuet får eit vedtak på vegner av " + navn + " når saka er ferdig behandla. "}
                 )
             }
-            paragraph {
+            title1 {
                 text(
                     bokmal { + "Derfor mener vi " + navn + " har fått utbetalt for mye " },
                     nynorsk { + "Derfor meiner vi " + navn + " har fått utbetalt for mykje "}
@@ -166,8 +167,8 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33.  " },
-                    nynorsk { + "Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33. "}
+                    bokmal { + "Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}.  " },
+                    nynorsk { + "Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. "}
                     )
             }
             title1 {

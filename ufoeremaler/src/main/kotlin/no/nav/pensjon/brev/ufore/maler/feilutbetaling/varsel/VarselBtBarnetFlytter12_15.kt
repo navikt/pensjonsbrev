@@ -54,7 +54,7 @@ object VarselBtBarnetFlytter12_15: RedigerbarTemplate<FeilutbetalingSpesifikkVar
         outline {
             paragraph {
                 text(bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " + dato + " til og med " + dato +
-                        " . Grunnen til det, er at vi har fått opplysninger om at du ikke lenger forsørger " + navn + ". " },
+                        ". Grunnen til det, er at vi har fått opplysninger om at du ikke lenger forsørger " + navn + ". " },
                     nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " + dato + " til og med " + dato +
                             ". Grunnen til det er at vi har fått opplysningar om at du ikkje lenger forsørgjer " + navn + ". "}
                     )

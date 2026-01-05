@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 
 class FeilutbetalingFraser {
 
@@ -22,8 +23,8 @@ class FeilutbetalingFraser {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har rett til å uttale deg før vi tar den endelige avgjørelsen om tilbakebetaling og fatter et vedtak. Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33. " },
-                    nynorsk { + "Du har rett til å uttale deg før vi tek den endelege avgjerda om tilbakebetaling og fattar eit vedtak. Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33. "}
+                    bokmal { + "Du har rett til å uttale deg før vi tar den endelige avgjørelsen om tilbakebetaling og fatter et vedtak. Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. " },
+                    nynorsk { + "Du har rett til å uttale deg før vi tek den endelege avgjerda om tilbakebetaling og fattar eit vedtak. Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. "}
                 )
             }
         }
@@ -117,7 +118,7 @@ class FeilutbetalingFraser {
             paragraph {
                 text(
                     bokmal { + "Du har rett til å uttale deg og gi oss nye opplysninger før vi fatter et vedtak. " +
-                            "Det må du gjøre innen 14 dager etter at du har fått dette varselet, se avsnittet \"Slik uttaler du deg\" for mer informasjon. " },
+                            "Det må du gjøre innen 14 dager etter at du har fått dette varselet, se avsnittet «Slik uttaler du deg» for mer informasjon. " },
                     nynorsk { + "Du har rett til å uttale deg og gi oss nye opplysningar før vi fattar eit vedtak. " +
                             "Det må du gjere innan 14 dagar etter at du har fått dette varselet. Sjå avsnittet «Slik uttaler du deg» for meir informasjon. " },
                 )

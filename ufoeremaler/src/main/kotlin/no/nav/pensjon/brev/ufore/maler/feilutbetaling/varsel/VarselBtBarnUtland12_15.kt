@@ -107,7 +107,7 @@ object VarselBtBarnUtland12_15: RedigerbarTemplate<FeilutbetalingSpesifikkVarsel
             paragraph {
                 text(
                     bokmal { + "Du fikk utbetalt uføretrygd og barnetillegg i perioden " + dato + " til " + dato +
-                            " , og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt + " kroner.  " },
+                            ", og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt + " kroner.  " },
                     nynorsk { + "Du fekk utbetalt uføretrygd og barnetillegg i perioden " + dato + " til " + dato +
                             ", og her har det oppstått ei feilutbetaling på " + bruttoFeilutbetalt + " kroner. "}
                 )

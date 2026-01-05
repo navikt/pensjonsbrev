@@ -42,6 +42,7 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
         val dato = fritekst("dato")
         val kilde = fritekst("kilde")
         val handling = fritekst("handling")
+        val prosent = fritekst("prosent")
         val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(LocalizedFormatter.CurrencyFormat)
 
         title {
@@ -83,8 +84,8 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
             }
             paragraph {
                 text(
-                    bokmal { + "Den " + dato + " fikk du vedtak om innvilgelse av X prosent uføretrygd. I søknaden dato fylte du ut at du var enslig. " },
-                    nynorsk { + "" +  dato + " fekk du vedtak om innvilging av X prosent uføretrygd. I søknaden dato fylte du ut at du var einsleg. " }
+                    bokmal { + "Den " + dato + " fikk du vedtak om innvilgelse av " + prosent + " prosent uføretrygd. I søknaden dato fylte du ut at du var enslig. " },
+                    nynorsk { + "" +  dato + " fekk du vedtak om innvilging av " + prosent + " prosent uføretrygd. I søknaden dato fylte du ut at du var einsleg. " }
                 )
             }
             paragraph {
@@ -103,10 +104,10 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
                 text(
                     bokmal { + "Du fikk utbetalt uføretrygd som enslig i perioden " +  dato + " til " +
                             dato + " , og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt  + ". " +
-                            " kroner. Utbetalingen din skulle vært endret fra måneden etter at du " +  fritekst("handling") + ". " },
+                            " kroner. Utbetalingen din skulle vært endret fra måneden etter at du " +  handling + ". " },
                     nynorsk { + "Du fekk utbetalt uføretrygd som einsleg i perioden " +  dato + " til " +
                             dato + ", og her har det oppstått ei feilutbetaling på " + bruttoFeilutbetalt  + ". " +
-                            " kroner. Utbetalinga di skulle vore endra frå månaden etter at du " +  fritekst("handling") + ". "}
+                            " kroner. Utbetalinga di skulle vore endra frå månaden etter at du " +  handling + ". "}
                 )
             }
             paragraph {
