@@ -7,7 +7,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import java.time.LocalDate
 import java.time.Month
@@ -32,6 +34,7 @@ object Fixtures : LetterDataFactory {
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
             FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
@@ -246,5 +249,10 @@ object Fixtures : LetterDataFactory {
                 ytelsenMedFeilutbetaling = KonteringType.UT_ORDINER
             )),
         feilutbetalingPerArListe = lagFeilutbetalingPerAr(),
+    )
+
+    fun lagFeilutbetalingVarselDodsbo() = FeilutbetalingVarselDodsboDto(
+        saksbehandlerValg = FeilutbetalingDodsboSaksbehandlervalg(),
+        pesysData = VarselFeilutbetalingPesysData(feilutbetaltBrutto = 100)
     )
 }
