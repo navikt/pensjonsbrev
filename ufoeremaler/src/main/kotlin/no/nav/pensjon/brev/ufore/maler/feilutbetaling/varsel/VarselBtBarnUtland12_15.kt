@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -31,76 +32,92 @@ object VarselBtBarnUtland12_15: RedigerbarTemplate<FeilutbetalingSpesifikkVarsel
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel feilutbetaling barn bor i utlandet §12-15",
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )
     ) {
+        val dato = fritekst("dato")
+        val land = fritekst("land")
+        val hendelse = fritekst("handling")
+        val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(CurrencyFormat)
+
         title {
             text(
-                bokmal { +"Vi vurderer om du må betale tilbake uføretrygd " })
+                bokmal { +"Vi vurderer om du må betale tilbake uføretrygd " },
+                nynorsk { + "Vi vurderer om du må betale tilbake uføretrygd "}
+            )
         }
         outline {
             paragraph {
-                text( bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " + fritekst("dato") +
-                        " til og med " + fritekst("dato") + " . Grunnen til det, er at vi har fått opplysninger om at du ikke lenger bor i et EØS-land. " }
+                text( bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " + dato +
+                        " til og med " + dato + " . Grunnen til det, er at vi har fått opplysninger om at du ikke lenger bor i et EØS-land. " },
+                    nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " + dato +
+                            " til og med " + dato + ". Grunnen til det er at vi har fått opplysningar om at du ikkje lenger bur i eit EØS-land. "}
                 )
             }
             paragraph {
                 text( bokmal { + "Uføretrygden og barnetillegget ditt påvirkes av om du bor i EØS-land eller ikke. I vedtaket av " +
-                        fritekst("dato") + ", informerte vi deg om at endringen i bostedsland, kan ha ført til feilutbetalinger tilbake i tid.  " }
+                        dato + ", informerte vi deg om at endringen i bostedsland, kan ha ført til feilutbetalinger tilbake i tid.  " },
+                    nynorsk { + "Uføretrygda og barnetillegget ditt blir påverka av om du bur i EØS-land eller ikkje. I vedtaket av " +
+                             dato + " informerte vi deg om at endringa i bustadsland kan ha ført til feilutbetalingar tilbake i tid. "}
                 )
             }
             includePhrase(FeilutbetalingFraser.FeilOpplysninger)
             title1 {
                 text(
-                    bokmal { +"Derfor mener vi du har fått utbetalt for mye " }
+                    bokmal { +"Derfor mener vi du har fått utbetalt for mye " },
+                    nynorsk { + "Derfor meiner vi du har fått utbetalt for mykje "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Du har fått barnetillegg i uføretrygden for barn født " + fritekst("dato") + ". " }
+                    bokmal { +"Du har fått barnetillegg i uføretrygden for barn født " + dato + ". " },
+                    nynorsk { + "Du har fått barnetillegg i uføretrygda for barn fødd " + dato + ". "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har fått barnetillegg i uføretrygden for barn født " + fritekst("dato") + ". " }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "For å ha rett til barnetillegg fra 1. juli 2020 må: " }
+                    bokmal { + "For å ha rett til barnetillegg fra 1. juli 2020 må: " },
+                    nynorsk { + "For å ha rett til barnetillegg frå 1. juli 2020 må: "}
                 )
                 list {
                     item {
                         text(
-                            bokmal { + "du bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" }
+                            bokmal { + "du bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                            nynorsk { + "du bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med "}
                         )
                     }
                     item {
                         text(
-                            bokmal { + "barnet ditt være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med " }
+                            bokmal { + "barnet ditt være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med " },
+                            nynorsk { + "barnet ditt vere busett og opphalde seg i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med "}
                         )
                     }
                 }
             }
             paragraph {
                 text(
-                    bokmal { + "Du har bodd i " + fritekst("land") + " og har derfor ikke rett til barnetillegg fra " + fritekst("dato") + "." }
+                    bokmal { + "Du har bodd i " + land + " og har derfor ikke rett til barnetillegg fra " + dato + "." },
+                    nynorsk { + "Du har budd i " + land + " og har derfor ikkje rett til barnetillegg frå " + dato + ". "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du fikk utbetalt uføretrygd og barnetillegg i perioden " + fritekst("dato") + " til " + fritekst("dato") +
-                            " , og her har det oppstått en feilutbetaling på " + pesysData.feilutbetaltBrutto.format(CurrencyFormat) + " kroner.  " }
+                    bokmal { + "Du fikk utbetalt uføretrygd og barnetillegg i perioden " + dato + " til " + dato +
+                            " , og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt + " kroner.  " },
+                    nynorsk { + "Du fekk utbetalt uføretrygd og barnetillegg i perioden " + dato + " til " + dato +
+                            ", og her har det oppstått ei feilutbetaling på " + bruttoFeilutbetalt + " kroner. "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Utbetalingen din skulle vært endret ved utgangen av måneden etter at " + fritekst("hendelse") +
-                            ". Barnetillegg stanses ved utgangen av den måneden retten til ytelsen faller bort. Dette følger av folketrygdloven § 22-12 sjette ledd. " }
+                    bokmal { + "Utbetalingen din skulle vært endret ved utgangen av måneden etter at " + hendelse +
+                            ". Barnetillegg stanses ved utgangen av den måneden retten til ytelsen faller bort. Dette følger av folketrygdloven § 22-12 sjette ledd. " },
+                    nynorsk { + "Utbetalinga di skulle vore endra ved utgangen av månaden etter at " + hendelse +
+                            ". Barnetillegg blir stoppa ved utgangen av den månaden retten til ytinga fell bort. Dette følgjer av folketrygdlova § 22-12 sjette ledd. "}
                 )
             }
             includePhrase(FeilutbetalingFraser.KriterierTilbakekreving)

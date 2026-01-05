@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -31,68 +32,87 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel feilutbetaling sivilstand §12-13 andre ledd",
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )
     ) {
-        val feilutbetaltBeloep =
+        val dato = fritekst("dato")
+        val kilde = fritekst("kilde")
+        val handling = fritekst("handling")
+        val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(LocalizedFormatter.CurrencyFormat)
+
         title {
             text(
-                bokmal { +"Vi vurderer om du må betale tilbake uføretrygd " })
+                bokmal { + "Vi vurderer om du må betale tilbake uføretrygd " },
+                nynorsk { + "Vi vurderer om du må betale tilbake uføretrygd "}
+            )
         }
         outline {
             paragraph {
                 text(
-                    bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " +  fritekst("dato") + " til og med " +  fritekst("dato") + ". " +
-                            "Grunnen til det, er at vi har fått opplysninger om at du har fått en samboer eller ektefelle." }
+                    bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " +  dato + " til og med " +  dato + ". " +
+                            "Grunnen til det, er at vi har fått opplysninger om at du har fått en samboer eller ektefelle." },
+                    nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " +  dato + " til og med " +  dato + ". Grunnen til det er at vi har fått opplysningar om at du har fått ein sambuar eller ektefelle. " }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Din sivilstand påvirker beregningen av din uføretrygd, og er årsaken til at vi vurderer at du har fått utbetalt for mye. " +
-                            "I vedtaket av " +  fritekst("dato") + ", informerte vi deg om at endringen i din sivilstand kan ha ført til feilutbetalinger tilbake i tid. " }
+                            "I vedtaket av " +  dato + ", informerte vi deg om at endringen i din sivilstand kan ha ført til feilutbetalinger tilbake i tid. " },
+                    nynorsk { + "Sivilstanden din påverkar berekninga av uføretrygda di, og er årsaka til at vi vurderer at du har fått utbetalt for mykje. " +
+                            "I vedtaket av " +  dato + " informerte vi deg om at endringa i sivilstanden din kan ha ført til feilutbetalingar tilbake i tid. " }
                 )
             }
             includePhrase(FeilutbetalingFraser.FeilOpplysninger)
             title1 {
                 text(
-                    bokmal { + "Derfor mener vi du har fått utbetalt for mye " }
+                    bokmal { + "Derfor mener vi du har fått utbetalt for mye " },
+                    nynorsk { + "Derfor meiner vi du har fått utbetalt for mykje " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Vi har den " +  fritekst("dato") + " mottatt opplysninger fra " +  fritekst("kilde") +
-                            " om at du " +  fritekst("handling") + " den " +  fritekst("dato") + ". " }
+                    bokmal { + "Vi har den " +  dato + " mottatt opplysninger fra " +  kilde +
+                            " om at du " +  handling + " den " +  dato + ". " },
+                    nynorsk { + "Vi har den " +  dato + " mottatt opplysningar frå " +  kilde +
+                            " om at du " +  handling + " den " +  dato + ". " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Den " + fritekst("dato") + " fikk du vedtak om innvilgelse av X prosent uføretrygd. I søknaden dato fylte du ut at du var enslig. " }
+                    bokmal { + "Den " + dato + " fikk du vedtak om innvilgelse av X prosent uføretrygd. I søknaden dato fylte du ut at du var enslig. " },
+                    nynorsk { + "" +  dato + " fekk du vedtak om innvilging av X prosent uføretrygd. I søknaden dato fylte du ut at du var einsleg. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Fordi du får uføretrygd beregnet etter reglene for minsteytelse, påvirker din sivilstand beregningen av din uføretrygd. " }
+                    bokmal { + "Fordi du får uføretrygd beregnet etter reglene for minsteytelse, påvirker din sivilstand beregningen av din uføretrygd. " },
+                    nynorsk { + "Fordi du får uføretrygd berekna etter reglane for minsteyting, påverkar sivilstanden din berekninga av uføretrygda di. "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du får en lavere utbetaling av uføretrygd fra måneden etter at sivilstanden din ble endret. Dette står i folketrygdloven § 22-12 femte ledd. " }
+                    bokmal { + "Du får en lavere utbetaling av uføretrygd fra måneden etter at sivilstanden din ble endret. Dette står i folketrygdloven § 22-12 femte ledd. " },
+                    nynorsk { + "Du får ei lågare utbetaling av uføretrygd frå månaden etter at sivilstanden din vart endra. Dette står i folketrygdlova § 22-12 femte ledd. "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du fikk utbetalt uføretrygd som enslig i perioden " +  fritekst("dato") + " til " +
-                            fritekst("dato") + " , og her har det oppstått en feilutbetaling på " + pesysData.feilutbetaltBrutto.format(LocalizedFormatter.CurrencyFormat)  +
-                            " kroner. Utbetalingen din skulle vært endret fra måneden etter at du " +  fritekst("handling") + ". " }
+                    bokmal { + "Du fikk utbetalt uføretrygd som enslig i perioden " +  dato + " til " +
+                            dato + " , og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt  + ". " +
+                            " kroner. Utbetalingen din skulle vært endret fra måneden etter at du " +  fritekst("handling") + ". " },
+                    nynorsk { + "Du fekk utbetalt uføretrygd som einsleg i perioden " +  dato + " til " +
+                            dato + ", og her har det oppstått ei feilutbetaling på " + bruttoFeilutbetalt  + ". " +
+                            " kroner. Utbetalinga di skulle vore endra frå månaden etter at du " +  fritekst("handling") + ". "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + fritekst("Fritekst")}
+                    bokmal { + fritekst("Fritekst")},
+                    nynorsk { + fritekst("Fritekst")}
                 )
             }
             includePhrase(FeilutbetalingFraser.KriterierTilbakekreving)

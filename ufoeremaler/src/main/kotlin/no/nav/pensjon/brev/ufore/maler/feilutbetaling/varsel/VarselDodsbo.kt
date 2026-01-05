@@ -4,7 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -34,93 +35,166 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel feilutbetaling dødsbo",
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )
     ) {
+        val dato = fritekst ("dato")
+        val navn = fritekst ("navn")
+        val kilde = fritekst ("kilde")
+        val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(CurrencyFormat)
+
+
         title {
             text(
-                bokmal { +"Vi vurderer om du må betale tilbake uføretrygd " })
+                bokmal { +"Vi vurderer om dødsbo etter " + navn + " må betale tilbake uføretrygd " },
+                nynorsk { + "Vi vurderer om dødsbu etter NAVN må betale tilbake uføretrygd "}
+            )
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi vurderer at " + fritekst("navn") + " kan ha fått utbetalt for mye i uføretrygd fra og med " +
-                        fritekst("dato") + " til og med " + fritekst("dato") +
-                        " . Grunnen til det, er at vi har fått opplysninger om at " + fritekst("navn") + " døde " + fritekst("dato") + ". " })
+                text(
+                    bokmal { + "Vi vurderer at " + navn + " kan ha fått utbetalt for mye i uføretrygd fra og med " +
+                        dato + " til og med " + dato + " . Grunnen til det, er at vi har fått opplysninger om at " + navn + " døde " + dato + ". " },
+                    nynorsk { + "Vi vurderer at " + navn + " kan ha fått utbetalt for mykje i uføretrygd frå og med " +
+                            dato + " til og med " + dato + ". Grunnen til det er at vi har fått opplysningar om at " + navn + " døydde " + dato + ". "}
+                )
             }
             paragraph {
-                text(bokmal { + "I vedtaket av " + fritekst("dato") + ", informerte vi om at dødsfallet kan ha ført til at " + fritekst("navn") +
-                        " kan ha fått utbetalt for mye uføretrygd tilbake i tid. " })
+                text(
+                    bokmal { + "I vedtaket av " + dato + ", informerte vi om at dødsfallet kan ha ført til at " + navn +
+                        " kan ha fått utbetalt for mye uføretrygd tilbake i tid. " },
+                    nynorsk { + "I vedtaket av " + dato + " informerte vi om at dødsfallet kan ha ført til at " + navn +
+                            " kan ha fått utbetalt for mykje uføretrygd tilbake i tid. "}
+                    )
             }
             paragraph {
-                text(bokmal { + "I folketrygdloven paragraf 22-12 sjette ledd første punktum kan du lese mer om hvordan dødsfall påvirker utbetalingen av uføretrygd. " })
+                text(
+                    bokmal { + "I folketrygdloven paragraf 22-12 sjette ledd første punktum kan du lese mer om hvordan dødsfall påvirker utbetalingen av uføretrygd. " },
+                    nynorsk { + "I folketrygdlova § 22-12 sjette ledd første punktum kan du lese meir om korleis dødsfall påverkar utbetalinga av uføretrygd. "}
+                    )
             }
             title1 {
-                text(bokmal { + "Dette kan du gjøre hvis vi har feil opplysninger " })
+                text(
+                    bokmal { + "Dette kan du gjøre hvis vi har feil opplysninger " },
+                    nynorsk { + "Dette kan du gjere dersom vi har feil opplysningar "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Dødsboet har rett til å uttale seg og gi oss nye opplysninger før vi fatter et vedtak. " +
-                        "Dette må gjøres innen 14 dager etter at dette varselet er mottatt, se avsnittet \"Slik uttaler du deg\" for mer informasjon. " })
+                text(
+                    bokmal { + "Dødsboet har rett til å uttale seg og gi oss nye opplysninger før vi fatter et vedtak. " +
+                        "Dette må gjøres innen 14 dager etter at dette varselet er mottatt, se avsnittet \"Slik uttaler du deg\" for mer informasjon. " },
+                    nynorsk { + "Dødsbuet har rett til å uttale seg og gi oss nye opplysningar før vi fattar eit vedtak. " +
+                            "Dette må gjerast innan 14 dagar etter at dette varselet er mottatt. Sjå avsnittet \"Slik uttaler du deg\" for meir informasjon. "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Dette er bare et varsel om at vi vurderer å kreve tilbake det feilutbetalte beløpet. " +
-                        "Dødsboet får et vedtak på vegne av " + fritekst("navn") + " når saken er ferdig behandlet. " })
+                text(
+                    bokmal { + "Dette er bare et varsel om at vi vurderer å kreve tilbake det feilutbetalte beløpet. " +
+                        "Dødsboet får et vedtak på vegne av " + navn + " når saken er ferdig behandlet. " },
+                    nynorsk { + "Dette er berre eit varsel om at vi vurderer å krevje tilbake det feilutbetalte beløpet. " +
+                            "Dødsbuet får eit vedtak på vegner av " + navn + " når saka er ferdig behandla. "}
+                )
             }
             paragraph {
-                text(bokmal { + "Derfor mener vi " + fritekst("navn") + " har fått utbetalt for mye " })
+                text(
+                    bokmal { + "Derfor mener vi " + navn + " har fått utbetalt for mye " },
+                    nynorsk { + "Derfor meiner vi " + navn + " har fått utbetalt for mykje "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Vi har den " + fritekst("dato") + " fått opplysninger fra " + fritekst("kilde") +
-                        " om at " + fritekst("navn") + " døde " + fritekst("dato") + ". " })
+                text(
+                    bokmal { + "Vi har den " + dato + " fått opplysninger fra " + kilde + " om at " + navn + " døde " + dato + ". " },
+                    nynorsk { + "Vi har den " + dato + " fått opplysningar frå " + kilde + " om at " + navn + " døydde " + dato + ". "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Uføretrygden opphører ved utgangen av måneden den som får uføretrygd dør. " })
+                text(
+                    bokmal { + "Uføretrygden opphører ved utgangen av måneden den som får uføretrygd dør. " },
+                    nynorsk { + "Uføretrygda blir stoppa ved utgangen av månaden den som får uføretrygd døyr. "}
+                    )
             }
             paragraph {
-                text(bokmal { + "" + fritekst("dato") + " fikk utbetalt uføretrygd i perioden dato til dato etter at dødsfallet hadde skjedd. " +
-                        "Utbetalingen skulle vært stanset i denne perioden, og derfor har det skjedd en feilutbetaling på " +
-                        pesysData.feilutbetaltBrutto.format(LocalizedFormatter.CurrencyFormat) + " kroner.  " })
+                text(
+                    bokmal { + dato + " fikk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
+                        "Utbetalingen skulle vært stanset i denne perioden, og derfor har det skjedd en feilutbetaling på " + bruttoFeilutbetalt + " kroner.  " },
+                    nynorsk { + navn + " fekk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
+                            "Utbetalinga skulle vore stansa i denne perioden, og derfor har det skjedd ei feilutbetaling på " + bruttoFeilutbetalt + " kroner. "}
+                    )
             }
+
             paragraph {
-                text(bokmal { + "Vi vurderer nå om dette beløpet skal kreves tilbake fra dødsboet. " })
+                text(
+                    bokmal { + "Vi vurderer nå om dette beløpet skal kreves tilbake fra dødsboet. " },
+                    nynorsk { + "Vi vurderer no om dette beløpet skal krevjast tilbake frå dødsbuet. "}
+
+                    )
             }
             showIf(saksbehandlerValg.kjentBobestyrer) {
                 paragraph {
-                    text(bokmal { + "Vi har fått opplysninger om at skifteattest er utstedt til deg. Derfor får du dette varselet på vegne av boet. " })
+                    text(
+                        bokmal { + "Vi har fått opplysninger om at skifteattest er utstedt til deg. Derfor får du dette varselet på vegne av boet. " },
+                        nynorsk { + "Vi har fått opplysningar om at skifteattest er utstedt til deg. Derfor får du dette varselet på vegner av buet."}
+                        )
                 }
             }
             showIf(saksbehandlerValg.ukjentBobestyrer) {
                 paragraph {
-                    text(bokmal { + "Vi mangler opplysninger om hvem som er arvinger / representant for dødsboet / hvem som har fått utstedt skifteattest. Vi ber deg om å sende oss disse opplysningene. " })
+                    text(
+                        bokmal { + "Vi mangler opplysninger om hvem som er arvinger / representant for dødsboet / hvem som har fått utstedt skifteattest. Vi ber deg om å sende oss disse opplysningene. " },
+                        nynorsk { + "Vi manglar opplysningar om kven som er arvingar / representant for dødsbuet / kven som har fått utstedt skifteattest. Vi ber deg om å sende oss desse opplysningane. "}
+                        )
                 }
             }
             includePhrase(FeilutbetalingFraser.KriterierTilbakekreving)
             includePhrase(FeilutbetalingFraser.KriterierIngenTilbakekreving)
 
             title1 {
-                text(bokmal { + "Slik kan boet uttale seg "})
+                text(
+                    bokmal { + "Slik kan boet uttale seg "},
+                    nynorsk { + "Slik kan buet uttale seg "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Hvis du mener vi har feil opplysninger, har du rett til å uttale deg på vegne av boet før vi tar den endelige " +
-                        "avgjørelsen om tilbakebetaling. Fristen for å gi uttalelse er 14 dager etter at dette brevet er mottatt. " })
+                text(
+                    bokmal { + "Hvis du mener vi har feil opplysninger, har du rett til å uttale deg på vegne av boet før vi tar den endelige " +
+                        "avgjørelsen om tilbakebetaling. Fristen for å gi uttalelse er 14 dager etter at dette brevet er mottatt. " },
+                    nynorsk { + "Dersom du meiner vi har feil opplysningar, har du rett til å uttale deg på vegner av buet før vi tek den endelege " +
+                            "avgjerda om tilbakebetaling. Fristen for å gi uttale er 14 dagar etter at dette brevet er mottatt. "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33.  " })
+                text(
+                    bokmal { + "Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33.  " },
+                    nynorsk { + "Du kan skrive til oss på nav.no/kontakt eller ringe oss på telefon 55 55 33 33. "}
+                    )
             }
             title1 {
-                text(bokmal { + "Hva skjer videre i saken "})
+                text(
+                    bokmal { + "Hva skjer videre i saken "},
+                    nynorsk { + "Kva skjer vidare i saka "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Vi vil vurdere saken og sende boet et vedtak. Hvis boet må betale tilbake til oss, vil det stå informasjon i vedtaksbrevet om tilbakebetaling. " })
+                text(
+                    bokmal { + "Vi vil vurdere saken og sende boet et vedtak. Hvis boet må betale tilbake til oss, vil det stå informasjon i vedtaksbrevet om tilbakebetaling. " },
+                    nynorsk { + "Vi vil vurdere saka og sende buet eit vedtak. Dersom buet må betale tilbake til oss, vil det stå informasjon i vedtaksbrevet om tilbakebetaling. "}
+                    )
             }
             title1 {
-                text(bokmal { + "Boet har rett til innsyn  "})
+                text(
+                    bokmal { + "Boet har rett til innsyn  "},
+                    nynorsk { + "Buet har rett til innsyn "}
+                    )
             }
             paragraph {
-                text(bokmal { + "Boet har også som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven, § 18. " })
+                text(
+                    bokmal { + "Boet har som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven, § 18. " },
+                    nynorsk { + "Buet har som hovudregel rett til å sjå sakens dokument etter reglane i forvaltningslova § 18. "}
+                    )
             }
             includePhrase(Felles.HarDuSporsmal)
         }
